@@ -14,12 +14,14 @@
 %% DESCRIPTION:
 %%   `pst-optexp' is a PSTricks package to draw optical experimental setups
 %%
+%% HISTORY -> see file Changes
+%%
 \csname PSToptexpLoaded\endcsname
 \let\PSToptexpLoaded\endinput
 %
 %
-\def\fileversion{1.0}
-\def\filedate{2007/07/18}
+\def\fileversion{1.1}
+\def\filedate{2007/09/06}
 \message{`pst-optexp' v\fileversion, \filedate\space (CB)}
 %
 % DPC interface to the `keyval' package (until keyval based version of PSTricks)
@@ -69,26 +71,34 @@
 \newif\ifPst@optexp@component@optional
 \newif\ifPst@optexp@debug@showoptdots
 \newif\ifPst@optexp@endbox
-\newif\ifPst@optexp@labelrelative
 %
 % Strings
-\def\pst@string@pol@polperp{perp}
-\def\pst@string@pol@polparallel{parallel}
-\def\pst@string@pol@polmisc{misc}
-\def\pst@string@pol@polrcirc{rcirc}
-\def\pst@string@pol@pollcirc{lcirc}
-\def\pst@string@mirror@type@piezo{piezo}
-\def\pst@string@mirror@type@plain{plain}
-\def\pst@string@mirror@type@extended{extended}
+\edef\pst@string@pol@polperp{perp}
+\edef\pst@string@pol@polparallel{parallel}
+\edef\pst@string@pol@polmisc{misc}
+\edef\pst@string@pol@polrcirc{rcirc}
+\edef\pst@string@pol@pollcirc{lcirc}
+\edef\pst@string@mirror@type@piezo{piezo}
+\edef\pst@string@mirror@type@plain{plain}
+\edef\pst@string@mirror@type@extended{extended}
 %
-\def\pst@string@lens@type@plainconvex{plainconvex}
-\def\pst@string@lens@type@convexplain{convexplain}
-\def\pst@string@lens@type@biconvex{biconvex}
-\def\pst@string@lens@type@plainconcave{plainconcave}
-\def\pst@string@lens@type@concaveplain{concaveplain}
-\def\pst@string@lens@type@biconcave{biconcave}
+\edef\pst@string@lens@type@plainconvex{plainconvex}
+\edef\pst@string@lens@type@convexplain{convexplain}
+\edef\pst@string@lens@type@biconvex{biconvex}
+\edef\pst@string@lens@type@plainconcave{plainconcave}
+\edef\pst@string@lens@type@concaveplain{concaveplain}
+\edef\pst@string@lens@type@biconcave{biconcave}
 %
-\newpsstyle{OptionalStyle}{linestyle=dotted}
+\edef\pst@string@labelref@relative{relative}
+\edef\pst@string@labelref@relgrav{relgrav}
+\edef\pst@string@labelref@global{global}
+%
+\edef\pst@optexp@label@refangle{0}
+%
+%
+% psstyles
+%
+\newpsstyle{OptionalStyle}{linestyle=dashed,dash=1.5pt 1pt}
 \newpsstyle{ExtendedMirror}{linestyle=none,%
                 hatchwidth=0.5\psk@optexp@mirror@linewidth,%0.6pt,%
                 hatchsep=1.4\psk@optexp@mirror@linewidth,%
@@ -101,11 +111,10 @@
 % Parameterdefinitions
 %
 % General
-\define@key[psset]{optexp}{optional}[true]{\@nameuse{Pst@optexp@component@optional#1}}
+\define@boolkey[psset]{optexp}[Pst@optexp@component@]{optional}[true]{}
 \define@key[psset]{optexp}{position}{\edef\psk@optexp@position{#1}}
 \define@key[psset]{optexp}{abspos}{\edef\psk@optexp@abspos{#1}}
 \define@key[psset]{optexp}{angle}{\edef\psk@optexp@angle{#1}}
-\define@key[psset]{optexp}{reverse}[true]{\@nameuse{Pst@optexp@reverse#1}}
 %
 % Lens
 \define@key[psset]{optexp}{lensheight}{\edef\psk@optexp@lens@height{#1}}
@@ -132,20 +141,32 @@
 }}
 %
 % Pinhole
-\define@key[psset]{optexp}{iwidth}{\edef\psk@optexp@pinhole@iwidth{#1}}
-\define@key[psset]{optexp}{owidth}{\edef\psk@optexp@pinhole@owidth{#1}}
+\define@key[psset]{optexp}{innerheight}{\edef\psk@optexp@pinhole@iheight{#1}}
+\define@key[psset]{optexp}{iwidth}{%
+   \edef\psk@optexp@pinhole@iheight{#1}%
+   \PackageWarning{pst-optexp}{iwidth is obsolete, use innerheight instead}
+}
+\define@key[psset]{optexp}{outerheight}{\edef\psk@optexp@pinhole@oheight{#1}}
+\define@key[psset]{optexp}{owidth}{%
+   \edef\psk@optexp@pinhole@oheight{#1}%
+   \PackageWarning{pst-optexp}{owidth is obsolete, use outerheight instead}
+}
 \define@key[psset]{optexp}{phlinewidth}{\edef\psk@optexp@pinhole@linewidth{#1}}
 %
 % Beamsplitter
-\define@key[psset]{optexp}{bswidth}{\edef\psk@optexp@bswidth{#1}}
+\define@key[psset]{optexp}{bssize}{\edef\psk@optexp@bssize{#1}}
+\define@key[psset]{optexp}{bswidth}{%
+   \edef\psk@optexp@bssize{#1}%
+   \PackageWarning{pst-optexp}{bswidth is obsolete, use bssize instead}%
+}
 %
 % Crystal
 \define@key[psset]{optexp}{crystalwidth}{\edef\psk@optexp@crystal@width{#1}}
 \define@key[psset]{optexp}{crystalheight}{\edef\psk@optexp@crystal@height{#1}}
 \define@key[psset]{optexp}{caxislength}{\edef\psk@optexp@crystal@caxislength{#1}}
-\define@key[psset]{optexp}{voltage}[true]{\@nameuse{Pst@optexp@crystal@voltage#1}}
-\define@key[psset]{optexp}{caxisinv}[true]{\@nameuse{Pst@optexp@crystal@caxisinv#1}}
-\define@key[psset]{optexp}{lamp}[true]{\@nameuse{Pst@optexp@crystal@lamp#1}}
+\define@boolkey[psset]{optexp}[Pst@optexp@crystal@]{voltage}[true]{}
+\define@boolkey[psset]{optexp}[Pst@optexp@crystal@]{caxisinv}[true]{}
+\define@boolkey[psset]{optexp}[Pst@optexp@crystal@]{lamp}[true]{}
 \define@key[psset]{optexp}{lampscale}{\def\psk@optexp@lamp@scale{#1}}
 %
 % Mirror
@@ -153,7 +174,7 @@
 \define@key[psset]{optexp}{mirrorlinewidth}{\edef\psk@optexp@mirror@linewidth{#1}}
 \define@key[psset]{optexp}{mirrortype}{\edef\psk@optexp@mirror@type{#1}}% piezo, extended, plain
 \define@key[psset]{optexp}{mirrordepth}{\edef\psk@optexp@mirror@depth{#1}}
-\define@key[psset]{optexp}{variable}[true]{\@nameuse{Pst@optexp@variable#1}}
+\define@boolkey[psset]{optexp}[Pst@optexp@]{variable}[true]{}
 %
 % Grid
 \define@key[psset]{optexp}{optgridcount}{\edef\psk@optexp@optgrid@count{#1}}
@@ -161,11 +182,12 @@
 \define@key[psset]{optexp}{optgridheight}{\edef\psk@optexp@optgrid@height{#1}}
 \define@key[psset]{optexp}{optgriddepth}{\edef\psk@optexp@optgrid@depth{#1}}
 \define@key[psset]{optexp}{optgridlinewidth}{\edef\psk@optexp@optgrid@linewidth{#1}}
+\define@boolkey[psset]{optexp}[Pst@optexp@]{reverse}[true]{}
 %
 % Box
 \define@key[psset]{optexp}{optboxwidth}{\edef\psk@optexp@optbox@width{#1}}
 \define@key[psset]{optexp}{optboxheight}{\edef\psk@optexp@optbox@height{#1}}
-\define@key[psset]{optexp}{endbox}[true]{\@nameuse{Pst@optexp@endbox#1}}
+\define@boolkey[psset]{optexp}[Pst@optexp@]{endbox}[true]{}
 %
 % Plate
 \define@key[psset]{optexp}{platelinewidth}{\edef\psk@optexp@plate@linewidth{#1}}
@@ -177,21 +199,38 @@
 % Detector
 \define@key[psset]{optexp}{detsize}{\edef\psk@optexp@detector@size{#1}}
 %
-% Polarisation
-\define@key[psset]{optexp}{polwidth}{\edef\psk@optexp@polarisation@width{#1}}
-\define@key[psset]{optexp}{pollinewidth}{\edef\psk@optexp@polarisation@linewidth{#1}}
-\define@key[psset]{optexp}{pol}{\edef\psk@optexp@pol{#1}}
+% Polarization
+\define@key[psset]{optexp}{polwidth}{%
+   \edef\psk@optexp@polarization@size{#1}%
+   \PackageWarning{pst-optexp}{polwidth is obsolete, use polsize instead}%
+}
+\define@key[psset]{optexp}{polsize}{\edef\psk@optexp@polarization@size{#1}}
+\define@key[psset]{optexp}{pollinewidth}{\edef\psk@optexp@polarization@linewidth{#1}}
+\define@key[psset]{optexp}{poltype}{\edef\psk@optexp@pol@type{#1}}
+\define@key[psset]{optexp}{pol}{%
+   \edef\psk@optexp@poltype{#1}%
+   \PackageWarning{pst-optexp}{pol is obsolete, use poltype instead}%
+}
 %
 % Label
 \define@key[psset]{optexp}{labelangle}{\edef\psk@optexp@label@angle{#1}}
 \define@key[psset]{optexp}{labeloffset}{\edef\psk@optexp@label@offset{#1}}
 \define@key[psset]{optexp}{labelstyle}{\def\psk@optexp@label@style{#1}}
 \define@key[psset]{optexp}{labelalign}{\def\psk@optexp@label@align{#1}}
-\define@key[psset]{optexp}{labelrelative}[true]{\@nameuse{Pst@optexp@labelrelative#1}}
+\define@key[psset]{optexp}{labelref}{\edef\psk@optexp@label@ref{#1}}
+% labelrelative is obsolete
+\define@choicekey*[psset]{optexp}{labelrelative}[\val\nr]{true,false}[true]{%
+  \ifcase\nr\relax
+     \psset{labelref=relative}
+  \or
+     \psset{labelref=global}
+  \fi
+  \PackageWarning{pst-optexp}{labelrelative is obsolete, please use labelref=relative instead}
+}
+
 %
 % Debug
-\define@key[psset]{optexp}{showoptdots}[true]{\@nameuse{Pst@optexp@debug@showoptdots#1}}
-%
+\define@boolkey[psset]{optexp}[Pst@optexp@debug@]{showoptdots}[true]{}
 %
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -205,7 +244,11 @@
 \def\crystal{\@ifnextchar[{\pst@crystal}{\pst@crystal[]}}
 \def\optgrid{\@ifnextchar[{\pst@optgrid}{\pst@optgrid[]}}
 \def\mirror{\@ifnextchar[{\pst@mirror}{\pst@mirror[]}}
-\def\polarisation{\@ifnextchar[{\pst@polarisation}{\pst@polarisation[]}}
+\def\polarisation{%
+  \PackageWarning{pst-optexp}{macro polarisation is obsolete, please use polarization instead}%
+  \@ifnextchar[{\pst@polarization}{\pst@polarization[]}%
+}
+\def\polarization{\@ifnextchar[{\pst@polarization}{\pst@polarization[]}}
 \def\optbox{\@ifnextchar[{\pst@optbox}{\pst@optbox[]}}
 \def\optplate{\@ifnextchar[{\pst@optplate}{\pst@optplate[]}}
 \def\optretplate{\@ifnextchar[{\pst@optretplate}{\pst@optretplate[]}}
@@ -226,14 +269,14 @@
         ,lenstype=biconvex
         ,mirrorwidth=1
         ,mirrordepth=0.08
-        ,pol=\pst@string@pol@polparallel
+        ,poltype=\pst@string@pol@polparallel
         ,optgridcount=10
         ,optgridwidth=1
         ,optgridheight=0.1
         ,optgriddepth=0.05
-        ,bswidth=1
-        ,owidth=1
-        ,iwidth=0.1
+        ,bssize=0.8
+        ,outerheight=1
+        ,innerheight=0.1
         ,crystalwidth=2
         ,crystalheight=0.8
         ,caxislength=0.6
@@ -241,8 +284,8 @@
         ,optboxheight=0.5
         ,position=\@empty
         ,abspos=\@empty
-        ,labeloffset=1
-        ,labelangle=-90
+        ,labeloffset=0.8
+        ,labelangle=0
         ,labelstyle=\small
         ,mirrortype=\pst@string@mirror@type@plain,
         ,labelalign=c
@@ -251,12 +294,13 @@
         ,plateheight=1
         ,platelinewidth=2\pslinewidth
         ,platewidth=0.1
-        ,polwidth=0.6
+        ,polsize=0.6
         ,pollinewidth=0.7\pslinewidth
         ,optgridlinewidth=0.7\pslinewidth
         ,phlinewidth=2\pslinewidth
         ,lampscale=0.3
         ,detsize=0.5
+        ,labelref=relgrav
 }%
 %
 %
@@ -336,6 +380,7 @@
            /Y@B YAtmp def}if
         X@A Y@A){tempNode@A}%
   \pnode(! X@B Y@B){tempNode@B}%
+  \gdef\pst@optexp@label@refangle{180}
 }\ignorespaces}%
 %
 %
@@ -350,6 +395,54 @@
     \pnode(#1){tempNode@A}
     \pnode(#2){tempNode@B}
 }\ignorespaces}%
+%
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Some other usefuls macros
+%
+% Define a new node #3 shifted by (#1) relative to existing node #2.
+% Aditionally rotate the new node by #4 degree around existing node as origin.
+%
+\def\pst@defShiftedRotNode(#1)#2#3#4{%
+    \pst@getcoor{#1}\pst@tempDiff%
+    \pnode(!%
+       \pst@tempDiff /YDiff ED /XDiff ED %
+       tx@NodeDict begin
+         /N@#2 load GetCenter /YShifted ED /XShifted ED
+         /rot@angle #4 \pst@optexp@label@refangle\space add def
+         /XDiff@Rot rot@angle cos XDiff mul rot@angle sin YDiff mul add def
+         /YDiff@Rot rot@angle cos YDiff mul rot@angle sin XDiff mul sub def
+         XShifted XDiff@Rot add \pst@number\psxunit div
+         YShifted YDiff@Rot add \pst@number\psyunit div neg
+       end){#3}%
+    % reset reference label to 0
+    \gdef\pst@optexp@label@refangle{0}%
+}%
+%
+% Define a new node #3 that is only shifted by (#1) with respect to the existing
+% node #2
+\def\pst@defShiftedNode(#1)#2#3{%
+  \pst@defShiftedRotNode(#1){#2}{#3}{0}%
+}%
+%
+% Used to put the label for labelref=relative
+%
+\def\put@RelLabel#1{%
+\nput[labelsep=0]{\psk@optexp@label@angle}%
+     {tempNode@LabelShifted}%
+     {\rput[\psk@optexp@label@align](0,0){\psk@optexp@label@style #1}}%
+}%
+%
+% Put the component #1 and define a new node 'tempNode@LabelShifted'
+% for positioning of the label
+\def\put@Comp#1{%
+   #1%
+   \pst@defShiftedRotNode(0,\psk@optexp@label@offset)%
+                         {tempNode@Label}%
+                         {tempNode@LabelShifted}%
+                         {\psk@optexp@label@angle}%
+}%
 %
 %
 %
@@ -387,6 +480,7 @@
 %
 \def\pst@beamsplitter[#1](#2)(#3)(#4)#5{{%
     \pst@calcNodes{#2}{#3}{#4}%
+    \gdef\pst@optexp@label@refangle{-135}
     \pst@draw@component{#1}{#5}\pst@draw@beamsplitter%
 }\ignorespaces}%
 %
@@ -401,7 +495,6 @@
 %
 \def\pst@optbox[#1](#2)(#3)#4{{%
     \pst@regNodes{#2}{#3}%
-    \psset{labeloffset=0}%
     \pst@draw@component{#1}{#4}\pst@draw@optbox%
 }\ignorespaces}%
 %
@@ -429,9 +522,9 @@
 %
 %
 %
-\def\pst@polarisation[#1](#2)(#3){{%
+\def\pst@polarization[#1](#2)(#3){{%
     \pst@regNodes{#2}{#3}%
-    \pst@draw@component{#1}{}\pst@draw@polarisation%
+    \pst@draw@component{#1}{}\pst@draw@polarization%
 }\ignorespaces}%
 %
 %
@@ -457,44 +550,92 @@
 % This macro is called by every unit
 %
 \def\pst@draw@component#1#2#3{{%
-    \psset{labelsep=1}%
+%    \psset{labelsep=1}%
     \psset{#1}%
-%
+    % 
     \ifPst@optexp@endbox%
+       \ifx\psk@optexp@label@offset\@empty
+          \psset{labeloffset=0}
+       \fi
        \psset{position=1}%
     \fi%
-%
-% linestyle to use, if component should be marked as optional
+    % 
+    % linestyle to use, if component should be marked as optional
     \ifPst@optexp@component@optional
       \psset{style=OptionalStyle}
     \fi
     \ncline[linestyle=none,fillstyle=none,npos=]{tempNode@A}{tempNode@B}%
-%
-% if parameter 'position' is given, use it for 'npos'
+    % 
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+    % 
+    % Positioning of the component
+    % 
+    % if parameter 'position' is given, use it for 'npos'
     \ifx\psk@optexp@position\@empty
-%
-% then check if absolute positioning is wanted
+    % 
+    % then check if absolute positioning is wanted
         \ifx\psk@optexp@abspos\@empty
-            \ncput[nrot=:U,npos=]{#3}
+           \ncput[nrot=:U,npos=]{\put@Comp{#3}}
         \else
-            \nlput[nrot=:U](tempNode@A)(tempNode@B){\psk@optexp@abspos}{#3}
+           \nlput[nrot=:U](tempNode@A)(tempNode@B){\psk@optexp@abspos}{\put@Comp{#3}}
         \fi
     \else
-        \ncput[nrot=:U,npos=\psk@optexp@position]{#3}
+       \ncput[nrot=:U,npos=\psk@optexp@position]{\put@Comp{#3}}
     \fi
-    \ifPst@optexp@labelrelative
-       \ncline[linestyle=none]{tempNode@A}{tempNode@Label}
-       \ncput[nrot=:U,npos=1]{\rput[\psk@optexp@label@align](0,0){\psk@optexp@label@style #2}}%
-    \else
+    % 
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+    % 
+    % Positioning of the label depending on the reference coordinates
+    % 
+    \ifx\psk@optexp@label@ref\pst@string@labelref@global
+       % global
        \nput[labelsep=\psk@optexp@label@offset]%
-           {\psk@optexp@label@angle}%
-           {tempNode@Label}%
-           {\rput[\psk@optexp@label@align](0,0){\psk@optexp@label@style #2}}%
-    \fi
-%
-% Show dots for debugging
+            {\psk@optexp@label@angle}%
+            {tempNode@Label}%
+            {\rput[\psk@optexp@label@align](0,0){\psk@optexp@label@style #2}}%
+    \else\ifx\psk@optexp@label@ref\pst@string@labelref@relgrav
+       \rput[\psk@optexp@label@align](tempNode@LabelShifted){\psk@optexp@label@style #2}
+    \else\ifx\psk@optexp@label@ref\pst@string@labelref@relative
+       \begingroup
+       %
+       % Redefine InitNC only for positioning of the label with 
+       % labelref=relative
+       %
+       \pst@def{InitNC}<       % kindly contributed by Herbert Voss
+       /b ED /a ED % second and first node
+       /NodeSepTypeB ED /NodeSepTypeA ED
+       /NodeSepB ED /NodeSepA ED
+       /OffsetB ED /OffsetA ED
+       tx@NodeDict a known tx@NodeDict b known and dup {
+         /NodeA a load def /NodeB b load def
+         NodeA GetCenter NodeB GetCenter % xA yA xB yB
+         4 copy pop exch pop le % xA xB
+           { /yB ED /xB ED /yA ED /xA ED }
+           { /yA ED /xA ED /yB ED /xB ED } ifelse
+       } if >%
+       % 
+       \ncline[linestyle=none,fillstyle=none,npos=]{tempNode@A}{tempNode@B}%
+       % 
+       % 
+       \ifx\psk@optexp@position\@empty
+          \ifx\psk@optexp@abspos\@empty
+             \ncput[nrot=:U,npos=]{\put@RelLabel{#2}}
+          \else
+             \nlput[nrot=:U](tempNode@A)(tempNode@B){\psk@optexp@abspos}{\put@RelLabel{#2}}
+          \fi
+       \else
+          \ncput[nrot=:U,npos=\psk@optexp@position]{\put@RelLabel{#2}}
+       \fi
+       %
+       \endgroup
+    \fi\fi\fi
+    % 
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+    % 
+    % Show dots for debugging
     \ifPst@optexp@debug@showoptdots
         \psdot[linecolor=red](tempNode@Label)
+        \psdot[linecolor=red](tempNode@LabelShifted)
         \psdot[linecolor=black](tempNode@A)
         \psdot[linecolor=black](tempNode@B)
     \fi
@@ -514,23 +655,27 @@
       \psarc[linewidth=0.8\pslinewidth,arrowinset=0,arrowscale=0.8]{<->}
             (! m@width 2 div 0.4 sub neg 0){0.6}{160}{200}
      \fi
-     \psline[linewidth=\psk@optexp@mirror@linewidth](! m@width -2 div 0)(! m@width 2 div 0)
-%
-% piezo
+     \psline[linewidth=\psk@optexp@mirror@linewidth](! m@width -2 div
+     0)(! m@width 2 div 0)
+     % 
+     % mirrortype
      \ifx\psk@optexp@mirror@type\pst@string@mirror@type@piezo%
+     % 
+     % piezo
         \psframe[style=PiezoMirror](! m@width 8 div 0)(! m@width -8 div m@width 5 div)
         \psbezier(! 0 m@width 5 div)%
                  (! 0 m@width 3 div)%
                  (! m@width 4 div m@width 4 div)%
                  (! m@width 8 div m@width 2 div)%
-     \fi
-     \ifx\psk@optexp@mirror@type\pst@string@mirror@type@extended%
+     \else\ifx\psk@optexp@mirror@type\pst@string@mirror@type@extended%
+     % 
+     % extended
        \psframe[style=ExtendedMirror]%
           (! m@width -2 div \psk@optexp@mirror@depth\space )%
           (! m@width 2 div 0)%
-     \fi
-%
-% labelnode
+     \fi\fi
+     % 
+     % labelnode
      \pnode(0,0){tempNode@Label}
 }\ignorespaces}%
 %
@@ -566,7 +711,7 @@
     }%
   \fi%
   % 
-  % draw the lens
+  % define some parameters only for convex lenses
   % 
   \pstVerb{%
     /lens@d lens@r lens@a sub def
@@ -591,7 +736,7 @@
     }%
   \fi%
   %
-  %
+  % define some parameters only for concave lenses
   %
   \pstVerb{%
     /lens@d lens@r dup mul lens@h dup mul sub sqrt def
@@ -602,50 +747,52 @@
   % 
   %
   \def\temp@LeftPlot{%
-     \parametricplot[plotstyle=curve,arrows=c-c]{-1}{1}{%   
+     \parametricplot[liftpen=1]{-1}{1}{%   
         lens@r lens@alpha t mul 180 add cos mul lens@yshift add lens@r lens@alpha t mul 180 add sin mul}%
   }%
   \def\temp@RightPlot{%
-     \parametricplot[plotstyle=curve,arrows=c-c]{-1}{1}{%  
+     \parametricplot[liftpen=1]{-1}{1}{%  
         lens@r lens@alpha t mul cos mul lens@yshift sub lens@r lens@alpha t mul sin mul}%
   }%      
   %
   %
   \pscustom{%
   \ifcase\psk@optexp@lens@type
-  % plainconvex
-    \temp@RightPlot%
-    \closepath%
+     % plainconvex
+     \temp@RightPlot%
+     \closepath%
+  \or
+     % convexplain
+     \temp@LeftPlot%
+     \closepath%
+  \or
+     % biconvex
+     \temp@LeftPlot%
+     \temp@RightPlot%
+     \closepath
+  \or
+     % plainconcave
+     \temp@LeftPlot%
+     \psline[liftpen=1](! 0 lens@h neg)%
+                       (! 0 lens@h)%
+                       (! lens@r lens@d sub lens@a add lens@h)%
+     \closepath
   \or%
-  % convexplain
-    \temp@LeftPlot%
-    \closepath%
-  \or%
-  % biconvex
-    \temp@LeftPlot%
-    \temp@RightPlot%
-  \or%
-  % plainconcave
-  \temp@LeftPlot%
-  \psline{c-c}(! 0 lens@h neg)%
-         (! 0 lens@h)%
-         (! lens@r lens@d sub lens@a add lens@h)%
-  \or%
-  % concaveplain
-  \temp@RightPlot%
-  \psline{c-c}(! 0 lens@h)%
-         (! 0 lens@h neg)%
-         (! lens@r lens@d sub lens@a add neg lens@h neg)%
-  \or%
-  % biconcave
-  \temp@RightPlot%
-  \psline{c-c}(! lens@r lens@d sub lens@a add lens@h)%
-  \temp@LeftPlot%
-  \psline{c-c}(! lens@r lens@d sub lens@a add neg lens@h neg)%
-  \fi%
-  }
-%
-% labelnode
+     % concaveplain
+     \temp@RightPlot%
+     \psline[liftpen=1](! 0 lens@h)%
+                       (! 0 lens@h neg)%
+                       (! lens@r lens@d sub lens@a add neg lens@h neg)%
+     \closepath
+  \or
+     % biconcave
+     \temp@RightPlot%
+     \temp@LeftPlot%
+     \closepath
+  \fi
+  }%
+  % 
+  % labelnode
   \pnode(0,0){tempNode@Label}
 }\ignorespaces}%
 %
@@ -655,13 +802,13 @@
 %
 \def\pst@draw@pinhole{{%
   \psline[linewidth=\psk@optexp@pinhole@linewidth]%
-         (! 0 \psk@optexp@pinhole@owidth\space 2 div)%
-         (! 0 \psk@optexp@pinhole@iwidth\space 2 div)%
+         (! 0 \psk@optexp@pinhole@oheight\space 2 div)%
+         (! 0 \psk@optexp@pinhole@iheight\space 2 div)%
   \psline[linewidth=\psk@optexp@pinhole@linewidth]%
-         (! 0 \psk@optexp@pinhole@owidth\space -2 div)%
-         (! 0 \psk@optexp@pinhole@iwidth\space -2 div)%
-%
-% labelnode
+         (! 0 \psk@optexp@pinhole@oheight\space -2 div)%
+         (! 0 \psk@optexp@pinhole@iheight\space -2 div)%
+  % 
+  % labelnode
   \pnode(0,0){tempNode@Label}
 }\ignorespaces}
 %
@@ -671,14 +818,14 @@
 %
 \def\pst@draw@beamsplitter{{%
    \pstVerb{%
-      /bs@width \psk@optexp@bswidth\space 2.0 div def
+      /bs@width \psk@optexp@bssize\space 2.0 div def
    }%
    \psline{cc-cc}(! bs@width neg 2 sqrt mul 0)%
                  (! bs@width 2 sqrt mul 0)
    \rput[c]{45}(0,0){\psframe(! bs@width neg bs@width neg)(! bs@width bs@width)}
-%
-% labelnode
-  \pnode(0,0){tempNode@Label}
+   %
+   % labelnode
+   \pnode(0,0){tempNode@Label}
 }\ignorespaces}%
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -702,11 +849,13 @@
         \psline(! c@width 4 div 3 mul neg 0.15 sub c@height neg 0.2 sub)%
                (! c@width 4 div 3 mul neg 0.15 add c@height neg 0.2 sub)%
      \fi
-%
+     % 
      \ifPst@optexp@crystal@lamp
         \rput{180}(! c@width c@height 1.4 \psk@optexp@lamp@scale\space mul add){\lamp}%
      \fi
      \ifPst@optexp@crystal@caxisinv
+        %
+        % invert the c-axis
         \psline[linestyle=dashed,%
                 dash=2pt 2pt,%
                 linewidth=0.7\pslinewidth,%
@@ -719,47 +868,47 @@
                 arrowinset=0]{->}%
            (! 0 c@height)(! 0 c@height neg c@caxisL sub)%
      \fi
-  }%
-%
-% labelnode
-  \pnode(0,0){tempNode@Label}
+   }%
+   %
+   % labelnode
+   \pnode(0,0){tempNode@Label}
 }\ignorespaces}%
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-% POLARISATION
+% POLARIZATION
 %
+\def\pst@draw@polarization{{%
 %
-\def\pst@draw@polarisation{{%
-%
-  \ifx\psk@optexp@pol\pst@string@pol@polparallel
-     \psline[linestyle=solid,linewidth=\psk@optexp@polarisation@linewidth,arrowscale=0.8]{<->}%
-        (! 0 \psk@optexp@polarisation@width\space 2 div neg)%
-        (! 0 \psk@optexp@polarisation@width\space 2 div)%
+  \ifx\psk@optexp@pol@type\pst@string@pol@polparallel
+     \psline[linestyle=solid,linewidth=\psk@optexp@polarization@linewidth,arrowscale=0.8]{<->}%
+        (! 0 \psk@optexp@polarization@size\space 2 div neg)%
+        (! 0 \psk@optexp@polarization@size\space 2 div)%
   \fi
-  \ifx\psk@optexp@pol\pst@string@pol@polperp
+  \ifx\psk@optexp@pol@type\pst@string@pol@polperp
      \psdot[dotsize=0.05](0,0)%
-     \pscircle[fillstyle=none,linestyle=solid,linewidth=\psk@optexp@polarisation@linewidth](0,0){0.12}%
+     \pscircle[fillstyle=none,linestyle=solid,linewidth=\psk@optexp@polarization@linewidth](0,0){0.12}%
   \fi
-  \ifx\psk@optexp@pol\pst@string@pol@polmisc
-     \psline[linestyle=solid,linewidth=\psk@optexp@polarisation@linewidth,arrowscale=0.8]{<->}%
-        (! 0 \psk@optexp@polarisation@width\space 2 div neg)%
-        (! 0 \psk@optexp@polarisation@width\space 2 div)%
+  \ifx\psk@optexp@pol@type\pst@string@pol@polmisc
+     \psline[linestyle=solid,linewidth=\psk@optexp@polarization@linewidth,arrowscale=0.8]{<->}%
+        (! 0 \psk@optexp@polarization@size\space 2 div neg)%
+        (! 0 \psk@optexp@polarization@size\space 2 div)%
      \psdot[dotsize=0.05](0,0)%
      \pscircle[fillstyle=none,linestyle=solid,linewidth=0.7\pslinewidth](0,0){0.12}
   \fi
-  \ifx\psk@optexp@pol\pst@string@pol@polrcirc
-     \psellipticarc[linewidth=\psk@optexp@polarisation@linewidth]{->}(0,0)(!
-     \psk@optexp@polarisation@width\space 4 div
-     \psk@optexp@polarisation@width\space 2 div)%
+  \ifx\psk@optexp@pol@type\pst@string@pol@polrcirc
+     \psellipticarc[linewidth=\psk@optexp@polarization@linewidth]{->}(0,0)(!
+     \psk@optexp@polarization@size\space 4 div
+     \psk@optexp@polarization@size\space 2 div)%
      {20}{-20}
   \fi
-  \ifx\psk@optexp@pol\pst@string@pol@pollcirc
-     \psellipticarc[linewidth=\psk@optexp@polarisation@linewidth]{<-}(0,0)(!
-     \psk@optexp@polarisation@width\space 4 div
-     \psk@optexp@polarisation@width\space 2 div)%
+  \ifx\psk@optexp@pol@type\pst@string@pol@pollcirc
+     \psellipticarc[linewidth=\psk@optexp@polarization@linewidth]{<-}(0,0)(!
+     \psk@optexp@polarization@size\space 4 div
+     \psk@optexp@polarization@size\space 2 div)%
      {20}{-20}
   \fi
+  \pnode(0,0){tempNode@Label}
 }\ignorespaces}%
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -767,58 +916,60 @@
 % OPTICAL GRID
 %
 \def\pst@draw@optgrid{{%
-  \pstVerb{%
-     /g@count \psk@optexp@optgrid@count\space def
-     /g@width \psk@optexp@optgrid@width\space 2 div def
-     /g@height \psk@optexp@optgrid@height\space def
-     /g@depth \psk@optexp@optgrid@depth\space def
-     /g@step g@width 2 mul g@count div def}%
-  \ifPst@optexp@reverse%
-     \pscustom[linewidth=\psk@optexp@optgrid@linewidth]{%
-        \psline(! g@width g@depth)(! g@width g@height)%
-               (! g@width neg g@height)(! g@width neg g@depth)
-        \multido{\i=0+1}{\psk@optexp@optgrid@count}{%
-           \psline{cc-cc}(! g@width neg \i\space g@step mul add g@depth)%
-                         (! g@width neg \i\space g@step mul add 0)%
-                         (! g@width neg \i\space 1 add g@step mul add g@depth)%
-        }
-     }%
-  \else%   
-     \pscustom[linewidth=\psk@optexp@optgrid@linewidth]{%
-        \psline(! g@width g@depth)(! g@width g@height)%
-               (! g@width neg g@height)(! g@width neg g@depth)
-        \multido{\i=0+1}{\psk@optexp@optgrid@count}{%
-           \psline{cc-cc}(! g@width neg \i\space g@step mul add g@depth)%
-                         (! g@width neg \i\space 1 add g@step mul add 0)%
-                         (! g@width neg \i\space 1 add g@step mul add g@depth)%
-        }
-     }%
-  \fi%
-%
-% labelnode
-  \pnode(0,0){tempNode@Label}
+   \pstVerb{%
+      /g@count \psk@optexp@optgrid@count\space def
+      /g@width \psk@optexp@optgrid@width\space 2 div def
+      /g@height \psk@optexp@optgrid@height\space def
+      /g@depth \psk@optexp@optgrid@depth\space def
+      /g@step g@width 2 mul g@count div def}%
+   \ifPst@optexp@reverse%
+      \pscustom[linewidth=\psk@optexp@optgrid@linewidth]{%
+         \psline[liftpen=1](! g@width g@depth)(! g@width g@height)%
+                           (! g@width neg g@height)(! g@width neg g@depth)
+         \multido{\i=0+1}{\psk@optexp@optgrid@count}{%
+            \psline[liftpen=1](! g@width neg \i\space g@step mul add g@depth)%
+                              (! g@width neg \i\space g@step mul add 0)%
+                              (! g@width neg \i\space 1 add g@step mul add g@depth)%
+         }
+         \closepath
+      }%
+   \else%   
+      \pscustom[linewidth=\psk@optexp@optgrid@linewidth]{%
+         \psline[liftpen=1](! g@width g@depth)(! g@width g@height)%
+                           (! g@width neg g@height)(! g@width neg g@depth)
+         \multido{\i=0+1}{\psk@optexp@optgrid@count}{%
+            \psline[liftpen=1](! g@width neg \i\space g@step mul add g@depth)%
+                              (! g@width neg \i\space 1 add g@step mul add 0)%
+                              (! g@width neg \i\space 1 add g@step mul add g@depth)%
+         }
+         \closepath
+      }%
+   \fi%
+   % 
+   % labelnode
+   \pnode(0,0){tempNode@Label}
 }\ignorespaces}%
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 % OPTBOX
 %
 \def\pst@draw@optbox{{%
-    \ifPst@optexp@endbox
-    \pnode(!%
-        /box@width \psk@optexp@optbox@width\space def
-        /box@height \psk@optexp@optbox@height\space def
-        box@width 2 div 0){tempNode@Label}%
-    \psframe(! 0 box@height 2 div neg)%
-            (! box@width box@height 2 div)%
-    \else
-        \pnode(!%
-        /box@width \psk@optexp@optbox@width\space def
-        /box@height \psk@optexp@optbox@height\space def
-        0 0){tempNode@Label}%
-    \rput{\psk@optexp@angle}(0,0){%
-        \psframe(! box@width 2 div neg box@height 2 div neg)%
-                (! box@width 2 div box@height 2 div)%
-    }%
-    \fi
+   \pstVerb{%
+      /box@width \psk@optexp@optbox@width\space def
+      /box@height \psk@optexp@optbox@height\space def
+   }%
+   \ifPst@optexp@endbox
+      \pnode(! box@width 2 div 0){tempNode@Label}%
+      \psframe(! 0 box@height 2 div neg)%
+              (! box@width box@height 2 div)%
+   \else
+      \pnode(0,0){tempNode@Label}%
+      \rput{\psk@optexp@angle}(0,0){%
+         \psframe(! box@width 2 div neg box@height 2 div neg)%
+                 (! box@width 2 div box@height 2 div)%
+      }%
+   \fi
 }\ignorespaces}%
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -826,20 +977,21 @@
 % OPTPLATE
 %
 \def\pst@draw@optplate{{%
-  \psline[linewidth=\psk@optexp@plate@linewidth]%
-        (! 0 \psk@optexp@plate@height\space 2 div neg)%
-        (! 0 \psk@optexp@plate@height\space 2 div)
-%
-% labelnode
-  \pnode(0,0){tempNode@Label}
+   \psline[linewidth=\psk@optexp@plate@linewidth]%
+          (! 0 \psk@optexp@plate@height\space 2 div neg)%
+          (! 0 \psk@optexp@plate@height\space 2 div)
+   % 
+   % labelnode
+   \pnode(0,0){tempNode@Label}
 }\ignorespaces}%
+%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 % DETECTOR
 %
 \def\pst@draw@detector{{%
-    \pnode(! \psk@optexp@detector@size\space 3 div 0){tempNode@Label}%
-    \pswedge(0,0){\psk@optexp@detector@size}{-90}{90}
+   \pnode(! \psk@optexp@detector@size\space 3 div 0){tempNode@Label}%
+   \pswedge(0,0){\psk@optexp@detector@size}{-90}{90}
 }\ignorespaces}%
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -848,23 +1000,25 @@
 %
 \def\pst@draw@optretplate{{%
    \pstVerb{%
-     /orp@height \psk@optexp@plate@height\space 2.0 div def
-     /orp@width \psk@optexp@plate@width\space 2.0 div def
+      /orp@height \psk@optexp@plate@height\space 2.0 div def
+      /orp@width \psk@optexp@plate@width\space 2.0 div def
    }%
    \psframe(! orp@width neg orp@height neg)(! orp@width orp@height)
    \psline{cc-cc}(! orp@width neg orp@height)%
                  (! orp@width orp@height neg)
-%
-% labelnode
-  \pnode(0,0){tempNode@Label}
+   %
+   % labelnode
+   \pnode(0,0){tempNode@Label}
 }\ignorespaces}%
 %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
+% LAMP FOR THE CRYSTAL
 %
 \def\lamp{{%
   \psset{linewidth=0.6\pslinewidth}
   \pstVerb{/l@s \psk@optexp@lamp@scale\space def}
-%
+  % 
   \pscurve[fillstyle=none](! -0.05 l@s mul 0)%
           (! -0.1 l@s mul 0.15 l@s mul)%
           (! -0.2 l@s mul 0.25 l@s mul)%
@@ -877,7 +1031,7 @@
   \multido{\i=-210+40}{7}{%
     \rput{\i}(! 0 0.45 l@s mul){\psline(! -0.35 l@s mul 0)(! -0.6 l@s mul 0)}
   }
-}\ignorespaces}
+}\ignorespaces}%
 %
 %
 \endinput
