@@ -91,7 +91,9 @@ layout is possible (e.g. the extended part of mirrors). For those cases
 psstyles are provided that influence only the corresponing part of the
 components and can be redefined using \cs{newpsstyle}.
 
-\subsection{Lens}\label{sec:lens}
+\subsection{Free-ray components}
+
+\subsubsection{Lens}\label{sec:lens}
 
 \begin{description}
 \item[\param{lensheight}:] \paramvalue{<value>} (\defaultparam{1})
@@ -157,7 +159,7 @@ adapt their code to use the new parameters, as the old code will be
 removed in future versions.
 
 \medskip
-\subsection{Optical plate}
+\subsubsection{Optical plate}
 
 \begin{description}
 \item[\param{plateheight}:] \paramvalue{<value>} (\defaultparam{1})
@@ -177,7 +179,7 @@ removed in future versions.
 
 \medskip
 
-\subsection{Retardation plate}
+\subsubsection{Retardation plate}
 
 \begin{description}
 \item[\param{plateheight}:] \paramvalue{<value>} (\defaultparam{1})
@@ -197,7 +199,7 @@ removed in future versions.
 
 \medskip
 
-\subsection{Pinhole}
+\subsubsection{Pinhole}
 
 \begin{description}
 \item[\param{outerheight}:] \paramvalue{<value>} (\defaultparam{1})
@@ -218,7 +220,7 @@ removed in future versions.
 
 \medskip
 
-\subsection{Crystal}\label{sec:crystal}
+\subsubsection{Crystal}\label{sec:crystal}
 
 \begin{description}
 \item[\param{crystalwidth}:] \paramvalue{<value>} (\defaultparam{2})
@@ -243,7 +245,7 @@ removed in future versions.
 
 \medskip
 
-\subsection{Box}
+\subsubsection{Box}
 
 \begin{description}
 \item[\param{optboxheight}:] \paramvalue{<value>} (\defaultparam{0.5})
@@ -286,7 +288,7 @@ removed in future versions.
 
 \medskip
 
-\subsection{Detector}
+\subsubsection{Detector}
 
 \begin{description}
 \item[\param{detsize}:] \paramvalue{<value>} (\defaultparam{0.5})
@@ -305,7 +307,7 @@ removed in future versions.
 
 \medskip
 
-\subsection{Polarization}
+\subsubsection{Polarization}
 
 \begin{description}
 \item[\param{poltype}:] \paramvalue{parallel|perp|misc|lcirc|rcirc} (\defaultparam{parallel})
@@ -333,7 +335,7 @@ removed in future versions.
 
 \medskip
 
-\subsection{Mirror}\label{sec:mirror}
+\subsubsection{Mirror}\label{sec:mirror}
 
 \begin{description}
 \item[\param{mirrorwidth}:] \paramvalue{<value>} (\defaultparam{1})
@@ -413,7 +415,7 @@ changed by adapting the psstyle \parameter{PiezoMirror}.
 
 \medskip
 
-\subsection{Beamsplitter}
+\subsubsection{Beamsplitter}
 
 \begin{description}
 \item[\param{bssize}:] \paramvalue{<value>} (\defaultparam{0.8})
@@ -434,7 +436,7 @@ changed by adapting the psstyle \parameter{PiezoMirror}.
 \medskip
 
 
-\subsection{Optical grid}
+\subsubsection{Optical grid}
 
 \begin{description}
 \item[\param{optgridcount}:] \paramvalue{<integer>} (\defaultparam{10})
@@ -499,7 +501,7 @@ changed by adapting the psstyle \parameter{PiezoMirror}.
 
 \medskip
 
-\subsection{Custom components}\label{sec:custom}
+\subsubsection{Custom components}\label{sec:custom}
 The macros \cs{optdipole} and \cs{opttripole} allow using everything as
 optical component. If you want to use a certain component several times,
 you should define it as a new component. For details see
@@ -532,7 +534,7 @@ sec.~\ref{sec:newobj}.
 
 \medskip
 
-\subsection{General options}\label{sec:general}
+\subsubsection{General options}\label{sec:general}
 
 \begin{description}
 \item[\param{angle}:] \paramvalue{<value>} (\defaultparam{0})
@@ -607,6 +609,108 @@ label.
   \pnode(0,3){B} 
   \psline[style=OptBeam](A)(G)(B)
   \mirror[showoptdots](A)(G)(B){mirror}
+\end{pspicture}
+\end{LTXexample}
+
+\medskip
+
+\subsection{Fiber-optical components}
+
+\subsubsection{Fiber}
+\begin{description}
+\item[\param{fiberloops}:] \paramvalue{<integer>} (\defaultparam{3})
+\item[\param{fiberloopradius}:] \paramvalue{<value>} (\defaultparam{0.3})
+\item[\param{fiberloopsep}:] \paramvalue{<value>} (\defaultparam{0.3})
+\end{description}
+\medskip
+
+\begin{LTXexample}[width=3.5cm]
+\begin{pspicture}(3,2)\psgrid
+  \optfiber(0,1)(3,1){SSMF}
+\end{pspicture}
+\end{LTXexample}
+
+\medskip
+
+\subsubsection{Amplifier}
+\begin{description}
+\item[\param{optampsize}:] \paramvalue{<value>} (\defaultparam{0.8})
+\end{description}
+
+\medskip
+
+\begin{LTXexample}[width=3.5cm]
+\begin{pspicture}(3,2)\psgrid
+  \optamp(0,1)(3,1){EDFA}
+\end{pspicture}
+\end{LTXexample}
+
+\medskip
+
+\subsubsection{Mach-Zehnder Modulator}
+\begin{description}
+\item[\param{optmzmsize}:] \paramvalue{<value>} (\defaultparam{0.8})
+\end{description}
+
+\medskip
+
+\begin{LTXexample}[width=3.5cm]
+\begin{pspicture}(3,2)\psgrid
+  \optmzm(0,1)(3,1){MZM}
+\end{pspicture}
+\end{LTXexample}
+
+\medskip
+
+\subsubsection{Filter}
+\begin{description}
+\item[\param{filtertype}:] \paramvalue{bandpass|bandstop} (\defaultparam{bandpass})
+\end{description}
+
+\medskip
+
+\begin{LTXexample}[width=3.5cm]
+\begin{pspicture}(3,2)\psgrid
+  \optfilter(0,1)(3,1){bandpass}
+\end{pspicture}
+\end{LTXexample}
+
+\bigskip
+
+\begin{LTXexample}[width=3.5cm]
+\begin{pspicture}(3,2)\psgrid
+  \optfilter[filtertype=bandstop](0,1)(3,1){bandstop}
+\end{pspicture}
+\end{LTXexample}
+
+\medskip
+
+\subsubsection{Polarization controller}
+\begin{description}
+\item[\param{polcontrolsize}:] \paramvalue{<value>} (\defaultparam{0.1})
+\end{description}
+
+\medskip
+
+\begin{LTXexample}[width=3.5cm]
+\begin{pspicture}(3,2)\psgrid
+  \polcontrol(0,1)(3,1){PC}
+\end{pspicture}
+\end{LTXexample}
+
+\medskip
+
+\subsubsection[2x2 Coupler]{$2\times 2$ Coupler}
+\begin{description}
+\item[\param{couplersize}:] \paramvalue{<value>} (\defaultparam{0.1})
+\item[\param{couplerstyle}:] \paramvalue{free|elliptic} (\defaultparam{elliptic})
+\end{description}
+
+\medskip
+
+\begin{LTXexample}[width=3.5cm]
+\begin{pspicture}(3,2)\psgrid
+  \optcoupler(0.5,2)(0,0.5)(3,1.5)(2.5,0){Coupler}
 \end{pspicture}
 \end{LTXexample}
 
@@ -708,7 +812,7 @@ If you need more than one type of lenses in your setup it is very cumbersome to 
 \end{LTXexample}
 \medskip
 
-\subsection{Defining new objects}\label{sec:newobj}
+\subsection{Defining new free-ray objects}\label{sec:newobj}
 
 Since version 1.2 \texttt{pst-optexp} provides some high-level macros to
 allow very convenient definition of completely new components. The macro
@@ -757,6 +861,7 @@ to change this, you have to define a new pnode named
 If you create a new component, please send it to me then I can
 incorporate this in a new released version.
 
+\subsection{Defining new fiber objects}\label{sec:newfiberobj}
 \newpage
 
 \section{Examples}
