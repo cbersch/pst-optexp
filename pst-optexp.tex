@@ -18,9 +18,16 @@
 %%
 \csname PSToptexpLoaded\endcsname
 \let\PSToptexpLoaded\endinput
+% Requires PSTricks, code for plain TeX inclusion
+\ifx\PSTricksLoaded\endinput\else\input pstricks.tex\fi
+\ifx\PSTnodesLoaded\endinput\else\input pst-node.tex\fi
+\ifx\PSTplotLoaded\endinput\else\input pst-plot.tex\fi
+\ifx\MultidoLoaded\endinput\else\input multido.tex\fi
+\ifx\PSTXKeyLoaded\endinput\else\input pst-xkey.tex\fi
+\ifx\PSTricksAddLoaded\endinput\else\input pstricks-add.tex\fi
 %
 %
-\def\fileversion{1.2}
+\def\fileversion{1.3alpha}
 \def\filedate{2008/06/17}
 \message{`pst-optexp' v\fileversion, \filedate\space (CB)}
 %
@@ -73,6 +80,7 @@
 \newif\ifPst@optexp@debug@showoptdots
 \newif\ifPst@optexp@endbox
 \newif\ifPst@optexp@thicklens
+\newif\ifPst@optexp@fiber
 %
 % Strings
 \def\pst@string@pol@polperp{perp}
@@ -97,6 +105,12 @@
 \def\pst@string@labelref@relgrav{relgrav}
 \def\pst@string@labelref@global{global}
 %
+\edef\pst@string@filter@type@bandpass{bandpass}
+\edef\pst@string@filter@type@bandstop{bandstop}
+%
+\edef\pst@string@coupler@type@free{free}
+\edef\pst@string@coupler@type@elliptic{elliptic}
+%
 % psstyles
 %
 \newpsstyle{OptionalStyle}{linestyle=dashed,dash=1.5pt 1pt}%
@@ -106,6 +120,8 @@
                 fillstyle=hlines}%
 \newpsstyle{PiezoMirror}{fillstyle=solid,fillcolor=black!30}%
 \newpsstyle{OptBeam}{linecolor=green!90!black}%
+\newpsstyle{Fiber}{linecolor=red}%
+\newpsstyle{FiberIn1}{ArrowInside=->,linecolor=green}%
 %
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -117,6 +133,34 @@
 \define@key[psset]{optexp}{position}{\edef\psk@optexp@position{#1}}
 \define@key[psset]{optexp}{abspos}{\edef\psk@optexp@abspos{#1}}
 \define@key[psset]{optexp}{angle}{\edef\psk@optexp@angle{#1}}
+\define@key[psset]{optexp}{compname}{\edef\psk@optexp@compname{#1}}
+%
+% Label
+\define@key[psset]{optexp}{labelangle}{\edef\psk@optexp@label@angle{#1}}
+\define@key[psset]{optexp}{labeloffset}{\edef\psk@optexp@label@offset{#1}}
+\define@key[psset]{optexp}{labelstyle}{\def\psk@optexp@label@style{#1}}
+\define@key[psset]{optexp}{labelalign}{\def\psk@optexp@label@align{#1}}
+\define@key[psset]{optexp}{labelref}{\edef\psk@optexp@label@ref{#1}}
+% for internal use only
+\define@key[psset]{optexp}{ref@angle}{\edef\psk@optexp@label@refangle{#1}}
+% labelrelative is obsolete
+\define@choicekey*[psset]{optexp}{labelrelative}[\val\nr]{true,false}[true]{%
+  \ifcase\nr\relax
+     \psset{labelref=relative}
+  \or
+     \psset{labelref=global}
+  \fi
+  \PackageWarning{pst-optexp}{labelrelative is obsolete, please use labelref=relative instead}
+}
+%
+% Debug
+\define@boolkey[psset]{optexp}[Pst@optexp@debug@]{showoptdots}[true]{}
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Parameters for free-ray components
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 % Lens
 \define@key[psset]{optexp}{lensheight}{\edef\psk@optexp@lens@height{#1}}
@@ -242,27 +286,45 @@
    \edef\psk@optexp@poltype{#1}%
    \PackageWarning{pst-optexp}{pol is obsolete, use poltype instead}%
 }
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-% Label
-\define@key[psset]{optexp}{labelangle}{\edef\psk@optexp@label@angle{#1}}
-\define@key[psset]{optexp}{labeloffset}{\edef\psk@optexp@label@offset{#1}}
-\define@key[psset]{optexp}{labelstyle}{\def\psk@optexp@label@style{#1}}
-\define@key[psset]{optexp}{labelalign}{\def\psk@optexp@label@align{#1}}
-\define@key[psset]{optexp}{labelref}{\edef\psk@optexp@label@ref{#1}}
-% for internal use only
-\define@key[psset]{optexp}{ref@angle}{\edef\psk@optexp@label@refangle{#1}}
-% labelrelative is obsolete
-\define@choicekey*[psset]{optexp}{labelrelative}[\val\nr]{true,false}[true]{%
-  \ifcase\nr\relax
-     \psset{labelref=relative}
-  \or
-     \psset{labelref=global}
-  \fi
-  \PackageWarning{pst-optexp}{labelrelative is obsolete, please use labelref=relative instead}
-}
+% Parameters for fiber-optical components
 %
-% Debug
-\define@boolkey[psset]{optexp}[Pst@optexp@debug@]{showoptdots}[true]{}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Fiber
+\define@key[psset]{optexp}{fiberloops}{\edef\psk@optexp@fiber@count{#1}}
+\define@key[psset]{optexp}{fiberloopradius}{\edef\psk@optexp@fiber@radius{#1}}
+\define@key[psset]{optexp}{fiberloopsep}{\edef\psk@optexp@fiber@sep{#1}}
+\define@boolkey[psset]{optexp}[Pst@optexp@]{fiber}[true]{}
+%
+% Filter
+\define@key[psset]{optexp}{filtersize}{\edef\psk@optexp@filter@size{#1}}
+\define@key[psset]{optexp}{filtertype}{\edef\psk@optexp@filter@type{#1}}
+%
+% Polarization controller
+\define@key[psset]{optexp}{polcontrolsize}{\edef\psk@optexp@polcontrol@size{#1}}
+%
+% Laserdiode
+\define@key[psset]{optexp}{laserdiodesize}{\edef\psk@optexp@laserdiode@size{#1}}
+%
+% Laser
+\define@key[psset]{optexp}{laserwidth}{\edef\psk@optexp@laser@width{#1}}
+\define@key[psset]{optexp}{laserheight}{\edef\psk@optexp@laser@height{#1}}
+%
+% Optical amplifier
+\define@key[psset]{optexp}{optampsize}{\edef\psk@optexp@optamp@size{#1}}
+%
+% Mach-Zehnder-Modulator
+\define@key[psset]{optexp}{optmzmheight}{\edef\psk@optexp@optmzm@height{#1}}
+\define@key[psset]{optexp}{optmzmwidth}{\edef\psk@optexp@optmzm@width{#1}}
+%
+% Isolator
+\define@key[psset]{optexp}{isolatorsize}{\edef\psk@optexp@isolator@size{#1}}
+%
+% Coupler
+\define@key[psset]{optexp}{couplersize}{\edef\psk@optexp@coupler@size{#1}}
+\define@key[psset]{optexp}{couplertype}{\edef\psk@optexp@coupler@type{#1}}
 %
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -295,6 +357,8 @@
 \def\newOptexpDipole{\@ifnextchar[{\new@optexpdipole}{\new@optexpdipole[]}}
 \def\newOptexpDipoleNolabel{\@ifnextchar[{\new@optexpdipolenolabel}{\new@optexpdipolenolabel[]}}
 \def\newOptexpTripole{\@ifnextchar[{\new@optexptripole}{\new@optexptripole[]}}
+\def\newOptexpFiberDipole{\@ifnextchar[{\new@optexpfiberdipole}{\new@optexpfiberdipole[]}}
+\def\newOptexpFiberQuadrupole{\@ifnextchar[{\new@optexpfiberquadrupole}{\new@optexpfiberquadrupole[]}}
 %
 % Creates new macros ...@i and ...@ii which provide most code for the arrangement
 % of the objects. A tempNode@Label is predefined as well as two internal nodes if compname is
@@ -363,6 +427,92 @@
       }%
    }{%
      \@pstrickserr{OptExp tripole object `#2' already defined}\@eha}%
+\ignorespaces}%
+%
+% Equivalent to new@optexpdipole for fiber dipole objects.
+\def\new@optexpfiberdipole[#1]#2#3{%
+   \@ifundefined{#2@i}{%
+      \@namedef{#2}{\pst@object{#2}}%
+      \expandafter\def\csname #2@i\endcsname(##1)(##2)##3{%
+         \pst@killglue
+         \addbefore@par{#3}%
+         \addafter@par{#1}%
+         \begingroup
+            \use@par
+            \pst@regNodes{##1}{##2}
+            \pst@draw@fibercomponent{##3}{\@nameuse{#2@ii}}
+            % 
+            % connect the fibers
+            \bgroup
+               \@ifundefined{pscs@FiberIn}{\psset{style=Fiber}}{\psset{style=FiberIn}}%
+               \pcline(tempNode@A)(tempNode@A@)
+            \egroup
+            \bgroup
+               \@ifundefined{pscs@FiberOut}{\psset{style=Fiber}}{\psset{style=FiberOut}}%
+               \pcline(tempNode@B)(tempNode@B@)
+            \egroup
+         \endgroup
+      }%
+      \@namedef{#2@ii}{%
+        \pnode(0,0){tempNode@Label}%
+        \@nameuse{#2@iii}%
+      }%
+   }{%
+     \@pstrickserr{OptExp fiber dipole object `#2' already defined}\@eha}%
+\ignorespaces}%
+%
+% 
+\def\new@optexpfiberquadrupole[#1]#2#3{%
+   \@ifundefined{#2@i}{%
+      \@namedef{#2}{\pst@object{#2}}%
+      \expandafter\def\csname #2@i\endcsname(##1)(##2)(##3)(##4)##5{%
+         \pst@killglue
+         \addbefore@par{#3}%
+         \addafter@par{#1}%
+         \begingroup
+            \use@par
+            %
+            \pst@getcoor{##1}\pst@tempA%
+            \pst@getcoor{##2}\pst@tempB%
+            \pnode(!\pst@tempA\pst@number\psyunit div exch \pst@number\psxunit div exch
+                    \pst@tempB\pst@number\psyunit div exch \pst@number\psxunit div exch 
+                    \pst@optexpdict mwNode end){tempNode@A}
+            \pst@getcoor{##3}\pst@tempA%
+            \pst@getcoor{##4}\pst@tempB%
+            \pnode(!\pst@tempA\pst@number\psyunit div exch \pst@number\psxunit div exch
+                    \pst@tempB\pst@number\psyunit div exch \pst@number\psxunit div exch 
+                    \pst@optexpdict mwNode end){tempNode@B}
+            \pst@draw@fibercomponent{##5}{\@nameuse{#2@ii}}
+            % 
+            % connect the fibers
+            \bgroup
+               \@ifundefined{pscs@FiberIn1}{\psset{style=Fiber}}{\psset{style=FiberIn1}}%
+               \pccurve[angleB=! \pst@optexpdict FiberQuadAngleB end,
+                        angleA=! \pst@optexpdict FiberQuadAngleA end](##1)(tempNode@A@1)
+            \egroup
+            \bgroup
+               \@ifundefined{pscs@FiberIn2}{\psset{style=Fiber}}{\psset{style=FiberIn2}}%
+               \pccurve[angleB=! \pst@optexpdict FiberQuadAngleB end,
+                        angleA=! \pst@optexpdict FiberQuadAngleA end](##2)(tempNode@A@2)
+            \egroup
+            \bgroup
+               \@ifundefined{pscs@FiberOut1}{\psset{style=Fiber}}{\psset{style=FiberOut1}}%
+               \pccurve[angleA=! \pst@optexpdict FiberQuadAngleA end,
+                        angleB=! \pst@optexpdict FiberQuadAngleB end](tempNode@B@1)(##3)
+            \egroup
+            \bgroup
+               \@ifundefined{pscs@FiberOut2}{\psset{style=Fiber}}{\psset{style=FiberOut2}}%
+               \pccurve[angleA=! \pst@optexpdict FiberQuadAngleA end,
+                        angleB=! \pst@optexpdict FiberQuadAngleB end](tempNode@B@2)(##4)
+            \egroup
+         \endgroup
+      }%
+      \@namedef{#2@ii}{%
+        \pnode(0,0){tempNode@Label}%
+        \@nameuse{#2@iii}%
+      }%
+   }{%
+     \@pstrickserr{OptExp fiber quadrupole object `#2' already defined}\@eha}%
 \ignorespaces}%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
@@ -565,6 +715,20 @@
    \endgroup
 }%
 %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% FIBER COMPONENTS
+\newOptexpFiberDipole{optfiber}{}
+\newOptexpFiberDipole[endbox]{laserdiode}{}
+\newOptexpFiberDipole[endbox]{laser}{}
+\newOptexpFiberDipole{optamp}{}
+\newOptexpFiberDipole{optmzm}{}
+\newOptexpFiberDipole{optfilter}{}
+\newOptexpFiberDipole{polcontrol}{}
+\newOptexpFiberDipole{optisolator}{}
+\newOptexpFiberQuadrupole{optcoupler}{}
+%
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
@@ -628,6 +792,22 @@
         ,labelalign=c
         ,labelref=relgrav
         ,ref@angle=0
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% fiber optics
+        ,fiberloops=3
+        ,fiberloopradius=0.4
+        ,fiberloopsep=0.6
+        ,optmzmheight=0.8
+        ,optmzmwidth=1.2
+        ,laserheight=0.8
+        ,laserwidth=1.3
+        ,optampsize=0.8
+        ,filtersize=0.8
+        ,filtertype=\pst@string@filter@type@bandpass
+        ,polcontrolsize=0.1
+        ,isolatorsize=0.8
+        ,couplersize=0.2
+        ,couplertype=\pst@string@coupler@type@elliptic
 }%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
@@ -677,6 +857,24 @@
         \psdot[linecolor=black](tempNode@A)
         \psdot[linecolor=black](tempNode@B)
     \fi
+\ignorespaces}%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% DRAW FIBER COMPONENTS
+%
+% This macro is called by every fiber unit
+%
+\def\pst@draw@fibercomponent#1#2{%
+    %
+    % linestyle to use, if component should be marked as optional
+    \ifPst@optexp@component@optional
+      \psset{style=OptionalStyle}
+    \fi
+    \ncline[linestyle=none]{tempNode@A}{tempNode@B}%
+    \ncput[nrot=:U,npos=]{\put@Comp{#2}}
+    %
+    % Now put the label
+    \put@Label{#1}%
 \ignorespaces}%
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -988,7 +1186,7 @@
       \fi
       % 
       \ifPst@optexp@crystal@lamp
-         \rput{180}(! \@c@wd \@c@ht 1.4 \psk@optexp@lamp@scale\space mul add){\lamp}%
+         \rput{180}(! \@c@wd \@c@ht 1.4 \psk@optexp@lamp@scale\space mul add){\crystal@lamp}%
       \fi
       % plot c-axis only, if caxislength > 0
       \ifdim\psk@optexp@crystal@caxislength pt>0pt
@@ -1014,7 +1212,7 @@
 %
 % LAMP FOR THE CRYSTAL
 %
-\def\lamp{%
+\def\crystal@lamp{%
   \psset{linewidth=0.6\pslinewidth}
   \edef\@l@s{\psk@optexp@lamp@scale\space}%
   % 
@@ -1121,10 +1319,15 @@
    \edef\@b@ht{\psk@optexp@optbox@height\space 2 div\space}%
    \ifPst@optexp@endbox
       \pnode(! \@b@wd 0){tempNode@Label}%
-      \psframe(! 0 \@b@ht neg)(! \@b@wd 2 mul \@b@ht)%
+      \psframe[dimen=outer](! 0 \@b@ht neg)(! \@b@wd 2 mul \@b@ht)%
+      \ifPst@optexp@fiber
+         \pcline[style=Fiber](tempNode@A)(tempNode@B)
+      \fi
    \else
+      \pcline[style=Fiber](tempNode@A)(! \@b@wd neg 0)
+      \pcline[style=Fiber](tempNode@B)(! \@b@wd 0)
       \rput{\psk@optexp@angle}(0,0){%
-         \psframe(! \@b@wd neg \@b@ht neg)(! \@b@wd \@b@ht)%
+         \psframe[dimen=outer](! \@b@wd neg \@b@ht neg)(! \@b@wd \@b@ht)%
       }%
    \fi
 \ignorespaces}%
@@ -1145,7 +1348,11 @@
 %
 \def\detector@iii{%
    \pnode(! \psk@optexp@detector@size\space 3 div 0){tempNode@Label}%
-   \pswedge(0,0){\psk@optexp@detector@size}{-90}{90}
+   \begin@ClosedObj
+      % I could have use pswedge but then a correction of the component size
+      % depending on the current linewidth is not possible
+      \addto@pscode{CLW 0.5 mul 0 \psk@optexp@detector@size\space\pst@number\psrunit mul CLW sub -90 90 arc closepath }%
+   \end@ClosedObj
 \ignorespaces}%
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1158,6 +1365,176 @@
    \psframe(! \@p@wd neg \@p@ht neg)(! \@p@wd \@p@ht)
    \psline{cc-cc}(! \@p@wd neg \@p@ht)(! \@p@wd \@p@ht neg)
 \ignorespaces}%
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% FIBER OPTICS
+%
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% FIBER
+%
+\def\optfiber@iii{%
+   \edef\@f@cnt{\psk@optexp@fiber@count\space}%
+   \edef\@f@r{\psk@optexp@fiber@radius\space}%
+   \edef\@f@sep{\psk@optexp@fiber@sep\space}%
+   \parametricplot[plotpoints=200,style=Fiber]{0}{1}{%
+      t 360 mul \@f@cnt mul sin \@f@sep \@f@cnt 1 sub mul t 0.5 sub mul add \@f@r mul
+      1 t 360 mul \@f@cnt mul cos sub \@f@r mul
+   }%
+   \pnode(!\@f@sep \@f@cnt 1 sub mul \@f@r mul 0.5 mul neg 0){tempNode@A@}
+   \pnode(!\@f@sep \@f@cnt 1 sub mul \@f@r mul 0.5 mul 0){tempNode@B@}
+\ignorespaces}%
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% LASERDIODE
+%
+\def\laserdiode@iii{%
+   \edef\@ld@size{\psk@optexp@laserdiode@size\space}%
+   \edef\@ld@xl{0.75 sqrt \@ld@size mul\space}%
+   \pnode(! \@ld@xl 2 mul 3 div 0){tempNode@Label}%
+%   \ifPst@optexp@connectfiber
+%       \psline[style=Fiber](tempNode@A)(0,0)
+%    \fi
+    % 
+%    \psset{style=OptComp}%
+    % 
+    \psline(0,0)(! 0 \@ld@size 0.5 mul neg)(!0 \@ld@size 0.5 mul)(0,0)%
+           (! \@ld@xl \@ld@size 0.5 mul neg)(! \@ld@xl \@ld@size 0.5 mul)(0,0)
+\ignorespaces}%
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% LASER (always an endbox)
+%
+\def\laser@iii{%
+   \edef\@l@wd{\psk@optexp@laser@width\space 2 div\space}%
+   \edef\@l@ht{\psk@optexp@laser@height\space 2 div\space}%
+   \pnode(! \@l@wd 0){tempNode@Label}%
+   \psframe[dimen=outer](! 0 \@l@ht neg)(! \@l@wd 2 mul \@l@ht)%
+   \ifPst@optexp@fiber
+      \pcline[style=Fiber](tempNode@A)(tempNode@B)
+   \fi
+\ignorespaces}%
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% OPTMZM
+%
+\def\optmzm@iii{%
+   \edef\@wd{\psk@optexp@optmzm@width\space}%
+   \edef\@ht{\psk@optexp@optmzm@height\space}%
+   \bgroup
+      \psset{style=Fiber}
+      \psline(! \@wd 2 div neg 0)(! \@wd 0.35 mul neg 0)(! \@wd 0.2 mul neg \@ht 0.3 mul)%
+             (! \@wd 0.2 mul \@ht 0.3 mul)(! \@wd 0.35 mul 0)(! \@wd 0.5 mul 0)%
+             (! \@wd 0.35 mul 0)(! \@wd 0.2 mul \@ht 0.3 mul neg)%
+             (! \@wd 0.2 mul neg \@ht 0.3 mul neg)(! \@wd 0.35 mul neg 0)%
+   \egroup
+   \psframe[dimen=outer]%
+           (! \@wd 2 div neg \@ht 2 div neg)%
+           (! \@wd 2 div \@ht 2 div)%
+   %
+   \pnode(!\@wd -2 div 0){tempNode@A@}
+   \pnode(!\@wd 2 div 0){tempNode@B@}
+\ignorespaces}%
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% OPTICAL FILTER
+%
+\def\optfilter@iii{%
+    %
+   \edef\@sz{\psk@optexp@filter@size\space 0.5 mul\space}%
+   \def\filter@curve{%
+     \parametricplot[plotstyle=curve,arrows=c-c]{-1}{1}{%
+       t \@sz mul 0.7 mul t Pi mul RadtoDeg 90 add cos 0.2 \@sz mul mul}%
+   }%
+   \psframe[dimen=outer](! \@sz neg \@sz neg)(! \@sz \@sz)
+   \multips(! 0 -0.5 \@sz mul)(! 0 0.5 \@sz mul){3}{\filter@curve}
+   \ifx\psk@optexp@filter@type\pst@string@filter@type@bandpass
+      \psline(! -0.3 \@sz mul -0.65 \@sz mul)%
+             (! 0.3 \@sz mul -0.35 \@sz mul)%
+      \psline(! -0.3 \@sz mul 0.35 \@sz mul)%
+             (! 0.3 \@sz mul 0.65 \@sz mul)%
+      \rput(! 0 -0.5 \@sz mul){\filter@curve}
+      \rput(0, 0){\psset{style=Fiber}\filter@curve}
+      \rput(! 0 0.5 \@sz mul){\filter@curve}
+   \else\ifx\psk@optexp@filter@type\pst@string@filter@type@bandstop
+      \psline(! -0.3 \@sz mul -0.15 \@sz mul)%
+             (! 0.3 \@sz mul 0.15 \@sz mul)%
+      \rput(! 0 -0.5 \@sz mul){\psset{style=Fiber}\filter@curve}
+      \rput(0, 0){\filter@curve}
+      \rput(! 0 0.5 \@sz mul){\psset{style=Fiber}\filter@curve}
+   \fi\fi
+   %
+   \pnode(!\@sz neg 0){tempNode@A@}
+   \pnode(!\@sz 0){tempNode@B@}
+\ignorespaces}%
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% OPTICAL AMPLIFIER
+%
+\def\optamp@iii{%
+   \def\getCLW{CLW \pst@number\psxunit 2 mul div\space}%
+   \edef\@sz{\psk@optexp@optamp@size\space 0.5 mul\space}%
+   \edef\@xl{0.75 sqrt \@sz mul\space}%
+   \pspolygon(! \@xl 0)(! \getCLW \@xl sub \@sz)(! \getCLW \@xl sub \@sz neg)
+   \pnode(!\@xl neg 0){tempNode@A@}
+   \pnode(!\@xl 0){tempNode@B@}
+\ignorespaces}%
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% POLARIZATION CONTROLLER
+%
+\def\polcontrol@iii{%
+   \edef\@sz{\psk@optexp@polcontrol@size\space}%
+   \psset{style=Fiber}
+   \multips(! -2.5 \@sz mul \@sz)(! 2.5 \@sz mul 0){3}{\pscircle(0,0){\psk@optexp@polcontrol@size}}
+   \pnode(0,0){tempNode@A@}
+   \pnode(0,0){tempNode@B@}
+\ignorespaces}%
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% ISOLATOR
+%
+\def\optisolator@iii{%
+   \edef\@sz{\psk@optexp@isolator@size\space 2 div\space}%
+   \psframe[dimen=outer](! \@sz neg \@sz neg 0.6 mul )(! \@sz \@sz 0.6 mul)
+   \psline[linewidth=2\pslinewidth,arrowinset=0]{->}(! \@sz neg 0.6 mul 0)(!\@sz 0.6 mul 0)
+   \pnode(! \@sz neg 0){tempNode@A@}
+   \pnode(! \@sz 0){tempNode@B@}
+}
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% COUPLER
+%
+\def\optcoupler@iii{%
+   \edef\@sz{\psk@optexp@coupler@size\space}%
+   \ifx\psk@optexp@coupler@type\pst@string@coupler@type@elliptic
+      \psellipse[dimen=outer](0,0)(! \@sz \@sz 0.4 mul)
+      \ifPst@optexp@variable
+         \psline[arrowinset=0]{->}(!\@sz -0.5 mul \@sz neg )(!\@sz 0.5 mul \@sz)
+      \fi
+      \pnode(! \@sz neg \@sz 0.05 mul){tempNode@A@1}
+      \pnode(! \@sz neg \@sz -0.05 mul){tempNode@A@2}
+      \pnode(! \@sz \@sz 0.05 mul){tempNode@B@1}
+      \pnode(! \@sz \@sz -0.05 mul){tempNode@B@2}
+   \fi
+   \ifx\psk@optexp@coupler@type\pst@string@coupler@type@free
+      \pnode(! 0 \@sz 0.1 mul){tempNode@A@1}
+      \pnode(! 0 \@sz -0.1 mul){tempNode@A@2}
+      \pnode(! 0 \@sz 0.1 mul){tempNode@B@1}
+      \pnode(! 0 \@sz -0.1 mul){tempNode@B@2}
+   \fi
+}%
 %
 %
 \endinput

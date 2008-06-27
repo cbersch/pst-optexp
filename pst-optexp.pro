@@ -1,6 +1,6 @@
 %
 % PostScript prologue for pst-optexp.tex.
-% version 0.1 2008-06-17 (cb)
+% version 0.2 2008-06-25 (cb)
 % For distribution, see pstricks.tex.
 %
 /tx@OptexpDict 20 dict def
@@ -104,6 +104,36 @@ tx@OptexpDict begin
    /ArcR /arcn load def
    /a2 0.5 a2 mul def
    R2
+} bind def
+/mwNode {%def
+    exch 3 1 roll add 2 div 3 1 roll add 2 div exch
+} bind def
+/FiberQuadAngleB {%
+    N@tempNode@A GetCenter N@tempNode@B GetCenter exch 3 1 roll sub 3 1 roll sub atan
+} bind def
+/FiberQuadAngleA {%
+    FiberQuadAngleB 180 add
+} bind def
+%
+% basicnodename GetInternalBeamNodes x_n y_n ... x_1 y_1
+/GetInternalBeamNodes {% def
+    % str1 str2 append str1str2
+    /strcat {
+	exch 2 copy
+	length exch length add
+	string dup dup 5 2 roll
+	copy length exch
+	putinterval
+    } bind def
+    1 % counter
+    {% counter and name on stack
+	2 copy 3 string cvs strcat dup
+	tx@NodeDict exch
+	known {% push coordinates on stack
+	    cvn tx@NodeDict begin load GetCenter end 4 -2 roll
+	} { pop pop pop exit } ifelse
+	1 add
+    } loop
 } bind def
 %
 end % tx@OptexpDict
