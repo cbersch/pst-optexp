@@ -70,7 +70,7 @@ provided internally. This way the user does not have to care for proper
 orientation of the elements. Macros for convenient definition of new 
 user-defined components are also provided.
 
-\section{Free-ray components}
+\section{Free-Ray Components}
 
 In the sections \ref{sec:lens}--\ref{sec:custom} the
 available components with their parameters are described. Up to now
@@ -158,7 +158,7 @@ adapt their code to use the new parameters, as the old code will be
 removed in future versions.
 
 \medskip
-\subsection{Optical plate}
+\subsection{Optical Plate}
 
 \begin{description}
 \item[\param{plateheight}:] \paramvalue{<value>} (\defaultparam{1})
@@ -178,7 +178,7 @@ removed in future versions.
 
 \medskip
 
-\subsection{Retardation plate}
+\subsection{Retardation Plate}
 
 \begin{description}
 \item[\param{plateheight}:] \paramvalue{<value>} (\defaultparam{1})
@@ -301,6 +301,25 @@ removed in future versions.
   \pnode(1.7,1){B}
   \psline[style=OptBeam](A)(B)
   \detector(A)(B){detector}
+\end{pspicture}
+\end{LTXexample}
+
+\medskip
+
+\subsection{Optical Diode}
+
+\begin{description}
+\item[\param{optdiodesize}:] \paramvalue{<value>} (\defaultparam{0.8})
+\end{description}
+
+\medskip 
+
+\begin{LTXexample}[width=3.5cm]
+\begin{pspicture}(3,2)\psgrid
+  \pnode(0,1){A}
+  \pnode(3,1){B}
+  \psline[style=OptBeam](A)(B)
+  \optdiode(A)(B){Diode}
 \end{pspicture}
 \end{LTXexample}
 
@@ -435,7 +454,7 @@ changed by adapting the psstyle \parameter{PiezoMirror}.
 \medskip
 
 
-\subsection{Optical grid}
+\subsection{Optical Grid}
 
 \begin{description}
 \item[\param{optgridcount}:] \paramvalue{<integer>} (\defaultparam{10})
@@ -500,7 +519,7 @@ changed by adapting the psstyle \parameter{PiezoMirror}.
 
 \medskip
 
-\subsection{Custom components}\label{sec:custom}
+\subsection{Custom Components}\label{sec:custom}
 The macros \cs{optdipole} and \cs{opttripole} allow using everything as
 optical component. If you want to use a certain component several times,
 you should define it as a new component. For details see
@@ -533,7 +552,7 @@ sec.~\ref{sec:newobj}.
 
 \medskip
 
-\subsection{General options}\label{sec:general}
+\subsection{General Options}\label{sec:general}
 
 \begin{description}
 \item[\param{angle}:] \paramvalue{<value>} (\defaultparam{0})
@@ -613,7 +632,7 @@ label.
 
 \medskip
 
-\section{Fiber-optical components}
+\section{Fiber-Optical Components}
 
 \subsection{Fiber}
 \begin{description}
@@ -684,7 +703,7 @@ label.
 
 \medskip
 
-\subsection{Polarization controller}
+\subsection{Polarization Controller}
 \begin{description}
 \item[\param{polcontrolsize}:] \paramvalue{<value>} (\defaultparam{0.1})
 \end{description}
@@ -777,6 +796,110 @@ label.
 
 \medskip
 
+\subsection{Fiber Styles}
+
+\begin{description}
+\item[\param{usefiberstyle}:] \paramvalue{<boolean>} (\defaultparam{true})
+\item[\param{Fiber}:] \paramvalue{<psstyle>} (\defaultparam{linecolor=red})
+\item[\param{FiberIn}:] \paramvalue{<psstyle>} (\defaultparam{style=Fiber})
+\item[\param{FiberIn1}:] \paramvalue{<psstyle>} (\defaultparam{style=FiberIn})
+\item[\param{FiberIn2}:] \paramvalue{<psstyle>} (\defaultparam{style=FiberIn})
+\item[\param{FiberOut}:] \paramvalue{<psstyle>} (\defaultparam{style=Fiber})
+\item[\param{FiberOut1}:] \paramvalue{<psstyle>} (\defaultparam{style=FiberOut})
+\item[\param{FiberOut2}:] \paramvalue{<psstyle>} (\defaultparam{style=FiberOut})
+\end{description}
+
+All these psstyles control the appearence of the fiber parts before and
+after each components. The styles can be redefined with \cs{newpsstyle}
+or changed with \cs{addtopsstyle}.  For optical systems it is not
+possible to define a unique input and a unique output as most components
+can be used bidirectionally. Therefore, I refer to the input as the part
+from the first node to the component and to the output as the part from
+the component to the second node.
+
+The basic style is \parameter{Fiber} which is the parent of all other
+styles. \parameter{FiberIn} inherits from \parameter{Fiber} and defines
+the style of the input fiber. Analogously \parameter{FiberOut} controls
+the style of the output fiber. If you want to change the input and
+output fiber styles you should use \cs{addtopsstyle} as then the
+inheritance from the parent style \parameter{Fiber} remains.
+
+The other styles are used by the fiber couplers (\cs{optcoupler},
+\cs{wdmcoupler} and \cs{wdmsplitter}). \parameter{FiberIn1} affects the
+upper input fiber, \parameter{FiberIn2} the lower input
+fiber, \parameter{FiberOut1} the upper output fiber
+and \parameter{FiberOut2} the lower output fiber. If the object has only
+one input (e.g. \cs{wdmsplitter}), \parameter{FiberIn} is used.
+
+\medskip
+
+\begin{LTXexample}[width=3.5cm]
+\begin{pspicture}(3,3)\psgrid
+   \addtopsstyle{FiberIn}{ArrowInside=->, arrowscale=1.2}
+   \addtopsstyle{FiberOut2}{linecolor=blue}
+   \optcoupler(0,2.5)(0,0.5)(3,2.5)(3,0.5){50~\%}
+\end{pspicture}
+\end{LTXexample}
+
+\medskip
+
+In addition to the psstyles there exist
+corresponding \parameter{new\ldots} and \parameter{addto\ldots}
+parameter keys for each of them.
+
+\medskip
+
+\begin{lstlisting}
+\psset{addtoFiberIn={arrows=->, arrowscale=1.3}}
+\end{lstlisting}
+
+\medskip
+
+\noindent is equivalent to 
+
+\medskip
+
+\begin{lstlisting}
+\addtopsstyle{FiberIn}{arrows=->, arrowscale=1.3}
+\end{lstlisting}
+
+\medskip
+
+\noindent Accordingly \parameter{newFiberIn} corresponds to \cs{newpsstyle\{FiberIn\}\{\ldots\}}.
+
+At first glance these keys make no sense. The reason why I
+introduced them was to be able to define special couplers with
+\cs{newpsobject}. This is only possible if all modifications can be
+expressed as parameter keys. Consider for example a WDM splitter which
+only couples out a certain spectral range of the input and you want to
+mark the output with an arrow:
+
+\medskip
+
+\begin{LTXexample}[width=3.5cm]
+\begin{pspicture}(3,2)\psgrid
+   \newpsobject{mywdmsplitter}{wdmsplitter}{addtoFiberOut1={arrows=->, arrowscale=1.3, linecolor=blue}, labelangle=180, align=bottom}
+   \mywdmsplitter(0,0.5)(3,1.5)(3,0.5){blue band}
+\end{pspicture}
+\end{LTXexample}
+
+\medskip
+
+Or if you need a coupler with a particular input angle you can do it be extending the appropriate fiber style:
+
+\medskip
+
+\begin{LTXexample}[width=3.5cm]
+\begin{pspicture}(3,2)\psgrid
+   \newpsobject{mycoupler}{optcoupler}{addtoFiberIn2={angleA=90}, align=top}
+   \mycoupler(0.5,1.5)(0.5,0.5)(2.5,1.5)(2.5,0.5){}
+\end{pspicture}
+\end{LTXexample}
+
+\medskip
+
+
+
 \section{Labels}\label{sec:labels}
 
 \begin{description}
@@ -832,9 +955,9 @@ the following three examples.
 \end{pspicture}
 \end{LTXexample}
 
-\section{Defining new components}
+\section{Defining New Components}
 
-\subsection{Customized versions of existing macros}
+\subsection{Customized Versions of Existing Macros}
 
 The easiest way to define your own components is to use the
 \cs{newpsobject} macro. With this you can define a new component using
@@ -882,7 +1005,7 @@ If you need more than one type of lenses in your setup it is very cumbersome to 
 \end{LTXexample}
 \medskip
 
-\subsection{Defining new objects}\label{sec:newobj}
+\subsection{Defining New Objects}\label{sec:newobj}
 
 Since version 1.2 \texttt{pst-optexp} provides some high-level macros to
 allow very convenient definition of completely new components. The macro
@@ -1024,7 +1147,7 @@ fibres in a recirculating loop"', Electron. Lett. 31 (\textbf{5}), 375
 
 \begin{LTXexample}[pos=t]
 \psset{unit=1cm}
-\begin{pspicture}(0.5,3.8)(13.2,10.5)
+\begin{pspicture}(0.5,4)(13.2,10.5)
   \laser[labeloffset=0](2.1,10)(2,10){LD}
   \optmzm(2.1,10)(3.5,10){MZM}
   \optamp(3.5,10)(4.5,10){EDFA}
@@ -1037,13 +1160,13 @@ fibres in a recirculating loop"', Electron. Lett. 31 (\textbf{5}), 375
   \optbox[endbox, fiber, labeloffset=0](12,10)(12.1,10){RX}
   % loop
   \optamp(9,8)(11,8){EDFA}
-  \psline[linearc=1,style=Fiber](11,8)(12,8)(12,5)(11,5)
-  \optfiber[labeloffset=-1.2](9,5)(11,5){\begin{tabular}{c}conventional\\fibre 89.8~km\end{tabular}}
-  \optamp(9,5)(8,5){EDFA}
-  \optfilter(8,5)(6.5,5){BPF}
-  \optfiber[fiberloops=1](4,5)(6.5,5){DCF 16.2~km}
-  \optamp(4,5)(2.5,5){EDFA}
-  \psline[style=Fiber,linearc=1](2.5,5)(1.5,5)(1.5,8)(2.5,8)
+  \psline[linearc=1,style=Fiber](11,8)(12,8)(12,4.5)(11,4.5)
+  \optfiber[labelalign=b, labeloffset=-1, position=0.8](9,4.5)(11,4.5){\begin{tabular}{c}conventional\\fibre 89.8~km\end{tabular}}
+  \optamp(9,4.5)(8,4.5){EDFA}
+  \optfilter(8,4.5)(6.5,4.5){BPF}
+  \optfiber[fiberloops=1, labeloffset=-1, labelalign=b](4,4.5)(6.5,4.5){DCF 16.2~km}
+  \optamp(4,4.5)(2.5,4.5){EDFA}
+  \psline[style=Fiber,linearc=1](2.5,4.5)(1.5,4.5)(1.5,8)(2.5,8)
   \optfilter(2.5,8)(4.5,8){BPF}
   \optswitch(4.5,8)(6,8){SW}
   \polcontrol(6,8)(7.5,8){}
