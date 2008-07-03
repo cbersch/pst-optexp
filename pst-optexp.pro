@@ -118,4 +118,8 @@ tx@OptexpDict begin
     FiberQuadAngleB 180 add
 } bind def
 %
+/ExtNode {%
+    tx@Dict /@@x known {tx@Dict /@@x0 known {@@x0}{0} ifelse @xref @@x mul add}{0} ifelse 
+    tx@Dict /@@y known {tx@Dict /@@y0 known {@@y0}{0} ifelse @yref @@y mul add}{0} ifelse 
+} def
 end % tx@OptexpDict
