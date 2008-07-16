@@ -28,7 +28,7 @@
 %
 %
 \def\fileversion{1.3alpha}
-\def\filedate{2008/07/03}
+\def\filedate{2008/07/15}
 \message{`pst-optexp' v\fileversion, \filedate\space (CB)}
 %
 \edef\PstAtCode{\the\catcode`\@} \catcode`\@=11\relax
@@ -80,7 +80,6 @@
 \newif\ifPst@optexp@debug@showoptdots
 \newif\ifPst@optexp@endbox
 \newif\ifPst@optexp@thicklens
-\newif\ifPst@optexp@fiber
 \newif\ifPst@optexp@usefiberstyle
 %
 % Strings
@@ -117,6 +116,8 @@
 \edef\pst@string@optexp@center{center}
 \edef\pst@string@optexp@closed{closed}
 \edef\pst@string@optexp@opened{opened}
+\edef\pst@string@optexp@basicname@default{tempNode@}
+\edef\pst@string@optexp@basicname@postfix{Intern}
 %
 % psstyles
 %
@@ -126,7 +127,7 @@
                 hatchsep=1.4\psk@optexp@mirror@linewidth,%
                 fillstyle=hlines}%
 \newpsstyle{PiezoMirror}{fillstyle=solid,fillcolor=black!30}%
-\newpsstyle{OptBeam}{linecolor=green!90!black}%
+\newpsstyle{Beam}{linecolor=green!90!black}%
 %
 \newpsstyle{Fiber}{linecolor=red}%
 \define@key[psset]{optexp}{newFiber}{\newpsstyle{Fiber}{#1}}
@@ -329,6 +330,12 @@
 %
 % Optical Diode
 \define@key[psset]{optexp}{optdiodesize}{\edef\psk@optexp@diode@size{#1}}
+%
+% Penta Prism
+\define@key[psset]{optexp}{pentaprismsize}{\edef\psk@optexp@pentaprism@size{#1}}
+%
+% Right-Angle Prism
+\define@key[psset]{optexp}{raprismsize}{\edef\psk@optexp@raprism@size{#1}}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 % Parameters for fiber-optical components
@@ -339,7 +346,6 @@
 \define@key[psset]{optexp}{fiberloops}{\edef\psk@optexp@fiber@count{#1}}
 \define@key[psset]{optexp}{fiberloopradius}{\edef\psk@optexp@fiber@radius{#1}}
 \define@key[psset]{optexp}{fiberloopsep}{\edef\psk@optexp@fiber@sep{#1}}
-\define@boolkey[psset]{optexp}[Pst@optexp@]{fiber}[true]{}
 %
 % Filter
 \define@key[psset]{optexp}{filtersize}{\edef\psk@optexp@filter@size{#1}}
@@ -412,6 +418,96 @@
 \define@key[psset]{optexp}{extnodename}{\edef\psk@optexp@extnode@name{#1}}
 %
 %
+%
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% THIS IS THE COMPLETE AND NEW CODE FOR ALL CONNECTIONS %%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+\define@key[psset]{optexp}{basicname}{%
+   \edef\pst@temp{#1}%
+   \ifx\pst@temp\@empty
+      \edef\psk@optexp@basicname{\pst@string@optexp@basicname@default}
+   \else
+      \edef\psk@optexp@basicname{#1\pst@string@optexp@basicname@postfix}
+   \fi
+}
+\define@key[psset]{optexp}{compname}{%
+   \edef\psk@optexp@compname{#1}
+   \psset{basicname=#1}
+}
+\define@key[psset]{optexp}{conn}{%
+   \edef\pst@tempg{#1}
+   \expandafter\psset@@conn\pst@tempg\@empty-\@empty\@nil
+   \if@pst\else
+      \pstrickserr{Bad connection specification: #1}\@ehpa
+   \fi
+}
+\def\psset@@conn#1-#2\@empty#3\@nil{%
+  \@psttrue
+  \def\next##1,#1-##2,##3\@nil{\def\pst@tempg{##2}}%
+  \expandafter\next\pst@optexp@conntable,#1-#1,\@nil
+  \@ifundefined{psoe@cs@in@\pst@tempg}%
+    {\@pstfalse\def\psk@connIn{}}%
+    {\edef\psk@connIn{psoe@cs@in@\pst@tempg}}%
+  \@ifundefined{psoe@cs@out@#2}%
+    {\@pstfalse\def\psk@connOut{}}%
+    {\def\psk@connOut{psoe@cs@out@#2}}%
+}
+\def\psk@connIn{}
+\def\psk@connOut{}
+% this is the conntable for the \drawbeam macro
+%\def\pst@optexp@conntable{,a-a,A-A,b-b,B-B}%
+% this is the conntable for the direct drawing of the connections
+\def\pst@optexp@conntable{,o-o,i-i,f-f}%
+\def\psoe@cs@out@{}
+\def\psoe@cs@in@{}
+\def\psoe@cs@in@o{%
+   \psline[style=Beam](\psk@optexp@basicname A)(\optexp@nodeA)
+}%
+\def\psoe@cs@out@o{%
+   \psline[style=Beam](\optexp@nodeB)(\psk@optexp@basicname B)
+}%
+\def\psoe@cs@in@f{%
+   \pccurve[angleA=0, angleB=180, style=FiberIn](\psk@optexp@basicname A)(\optexp@nodeA)
+}%
+\def\psoe@cs@out@f{%
+   \pccurve[angleA=0, angleB=180, style=FiberOut](\optexp@nodeB)(\psk@optexp@basicname B)
+}%
+\def\psoe@cs@in@i{%
+   \def\pst@par{style=Beam}
+   \begin@OpenObj
+      \addto@pscode{%
+         [
+         (N@\psk@optexp@basicname A) tx@NodeDict begin load GetCenter end
+         \pst@optexpdict
+            (\psk@optexp@basicname) true GetInternalBeamNodes 
+         end
+      }%
+      \psline@ii
+}%
+\def\psoe@cs@out@i{%
+   \def\pst@par{style=Beam}
+   \begin@OpenObj
+      \addto@pscode{%
+         [
+         \pst@optexpdict
+            (\psk@optexp@basicname) true GetInternalBeamNodes 
+         end
+         (N@\psk@optexp@basicname B) tx@NodeDict begin load GetCenter end
+      }%
+      \psline@ii
+}%
+%
+\def\optexp@nodeA{\psk@optexp@basicname 1}%
+\def\optexp@nodeB{\psk@optexp@basicname N}%
+\def\optexp@node#1{\psk@optexp@basicname #1}%
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% END %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 % BASIC MACROS
@@ -423,6 +519,17 @@
 % This can be useful to preset options that are not allowed to be changed by the
 % user.
 %
+\def\begin@OptexpObj{%
+   \pst@killglue
+   \begingroup
+      \pst@Verb{\pst@optexpdict InitOptexpComp end }%
+      \use@par
+}
+\def\end@OptexpObj{%
+      \pstVerb{\pst@optexpdict (\psk@optexp@basicname) CloseOptexpComp end }%
+  \endgroup
+  \ignorespaces%
+}
 \def\addafter@par#1{%
   \ifx\pst@par\@empty
     \def\pst@par{#1}%
@@ -447,7 +554,7 @@
 \def\newOptexpFiberDipole{\@ifnextchar[{\new@optexpfiberdipole}{\new@optexpfiberdipole[]}}
 \def\newOptexpFiberQuadrupole{\@ifnextchar[{\new@optexpfiberquadrupole}{\new@optexpfiberquadrupole[]}}
 \def\new@optexpfiberdipole[#1]#2#3{%
-   \new@optexpdipole[fiber,#1]{#2}{#3}%
+   \new@optexpdipole[conn=f-f,#1]{#2}{#3}%
 }%
 %
 % Creates new macros ...@i and ...@ii which provide most code for the arrangement
@@ -458,29 +565,23 @@
    \@ifundefined{#2@i}{%
       \@namedef{#2}{\pst@object{#2}}%
       \expandafter\def\csname #2@i\endcsname(##1)(##2)##3{%
-         \pst@killglue
          \addbefore@par{#3}%
          \addafter@par{#1}%
-         \begingroup
-            \use@par
+         \begin@OptexpObj
             \pst@regNodes{##1}{##2}
             \pst@draw@component{##3}{\@nameuse{#2@ii}}
             %
             % the following code is only for fiber-optical components
-            \ifPst@optexp@fiber
-               % 
-               % connect the fibers
-               \pcline[style=FiberIn](tempNode@A)(tempNode@A@)
-               \ifPst@optexp@endbox\else
-                  \pcline[style=FiberOut](tempNode@B)(tempNode@B@)
-               \fi
+            \@nameuse{\psk@connIn}
+            \ifPst@optexp@endbox\else
+               \@nameuse{\psk@connOut}
             \fi
-         \endgroup
+         \end@OptexpObj
       }%
       \@namedef{#2@ii}{%
         \pnode(0,0){tempNode@Label}%
-        \pnode(0,0){tempNode@A@}%
-        \pnode(0,0){tempNode@B@}%
+        \pnode(0,0){\optexp@nodeA}%
+        \pnode(0,0){\optexp@nodeB}%
         \@nameuse{#2@iii}%
       }%
    }{%
@@ -492,24 +593,20 @@
    \@ifundefined{#2@i}{%
       \@namedef{#2}{\pst@object{#2}}%
       \expandafter\def\csname #2@i\endcsname(##1)(##2){%
-         \pst@killglue
          \addbefore@par{#3}%
          \addafter@par{#1}%
-         \begingroup
-            \use@par
+         \begin@OptexpObj
             \pst@regNodes{##1}{##2}
             \pst@draw@component{}{\@nameuse{#2@ii}}
             %
-            \ifPst@optexp@fiber
-               % 
-               % connect the fibers
-               \pcline[style=FiberIn](tempNode@A)(tempNode@A@)
-               \pcline[style=FiberOut](tempNode@B)(tempNode@B@)
-             \fi
-         \endgroup
+            \@nameuse{\psk@connIn}
+            \@nameuse{\psk@connOut}
+         \end@OptexpObj
       }%
       \@namedef{#2@ii}{%
         \pnode(0,0){tempNode@Label}%
+        \pnode(0,0){\optexp@nodeA}%
+        \pnode(0,0){\optexp@nodeB}%
         \@nameuse{#2@iii}%
       }%
    }{%
@@ -521,17 +618,22 @@
    \@ifundefined{#2@i}{%
       \@namedef{#2}{\pst@object{#2}}%
       \expandafter\def\csname #2@i\endcsname(##1)(##2)(##3)##4{%
-         \pst@killglue
          \addbefore@par{#3}%
          \addafter@par{ref@angle=180,#1}%
-         \begingroup
-            \use@par
+         \begin@OptexpObj
             \pst@calcNodes{##1}{##2}{##3}
             \pst@draw@component{##4}{\@nameuse{#2@ii}}
-         \endgroup
+            % adjust tempNode@A and tempNode@B for the connections
+            \pnode(##1){tempNode@A}
+            \pnode(##3){tempNode@B}
+            \@nameuse{\psk@connIn}
+            \@nameuse{\psk@connOut}
+         \end@OptexpObj
       }%
       \@namedef{#2@ii}{%
         \pnode(0,0){tempNode@Label}%
+        \pnode(0,0){\optexp@nodeA}%
+        \pnode(0,0){\optexp@nodeB}%
         \@nameuse{#2@iii}%
       }%
    }{%
@@ -543,11 +645,9 @@
    \@ifundefined{#2@i}{%
       \@namedef{#2}{\pst@object{#2}}%
       \expandafter\def\csname #2@i\endcsname(##1)(##2)(##3)(##4)##5{%
-         \pst@killglue
          \addbefore@par{#3}%
          \addafter@par{#1}%
-         \begingroup
-            \use@par
+         \begin@OptexpObj
             %
             \ifx\psk@optexp@align\pst@string@optexp@top
                \pnode(##1){tempNode@A}
@@ -577,7 +677,7 @@
             \pccurve[style=FiberIn2](##2)(tempNode@A@2)
             \pccurve[style=FiberOut1](tempNode@B@1)(##3)
             \pccurve[style=FiberOut2](tempNode@B@2)(##4)
-         \endgroup
+         \end@OptexpObj
       }%
       \@namedef{#2@ii}{%
         \pnode(0,0){tempNode@Label}%
@@ -592,9 +692,7 @@
 % 
 \def\wdmsplitter{\pst@object{wdmsplitter}}%
 \def\wdmsplitter@i(#1)(#2)(#3)#4{%
-   \pst@killglue
-   \begingroup
-      \use@par
+   \begin@OptexpObj
       % 
       \pnode(#1){tempNode@A}
       \ifx\psk@optexp@align\pst@string@optexp@top
@@ -617,15 +715,13 @@
       \pccurve[style=FiberIn](#1)(tempNode@A@)     
       \pccurve[style=FiberOut1](tempNode@B@1)(#2)
       \pccurve[style=FiberOut2](tempNode@B@2)(#3)
-   \endgroup
-\ignorespaces}%
+   \end@OptexpObj
+}%
 %
 %
 \def\wdmcoupler{\pst@object{wdmcoupler}}%
 \def\wdmcoupler@i(#1)(#2)(#3)#4{%
-   \pst@killglue
-   \begingroup
-      \use@par
+   \begin@OptexpObj
       % 
       \pnode(#3){tempNode@B}
       \ifx\psk@optexp@align\pst@string@optexp@top
@@ -648,8 +744,8 @@
       \pccurve[style=FiberOut](tempNode@B@)(#3)
       \pccurve[style=FiberIn1](#1)(tempNode@A@1)
       \pccurve[style=FiberIn2](#2)(tempNode@A@2)
-   \endgroup
-\ignorespaces}%
+   \end@OptexpObj
+}%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %   Some of the components need three points to be positioned. 
@@ -754,6 +850,8 @@
 %   relative => as relgrav but text is rotated together with object.
 %
 \def\put@Label#1{%
+   \def\pst@temp{#1}%
+   \ifx\pst@temp\@empty\else
    \ifx\psk@optexp@label@ref\pst@string@labelref@global
       %
       % global
@@ -803,6 +901,7 @@
       %
       \endgroup
    \fi\fi\fi
+   \fi
 }%
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -821,12 +920,15 @@
 \newOptexpDipole{optretplate}{}%
 \newOptexpDipole[endbox]{detector}{}%
 \newOptexpDipole{optdiode}{}
+\newOptexpDipole{doveprism}{}
 %
 % TRIPOLES
 %
 \newOptexpTripole{mirror}{}%
 \newOptexpTripole[ref@angle=-135]{beamsplitter}{}%
 \newOptexpTripole{optgrid}{}%
+\newOptexpTripole{pentaprism}{}%
+\newOptexpTripole{rightangleprism}{}%
 %
 % SPECIAL OBJECTS
 %
@@ -838,19 +940,13 @@
       \pst@regNodes{#1}{#2}
       \pst@draw@component{#4}{%
          \pnode(0,0){tempNode@Label}%
-         \ifPst@optexp@fiber
-            \pnode(0,0){tempNode@A@}%
-            \pnode(0,0){tempNode@B@}%
-         \fi
+         \pnode(0,0){\optexp@nodeA}%
+         \pnode(0,0){\optexp@nodeB}%
          #3
       }%
-      \ifPst@optexp@fiber
-         % 
-         % connect the fibers
-         \pcline[style=FiberIn](tempNode@A)(tempNode@A@)
-         \ifPst@optexp@endbox\else
-            \pcline[style=FiberOut](tempNode@B)(tempNode@B@)
-         \fi
+      \@nameuse{\psk@connIn}
+      \ifPst@optexp@endbox\else
+         \@nameuse{\psk@connOut}
       \fi
    \endgroup
 }%
@@ -862,6 +958,8 @@
       \pst@calcNodes{#1}{#2}{#3}
       \pst@draw@component{#5}{%
          \pnode(0,0){tempNode@Label}% 
+         \pnode(0,0){\optexp@nodeA}% 
+         \pnode(0,0){\optexp@nodeB}% 
          #4
       }%
    \endgroup
@@ -943,6 +1041,10 @@
         ,pollinewidth=0.7\pslinewidth
 % optdiode
         ,optdiodesize=0.8
+% pentaprism
+        ,pentaprismsize=1
+% rightangleprism
+        ,raprismsize=1
 % label
         ,labeloffset=0.8
         ,labelangle=0
@@ -971,6 +1073,8 @@
         ,switchsize=0.8
         ,switchstyle=opened
         ,fdlsize=0.5
+        ,conn=-
+        ,compname=\@empty
 }%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
@@ -979,8 +1083,6 @@
 % This macro is called by every unit
 %
 \def\pst@draw@component#1#2{%
-    %
-    \pst@Verb{/@@x 0 def /@@y 0 def /@@x0 0 def /@@y0 0 def}%
     %
     \def\@@comp{%
        #2
@@ -1481,14 +1583,10 @@
       \pst@Verb{/@@x0 @@x def}%
       \pnode(! @@x 0){tempNode@Label}%
       \psframe[dimen=outer](! 0 @@y neg)(! @@x 2 mul @@y)%
-      \ifPst@optexp@fiber
-         \pnode(tempNode@B){tempNode@A@}
-      \fi
+      \pnode(tempNode@B){\optexp@nodeA}
    \else
-      \ifPst@optexp@fiber
-         \pnode(! @@x neg 0){tempNode@A@}
-         \pnode(!@@x 0){tempNode@B@}
-      \fi
+      \pnode(! @@x neg 0){\optexp@nodeA}
+      \pnode(!@@x 0){\optexp@nodeB}
       \rput{\psk@optexp@angle}(0,0){%
          \psframe[dimen=outer](! @@x neg @@y neg)(! @@x @@y)%
       }%
@@ -1511,9 +1609,7 @@
 %
 \def\detector@iii{%
    \pnode(! \psk@optexp@detector@size\space 3 div 0){tempNode@Label}%
-   \ifPst@optexp@fiber
-      \pnode(tempNode@B){tempNode@A@}
-   \fi
+   \pnode(tempNode@B){\optexp@nodeA}
    \begin@ClosedObj
       % I could have use pswedge but then a correction of the component size
       % depending on the current linewidth is not possible
@@ -1544,7 +1640,56 @@
              (! \@sz -0.2 mul \@sz 0.25 mul)
              (! \@sz 0.2 mul 0)
    \psline(! \@sz 0.2 mul \@sz 0.25 mul)(! \@sz 0.2 mul \@sz -0.25 mul)
+   \pnode(! \@sz neg 0){\optexp@nodeA}
+   \pnode(! \@sz 0){\optexp@nodeB}
 \ignorespaces}%
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% DOVE PRISM
+%
+\def\doveprism@iii{%
+   \edef\@sz{0.5\space}%
+   \pspolygon(! \@sz neg \@sz -0.6 mul)
+             (! \@sz \@sz -0.6 mul)
+             (! \@sz 0.6 mul \@sz 0.6 mul)
+             (! \@sz -0.6 mul \@sz 0.6 mul)
+   \pnode(!\@sz -0.8 mul 0){\optexp@nodeA}
+   \pnode(! 0 \@sz -0.6 mul){\optexp@node{2}}
+   \pnode(!\@sz 0.8 mul 0){\optexp@nodeB}
+\ignorespaces}%
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% PENTA PRISM
+%
+\def\pentaprism@iii{%
+   \edef\@pp@size{\psk@optexp@pentaprism@size\space}%
+   \pscustom{%
+      \psline(! \@pp@size 2 sqrt div 0)%
+         (! \@pp@size 2 sqrt div 67.5 cos \@pp@size mul 67.5 sin div sub \@pp@size)%
+         (! 67.5 cos \@pp@size mul 67.5 sin div \@pp@size 2 sqrt div sub \@pp@size)%
+         (! \@pp@size 2 sqrt div neg 0)%
+         (! 0 \@pp@size 2 sqrt div neg)%
+      \closepath
+   }%
+   \pnode(! \@pp@size 2 sqrt div 67.5 cos \@pp@size mul 67.5 sin 2 mul div sub \@pp@size 2 div){\optexp@nodeA}%
+   \pnode(! 67.5 cos \@pp@size mul 67.5 sin 2 mul div \@pp@size 2 sqrt div sub \@pp@size 2 div){\optexp@nodeB}%
+}%
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% RIGHT-ANGLE PRISM
+%
+\def\rightangleprism@iii{%
+   % 
+   \pstVerb{/prism@size \psk@optexp@raprism@size\space 0.5 mul def }%
+   \pspolygon(! prism@size neg \getCLW)
+             (! prism@size \getCLW)
+             (! 0 prism@size \getCLW 2 sqrt mul add)%
+   \pnode(! prism@size 2 sqrt div neg dup neg){\optexp@nodeA}
+   \pnode(! prism@size 2 sqrt div dup){\optexp@nodeB}
+}%
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1564,8 +1709,8 @@
       t 360 mul \@f@cnt mul sin \@f@sep \@f@cnt 1 sub mul t 0.5 sub mul add \@f@r mul
       1 t 360 mul \@f@cnt mul cos sub \@f@r mul
    }%
-   \pnode(!\@f@sep \@f@cnt 1 sub mul \@f@r mul 0.5 mul neg 0){tempNode@A@}
-   \pnode(!\@f@sep \@f@cnt 1 sub mul \@f@r mul 0.5 mul 0){tempNode@B@}
+   \pnode(!\@f@sep \@f@cnt 1 sub mul \@f@r mul 0.5 mul neg 0){\optexp@nodeA}
+   \pnode(!\@f@sep \@f@cnt 1 sub mul \@f@r mul 0.5 mul 0){\optexp@nodeB}
 \ignorespaces}%
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1592,9 +1737,7 @@
    }%
    \pnode(! @@x 0){tempNode@Label}%
    \psframe[dimen=outer](! 0 @@y neg)(! @@x 2 mul @@y)%
-   \ifPst@optexp@fiber
-      \pcline[style=Fiber](tempNode@A)(tempNode@B)
-   \fi
+   \pnode(tempNode@B){\optexp@nodeA}
 \ignorespaces}%
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1617,8 +1760,8 @@
    \egroup
    \psframe[dimen=outer](! @@x neg @@y neg)(! @@x @@y)
    %
-   \pnode(! @@x neg 0){tempNode@A@}
-   \pnode(! @@x 0){tempNode@B@}
+   \pnode(! @@x neg 0){\optexp@nodeA}
+   \pnode(! @@x 0){\optexp@nodeB}
 \ignorespaces}%
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1664,8 +1807,8 @@
          \filter@curve}
    \fi\fi
    %
-   \pnode(! @@x neg 0){tempNode@A@}
-   \pnode(! @@x 0){tempNode@B@}
+   \pnode(! @@x neg 0){\optexp@nodeA}
+   \pnode(! @@x 0){\optexp@nodeB}
 \ignorespaces}%
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1676,8 +1819,8 @@
    \edef\@sz{\psk@optexp@optamp@size\space 0.5 mul\space}%
    \edef\@xl{0.75 sqrt \@sz mul\space}%
    \pspolygon(! \@xl 0)(! \getCLWH \@xl sub \@sz)(! \getCLWH \@xl sub \@sz neg)
-   \pnode(!\@xl neg 0){tempNode@A@}
-   \pnode(!\@xl 0){tempNode@B@}
+   \pnode(!\@xl neg 0){\optexp@nodeA}
+   \pnode(!\@xl 0){\optexp@nodeB}
 \ignorespaces}%
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1701,8 +1844,8 @@
    \edef\@wd{\psk@optexp@isolator@size\space 0.8 mul\space}%
    \psframe[dimen=outer](! \@wd neg \@ht neg)(! \@wd \@ht)
    \psline[linewidth=2\pslinewidth,arrowinset=0]{->}(! \@wd neg 0.6 mul 0)(!\@wd 0.6 mul 0)
-   \pnode(! \@wd neg 0){tempNode@A@}
-   \pnode(! \@wd 0){tempNode@B@}
+   \pnode(! \@wd neg 0){\optexp@nodeA}
+   \pnode(! \@wd 0){\optexp@nodeB}
 \ignorespaces}%
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1714,8 +1857,8 @@
       /@@x \psk@optexp@switch@size\space 0.5 mul def
       /@@y @@x def
    }%
-   \pnode(! @@x neg 0){tempNode@A@}%
-   \pnode(! @@x 0){tempNode@B@}%
+   \pnode(! @@x neg 0){\optexp@nodeA}%
+   \pnode(! @@x 0){\optexp@nodeB}%
    % storing the linewidth of the object allows for some aesthetic fine tuning 
    \pstVerb{tx@Dict begin /@lw \getCLW def end}%
    % the fiber parts
@@ -1751,8 +1894,8 @@
    }%
    \psframe[dimen=outer](! @@x neg @@y neg)(! @@x @@y)
    \psline{->}(! @@x -0.3 mul @@y -1.5 mul)(! @@x 0.3 mul @@y 1.5 mul)
-   \pnode(! @@x neg 0){tempNode@A@}
-   \pnode(! @@x 0){tempNode@B@}
+   \pnode(! @@x neg 0){\optexp@nodeA}
+   \pnode(! @@x 0){\optexp@nodeB}
 \ignorespaces}%
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
