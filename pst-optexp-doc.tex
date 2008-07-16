@@ -16,6 +16,9 @@
 \lstset{breakatwhitespace}
 \usepackage{nicefrac}
 \usepackage{graphicx}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{booktabs}
 \usepackage[colorlinks,linktocpage]{hyperref}
 %
 % New commands
@@ -28,7 +31,8 @@
 \newcommand{\defaultparam}[1]{\emph{default:} \paramvalue{#1}}
 \def\lbracket{[}
 \def\rbracket{]}
-
+\newcolumntype{T}{>{\ttfamily}l}
+\newcolumntype{B}{>{\bfseries}l}
 %
 % Settings
 \setkomafont{sectioning}{\normalfont\normalcolor\bfseries}
@@ -70,15 +74,129 @@ provided internally. This way the user does not have to care for proper
 orientation of the elements. Macros for convenient definition of new 
 user-defined components are also provided.
 
+\section{Concept and General Options}\label{sec:general}
+
+\subsection{Concept}
+
+There are two different categories of optical components that are
+provided by the package: free-ray and fiber-optical components.  
+
+The free-ray components are subdivided in two different kinds: the
+components which require two reference points and do not alter the
+direction of the passing light beam (e.g. lenses and retardation plates)
+and those which work in reflection and require three reference points
+(mirrors, gratings, beamsplitters etc.). 
+
+For free-ray setups one usually has few straight light paths in which
+several different components are arranged. Therefore, it is more
+convenient if one has to define only two nodes for each light path. The
+components then are placed on this light path using the different
+positioning parameters of the package and at the end the beam itself is
+drawn. This concept is different from the one used for the fiber-optical
+components or the way \texttt{pst-circ} treats its objects. They
+directly connect the components with the reference nodes.
+
+The fiber-optical components can be subdivided in dipoles, tripoles and
+quadrupoles which have a corresponding number of fiber connections. The
+handling of these components differs in some aspects from the free-ray
+objects. The fiber optics are directly connected with the reference
+nodes. The psstyles used for each fiber connections can be flexibly
+changed for every components (see sec. \ref{sec:styles}).
+
+Some hybrid components (laser, optbox, detector etc.) can be used both
+as fiber-optical or free-ray elements. By default they are treated as
+free-ray objects, i.e. they are not connected to their reference
+points. Setting the parameter \parameter{fiber} to \parameter{true} they
+are treated as fiber-optical object and connected with the reference
+points using the appropriate psstyles.
+
+\subsection{General Options}
+\begin{description}
+\item[\param{angle}:] \paramvalue{<value>} (\defaultparam{0})
+\item[\param{optional}:] \paramvalue{<boolean>} (\defaultparam{false})
+\item[\param{position}:] \paramvalue{<value>} (\defaultparam{\cs{@empty}})
+\item[\param{abspos}:] \paramvalue{<value>} (\defaultparam{\cs{@empty}})
+\item[\param{showoptdots}:] \paramvalue{<boolean>} (\defaultparam{false})
+\item[\param{fiber}:] \paramvalue{<boolean>}
+\item[\param{extnode}:] \paramvalue{<ref string>} (\defaultparam{\cs{@empty}})
+\item[\param{extnodename}:] \paramvalue{<string>} (\defaultparam{Ext})
+\end{description}
+
+The parameter \parameter{angle} is available for the macros \cs{optbox}
+and \cs{crystal} only, as for the most other cases it would make
+no sense. \parameter{optional} can be used with every component and marks it as
+optional and can be configured by changing the psstyle \parameter{OptionalStyle}.
+\parameter{position} is equivalent to the \parameter{npos} parameter of \cs{ncput},
+but is used only for the \lq dipole\rq-macros to position the component
+between the two given points. In addition, there is a parameter
+\parameter{abspos} that allows absolute positioning between the two line
+points. \parameter{showoptdots} shows in black the two points calculated for the
+positioning of the component, and in red the reference points for the
+label.
+
+\medskip
+
+\begin{LTXexample}[width=3.5cm]
+\begin{pspicture}(3,2)\psgrid
+  \pnode(0,1.2){A}
+  \pnode(3,1.2){B}
+  \psline[style=OptBeam](A)(B)
+  \optbox[angle=10](A)(B){box}
+\end{pspicture}
+\end{LTXexample}
+
+\bigskip
+
+\begin{LTXexample}[width=3.5cm]
+\begin{pspicture}(3,2)\psgrid 
+  \pnode(0,1.2){A} 
+  \pnode(3,1.2){B}
+  \psline[style=OptBeam](A)(B) 
+  \lens[optional](A)(B){L}
+\end{pspicture}
+\end{LTXexample}
+
+\bigskip
+
+\begin{LTXexample}[width=3.5cm]
+\begin{pspicture}(3,2)\psgrid 
+  \pnode(0,1.2){A} 
+  \pnode(3,1.2){B}
+  \psline[style=OptBeam](A)(B) 
+  \lens[position=0.8](A)(B){L}
+\end{pspicture}
+\end{LTXexample}
+
+\bigskip
+
+\begin{LTXexample}[width=3.5cm]
+\begin{pspicture}(3,2)\psgrid 
+  \pnode(0,1.2){A} 
+  \pnode(3,1.2){B}
+  \psline[style=OptBeam](A)(B) 
+  \lens[abspos=1](A)(B){L}
+\end{pspicture}
+\end{LTXexample}
+
+\bigskip
+
+\begin{LTXexample}[width=3.5cm]
+\begin{pspicture}(3,3)\psgrid 
+  \pnode(0,0){A} 
+  \pnode(1.5,2){G}
+  \pnode(0,3){B} 
+  \psline[style=OptBeam](A)(G)(B)
+  \mirror[showoptdots](A)(G)(B){mirror}
+\end{pspicture}
+\end{LTXexample}
+
+\medskip
+
+
 \section{Free-Ray Components}
 
 In the sections \ref{sec:lens}--\ref{sec:custom} the
-available components with their parameters are described. Up to now
-there are two types of components: those which require two reference
-points and do not alter the direction of the passing light beam (for
-example lenses and retardation plates) and those which work in
-reflection and require three reference points (mirrors, grids,
-beamsplitters etc.).
+available free-ray components with their parameters are described.
 
 In section \ref{sec:general} general parameters are described that are
 not proprietary to a specific unit but can be used for several different
@@ -97,10 +215,10 @@ components and can be redefined using \cs{newpsstyle}.
 \begin{description}
 \item[\param{lensheight}:] \paramvalue{<value>} (\defaultparam{1})
 \item[\param{lenswidth}:] \paramvalue{<value>} (\defaultparam{0.3})
-\item[\param{lensradius}:] \paramvalue{<value> [<value>]} (\defaultparam{\cs{empty}})
+\item[\param{lensradius}:] \paramvalue{<value> [<value>]} (\defaultparam{\cs{@empty}})
 \item[\param{lensradiusleft}:] \paramvalue{<value>} (\defaultparam{1})
 \item[\param{lensradiusright}:] \paramvalue{<value>} (\defaultparam{1})
-\item[\param{lens}:] \paramvalue{<value> [<value> [<value> [<value>]]]} (\defaultparam{\cs{empty}})
+\item[\param{lens}:] \paramvalue{<value> [<value> [<value> [<value>]]]} (\defaultparam{\cs{@empty}})
 \item[\param{thicklens}:] \paramvalue{<boolean>}(\defaultparam{false})
 \end{description}
 
@@ -301,25 +419,6 @@ removed in future versions.
   \pnode(1.7,1){B}
   \psline[style=OptBeam](A)(B)
   \detector(A)(B){detector}
-\end{pspicture}
-\end{LTXexample}
-
-\medskip
-
-\subsection{Optical Diode}
-
-\begin{description}
-\item[\param{optdiodesize}:] \paramvalue{<value>} (\defaultparam{0.8})
-\end{description}
-
-\medskip 
-
-\begin{LTXexample}[width=3.5cm]
-\begin{pspicture}(3,2)\psgrid
-  \pnode(0,1){A}
-  \pnode(3,1){B}
-  \psline[style=OptBeam](A)(B)
-  \optdiode(A)(B){Diode}
 \end{pspicture}
 \end{LTXexample}
 
@@ -552,86 +651,6 @@ sec.~\ref{sec:newobj}.
 
 \medskip
 
-\subsection{General Options}\label{sec:general}
-
-\begin{description}
-\item[\param{angle}:] \paramvalue{<value>} (\defaultparam{0})
-\item[\param{optional}:] \paramvalue{<boolean>} (\defaultparam{false})
-\item[\param{position}:] \paramvalue{<value>} (\defaultparam{\cs{empty}})
-\item[\param{abspos}:] \paramvalue{<value>} (\defaultparam{\cs{empty}})
-\item[\param{showoptdots}:] \paramvalue{<boolean>} (\defaultparam{false})
-\end{description}
-
-The parameter \parameter{angle} is available for the macros \cs{optbox}
-and \cs{crystal} only, as for the most other cases it would make
-no sense. \parameter{optional} can be used with every component and marks it as
-optional and can be configured by changing the psstyle \parameter{OptionalStyle}.
-\parameter{position} is equivalent to the \parameter{npos} parameter of \cs{ncput},
-but is used only for the \lq dipole\rq-macros to position the component
-between the two given points. In addition, there is a parameter
-\parameter{abspos} that allows absolute positioning between the two line
-points. \parameter{showoptdots} shows in black the two points calculated for the
-positioning of the component, and in red the reference points for the
-label.
-
-\medskip
-
-\begin{LTXexample}[width=3.5cm]
-\begin{pspicture}(3,2)\psgrid
-  \pnode(0,1.2){A}
-  \pnode(3,1.2){B}
-  \psline[style=OptBeam](A)(B)
-  \optbox[angle=10](A)(B){box}
-\end{pspicture}
-\end{LTXexample}
-
-\bigskip
-
-\begin{LTXexample}[width=3.5cm]
-\begin{pspicture}(3,2)\psgrid 
-  \pnode(0,1.2){A} 
-  \pnode(3,1.2){B}
-  \psline[style=OptBeam](A)(B) 
-  \lens[optional](A)(B){L}
-\end{pspicture}
-\end{LTXexample}
-
-\bigskip
-
-\begin{LTXexample}[width=3.5cm]
-\begin{pspicture}(3,2)\psgrid 
-  \pnode(0,1.2){A} 
-  \pnode(3,1.2){B}
-  \psline[style=OptBeam](A)(B) 
-  \lens[position=0.8](A)(B){L}
-\end{pspicture}
-\end{LTXexample}
-
-\bigskip
-
-\begin{LTXexample}[width=3.5cm]
-\begin{pspicture}(3,2)\psgrid 
-  \pnode(0,1.2){A} 
-  \pnode(3,1.2){B}
-  \psline[style=OptBeam](A)(B) 
-  \lens[abspos=1](A)(B){L}
-\end{pspicture}
-\end{LTXexample}
-
-\bigskip
-
-\begin{LTXexample}[width=3.5cm]
-\begin{pspicture}(3,3)\psgrid 
-  \pnode(0,0){A} 
-  \pnode(1.5,2){G}
-  \pnode(0,3){B} 
-  \psline[style=OptBeam](A)(G)(B)
-  \mirror[showoptdots](A)(G)(B){mirror}
-\end{pspicture}
-\end{LTXexample}
-
-\medskip
-
 \section{Fiber-Optical Components}
 
 \subsection{Fiber}
@@ -796,7 +815,7 @@ label.
 
 \medskip
 
-\subsection{Fiber Styles}
+\subsection{Fiber Styles}\label{sec:styles}
 
 \begin{description}
 \item[\param{usefiberstyle}:] \paramvalue{<boolean>} (\defaultparam{true})
@@ -1174,6 +1193,107 @@ fibres in a recirculating loop"', Electron. Lett. 31 (\textbf{5}), 375
 \end{LTXexample}
 
 \newpage
+
+\section{Complete List of Parameters}
+\begin{longtable}{BTT}
+\toprule \multicolumn{1}{l}{parameter} & \multicolumn{1}{l}{values} & \multicolumn{1}{l}{default}\\\midrule\endhead
+\bottomrule\endfoot
+angle & \paramvalue{<value>} & 0 \\
+optional & \paramvalue{<boolean>} & false \\
+position & \paramvalue{<value>} & \cs{@empty} \\
+abspos & \paramvalue{<value>} & \cs{@empty} \\
+showoptdots & \paramvalue{<boolean>} & false \\
+fiber & \paramvalue{<boolean>} & false\\
+extnode & \paramvalue{<ref string>} & \cs{@empty} \\
+extnodename & \paramvalue{<string>} & Ext \\
+\midrule
+lensheight & \paramvalue{<value>} & 1 \\
+lenswidth & \paramvalue{<value>} & 0.3 \\
+lensradius & \paramvalue{<value> [<value>]} & \cs{@empty} \\
+lensradiusleft & \paramvalue{<value>} & 1 \\
+lensradiusright & \paramvalue{<value>} & 1 \\
+lens & \paramvalue{<value> [<value> [<value> [<value>]]]} & \cs{@empty} \\
+thicklens & \paramvalue{<boolean>}& false \\
+\midrule
+plateheight & \paramvalue{<value>} & 1 \\
+platelinewidth & \paramvalue{<value>} & 2\cs{pslinewidth} \\
+\midrule
+plateheight & \paramvalue{<value>} & 1 \\
+platewidth & \paramvalue{<value>} & 0.1 \\
+outerheight & \paramvalue{<value>} & 1 \\
+innerheight & \paramvalue{<value>} & 0.1 \\
+phlinewidth &  \paramvalue{<value>} & 2\cs{pslinewidth} \\
+\midrule
+crystalwidth & \paramvalue{<value>} & 2 \\
+crystalheight & \paramvalue{<value>} & 0.8 \\
+caxislength & \paramvalue{<value>} & 0.6 \\
+caxisinv & \paramvalue{<boolean>} & false \\
+voltage & \paramvalue{<boolean>} & false \\
+lamp & \paramvalue{<boolean>} & false \\
+lampscale & \paramvalue{<value>} & 0.3 \\
+\midrule
+optboxheight & \paramvalue{<value>} & 0.5 \\
+optboxwidth & \paramvalue{<value>} & 1 \\
+endbox & \paramvalue{<boolean>} & false \\
+\midrule
+detsize & \paramvalue{<value>} & 0.5 \\
+\midrule
+poltype & \paramvalue{parallel|perp|misc|lcirc|rcirc} & parallel \\
+polsize & \paramvalue{<value>} & 0.6 \\
+pollinewidth & \paramvalue{<value>} & 0.7\cs{pslinewidth} \\
+\midrule
+mirrorwidth & \paramvalue{<value>} & 1 \\
+mirrorradius & \paramvalue{<value>} & 0 \\
+mirrorlinewidth & \paramvalue{<value>} & 2\cs{pslinewidth} \\
+mirrortype & \paramvalue{normal|piezo|extended} & normal \\
+mirrordepth & \paramvalue{<value>} & 0.08 \\
+variable & \paramvalue{<value>} & false \\
+\midrule
+bssize & \paramvalue{<value>} & 0.8 \\
+\midrule
+optgridcount & \paramvalue{<integer>} & 10 \\
+optgridwidth & \paramvalue{<value>} & 1 \\
+optgridheight & \paramvalue{<value>} & 0.1 \\
+optgriddepth & \paramvalue{<value>} & 0.05 \\
+optgridtype & \paramvalue{blazed|binary} & blazed \\
+optgridlinewidth & \paramvalue{<value>} & 0.7\cs{pslinewidth} \\
+reverse & \paramvalue{<boolean>} & false \\
+\midrule
+fiberloops & \paramvalue{<integer>} & 3 \\
+fiberloopradius & \paramvalue{<value>} & 0.3 \\
+fiberloopsep & \paramvalue{<value>} & 0.3 \\
+\midrule
+optampsize & \paramvalue{<value>} & 0.8 \\
+\midrule
+optmzmsize & \paramvalue{<value>} & 0.8 \\
+\midrule
+filtertype & \paramvalue{bandpass|bandstop} & bandpass \\
+\midrule
+polcontrolsize & \paramvalue{<value>} & 0.1 \\
+\midrule
+switchsize & \paramvalue{<value>} & 0.8 \\
+switchstyle & \paramvalue{opened|closed} & opened \\
+\midrule
+couplersize & \paramvalue{<value>} & 0.1 \\
+couplersep & \paramvalue{<value>} & 0.1 \\
+couplertype & \paramvalue{none|elliptic} & elliptic \\
+\midrule
+usefiberstyle & \paramvalue{<boolean>} & true \\
+Fiber & \paramvalue{<psstyle>} & linecolor=red \\
+FiberIn & \paramvalue{<psstyle>} & style=Fiber \\
+FiberIn1 & \paramvalue{<psstyle>} & style=FiberIn \\
+FiberIn2 & \paramvalue{<psstyle>} & style=FiberIn \\
+FiberOut & \paramvalue{<psstyle>} & style=Fiber \\
+FiberOut1 & \paramvalue{<psstyle>} & style=FiberOut \\
+FiberOut2 & \paramvalue{<psstyle>} & style=FiberOut \\
+\midrule
+labeloffset & \paramvalue{<value>} & 1 \\
+labelangle & \paramvalue{<value>} & 0 \\
+labelstyle & \paramvalue{<macro>} & \cs{small} \\
+labelalign & \paramvalue{<\cs{rput} ref string>} & c \\
+labelref & \paramvalue{relative|relgrav|global} & relgrav \\
+\end{longtable}
+\newpage
 \section{Todo}
 
 The next thing I will add are components with multiple internal
@@ -1191,4 +1311,7 @@ could take very long until this feature will be implemented.
 
 I thank all the people of the PSTricks mailinglist for the continuous help, especially Herbert Voﬂ.
 
+\section{History}
+
+For the package history see file Changes that is distributed with the package.
 \end{document}
