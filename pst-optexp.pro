@@ -28,6 +28,7 @@ tx@OptexpDict begin
     /cy ay a div by b div add def
     /c@tmp cx cy Pyth def
     /c ax bx add ay by add Pyth def
+    /OEangle c dup mul a dup mul sub b dup mul sub -2 a b mul mul div Acos def
     %
     % if c=0, then set the coordinates of the vector manually
     % depending on the dotproduct (and thus, if 'a' and 'b'
@@ -156,7 +157,7 @@ tx@OptexpDict begin
 %
 %
 /InitOptexpComp {%
-    tx@OptexpDict begin
+    tx@Dict begin
 	/@@x 0 def
 	/@@y 0 def
 	/@@x0 0 def
@@ -164,8 +165,10 @@ tx@OptexpDict begin
     end
 } bind def
 %
-% basicnodename CloseOptexpComp
+% defaultbasicnodename basicnodename CloseOptexpComp
 /CloseOptexpComp {% def
-    [ exch false GetInternalNodeNames ] { tx@NodeDict exch undef } forall
+    2 copy eq {
+	exch pop [ exch false GetInternalNodeNames ] { tx@NodeDict exch undef } forall
+    } { pop pop } ifelse
 } bind def
 end % tx@OptexpDict

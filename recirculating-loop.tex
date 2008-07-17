@@ -1,0 +1,41 @@
+%%% recirculating-loop.tex --- 
+
+%% Author: cbersch
+%% Version: $Id: recirculating-loop.tex,v 0.0 2008/07/01 11:33:38 Exp$
+
+
+\documentclass{scrartcl}
+\usepackage[latin1]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[ngerman]{babel}
+\usepackage{lmodern}
+\usepackage{pst-optexp}
+
+%%\revision$Header: /home/cbersch/texmf/tex/graphics/pstricks/contrib/pst-optexp-v1_3alpha/recirculating-loop.tex,v 0.0 2008/07/01 11:33:38 cbersch Exp$
+
+\begin{document}
+\begin{pspicture}[showgrid=true](0.5,4)(13.2,10.5)
+  \laser[labeloffset=0](2.1,10)(2,10){LD}
+  \optmzm(2.1,10)(3.5,10){MZM}
+  \optamp(3.5,10)(4.5,10){EDFA}
+  \optfilter(4.5,10)(5.5,10){BPF}
+  \optswitch(5.5,10)(6.5,10){SW}
+  \polcontrol(6.5,10)(7.5,10){}
+  \optcoupler[couplertype=none,couplersep=0.2](7.5,10)(7.5,8)(9,10)(9,8){}
+  \optamp(9,10)(10.5,10){EDFA}
+  \optfilter(10.5,10)(12,10){BPF}
+  \optbox[endbox, labeloffset=0, conn=f-f](12,10)(12.1,10){RX}
+  % loop
+  \optamp(9,8)(11,8){EDFA}
+  \psline[linearc=1,style=Fiber](11,8)(12,8)(12,4.5)(11,4.5)
+  \optfiber[labelalign=b, labeloffset=-1, position=0.8](9,4.5)(11,4.5){\begin{tabular}{c}conventional\\fibre 89.8~km\end{tabular}}
+  \optamp(9,4.5)(8,4.5){EDFA}
+  \optfilter(8,4.5)(6.5,4.5){BPF}
+  \optfiber[fiberloops=1, labeloffset=-1, labelalign=b](4,4.5)(6.5,4.5){DCF 16.2~km}
+  \optamp(4,4.5)(2.5,4.5){EDFA}
+  \psline[style=Fiber,linearc=1](2.5,4.5)(1.5,4.5)(1.5,8)(2.5,8)
+  \optfilter(2.5,8)(4.5,8){BPF}
+  \optswitch(4.5,8)(6,8){SW}
+  \polcontrol(6,8)(7.5,8){}
+\end{pspicture}
+\end{document}

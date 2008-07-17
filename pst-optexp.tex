@@ -18,17 +18,10 @@
 %%
 \csname PSToptexpLoaded\endcsname
 \let\PSToptexpLoaded\endinput
-% Requires PSTricks, code for plain TeX inclusion
-\ifx\PSTricksLoaded\endinput\else\input pstricks.tex\fi
-\ifx\PSTnodesLoaded\endinput\else\input pst-node.tex\fi
-\ifx\PSTplotLoaded\endinput\else\input pst-plot.tex\fi
-\ifx\MultidoLoaded\endinput\else\input multido.tex\fi
-\ifx\PSTXKeyLoaded\endinput\else\input pst-xkey.tex\fi
-\ifx\PSTricksAddLoaded\endinput\else\input pstricks-add.tex\fi
 %
 %
 \def\fileversion{1.3alpha}
-\def\filedate{2008/07/15}
+\def\filedate{2008/07/16}
 \message{`pst-optexp' v\fileversion, \filedate\space (CB)}
 %
 \edef\PstAtCode{\the\catcode`\@} \catcode`\@=11\relax
@@ -69,6 +62,7 @@
 }%
 \fi
 %
+%
 % IF's
 %
 \newif\ifPst@optexp@variable
@@ -82,7 +76,10 @@
 \newif\ifPst@optexp@thicklens
 \newif\ifPst@optexp@usefiberstyle
 %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
 % Strings
+%
 \def\pst@string@pol@polperp{perp}
 \def\pst@string@pol@polparallel{parallel}
 \def\pst@string@pol@polmisc{misc}
@@ -119,6 +116,7 @@
 \edef\pst@string@optexp@basicname@default{tempNode@}
 \edef\pst@string@optexp@basicname@postfix{Intern}
 %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % psstyles
 %
 \newpsstyle{OptionalStyle}{linestyle=dashed,dash=1.5pt 1pt}%
@@ -178,7 +176,7 @@
 % for internal use only
 \define@key[psset]{optexp}{ref@angle}{\edef\psk@optexp@label@refangle{#1}}
 % labelrelative is obsolete
-\define@choicekey*[psset]{optexp}{labelrelative}[\val\nr]{true,false}[true]{%
+\define@choicekey[psset]{optexp}{labelrelative}[\val\nr]{true,false}[true]{%
   \ifcase\nr\relax
      \psset{labelref=relative}
   \or
@@ -280,7 +278,7 @@
 \define@key[psset]{optexp}{mirrorwidth}{\edef\psk@optexp@mirror@width{#1}}
 \define@key[psset]{optexp}{mirrorlinewidth}{\edef\psk@optexp@mirror@linewidth{#1}}
 %\define@key[psset]{optexp}{mirrortype}{\edef\psk@optexp@mirror@type{#1}}% piezo, extended, plain
-\define@choicekey*+[psset]{optexp}{mirrortype}[\val\nr]{piezo,extended,plain}%
+\define@choicekey+[psset]{optexp}{mirrortype}[\val\nr]{piezo,extended,plain}%
    {\edef\psk@optexp@mirror@type{#1}}%
    {\PackageError{pst-optexp}{Unknown value '\val' for mirrortype}}
 \define@key[psset]{optexp}{mirrordepth}{\edef\psk@optexp@mirror@depth{#1}}
@@ -291,7 +289,7 @@
 \define@key[psset]{optexp}{optgridcount}{\edef\psk@optexp@optgrid@count{#1}}
 \define@key[psset]{optexp}{optgridwidth}{\edef\psk@optexp@optgrid@width{#1}}
 \define@key[psset]{optexp}{optgridheight}{\edef\psk@optexp@optgrid@height{#1}}
-\define@choicekey*+[psset]{optexp}{optgridtype}[\val\nr]{binary,blazed}%
+\define@choicekey+[psset]{optexp}{optgridtype}[\val\nr]{binary,blazed}%
    {\edef\psk@optexp@optgrid@type{#1}}
    {\PackageError{pst-optexp}{Unknown value '\val' for optgridtype}}
 \define@key[psset]{optexp}{optgriddepth}{\edef\psk@optexp@optgrid@depth{#1}}
@@ -320,7 +318,7 @@
 }
 \define@key[psset]{optexp}{polsize}{\edef\psk@optexp@polarization@size{#1}}
 \define@key[psset]{optexp}{pollinewidth}{\edef\psk@optexp@polarization@linewidth{#1}}
-\define@choicekey*+[psset]{optexp}{poltype}[\val\nr]{parallel,misc,perp,rcirc,lcirc}%
+\define@choicekey+[psset]{optexp}{poltype}[\val\nr]{parallel,misc,perp,rcirc,lcirc}%
    {\edef\psk@optexp@pol@type{#1}}
    {\PackageError{pst-optexp}{Unknown value '\val' for key poltype}}
 \define@key[psset]{optexp}{pol}{%
@@ -336,6 +334,10 @@
 %
 % Right-Angle Prism
 \define@key[psset]{optexp}{raprismsize}{\edef\psk@optexp@raprism@size{#1}}
+%
+% Prism
+\define@key[psset]{optexp}{prismsize}{\edef\psk@optexp@prism@size{#1}}
+\define@key[psset]{optexp}{prismangle}{\edef\psk@optexp@prism@angle{#1}}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 % Parameters for fiber-optical components
@@ -349,7 +351,7 @@
 %
 % Filter
 \define@key[psset]{optexp}{filtersize}{\edef\psk@optexp@filter@size{#1}}
-\define@choicekey*+[psset]{optexp}{filtertype}[\val\nr]{bandstop,bandpass}%
+\define@choicekey+[psset]{optexp}{filtertype}[\val\nr]{bandstop,bandpass}%
    {\edef\psk@optexp@filter@type{#1}}%
    {\PackageError{pst-optexp}{Unknown value '\val' for key filtertype}}
 %
@@ -374,7 +376,7 @@
 %
 % Optical switch
 \define@key[psset]{optexp}{switchsize}{\edef\psk@optexp@switch@size{#1}}
-\define@choicekey*+[psset]{optexp}{switchstyle}[\val\nr]{opened,closed}%
+\define@choicekey+[psset]{optexp}{switchstyle}[\val\nr]{opened,closed}%
    {\edef\psk@optexp@switch@style{#1}}%
    {\PackageError{pst-optexp}{Unknown value '\val' for key switchstyle}}
 %
@@ -384,12 +386,15 @@
 % Coupler
 \define@key[psset]{optexp}{couplersize}{\edef\psk@optexp@coupler@size{#1}}
 \define@key[psset]{optexp}{couplersep}{\edef\psk@optexp@coupler@sep{#1}}
-\define@choicekey*+[psset]{optexp}{couplertype}[\val\nr]{none,elliptic}%
+\define@choicekey+[psset]{optexp}{couplertype}[\val\nr]{none,elliptic}%
    {\edef\psk@optexp@coupler@type{#1}}%
    {\PackageError{pst-optexp}{Unknown value '\val' for key couplertype}}
 \define@key[psset]{optexp}{align}{\edef\psk@optexp@align{#1}}
 %
-% Additional input node
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Code for the extnode parameter (additional input node)
+%
 % (this part was copied and adapted from \psset@@ref from pstricks.tex)
 \define@key[psset]{optexp}{extnode}{%
    \edef\psk@optexp@extnode{#1}
@@ -432,9 +437,23 @@
       \edef\psk@optexp@basicname{#1\pst@string@optexp@basicname@postfix}
    \fi
 }
+\let\pst@optexp@complist\@empty
 \define@key[psset]{optexp}{compname}{%
    \edef\psk@optexp@compname{#1}
    \psset{basicname=#1}
+   % check if compname was already defined
+   \ifx\psk@optexp@compname\@empty\else
+      \@expandtwoargs\in@{,#1,}{,\pst@optexp@complist,}%
+      \ifin@
+         \PackageWarning{pst-optexp}%
+            {^^Jcompname '#1' already used. Previously defined nodes will be overwritten!^^J}
+      \else
+         % Use definition of \XKV@addtolist@x with an \xdef instead of \edef in order
+         % to keep the bookkeeping global
+         \xdef\pst@optexp@complist{\pst@optexp@complist\ifx\pst@optexp@complist\@empty\else,\fi#1}
+         %\XKV@addtolist@x\pst@optexp@complist{#1}%
+      \fi
+   \fi
 }
 \define@key[psset]{optexp}{conn}{%
    \edef\pst@tempg{#1}
@@ -456,32 +475,28 @@
 }
 \def\psk@connIn{}
 \def\psk@connOut{}
-% this is the conntable for the \drawbeam macro
-%\def\pst@optexp@conntable{,a-a,A-A,b-b,B-B}%
 % this is the conntable for the direct drawing of the connections
 \def\pst@optexp@conntable{,o-o,i-i,f-f}%
 \def\psoe@cs@out@{}
 \def\psoe@cs@in@{}
-\def\psoe@cs@in@o{%
-   \psline[style=Beam](\psk@optexp@basicname A)(\optexp@nodeA)
-}%
-\def\psoe@cs@out@o{%
-   \psline[style=Beam](\optexp@nodeB)(\psk@optexp@basicname B)
-}%
+\def\psoe@cs@in@o{\psline[style=Beam](\pst@string@optexp@basicname@default A)(\optexp@nodeA)}%
+\def\psoe@cs@out@o{\psline[style=Beam](\optexp@nodeB)(\pst@string@optexp@basicname@default B)}%
 \def\psoe@cs@in@f{%
-   \pccurve[angleA=0, angleB=180, style=FiberIn](\psk@optexp@basicname A)(\optexp@nodeA)
+%   \psline[style=FiberOut](\psk@optexp@basicname A)(\optexp@nodeA)
+   \pccurve[angleA=180, angleB=0, style=FiberIn](\psk@optexp@basicname A)(\optexp@nodeA)
 }%
 \def\psoe@cs@out@f{%
-   \pccurve[angleA=0, angleB=180, style=FiberOut](\optexp@nodeB)(\psk@optexp@basicname B)
+%   \psline[style=FiberOut](\optexp@nodeB)(\psk@optexp@basicname B)
+   \pccurve[angleA=180, angleB=0, style=FiberOut](\optexp@nodeB)(\psk@optexp@basicname B)
 }%
 \def\psoe@cs@in@i{%
    \def\pst@par{style=Beam}
    \begin@OpenObj
       \addto@pscode{%
          [
-         (N@\psk@optexp@basicname A) tx@NodeDict begin load GetCenter end
          \pst@optexpdict
-            (\psk@optexp@basicname) true GetInternalBeamNodes 
+            (\psk@optexp@basicname) false GetInternalBeamNodes 
+            /N@\pst@string@optexp@basicname@default A tx@NodeDict begin load GetCenter end 
          end
       }%
       \psline@ii
@@ -492,13 +507,77 @@
       \addto@pscode{%
          [
          \pst@optexpdict
-            (\psk@optexp@basicname) true GetInternalBeamNodes 
+            /N@\pst@string@optexp@basicname@default B tx@NodeDict begin load GetCenter end 
+            (\psk@optexp@basicname) false GetInternalBeamNodes 
          end
-         (N@\psk@optexp@basicname B) tx@NodeDict begin load GetCenter end
       }%
       \psline@ii
 }%
 %
+% 
+\def\drawbeam{%
+   \def\conntable{,a-a,b-b,A-A,B-B}%
+   \psset{style=Beam}
+   \pst@object{drawbeam}%
+}%
+\def\drawbeam@i#1#2{%
+   \def\pst@tempA{\pst@optexp@getfirstchar#1\@nil}
+   \def\pst@tempB{\pst@optexp@getfirstchar#2\@nil}
+   \begin@OpenObj
+   \if(\pst@tempB
+      % second parameter is a node
+      \pst@optexp@@getcoor#2
+      \def\psk@connOut{pst@coor}
+   \else
+      \pst@optexp@check@compname{#2}%
+      \edef\psk@optexp@basicnameB{#2\pst@string@optexp@basicname@postfix}%
+   \fi
+   \if(\pst@tempA
+      % first parameter is a node
+      \pst@optexp@@getcoor#1
+      \def\psk@connIn{pst@coor}
+   \else
+      \pst@optexp@check@compname{#1}%
+      \edef\psk@optexp@basicnameA{#1\pst@string@optexp@basicname@postfix}%
+   \fi   
+   \let\psk@optexp@basicname\psk@optexp@basicnameB
+   \addto@pscode{[ \@nameuse{\psk@connOut} }%
+   \let\psk@optexp@basicname\psk@optexp@basicnameA
+   \addto@pscode{\@nameuse{\psk@connIn} }%
+   \psline@ii
+}%
+\def\pst@optexp@check@compname#1{%
+   % check if 'compname' is defined
+   \@expandtwoargs\in@{,#1,}{,\pst@optexp@complist,}%
+   \ifin@\else
+      \PackageError{pst-optexp}{^^Jcompname '#1' undefined!^^J}
+   \fi
+}%
+\def\pst@optexp@getfirstchar#1#2\@nil{#1}%
+\def\pst@optexp@@getcoor(#1){%
+  \pst@@getcoor{#1}%
+}%
+%
+% IN
+\def\psoe@cs@in@a{tx@NodeDict begin /N@\psk@optexp@basicname 1 load GetCenter end }%
+\def\psoe@cs@in@A{\pst@optexpdict (\psk@optexp@basicname) true GetInternalBeamNodes end }%
+\def\psoe@cs@in@b{tx@NodeDict begin /N@\psk@optexp@basicname N load GetCenter end }%
+\def\psoe@cs@in@B{\pst@optexpdict (\psk@optexp@basicname) false GetInternalBeamNodes end }%
+%
+% OUT
+%
+\def\psoe@cs@out@a{tx@NodeDict begin N@\psk@optexp@basicname 1 GetCenter end }%
+\def\psoe@cs@out@A{\pst@optexpdict (\psk@optexp@basicname) false GetInternalBeamNodes end }%
+\def\psoe@cs@out@b{tx@NodeDict begin N@\psk@optexp@basicname N GetCenter end }%
+\def\psoe@cs@out@B{\pst@optexpdict (\psk@optexp@basicname) true GetInternalBeamNodes end }%
+%
+%
+\define@choicekey[psset]{optexp}{beam}[\val\nr]{}[]{%
+   \psset{conn=i-o}%
+}
+\define@choicekey[psset]{optexp}{fiber}[\val\nr]{}[]{%
+   \psset{conn=f-f}%
+}
 \def\optexp@nodeA{\psk@optexp@basicname 1}%
 \def\optexp@nodeB{\psk@optexp@basicname N}%
 \def\optexp@node#1{\psk@optexp@basicname #1}%
@@ -519,14 +598,15 @@
 % This can be useful to preset options that are not allowed to be changed by the
 % user.
 %
+\def\pst@OptexpVerb#1{\pst@Verb{\pst@optexpdict #1 end }}%
 \def\begin@OptexpObj{%
    \pst@killglue
    \begingroup
-      \pst@Verb{\pst@optexpdict InitOptexpComp end }%
+      \pst@OptexpVerb{InitOptexpComp}%
       \use@par
 }
 \def\end@OptexpObj{%
-      \pstVerb{\pst@optexpdict (\psk@optexp@basicname) CloseOptexpComp end }%
+      \pst@OptexpVerb{(\pst@string@optexp@basicname@default) (\psk@optexp@basicname) CloseOptexpComp}%
   \endgroup
   \ignorespaces%
 }
@@ -554,7 +634,7 @@
 \def\newOptexpFiberDipole{\@ifnextchar[{\new@optexpfiberdipole}{\new@optexpfiberdipole[]}}
 \def\newOptexpFiberQuadrupole{\@ifnextchar[{\new@optexpfiberquadrupole}{\new@optexpfiberquadrupole[]}}
 \def\new@optexpfiberdipole[#1]#2#3{%
-   \new@optexpdipole[conn=f-f,#1]{#2}{#3}%
+   \new@optexpdipole[fiber,#1]{#2}{#3}%
 }%
 %
 % Creates new macros ...@i and ...@ii which provide most code for the arrangement
@@ -624,10 +704,23 @@
             \pst@calcNodes{##1}{##2}{##3}
             \pst@draw@component{##4}{\@nameuse{#2@ii}}
             % adjust tempNode@A and tempNode@B for the connections
-            \pnode(##1){tempNode@A}
-            \pnode(##3){tempNode@B}
-            \@nameuse{\psk@connIn}
-            \@nameuse{\psk@connOut}
+            % \pnode(##1){tempNode@A}
+            % \pnode(##3){tempNode@B}
+            % check if node must be switched, therefore we implement this
+            % directly as PS code
+            \pst@getcoor{##1}\pst@tempA%
+            \pst@getcoor{##3}\pst@tempB%
+            \pst@Verb{%
+               \pst@optexpdict
+               tx@NodeDict begin
+                   {\pst@tempA } false chirality 0 le { /N@tempNode@B }{ /N@tempNode@A } ifelse
+                   10 {InitPnode } NewNode
+                   {\pst@tempB } false chirality 0 le { /N@tempNode@A }{ /N@tempNode@B } ifelse
+                   10 {InitPnode } NewNode
+               end end
+            }%
+            \@nameuse{\psk@connIn}%
+            \@nameuse{\psk@connOut}%
          \end@OptexpObj
       }%
       \@namedef{#2@ii}{%
@@ -786,6 +879,7 @@
     \pst@Verb{tx@NodeDict begin N@tempNode@A GetCenter pop N@tempNode@B GetCenter pop end
               gt {/@xref \psk@optexp@xref\space neg def /@yref \psk@optexp@yref\space neg def}
                  {/@xref \psk@optexp@xref\space def /@yref \psk@optexp@yref\space def} ifelse
+              tx@OptexpDict /chirality known not {tx@OptexpDict begin /chirality 1 def end } if
     }%
 \ignorespaces}%
 %
@@ -918,7 +1012,10 @@
 \newOptexpDipole{optbox}{}%
 \newOptexpDipole{optplate}{}%
 \newOptexpDipole{optretplate}{}%
-\newOptexpDipole[endbox]{detector}{}%
+\newOptexpDipole[endbox]{optdetector}{}%
+\ifx\PSTcircLoaded\else
+   \newpsobject{detector}{optdetector}
+\fi
 \newOptexpDipole{optdiode}{}
 \newOptexpDipole{doveprism}{}
 %
@@ -929,6 +1026,7 @@
 \newOptexpTripole{optgrid}{}%
 \newOptexpTripole{pentaprism}{}%
 \newOptexpTripole{rightangleprism}{}%
+\newOptexpTripole{optprism}{}%
 %
 % SPECIAL OBJECTS
 %
@@ -980,6 +1078,9 @@
 \newOptexpFiberDipole{optswitch}{}
 \newOptexpFiberDipole{fiberdelayline}{}
 \newOptexpFiberQuadrupole{optcoupler}{}
+%
+% HYBRID COMPONENTS
+\newOptexpDipole{fibercollimator}{conn=o-f}
 %
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1045,6 +1146,9 @@
         ,pentaprismsize=1
 % rightangleprism
         ,raprismsize=1
+% optprism
+        ,prismsize=1
+        ,prismangle=45
 % label
         ,labeloffset=0.8
         ,labelangle=0
@@ -1607,7 +1711,7 @@
 %
 % DETECTOR
 %
-\def\detector@iii{%
+\def\optdetector@iii{%
    \pnode(! \psk@optexp@detector@size\space 3 div 0){tempNode@Label}%
    \pnode(tempNode@B){\optexp@nodeA}
    \begin@ClosedObj
@@ -1640,8 +1744,8 @@
              (! \@sz -0.2 mul \@sz 0.25 mul)
              (! \@sz 0.2 mul 0)
    \psline(! \@sz 0.2 mul \@sz 0.25 mul)(! \@sz 0.2 mul \@sz -0.25 mul)
-   \pnode(! \@sz neg 0){\optexp@nodeA}
-   \pnode(! \@sz 0){\optexp@nodeB}
+   \pnode(! \@sz -0.5 mul 0){\optexp@nodeA}
+   \pnode(! \@sz 0.5 mul 0){\optexp@nodeB}
 \ignorespaces}%
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1664,7 +1768,7 @@
 % PENTA PRISM
 %
 \def\pentaprism@iii{%
-   \edef\@pp@size{\psk@optexp@pentaprism@size\space}%
+   \edef\@pp@size{\psk@optexp@pentaprism@size\space 0.5 mul\space}%
    \pscustom{%
       \psline(! \@pp@size 2 sqrt div 0)%
          (! \@pp@size 2 sqrt div 67.5 cos \@pp@size mul 67.5 sin div sub \@pp@size)%
@@ -1679,17 +1783,36 @@
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
+% PRISM
+%
+\def\optprism@iii{%
+   % 
+   \pst@Verb{%
+      /@sz \psk@optexp@prism@size\space def
+      /@alpha \psk@optexp@prism@angle\space 0.5 mul def 
+      /@hshift @sz 0.5 mul @alpha tan mul \pst@optexpdict OEangle end 0.5 mul tan div def
+   }%
+   \pspolygon(! @sz neg @alpha tan mul @sz -0.5 mul @hshift sub)
+             (! @sz @alpha tan mul @sz -0.5 mul @hshift sub)
+             (! 0 @sz 0.5 mul @hshift sub)
+   \pnode(! @sz -0.5 mul @alpha tan mul @hshift neg){\optexp@nodeA}
+   \pnode(! @sz 0.5 mul @alpha tan mul @hshift neg){\optexp@nodeB}
+}%
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
 % RIGHT-ANGLE PRISM
 %
 \def\rightangleprism@iii{%
    % 
-   \pstVerb{/prism@size \psk@optexp@raprism@size\space 0.5 mul def }%
+   \pst@Verb{/prism@size \psk@optexp@raprism@size\space 0.5 mul def }%
    \pspolygon(! prism@size neg \getCLW)
              (! prism@size \getCLW)
              (! 0 prism@size \getCLW 2 sqrt mul add)%
    \pnode(! prism@size 2 sqrt div neg dup neg){\optexp@nodeA}
    \pnode(! prism@size 2 sqrt div dup){\optexp@nodeB}
 }%
+%
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -2018,6 +2141,16 @@
       \pnode(0,0){tempNode@B@2}
       \pnode(0,0){tempNode@Label}
    \fi
+}%
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% FIBER COLLIMATOR
+%
+\def\fibercollimator@iii{%
+   \pspolygon(-0.2,-0.2)(0.2,0)(-0.2,0.2)
+   \pnode(-0.2,0){\optexp@nodeA}
+   \pnode(0.2,0){\optexp@nodeB}
 }%
 %
 %
