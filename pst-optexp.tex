@@ -21,7 +21,7 @@
 %
 %
 \def\fileversion{1.3alpha}
-\def\filedate{2008/07/16}
+\def\filedate{2008/07/20}
 \message{`pst-optexp' v\fileversion, \filedate\space (CB)}
 %
 \edef\PstAtCode{\the\catcode`\@} \catcode`\@=11\relax
@@ -115,6 +115,8 @@
 \edef\pst@string@optexp@opened{opened}
 \edef\pst@string@optexp@basicname@default{tempNode@}
 \edef\pst@string@optexp@basicname@postfix{Intern}
+\edef\pst@string@detector@round{round}
+\edef\pst@string@detector@diode{diode}
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % psstyles
@@ -125,7 +127,7 @@
                 hatchsep=1.4\psk@optexp@mirror@linewidth,%
                 fillstyle=hlines}%
 \newpsstyle{PiezoMirror}{fillstyle=solid,fillcolor=black!30}%
-\newpsstyle{Beam}{linecolor=green!90!black}%
+\newpsstyle{Beam}{linecolor=green!90!black, linewidth=1.5\pslinewidth}%
 %
 \newpsstyle{Fiber}{linecolor=red}%
 \define@key[psset]{optexp}{newFiber}{\newpsstyle{Fiber}{#1}}
@@ -310,6 +312,9 @@
 %
 % Detector
 \define@key[psset]{optexp}{detsize}{\edef\psk@optexp@detector@size{#1}}
+\define@choicekey+[psset]{optexp}{dettype}[\val\nr]{round,diode}%
+   {\edef\psk@optexp@detector@type{\val}}
+   {\PackageError{pst-optexp}{Unknown value '\val' for key dettype}}
 %
 % Polarization
 \define@key[psset]{optexp}{polwidth}{%
@@ -338,6 +343,9 @@
 % Prism
 \define@key[psset]{optexp}{prismsize}{\edef\psk@optexp@prism@size{#1}}
 \define@key[psset]{optexp}{prismangle}{\edef\psk@optexp@prism@angle{#1}}
+%
+% Dove Prism
+\define@key[psset]{optexp}{doveprismsize}{\edef\psk@optexp@doveprism@size{#1}}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 % Parameters for fiber-optical components
@@ -395,6 +403,8 @@
 %
 % Code for the extnode parameter (additional input node)
 %
+\define@key[psset]{optexp}{extnoden@me}{\edef\psk@optexp@extnode@name{#1}}
+%
 % (this part was copied and adapted from \psset@@ref from pstricks.tex)
 \define@key[psset]{optexp}{extnode}{%
    \edef\psk@optexp@extnode{#1}
@@ -420,7 +430,7 @@
 \def\getref@optexp@l{\def\psk@optexp@xref{-1}}
 \def\getref@optexp@r{\def\psk@optexp@xref{1}}
 %
-\define@key[psset]{optexp}{extnodename}{\edef\psk@optexp@extnode@name{#1}}
+\define@key[psset]{optexp}{extnodepostfix}{\edef\psk@optexp@extnode@postfix{#1}}
 %
 %
 %
@@ -429,7 +439,7 @@
 % THIS IS THE COMPLETE AND NEW CODE FOR ALL CONNECTIONS %%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-\define@key[psset]{optexp}{basicname}{%
+\define@key[psset]{optexp}{b@sicname}{%
    \edef\pst@temp{#1}%
    \ifx\pst@temp\@empty
       \edef\psk@optexp@basicname{\pst@string@optexp@basicname@default}
@@ -440,7 +450,8 @@
 \let\pst@optexp@complist\@empty
 \define@key[psset]{optexp}{compname}{%
    \edef\psk@optexp@compname{#1}
-   \psset{basicname=#1}
+   \psset{b@sicname=#1}
+   \psset{extnoden@me=#1\psk@optexp@extnode@postfix}
    % check if compname was already defined
    \ifx\psk@optexp@compname\@empty\else
       \@expandtwoargs\in@{,#1,}{,\pst@optexp@complist,}%
@@ -483,11 +494,11 @@
 \def\psoe@cs@out@o{\psline[style=Beam](\optexp@nodeB)(\pst@string@optexp@basicname@default B)}%
 \def\psoe@cs@in@f{%
 %   \psline[style=FiberOut](\psk@optexp@basicname A)(\optexp@nodeA)
-   \pccurve[angleA=180, angleB=0, style=FiberIn](\psk@optexp@basicname A)(\optexp@nodeA)
+   \pccurve[angleA=0, angleB=180, style=FiberIn](\psk@optexp@basicname A)(\optexp@nodeA)
 }%
 \def\psoe@cs@out@f{%
 %   \psline[style=FiberOut](\optexp@nodeB)(\psk@optexp@basicname B)
-   \pccurve[angleA=180, angleB=0, style=FiberOut](\optexp@nodeB)(\psk@optexp@basicname B)
+   \pccurve[angleA=0, angleB=180, style=FiberOut](\optexp@nodeB)(\psk@optexp@basicname B)
 }%
 \def\psoe@cs@in@i{%
    \def\pst@par{style=Beam}
@@ -975,9 +986,13 @@
       tx@NodeDict a known tx@NodeDict b known and dup {
         /NodeA a load def /NodeB b load def
         NodeA GetCenter NodeB GetCenter % xA yA xB yB
-        4 copy pop exch pop le % xA xB
-          { /yB ED /xB ED /yA ED /xA ED }
-          { /yA ED /xA ED /yB ED /xB ED } ifelse
+        4 copy exch 4 -1 roll 2 copy gt % yA yB xB xA
+%        4 copy pop exch pop le % xA xB
+          { pop pop pop pop /yB ED /xB ED /yA ED /xA ED }
+          { eq 3 1 roll lt and 
+              { /yB ED /xB ED /yA ED /xA ED} 
+              { /yA ED /xA ED /yB ED /xB ED} ifelse
+          } ifelse
       } if >%
       % 
       \ncline[linestyle=none,fillstyle=none,npos=]{tempNode@A}{tempNode@B}%
@@ -1136,6 +1151,7 @@
         ,platewidth=0.1
 % detector
         ,detsize=0.5
+        ,dettype=round
 % polarization
         ,poltype=parallel
         ,polsize=0.6
@@ -1143,12 +1159,14 @@
 % optdiode
         ,optdiodesize=0.8
 % pentaprism
-        ,pentaprismsize=1
+        ,pentaprismsize=0.7
 % rightangleprism
-        ,raprismsize=1
+        ,raprismsize=1.5
 % optprism
         ,prismsize=1
-        ,prismangle=45
+        ,prismangle=60
+% doveprism
+        ,doveprismsize=0.8
 % label
         ,labeloffset=0.8
         ,labelangle=0
@@ -1158,8 +1176,9 @@
         ,ref@angle=0
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % fiber optics
+        ,extnodepostfix=ExtNode
+        ,compname=\@empty
         ,extnode=\@empty
-        ,extnodename=Ext
         ,fiberloops=3
         ,fiberloopradius=0.4
         ,fiberloopsep=0.6
@@ -1178,7 +1197,6 @@
         ,switchstyle=opened
         ,fdlsize=0.5
         ,conn=-
-        ,compname=\@empty
 }%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
@@ -1201,16 +1219,18 @@
        \psset{position=1}%
     \fi%
     % 
-    % linestyle to use, if component should be marked as optional
-    \ifPst@optexp@component@optional
-      \psset{style=OptionalStyle}
-    \fi
     \ncline[linestyle=none,fillstyle=none,npos=]{tempNode@A}{tempNode@B}%
     % 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
     % 
     % Positioning of the component
     % 
+    \begingroup
+    % 
+    % linestyle to use, if component should be marked as optional
+    \ifPst@optexp@component@optional
+      \psset{style=OptionalStyle}
+    \fi
     % if parameter 'position' is given, use it for 'npos'
     \ifx\psk@optexp@position\@empty
     % 
@@ -1223,6 +1243,7 @@
     \else
        \ncput[nrot=:U,npos=\psk@optexp@position]{\put@Comp{\@@comp}}
     \fi
+    \endgroup
     %
     % Now put the label
     \put@Label{#1}%
@@ -1314,7 +1335,7 @@
                     (! \@m@wd 2 div \@m@wd 2 div)%
                     (! \@m@wd 4 div \@m@wd)%
         \else
-           \pst@Verb{/@@y0 \@m@wd 2.5 div}
+           \pst@Verb{/@@y0 \@m@wd 2.5 div def }%
         \fi
      \else\ifx\psk@optexp@mirror@type\pst@string@mirror@type@extended%
         % 
@@ -1712,14 +1733,26 @@
 % DETECTOR
 %
 \def\optdetector@iii{%
-   \pnode(! \psk@optexp@detector@size\space 3 div 0){tempNode@Label}%
    \pnode(tempNode@B){\optexp@nodeA}
-   \begin@ClosedObj
-      % I could have use pswedge but then a correction of the component size
-      % depending on the current linewidth is not possible
-      \addto@pscode{CLW 0.5 mul 0 \psk@optexp@detector@size\space\pst@number\psrunit mul CLW sub -90 90 arc closepath }%
-   \end@ClosedObj
-   \pst@Verb{/@@x0 \psk@optexp@detector@size\space def}%
+   \ifx\psk@optexp@detector@type\pst@string@detector@round
+      \pnode(! \psk@optexp@detector@size\space 3 div 0){tempNode@Label}%
+      \begin@ClosedObj
+         % I could have use pswedge but then a correction of the component size
+         % depending on the current linewidth is not possible
+         \addto@pscode{CLW 0.5 mul 0 \psk@optexp@detector@size\space\pst@number\psrunit mul CLW sub -90 90 arc closepath }%
+      \end@ClosedObj
+      \pst@Verb{/@@x0 \psk@optexp@detector@size\space def}%
+   \else
+      \edef\@sz{\psk@optexp@detector@size\space}%
+      \psframe[dimen=outer](! 0 \@sz neg)(!\@sz 2 mul \@sz)
+      \pspolygon(! \@sz 0.6 mul \@sz -0.5 mul)
+             (! \@sz 1.6 mul \@sz -0.5 mul)
+             (! \@sz 1.05 mul \@sz 0.5 mul)
+      \psline(! \@sz 0.6 mul \@sz 0.5 mul)(! \@sz 1.6 mul \@sz 0.5 mul)
+      \psline{->}(! \@sz 0.2 mul \@sz 0.6 mul)(! \@sz 0.6 mul \@sz 0.3 mul)
+      \psline{->}(! \@sz 0.2 mul \@sz 0.3 mul)(! \@sz 0.6 mul 0)
+      \psline{->}(! \@sz 0.2 mul 0)(! \@sz 0.6 mul \@sz -0.3 mul)
+   \fi
 \ignorespaces}%
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1740,10 +1773,10 @@
 \def\optdiode@iii{%
    \edef\@sz{\psk@optexp@diode@size\space}%
    \psframe[dimen=outer](! \@sz -0.5 mul dup)(!\@sz 0.5 mul dup)
-   \pspolygon(! \@sz -0.2 mul \@sz -0.25 mul)
-             (! \@sz -0.2 mul \@sz 0.25 mul)
+   \pspolygon(! \@sz -0.2 mul \@sz -0.2 mul)
+             (! \@sz -0.2 mul \@sz 0.2 mul)
              (! \@sz 0.2 mul 0)
-   \psline(! \@sz 0.2 mul \@sz 0.25 mul)(! \@sz 0.2 mul \@sz -0.25 mul)
+   \psline(! \@sz 0.2 mul \@sz 0.2 mul)(! \@sz 0.2 mul \@sz -0.2 mul)
    \pnode(! \@sz -0.5 mul 0){\optexp@nodeA}
    \pnode(! \@sz 0.5 mul 0){\optexp@nodeB}
 \ignorespaces}%
@@ -1753,14 +1786,15 @@
 % DOVE PRISM
 %
 \def\doveprism@iii{%
-   \edef\@sz{0.5\space}%
-   \pspolygon(! \@sz neg \@sz -0.6 mul)
-             (! \@sz \@sz -0.6 mul)
-             (! \@sz 0.6 mul \@sz 0.6 mul)
-             (! \@sz -0.6 mul \@sz 0.6 mul)
-   \pnode(!\@sz -0.8 mul 0){\optexp@nodeA}
-   \pnode(! 0 \@sz -0.6 mul){\optexp@node{2}}
-   \pnode(!\@sz 0.8 mul 0){\optexp@nodeB}
+   \edef\@ht{\psk@optexp@doveprism@size\space 0.5 mul\space}%
+   \edef\@wd{\psk@optexp@doveprism@size\space 0.9 mul\space}%
+   \pspolygon(! \@wd neg \@ht neg)
+             (! \@wd \@ht neg)
+             (! \@ht dup)
+             (! \@ht neg \@ht)
+   \pnode(!\@wd \@ht add -0.5 mul 0){\optexp@nodeA}
+   \pnode(! 0 \@ht neg){\optexp@node{2}}
+   \pnode(!\@wd \@ht add 0.5 mul 0){\optexp@nodeB}
 \ignorespaces}%
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1768,7 +1802,7 @@
 % PENTA PRISM
 %
 \def\pentaprism@iii{%
-   \edef\@pp@size{\psk@optexp@pentaprism@size\space 0.5 mul\space}%
+   \edef\@pp@size{\psk@optexp@pentaprism@size\space}%
    \pscustom{%
       \psline(! \@pp@size 2 sqrt div 0)%
          (! \@pp@size 2 sqrt div 67.5 cos \@pp@size mul 67.5 sin div sub \@pp@size)%
@@ -1805,12 +1839,15 @@
 %
 \def\rightangleprism@iii{%
    % 
-   \pst@Verb{/prism@size \psk@optexp@raprism@size\space 0.5 mul def }%
-   \pspolygon(! prism@size neg \getCLW)
-             (! prism@size \getCLW)
-             (! 0 prism@size \getCLW 2 sqrt mul add)%
-   \pnode(! prism@size 2 sqrt div neg dup neg){\optexp@nodeA}
-   \pnode(! prism@size 2 sqrt div dup){\optexp@nodeB}
+   \pst@Verb{%
+      /prism@size \psk@optexp@raprism@size\space 0.5 mul def 
+      /h \pst@optexpdict OEangle 0.5 mul sin modA mul end def
+   }%
+   \pspolygon(! prism@size neg h \getCLW add prism@size sub)
+             (! prism@size h \getCLW add prism@size sub)
+             (! 0 h \getCLW 2 sqrt mul add)%
+   \pnode(! h neg 0){\optexp@nodeA}
+   \pnode(! h 0){\optexp@nodeB}
 }%
 %
 %

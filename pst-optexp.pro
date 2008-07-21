@@ -23,6 +23,7 @@ tx@OptexpDict begin
     /by exch YG sub def
     /bx exch XG sub def
     /a ax ay Pyth def
+    /modA a def % for external use
     /b bx by Pyth def
     /cx ax a div bx b div add def
     /cy ay a div by b div add def
