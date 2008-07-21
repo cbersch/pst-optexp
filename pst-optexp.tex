@@ -407,7 +407,7 @@
 %
 % (this part was copied and adapted from \psset@@ref from pstricks.tex)
 \define@key[psset]{optexp}{extnode}{%
-   \edef\psk@optexp@extnode{#1}
+   \edef\psk@optexp@extnode{#1}%
    \ifx\@empty\psk@optexp@extnode\else
       \pst@expandafter\psset@@extnode{#1}\@empty,,\@nil
    \fi
@@ -421,16 +421,16 @@
     \@nameuse{getref@optexp@#1}%
     \@nameuse{getref@optexp@#2}%
   \else
-    \pst@checknum{#1#2}\psk@optexp@xref
-    \pst@checknum{#3}\psk@optexp@yref
-  \fi}
-\def\getref@optexp@c{}
-\def\getref@optexp@t{\def\psk@optexp@yref{1}}
-\def\getref@optexp@b{\def\psk@optexp@yref{-1}}
-\def\getref@optexp@l{\def\psk@optexp@xref{-1}}
-\def\getref@optexp@r{\def\psk@optexp@xref{1}}
+    \pst@checknum{#1#2}\psk@optexp@xref%
+    \pst@checknum{#3}\psk@optexp@yref%
+  \fi}%
+\def\getref@optexp@c{}%
+\def\getref@optexp@t{\def\psk@optexp@yref{1}}%
+\def\getref@optexp@b{\def\psk@optexp@yref{-1}}%
+\def\getref@optexp@l{\def\psk@optexp@xref{-1}}%
+\def\getref@optexp@r{\def\psk@optexp@xref{1}}%
 %
-\define@key[psset]{optexp}{extnodepostfix}{\edef\psk@optexp@extnode@postfix{#1}}
+\define@key[psset]{optexp}{extnodepostfix}{\edef\psk@optexp@extnode@postfix{#1}}%
 %
 %
 %
@@ -441,38 +441,38 @@
 %
 \define@key[psset]{optexp}{b@sicname}{%
    \edef\pst@temp{#1}%
-   \ifx\pst@temp\@empty
-      \edef\psk@optexp@basicname{\pst@string@optexp@basicname@default}
-   \else
-      \edef\psk@optexp@basicname{#1\pst@string@optexp@basicname@postfix}
-   \fi
-}
-\let\pst@optexp@complist\@empty
+   \ifx\pst@temp\@empty%
+      \edef\psk@optexp@basicname{\pst@string@optexp@basicname@default}%
+   \else%
+      \edef\psk@optexp@basicname{#1\pst@string@optexp@basicname@postfix}%
+   \fi%
+}%
+\let\pst@optexp@complist\@empty%
 \define@key[psset]{optexp}{compname}{%
-   \edef\psk@optexp@compname{#1}
-   \psset{b@sicname=#1}
-   \psset{extnoden@me=#1\psk@optexp@extnode@postfix}
+   \edef\psk@optexp@compname{#1}%
+   \psset{b@sicname=#1}%
+   \psset{extnoden@me=#1\psk@optexp@extnode@postfix}%
    % check if compname was already defined
    \ifx\psk@optexp@compname\@empty\else
       \@expandtwoargs\in@{,#1,}{,\pst@optexp@complist,}%
       \ifin@
          \PackageWarning{pst-optexp}%
-            {^^Jcompname '#1' already used. Previously defined nodes will be overwritten!^^J}
+            {^^Jcompname '#1' already used. Previously defined nodes will be overwritten!^^J}%
       \else
          % Use definition of \XKV@addtolist@x with an \xdef instead of \edef in order
          % to keep the bookkeeping global
-         \xdef\pst@optexp@complist{\pst@optexp@complist\ifx\pst@optexp@complist\@empty\else,\fi#1}
+         \xdef\pst@optexp@complist{\pst@optexp@complist\ifx\pst@optexp@complist\@empty\else,\fi#1}%
          %\XKV@addtolist@x\pst@optexp@complist{#1}%
       \fi
    \fi
-}
+}%
 \define@key[psset]{optexp}{conn}{%
-   \edef\pst@tempg{#1}
+   \edef\pst@tempg{#1}%
    \expandafter\psset@@conn\pst@tempg\@empty-\@empty\@nil
    \if@pst\else
       \pstrickserr{Bad connection specification: #1}\@ehpa
    \fi
-}
+}%
 \def\psset@@conn#1-#2\@empty#3\@nil{%
   \@psttrue
   \def\next##1,#1-##2,##3\@nil{\def\pst@tempg{##2}}%
@@ -483,22 +483,22 @@
   \@ifundefined{psoe@cs@out@#2}%
     {\@pstfalse\def\psk@connOut{}}%
     {\def\psk@connOut{psoe@cs@out@#2}}%
-}
-\def\psk@connIn{}
-\def\psk@connOut{}
+}%
+\def\psk@connIn{}%
+\def\psk@connOut{}%
 % this is the conntable for the direct drawing of the connections
 \def\pst@optexp@conntable{,o-o,i-i,f-f}%
-\def\psoe@cs@out@{}
-\def\psoe@cs@in@{}
+\def\psoe@cs@out@{}%
+\def\psoe@cs@in@{}%
 \def\psoe@cs@in@o{\psline[style=Beam](\pst@string@optexp@basicname@default A)(\optexp@nodeA)}%
 \def\psoe@cs@out@o{\psline[style=Beam](\optexp@nodeB)(\pst@string@optexp@basicname@default B)}%
 \def\psoe@cs@in@f{%
 %   \psline[style=FiberOut](\psk@optexp@basicname A)(\optexp@nodeA)
-   \pccurve[angleA=0, angleB=180, style=FiberIn](\psk@optexp@basicname A)(\optexp@nodeA)
+   \pccurve[angleA=0, angleB=180, style=FiberIn](\psk@optexp@basicname A)(\optexp@nodeA)%
 }%
 \def\psoe@cs@out@f{%
 %   \psline[style=FiberOut](\optexp@nodeB)(\psk@optexp@basicname B)
-   \pccurve[angleA=0, angleB=180, style=FiberOut](\optexp@nodeB)(\psk@optexp@basicname B)
+   \pccurve[angleA=0, angleB=180, style=FiberOut](\optexp@nodeB)(\psk@optexp@basicname B)%
 }%
 \def\psoe@cs@in@i{%
    \def\pst@par{style=Beam}
@@ -528,35 +528,38 @@
 % 
 \def\drawbeam{%
    \def\conntable{,a-a,b-b,A-A,B-B}%
-   \psset{style=Beam}
-   \pst@object{drawbeam}%
+   \begingroup
+   \psset{style=Beam}%
+   \pst@object{drawbeam}
 }%
 \def\drawbeam@i#1#2{%
-   \def\pst@tempA{\pst@optexp@getfirstchar#1\@nil}
-   \def\pst@tempB{\pst@optexp@getfirstchar#2\@nil}
-   \begin@OpenObj
+   \def\pst@tempA{\pst@optexp@getfirstchar#1\@nil}%
+   \def\pst@tempB{\pst@optexp@getfirstchar#2\@nil}%
+   \begin@OpenObj%
    \if(\pst@tempB
       % second parameter is a node
       \pst@optexp@@getcoor#2
-      \def\psk@connOut{pst@coor}
+      \def\psk@connOut{pst@coor}%
    \else
       \pst@optexp@check@compname{#2}%
       \edef\psk@optexp@basicnameB{#2\pst@string@optexp@basicname@postfix}%
    \fi
    \if(\pst@tempA
-      % first parameter is a node
-      \pst@optexp@@getcoor#1
-      \def\psk@connIn{pst@coor}
+   %   % first parameter is a node
+      \pst@optexp@@getcoor#1%
+      \def\psk@connIn{pst@coor}%
    \else
       \pst@optexp@check@compname{#1}%
       \edef\psk@optexp@basicnameA{#1\pst@string@optexp@basicname@postfix}%
-   \fi   
+   \fi
    \let\psk@optexp@basicname\psk@optexp@basicnameB
-   \addto@pscode{[ \@nameuse{\psk@connOut} }%
+   \addto@pscode{[ \@nameuse{\psk@connOut}}%
    \let\psk@optexp@basicname\psk@optexp@basicnameA
-   \addto@pscode{\@nameuse{\psk@connIn} }%
+   \addto@pscode{\@nameuse{\psk@connIn}}%
    \psline@ii
-}%
+   \endgroup
+\ignorespaces}%
+%
 \def\pst@optexp@check@compname#1{%
    % check if 'compname' is defined
    \@expandtwoargs\in@{,#1,}{,\pst@optexp@complist,}%
@@ -567,7 +570,7 @@
 \def\pst@optexp@getfirstchar#1#2\@nil{#1}%
 \def\pst@optexp@@getcoor(#1){%
   \pst@@getcoor{#1}%
-}%
+\ignorespaces}%
 %
 % IN
 \def\psoe@cs@in@a{tx@NodeDict begin /N@\psk@optexp@basicname 1 load GetCenter end }%
@@ -615,12 +618,12 @@
    \begingroup
       \pst@OptexpVerb{InitOptexpComp}%
       \use@par
-}
+}%
 \def\end@OptexpObj{%
       \pst@OptexpVerb{(\pst@string@optexp@basicname@default) (\psk@optexp@basicname) CloseOptexpComp}%
   \endgroup
   \ignorespaces%
-}
+}%
 \def\addafter@par#1{%
   \ifx\pst@par\@empty
     \def\pst@par{#1}%
@@ -629,7 +632,7 @@
     \pst@toks\expandafter{\pst@par}%
     \edef\pst@par{\the\pst@toks,\the\toks@}%
   \fi%
-}
+}%
 \def\getCLWH{CLW \pst@number\psxunit 2 mul div\space}%
 \def\getCLW{CLW \pst@number\psxunit div\space}%
 %
@@ -1029,10 +1032,10 @@
 \newOptexpDipole{optretplate}{}%
 \newOptexpDipole[endbox]{optdetector}{}%
 \ifx\PSTcircLoaded\else
-   \newpsobject{detector}{optdetector}
+   \newpsobject{detector}{optdetector}%
 \fi
-\newOptexpDipole{optdiode}{}
-\newOptexpDipole{doveprism}{}
+\newOptexpDipole{optdiode}{}%
+\newOptexpDipole{doveprism}{}%
 %
 % TRIPOLES
 %
@@ -1745,9 +1748,9 @@
    \else
       \edef\@sz{\psk@optexp@detector@size\space}%
       \psframe[dimen=outer](! 0 \@sz neg)(!\@sz 2 mul \@sz)
-      \pspolygon(! \@sz 0.6 mul \@sz -0.5 mul)
-             (! \@sz 1.6 mul \@sz -0.5 mul)
-             (! \@sz 1.05 mul \@sz 0.5 mul)
+      \pspolygon(! \@sz 0.6 mul \@sz -0.5 mul)%
+             (! \@sz 1.6 mul \@sz -0.5 mul)%
+             (! \@sz 1.05 mul \@sz 0.5 mul)%
       \psline(! \@sz 0.6 mul \@sz 0.5 mul)(! \@sz 1.6 mul \@sz 0.5 mul)
       \psline{->}(! \@sz 0.2 mul \@sz 0.6 mul)(! \@sz 0.6 mul \@sz 0.3 mul)
       \psline{->}(! \@sz 0.2 mul \@sz 0.3 mul)(! \@sz 0.6 mul 0)
@@ -1788,10 +1791,10 @@
 \def\doveprism@iii{%
    \edef\@ht{\psk@optexp@doveprism@size\space 0.5 mul\space}%
    \edef\@wd{\psk@optexp@doveprism@size\space 0.9 mul\space}%
-   \pspolygon(! \@wd neg \@ht neg)
-             (! \@wd \@ht neg)
-             (! \@ht dup)
-             (! \@ht neg \@ht)
+   \pspolygon(! \@wd neg \@ht neg)%
+             (! \@wd \@ht neg)%
+             (! \@ht dup)%
+             (! \@ht neg \@ht)%
    \pnode(!\@wd \@ht add -0.5 mul 0){\optexp@nodeA}
    \pnode(! 0 \@ht neg){\optexp@node{2}}
    \pnode(!\@wd \@ht add 0.5 mul 0){\optexp@nodeB}
