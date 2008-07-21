@@ -404,8 +404,9 @@ changed using \parameter{newpsstyle} and \parameter{addtopsstyle}.
 
 The following example shows how this parameter can be used in some kinds
 of experimental setups using objects with internal reflections (here a
-penta prism). Instead of drawing the beam at the end with a psline, the
-beams are created with the \parameter{conn} parameter.
+penta prism). Instead of drawing the beam at the end with a \cs{psline},
+the beams are created at definition time of the object with
+the \parameter{conn} parameter.
 
 \begin{LTXexample}[width=4.5cm]
 \begin{pspicture}(4,6)\psgrid
@@ -423,11 +424,13 @@ beams are created with the \parameter{conn} parameter.
 
 \medskip
 
-This method works as long as no objects without internal beams are used
-in the setup. A possibility would be to create additional nodes, but
-this may be not very comfortable. Therefore \texttt{pst-optexp} provides
-a macro \cs{drawbeam} which connects two named objects. A named object
-is a \texttt{pst-optexp} element with a non-empty \parameter{compname}.
+This method works as long as no objects without internal beams or with
+internal reflections (e.g. a Dove prism, see Sec.~\ref{sec:doveprism})
+are used in the setup. A possibility would be to create additional
+nodes, but this may be not very comfortable. Therefore,
+\texttt{pst-optexp} provides a macro \cs{drawbeam} which connect a named
+objects with a node or another named object. A named object is a
+\texttt{pst-optexp} element with a non-empty \parameter{compname}.
 
 \medskip
 
@@ -437,17 +440,39 @@ is a \texttt{pst-optexp} element with a non-empty \parameter{compname}.
 
 \medskip
 
-The type of beam connection is again controlled by the
-parameter \parameter{conn}. Almost every optical object does not have distinguished
-inputs and outputs, but can be used in either directions. Therefore,
-it does not make sense to speak about `input` and `output` when
-referring to the object nodes, but rather about node A and node B. Consequently,
-the two letters of parameter \parameter{conn} can take the
-values \parameter{a}, \parameter{A}, \parameter{b} or \parameter{B}.
-
-
+\noindent If \parameter{<from>} or \parameter{<to>} is a node, it must be written
+including the round braces. A call
 
 \medskip
+
+\begin{lstlisting}
+\drawbeam{Obj}{(1;45)}
+\end{lstlisting}
+
+\medskip\noindent connects an named object \parameter{Obj} to a node.
+
+The type of beam connection is again controlled by the
+parameter \parameter{conn}. Almost every optical object does not have
+distinguished inputs and outputs and can be used in either
+directions. Therefore, it does not make sense to speak about `input` and
+`output` when referring to the object nodes, but rather about node A and
+node B. Consequently, the two letters of parameter \parameter{conn} can
+take the values \parameter{a}, \parameter{A}, \parameter{b}
+or \parameter{B} when used together with \cs{drawbeam}.
+
+The first letter in \parameter{conn} refers to the \parameter{<from>}
+object, the second one to the \parameter{<to>} object.
+
+\medskip
+
+\begin{LTXexample}[width=4.5cm]
+\begin{pspicture}(4,6)\psgrid
+  \doveprism[compname=Dove1](0,1)(3,1){Dove1}
+  \drawbeam[conn=b-]{Dove1}{(3,1)}
+  \doveprism[compname=Dove2](0,3)(3,3){Dove2}
+  \drawbeam[conn=B-]{Dove2}{(3,3)}
+\end{pspicture}
+\end{LTXexample}
 
 \begin{LTXexample}[width=4.5cm]
 \begin{pspicture}(4,6)\psgrid
@@ -1129,6 +1154,22 @@ sec.~\ref{sec:newobj}.
 
 \medskip
 
+\subsection{Fiber Collimator}
+
+\begin{description}
+\paramitem{fibcolsize}{<num>}{0.4}
+\end{description}
+
+\medskip
+
+\begin{LTXexample}[width=3.5cm]
+\begin{pspicture}(3,2)\psgrid
+   \fibercollimator(0.5,1)(2.5,1){FC}
+\end{pspicture}
+\end{LTXexample}
+
+\medskip
+
 \subsection{Coupler}\label{sec:coupler}
 \begin{description}
 \paramitem{couplersize}{<num>}{0.1}
@@ -1280,24 +1321,6 @@ Or if you need a coupler with a particular input angle you can do it be extendin
 \begin{pspicture}(3,2)\psgrid
    \newpsobject{mycoupler}{optcoupler}{addtoFiberIn2={angleA=90}, align=top}
    \mycoupler(0.5,1.5)(0.5,0.5)(2.5,1.5)(2.5,0.5){}
-\end{pspicture}
-\end{LTXexample}
-
-\medskip
-
-\section{Hybrid Objects}
-
-\subsection{Fiber Collimator}
-
-\begin{description}
-\paramitem{fibcolsize}{<num>}{0.4}
-\end{description}
-
-\medskip
-
-\begin{LTXexample}[width=3.5cm]
-\begin{pspicture}(3,2)\psgrid
-   \fibercollimator(0.5,1)(2.5,1){FC}
 \end{pspicture}
 \end{LTXexample}
 
