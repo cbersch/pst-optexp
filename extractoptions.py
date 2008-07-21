@@ -12,7 +12,7 @@ def compare(x, y):
         return 0
 
 doc=file('pst-optexp-doc.tex').read()
-pat=re.compile(r"\\item\[\\param\{(.*?)\}:\]\s*\\paramvalue\{(.*?)\}\s*\(\\defaultparam\{(.*?)\}\)")
+pat=re.compile(r"\\paramitem\{(.*?)\}\{(.*?)\}\{(.*?)\}\n")
 
 match=pat.findall(doc)
 match.sort(cmp=lambda x,y: cmp(x[0].lower(), y[0].lower()))
