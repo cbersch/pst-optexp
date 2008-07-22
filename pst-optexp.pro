@@ -130,8 +130,8 @@ tx@OptexpDict begin
 } bind def
 %
 /ExtNode {%
-    tx@Dict /@@x known {tx@Dict /@@x0 known {@@x0}{0} ifelse @xref @@x mul add}{0} ifelse 
-    tx@Dict /@@y known {tx@Dict /@@y0 known {@@y0}{0} ifelse @yref @@y mul add}{0} ifelse 
+    @@x0 @xref @@x mul add 
+    @@y0 @yref @@y mul add 
 } bind def
 % basicnodename reverse GetInternalNodeNames
 /GetInternalNodeNames {% def
