@@ -20,7 +20,7 @@
 \usepackage{array}
 \usepackage{longtable}
 \usepackage{booktabs}
-\usepackage{caption}[2008/04/01]
+\usepackage{caption}
 \usepackage[colorlinks,linktocpage]{hyperref}
 %
 % New commands
@@ -122,15 +122,9 @@ parameters explained in Sec.~\ref{sec:connecting}.
 \subsection{General Options}
 
 \begin{description}
-\paramitem{angle}{<degree>}{0}
 \paramitem{optional}{<boolean>}{false}
 \paramitem{showoptdots}{<boolean>}{false}
 \end{description}
-
-\noindent The parameter \parameter{angle} is available for the macros \cs{optbox}
-and \cs{crystal} only, as for the other cases it would make no
-sense. It tilts the object relative to the line defined by the two
-reference nodes. 
 
 \parameter{optional} can be used with every object and marks it as
 optional. The style of an optional element can be configured by changing
@@ -143,11 +137,10 @@ positioning, the red points mark the label references.
 \medskip
 
 \begin{LTXexample}[pos=t, vsep=0.8cm]
-\begin{pspicture}(12,2)\psgrid
+\begin{pspicture}[showgrid=true](8,2)
   \psset{beam}
-  \optbox[angle=10](0,1)(3,1){box}
-  \lens[optional](4,1)(7,1){L}
-  \mirror[showoptdots](8,1)(11,1)(11,0){mirror}
+  \lens[optional](0,1)(3,1){L}
+  \mirror[showoptdots](4,1)(7,1)(7,0){mirror}
 \end{pspicture}
 \end{LTXexample}
 
@@ -171,7 +164,7 @@ two reference nodes. Its value is given in psunits.
 \medskip
 
 \begin{LTXexample}[width=3.5cm]
-\begin{pspicture}(3,2)\psgrid 
+\begin{pspicture}[showgrid=true](3,2) 
   \lens[beam, position=0.8](0,1.2)(3,1.2){L}
 \end{pspicture}
 \end{LTXexample}
@@ -179,7 +172,7 @@ two reference nodes. Its value is given in psunits.
 \bigskip
 
 \begin{LTXexample}[width=3.5cm]
-\begin{pspicture}(3,1.4)\psgrid 
+\begin{pspicture}[showgrid=true](3,2) 
   \lens[beam, abspos=1](0,1.2)(3,1.2){L}
 \end{pspicture}
 \end{LTXexample}
@@ -275,7 +268,7 @@ Sec.~\ref{sec:mirror}).
 \bigskip
 
 \begin{LTXexample}[width=4.5cm]
-\begin{pspicture}(4,6)\psgrid 
+\begin{pspicture}[showgrid=true](4,6) 
    \psset{conn=o-o, labeloffset=0}
    \optbox[extnode=t](0,5.5)(4,5.5){\texttt{t}}
    \psdot(ExtNode)
@@ -376,7 +369,7 @@ changed using \parameter{newpsstyle} and \parameter{addtopsstyle}.
 \medskip
 
 \begin{LTXexample}[width=4.5cm]
-\begin{pspicture}(4,6)\psgrid
+\begin{pspicture}[showgrid=true](4,6)
   \addtopsstyle{Beam}{arrows=->, arrowscale=1.5}
   \psset{labeloffset=0.1, labelalign=t}
   \optbox[conn=o-](0,5)(4,5){\texttt{o-}}
@@ -390,7 +383,7 @@ changed using \parameter{newpsstyle} and \parameter{addtopsstyle}.
 \medskip
 
 \begin{LTXexample}[width=4.5cm]
-\begin{pspicture}(4,5)\psgrid
+\begin{pspicture}[showgrid=true](4,5)
   \addtopsstyle{Beam}{arrows=->, arrowscale=1.5}
   \psset{labeloffset=0}
   \doveprism[conn=o-](0,4)(4,4){\texttt{o-}}
@@ -409,7 +402,7 @@ the beams are created at definition time of the object with
 the \parameter{conn} parameter.
 
 \begin{LTXexample}[width=4.5cm]
-\begin{pspicture}(4,6)\psgrid
+\begin{pspicture}[showgrid=true](4,6)
    \pnode(1,1.5){A}\pnode(1,5){G}\pnode(3,5){B}
    \optbox[endbox, labelref=relative, labeloffset=0](G)(A){Laser}
    \lens[lens=0.5 0.5 0.5, abspos=0.5](A)(G){}
@@ -466,7 +459,7 @@ object, the second one to the \parameter{<to>} object.
 \medskip
 
 \begin{LTXexample}[width=4.5cm]
-\begin{pspicture}(4,6)\psgrid
+\begin{pspicture}[showgrid=true](4,6)
   \doveprism[compname=Dove1](0,1)(3,1){Dove1}
   \drawbeam[conn=b-]{Dove1}{(3,1)}
   \doveprism[compname=Dove2](0,3)(3,3){Dove2}
@@ -475,7 +468,7 @@ object, the second one to the \parameter{<to>} object.
 \end{LTXexample}
 
 \begin{LTXexample}[width=4.5cm]
-\begin{pspicture}(4,6)\psgrid
+\begin{pspicture}[showgrid=true](4,6)
    \pnode(1,1.5){A}\pnode(1,5){G}\pnode(3,5){B}
    \optbox[endbox, labelref=relative, labeloffset=0](G)(A){Laser}
    \lens[lens=0.5 0.5 0.5, abspos=0.5](A)(G){}
@@ -526,7 +519,7 @@ components and can be redefined using \cs{newpsstyle}.
 \medskip 
 
 \begin{LTXexample}[width=5.5cm]
-\begin{pspicture}(5,6)\psgrid
+\begin{pspicture}[showgrid=true](5,6)
   % concave lenses
   \pnode(0,5){A}\pnode(5,5){B}
   \psline[style=Beam](A)(B)
@@ -587,7 +580,7 @@ removed in future versions.
 \medskip
 
 \begin{LTXexample}[width=3.5cm]
-\begin{pspicture}(3,2)\psgrid
+\begin{pspicture}[showgrid=true](3,2)
   \optplate[beam](0,1.2)(3,1.2){filter}
 \end{pspicture}
 \end{LTXexample}
@@ -604,7 +597,7 @@ removed in future versions.
 \medskip
 
 \begin{LTXexample}[width=3.5cm]
-\begin{pspicture}(3,2)\psgrid
+\begin{pspicture}[showgrid=true](3,2)
   \pnode(0,1.2){A}
   \pnode(3,1.2){B}
   \optretplate[beam](A)(B){$\nicefrac{\lambda}{2}$}
@@ -624,7 +617,7 @@ removed in future versions.
 \medskip
 
 \begin{LTXexample}[width=3.5cm]
-\begin{pspicture}(3,2)\psgrid
+\begin{pspicture}[showgrid=true](3,2)
   \pnode(0,1.2){A}
   \pnode(3,1.2){B}
   \pinhole[beam](A)(B){PH}
@@ -643,12 +636,15 @@ removed in future versions.
 \paramitem{voltage}{<boolean>}{false}
 \paramitem{lamp}{<boolean>}{false}
 \paramitem{lampscale}{<num>}{0.3}
+\paramitem{angle}{<degree>}{0}
+\paramitem{rotateref}{<ref string>}{c}
 \end{description}
 
-\medskip
+\noindent For a discussion of the \parameter{angle} and \parameter{rotateref}
+parameters see Sec.~\ref{sec:box} about boxes.  \medskip
 
 \begin{LTXexample}[width=3.5cm]
-\begin{pspicture}(3,2)\psgrid
+\begin{pspicture}[showgrid=true](3,2)
   \pnode(0,1.2){A}
   \pnode(3,1.2){B}
   \crystal[crystalwidth=1.5, crystalheight=0.6, fillstyle=solid, fillcolor=yellow!90!black, labelangle=-45, labeloffset=1.2, voltage, lamp, beam](A)(B){SBN:Ce}
@@ -657,18 +653,21 @@ removed in future versions.
 
 \medskip
 
-\subsection{Box}
+\subsection{Box}\label{sec:box}
 
 \begin{description}
 \paramitem{optboxheight}{<num>}{0.5}
 \paramitem{optboxwidth}{<num>}{1}
 \paramitem{endbox}{<boolean>}{false}
+\paramitem{angle}{<degree>}{0}
+\paramitem{rotateref}{<ref string>}{c}
+\paramitem{refractiveindex}{<num>}{\{\}}
 \end{description}
 
 \medskip 
 
 \begin{LTXexample}[width=3.5cm]
-\begin{pspicture}(3,2)\psgrid
+\begin{pspicture}[showgrid=true](3,2)
   \optbox[beam](0,0)(3,2){box}
 \end{pspicture}
 \end{LTXexample}
@@ -676,7 +675,7 @@ removed in future versions.
 \bigskip
 
 \begin{LTXexample}[width=3.5cm]
-\begin{pspicture}(3,2)\psgrid
+\begin{pspicture}[showgrid=true](3,2)
   \optbox[beam, endbox](0,0)(1.7,1){box}
 \end{pspicture}
 \end{LTXexample}
@@ -684,10 +683,46 @@ removed in future versions.
 \bigskip
 
 \begin{LTXexample}[width=3.5cm]
-\begin{pspicture}(3,2)\psgrid
+\begin{pspicture}[showgrid=true](3,2)
   \pnode(0,0){A}
   \pnode(1.7,1){B}
   \optbox[beam, endbox, labelref=relative, labeloffset=0](A)(B){box}
+\end{pspicture}
+\end{LTXexample}
+
+\medskip
+
+\noindent The parameter \parameter{angle} describes the tilt of the box
+relative to the reference line defined by the two reference nodes. The
+reference point for the rotation can be defined
+with \parameter{rotateref} which can take any combination
+of \parameter{c}, \parameter{t}, \parameter{b}, \parameter{l}
+and \parameter{r} (compare with \parameter{extnode} in
+Sec.~\ref{sec:extnode}). Note, that all connection-related nodes are
+also rotate, while the label is not affected.
+
+\medskip
+
+\begin{LTXexample}[width=3.5cm]
+\begin{pspicture}[showgrid=true](3,2)
+  \optbox[angle=20, beam, rotateref=l, labeloffset=0.5](0,1)(3,1){box}
+\end{pspicture}
+\end{LTXexample}
+
+\medskip
+
+Together with the parameter \parameter{refractiveindex} this can be
+exploited to sketch the refraction through a tilted homogeneous medium.
+
+\medskip
+
+\begin{LTXexample}[width=3.5cm]
+\begin{pspicture}[showgrid=true](3,2)
+  \pnode(0,1){A}
+  \pnode(3,1){B}
+  \optbox[angle=20, rotateref=t, labeloffset=0.5, refractiveindex=2.3, compname=Box](A)(B){box}
+  \drawbeam[conn=-a]{(A|BoxIntern1)}{Box}
+  \drawbeam[conn=B-]{Box}{(B|BoxInternN)}
 \end{pspicture}
 \end{LTXexample}
 
@@ -703,7 +738,7 @@ removed in future versions.
 \medskip 
 
 \begin{LTXexample}[width=3.5cm]
-\begin{pspicture}(3,2)\psgrid
+\begin{pspicture}[showgrid=true](3,2)
   \pnode(0,0){A}
   \pnode(1.7,1){B}
   \optdetector[beam](A)(B){detector}
@@ -713,7 +748,7 @@ removed in future versions.
 \bigskip 
 
 \begin{LTXexample}[width=3.5cm]
-\begin{pspicture}(3,2)\psgrid
+\begin{pspicture}[showgrid=true](3,2)
   \pnode(0,0){A}
   \pnode(1.7,1){B}
   \optdetector[beam, dettype=diode](A)(B){detector}
@@ -731,7 +766,7 @@ removed in future versions.
 \medskip 
 
 \begin{LTXexample}[width=3.5cm]
-\begin{pspicture}(3,2)\psgrid
+\begin{pspicture}[showgrid=true](3,2)
    \optdiode[conn=o-o](0,1)(3,1){Diode}
 \end{pspicture}
 \end{LTXexample}
@@ -740,13 +775,13 @@ removed in future versions.
 
 \subsection{Dove Prism}\label{sec:doveprism}
 \begin{description}
-  \paramitem{doveprismsize}{<num>}{1}
+  \paramitem{doveprismsize}{<num>}{0.6}
 \end{description}
 
 \medskip
 
 \begin{LTXexample}[width=3.5cm]
-\begin{pspicture}(3,3)\psgrid
+\begin{pspicture}[showgrid=true](3,2)
   \doveprism[beam](0,1)(3,1){Dove}
 \end{pspicture}
 \end{LTXexample}
@@ -764,7 +799,7 @@ removed in future versions.
 \medskip
 
 \begin{LTXexample}[width=3.4cm]
-\begin{pspicture}(3,5)\psgrid
+\begin{pspicture}[showgrid=true](3,5)
   \pnode(0,0.5){A1}\pnode(3,0.5){B1}\pnode(0,1.5){A2}
   \pnode(3,1.5){B2}\pnode(0,2.5){A3}\pnode(3,2.5){B3}
   \pnode(0,3.5){A4}\pnode(3,3.5){B4}\pnode(0,4.5){A5}
@@ -792,7 +827,7 @@ removed in future versions.
 \paramitem{variable}{<num>}{false}
 \end{description}
 
-The parameter \texttt{mirrorradius} defines the curvature of the mirror. A
+\noindent The parameter \texttt{mirrorradius} defines the curvature of the mirror. A
 value of \texttt{0} is for a plain mirror, a negative radius is for a
 concave mirror and a positive radius gives you a convex mirror. The
 style of the extended mirror is defined as a
@@ -803,7 +838,7 @@ changed by adapting the psstyle \parameter{PiezoMirror}.
 \medskip
 
 \begin{LTXexample}[width=3.5cm]
-\begin{pspicture}(3,3)\psgrid
+\begin{pspicture}[showgrid=true](3,3)
   \pnode(0,0){A}
   \pnode(1.8,2.2){G}
   \pnode(0,3){B}
@@ -814,7 +849,7 @@ changed by adapting the psstyle \parameter{PiezoMirror}.
 \bigskip
 
 \begin{LTXexample}[width=3.5cm]
-\begin{pspicture}(3,3)\psgrid
+\begin{pspicture}[showgrid=true](3,3)
   \pnode(0,0){A}
   \pnode(1.8,2.2){G}
   \pnode(0,3){B}
@@ -825,7 +860,7 @@ changed by adapting the psstyle \parameter{PiezoMirror}.
 \bigskip
 
 \begin{LTXexample}[width=3.5cm]
-\begin{pspicture}(3,3)\psgrid
+\begin{pspicture}[showgrid=true](3,3)
   \pnode(0,0){A}
   \pnode(1.8,2.2){G}
   \pnode(0,3){B}
@@ -836,7 +871,7 @@ changed by adapting the psstyle \parameter{PiezoMirror}.
 \bigskip
 
 \begin{LTXexample}[width=3.5cm]
-\begin{pspicture}(3,3)\psgrid
+\begin{pspicture}[showgrid=true](3,3)
   \pnode(0,0){A}
   \pnode(1.8,2.2){G}
   \pnode(0,3){B}
@@ -845,7 +880,7 @@ changed by adapting the psstyle \parameter{PiezoMirror}.
 \end{LTXexample}
 
 \begin{LTXexample}[width=3.5cm]
-\begin{pspicture}(3,3)\psgrid
+\begin{pspicture}[showgrid=true](3,3)
   \pnode(0,0){A}\pnode(0.7,2){G1}
   \pnode(1.5,1){G2}\pnode(2,3){B}
   \psset{labeloffset=0.5}
@@ -866,7 +901,7 @@ changed by adapting the psstyle \parameter{PiezoMirror}.
 \medskip
 
 \begin{LTXexample}[width=3.5cm]
-\begin{pspicture}(3,3)\psgrid
+\begin{pspicture}[showgrid=true](3,3)
   \pnode(0,2){A}
   \pnode(2,2){G}
   \pnode(3,0){B}
@@ -892,7 +927,7 @@ changed by adapting the psstyle \parameter{PiezoMirror}.
 \medskip
 
 \begin{LTXexample}[width=3.5cm]
-\begin{pspicture}(3,3)\psgrid
+\begin{pspicture}[showgrid=true](3,3)
   \pnode(0,3){A}
   \pnode(1.8,2.2){G}
   \pnode(0,0){B}
@@ -904,7 +939,7 @@ changed by adapting the psstyle \parameter{PiezoMirror}.
 
 
 \begin{LTXexample}[width=3.5cm]
-\begin{pspicture}(3,3)\psgrid
+\begin{pspicture}[showgrid=true](3,3)
   \pnode(0,3){A}
   \pnode(1.8,2.2){G}
   \pnode(0,0){B}
@@ -915,7 +950,7 @@ changed by adapting the psstyle \parameter{PiezoMirror}.
 \bigskip
 
 \begin{LTXexample}[width=3.5cm]
-\begin{pspicture}(3,3)\psgrid
+\begin{pspicture}[showgrid=true](3,3)
   \pnode(0,3){A}
   \pnode(1.8,2.2){G}
   \pnode(0,0){B}
@@ -929,7 +964,7 @@ changed by adapting the psstyle \parameter{PiezoMirror}.
 \bigskip
 
 \begin{LTXexample}[width=3.5cm]
-\begin{pspicture}(3,3)\psgrid
+\begin{pspicture}[showgrid=true](3,3)
   \pnode(0,3){A}
   \pnode(1.8,2.2){G}
   \pnode(0,0){B}
@@ -948,7 +983,7 @@ changed by adapting the psstyle \parameter{PiezoMirror}.
 \medskip
 
 \begin{LTXexample}[width=3.5cm]
-\begin{pspicture}(3,3)\psgrid
+\begin{pspicture}[showgrid=true](3,3)
   \pnode(0,2.5){A}
   \pnode(2,2){G}
   \pnode(3,0){B}
@@ -966,10 +1001,10 @@ changed by adapting the psstyle \parameter{PiezoMirror}.
 \medskip
 
 \begin{LTXexample}[width=3.5cm]
-\begin{pspicture}(3,3)\psgrid
-  \pnode(0,2.3){A}
-  \pnode(1.8,2){G}
-  \pnode(0,1.7){B}
+\begin{pspicture}[showgrid=true](3,2)
+  \pnode(0,1.3){A}
+  \pnode(1.8,1){G}
+  \pnode(0,0.7){B}
   \rightangleprism[beam](A)(G)(B){RA}
 \end{pspicture}
 \end{LTXexample}
@@ -984,7 +1019,7 @@ changed by adapting the psstyle \parameter{PiezoMirror}.
 \medskip
 
 \begin{LTXexample}[width=3.5cm]
-\begin{pspicture}(3,3)\psgrid
+\begin{pspicture}[showgrid=true](3,3)
   \pnode(0,2.3){A}
   \pnode(2.3,2.3){G}
   \pnode(2.3,0){B}
@@ -1001,7 +1036,7 @@ you should define it as a new component. For details see
 sec.~\ref{sec:newobj}.
 
 \begin{LTXexample}[width=3.5cm]
-\begin{pspicture}(3,3)\psgrid
+\begin{pspicture}[showgrid=true](3,3)
   \pnode(0,2){A}
   \pnode(3,1){B}
   \optdipole[labeloffset=1](A)(B){%
@@ -1016,7 +1051,7 @@ sec.~\ref{sec:newobj}.
 \bigskip
 
 \begin{LTXexample}[width=3.5cm]
-\begin{pspicture}(3,3)\psgrid
+\begin{pspicture}[showgrid=true](3,3)
   \pnode(0,0){A}
   \pnode(1.5,2){G}
   \pnode(3,1.5){B}
@@ -1038,7 +1073,7 @@ sec.~\ref{sec:newobj}.
 \medskip
 
 \begin{LTXexample}[width=3.5cm]
-\begin{pspicture}(3,2)\psgrid
+\begin{pspicture}[showgrid=true](3,2)
   \optfiber(0,1)(3,1){SSMF}
 \end{pspicture}
 \end{LTXexample}
@@ -1053,7 +1088,7 @@ sec.~\ref{sec:newobj}.
 \medskip
 
 \begin{LTXexample}[width=3.5cm]
-\begin{pspicture}(3,2)\psgrid
+\begin{pspicture}[showgrid=true](3,2)
   \optamp(0,1)(3,1){EDFA}
 \end{pspicture}
 \end{LTXexample}
@@ -1068,7 +1103,7 @@ sec.~\ref{sec:newobj}.
 \medskip
 
 \begin{LTXexample}[width=3.5cm]
-\begin{pspicture}(3,2)\psgrid
+\begin{pspicture}[showgrid=true](3,2)
   \optmzm(0,1)(3,1){MZM}
 \end{pspicture}
 \end{LTXexample}
@@ -1084,7 +1119,7 @@ sec.~\ref{sec:newobj}.
 \medskip
 
 \begin{LTXexample}[width=3.5cm]
-\begin{pspicture}(3,2)\psgrid
+\begin{pspicture}[showgrid=true](3,2)
   \optfilter(0,1)(3,1){bandpass}
 \end{pspicture}
 \end{LTXexample}
@@ -1092,7 +1127,7 @@ sec.~\ref{sec:newobj}.
 \bigskip
 
 \begin{LTXexample}[width=3.5cm]
-\begin{pspicture}(3,2)\psgrid
+\begin{pspicture}[showgrid=true](3,2)
   \optfilter[filtertype=bandstop](0,1)(3,1){bandstop}
 \end{pspicture}
 \end{LTXexample}
@@ -1107,7 +1142,7 @@ sec.~\ref{sec:newobj}.
 \medskip
 
 \begin{LTXexample}[width=3.5cm]
-\begin{pspicture}(3,2)\psgrid
+\begin{pspicture}[showgrid=true](3,2)
   \polcontrol(0,1)(3,1){PC}
 \end{pspicture}
 \end{LTXexample}
@@ -1123,7 +1158,7 @@ sec.~\ref{sec:newobj}.
 \medskip
 
 \begin{LTXexample}[width=3.5cm]
-\begin{pspicture}(3,2)\psgrid
+\begin{pspicture}[showgrid=true](3,2)
   \optswitch(0,1)(3,1){Opened switch}
 \end{pspicture}
 \end{LTXexample}
@@ -1131,7 +1166,7 @@ sec.~\ref{sec:newobj}.
 \medskip
 
 \begin{LTXexample}[width=3.5cm]
-\begin{pspicture}(3,2)\psgrid
+\begin{pspicture}[showgrid=true](3,2)
   \optswitch[switchstyle=closed](0,1)(3,1){Closed switch}
 \end{pspicture}
 \end{LTXexample}
@@ -1147,7 +1182,7 @@ sec.~\ref{sec:newobj}.
 \medskip
 
 \begin{LTXexample}[width=3.5cm]
-\begin{pspicture}(3,2)\psgrid
+\begin{pspicture}[showgrid=true](3,2)
   \fiberdelayline(0,1)(3,1){Delay line}
 \end{pspicture}
 \end{LTXexample}
@@ -1163,7 +1198,7 @@ sec.~\ref{sec:newobj}.
 \medskip
 
 \begin{LTXexample}[width=3.5cm]
-\begin{pspicture}(3,2)\psgrid
+\begin{pspicture}[showgrid=true](3,2)
    \fibercollimator(0.5,1)(2.5,1){FC}
 \end{pspicture}
 \end{LTXexample}
@@ -1181,7 +1216,7 @@ sec.~\ref{sec:newobj}.
 \subsubsection{\texorpdfstring{$2\times 2$}{2x2} Coupler}
 
 \begin{LTXexample}[width=3.5cm]
-\begin{pspicture}(3,2)\psgrid
+\begin{pspicture}[showgrid=true](3,2)
   \optcoupler(0.5,2)(0,0.5)(3,1.5)(2.5,0){Coupler}
 \end{pspicture}
 \end{LTXexample}
@@ -1189,7 +1224,7 @@ sec.~\ref{sec:newobj}.
 \bigskip
 
 \begin{LTXexample}[width=3.5cm]
-\begin{pspicture}(3,2)\psgrid
+\begin{pspicture}[showgrid=true](3,2)
   \optcoupler[align=top](0.5,2)(0,0.5)(3,1.5)(2.5,0){Coupler}
 \end{pspicture}
 \end{LTXexample}
@@ -1197,7 +1232,7 @@ sec.~\ref{sec:newobj}.
 \bigskip
 
 \begin{LTXexample}[width=3.5cm]
-\begin{pspicture}(3,2)\psgrid
+\begin{pspicture}[showgrid=true](3,2)
   \optcoupler[align=bottom, couplertype=none](0.5,2)(0,0.5)(3,1.5)(2.5,0){Coupler}
 \end{pspicture}
 \end{LTXexample}
@@ -1207,7 +1242,7 @@ sec.~\ref{sec:newobj}.
 \subsubsection{WDM Coupler}
 
 \begin{LTXexample}[width=3.5cm]
-\begin{pspicture}(3,2)\psgrid
+\begin{pspicture}[showgrid=true](3,2)
   \wdmcoupler[align=bottom](0,1.5)(0,0.5)(3,0.5){WDM}
 \end{pspicture}
 \end{LTXexample}
@@ -1216,7 +1251,7 @@ sec.~\ref{sec:newobj}.
 
 \subsubsection{WDM Splitter}
 \begin{LTXexample}[width=3.5cm]
-\begin{pspicture}(3,2)\psgrid
+\begin{pspicture}[showgrid=true](3,2)
   \newpsstyle{FiberOut2}{style=Fiber, arrows=->}
   \wdmsplitter[align=top](0,1.5)(3,1.5)(3,0.5){}
 \end{pspicture}
@@ -1262,7 +1297,7 @@ one input (e.g. \cs{wdmsplitter}), \parameter{FiberIn} is used.
 \medskip
 
 \begin{LTXexample}[width=3.5cm]
-\begin{pspicture}(3,3)\psgrid
+\begin{pspicture}[showgrid=true](3,3)
    \addtopsstyle{FiberIn}{ArrowInside=->, arrowscale=1.2}
    \addtopsstyle{FiberOut2}{linecolor=blue}
    \optcoupler(0,2.5)(0,0.5)(3,2.5)(3,0.5){50~\%}
@@ -1305,7 +1340,7 @@ mark the output with an arrow:
 \medskip
 
 \begin{LTXexample}[width=3.5cm]
-\begin{pspicture}(3,2)\psgrid
+\begin{pspicture}[showgrid=true](3,2)
    \newpsobject{mywdmsplitter}{wdmsplitter}{addtoFiberOut1={arrows=->, arrowscale=1.3, linecolor=blue}, labelangle=180, align=bottom}
    \mywdmsplitter(0,0.5)(3,1.5)(3,0.5){blue band}
 \end{pspicture}
@@ -1318,7 +1353,7 @@ Or if you need a coupler with a particular input angle you can do it be extendin
 \medskip
 
 \begin{LTXexample}[width=3.5cm]
-\begin{pspicture}(3,2)\psgrid
+\begin{pspicture}[showgrid=true](3,2)
    \newpsobject{mycoupler}{optcoupler}{addtoFiberIn2={angleA=90}, align=top}
    \mycoupler(0.5,1.5)(0.5,0.5)(2.5,1.5)(2.5,0.5){}
 \end{pspicture}
@@ -1341,7 +1376,7 @@ Sec.~\ref{sec:crystal}.
 
 \begin{LTXexample}[width=3.5cm]
 \newpsobject{sbn}{crystal}{crystalwidth=1.5, crystalheight=0.6, voltage, lamp, labelangle=45, labeloffset=1.2, fillstyle=solid, fillcolor=yellow!90!black}
-\begin{pspicture}(3,2)\psgrid 
+\begin{pspicture}[showgrid=true](3,2) 
    \sbn(0,1)(3,1){SBN:Ce}
    \psline[style=Beam](0,1)(3,1)
 \end{pspicture}
@@ -1351,7 +1386,7 @@ Sec.~\ref{sec:crystal}.
 
 \begin{LTXexample}[width=3.5cm]
 \newpsobject{pumpcoupler}{wdmcoupler}{align=top, labelangle=180, addtoFiberIn2={ArrowInside=->, arrowscale=2}}
-\begin{pspicture}(3,2)\psgrid 
+\begin{pspicture}[showgrid=true](3,2) 
    \pumpcoupler(0,1)(0,0)(3,1){Pumpcoupler}
 \end{pspicture}
 \end{LTXexample}
@@ -1365,7 +1400,7 @@ If you need more than one type of lenses in your setup it is very cumbersome to 
 \begin{LTXexample}[width=5.5cm]
 \newpsobject{MOLensIn}{lens}{lens=0.5 0.5 0.5}
 \newpsobject{MOLensOut}{lens}{lens=1.5 1.5 1.5}
-\begin{pspicture}(5,2)\psgrid 
+\begin{pspicture}[showgrid=true](5,2) 
    \pnode(0,1){A}\pnode(5,1){B}
    \MOLensIn[abspos=0.5](A)(B){}
    \MOLensOut[abspos=1](A)(B){}
@@ -1419,7 +1454,7 @@ macro.
   \psgrid(-1,0)(1,1)
 }%
 \makeatother
-\begin{pspicture}(4,4)\psgrid 
+\begin{pspicture}[showgrid=true](4,4) 
    \pnode(0,1){A}\pnode(2,2){G}\pnode(3,0){B}
    \mygrid[gridcolor=red,labeloffset=1.5](A)(G)(B){myGrid}
    \psline[style=Beam](A)(G)(B)
