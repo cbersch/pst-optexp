@@ -8,11 +8,9 @@
 \usepackage{scrpage2}
 \usepackage{url}
 %
-\usepackage{pstricks}
 \usepackage{pst-optexp}
 \let\verPstOptExp\fileversion
 \let\datePstOptExp\filedate
-\usepackage{multicol}
 \usepackage{showexpl}
 \lstset{breakatwhitespace}
 \usepackage{nicefrac}
@@ -20,20 +18,34 @@
 \usepackage{array}
 \usepackage{longtable}
 \usepackage{booktabs}
+\usepackage{multicol}
+\usepackage{multirow}
+\usepackage{tabularx}
 \usepackage{caption}
+\usepackage{float}
 \usepackage[colorlinks,linktocpage]{hyperref}
+%
+\newfloat{LTXexampleFloat}{H}{expl}
+\floatname{LTXexampleFloat}{Listing}
 %
 % New commands
 %
 \DeclareRobustCommand\cs[1]{\texttt{\char`\\#1}}
 \newcommand{\OptExpPackage}{\textsf{`pst-optexp'}}
 \newcommand{\parameter}[1]{\texttt{#1}}
+\newcommand{\nodename}[1]{\emph{#1}}
 \let\param\textrm
 \newcommand{\paramvalue}[1]{\texttt{#1}}
 \newcommand{\defaultparam}[1]{\emph{default:} \paramvalue{#1}}
 \newcommand{\paramitem}[3]{\item[\param{#1}:] \paramvalue{#2} (\defaultparam{#3})}
+\newcommand{\styleitem}[2]{\item[\param{#1}:] \paramvalue{#2}}
+\newcommand{\styleshape}[1]{\texttt{#1}}
 \newcolumntype{T}{>{\ttfamily}l}
 \newcolumntype{B}{>{\bfseries}l}
+\newcommand{\refstringexplanation}[0]{%
+  A \paramvalue{<ref string>} is any combination of \paramvalue{c}
+  (center), \paramvalue{t} (top), \paramvalue{b} (bottom), \paramvalue{l}
+  (left), \paramvalue{r} (right)}
 %
 % Settings
 \setkomafont{sectioning}{\normalfont\normalcolor\bfseries}
@@ -52,21 +64,20 @@
 \ofoot{\pagemark}
 \pagestyle{scrheadings}
 
-\psset{subgriddiv=0,griddots=10,gridlabels=7pt}
-
+\psset{usefiberstyle=true}
+\addtopsstyle{Fiber}{linecolor=red}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{document}
  \title{\texttt{pst-optexp}\\ A PSTricks package to draw optical experimental setups}
  \author{Christoph Bersch \textless
    \href{mailto:usenet@bersch.net}{\texttt{usenet@bersch.net}}\textgreater}
  \date{\datePstOptExp\enspace\enspace Version \verPstOptExp}
-
 \maketitle
-
 \setlength{\columnseprule}{0.6pt}
 \begin{multicols}{2}
 {\parskip 0pt \tableofcontents}
 \end{multicols}
+
 \section{Introduction}
 The package \texttt{pst-optexp} is a collection of optical components
 that facilitate easy sketching of optical experimental
@@ -106,7 +117,7 @@ different possibilities are explained in Sec.~\ref{sec:connecting}.
 The fiber-optical objects can be classified as dipoles, tripoles and
 quadrupoles which have a corresponding number of fiber
 connections. Their handling differs in some aspects from the free-ray
-objects. The fiber optics are directly connected with the reference
+objects. The fiber optics are directly connected to the reference
 nodes. Every input and output fiber can be flexibly customized for each
 object (see Sec.~\ref{sec:styles}). Positioning of the fiber dipoles is
 handled equivalently to the free-ray dipoles. Tripoles and quadrupoles
@@ -124,11 +135,12 @@ parameters explained in Sec.~\ref{sec:connecting}.
 \begin{description}
 \paramitem{optional}{<boolean>}{false}
 \paramitem{showoptdots}{<boolean>}{false}
+\styleitem{OptionalStyle}{<psstyle>}
 \end{description}
 
 \parameter{optional} can be used with every object and marks it as
 optional. The style of an optional element can be configured by changing
-the psstyle \parameter{OptionalStyle}.
+the psstyle \styleshape{OptionalStyle}.
 
 \parameter{showoptdots} draws some internal nodes which are used to
 place the object and the label. The black points are used for
@@ -155,8 +167,8 @@ positioning, the red points mark the label references.
 
 \noindent\parameter{position} is equivalent to the \parameter{npos}
 parameter of \cs{ncput} (can be any number from 0 to 1) and controls the
-relative position of object between the two reference points. It it not
-available for the free-ray tripoles.
+relative position of object between the two reference points. It is only
+not available for the free-ray tripoles.
 
 The parameter \parameter{abspos} allows absolute positioning between the
 two reference nodes. Its value is given in psunits.
@@ -185,7 +197,7 @@ two reference nodes. Its value is given in psunits.
 \paramitem{labeloffset}{<num>}{0.8}
 \paramitem{labelangle}{<num>}{0}
 \paramitem{labelstyle}{<macro>}{\cs{small}}
-\paramitem{labelalign}{<\cs{rput} ref string>}{c}
+\paramitem{labelalign}{<ref string>\footnote{\refstringexplanation}}{c}
 \paramitem{labelref}{relative|relgrav|global}{relgrav}
 \end{description}
 
@@ -237,65 +249,110 @@ the following three examples.
 
 \medskip
 
+\subsection{Named Objects}\label{sec:namedobj}
+
+\begin{description}
+  \paramitem{compname}{<string>}{\{\}}
+\end{description}
+
+\noindent Every \texttt{pst-optexp} object of an experimental setup can
+be assigned a name that is unique within one pspicture environment. The
+name is defined with the parameter \parameter{compname} which is
+defineable only directly within a \texttt{pst-optexp} object: \medskip
+
+\begin{lstlisting}
+\optbox[compname=MyBox](A)(B){Box} % valid use of 'compname'
+\psset{compname=MyName}            % not valid, gives an error
+\end{lstlisting}
+
+\medskip
+
+\noindent With this naming mechanisms one can access some special nodes of the
+component at any time after its definition:
+
+\begin{table}[H]
+  \centering
+  \addtolength{\extrarowheight}{1.5mm}
+  \begin{tabularx}{.8\linewidth}{TX}
+    \toprule
+    \multicolumn{1}{l}{node name} & description\\
+    \midrule
+    <compname>ExtNode & Node for external connections (\emph{external node})\\
+    <compname>Intern1 & Node which should be connected to the first reference node. 
+       In the text we refer to this node as \emph{left outer node} \\
+    <compname>Intern2 & First internal node. As the nodes with higher numbers it 
+       is only available for objects with multiple internal beams (e.g. dove prism, 
+       see Sec.~\ref{sec:doveprism}). They are called \emph{internal nodes}.\\
+    \multicolumn{1}{c}{\vdots} & \\
+    <compname>InternN & Node which should be connected to the second reference node. 
+       In the text this node is referred to as \emph{right outer node}\\
+    \bottomrule
+  \end{tabularx}
+  \caption{Naming conventions for special nodes which are created by named objects and can be 
+    accessed by the user after definition of the object.}
+\end{table}
+
+If \parameter{compname} is empty, the external node has the name
+\nodename{ExtNode} and will be overwritten by any following object. The
+outer nodes are not accessible to the user and will also be overwritten
+by following object. The internal nodes are deleted after the object's
+definition.
+
+These named objects are used to create permanent external nodes (see
+Sec.~\ref{sec:extnode}) and to connect objects after their definition
+(see Sec.~\ref{sec:connecting}).
+
+
 \subsection{Nodes For External Usage}\label{sec:extnode}
 
 \begin{description}
-\paramitem{extnode}{<ref string>}{\{\}}
-\paramitem{extnodepostfix}{<string>}{ExtNode}
+\paramitem{extnode}{<ref string>\footnote{\refstringexplanation}}{\{\}}
 \end{description}
 
 \noindent Some of the objects can provide a supplementary node for additional
 connections. A laser diode may be connected for example to a frequency synthesizer
 (use package \texttt{pst-circ}) or a detector to a computer.
 
-\parameter{extnode} controls the position of the additional node. By
-default this parameter is empty (\texttt{\{\}}) and no node is
-created. Possible values are any combinations of \parameter{t}
-(top), \parameter{b} (bottom), \parameter{l} (left), \parameter{r}
-(right) and \parameter{c} (center).
+\parameter{extnode} controls the position of the additional node and
+takes a \paramvalue{<ref string>} as its argument. By default this
+parameter is empty (\paramvalue{\{\}}) and no node is created.
 
 The name of the new node depends on the \parameter{compname} parameter
-(see Sec.~\ref{sec:connecting}). It is composed by \parameter{compname}
-+ \parameter{extnodepostfix}, that is if \parameter{compname} is empty
-the new node is named \textit{ExtNode} by default and overwritten by
+(see Sec.~\ref{sec:namedobj} for naming conventions). If \parameter{compname} is empty
+the new node is named \nodename{ExtNode} by default and overwritten by
 following objects.
 
 Table.~\ref{tab:nodes} shows all objects which provide an external
-node. Some allow any combination for \parameter{extnode}, others have
+node. Some allow any possible \paramvalue{<ref string>} for \parameter{extnode}, others have
 only one reasonable possibility (e.g. piezo mirror, see
-Sec.~\ref{sec:mirror}).
+Sec.~\ref{sec:mirror}) which does not depend on the actual value of \parameter{extnode}.
 
 \bigskip
 
-\begin{LTXexample}[width=4.5cm]
-\begin{pspicture}[showgrid=true](4,6) 
-   \psset{conn=o-o, labeloffset=0}
-   \optbox[extnode=t](0,5.5)(4,5.5){\texttt{t}}
-   \psdot(ExtNode)
-   \optbox[extnode=tr](0,4.5)(4,4.5){\texttt{tr}}
-   \psdot(ExtNode)
-   \optbox[extnode=b](0,3.5)(4,3.5){\texttt{b}}
-   \psdot(ExtNode)
-   \optbox[extnode=bl](0,2.5)(4,2.5){\texttt{bl}}
-   \psdot(ExtNode)
-   \optbox[extnode=l](0,1.5)(4,1.5){\texttt{l}}
-   \psdot(ExtNode)
-   \optbox[extnode=r](0,0.5)(4,0.5){\texttt{r}}
-   \psdot(ExtNode)
+\begin{LTXexample}[pos=t, vsep=8mm]
+\begin{pspicture}[showgrid=true](11,3) 
+   \psset{conn=o-o, labelangle=-90, labeloffset=0.3}
+   \optbox[extnode=tl](0,2.5)(3,2.5){\texttt{tl}}\psdot(ExtNode)
+   \optbox[extnode=l](0,1.5)(3,1.5){\texttt{l}}\psdot(ExtNode)
+   \optbox[extnode=bl](0,0.5)(3,0.5){\texttt{bl}}\psdot(ExtNode)
+   \optbox[extnode=t](4,2.5)(7,2.5){\texttt{t}}\psdot(ExtNode)
+   \optbox[extnode=c](4,1.5)(7,1.5){\texttt{c}}\psdot(ExtNode)
+   \optbox[extnode=b](4,0.5)(7,0.5){\texttt{b}}\psdot(ExtNode)
+   \optbox[extnode=tr](8,2.5)(11,2.5){\texttt{tr}}\psdot(ExtNode)
+   \optbox[extnode=r](8,1.5)(11,1.5){\texttt{r}}\psdot(ExtNode)
+   \optbox[extnode=br](8,0.5)(11,0.5){\texttt{br}}\psdot(ExtNode)
 \end{pspicture}
 \end{LTXexample}
 
-\bigskip
-
-\noindent\begin{minipage}{\textwidth}
-  \centering
+\begin{table}[H]
+\centering
   \begin{tabular}{llc}
     \toprule
     Object & possible extnode positions &\\
     \midrule
     %
     \cs{optbox} & 
-    all (any combination of \texttt{t}, \texttt{r}, \texttt{l} and \texttt{b} &
+    all (any combination of \paramvalue{t}, \paramvalue{r}, \paramvalue{l} and \paramvalue{b}) &
     \begin{pspicture}[shift=-0.3](0,-0.4)(1,0.4)
        \psframe(0,-0.25)(1,0.25)
        \psdot(0,-0.25)\psdot(0.5,-0.25)\psdot(1,-0.25)
@@ -304,7 +361,7 @@ Sec.~\ref{sec:mirror}).
     \end{pspicture}\\
     %
     \cs{mirror} & 
-    one fix position (only for \parameter{mirrortype=piezo}) &
+    one fixed position (only for \parameter{mirrortype=piezo}) &
     \begin{pspicture}[shift=-0.3](1,0.8)
        \mirror[mirrortype=piezo,extnode=t](0,0.4)(0.5,0.4)(0.5,0){}\psdot(ExtNode)
     \end{pspicture}\\
@@ -312,7 +369,7 @@ Sec.~\ref{sec:mirror}).
     \cs{optdetector} & 
     one (for \parameter{dettype=round}) &
     \begin{pspicture}[shift=-0.3](1,0.8)
-       \optdetector[detsize=0.3, extnode=r](0,0.4)(0.5,0.4){}
+       \optdetector[detsize=0.6, extnode=r](0,0.4)(0.5,0.4){}
        \psdot(ExtNode)
     \end{pspicture}\\
     %
@@ -323,62 +380,74 @@ Sec.~\ref{sec:mirror}).
     \cs{fiberdelayline} & all & see \cs{optbox}\\
     \bottomrule
   \end{tabular}
-  \captionof{table}{The objects which may provide an external node when parameter
-    \texttt{extnode} is not empty. Some allow different positions of the
+  \caption{The objects which may provide an external node when parameter
+    \parameter{extnode} is not empty. Some allow different positions of the
     node and for some only a fixed node makes sense.}\label{tab:nodes}
-\end{minipage}
+\end{table}
 
 \subsection{Connecting Objects}\label{sec:connecting}
 
 \begin{description}
-\paramitem{compname}{<string>}{\{\}}
-\paramitem{conn}{i-i|o-o|f-f}{-}
+\paramitem{conn}{<conn definition>}{-}
 \item[\param{fiber}:] alias for \parameter{conn=f-f}
 \item[\param{beam}:] alias for \parameter{conn=o-i}
 \end{description}
 
 \noindent Simple experimental setups with a few objects can usually be
-realized by defining some nodes, arranging the object inbetween and
-drawing the beams at the end. If, however, objects with multiple
-internal reflections (all the prisms) or without visible internal beams
-(optical diode) are involved, this simple method is not applicable
-anymore.
+realized by defining some nodes, arranging the object in between and
+drawing the beams at the end. If, however, objects with changed internal
+optical path (all the prisms) or without visible internal beam (optical
+diode) are involved, this simple method is not applicable anymore.
 
 For this case several different possibilities of connecting objects are
-available: parameter{conn} specifies the kind of connections before and
-after the object. Its syntax is analogous to the PSTricks
-parameter \parameter{arrows}. By default it is set to \texttt{-} and no
-connections are drawn. 
+available: \parameter{conn} specifies the kind of connections in front of and
+behind the object. Its syntax is analogous to the PSTricks
+\parameter{arrows} parameter. By default it is set to \paramvalue{-} and no
+connections are drawn. Tab.~\ref{tab:conn} lists all possible values and
+their scope for the \paramvalue{<conn definition>}.
+
+\begin{table}\centering
+\addtolength{\extrarowheight}{1.5mm}
+\begin{tabularx}{0.8\textwidth}{TXl}
+  \toprule
+  \multicolumn{1}{l}{conn style} & description & scope\\
+  \midrule
+  i & Draw beam from the first reference node to its assigned outer node 
+      and then through all internal nodes and end at the other 
+      outer node. & \multirow{3}{*}{optexp objects}\\
+  o & Draw beam from the first reference node to its assigned outer node.  & \\
+  f & Draw fiber from the first reference node to its assigned outer node. & \\
+  \midrule
+  a & Left outer node & \multirow{4}{*}{\cs{drawbeam} macro}\\
+  A & Connect left outer node to all internal nodes and then to the right outer node & \\
+  b & Right outer node & \\
+  B & Connect right outer node to all internal nodes and then to the left outer node & \\
+  \bottomrule
+\end{tabularx}
+\caption{All possible values for the \paramvalue{<conn definition>}, their detailed description and scope.}\label{tab:conn}
+\end{table}
+
+The first letter (before the dash) in the \paramvalue{<conn definition>}
+refers to which object node the first reference node should be connected
+to, the second letter (after the dash) affects the connection from the
+object to the second reference node. Tab.~\ref{tab:conn} lists all
+possibilities for \parameter{conn} within an object: \paramvalue{f} draws
+a fiber connection and \paramvalue{o} a beam connection to the
+appropriate outer node. \paramvalue{i} draws a beam connection to the
+appropriate outer node and then through all internal nodes and end at
+the other outer node. The boolean parameter \parameter{beam} is an alias
+for \parameter{conn=o-i}. The beam style is controlled by the
+psstyle \styleshape{Beam} which can be changed
+using \cs{newpsstyle} and \cs{addtopsstyle}.
 
 All fiber-optical units define \parameter{conn=f-f} which means that
-input and output connections are \texttt{f}ibers (the boolean
-parameter \parameter{fiber} is an alias for \parameter{conn=f-f}). The
-other possibilities are \parameter{i} (inner node) and \parameter{o}
-(outer node). Their meaning should become clear looking at the next two
-code examples. The letter before the dash specifies the kind of
-connection from the first reference node to the
-object. A \parameter{conn=o-} connects the first reference node to the
-outer left node, a \parameter{conn=i-} connects the first reference node
-to the outer left node and then a line through all internal nodes up to
-the outer right node. Equivalently does \parameter{conn=-i}
-and \parameter{conn=-o} work for the second reference point. The boolean
-parameter \parameter{beam} is an alias for \parameter{conn=o-i}. The
-beam style is controlled by the psstyle \parameter{Beam} which can be
-changed using \parameter{newpsstyle} and \parameter{addtopsstyle}.
+input and output connections are \paramvalue{f}ibers. The boolean
+parameter \parameter{fiber} is an alias for \parameter{conn=f-f}. The
+fiber connection style can be changed by adapting the \styleshape{Fiber*}
+styles (see Sec.~\ref{sec:styles}).
 
-\medskip
-
-\begin{LTXexample}[width=4.5cm]
-\begin{pspicture}[showgrid=true](4,6)
-  \addtopsstyle{Beam}{arrows=->, arrowscale=1.5}
-  \psset{labeloffset=0.1, labelalign=t}
-  \optbox[conn=o-](0,5)(4,5){\texttt{o-}}
-  \optbox[conn=i-](0,4)(4,4){\texttt{i-}}
-  \optbox[conn=-o](0,3)(4,3){\texttt{-o}}
-  \optbox[conn=-i](0,2)(4,2){\texttt{-i}}
-  \optbox[conn=-f](0,1)(4,1){\texttt{-f}}
-\end{pspicture}
-\end{LTXexample}
+The way how to really use this kind of connections should become more
+clear after looking at the following examples in this section.
 
 \medskip
 
@@ -386,44 +455,46 @@ changed using \parameter{newpsstyle} and \parameter{addtopsstyle}.
 \begin{pspicture}[showgrid=true](4,5)
   \addtopsstyle{Beam}{arrows=->, arrowscale=1.5}
   \psset{labeloffset=0}
-  \doveprism[conn=o-](0,4)(4,4){\texttt{o-}}
-  \doveprism[conn=i-](0,3)(4,3){\texttt{i-}}
-  \doveprism[conn=-o](0,2)(4,2){\texttt{-o}}
-  \doveprism[conn=-i](0,1)(4,1){\texttt{-i}}
+  \doveprism[conn=o-](0,4.5)(4,4.5){\texttt{o-}}
+  \doveprism[conn=i-](0,3.5)(4,3.5){\texttt{i-}}
+  \doveprism[conn=-o](0,2.5)(4,2.5){\texttt{-o}}
+  \doveprism[conn=-i](0,1.5)(4,1.5){\texttt{-i}}
+  \optbox[conn=-f](0,0.5)(4,0.5){\texttt{-f}}
 \end{pspicture}
 \end{LTXexample}
 
 \medskip 
 
-The following example shows how this parameter can be used in some kinds
-of experimental setups using objects with internal reflections (here a
+The following example shows how this \parameter{conn} parameter can be used in some kinds
+of experimental setups using objects with changed internal optical path (here a
 penta prism). Instead of drawing the beam at the end with a \cs{psline},
-the beams are created at definition time of the object with
-the \parameter{conn} parameter.
+the beams are created at definition time of the respective object.
 
+\begin{LTXexampleFloat}
 \begin{LTXexample}[width=4.5cm]
-\begin{pspicture}[showgrid=true](4,6)
-   \pnode(1,1.5){A}\pnode(1,5){G}\pnode(3,5){B}
-   \optbox[endbox, labelref=relative, labeloffset=0](G)(A){Laser}
-   \lens[lens=0.5 0.5 0.5, abspos=0.5](A)(G){}
-   \pinhole[abspos=0.7](A)(G){}
-   \lens[lens=2, abspos=1](A)(G){}
-   \lens[abspos=2.5, labelangle=180](A)(G){L}
+\begin{pspicture}[showgrid=true](4,5)
+   \pnode(1,1){A}\pnode(1,4){G}\pnode(3,4){B}
+   \optbox[endbox, labelref=relative, labeloffset=0, optboxwidth=1](G)(A){Laser}
+   \lens[lens=0.5 0.5 0.5, abspos=0.3](A)(G){}
+   \pinhole[abspos=0.5](A)(G){}
+   \lens[lens=2, abspos=0.8](A)(G){}
+   \lens[abspos=2, labelangle=180](A)(G){L}
+   \optplate[abspos=1.5, labeloffset=1](A)(G){SLM}
    \lens[abspos=1](G)(B){L}
    \optbox[endbox, labeloffset=0, optboxwidth=1](G)(B){CCD}
    \pentaprism[beam, labeloffset=1](A)(G)(B){PP}
 \end{pspicture}
 \end{LTXexample}
+\caption{Code example on how to use the \parameter{conn} in experimental setups.\label{lst:conn}}
+\end{LTXexampleFloat}
 
-\medskip
-
-This method works as long as no objects without internal beams or with
-internal reflections (e.g. a Dove prism, see Sec.~\ref{sec:doveprism})
-are used in the setup. A possibility would be to create additional
-nodes, but this may be not very comfortable. Therefore,
-\texttt{pst-optexp} provides a macro \cs{drawbeam} which connect a named
-objects with a node or another named object. A named object is a
-\texttt{pst-optexp} element with a non-empty \parameter{compname}.
+This method works unless objects without internal beams (e.g. an optical
+diode, Sec.~\ref{sec:optdiode}) or with internal reflections (e.g. a
+Dove prism, Sec.~\ref{sec:doveprism}) are used in the straight light
+paths of the setup. One possibility would be to create additional nodes,
+but this may be not very comfortable. Therefore, \texttt{pst-optexp}
+provides a macro \cs{drawbeam} which connects a named object
+(Sec.~\ref{sec:namedobj}) to another named object or a node.
 
 \medskip
 
@@ -433,8 +504,8 @@ objects with a node or another named object. A named object is a
 
 \medskip
 
-\noindent If \parameter{<from>} or \parameter{<to>} is a node, it must be written
-including the round braces. A call
+\noindent If \paramvalue{<from>} or \paramvalue{<to>} is a node, it must be written
+including the round braces. The call
 
 \medskip
 
@@ -442,73 +513,92 @@ including the round braces. A call
 \drawbeam{Obj}{(1;45)}
 \end{lstlisting}
 
-\medskip\noindent connects an named object \parameter{Obj} to a node.
+\medskip\noindent connects the named object \nodename{Obj} to the node.
 
-The type of beam connection is again controlled by the
-parameter \parameter{conn}. Almost every optical object does not have
-distinguished inputs and outputs and can be used in either
-directions. Therefore, it does not make sense to speak about `input` and
-`output` when referring to the object nodes, but rather about node A and
-node B. Consequently, the two letters of parameter \parameter{conn} can
-take the values \parameter{a}, \parameter{A}, \parameter{b}
-or \parameter{B} when used together with \cs{drawbeam}.
-
-The first letter in \parameter{conn} refers to the \parameter{<from>}
-object, the second one to the \parameter{<to>} object.
+The type of beam connection which \cs{drawbeam} draws is again
+controlled by the parameter \parameter{conn}. Almost every optical
+object does not have distinguished inputs and outputs and can be used in
+either directions. Therefore, it does not make sense to speak about
+`input` and `output` when referring to the object nodes, but rather
+about node A (\nodename{left outer node}) and node B (\nodename{right outer
+  node}). Consequently, the two letters of parameter \parameter{conn}
+can take the values \paramvalue{a}, \paramvalue{A}, \paramvalue{b}
+or \paramvalue{B} when used together with \cs{drawbeam}. The detailed
+descriptions of the individual possibilities are listed in
+Tab.~\ref{tab:conn}. The letter before the dash in \parameter{conn}
+refers to the \paramvalue{<from>} object, the other one to
+the \paramvalue{<to>} object. Again, the next examples should clearify
+how to apply the \cs{drawbeam} macro together with the
+different \parameter{conn} settings.
 
 \medskip
 
 \begin{LTXexample}[width=4.5cm]
 \begin{pspicture}[showgrid=true](4,6)
-  \doveprism[compname=Dove1](0,1)(3,1){Dove1}
-  \drawbeam[conn=b-]{Dove1}{(3,1)}
-  \doveprism[compname=Dove2](0,3)(3,3){Dove2}
-  \drawbeam[conn=B-]{Dove2}{(3,3)}
+  \psset{labeloffset=0.6}
+  \addtopsstyle{Beam}{arrows=->, arrowscale=1.5}
+  \doveprism[compname=Dove1](0,0.8)(3,0.8){Dove1}
+  \drawbeam[conn=b-]{Dove1}{(3,0.8)}
+  \doveprism[compname=Dove2](0,2.3)(3,2.3){Dove2}
+  \drawbeam[conn=B-]{Dove2}{(3,2.3)}
+  \doveprism[compname=Dove3](0,3.8)(3,3.8){Dove3}
+  \drawbeam[conn=-a]{(0,3.8)}{Dove3}
+  \doveprism[compname=Dove4](0,5.3)(3,5.3){Dove4}
+  \drawbeam[conn=-A]{(0,5.3)}{Dove4}
 \end{pspicture}
 \end{LTXexample}
 
+\medskip
+
+With the help of the \cs{drawbeam} macro we can adapt
+Listing~\ref{lst:conn} to use an optical diode before the beam clearing
+and connect it to the other components. In order to illustrate the beams
+that are drawn by the different mechanisms, they are colorcoded in the
+resulting Listing~\ref{lst:conn2}: \emph{green} is the direct connecting
+of the optical diode, \emph{red} is the \cs{drawbeam} connection and
+\emph{blue} the direct connecting of the penta prism.
+
+\begin{LTXexampleFloat}
 \begin{LTXexample}[width=4.5cm]
 \begin{pspicture}[showgrid=true](4,6)
-   \pnode(1,1.5){A}\pnode(1,5){G}\pnode(3,5){B}
-   \optbox[endbox, labelref=relative, labeloffset=0](G)(A){Laser}
-   \lens[lens=0.5 0.5 0.5, abspos=0.5](A)(G){}
-   \pinhole[abspos=0.7](A)(G){}
-   \lens[lens=2, abspos=1](A)(G){}
-   \lens[abspos=2.5, labelangle=180](A)(G){L}
+   \pnode(1,1){A}\pnode(1,5){G}\pnode(3,5){B}
+   \optbox[endbox, labelref=relative, labeloffset=0, optboxwidth=1](G)(A){Laser}
+   \lens[lens=0.5 0.5 0.5, abspos=1.5](A)(G){}
+   \pinhole[abspos=1.7](A)(G){}
+   \lens[lens=2, abspos=2](A)(G){}
+   \lens[abspos=3, labelangle=180](A)(G){L}
+   \optplate[abspos=2.5, labeloffset=1](A)(G){SLM}
    \lens[abspos=1](G)(B){L}
-   \optdiode[abspos=1.8, conn=o-, compname=OD](A)(G){OD}
    \optbox[endbox, labeloffset=0, optboxwidth=1](G)(B){CCD}
+   \optdiode[abspos=0.8, conn=o-, compname=OD](A)(G){OD}
    \addtopsstyle{Beam}{linecolor=blue}
    \pentaprism[conn=-i, labeloffset=1, compname=PP](A)(G)(B){PP}
    \addtopsstyle{Beam}{linecolor=red}
    \drawbeam[conn=b-a]{OD}{PP}
 \end{pspicture}
 \end{LTXexample}
+\caption{More soffisticated code example which employs both connecting
+  methods. The beam connections are colorcoded: \emph{green} is the
+  direct connecting of the optical diode, \emph{red} is the
+  \cs{drawbeam} connection and \emph{blue} the direct connecting of the
+  penta prism.}\label{lst:conn2}
+\end{LTXexampleFloat}
 
 \newpage
 
 \section{Free-Ray Objects}
 
-In the sections \ref{sec:lens}--\ref{sec:custom} the
-available free-ray components with their parameters are described.
-
-In section \ref{sec:general} general parameters are described that are
-not proprietary to a specific unit but can be used for several different
-components. Finally, in section \ref{sec:labels} the options for the
-positioning of labels are explained.
-
-The appearence of all components can be changed with the corresponding
-standard PSTricks parameters such as \parameter{fillstyle}
-or \parameter{linestyle}. For some components changing only parts of the
-layout is possible (e.g. the extended part of mirrors). For those cases
-psstyles are provided that influence only the corresponing part of the
-components and can be redefined using \cs{newpsstyle}.
+The general appearance of all objects can be customized using the
+standard PSTricks parameter like \parameter{linewidth}
+or \parameter{fillstyle}. Some components allow changing a special part
+(e.g. for a piezo mirror) for which they use certain psstyles. For the
+automatic beam connections the \styleshape{Beam} style is used.
 
 \subsection{Lens}\label{sec:lens}
 
 \begin{description}
 \paramitem{lensheight}{<num>}{1}
-\paramitem{lenswidth}{<num>}{0.3}
+\paramitem{lenswidth}{<num>}{0.2}
 \paramitem{lensradius}{<num> [<num>]}{\{\}}
 \paramitem{lensradiusleft}{<num>}{1}
 \paramitem{lensradiusright}{<num>}{1}
@@ -551,14 +641,14 @@ value. Usually only \parameter{lensheight} and the two radii are used to
 construct the lens. The thickness (or width) is determined
 automatically. Manually controlling the thickness of the lens can be
 achived by setting \parameter{thicklens}
-to \parameter{true}. Then \parameter{lenswidth} is used as width of the lens at
+to \paramvalue{true}. Then \parameter{lenswidth} is used as width of the lens at
 its waist. Finally, the parameter \parameter{lens} allows the definition of
 all relevant lens parameters at once. It consists of one up to four
 space-separated numbers. The first one gives the left radius. If no
 further value is set, the right radius will be set to the same value and
 all other parameters are left unchanged. Using two numbers defines two
 different radii. The third optional value defines
-the \parameter{lensheight} and the fourth one the \parameter{lenswidth}
+the \parameter{lensheight} and the fourth one the \parameter{lenswidth}.
 
 \textbf{Compatibility:} The whole implementation of the lens was
 changed in version 1.2. It allows a much more flexible definition of different lens
@@ -629,8 +719,8 @@ removed in future versions.
 \subsection{Crystal}\label{sec:crystal}
 
 \begin{description}
-\paramitem{crystalwidth}{<num>}{2}
-\paramitem{crystalheight}{<num>}{0.8}
+\paramitem{crystalwidth}{<num>}{1.4}
+\paramitem{crystalheight}{<num>}{0.6}
 \paramitem{caxislength}{<num>}{0.6}
 \paramitem{caxisinv}{<boolean>}{false}
 \paramitem{voltage}{<boolean>}{false}
@@ -647,7 +737,7 @@ parameters see Sec.~\ref{sec:box} about boxes.  \medskip
 \begin{pspicture}[showgrid=true](3,2)
   \pnode(0,1.2){A}
   \pnode(3,1.2){B}
-  \crystal[crystalwidth=1.5, crystalheight=0.6, fillstyle=solid, fillcolor=yellow!90!black, labelangle=-45, labeloffset=1.2, voltage, lamp, beam](A)(B){SBN:Ce}
+  \crystal[fillstyle=solid, fillcolor=yellow!90!black, labelangle=-45, labeloffset=1.2, voltage, lamp, beam](A)(B){SBN:Ce}
 \end{pspicture}
 \end{LTXexample}
 
@@ -656,11 +746,11 @@ parameters see Sec.~\ref{sec:box} about boxes.  \medskip
 \subsection{Box}\label{sec:box}
 
 \begin{description}
-\paramitem{optboxheight}{<num>}{0.5}
-\paramitem{optboxwidth}{<num>}{1}
+\paramitem{optboxheight}{<num>}{0.8}
+\paramitem{optboxwidth}{<num>}{1.4}
 \paramitem{endbox}{<boolean>}{false}
 \paramitem{angle}{<degree>}{0}
-\paramitem{rotateref}{<ref string>}{c}
+\paramitem{rotateref}{<ref string>\footnote{\refstringexplanation}}{c}
 \paramitem{refractiveindex}{<num>}{\{\}}
 \end{description}
 
@@ -696,8 +786,8 @@ parameters see Sec.~\ref{sec:box} about boxes.  \medskip
 relative to the reference line defined by the two reference nodes. The
 reference point for the rotation can be defined
 with \parameter{rotateref} which can take any combination
-of \parameter{c}, \parameter{t}, \parameter{b}, \parameter{l}
-and \parameter{r} (compare with \parameter{extnode} in
+of \paramvalue{c}, \paramvalue{t}, \paramvalue{b}, \paramvalue{l}
+and \paramvalue{r} (compare with \parameter{extnode} in
 Sec.~\ref{sec:extnode}). Note, that all connection-related nodes are
 also rotate, while the label is not affected.
 
@@ -711,8 +801,12 @@ also rotate, while the label is not affected.
 
 \medskip
 
-Together with the parameter \parameter{refractiveindex} this can be
-exploited to sketch the refraction through a tilted homogeneous medium.
+\noindent Together with the parameter \parameter{refractiveindex} this
+can be exploited to sketch the refraction through a tilted homogeneous
+medium (e.g. a glass plate). Then, however, the reference nodes for the
+beam connection must be corrected which is rather easy using the outer
+nodes of the object as coordinate references and the \texttt{|} node
+operator.
 
 \medskip
 
@@ -720,7 +814,7 @@ exploited to sketch the refraction through a tilted homogeneous medium.
 \begin{pspicture}[showgrid=true](3,2)
   \pnode(0,1){A}
   \pnode(3,1){B}
-  \optbox[angle=20, rotateref=t, labeloffset=0.5, refractiveindex=2.3, compname=Box](A)(B){box}
+  \optbox[labeloffset=0.7, optboxwidth=0.5, optboxheight=1, angle=20, refractiveindex=2.3, compname=Box](A)(B){glass plate}
   \drawbeam[conn=-a]{(A|BoxIntern1)}{Box}
   \drawbeam[conn=B-]{Box}{(B|BoxInternN)}
 \end{pspicture}
@@ -731,7 +825,7 @@ exploited to sketch the refraction through a tilted homogeneous medium.
 \subsection{Detector}
 
 \begin{description}
-\paramitem{detsize}{<num>}{0.5}
+\paramitem{detsize}{<num>}{0.8}
 \paramitem{dettype}{round|diode}{round}
 \end{description}
 
@@ -823,17 +917,21 @@ exploited to sketch the refraction through a tilted homogeneous medium.
 \paramitem{mirrorradius}{<num>}{0}
 \paramitem{mirrorlinewidth}{<num>}{2\cs{pslinewidth}}
 \paramitem{mirrortype}{normal|piezo|extended}{normal}
-\paramitem{mirrordepth}{<num>}{0.08}
+\paramitem{mirrordepth}{<num>}{0.1}
 \paramitem{variable}{<num>}{false}
+\styleitem{ExtendedMirror}{<psstyle>}
+\styleitem{PiezoMirror}{<psstyle>}
 \end{description}
 
-\noindent The parameter \texttt{mirrorradius} defines the curvature of the mirror. A
-value of \texttt{0} is for a plain mirror, a negative radius is for a
-concave mirror and a positive radius gives you a convex mirror. The
-style of the extended mirror is defined as a
-psstyle \parameter{ExtendedMirror} and can be changed using
-\cs{newpsstyle}. The appearence of the piezo mirror likewise can be
-changed by adapting the psstyle \parameter{PiezoMirror}.
+\noindent The parameter \parameter{mirrorradius} defines the curvature
+of the mirror. A value of \paramvalue{0} is for a plain mirror, a
+negative radius is for a concave mirror and a positive radius gives you
+a convex mirror. The style of the extended mirror is defined as a
+psstyle \styleshape{ExtendedMirror} and can be changed using
+\cs{newpsstyle} or \cs{addtopsstyle}. The appearence of the piezo mirror
+likewise can be changed by adapting the psstyle
+\styleshape{PiezoMirror}. Note, when using \parameter{extnode} with a
+piezo mirror, the default piece of wire is omitted.
 
 \medskip
 
@@ -879,14 +977,16 @@ changed by adapting the psstyle \parameter{PiezoMirror}.
 \end{pspicture}
 \end{LTXexample}
 
+\bigskip
+
 \begin{LTXexample}[width=3.5cm]
 \begin{pspicture}[showgrid=true](3,3)
-  \pnode(0,0){A}\pnode(0.7,2){G1}
-  \pnode(1.5,1){G2}\pnode(2,3){B}
+  \pnode(0,0){A}\pnode(1,2){G1}
+  \pnode(1.8,1){G2}\pnode(2.5,3){B}
   \psset{labeloffset=0.5}
   \psline[style=Beam](A)(G1)(G2)(B)
-  \mirror[mirrortype=extended, mirrorradius=1](A)(G1)(G2){M$_v$}
-  \mirror[mirrorradius=-1](G1)(G2)(B){M$_x$}
+  \mirror[mirrortype=extended, mirrorradius=1](A)(G1)(G2){M$_{\mathrm{concave}}$}
+  \mirror[mirrorradius=-1](G1)(G2)(B){M$_{\mathrm{convex}}$}
 \end{pspicture}
 \end{LTXexample}
 
@@ -980,6 +1080,9 @@ changed by adapting the psstyle \parameter{PiezoMirror}.
   \paramitem{prismangle}{<num>}{60}
 \end{description}
 
+The prism has always a symmetric refraction independent of the beams and
+the \parameter{prismangle}.
+
 \medskip
 
 \begin{LTXexample}[width=3.5cm]
@@ -995,17 +1098,21 @@ changed by adapting the psstyle \parameter{PiezoMirror}.
 
 \subsection{Right-Angle Prism}\label{sec:raprism}
 \begin{description}
-  \paramitem{raprismsize}{<num>}{1}
+  \paramitem{raprismsize}{<num>}{1.5}
 \end{description}
+
+The right-angle prisms is constructed such that the two incoming beams
+are parallel and the middle reference node is vertically centered in the
+prism.
 
 \medskip
 
 \begin{LTXexample}[width=3.5cm]
 \begin{pspicture}[showgrid=true](3,2)
-  \pnode(0,1.3){A}
-  \pnode(1.8,1){G}
-  \pnode(0,0.7){B}
-  \rightangleprism[beam](A)(G)(B){RA}
+  \pnode(0,1.5){A}
+  \pnode(1.8,0.8){G}
+  \pnode(0,0.5){B}
+  \rightangleprism[beam, showoptdots](A)(G)(B){RA}
 \end{pspicture}
 \end{LTXexample}
 
@@ -1013,16 +1120,16 @@ changed by adapting the psstyle \parameter{PiezoMirror}.
 
 \subsection{Penta Prism}\label{sec:ppprism}
 \begin{description}
-  \paramitem{pentaprismsize}{<num>}{1}
+  \paramitem{pentaprismsize}{<num>}{0.7}
 \end{description}
 
 \medskip
 
 \begin{LTXexample}[width=3.5cm]
 \begin{pspicture}[showgrid=true](3,3)
-  \pnode(0,2.3){A}
-  \pnode(2.3,2.3){G}
-  \pnode(2.3,0){B}
+  \pnode(0,2){A}
+  \pnode(2,2){G}
+  \pnode(2,0){B}
   \pentaprism[beam](A)(G)(B){PP}
 \end{pspicture}
 \end{LTXexample}
@@ -1032,8 +1139,8 @@ changed by adapting the psstyle \parameter{PiezoMirror}.
 \subsection{Custom Components}\label{sec:custom}
 The macros \cs{optdipole} and \cs{opttripole} allow using everything as
 optical component. If you want to use a certain component several times,
-you should define it as a new component. For details see
-sec.~\ref{sec:newobj}.
+you should define it as a new component. For details on how to define
+your own components see Sec.~\ref{sec:newobj}.
 
 \begin{LTXexample}[width=3.5cm]
 \begin{pspicture}[showgrid=true](3,3)
@@ -1060,21 +1167,35 @@ sec.~\ref{sec:newobj}.
 \end{pspicture}
 \end{LTXexample}
 
-\newpage
+\medskip
 
 \section{Fiber-Optical Objects}
+
+\begin{description}
+\paramitem{usefiberstyle}{<boolean>}{false}
+\end{description}
+
+Fiber-optical objects are automatically connected to the reference
+nodes. The style of all fiber connections can be configured
+independently (see Sec.~\ref{sec:styles}).
+
+For some components it might me nice to highlight some
+internals. If \parameter{usefiberstyle} is enabled, for examples the
+passing parts of the optical filter are drawn with the \styleshape{Fiber}
+style. In the documentation this parameter is enabled to show the parts
+which would be highlighted.
 
 \subsection{Fiber}
 \begin{description}
 \paramitem{fiberloops}{<integer>}{3}
-\paramitem{fiberloopradius}{<num>}{0.3}
+\paramitem{fiberloopradius}{<num>}{0.4}
 \paramitem{fiberloopsep}{<num>}{0.3}
 \end{description}
 \medskip
 
 \begin{LTXexample}[width=3.5cm]
 \begin{pspicture}[showgrid=true](3,2)
-  \optfiber(0,1)(3,1){SSMF}
+  \optfiber[labeloffset=0.4](0,1)(3,1){SSMF}
 \end{pspicture}
 \end{LTXexample}
 
@@ -1136,7 +1257,7 @@ sec.~\ref{sec:newobj}.
 
 \subsection{Polarization Controller}
 \begin{description}
-\paramitem{polcontrolsize}{<num>}{0.1}
+\paramitem{polcontrolsize}{<num>}{0.15}
 \end{description}
 
 \medskip
@@ -1144,6 +1265,21 @@ sec.~\ref{sec:newobj}.
 \begin{LTXexample}[width=3.5cm]
 \begin{pspicture}[showgrid=true](3,2)
   \polcontrol(0,1)(3,1){PC}
+\end{pspicture}
+\end{LTXexample}
+
+\medskip
+
+\subsection{Isolator}
+\begin{description}
+\paramitem{isolatorsize}{<num>}{0.6}
+\end{description}
+
+\medskip
+
+\begin{LTXexample}[width=3.5cm]
+\begin{pspicture}[showgrid=true](3,2)
+  \optisolator(0,1)(3,1){}
 \end{pspicture}
 \end{LTXexample}
 
@@ -1192,8 +1328,10 @@ sec.~\ref{sec:newobj}.
 \subsection{Fiber Collimator}
 
 \begin{description}
-\paramitem{fibcolsize}{<num>}{0.4}
+\paramitem{fibercolsize}{<num>}{0.3}
 \end{description}
+
+The connection type for the fiber collimator is fixed to \parameter{conn=o-f}.
 
 \medskip
 
@@ -1207,13 +1345,15 @@ sec.~\ref{sec:newobj}.
 
 \subsection{Coupler}\label{sec:coupler}
 \begin{description}
-\paramitem{couplersize}{<num>}{0.1}
+\paramitem{couplersize}{<num>}{0.2}
 \paramitem{couplersep}{<num>}{0.1}
 \paramitem{couplertype}{none|elliptic}{elliptic}
+\paramitem{align}{top|bottom|center}{center}
 \end{description}
 
-\medskip
 \subsubsection{\texorpdfstring{$2\times 2$}{2x2} Coupler}
+
+\medskip 
 
 \begin{LTXexample}[width=3.5cm]
 \begin{pspicture}[showgrid=true](3,2)
@@ -1241,9 +1381,11 @@ sec.~\ref{sec:newobj}.
 
 \subsubsection{WDM Coupler}
 
+\medskip
+
 \begin{LTXexample}[width=3.5cm]
 \begin{pspicture}[showgrid=true](3,2)
-  \wdmcoupler[align=bottom](0,1.5)(0,0.5)(3,0.5){WDM}
+  \wdmcoupler[labeloffset=0.5](0,1.5)(0,0.5)(3,1){WDM}
 \end{pspicture}
 \end{LTXexample}
 
@@ -1253,7 +1395,7 @@ sec.~\ref{sec:newobj}.
 \begin{LTXexample}[width=3.5cm]
 \begin{pspicture}[showgrid=true](3,2)
   \newpsstyle{FiberOut2}{style=Fiber, arrows=->}
-  \wdmsplitter[align=top](0,1.5)(3,1.5)(3,0.5){}
+  \wdmsplitter[align=top, labeloffset=0.5](0,1.5)(3,1.5)(3,0.5){}
 \end{pspicture}
 \end{LTXexample}
 
@@ -1262,7 +1404,6 @@ sec.~\ref{sec:newobj}.
 \subsection{Fiber Styles}\label{sec:styles}
 
 \begin{description}
-\paramitem{usefiberstyle}{<boolean>}{true}
 \paramitem{Fiber}{<psstyle>}{linecolor=red}
 \paramitem{FiberIn}{<psstyle>}{style=Fiber}
 \paramitem{FiberIn1}{<psstyle>}{style=FiberIn}
@@ -1273,26 +1414,29 @@ sec.~\ref{sec:newobj}.
 \end{description}
 
 All these psstyles control the appearence of the fiber parts before and
-after each components. The styles can be redefined with \cs{newpsstyle}
-or changed with \cs{addtopsstyle}.  For optical systems it is not
-possible to define a unique input and a unique output as most components
-can be used bidirectionally. Therefore, I refer to the input as the part
-from the first node to the component and to the output as the part from
-the component to the second node.
+after each object. The styles can be redefined with \cs{newpsstyle} or
+changed with \cs{addtopsstyle}.  For optical systems it is not possible
+to define a unique input and a unique output as most components can be
+used bidirectionally. Therefore, I refer to the input as the connections
+on the left of the object and to the output the ones on the right side.
 
-The basic style is \parameter{Fiber} which is the parent of all other
-styles. \parameter{FiberIn} inherits from \parameter{Fiber} and defines
-the style of the input fiber. Analogously \parameter{FiberOut} controls
+The basic style is \styleshape{Fiber} which is the parent of all other
+styles. \styleshape{FiberIn} inherits from \styleshape{Fiber} and defines
+the style of the input fiber. Analogously \styleshape{FiberOut} controls
 the style of the output fiber. If you want to change the input and
 output fiber styles you should use \cs{addtopsstyle} as then the
-inheritance from the parent style \parameter{Fiber} remains.
+inheritance from the parent style \styleshape{Fiber} remains.
 
-The other styles are used by the fiber couplers (\cs{optcoupler},
-\cs{wdmcoupler} and \cs{wdmsplitter}). \parameter{FiberIn1} affects the
-upper input fiber, \parameter{FiberIn2} the lower input
-fiber, \parameter{FiberOut1} the upper output fiber
-and \parameter{FiberOut2} the lower output fiber. If the object has only
-one input (e.g. \cs{wdmsplitter}), \parameter{FiberIn} is used.
+The other psstyles are used only by the various fiber couplers
+(\cs{optcoupler}, \cs{wdmcoupler} and
+\cs{wdmsplitter}). \styleshape{FiberIn1} affects the upper input fiber,
+\styleshape{FiberIn2} the lower input fiber, \styleshape{FiberOut1} the
+upper output fiber and \styleshape{FiberOut2} the lower output fiber. If
+the object has only one input (e.g. \cs{wdmsplitter}),
+\styleshape{FiberIn} is used. All fiber connections are drawn as
+\cs{pccurve} which means that also the curvature and the input and
+output angles of each connection can be changed as you will see in a
+following code example.
 
 \medskip
 
@@ -1359,7 +1503,7 @@ Or if you need a coupler with a particular input angle you can do it be extendin
 \end{pspicture}
 \end{LTXexample}
 
-\newpage
+\medskip
 
 \section{Defining New Objects}
 
@@ -1368,14 +1512,14 @@ Or if you need a coupler with a particular input angle you can do it be extendin
 The easiest way to define your own components is to use the
 \cs{newpsobject} macro. With this you can define a new component using
 predefined objects with a set of options. These options serve only as
-default values and can be overridden. The following examples defines a
-new object \cs{sbn} for the special crystal used in
-Sec.~\ref{sec:crystal}.
+default values and can be overridden when calling the macro. The
+following examples defines a new object \cs{sbn} for the special crystal
+used in Sec.~\ref{sec:crystal}.
 
 \medskip
 
 \begin{LTXexample}[width=3.5cm]
-\newpsobject{sbn}{crystal}{crystalwidth=1.5, crystalheight=0.6, voltage, lamp, labelangle=45, labeloffset=1.2, fillstyle=solid, fillcolor=yellow!90!black}
+\newpsobject{sbn}{crystal}{voltage, lamp, labelangle=45, labeloffset=1.2, fillstyle=solid, fillcolor=yellow!90!black}
 \begin{pspicture}[showgrid=true](3,2) 
    \sbn(0,1)(3,1){SBN:Ce}
    \psline[style=Beam](0,1)(3,1)
@@ -1385,7 +1529,7 @@ Sec.~\ref{sec:crystal}.
 \medskip
 
 \begin{LTXexample}[width=3.5cm]
-\newpsobject{pumpcoupler}{wdmcoupler}{align=top, labelangle=180, addtoFiberIn2={ArrowInside=->, arrowscale=2}}
+\newpsobject{pumpcoupler}{wdmcoupler}{align=top, labelangle=180, labeloffset=0.5,addtoFiberIn2={ArrowInside=->, arrowscale=2}}
 \begin{pspicture}[showgrid=true](3,2) 
    \pumpcoupler(0,1)(0,0)(3,1){Pumpcoupler}
 \end{pspicture}
@@ -1393,7 +1537,8 @@ Sec.~\ref{sec:crystal}.
 
 \medskip
 
-If you need more than one type of lenses in your setup it is very cumbersome to specify all parameters every time.
+Or if you need more than one type of lenses several times in your setup
+it is very cumbersome to specify all parameters every time.
 
 \medskip
 
@@ -1416,19 +1561,20 @@ If you need more than one type of lenses in your setup it is very cumbersome to 
 Since version 1.2 \texttt{pst-optexp} provides some high-level macros to
 allow very convenient definition of completely new components. The macro
 \cs{newOptexpDipole} generates all organizing code for a new free-ray
-component. All you have to do is to define a new "`drawing"' macro
+component. All you have to do is to define a new `drawing' macro
 \cs{mycomponent@iii} which contains all drawing code. Analogously
-\cs{newOptexpDipoleNolabel} defines a new free-ray object which takes no label
+\cs{newOptexpDipoleNolabel} defines a new free-ray object without label
 (like \cs{polarization}) and \cs{newOptexpTripole} defines a new
 reflective component. 
 
 New fiber-optical components can be defined using
 \cs{newOptexpFiberDipole}. This macro differs from its free-ray
 analogous only in that it presets \parameter{fiber} and hence directly
-connects the component with the nodes. The first node in the parameter
-list gets connected with a node \parameter{tempNode@A@}, the second node
-with a node \parameter{tempNode@B@}. These two internal nodes are preset
-to \parameter{(0,0)} and can be overwritten within the drawing macro.
+connects the component with its reference nodes. The first node in the
+parameter list gets connected with a node \nodename{tempNode@A@}, the
+second node with a node \nodename{tempNode@B@}. These two internal
+nodes are preset to \paramvalue{(0,0)} and can be overwritten within the
+drawing macro.
 
 The syntax of the macros is
 \begin{lstlisting}
@@ -1442,7 +1588,7 @@ which are taken as defaults for the new component. The optional argument
 allows setting of parameters which cannot be overridden later.
 
 This is illustrate a bit more in the next code snippet, which also shows
-how the coordinate system is handled withing the \cs{mycomponent@iii}
+how the coordinate system is handled within the \cs{mycomponent@iii}
 macro.
 
 \medskip
@@ -1464,7 +1610,7 @@ macro.
 
 The default position of the label reference point is (0,0). If you want
 to change this, you have to define a new pnode named
-\texttt{tempNode@Label} in the \cs{mycomponent@iii} macro.
+\nodename{tempNode@Label} in the \cs{mycomponent@iii} macro.
 
 If you create a new component, please send it to me then I can
 incorporate this in a new released version.
@@ -1581,19 +1727,119 @@ fibres in a recirculating loop"', Electron. Lett. 31 (\textbf{5}), 375
 
 \newpage
 
-\section{Complete List of Parameters}
+\section{Complete List of Parameters and Styles}
 \begin{longtable}{BTT}
 \toprule \multicolumn{1}{l}{parameter} & \multicolumn{1}{l}{values} & \multicolumn{1}{l}{default}\\\midrule\endhead
 \bottomrule\endfoot
-\input alphabetical-option-list
+abspos & <num> & \{\}\\
+addtoFiber\ldots & <parameter list> & \\
+newFiber\ldots & <parameter list> & \\
+align & top|bottom|center & center\\
+angle & <degree> & 0\\
+beam & \multicolumn{2}{l}{alias for \parameter{conn=o-i}}\\
+bssize & <num> & 0.8\\
+caxisinv & <boolean> & false\\
+caxislength & <num> & 0.6\\
+compname & <string> & \{\}\\
+conn & <conn definition> & -\\
+couplersep & <num> & 0.1\\
+couplersize & <num> & 0.2\\
+couplertype & none|elliptic & elliptic\\
+crystalheight & <num> & 0.6\\
+crystalwidth & <num> & 1.4\\
+detsize & <num> & 0.8\\
+dettype & round|diode & round\\
+doveprismsize & <num> & 0.6\\
+endbox & <boolean> & false\\
+extnode & <ref string>& \{\}\\
+fdlsize & <num> & 0.8\\
+fiber & \multicolumn{2}{l}{alias for \parameter{conn=f-f}}\\
+fibercolsize & <num> & 0.3\\
+fiberloopradius & <num> & 0.4\\
+fiberloops & <integer> & 3\\
+fiberloopsep & <num> & 0.3\\
+filtersize & <num> & 0.8\\
+filtertype & bandpass|bandstop & bandpass\\
+innerheight & <num> & 0.1\\
+isolatorsize & <num> & 0.6\\
+labelalign & <ref string> & c\\
+labelangle & <num> & 0\\
+labeloffset & <num> & 0.8\\
+labelref & relative|relgrav|global & relgrav\\
+labelstyle & <macro> & \cs{small}\\
+lamp & <boolean> & false\\
+lampscale & <num> & 0.3\\
+lens & <num> [<num> [<num> [<num>]]] & \{\}\\
+lensheight & <num> & 1\\
+lensradius & <num> [<num>] & \{\}\\
+lensradiusleft & <num> & 1\\
+lensradiusright & <num> & 1\\
+lenswidth & <num> & 0.2\\
+mirrordepth & <num> & 0.1\\
+mirrorlinewidth & <num> & 2\cs{pslinewidth}\\
+mirrorradius & <num> & 0\\
+mirrortype & normal|piezo|extended & normal\\
+mirrorwidth & <num> & 1\\
+optampsize & <num> & 0.8\\
+optboxheight & <num> & 0.8\\
+optboxwidth & <num> & 1.4\\
+optdiodesize & <num> & 0.8\\
+optgridcount & <integer> & 10\\
+optgriddepth & <num> & 0.05\\
+optgridheight & <num> & 0.1\\
+optgridlinewidth & <num> & 0.7\cs{pslinewidth}\\
+optgridtype & blazed|binary & blazed\\
+optgridwidth & <num> & 1\\
+optional & <boolean> & false\\
+optmzmsize & <num> & 0.8\\
+outerheight & <num> & 1\\
+pentaprismsize & <num> & 0.7\\
+phlinewidth & <num> & 2\cs{pslinewidth}\\
+plateheight & <num> & 1\\
+platelinewidth & <num> & 2\cs{pslinewidth}\\
+platewidth & <num> & 0.1\\
+polcontrolsize & <num> & 0.15\\
+pollinewidth & <num> & 0.7\cs{pslinewidth}\\
+polsize & <num> & 0.6\\
+poltype & parallel|perp|misc|lcirc|rcirc & parallel\\
+position & <num> & \{\}\\
+prismangle & <num> & 60\\
+prismsize & <num> & 1\\
+raprismsize & <num> & 1.5\\
+refractiveindex & <num> & \{\}\\
+reverse & <boolean> & false\\
+rotateref & <ref string> & c\\
+showoptdots & <boolean> & false\\
+switchsize & <num> & 0.8\\
+switchstyle & opened|closed & opened\\
+thicklens & <boolean> & false\\
+usefiberstyle & <boolean> & false\\
+variable & <num> & false\\
+voltage & <boolean> & false\\
 \end{longtable}
-\newpage
-\section{Todo}
 
-The next thing I will add are components with multiple internal
-reflections, as right-angle, penta and dove prisms. The code is almost
-ready, I just need to think a bit more about the best way to provide
-access to the nodes that are newly defined within the components.
+\begin{table}[H]
+\addtolength{\extrarowheight}{1.5mm}
+\begin{tabularx}{0.85\linewidth}{BX}
+\multicolumn{1}{l}{style} & \multicolumn{1}{l}{description}\\
+\midrule
+Beam           & All automatic free-ray connections are drawn using this style\\
+ExtendedMirror & Affects the additional part for \parameter{mirrortype=extended}\\
+Fiber          & Parent style for all fiber connections. For a detailed discussion see Sec.~\ref{sec:styles}\\
+FiberIn        & Left fiber style if only one connection to be drawn (inherits from \styleshape{Fiber})\\
+FiberIn1       & Upper left connection (used for couplers only, inherits from \styleshape{FiberIn})\\
+FiberIn2       & Lower left connection (used for couplers only, inherits from \styleshape{FiberIn})\\
+FiberOut       & Right fiber style if only one connection to be drawn (inherits from \styleshape{Fiber})\\
+FiberOut1      & Upper right connection (used for couplers only, inherits from \styleshape{FiberOut})\\
+FiberOut2      & Lower right connection (used for couplers only, inherits from \styleshape{FiberOut})\\
+OptionalStyle  & Used for objects with parameter \parameter{optional} set to \paramvalue{true}\\
+PiezoMirror    & Affects the additional part for \parameter{mirrortype=piezo}\\
+\bottomrule
+\end{tabularx}
+\caption{All defined psstyles and their description.}
+\end{table}
+
+\section{Todo}
 
 Drawing of extended beams with focusing and so on could be integrated to
 some extent in future versions. But as the topic is rather difficult if
@@ -1605,7 +1851,4 @@ could take very long until this feature will be implemented.
 
 I thank all the people of the PSTricks mailinglist for the continuous help, especially Herbert Voﬂ.
 
-\section{History}
-
-For the package history see file Changes that is distributed with the package.
 \end{document}

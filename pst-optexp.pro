@@ -1,6 +1,6 @@
 %
 % PostScript prologue for pst-optexp.tex.
-% version 0.2 2008-06-25 (cb)
+% version 0.2 2008-07-25 (cb)
 % For distribution, see pstricks.tex.
 %
 /tx@OptexpDict 20 dict def
@@ -121,12 +121,12 @@ tx@OptexpDict begin
     exch 3 1 roll add 2 div 3 1 roll add 2 div exch
 } bind def
 %
-/FiberQuadAngleB {%
+/FiberAngleB {%
     N@tempNode@A GetCenter N@tempNode@B GetCenter exch 3 1 roll sub 3 1 roll sub atan
 } bind def
 %
-/FiberQuadAngleA {%
-    FiberQuadAngleB 180 add
+/FiberAngleA {%
+    FiberAngleB 180 add
 } bind def
 %
 /ExtNode {%
@@ -163,6 +163,8 @@ tx@OptexpDict begin
 	/@@y 0 def
 	/@@x0 0 def
 	/@@y0 0 def
+        /@xref 0 def
+        /@yref 0 def
     end
 } bind def
 %
