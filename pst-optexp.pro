@@ -1,6 +1,6 @@
 %
 % PostScript prologue for pst-optexp.tex.
-% version 0.2 2008-07-25 (cb)
+% version 0.2 2008-07-27 (cb)
 % For distribution, see pstricks.tex.
 %
 /tx@OptexpDict 20 dict def
