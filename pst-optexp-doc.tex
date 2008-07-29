@@ -73,6 +73,7 @@
    \href{mailto:usenet@bersch.net}{\texttt{usenet@bersch.net}}\textgreater}
  \date{\datePstOptExp\enspace\enspace Version \verPstOptExp}
 \maketitle
+\pdfbookmark[1]{Table of Contents}{toc}
 \setlength{\columnseprule}{0.6pt}
 \begin{multicols}{2}
 {\parskip 0pt \tableofcontents}
@@ -125,7 +126,7 @@ can be found only as different coupler types. Their positioning
 mechanisms are a bit more involved and explained in
 Sec.~\ref{sec:coupler}.
 
-Some hybrid dipoles (laser, optbox, detector etc.) can be used both as
+Some hybrid dipoles (optbox, detector etc.) can be used both as
 fiber-optical or free-ray elements. The way they are treated regarding
 the connections to the reference points can be controlled by the
 parameters explained in Sec.~\ref{sec:connecting}.
@@ -485,7 +486,7 @@ the beams are created at definition time of the respective object.
    \pentaprism[beam, labeloffset=1](A)(G)(B){PP}
 \end{pspicture}
 \end{LTXexample}
-\caption{Code example on how to use the \parameter{conn} in experimental setups.\label{lst:conn}}
+\caption{Code example on how to use the \parameter{conn} parameter in experimental setups.}\label{lst:conn}
 \end{LTXexampleFloat}
 
 This method works unless objects without internal beams (e.g. an optical
@@ -531,24 +532,21 @@ the \paramvalue{<to>} object. Again, the next examples should clearify
 how to apply the \cs{drawbeam} macro together with the
 different \parameter{conn} settings.
 
-\medskip
-
-\begin{LTXexample}[width=4.5cm]
-\begin{pspicture}[showgrid=true](4,6)
-  \psset{labeloffset=0.6}
-  \addtopsstyle{Beam}{arrows=->, arrowscale=1.5}
-  \doveprism[compname=Dove1](0,0.8)(3,0.8){Dove1}
-  \drawbeam[conn=b-]{Dove1}{(3,0.8)}
-  \doveprism[compname=Dove2](0,2.3)(3,2.3){Dove2}
-  \drawbeam[conn=B-]{Dove2}{(3,2.3)}
-  \doveprism[compname=Dove3](0,3.8)(3,3.8){Dove3}
-  \drawbeam[conn=-a]{(0,3.8)}{Dove3}
-  \doveprism[compname=Dove4](0,5.3)(3,5.3){Dove4}
-  \drawbeam[conn=-A]{(0,5.3)}{Dove4}
-\end{pspicture}
-\end{LTXexample}
-
-\medskip
+\begin{LTXexampleFloat}
+  \begin{LTXexample}[width=4.5cm]
+    \begin{pspicture}[showgrid=true](4,6) \psset{labeloffset=0.6}
+      \addtopsstyle{Beam}{arrows=->, arrowscale=1.5}
+      \doveprism[compname=Dove1](0,0.8)(3,0.8){Dove1}
+      \drawbeam[conn=b-]{Dove1}{(3,0.8)}
+      \doveprism[compname=Dove2](0,2.3)(3,2.3){Dove2}
+      \drawbeam[conn=B-]{Dove2}{(3,2.3)}
+      \doveprism[compname=Dove3](0,3.8)(3,3.8){Dove3}
+      \drawbeam[conn=-a]{(0,3.8)}{Dove3}
+      \doveprism[compname=Dove4](0,5.3)(3,5.3){Dove4}
+      \drawbeam[conn=-A]{(0,5.3)}{Dove4}
+    \end{pspicture}
+  \end{LTXexample}
+\end{LTXexampleFloat}
 
 With the help of the \cs{drawbeam} macro we can adapt
 Listing~\ref{lst:conn} to use an optical diode before the beam clearing
@@ -829,7 +827,14 @@ operator.
 \paramitem{dettype}{round|diode}{round}
 \end{description}
 
-\medskip 
+With \texttt{pst-optexp} version 2.0 the name for the detector was
+changed to \cs{optdetector} as the package \texttt{pst-circ} also
+provides a \cs{detector} macro. For compatibility reasons the old
+\cs{detector} macro is available when \texttt{pst-circ} is not loaded
+before \texttt{pst-optexp}.
+
+
+  \medskip
 
 \begin{LTXexample}[width=3.5cm]
 \begin{pspicture}[showgrid=true](3,2)
@@ -1312,7 +1317,7 @@ which would be highlighted.
 \subsection{Fiber Delay Line}
 
 \begin{description}
-  \paramitem{fdlsize}{<num>}{0.8}
+  \paramitem{fdlsize}{<num>}{0.6}
 \end{description}
 
 \medskip
@@ -1618,22 +1623,20 @@ incorporate this in a new released version.
 \newpage
 
 \section{Examples}
-\psset{unit=1.2cm}
 \begin{LTXexample}[pos=t,vsep=8mm]
-\begin{pspicture}(0,0.2)(12,1.8)
-\pnode(0,1.2){Start}\pnode(11,1.2){CCD}
-\psline[linewidth=2\pslinewidth,style=Beam](Start)(CCD)
-\polarization[poltype=perp,position=0.1](Start)(CCD)
+\begin{pspicture}(0,0.2)(13,1.8)
+\addtopsstyle{Beam}{linewidth=2\pslinewidth}
+\pnode(1.4,1){Start}\pnode(11,1){CCD}
+\optbox[endbox, labeloffset=0](CCD)(Start){Laser}
+\optbox[endbox, labeloffset=0, beam](Start)(CCD){CCD}
+\polarization[poltype=perp, position=0.1](Start)(CCD)
 \optretplate[position=0.15](Start)(CCD){$\nicefrac{\lambda}{2}$}
-\lens[lensheight=0.5,
-      lensradius=0.5,
-      position=0.25](Start)(CCD){$L_1$}
+\lens[lens=0.5 0.5 0.5, position=0.25](Start)(CCD){$L_1$}
 \lens[position=0.5](Start)(CCD){$L_2$}
 \optplate[position=0.57, platelinewidth=3\pslinewidth](Start)(CCD){SLM}
-\optplate[position=0.63](Start)(CCD){PF}
+\optplate[position=0.63, labelangle=180](Start)(CCD){PF}
 \polarization[position=0.66](Start)(CCD)
 \lens[position=0.7](Start)(CCD){$L_3$}
-\optbox[endbox,labeloffset=0](Start)(CCD){CCD}
 \end{pspicture}
 \end{LTXexample}
 
@@ -1641,30 +1644,30 @@ incorporate this in a new released version.
 
 \begin{LTXexample}[pos=t,vsep=8mm]
 \begin{pspicture}(-4,-1)(3,3)
+  \addtopsstyle{Beam}{linewidth=2\pslinewidth, linecolor=red!90!black}
   \psset{labeloffset=0.5}
   \pnode(-2,0){LaserOut}
-  \pnode(0,0){Grid}
+  \pnode(0,0){Grat}
   \pnode(4;45){Out}
   \pnode(2.5;67.5){Mvar}
-  \psline[linewidth=2\pslinewidth,
-         linecolor=red!90!black](LaserOut)(Grid)(Out)\psline(Grid)(Mvar)
-  \optbox[endbox, optboxwidth=2, labeloffset=0](Grid)(LaserOut){diodelaser}
-  \optretplate[position=0.3, labeloffset=0.8](LaserOut)(Grid){$\nicefrac{\lambda}{4}$}
-  \optgrid(LaserOut)(Grid)(Out){grid}
-  \mirror[variable](Grid)(Mvar)(Grid){M$_\mathrm{var}$}
+  \optbox[endbox, optboxwidth=2, labeloffset=0](Grat)(LaserOut){diode laser}
+  \mirror[variable, conn=o-](Grid)(Mvar)(Grid){M$_\mathrm{var}$}
+  \optgrid[beam](LaserOut)(Grat)(Out){grating}
+  \optretplate[position=0.3, labeloffset=0.8](LaserOut)(Grat){$\nicefrac{\lambda}{4}$}
+  \rput[l](-3,2){Littman setup}
 \end{pspicture}
 \end{LTXexample}
 
-\begin{LTXexample}[pos=t,vsep=3mm]
+\begin{LTXexample}[pos=t,vsep=8mm]
 \begin{pspicture}(0,-0.4)(9,6)
+  \addtopsstyle{Beam}{linewidth=2\pslinewidth}
   \pnode(1.5,5){Laser}\pnode(4,5){PBS}\pnode(6.5,5){PBS2}
   \pnode(6.5,5.7){piezo}\pnode(4,2){BSFwd}\pnode(6.5,2){BSBwd}
   \pnode(2,2){BS4f}\pnode(2,0.5){M4f3}\pnode(8,2){M4f1}
   \pnode(8,0.5){M4f2}\pnode(1,2){CCD}
-  \psline[style=Beam,linewidth=2\pslinewidth]%
-         (Laser)(PBS2)(piezo)(BSBwd)(M4f1)(M4f2)(M4f3)(BS4f)(CCD)
-  \psline[style=Beam,linewidth=2\pslinewidth](PBS)(BSFwd)(BS4f)
-  \psset{mirrorwidth=0.6, plateheight=0.7, outerheight=0.7, labeloffset=0.7, labelstyle=\scriptsize, lensheight=0.8, lenswidth=0.2, bssize=0.5} 
+  \psline[style=Beam](Laser)(PBS2)(piezo)(BSBwd)(M4f1)(M4f2)(M4f3)(BS4f)(CCD)
+  \psline[style=Beam](PBS)(BSFwd)(BS4f)
+  \psset{mirrorwidth=0.6, plateheight=0.7, outerheight=0.7, labeloffset=0.7, labelstyle=\scriptsize, lens=1.2 1.2 0.8, bssize=0.5} 
   \optbox[endbox,optboxwidth=1.5, optboxheight=0.7,labeloffset=0]%
      (PBS)(Laser){\parbox{1.5cm}{\centering Nd:YAG\\ 532\,nm}}
   \lens[lensheight=0.5, position=0.2](Laser)(PBS){MO}
@@ -1680,56 +1683,80 @@ incorporate this in a new released version.
   \optretplate[abspos=0.5](PBS2)(piezo){$\nicefrac{\lambda}{4}$}
   \mirror[mirrortype=piezo,labelangle=90](PBS2)(piezo)(PBS2){PZ}
   \lens[position=0.8,labelangle=180](PBS2)(BSBwd){L}
+  \crystal[crystalwidth=1, crystalheight=0.5, voltage, lamp, fillstyle=solid, fillcolor=yellow!90!black, labeloffset=0.8, beam](BSFwd)(BSBwd){SBN:Ce}
   \beamsplitter(PBS)(BSFwd)(BSBwd){BS}
   \beamsplitter[labelangle=-90](PBS2)(BSBwd)(BSFwd){BS}
-  \crystal[crystalwidth=1, crystalheight=0.5, voltage, lamp, fillstyle=solid, fillcolor=yellow!90!black, labeloffset=0.8](BSFwd)(BSBwd){SBN:Ce}
   \mirror(BSBwd)(M4f1)(M4f2){M}\mirror(M4f1)(M4f2)(M4f3){M}
   \lens[labelangle=180](M4f2)(M4f3){L}\mirror(M4f2)(M4f3)(BS4f){M}
-  \beamsplitter(M4f3)(BS4f)(CCD){BS}\optbox[endbox,labeloffset=0](BS4f)(CCD){CCD}
+  \beamsplitter(M4f3)(BS4f)(CCD){BS}\optbox[endbox,labeloffset=0, optboxwidth=1](BS4f)(CCD){CCD}
   \lens[abspos=0.7](BS4f)(BSFwd){L}\lens[abspos=0.7](BSBwd)(M4f1){L}
-  \psline[style=Beam, linewidth=2\pslinewidth](BSFwd)(BSBwd)
-\end{pspicture}
-\end{LTXexample}
-
-The following schematic configuration of a recirculating loop was
-adapted from the publication N. Kikuchi, S. Sasaki and K. Sekine, "`10
-Gbit/s dispersion-compensated transmission over 2245~km conventional
-fibres in a recirculating loop"', Electron. Lett. 31 (\textbf{5}), 375
-(1995).
-
-\begin{LTXexample}[pos=t]
-\psset{unit=1cm}
-\begin{pspicture}(0.5,4)(13.2,10.5)
-  \laser[labeloffset=0](2.1,10)(2,10){LD}
-  \optmzm(2.1,10)(3.5,10){MZM}
-  \optamp(3.5,10)(4.5,10){EDFA}
-  \optfilter(4.5,10)(5.5,10){BPF}
-  \optswitch(5.5,10)(6.5,10){SW}
-  \polcontrol(6.5,10)(7.5,10){}
-  \optcoupler[couplertype=none,couplersep=0.2](7.5,10)(7.5,8)(9,10)(9,8){}
-  \optamp(9,10)(10.5,10){EDFA}
-  \optfilter(10.5,10)(12,10){BPF}
-  \optbox[endbox, labeloffset=0, conn=f-f](12,10)(12.1,10){RX}
-  % loop
-  \optamp(9,8)(11,8){EDFA}
-  \psline[linearc=1,style=Fiber](11,8)(12,8)(12,4.5)(11,4.5)
-  \optfiber[labelalign=b, labeloffset=-1, position=0.8](9,4.5)(11,4.5){\begin{tabular}{c}conventional\\fibre 89.8~km\end{tabular}}
-  \optamp(9,4.5)(8,4.5){EDFA}
-  \optfilter(8,4.5)(6.5,4.5){BPF}
-  \optfiber[fiberloops=1, labeloffset=-1, labelalign=b](4,4.5)(6.5,4.5){DCF 16.2~km}
-  \optamp(4,4.5)(2.5,4.5){EDFA}
-  \psline[style=Fiber,linearc=1](2.5,4.5)(1.5,4.5)(1.5,8)(2.5,8)
-  \optfilter(2.5,8)(4.5,8){BPF}
-  \optswitch(4.5,8)(6,8){SW}
-  \polcontrol(6,8)(7.5,8){}
 \end{pspicture}
 \end{LTXexample}
 
 \newpage
 
-\section{Complete List of Parameters and Styles}
+The following schematic configuration of a recirculating loop was
+adapted from the publication N. Kikuchi, S. Sasaki and K. Sekine, `10
+Gbit/s dispersion-compensated transmission over 2245~km conventional
+fibres in a recirculating loop', Electron. Lett. 31 (\textbf{5}), 375
+(1995).
+
+\psset{unit=0.8cm,labelstyle=\footnotesize}
+\begin{LTXexample}[pos=t]
+\begin{pspicture}(0.5,4)(13.2,10.5)
+  \addtopsstyle{Fiber}{linecolor=red!90!black}\psset{usefiberstyle, optboxwidth=1}
+  \pnode(2,10){LD}\pnode([Xnodesep=5.5]LD){CPLin1}
+  \pnode([offset=-2]CPLin1){CPLin2}\pnode([Xnodesep=1.5]CPLin1){CPLout1}
+  \pnode([Xnodesep=1.5]CPLin2){CPLout2}
+  \optbox[endbox, labeloffset=0, fiber]([Xnodesep=0.1]LD)(LD){LD}
+  \optmzm([Xnodesep=0.1]LD)([Xnodesep=1.5]LD){MZM}
+  \optamp([Xnodesep=1.5]LD)([Xnodesep=2.5]LD){EDFA}
+  \optfilter([Xnodesep=2.5]LD)([Xnodesep=3.5]LD){BPF}
+  \optswitch([Xnodesep=3.5]LD)([Xnodesep=4.5]LD){SW}
+  \polcontrol([Xnodesep=4.5]LD)(CPLin1){}
+  \optcoupler[couplertype=none](CPLin1)(CPLin2)(CPLout1)(CPLout2){}
+  \optamp(CPLout1)([Xnodesep=1.5]CPLout1){EDFA}
+  \optfilter([Xnodesep=1.5]CPLout1)([Xnodesep=3]CPLout1){BPF}
+  \optbox[endbox, labeloffset=0, conn=f-f]([Xnodesep=3]CPLout1)([Xnodesep=3.1]CPLout1){RX}
+  \pnode([Xnodesep=2]CPLout2){LoopRU}\pnode([offset=-3.5]LoopRU){LoopRL}
+  \pnode([Xnodesep=-5]CPLin2){LoopLU}\pnode([offset=-3.5]LoopLU){LoopLL}
+  \optamp(CPLout2)(LoopRU){EDFA}
+  \psline[linearc=1,style=Fiber](LoopRU)([Xnodesep=1]LoopRU)([Xnodesep=1,offset=-2]LoopRU)
+  \psline[linearc=1,style=Fiber]([Xnodesep=1,offset=1.5]LoopRL)%
+                                ([Xnodesep=1]LoopRL)(LoopRL)
+  \optfiber[labelalign=b, labeloffset=-1, position=0.8]([Xnodesep=-2]LoopRL)(LoopRL){\begin{tabular}{c}conventional\\fibre 89.8~km\end{tabular}}
+  \optamp([Xnodesep=-2]LoopRL)([Xnodesep=-3]LoopRL){EDFA}
+  \optfilter([Xnodesep=-3]LoopRL)([Xnodesep=-4.5]LoopRL){BPF}
+  \optfiber[fiberloops=1, labeloffset=-1, labelalign=b]([Xnodesep=-7]LoopRL)([Xnodesep=-4.5]LoopRL){DCF 16.2~km}
+  \optamp([Xnodesep=1.5]LoopLL)(LoopLL){EDFA}
+  \psline[style=Fiber,linearc=1](LoopLL)([Xnodesep=-1]LoopLL)%
+                                ([Xnodesep=-1,offset=3.5]LoopLL)(LoopLU)
+  \optfilter(LoopLU)([Xnodesep=1.5]LoopLU){BPF}
+  \optswitch([Xnodesep=1.5]LoopLU)([Xnodesep=3.5]LoopLU){SW}
+  \polcontrol([Xnodesep=3.5]LoopLU)(CPLin2){}
+\end{pspicture}
+\end{LTXexample}
+
+\psset{unit=1cm}
+\begin{LTXexample}[pos=t, vsep=8mm]
+\begin{pspicture}(8.5,1.6)
+    \addtopsstyle{Beam}{linecolor=green!90!black}
+    \pnode(1.6,1){Laser}
+    \pnode(7.6,1){Diode}
+    \optbox[endbox,labeloffset=0](Diode)(Laser){Laser}%
+    \optbox[abspos=4, optboxwidth=1, optboxheight=0.6, labeloffset=1, compname=PC, conn=o-, angle=-10, rotateref=l, refractiveindex=2.3](Laser)(Diode){Photonic Crystal}
+    \optdetector[dettype=diode, conn=o-](PCInternN)(Diode|PCInternN){PD}
+    \defShiftedNode(PCIntern1)(2;170){Angle1}
+    \psline[linestyle=dashed](PCIntern1)(Angle1)
+    \psarc{<->}(PCIntern1){1.3}{330}{30}
+    \psarc[arcsep=1pt]{<->}(PCIntern1){2}{170}{180}
+    \uput{2.1}[175](PCIntern1){\small $\varphi$}
+\end{pspicture}
+\end{LTXexample}
+
+\section{Complete List of Parameters}
 \begin{longtable}{BTT}
-\toprule \multicolumn{1}{l}{parameter} & \multicolumn{1}{l}{values} & \multicolumn{1}{l}{default}\\\midrule\endhead
+\toprule \multicolumn{1}{l}{parameter} & \multicolumn{1}{l}{allowed values} & \multicolumn{1}{l}{default}\\\midrule\endhead
 \bottomrule\endfoot
 abspos & <num> & \{\}\\
 addtoFiber\ldots & <parameter list> & \\
@@ -1752,7 +1779,7 @@ dettype & round|diode & round\\
 doveprismsize & <num> & 0.6\\
 endbox & <boolean> & false\\
 extnode & <ref string>& \{\}\\
-fdlsize & <num> & 0.8\\
+fdlsize & <num> & 0.6\\
 fiber & \multicolumn{2}{l}{alias for \parameter{conn=f-f}}\\
 fibercolsize & <num> & 0.3\\
 fiberloopradius & <num> & 0.4\\
@@ -1818,9 +1845,12 @@ variable & <num> & false\\
 voltage & <boolean> & false\\
 \end{longtable}
 
+\section{Complete List of Styles}
+
 \begin{table}[H]
 \addtolength{\extrarowheight}{1.5mm}
-\begin{tabularx}{0.85\linewidth}{BX}
+\begin{tabularx}{\linewidth}{BX}
+\toprule
 \multicolumn{1}{l}{style} & \multicolumn{1}{l}{description}\\
 \midrule
 Beam           & All automatic free-ray connections are drawn using this style\\
@@ -1836,17 +1866,24 @@ OptionalStyle  & Used for objects with parameter \parameter{optional} set to \pa
 PiezoMirror    & Affects the additional part for \parameter{mirrortype=piezo}\\
 \bottomrule
 \end{tabularx}
-\caption{All defined psstyles and their description.}
 \end{table}
+
+\section{Requirements}
+
+\texttt{pst-optexp} version 2.0 requires at least version 2.87 of
+\texttt{pstricks-add} and \LaTeX. It does not work with plain \TeX.
 
 \section{Todo}
 
-Drawing of extended beams with focusing and so on could be integrated to
+\begin{itemize}
+\item Automatic sizing of optboxes (like a \cs{psframebox}
+\item Even more soffisticated beam drawing (draw beam before object contours)
+\item Drawing of extended beams with focusing and so on could be integrated to
 some extent in future versions. But as the topic is rather difficult if
 you want to do it properly (components should be placed above the beam,
 but the new nodes are available only when the component is drawn) it
 could take very long until this feature will be implemented.
-
+\end{itemize}
 \section{Acknowledgements}
 
 I thank all the people of the PSTricks mailinglist for the continuous help, especially Herbert Voﬂ.
