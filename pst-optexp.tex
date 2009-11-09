@@ -26,8 +26,8 @@
 \let\PSToptexpLoaded\endinput
 %
 %
-\def\fileversion{2.1}
-\def\filedate{2009/11/05}
+\def\fileversion{2.2alpha}
+\def\filedate{2009/11/09}
 \message{`pst-optexp' v\fileversion, \filedate\space (CB)}
 %
 \edef\PstAtCode{\the\catcode`\@} \catcode`\@=11\relax
@@ -422,6 +422,11 @@
    {\PackageError{pst-optexp}{Unknown value '\val' for key couplertype}}
 \define@key[psset]{optexp}{align}{\edef\POK@align{#1}}
 %
+% Crossswitch
+\define@key[psset]{optexp}{crossswitchheight}{\edef\POK@crossswitch@height{#1}}
+\define@key[psset]{optexp}{crossswitchwidth}{\edef\POK@crossswitch@width{#1}}
+\define@key[psset]{optexp}{crossswitchsep}{\edef\POK@crossswitch@sep{#1}}
+%
 %
 \define@key[psset]{optexp}{compshift}{\edef\POK@comp@shift{#1}}
 %
@@ -664,6 +669,24 @@
 \def\optexp@nodeA{\POK@basicname 1}%
 \def\optexp@nodeB{\POK@basicname N}%
 \def\optexp@node#1{\POK@basicname #1}%
+\def\optexp@beamnodes#1#2#3#4#5{%
+   \pst@Verb{%
+      tx@NodeDict begin
+      #1 \pst@number\psxunit mul
+      #2 \pst@number\psyunit mul
+      #3 \pst@number\psxunit mul
+      #4 \pst@number\psyunit mul
+      \pst@optexpdict ExchCoorSwitch end
+      { % exchange coordinates
+        neg exch neg exch [ 3 1 roll ] cvx false /N@#5B 10 {InitPnode } NewNode
+        neg exch neg exch [ 3 1 roll ] cvx false /N@#5T 10 {InitPnode } NewNode
+      }{ 
+        [ 3 1 roll ] cvx false /N@#5B 10 {InitPnode } NewNode
+        [ 3 1 roll ] cvx false /N@#5T 10 {InitPnode } NewNode
+      } ifelse
+      end
+    }%
+}%
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % END %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1270,42 +1293,6 @@
       \fi\fi
    \end@OptexpObj
 }%
-% \def\fibercollimator@i(#1)(#2){%
-%    \addbefore@par{conn=o-f}
-%    \def\pst@tempA{#1}%        
-%    \def\pst@tempB{#2}%
-%    \@ifnextchar({\fibercollimator@ii}{\fibercollimator@iii}%
-% }%
-% %
-% \def\fibercollimator@ii(#1)#2{%
-%    \pst@regNodes{\pst@tempA}{\pst@tempB}
-%    \pst@adjustTempNodes
-%    \begin@OptexpObj
-%    \pst@draw@component{#2}{%
-%       \pnode(0,0){tempNode@Label}%
-%       \pnode(0,0){\optexp@nodeA}%
-%       \pnode(0,0){\optexp@nodeB}%
-%       \fibercollimator@iv%
-%    }%
-%       \@nameuse{\psk@connIn}%
-%       \psbezier[style=FiberOut](#1)(\pst@tempB)(\pst@tempB)(\optexp@nodeB)%
-%    \end@OptexpObj
-% }%
-% %
-% \def\fibercollimator@iii#1{%
-%    \pst@regNodes{\pst@tempA}{\pst@tempB}
-%    \begin@OptexpObj
-%       \pst@adjustTempNodes
-%       \pst@draw@component{#1}{%
-%          \pnode(0,0){tempNode@Label}%
-%          \pnode(0,0){\optexp@nodeA}%
-%          \pnode(0,0){\optexp@nodeB}%
-%          \fibercollimator@iv%
-%       }%
-%       \@nameuse{\psk@connIn}%
-%       \@nameuse{\psk@connOut}%
-%    \end@OptexpObj
-% }%
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1321,6 +1308,7 @@
 \newOptexpFiberDipole{optswitch}{}
 \newOptexpFiberDipole{fiberdelayline}{}
 \newOptexpFiberQuadrupole{optcoupler}{}
+\newOptexpFiberQuadrupole{optcrossswitch}{}
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
@@ -1430,6 +1418,9 @@
         ,bsstyle=cube
         ,compshift=0
         ,connjoin=1
+        ,crossswitchwidth=0.4
+        ,crossswitchheight=0.4
+        ,crossswitchsep=0.05
 }%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
@@ -2380,6 +2371,36 @@
       \psline[style=Fiber](tempNode@A@1)(tempNode@B@1)
       \psline[style=Fiber](tempNode@A@2)(tempNode@B@2)
    \fi\fi
+}%
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% COUPLER
+%
+\def\optcrossswitch@iii{%
+   \edef\@wd{\POK@crossswitch@width\space 0.5 mul\space}%
+   \edef\@ht{\POK@crossswitch@height\space 0.5 mul\space}%
+   \edef\@sep{\POK@crossswitch@sep\space 0.5 mul\space}%
+   \ifx\POK@align\POS@optexp@top
+      \pst@Verb{/@yshift \@sep neg def}%
+   \else\ifx\POK@align\POS@optexp@bottom
+      \pst@Verb{/@yshift \@sep def}%
+   \else
+      \pst@Verb{/@yshift 0 def}%
+   \fi\fi
+   \psframe[dimen=outer](!\@wd neg @yshift \@ht sub )(! \@wd @yshift \@ht add)
+   \ifdim\POK@crossswitch@width pt<\POK@crossswitch@height pt
+      \edef\@csz{\POK@crossswitch@width\space 0.3 mul\space}
+   \else
+      \edef\@csz{\POK@crossswitch@height\space 0.3 mul\space}
+   \fi
+   \psline(! \@csz neg dup)(! \@csz dup)
+   \psline(! \@csz neg \@csz)(! \@csz dup neg)
+   \pnode(! \@wd neg @yshift \@sep add){tempNode@A@1}
+   \pnode(! \@wd neg @yshift \@sep sub){tempNode@A@2}
+   \pnode(! \@wd @yshift \@sep add){tempNode@B@1}
+   \pnode(! \@wd @yshift \@sep sub){tempNode@B@2}
+   \pnode(! 0 @yshift){tempNode@Label}
 }%
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
