@@ -1,6 +1,6 @@
 %
 % PostScript prologue for pst-optexp.tex.
-% version 0.2 2008-07-27 (cb)
+% version 0.3 2009-11-05 (cb)
 % For distribution, see pstricks.tex.
 %
 /tx@OptexpDict 20 dict def
@@ -63,11 +63,17 @@ tx@OptexpDict begin
            /Y@B exch def}if
 } bind def
 %
+% called with: R1 height
+% leaves on stack: a1
+/segLen {% def
+    dup mul neg exch abs dup 3 1 roll dup mul add sqrt sub
+} bind def
+%
 % called with:  height R1
 % leaves on stack: y |R1| alpha_bottom alpha_top R1
 /leftConvex {% def
    /R1 exch def /h exch def
-   /a1 R1 dup dup mul h dup mul sub sqrt sub def
+   /a1  R1 h segLen def
    0 R1 abs
    R1 a1 sub neg dup
    h exch atan exch
@@ -80,7 +86,7 @@ tx@OptexpDict begin
 % leaves on stack: y |R1| alpha_bottom alpha_top R1
 /leftConcave {% def
    /R1 exch def /h exch def
-   /a1 R1 abs dup dup mul h dup mul sub sqrt sub def
+   /a1 R1 h segLen def
    0 R1 abs
    R1 neg a1 sub dup
    h exch atan exch
@@ -94,7 +100,7 @@ tx@OptexpDict begin
 % leaves on stack: y |R2| alpha_bottom alpha_top R2
 /rightConvex {%def
    /R2 exch def /h exch def
-   /a2 R2 abs dup dup mul h dup mul sub sqrt sub def
+   /a2 R2 h segLen def
    0 R2 abs
    R2 a2 sub dup
    h neg exch atan exch
@@ -107,7 +113,7 @@ tx@OptexpDict begin
 % leaves on stack: y |R2| alpha_bottom alpha_top R2
 /rightConcave {%def
    /R2 exch def /h exch def
-   /a2 R2 abs dup dup mul h dup mul sub sqrt sub def
+   /a2 R2 h segLen def
    0 R2 abs
    R2 a2 add dup
    h neg exch atan exch
@@ -173,5 +179,19 @@ tx@OptexpDict begin
     2 copy eq {
 	exch pop [ exch false GetInternalNodeNames ] { tx@NodeDict exch undef } forall
     } { pop pop } ifelse
+} bind def
+%
+% xa ya xb yb ExchCoor true|false
+/ExchCoor {% def
+    exch 4 -1 roll% ya yb xb xa
+    2 copy % ya yb xb xa
+    gt 
+    { pop pop pop pop false } % xB > xA
+    { eq % xA == xB
+	3 1 roll gt % yA < yB
+	and
+        { false } 
+        { true } ifelse
+    } ifelse
 } bind def
 end % tx@OptexpDict
