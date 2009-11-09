@@ -11,7 +11,7 @@ def compare(x, y):
     else:
         return 0
 
-doc=file('pst-optexp-doc.tex').read()
+doc=file('pst-optexp-doc2.tex').read()
 pat=re.compile(r"\\paramitem\{([a-z].*?)\}\{(.*?)\}\{(.*?)\}\n")
 pat2=re.compile(r"^\\item\[\\param\{(.*?)\}:\]\s*(.*?)\n", re.M)
 match=pat.findall(doc)
