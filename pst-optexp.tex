@@ -26,8 +26,8 @@
 \let\PSToptexpLoaded\endinput
 %
 %
-\def\fileversion{2.2alpha}
-\def\filedate{2010/10/26}
+\def\fileversion{3.0alpha}
+\def\filedate{2011/02/09}
 \message{`pst-optexp' v\fileversion, \filedate\space (CB)}
 %
 \edef\PstAtCode{\the\catcode`\@} \catcode`\@=11\relax
@@ -434,11 +434,6 @@
    {\edef\POK@coupler@type{#1}}%
    {\PackageError{pst-optexp}{Unknown value '\val' for key couplertype}}
 \define@key[psset]{optexp}{align}{\edef\POK@align{#1}}
-%
-% Crossswitch
-%\define@key[psset]{optexp}{crossswitchheight}{\edef\POK@crossswitch@height{#1}}
-%\define@key[psset]{optexp}{crossswitchwidth}{\edef\POK@crossswitch@width{#1}}
-%\define@key[psset]{optexp}{crossswitchsep}{\edef\POK@crossswitch@sep{#1}}
 %
 %
 \define@key[psset]{optexp}{compshift}{\edef\POK@comp@shift{#1}}
@@ -1538,7 +1533,6 @@
 \newOptexpFiberDipole{optswitch}{}
 \newOptexpFiberDipole{fiberdelayline}{}
 \newOptexpFiberQuadrupole{optcoupler}{}
-%\newOptexpFiberQuadrupole{optcrossswitch}{}
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
@@ -1649,9 +1643,6 @@
         ,bsstyle=cube
         ,compshift=0
         ,connjoin=1
-%        ,crossswitchwidth=0.4
-%        ,crossswitchheight=0.4
-%        ,crossswitchsep=0.05
         %
         % beam
         ,startIn=false
@@ -2737,8 +2728,8 @@
       \psframe[dimen=outer](!\@sz neg @yshift \@sz sub )%
                            (!\@sz @yshift \@sz add)
       \edef\@csz{\POK@coupler@size\space 0.5 mul\space}
-      \psline(! \@csz neg dup \@sep add)(! \@csz dup \@sep add)
-      \psline(! \@csz neg \@csz \@sep add)(! \@csz dup neg \@sep add)
+      \psline(! \@csz neg dup)(! \@csz dup)
+      \psline(! \@csz neg \@csz)(! \@csz dup neg)
    \fi\fi
       \pnode(! \@sz neg \getCLW 0.3 mul add @yshift \@sep add){\optexp@nodeA @1}
       \pnode(! \@sz neg \getCLW 0.3 mul add @yshift \@sep sub){\optexp@nodeA @2}
