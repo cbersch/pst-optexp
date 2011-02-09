@@ -864,9 +864,9 @@ operator.
 \begin{pspicture}[showgrid=true](3,2)
   \pnode(0,1){A}
   \pnode(3,1){B}
-  \optbox[labeloffset=0.7, optboxwidth=0.5, optboxheight=1, angle=20, refractiveindex=2.3, compname=Box](A)(B){glass plate}
-  \drawbeam[conn=-a]{(A|BoxIntern1)}{Box}
-  \drawbeam[conn=B-]{Box}{(B|BoxInternN)}
+  \optbox[labeloffset=0.7, optboxwidth=0.5, optboxheight=1, angle=20, n=2.3, compname=Box](A)(B){glass plate}
+  \drawbeam[conn=-a]{(A|\OENodeIn{Box})}{Box}
+  \drawbeam[conn=B-]{Box}{(B|\OENodeOut{Box})}
 \end{pspicture}
 \end{LTXexample}
 
@@ -919,6 +919,7 @@ before \nxLPack{pst-optexp}.
 \begin{LTXexample}[width=3.5cm]
 \begin{pspicture}[showgrid=true](3,2)
    \optdiode[conn=o-o](0,1)(3,1){Diode}
+   \Drawbeam[beamIn=false,linecolor=red]{(0,1)}{1}{(3,1)}.
 \end{pspicture}
 \end{LTXexample}
 
@@ -1660,11 +1661,16 @@ it is very cumbersome to specify all parameters every time.
 \newpsobject{MOLensOut}{lens}{lens=1.5 1.5 1.5}
 \begin{pspicture}[showgrid=true](5,2) 
    \pnode(0,1){A}\pnode(5,1){B}
+   \psset{n=1}
    \MOLensIn[abspos=0.5](A)(B){}
    \MOLensOut[abspos=1](A)(B){}
    \MOLensOut[abspos=4](A)(B){}
    \MOLensIn[abspos=4.5](A)(B){}
-   \psline[style=Beam](A)(B)
+   \addtopsstyle{Beam}{beamExtended}
+   \DrawCustomBeam{%
+     \Drawbeam[beamwidth=0.1]{(A)}{1}.
+     \Drawbeam[beamdiv=1]{1}{2}.
+   }
 \end{pspicture}
 \end{LTXexample}
 \medskip
@@ -1768,12 +1774,12 @@ incorporate this in a new released version.
     \pnode(1.6,1){Laser}\pnode(7.6,1){Diode}
     \optbox[endbox,labeloffset=0](Diode)(Laser){Laser}%
     \optbox[abspos=4, optboxwidth=1, optboxheight=0.6, labeloffset=1, compname=PC, conn=o-, angle=-10, rotateref=l, refractiveindex=2.3](Laser)(Diode){Photonic Crystal}
-    \optdetector[dettype=diode, conn=o-](PCInternN)(Diode|PCInternN){PD}
-    \defShiftedNode(PCIntern1)(2;170){Angle1}
-    \psline[linestyle=dashed](PCIntern1)(Angle1)
-    \psarc{<->}(PCIntern1){1.3}{330}{30}
-    \psarc[arcsep=1pt]{<->}(PCIntern1){2}{170}{180}
-    \uput{2.1}[175](PCIntern1){\small $\varphi$}
+    \optdetector[dettype=diode, conn=o-](\OENodeOut{PC})(Diode|\OENodeOut{PC}){PD}
+    \defShiftedNode(\OENodeIn{PC})(2;170){Angle1}
+    \psline[linestyle=dashed](\OENodeIn{PC})(Angle1)
+    \psarc{<->}(\OENodeIn{PC}){1.3}{330}{30}
+    \psarc[arcsep=1pt]{<->}(\OENodeIn{PC}){2}{170}{180}
+    \uput{2.1}[175](\OENodeIn{PC}){\small $\varphi$}
 \end{pspicture}
 \end{LTXexample}
 
