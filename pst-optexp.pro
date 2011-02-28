@@ -621,6 +621,7 @@ tx@OptexpDict begin
     }{
 	2 copy /StartPoint load  TransformStartPos /Curr ED
     } ifelse
+%    (TraceBeam, transformations done) == 
     counttomark /PlaneNum ED /n1 1 def % init the refractive index
     /PN 1 def
 %    (start loop)==
@@ -643,6 +644,7 @@ tx@OptexpDict begin
 	/Mode ED
 	3 1 roll % n PlaneNumber CompName
 %	3 copy == == ==
+%        (load comp dict) ==
 	cvn load begin % comp dict
 %	    (comp dict) ==
 	    PlaneName cvn load begin % plane dict
@@ -662,6 +664,7 @@ tx@OptexpDict begin
 	    end
 %	    (comp dict end)==
 	end
+%	(done) ==
 	{ CurvedInterface }{ PlainInterface } ifelse
 %	(*Interface done) == 
 %	(after dict) == counttomark /t ED t copy t{==}repeat
@@ -699,10 +702,15 @@ tx@OptexpDict begin
     } {
 	TraceBeam %2 copy (go to start point)== == ==
     } ifelse
-    5 copy 3 -1 roll pop ArrowA pop pop pop pop % go to Startpoint
-    counttomark 3 idiv -1 2 { pop {lineto}{moveto}ifelse } for
-    {CP 4 2 roll ArrowB lineto pop pop } {moveto} ifelse
-    pop
+    counttomark 2 eq {
+	% first ray misses the next interface
+	pop pop
+    }{
+	5 copy 3 -1 roll pop ArrowA pop pop pop pop % go to Startpoint
+	counttomark 3 idiv -1 2 { pop {lineto}{moveto}ifelse } for
+	{CP 4 2 roll ArrowB lineto pop pop } {moveto} ifelse
+	pop
+    } ifelse
 %    (---------------------------------) ==
 } bind def
 %
@@ -1085,6 +1093,7 @@ tx@OptexpDict begin
     end
     4 copy
     0 eq 3 {exch 0 eq and} repeat {% all coordinates are zero, missed circle, stop
+%	(stop in curvedinterface) ==
 	PlaneNum PN sub 4 add {pop} repeat
 	exit
     } if
