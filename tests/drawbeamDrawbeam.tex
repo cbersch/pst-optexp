@@ -1,0 +1,54 @@
+\documentclass{scrartcl}
+\usepackage[latin1]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[ngerman]{babel}
+\usepackage{lmodern}
+\usepackage{pstricks}
+\usepackage{pst-optexp}
+\usepackage{booktabs}
+
+\begin{document}
+\begin{pspicture}[showgrid=true](5,4)
+  \pnode(1,1){A}
+  \pnode(4,1){B}
+  \pnode(4,4){C}
+  \pentaprism[conn=o-,compname=PP](A)(B)(C){PP}
+  \optdiode[conn=o-,compname=Box](A)(B){Box}
+  \drawbeam[conn=b-B]{Box}{PP}
+\end{pspicture}
+\hspace{\fill}
+\begin{pspicture}[showgrid=true](5,4)
+  \pnode(1,1){A}
+  \pnode(4,1){B}
+  \pnode(4,4){C}
+  \pentaprism[conn=o-,compname=PP](A)(B)(C){PP}
+  \optdiode[conn=o-,compname=Box](A)(B){Box}
+  \Drawbeam[stopIn=false]{(A)}{Box}.
+  \Drawbeam{Box}{PP}{(C)}.
+\end{pspicture}
+\bigskip
+
+\begin{pspicture}[showgrid=true](4,6)
+   \pnode(1,1.5){A}\pnode(1,5){G}\pnode(3,5){B}
+   \optbox[endbox, label=0 . . relative](G)(A){Laser}
+   \optdiode[abspos=1, conn=o-, compname=OD](A)(G){OD}
+   \lens[abspos=2](A)(G){L}
+   \lens[abspos=1](G)(B){L}
+   \optdetector(G)(B){CCD}
+   \pentaprism[conn=-i, compname=PP1](A)(G)(B){PP}
+   \drawbeam[conn=b-a]{OD}{PP1}
+\end{pspicture}
+\hspace{\fill}
+\begin{pspicture}[showgrid=true](4,6)
+   \pnode(1,1.5){A}\pnode(1,5){G}\pnode(3,5){B}
+   \optbox[endbox, label=0 . . relative](G)(A){Laser}
+   \optdiode[abspos=1, compname=OD](A)(G){OD}
+   \lens[abspos=2](A)(G){L}
+   \pentaprism[compname=PP1](A)(G)(B){PP}
+   \lens[abspos=1](G)(B){L}
+   \optdetector(G)(B){CCD}
+   \Drawbeam[stopIn=false, arrows=->]{(A)}{OD}.
+   \Drawbeam[startIn=false, arrows=->]{OD}{3}{PP1}{5}{6}.
+\end{pspicture}
+\bigskip
+\end{document}
