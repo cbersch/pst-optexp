@@ -4,70 +4,110 @@
 \usepackage[ngerman]{babel}
 \usepackage{lmodern}
 \usepackage{pst-optexp}
+\usepackage{showexpl}
+\definecolor{hellgelb}{rgb}{1,1,0.85}
+\definecolor{colKeys}{rgb}{0,0,1}
+\definecolor{colIdentifier}{rgb}{0,0,0}
+\definecolor{colComments}{rgb}{1,0,0}
+\definecolor{colString}{rgb}{0,0.5,0}
+\lstset{%
+    language=PSTricks,%
+    float=hbp,%
+    basicstyle=\ttfamily\small, %
+    identifierstyle=\color{colIdentifier}, %
+    keywordstyle=\color{colKeys}, %
+    stringstyle=\color{colString}, %
+    commentstyle=\color{colComments}, %
+    columns=flexible, %
+    tabsize=4, %
+    frame=single, %
+    extendedchars=true, %
+    showspaces=false, %
+    showstringspaces=false, %
+%    numbers=left, 
+%    numbersep=0.8em,
+%    numberstyle=\tiny, %
+    breaklines=true, %
+    breakautoindent=true, 
+    captionpos=b,
+    xleftmargin=1em
+}
+\lstset{explpreset={pos=l,wide=false,rframe={},preset=\centering}}
 
 \begin{document}
-% \begin{pspicture}[showgrid=true](10,3)
-%   \optbox[compname=Abox](0,1)(3,1.5){}
-%   \pnode(3,1.5){A}\pnode(6,2){B}
-%   \optbox[compname=Bbox](A)(B){}
-%   \pnode(9,2.5){C}
-%   \optbox[compname=Cbox](B)(C){}
-% %
-%   \Drawbeam{Abox}{Bbox}{Cbox}
-% \end{pspicture}
-%
-% \bigskip
-%
-%\begin{pspicture}[showgrid=true](10,3)
-%  \optbox[compname=Abox](0,1)(3,1){}
-%  \pnode(3,1){A}\pnode(6,1){B}
-%  \optbox[compname=Bbox](A)(B){}
-%  \pnode(9,1){C}
-%  \optbox[compname=Cbox](B)(C){}
-%
-%  \Drawbeam{Abox}{Bbox}{Cbox}
-%\end{pspicture}%
-%
-%\bigskip
-%
-%\begin{pspicture}[showgrid=true](10,6)
-%  \optbox[compname=Abox](0,1)(5,1){}
-%  \mirror[compname=Mirror](0,1)(5,1)(5,3){}
-%  \optbox[compname=Bbox](5,3)(5,5){}
-%  \psline(\OENodeOut{Abox})(\OENodeIn{Mirror})
-%
-%  \Drawbeam{Abox}{Mirror}{Bbox}
-%  \makeatletter
-%  \pst@Verb{(----------)== tx@Dict begin tx@OptexpDict begin (P@1) (Mirror) GetPlane 4{==}repeat end end}
-%  \makeatother
-%\end{pspicture}
+\section*{This document should resume all settings and properties of the \textbackslash Drawbeam macro}
+\subsection*{invec}
 
-%\begin{pspicture}[showgrid=true](10,6)
-%  \optbox[compname=Abox](0,1)(5,1){}
-%  \lens[compname=Lens, lens=2 -1.5 1.5](5,1)(7,1){}
-%  \optbox[compname=Bbox](7,1)(9,1){}
-%
-%  \Drawbeam{Abox}{Lens}{Bbox}
-%  \makeatletter
-%  \pst@Verb{(----------)== tx@Dict begin tx@OptexpDict begin (P@1) (Mirror) GetPlane 4{==}repeat end end}
-%  \makeatother
-%\end{pspicture}
-\begin{pspicture}[showgrid=true](10,6)
-  \optbox[compname=Abox](0,1)(5,1){}
-  \mirror[compname=Mirror, mirrorradius=1](5,1)(7,1)(5,4){}
-  \optbox[compname=Bbox](5,4)(3,7){}
-  %
-%  \pscustom[style=Beam, opacity=0.5, fillcolor=green, fillstyle=solid, linetype=0]{%
-%  \Drawbeam[style=Beam, invec={1 0.005}, reversepath]{Abox}{Mirror}{Bbox}.
-%  \Drawbeam[style=Beam, invec={1 -0.005}]{Abox}{Mirror}{Bbox}.
-%  }
-%  \ConnectComponents[style=Beam]{Abox}{Mirror}{Bbox}.
-  \addtopsstyle{Beam}{linecolor=red}
-  \Drawbeam[style=Beam, invec={1 0.01}]{Abox}{Mirror}{Bbox}.
-  \Drawbeam[style=Beam, invec={1 -0.01}]{Abox}{Mirror}{Bbox}.
+\begin{LTXexample}[width=6cm]
+\begin{pspicture}[showgrid=true](6,5)
+  \pnode(1.5,1){A}
+  \pnode(5.5,1){B}
+  \pnode(3.5,4){C} 
+  \optbox[endbox](B)(A){}
+  \mirror[mirrorradius=1](A)(B)(C){} 
+  \mirror(B)(C)(B){} 
+  \multido{\r=-0.05+0.05}{3}{%
+    \Drawbeam[invec=1 \r]{1}{2}{3}.
+  }
 \end{pspicture}
+\end{LTXexample}
 
 \bigskip
+
+\subsection*{startpos}
+
+\begin{LTXexample}[width=6cm]
+\begin{pspicture}[showgrid=true](6,5)
+  \pnode(1.5,1){A}
+  \pnode(5.5,1){B}
+  \pnode(3.5,4){C} 
+  \optbox[endbox](B)(A){}
+  \mirror[mirrorradius=1](A)(B)(C){} 
+  \mirror(B)(C)(B){} 
+  \multido{\r=-0.2+0.2}{3}{%
+    \Drawbeam[startpos=0 \r, 
+              invec=1 0]{1}{2}{3}.
+  }
+\end{pspicture}
+\end{LTXexample}
+\bigskip
+
+\subsection*{startpos and invec}
+
+\begin{LTXexample}[width=6cm]
+\begin{pspicture}[showgrid=true](6,5)
+  \pnode(1.5,1){A}
+  \pnode(5.5,1){B}
+  \pnode(3.5,4){C} 
+  \optbox[endbox](B)(A){}
+  \mirror[mirrorradius=1](A)(B)(C){} 
+  \mirror(B)(C)(B){} 
+  \multido{\r=-0.1+0.1}{3}{%
+    \Drawbeam[startpos=0 -2 \r\space mul,
+              invec=1 \r]{1}{2}{3}.
+  }
+\end{pspicture}
+\end{LTXexample}
+\bigskip
+
+\subsection*{That does not work, yet!}
+\begin{LTXexample}[width=6cm]
+\begin{pspicture}[showgrid=true](6,5)
+  \pnode(1.5,1){A}
+  \pnode(5.5,1){B}
+  \pnode(3.5,4){C} 
+  \optbox[endbox](B)(A){}
+  \mirror[mirrorradius=1,
+          mirrorwidth=1.5](A)(B)(C){} 
+  \mirror(B)(C)(B){} 
+  \multido{\r=-0.1+0.1}{3}{%
+    \Drawbeam[startpos=0 2 \r\space mul,
+              invec=1 \r]{1}{2}{3}.
+  }
+\end{pspicture}
+\end{LTXexample}
+\bigskip
+
 \begin{pspicture}[showgrid=true](10,6)
   \optbox[compname=Abox](0,5)(2,5){}
   \optprism[compname=Prism](2,5)(4,5)(6,4){}
