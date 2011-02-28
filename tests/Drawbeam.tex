@@ -35,8 +35,9 @@
 \lstset{explpreset={pos=l,wide=false,rframe={},preset=\centering}}
 
 \begin{document}
-\section*{This document should resume all settings and properties of the \textbackslash Drawbeam macro}
-\subsection*{invec}
+\section{This document should resume all settings and properties of the \textbackslash Drawbeam macro}
+\subsection{Line properties, and direction}
+\subsubsection{invec}
 
 \begin{LTXexample}[width=6cm]
 \begin{pspicture}[showgrid=true](6,5)
@@ -54,7 +55,7 @@
 
 \bigskip
 
-\subsection*{startpos}
+\subsubsection{startpos}
 
 \begin{LTXexample}[width=6cm]
 \begin{pspicture}[showgrid=true](6,5)
@@ -72,7 +73,7 @@
 \end{LTXexample}
 \bigskip
 
-\subsection*{startpos and invec}
+\subsubsection{startpos and invec}
 
 \begin{LTXexample}[width=6cm]
 \begin{pspicture}[showgrid=true](6,5)
@@ -90,7 +91,7 @@
 \end{LTXexample}
 \bigskip
 
-\subsection*{That does not work, yet!}
+\subsubsection{That does not work, yet!}
 \begin{LTXexample}[width=6cm]
 \begin{pspicture}[showgrid=true](6,5)
   \pnode(1.5,1){A}
@@ -108,11 +109,44 @@
 \end{LTXexample}
 \bigskip
 
-\begin{pspicture}[showgrid=true](10,6)
-  \optbox[compname=Abox](0,5)(2,5){}
-  \optprism[compname=Prism](2,5)(4,5)(6,4){}
-  \optbox[compname=Bbox](6,4)(8,3){}
-  % 
-  \Drawbeam[style=Beam]{Abox}{Prism}{Bbox}.
+\subsubsection{Using different line properties}
+\begin{LTXexample}[width=6cm]
+\begin{pspicture}[showgrid=true](6,5)
+  \pnode(1.5,1){A}
+  \pnode(5.5,1){B}
+  \pnode(3.5,4){C} 
+  \optbox[endbox](B)(A){}
+  \mirror[mirrorwidth=2](A)(B)(C){} 
+  \mirror(B)(C)(B){} 
+  \newpsstyle{Beam}{linestyle=dashed, 
+                    arrows=->, 
+                    strokeopacity=0.2, 
+                    arrowinset=0, 
+                    arrowscale=2}
+  \Drawbeam[invec=1 0.1]{1}{2}{3}.
+  \newpsstyle{Beam}{linecolor=red, 
+                    linewidth=4\pslinewidth,
+                    linejoin=2}
+  \Drawbeam[invec=1 -0.1]{1}{2}{3}.
 \end{pspicture}
+\end{LTXexample}
+\bigskip
+
+\subsection{Different connection types}
+
+\subsubsection{Using the refractive index and refraction law}   
+
+\begin{LTXexample}[width=6cm]
+\begin{pspicture}[showgrid=true](5,3)
+  \pnode(0, 1.5){A}
+  \pnode(5, 1.5){B}
+  \lens[lens=4 4 3, n=2, position=0.3](A)(B){}
+  \definecolor[ps]{bl}{rgb}{tx@addDict begin Red Green Blue end}%
+  \addtopsstyle{Beam}{linecolor=bl}
+  \multido{\i=0+1}{4}{%
+    \pstVerb{\i\space 650 580 sub 3 div mul 580 add tx@addDict begin wavelengthToRGB end }%
+    \Drawbeam[startpos=0 0.2 \i\space 0.2 mul add, nMul=1 \i\space 0.05 mul add]{(A)}{1}{(B)}.
+  }%
+\end{pspicture}
+\end{LTXexample}
 \end{document}
