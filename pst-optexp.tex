@@ -518,22 +518,22 @@
       \psset{b@sicname=\POS@optexp@basicname@default\the\poe@cnt}%
       \psset{extnoden@me=\POS@optexp@extnode@postfix}%
    \else
-      \global\advance\poe@cnt by -1
+%      \global\advance\poe@cnt by -1
       \edef\POK@compname{#1}%
       \psset{b@sicname=#1}%
       \psset{extnoden@me=#1\POS@optexp@extnode@postfix}%
-      % check if compname was already defined
-      \@expandtwoargs\in@{,#1,}{,\POE@complist,}%
-      \ifin@
-         \PackageWarning{pst-optexp}%
-            {^^Jcompname '#1' already used. Previously defined nodes will be overwritten!^^J}%
-      \else
-         % Use definition of \XKV@addtolist@x with an \xdef instead of \edef in order
-         % to keep the bookkeeping global
-         \xdef\POE@complist{#1\ifx\POE@complist\@empty\else,\fi\POE@complist}%
-      \fi
    \fi
-%   \typeout{\POK@compname, cnt=\the\poe@cnt^^J}
+   % check if compname was already defined
+   \@expandtwoargs\in@{,\POK@compname,}{,\POE@complist,}%
+   \ifin@
+      \PackageWarning{pst-optexp}%
+         {^^Jcompname '\POK@compname' already used. Previously defined nodes will be overwritten!^^J}%
+   \else
+      % Use definition of \XKV@addtolist@x with an \xdef instead of \edef in order
+      % to keep the bookkeeping global
+      \xdef\POE@complist{\POK@compname\ifx\POE@complist\@empty\else,\fi\POE@complist}%
+   \fi
+   \typeout{\POK@compname, cnt=\the\poe@cnt^^J}
 }%
 \define@key[psset]{optexp}{connjoin}{%
    \edef\pst@temp{#1}%
