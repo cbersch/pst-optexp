@@ -1,0 +1,61 @@
+
+\documentclass[12pt,a5paper]{article}
+\newcommand*{\Format}[1]{\textit{\tiny #1}}
+\newlength\WidestResult
+
+\usepackage{kvsetkeys}
+\usepackage{xkeyval}
+\makeatletter
+\gdef\POE@complist{}
+\def\addElement#1{%
+\xdef\POE@complist{\POE@complist\ifx\POE@complist\@empty\else,\fi#1}%
+}%
+\@ifdefinable{\FirstElement}{%
+  \def\FirstElement#1{%
+    \comma@parse{#1}{%
+      \comma@entry--
+      \@gobble % ignore list entry argument
+    }%
+  }%
+}
+\makeatother
+
+\makeatletter
+\@ifdefinable{\Widest}{%
+  \def\Widest#1#2(#3){%
+    #1=\z@ % 0pt
+    \comma@parse{#3}{%
+      \settowidth\dimen@{#2{\comma@entry}}%
+      \ifdim#1<\dimen@
+        #1=\dimen@
+      \fi
+      \@gobble % ignore list entry argument
+    }%
+  }%
+}
+\def\getLastCompname#1,#2,#3\@nil{#1}%
+
+\makeatother
+\usepackage{pst-node}
+\SpecialCoor
+\begin{document}
+\Widest{\WidestResult}{\Format}(Good,morning,world)
+\the\WidestResult
+
+\addElement{blubb}
+\addElement{blabber}
+\makeatletter
+\POE@complist
+
+\def\blubb{\expandafter\getLastCompname \POE@complist,\relax,\@nil}
+\def\blubber#1{\ifx.#1.\blubb\else#1\fi}
+\begin{pspicture}[showgrid=true](5,5)
+\pnode(1,1){blubb}\pnode(2,2){blabber}
+\psdot(\blubber{blabber})
+%\psdot(\blubber\space load end)
+\end{pspicture}
+
+\expandafter\FirstElement\expandafter{\POE@complist}
+
+\makeatother
+\end{document}

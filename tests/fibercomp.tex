@@ -1,0 +1,39 @@
+%%% fibercomp.tex --- 
+
+%% Author: cbersch
+%% Version: $Id: fibercomp.tex,v 0.0 2008/06/25 15:01:09 Exp$
+
+
+\documentclass{scrartcl}
+\usepackage[latin1]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[ngerman]{babel}
+\usepackage{lmodern}
+\usepackage{pst-optexp}
+
+%%\revision$Header: /home/cbersch/texmf/tex/graphics/pstricks/contrib/pst-optexp-v1_3alpha/fibercomp.tex,v 0.0 2008/06/25 15:01:09 cbersch Exp$
+
+\begin{document}
+\addtopsstyle{FiberIn}{linecolor=blue}
+\psset{usefiberstyle=true}
+\begin{pspicture}[showgrid=true](10,15)
+  \optfiber[labelref=relative](0,0)(2,2){HNLF}
+  \optfiber(2,0)(4,2){HNLF}
+  \optamp(5,1)(7,1){EDFA}
+  \optmzm(5,4)(7,4){MZM}
+  \polcontrol(7,4)(9,4){PC}
+  \optbox[fiber,endbox](3,6)(0,6){blubb}
+  \detector[fiber,detsize=1,fillstyle=solid,fillcolor=yellow](5,6)(7,6){Det}
+  \optisolator(8,6)(10,6){Iso}
+  \bgroup
+  \newpsstyle{FiberOut}{linecolor=magenta}
+  \newpsstyle{FiberOut2}{arrows=->,arrowscale=2}
+  \optcoupler[align=bottom](0,10)(0,8)(4,9)(3,7){blubber}
+  \egroup
+  \optcoupler[newFiberIn2={linestyle=none},align=top](5,10)(5,8)(8,10)(8,8){blubber}
+  \optswitch(0,12)(2,12){Switch}
+  \fiberdelayline(3,12)(5,12){delay line}
+  \optdiode(6,12)(8,12){Diode}
+\end{pspicture}
+
+\end{document}
