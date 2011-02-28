@@ -1,0 +1,78 @@
+\documentclass{scrartcl}
+\usepackage[latin1]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[ngerman]{babel}
+\usepackage{lmodern}
+\usepackage{pst-optexp}
+
+\begin{document}
+% \begin{pspicture}[showgrid=true](10,3)
+%   \optbox[compname=Abox](0,1)(3,1.5){}
+%   \pnode(3,1.5){A}\pnode(6,2){B}
+%   \optbox[compname=Bbox](A)(B){}
+%   \pnode(9,2.5){C}
+%   \optbox[compname=Cbox](B)(C){}
+% %
+%   \Drawbeam{Abox}{Bbox}{Cbox}
+% \end{pspicture}
+%
+% \bigskip
+%
+%\begin{pspicture}[showgrid=true](10,3)
+%  \optbox[compname=Abox](0,1)(3,1){}
+%  \pnode(3,1){A}\pnode(6,1){B}
+%  \optbox[compname=Bbox](A)(B){}
+%  \pnode(9,1){C}
+%  \optbox[compname=Cbox](B)(C){}
+%
+%  \Drawbeam{Abox}{Bbox}{Cbox}
+%\end{pspicture}%
+%
+%\bigskip
+%
+%\begin{pspicture}[showgrid=true](10,6)
+%  \optbox[compname=Abox](0,1)(5,1){}
+%  \mirror[compname=Mirror](0,1)(5,1)(5,3){}
+%  \optbox[compname=Bbox](5,3)(5,5){}
+%  \psline(\OENodeOut{Abox})(\OENodeIn{Mirror})
+%
+%  \Drawbeam{Abox}{Mirror}{Bbox}
+%  \makeatletter
+%  \pst@Verb{(----------)== tx@Dict begin tx@OptexpDict begin (P@1) (Mirror) GetPlane 4{==}repeat end end}
+%  \makeatother
+%\end{pspicture}
+
+%\begin{pspicture}[showgrid=true](10,6)
+%  \optbox[compname=Abox](0,1)(5,1){}
+%  \lens[compname=Lens, lens=2 -1.5 1.5](5,1)(7,1){}
+%  \optbox[compname=Bbox](7,1)(9,1){}
+%
+%  \Drawbeam{Abox}{Lens}{Bbox}
+%  \makeatletter
+%  \pst@Verb{(----------)== tx@Dict begin tx@OptexpDict begin (P@1) (Mirror) GetPlane 4{==}repeat end end}
+%  \makeatother
+%\end{pspicture}
+\begin{pspicture}[showgrid=true](10,6)
+  \optbox[compname=Abox](0,1)(5,1){}
+  \mirror[compname=Mirror, mirrorradius=1](5,1)(7,1)(5,4){}
+  \optbox[compname=Bbox](5,4)(3,7){}
+  %
+%  \pscustom[style=Beam, opacity=0.5, fillcolor=green, fillstyle=solid, linetype=0]{%
+%  \Drawbeam[style=Beam, invec={1 0.005}, reversepath]{Abox}{Mirror}{Bbox}.
+%  \Drawbeam[style=Beam, invec={1 -0.005}]{Abox}{Mirror}{Bbox}.
+%  }
+%  \ConnectComponents[style=Beam]{Abox}{Mirror}{Bbox}.
+  \addtopsstyle{Beam}{linecolor=red}
+  \Drawbeam[style=Beam, invec={1 0.01}]{Abox}{Mirror}{Bbox}.
+  \Drawbeam[style=Beam, invec={1 -0.01}]{Abox}{Mirror}{Bbox}.
+\end{pspicture}
+
+\bigskip
+\begin{pspicture}[showgrid=true](10,6)
+  \optbox[compname=Abox](0,5)(2,5){}
+  \optprism[compname=Prism](2,5)(4,5)(6,4){}
+  \optbox[compname=Bbox](6,4)(8,3){}
+  % 
+  \Drawbeam[style=Beam]{Abox}{Prism}{Bbox}.
+\end{pspicture}
+\end{document}

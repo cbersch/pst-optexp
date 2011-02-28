@@ -1,0 +1,87 @@
+\documentclass[a4paper,12pt]{article}
+
+\usepackage{pstricks}
+\usepackage{pst-optexp}
+\usepackage{nicefrac}
+\usepackage{pst-eps}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\begin{document} 
+
+\begin{TeXtoEPS}
+\psset{unit=1cm}
+\begin{pspicture}(10,4)
+\psset{subgriddiv=0,griddots=10,gridlabels=7pt}
+
+\pnode(1,2){VCSEL}
+\pnode(9,2){FBM}
+%\psgrid
+\psset{linecolor=red!90!black,linewidth=1.5\pslinewidth}
+
+\psline(1.5,2)(7,2)
+\psline(8,2)(9,2)
+
+
+\psset{plateheight=2, labeloffset=1.2,labelstyle=\small, lensheight=2, bswidth=0.5, lenswidth=0.3, owidth=0.7, mirrorwidth=2}
+
+
+
+\psset{linecolor=black,linewidth=0.8\pslinewidth}
+
+
+%Cavity
+
+\optbox[labelrelative, optboxwidth=.3, optboxheight=2](1,2)(1.3,2){}
+\rput(1.15,0.8){\small{VCSEL}}
+
+\optbox[labelrelative, optboxwidth=.2, optboxheight=0.4](1.3,2)(1.5,2){}
+\mirror(VCSEL)(FBM)(VCSEL){M}
+\lens[position=0.15](VCSEL)(FBM){L}
+\lens[position=0.625](VCSEL)(FBM){L}
+\optplate[position=0.25](VCSEL)(FBM){LP}
+\optretplate[position=0.35](VCSEL)(FBM){HWP}
+
+%Crystal
+\psset{linecolor=black,linewidth=0.4\pslinewidth}
+
+\multido{\r=1.6+0.1}{9}{%
+  \psline[linecolor=green!90!black, linewidth=3\pslinewidth](7,\r)(8,\r)}
+%\psline[linecolor=green!90!black, linewidth=3\pslinewidth](7,2.4)(8,2.4)
+%\psline[linecolor=green!90!black, linewidth=3\pslinewidth](7,2.3)(8,2.3)
+%\psline[linecolor=green!90!black, linewidth=3\pslinewidth](7,2.2)(8,2.2)
+%\psline[linecolor=green!90!black, linewidth=3\pslinewidth](7,2.1)(8,2.1)
+%\psline[linecolor=green!90!black, linewidth=3\pslinewidth](7,2.0)(8,2.0)
+%\psline[linecolor=green!90!black, linewidth=3\pslinewidth](7,1.9)(8,1.9)
+%\psline[linecolor=green!90!black, linewidth=3\pslinewidth](7,1.8)(8,1.8)
+%\psline[linecolor=green!90!black, linewidth=3\pslinewidth](7,1.7)(8,1.7)
+%\psline[linecolor=green!90!black, linewidth=3\pslinewidth](7,1.6)(8,1.6)
+\psframe(7,1.5)(8,2.5)
+\rput(7.5,0.8){\small{PRC}}
+
+
+%arrows focal length
+%\psline(1.5,3.3)(1.5,3.1)
+%\psline{<->}(1.5,3.2)(2.2,3.2)
+%\rput(1.85,3.45){\normalsize{$\text{f}_1$}}
+%\psline(2.2,3.3)(2.2,3.1)
+%\psline{<->}(2.2,3.2)(6,3.2)
+%\psline(6,3.3)(6,3.1)
+%\rput(4.1,3.45){\normalsize{$\text{f}_1+\text{f}_2$}}
+%\psline{<->}(6,3.2)(9,3.2)
+%\psline(9,3.3)(9,3.1)
+%\rput(7.5,3.45){\normalsize{$\text{f}_2$}}
+\pnode(1.5,3.2){A}
+\pnode(2.2,3.2){B}
+\pnode(6,3.2){C}
+\pnode(9,3.2){D}
+\pcline{|<->|}(A)(B)
+\naput{$\text{f}_1$}
+\pcline{<->|}(B)(C)
+\naput{$\text{f}_1+\text{f}_2$}
+\pcline{<->|}(C)(D)
+\naput{$\text{f}_2$}
+\end{pspicture}
+
+\end{TeXtoEPS}
+
+\end{document}

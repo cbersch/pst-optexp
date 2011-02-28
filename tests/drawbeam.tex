@@ -1,0 +1,50 @@
+%%% drawbeam.tex --- 
+
+%% Author: cbersch
+%% Version: $Id: drawbeam.tex,v 0.0 2008/07/16 11:22:34 Exp$
+
+
+\documentclass{scrartcl}
+\usepackage[latin1]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[ngerman]{babel}
+\usepackage{lmodern}
+\usepackage{pstricks}
+\usepackage{pst-optexp}
+\usepackage{booktabs}
+
+%%\revision$Header: /home/cbersch/texmf/tex/graphics/pstricks/contrib/pst-optexp-v1_3alpha/drawbeam.tex,v 0.0 2008/07/16 11:22:34 cbersch Exp$
+
+\begin{document}
+\begin{pspicture}[showgrid=true](5,5)
+  \pnode(1,1){blubb}
+  \pnode(5,6){hallo}
+  \pentaprism[conn=o-,compname=PP](1,1)(4,1)(4,4){PP}
+  \optdiode[conn=o-,compname=Box](1,1)(4,1){Box}
+  \drawbeam[conn=b-B]{Box}{PP}
+\end{pspicture}
+\bigskip
+
+\begin{pspicture}[showgrid=true](4,6)
+   \pnode(1,1.5){A}\pnode(1,5){G}\pnode(3,5){B}
+   \optbox[endbox, labelref=relative, labeloffset=0](G)(A){Laser}
+   \optdiode[abspos=1, conn=o-, compname=OD](A)(G){OD}
+   \lens[abspos=2](A)(G){L}
+   \lens[abspos=1](G)(B){L}
+   \optdetector(G)(B){CCD}
+   \pentaprism[conn=-i, compname=PP1](A)(G)(B){PP}
+   \drawbeam[conn=b-a]{OD}{PP1}
+\end{pspicture}
+
+\begin{pspicture}[showgrid=true](4,6)
+   \pnode(1,1.5){A}\pnode(1,5){G}\pnode(3,5){B}
+   \optbox[endbox, labelref=relative, labeloffset=0](G)(A){Laser}
+   \optdiode[abspos=1, conn=o-, compname=OD](A)(G){OD}
+   \lens[abspos=2](A)(G){L}
+   \lens[abspos=1](G)(B){L}
+   \optdetector(G)(B){CCD}
+   \pentaprism[conn=-o, compname=PP1](A)(G)(B){PP}
+   \drawbeam[linecolor=red,conn=b-A]{OD}{PP1}
+\end{pspicture}
+
+\end{document}

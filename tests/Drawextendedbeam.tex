@@ -1,0 +1,216 @@
+\documentclass{scrartcl}
+\usepackage[latin1]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[ngerman]{babel}
+\usepackage{lmodern}
+\usepackage{pst-optexp}
+
+\begin{document}
+\begin{pspicture}[showgrid=true](10,3)
+  \optbox[compname=Abox](0,2)(2,2){}
+  \pentaprism[compname=PPrism](2,2)(4,2)(4,0){}
+  \optbox[compname=Bbox](4,0)(4,-3){}
+  % 
+  \addtopsstyle{Beam}{linecolor=red, opacity=0.5, fillcolor=red, arrows=->}
+%  \Drawbeam[style=Beam, invec={1 0.04}]{Abox}{PPrism}{Bbox}.
+  \Drawbeam[invec=1 -0.05,startpos=0 0.1]{Abox}{PPrism}{Bbox}.
+%  \Drawbeam[beamExtended, invec={1 0}]{Abox}{PPrism}{Bbox}.
+\end{pspicture}
+
+\bigskip
+
+\begin{pspicture}[showgrid=true](0,1)(6,3)
+  \psset{n=1}
+  \lens(0,2)(2,2){}
+  \pinhole(1,2)(3,2){}
+  \lens(2,2)(6,2){}
+  \addtopsstyle{Beam}{beamExtended,beamContinue,stopIn,linecolor=red,linestyle=dashed,fillstyle=solid,fillcolor=green}%fillstyle=crosshatch*,fillcolor=black,hatchcolor=white,hatchwidth=0.4pt,hatchsep=0.6pt, hatchangle=0,stopIn}
+  \DrawCustomBeam{%
+   \Drawbeam[beamwidth=0.2]{(0,2)}{1}.
+    \Drawbeam[beamdiv=-5]{1}{3}.%
+    \Drawbeam[beamdiv=0]{3}{(6,2)}.%
+  }%
+\end{pspicture}
+\bigskip
+
+\begin{pspicture}[showgrid=true](0,1)(6,3)
+%  \psset{n=1}
+  \lens[lens=0.5 0.5 0.6](0,2)(2,2){}
+  \pinhole(1,2)(3,2){}
+  \lens[abspos=0.6](2,2)(6,2){}
+  \addtopsstyle{Beam}{beamExtended,beamContinue,linecolor=red,linestyle=dashed,fillstyle=solid,fillcolor=green}%fillstyle=crosshatch*,fillcolor=black,hatchcolor=white,hatchwidth=0.4pt,hatchsep=0.6pt, hatchangle=0,stopIn}
+  \Drawbeam[beamwidth=0.2]{(0,2)}{1}{3}{(6,2)}.
+  % \addtopsstyle{Beam}{fillstyle=none}
+  % \Drawbeam[beamwidth=0.2,addtoBeam={fillstyle=none}]{(0,2)}{1}{3}{(6,2)}.
+\end{pspicture}
+\bigskip
+
+\begin{pspicture}[showgrid=true](0,1)(6,3)
+%  \psset{n=1}
+  \lens[lens=-0.5 0 0.4](0,2)(2,2){}
+  \lens[abspos=2,lens=3](1,2)(6,2){}
+  \addtopsstyle{Beam}{beamExtended,beamContinue,beamIn=false,linecolor=red,linestyle=dashed,fillstyle=solid,fillcolor=green}%fillstyle=crosshatch*,fillcolor=black,hatchcolor=white,hatchwidth=0.4pt,hatchsep=0.6pt, hatchangle=0,stopIn}
+  \Drawbeam[beamwidth=0.2]{(0,2)}{1}{2}{(6,2)}.
+  % \addtopsstyle{Beam}{fillstyle=none}
+  % \Drawbeam[beamwidth=0.2,addtoBeam={fillstyle=none}]{(0,2)}{1}{3}{(6,2)}.
+\end{pspicture}
+\bigskip
+
+\begin{pspicture}[showgrid=true](6,4)
+%  \addtopsstyle{Beam}{linestyle=dashed}
+  \mirror[compname=BS](0,2)(5,3)(6,0){}
+  \Drawbeam[arrows=<->]{(0,2)}{BS}{(6,0)}.
+  \Drawbeam[invec=1 0.05,linecolor=red]{(0,2)}{BS}{(6,0)}.
+  \Drawbeam[invec=1 0.1,linecolor=blue,linestyle=dashed,arrows=*-o]{(0,2)}{BS}{(6,0)}.
+\end{pspicture}
+\bigskip
+
+\begin{pspicture}[showgrid=true](-4,0)(6,4)
+%  \beamsplitter[compname=BS,n=1](0,2)(4.9,2)(5,0){}
+  \pnode(4;90){B}
+  \beamsplitter[compname=BS,n=1](-4,0)(0,0)(B){}
+  \Drawbeam{(-4,0)}{BS}{(B)}.
+  \Drawbeam{(-4,0)}{BS}{(4;0)}.
+\end{pspicture}
+
+\bigskip
+
+\begin{pspicture}[showgrid=true](-4,0)(6,4)%
+%  \beamsplitter[compname=BS,n=1](0,2)(4.9,2)(5,0){}
+  \psset{n=1}%
+  \pnode(4;60){B}%
+  \beamsplitter[compname=BS0, bsstyle=plate](-4,4)(-4,0)(0,0){}
+  \beamsplitter[compname=BS](-4,0)(0,0)(B){}%
+  \beamsplitter[bsstyle=plate](0,0)(B)(-4,0|B){}%
+  \beamsplitter(B)(-4,0|B)(-4,1){}%
+  \addtopsstyle{Beam}{fillstyle=solid, fillcolor=red, opacity=0.2,linestyle=none}%
+  \Drawbeam[beamExtended,stopIn,startIn,beamwidth=0.3,beamdiv=0.5]{BS0}{BS}{3}{4}.%
+\end{pspicture}
+
+\bigskip
+
+\begin{pspicture}[showgrid=true](-4,0)(6,4)
+%  \beamsplitter[compname=BS,n=1](0,2)(4.9,2)(5,0){}
+  \pnode(4;60){B}
+  \beamsplitter[compname=BS,n=1](-4,0)(0,0)(B){}
+  \newOptexpPlane(4,0)(1,1){P}
+  \addtopsstyle{Beam}{fillstyle=solid, fillcolor=red, opacity=0.2}
+  \Drawbeam[beamExtended, beamwidth=0.3, beamdiv=1]{(-4,0)}{BS}{(B)}.
+  \Drawbeam[beamExtended, beamwidth=0.3, beamdiv=1]{(-4,0)}{BS}{P}.
+%  \Drawbeam{(-4,0)}{BS}{(4;0)}.
+\end{pspicture}
+
+\bigskip
+
+\begin{pspicture}[showgrid=true](10,3)%
+  \lens[compname=Abox,lens=1 -2](0,1)(3,1.5){}%
+  \pnode(3,1.5){A}\pnode(6,2){B}%
+  \optbox[compname=Bbox](A)(B){}%
+  \pnode(9,2.5){C}%
+  \optbox[compname=Cbox](B)(C){}%
+%
+  \Drawbeam[startpos=0 0.4]{(0,1)}{Abox}{Bbox}{(9,2.5)}.
+  \Drawbeam[startpos=0 -0.4]{(0,1)}{Abox}{Bbox}{(9,2.5)}.
+  % \addtopsstyle{Beam}{fillstyle=solid,opacity=0.5,fillcolor=red}
+  % \addtopsstyle{Beam}{linecolor=black,strokeopacity=0.2}
+  % \DrawExtendedBeam[beamwidth=0.8, style=Beam]{(0,1)}{Abox}{Bbox}{(9,2.5)}.
+  % \psline(0,1)(9,2.5)
+  % \psline(0.5,-2)(-0.5,4)
+  % \psline(9.5,-0.5)(8.5,5.5)
+\end{pspicture}
+
+\bigskip
+
+\begin{pspicture}[showgrid=true](10,3)%
+  \optbox[compname=Abox](0,1)(3,1.5){}%
+  \pnode(3,1.5){A}\pnode(6,2){B}%
+  \optbox[compname=Bbox](A)(B){}%
+  \pnode(9,2.5){C}%
+  \optbox[compname=Cbox](B)(C){}%
+%
+  \Drawbeam[invec=1 0, startpos=0 0.3,arrows=->]{(3,1.5)}{Bbox}{(9,2.5)}.
+\end{pspicture}
+
+\bigskip
+
+\begin{pspicture}[showgrid=true](10,3)%
+  \pnode(1,1){A}\pnode(6,2){B}%
+  \lens[compname=Lens,lens=2 2 2](A)(B){}%
+  \multido{\rpos=-0.4+0.1}{9}{%
+    \Drawbeam[linewidth=0.5\pslinewidth,linestyle=dashed,invec=1 0, startpos=0 \rpos,arrows=->]{(A)}{Lens}{(B)}.
+  }
+\end{pspicture}
+
+\bigskip
+
+\begin{pspicture}[showgrid=true](10,3)
+ \optbox[compname=Abox](0,1)(3,1){}
+ \pnode(3,1){A}\pnode(6,1){B}
+ \optbox[compname=Bbox](A)(B){}
+ \pnode(9,1){C}
+ \optbox[compname=Cbox](B)(C){}
+ \Drawbeam[invec=1 0]{Abox}{Bbox}{Cbox}.
+\end{pspicture}%
+
+\bigskip
+
+\begin{pspicture}[showgrid=true](10,6)
+ \optbox[compname=Abox](0,1)(5,1){}
+ \mirror[compname=Mirror](0,1)(5,1)(5,3){}
+ \optbox[compname=Bbox](5,3)(5,5){}
+ \Drawbeam[invec={1 0}]{Abox}{Mirror}{Bbox}.
+\end{pspicture}
+
+\begin{pspicture}[showgrid=true](10,2)
+  \optbox[compname=Abox, endbox](3,1)(0,1){}
+  \lens[compname=Lens, lens=2 0 1.5](3,1)(5,1){}
+  \optbox[compname=Bbox,endbox](5,1)(9,1){}
+%
+  \addtopsstyle{Beam}{linecolor=black, opacity=0.5, fillstyle=solid, fillcolor=red}
+  \Drawbeam[beamExtended, invec={1 0},beamwidth=0.4,beamIn=false]{Abox}{Lens}{Bbox}.
+\end{pspicture}
+
+\begin{pspicture}[showgrid=true](10,2)
+  \optbox[compname=Abox, endbox](3,1)(0,1){}
+  \lens[compname=Lens, lens=-2 0 1.5](3,1)(5,1){}
+%  \optplate[compname=Lens](5,1)(7,1){}
+  \optbox[compname=Bbox,endbox](5,1)(9,1){}
+%
+  \addtopsstyle{Beam}{linecolor=black, opacity=0.5, fillstyle=solid, fillcolor=red}
+  \Drawbeam[beamExtended, invec={1 0},beamwidth=0.4,beamIn=false]{Abox}{Lens}{Bbox}.
+\end{pspicture}
+
+\begin{pspicture}[showgrid=true](10,6)
+  \optbox[compname=Abox](0,1)(5,1){}
+  \mirror[compname=Mirror, mirrorradius=-2](5,1)(7,1)(5,4){}
+  \optbox[compname=Bbox](5,4)(3,7){}
+  \addtopsstyle{Beam}{linecolor=red, opacity=0.5, fillstyle=solid, fillcolor=red}
+  \multido{\r=-0.1+0.1}{3}{%
+    \Drawbeam[style=Beam, invec={1 0}, startpos=0 \r]{Abox}{Mirror}{Bbox}.
+  }
+%  \DrawExtendedBeam[style=Beam, invec={1 0}]{Abox}{Mirror}{Bbox}.
+\end{pspicture}
+
+\bigskip
+\begin{pspicture}[showgrid=true](10,6)
+  \optbox[compname=Abox](0,5)(2,5){}
+  \optprism[compname=Prism,n=1.37](2,5)(4,5)(6,4){}
+  \optbox[compname=Bbox](6,4)(8,3){}
+  % 
+%  \addtopsstyle{Beam}{linecolor=red, opacity=0.5, fillcolor=red}
+  \Drawbeam[style=Beam, invec={1 0}]{Abox}{Prism}{Bbox}.
+%  \addtopsstyle{Beam}{fillstyle=none}
+%  \Drawbeam[beamExtended, beamdiv=0.04]{Abox}{Prism}{Bbox}.
+\end{pspicture}
+
+\bigskip
+
+\begin{pspicture}[showgrid=true](5,3)
+  \optbox[compname=Abox](0,2)(2,2){}
+  \rightangleprism[compname=RAPrism, raprismsize=2.5](2,2)(4,1)(2,0){}
+  \optbox[compname=Bbox](2,0)(0,0){}
+  % 
+  \addtopsstyle{Beam}{linecolor=green, opacity=0.5, fillcolor=red, fillstyle=solid, linestyle=solid}
+  \Drawbeam[beamExtended, beamwidth=0.2, beamdiv=1]{Abox}{RAPrism}{Bbox}.
+\end{pspicture}
+\end{document}

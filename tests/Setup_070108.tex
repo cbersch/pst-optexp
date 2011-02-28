@@ -1,0 +1,163 @@
+\documentclass[a4paper]{article}
+
+\usepackage{pstricks}
+\usepackage{pst-optexp}
+\usepackage{nicefrac}
+\usepackage{pst-eps}
+\usepackage{graphicx}
+
+\begin{document} 
+
+\begin{TeXtoEPS}
+\psset{unit=1cm}
+\begin{pspicture}(18,14)
+\psset{subgriddiv=0,griddots=10,gridlabels=7pt}
+
+%\psgrid
+\psset{linecolor=green!90!black,linewidth=1.5\pslinewidth}
+\psset{plateheight=0.7, labeloffset=0.6,labelstyle=\normalsize, lensheight=0.8, bswidth=0.5, lenswidth=0.2, owidth=0.7}
+
+\pnode(0,8){Lasera}
+\pnode(1.5,8){Laserb}
+\pnode(3,8){BS1}
+\pnode(17,8){CCD}
+\pnode(3,6){BS2}
+\pnode(9,6){PB1M1}
+\pnode(3,1){LBM1}
+\pnode(8.9,1){LBM2}
+\pnode(8.9,5){LBM3}
+\pnode(9.1,4){LBM3b}
+\pnode(7,1){BS3}
+\pnode(7,3.15){LBM4}
+\pnode(8.9,3){BS4}
+\pnode(9.1,3.15){BS4b}
+\pnode(10.97,3){LBM5}
+\pnode(11.1,3.15){LBM5b}
+\pnode(11.1,3.15){LBM5c}
+\pnode(10.9,3){LBM5d}
+
+\pnode(11,5){BS5}
+\pnode(11,8){BS6}
+\pnode(11.1,8.1){BS6b}
+\pnode(10.9,7.9){BS6c}
+\pnode(9,8){PB1BS2}
+
+\pnode(12.5,8){K1}
+\pnode(12.5,8.1){K2}
+\pnode(12.5,7.9){K3}
+
+\pnode(4,8){BLOCKPB1}
+\pnode(15,8){BSFT}
+\pnode(16,8){PBSCCD}
+\pnode(15,6){CCD2}
+\pnode(16,6){CCD3}
+
+\pnode(7,8){PB2M5}
+\pnode(6.9,8.1){PB2M5a}
+\pnode(7.1,7.9){PB2M5b}
+\pnode(7,10){PB2BS3}
+\pnode(7.1,9.9){PB2BS3a}
+\pnode(6.9,12){PB2M4}
+\pnode(5,12){PB2M3}
+\pnode(5,10){PB2BS2}
+\pnode(4.9,9.9){PB2BS2a}
+\pnode(4.9,8){PB2M2}
+\pnode(4,8){PB2BS1}
+\pnode(4,10){PB2M1}
+\pnode(4.9,10.8){PB2BLOCK}
+
+
+
+
+
+\psline(Laserb)(BS1)(BS2)(LBM1)(LBM2)(LBM3)(BS5)(BS6)(CCD)
+\psline(BS3)(LBM4)(LBM5b)
+\psline(BS2)(PB1M1)(PB1BS2)(BS6)
+\psset{linecolor=green!90!black,linewidth=1\pslinewidth}
+\psline(BS4)(LBM5)
+\psline(BS4b)(LBM3b)
+\psline(LBM5c)(BS6b)
+\psline(LBM5d)(BS6c)
+\psline(BS6)(K1)
+\psline(BS6b)(K2)
+\psline(BS6c)(K3)
+\psline(BS1)(BLOCKPB1)
+\psline(BSFT)(CCD2)
+\psline(PBSCCD)(CCD3)
+
+\psline(PB2BS1)(PB2M1)(PB2BS2)(PB2M3)(PB2M4)(PB2M5a)
+\psline(PB2BS1)(PB2M2)
+\psline(PB2M2)(PB2BS2a)
+\psline(PB2M1)(PB2BS3)
+\psline(PB2BS2a)(PB2BS3a)
+\psline(PB2BS3)(PB2M5)
+\psline(PB2BS3a)(PB2M5b)
+\psline(PB2M5)(BS6)
+\psline(PB2M5b)(BS6c)
+\psline(PB2M5a)(BS6b)
+\psline(PB2BS2a)(PB2BLOCK)
+
+\psset{linecolor=black,linewidth=0.6\pslinewidth}
+\optbox[labelref=relative, labeloffset=0, optboxwidth=1.5, optboxheight=0.8](Lasera)(Laserb){\parbox{1.5cm}{\centering Nd:YAG\\532\,nm}}
+
+\beamsplitter(Laserb)(BS1)(BS2){PBS}%Muss später durch beamsplitter ersetzt werde, da weitere Probenstahlen!
+\beamsplitter[labelangle=-90, labeloffset=1](BS1)(BS2)(PB1M1){PEL-BS}
+\mirror[labeloffset=0.4, labelangle=-135](BS2)(LBM1)(LBM2){M}
+\mirror[labelangle=-45,labeloffset=0.4](LBM1)(LBM2)(LBM3){M}
+\beamsplitter(LBM1)(BS3)(LBM4){BS}
+\mirror[labelangle=135, labeloffset=0.4](BS3)(LBM4)(BS4){M}
+\beamsplitter[bswidth=0.7, labelangle=-35, labeloffset=0.8](LBM2)(BS4)(LBM5){BS}
+\mirror[labelangle=135, labeloffset=0.4](LBM2)(LBM3)(BS5){M}
+\mirror[labelangle=-45, labeloffset=0.4](BS4)(LBM5)(BS6){M}
+\beamsplitter[bswidth=0.7](LBM3)(BS5)(BS6){BS}
+\beamsplitter[labelangle=-90](BS5)(BS6)(CCD){BS}
+\mirror[labeloffset=0.4, labelangle=-45](BS2)(PB1M1)(PB1BS2){M}
+\beamsplitter[labelangle=-90](PB1M1)(PB1BS2)(CCD){BS}
+\optbox[endbox, labelrelative](BS6)(CCD){CCD1}
+\crystal[voltage, lamp, crystalwidth=1, crystalheight=0.4,fillstyle=solid, fillcolor=yellow!90!black, labeloffset=0.7, position=0.3](BS6)(CCD){SBN}
+\lens(BS6)(CCD){L}
+\beamsplitter[labelangle=90](BS6)(BSFT)(CCD2){BS}
+\beamsplitter[labelangle=90](BSFT)(PBSCCD)(CCD3){PBS}
+\optbox[endbox, labelrelative](BSFT)(CCD2){CCD2}
+\lens[labelangle=180, position=0.6](BSFT)(CCD2){L}
+\optbox[endbox, labelrelative](PBSCCD)(CCD3){CCD3}
+\optretplate(Laserb)(BS1){HWP}
+\lens[position=0.25](LBM1)(LBM2){L}
+\pinhole[position=0.3, labelangle=90](LBM1)(LBM2){PH}
+\lens[position=0.4](LBM1)(LBM2){L}
+\optplate[plateheight=0.4, labelangle=0, labeloffset=0.4](9.15,3.9)(9.15,4.1){B}
+
+\optplate[labelangle=0](BS5)(BS6){LP}
+\polarization[pol=perp, position=0.6](BS5)(BS6){}
+\polarization[pol=parallel](PB1BS2)(BS6){}
+
+\optplate[position=0.2](BS2)(PB1M1){PM}
+\lens[position=0.3,labelangle=180](BS2)(PB1M1){MO}
+\pinhole[position=0.35](BS2)(PB1M1){PH}
+\lens[position=0.5](BS2)(PB1M1){L}
+\optretplate[position=0.7](BS2)(PB1M1){HWP}
+\optplate[position=0.8, labelangle=180](BS2)(PB1M1){LP}
+\lens[labelangle=180](PB1M1)(PB1BS2){L}
+%\optplate(BLOCKPB1)(BLOCKPB1){B}
+\optretplate[labelangle=0, labeloffset=0.9](BS3)(LBM4){HWP}
+\optretplate[labelangle=0, labeloffset=0.9](LBM5)(BS5){HWP}
+
+
+%Probe beam interferometer
+\beamsplitter(BS1)(PB2BS1)(PB2M1){BS}
+\mirror[labeloffset=0.4,labelangle=135](PB2BS1)(PB2M1)(PB2BS2){M}
+\mirror[labeloffset=0.4,labelangle=-45](PB2BS1)(PB2M2)(PB2BS2){M}
+\beamsplitter[labelangle=-45](PB2M1)(PB2BS2)(PB2M3){BS}
+\mirror[labeloffset=0.4,labelangle=135](PB2BS2)(PB2M3)(PB2M4){M}
+\mirror[labeloffset=0.4,labelangle=45](PB2M3)(PB2M4)(PB2BS3){M}
+\beamsplitter[labelangle=0](PB2BS2)(PB2BS3)(PB2M5){BS}
+\mirror[labeloffset=0.4,labelangle=45](PB2BS3)(PB2M5)(PB1BS2){M}
+\optplate[plateheight=0.2, labelangle=0, labeloffset=0.4](4.85,10.79)(4.85,10.81){B}
+\optretplate[labelangle=0, labeloffset=0.9](PB2M2)(PB2BS2a){HWP}
+\optretplate[labelangle=180, labeloffset=0.9, position=0.6](PB2BS1)(PB2M1){HWP}
+\optretplate[labelangle=-90](PB2M3)(PB2M4){HWP}
+\end{pspicture}
+
+\end{TeXtoEPS}
+
+\end{document}
