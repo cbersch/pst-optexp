@@ -29,7 +29,7 @@ all: $(addsuffix .pdf, $(FILELIST))
 %.ps: %.dvi
 	dvips -q $< 2>&1 >/dev/null
 
-%.dvi: %.tex 
+%.dvi: %.tex $(POE)
 	$(LATEX) $< 2>&1 >/dev/null 
 	rm -f $*.aux $*.log
 
