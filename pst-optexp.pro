@@ -373,47 +373,6 @@ tx@OptexpDict begin
     end
 } bind def
 %
-% [ CompN ... Comp1 {options}
-/ConnectPlaneNodes {%
-    % preset options
-    /nMul 1 def
-    % execute options
-    exec
-    PrearrangePlanes
-    PushAllPlanesOnStack
-    counttomark /PlaneNum ED
-    /PN 1 def
-    { % iterate over all planes
-	dup xcheck not {% array, not executable
-	    PushAmbCompPlanesOnStack
-	} if
-	exec
-	5 1 roll
-	pop %/Mode ED
-	pop % n
-	% draw PlaneNumber CompName
-	cvn load begin % comp dict
-	    (N@) name strcat exch
-	    dup N eq { pop (N) } { 3 string cvs } ifelse
-	    strcat
-	end
-	tx@NodeDict begin cvn load GetCenter end
-	2 copy ToVec /lastBeamPoint ED
-	3 -1 roll
-	PN 1 eq {
-	    pop
-	    counttomark 2 roll
-	} {
-	    counttomark 3 roll
-	} ifelse
-	PN PlaneNum eq {
-	    exit
-	} {
-	    /PN PN 1 add def
-	} ifelse
-    } loop
-} bind def
-%
 % InVec is relative to the connection between first and second components
 % transform to absolute coordinates
 % Plane2 Plane1 {InVec} -> {InVec'}
@@ -459,24 +418,13 @@ tx@OptexpDict begin
     } ifelse
     ToVec
 } bind def
-%/TransformStartPos {
-%    exec 2 copy 6 2 roll 0 eq exch 0 eq and not  % SPx SPy P2 P1 bool
-%    exch exec pop pop pop GetPlaneCenter % SPx SPy P2 bool X1 Y1
- %   3 -1 roll {% SP != 0,0    SPx SPy P2 X1 Y1 bool
-%	2 copy 7 2 roll % X1 Y1 SPx SPy P2 X1 Y1
-%	3 -1 roll exec pop pop pop GetPlaneCenter % X1 Y1 SPx SPy X1 Y1 X2 Y2
-%	4 2 roll @ABVect
-%	exch atan matrix rotate dtransform
-%	VecAdd
- %   } {
-%	5 2 roll pop pop pop
- %   } ifelse
-  %  ToVec
-%} bind def
+%
 % X Y CompName -> PlaneNumber
 /GetNearestPlane {
     3 copy 1 exch GetPlaneCenter @ABDist /dist ED /nearestPlane 1 def
+    % X Y CompName
     dup cvn load /N get 2 1 3 -1 roll {
+	% iterate through plane 2 to plane N of CompName 
 	4 copy exch GetPlaneCenter @ABDist dup dist lt {
 	    /dist ED /nearestPlane ED
 	} {
@@ -511,18 +459,30 @@ tx@OptexpDict begin
     } ifelse
 } bind def
 %
+% Components which do not have an unambiguous behaviour (beamslitter, can
+% transmit and reflect) like lenses (transmission only) or mirrors (reflection
+% only), must be evaluated to see which mode should be used.  Argument is
+% [(name) draw], draw is a boolean which is true if the inner beams should be
+% drawn.
 /PushAmbCompPlanesOnStack {
 %    counttomark /t ED t copy t{==} repeat
     currentdict /outToPlane undef
-    PN PlaneNum eq not {% not last plane
-	exch dup 3 1 roll % outToPlane
-	dup xcheck not {%
+    PN PlaneNum eq not {
+	% not the last plane, there should be another one on the stack
+	exch dup 3 1 roll % plane ambcomp plane
+	dup xcheck not {
+	    % the next component is also an ambcomp, use its center point as
+	    % reference
 	    0 get (C) exch
 	} {
+	    % otherwise use the plane node
 	    exec pop pop pop
 	} ifelse
 	[ 3 1 roll ] cvx /outToPlane ED
+	% outToPlane is {(PN) (compName)}
     } if
+    % the old plane number, without counting the additional planes of the
+    % current ambcomp
     /PlaneNumTmp PlaneNum def
     aload pop /draw ED /name ED
     name cvn load /N get /N ED
@@ -533,7 +493,7 @@ tx@OptexpDict begin
 	/CurrTmp /CurrLow load def
 	/CurrVecTmp /CurrVecLow load def
     } ifelse
-
+    % CurrTmp is the current point of the beam, CurrVecTmp its vector.
     PN 1 eq not 1 N eq not and {% not first comp and not single interface
 	CurrTmp name GetNearestPlane /nextPlane ED
 	%
@@ -628,8 +588,8 @@ tx@OptexpDict begin
     { % iterate over all planes
 %	(PN) == PN ==
 %	/Curr load ==
-%	(on stack) == counttomark /t ED t copy t {==} repeat
 	dup xcheck not {% array, not executable
+	    (on stack) == counttomark /t ED t copy t {==} repeat	
 	    PushAmbCompPlanesOnStack
 %	    (completed planes on stack)==
 %	    counttomark /t ED t copy t{==}repeat
@@ -697,11 +657,11 @@ tx@OptexpDict begin
 %    (DrawBeam)==
 %    counttomark /t ED t copy t {==} repeat
 %    (TraceBeam)==
-    connectPlaneNodes {
-	ConnectPlaneNodes
-    } {
+%    connectPlaneNodes {
+%	ConnectPlaneNodes
+%    } {
 	TraceBeam %2 copy (go to start point)== == ==
-    } ifelse
+%    } ifelse
     counttomark 2 eq {
 	% first ray misses the next interface
 	pop pop
@@ -974,7 +934,7 @@ tx@OptexpDict begin
 		    } {
 			drawInner % the other beams depend on some options
 		    } ifelse % on stack: stop i draw?
-		    exch dup 4 -1 roll eq  {% draw i i stop
+		    exch dup 4 -1 roll eq connectPlaneNodes or {% draw i i stop
 			1 % after the last component plane we have always air
 		    }{ % otherwise the respective refractive index of the component
 			n
@@ -1067,10 +1027,20 @@ tx@OptexpDict begin
 % see <http://en.wikipedia.org/wiki/Snell%27s_law#Vector_form>
 % X_in Y_in X_norm Y_norm n1 n2 RefractVec -> X_out Y_out
 /RefractVec {
+    (PN) == PN ==
     div /n ED 4 2 roll NormalizeVec /Yin ED /Xin ED /Ynorm ED /Xnorm ED
-    /costheta1 Xnorm Ynorm Xin neg Yin neg SProd def
-    /costheta2 1 n dup mul 1 costheta1 dup mul sub mul sub sqrt def
-    n Xin mul n Yin mul n costheta1 mul costheta2 sub dup Xnorm mul exch Ynorm mul VecAdd 
+    n 1 eq {
+	(n = 1) ==
+	Xin Yin
+    }{
+	(n = ) == n ==
+	(Xin) == Xin  == (Yin) == Yin ==
+	(Xnorm) == Xnorm == (Ynorm) == Ynorm ==
+	/costheta1 Xnorm Ynorm Xin neg Yin neg SProd def
+	(costheta1) == costheta1 ==
+	/costheta2 1 n dup mul 1 costheta1 dup mul sub mul sub sqrt def
+	n Xin mul n Yin mul n costheta1 mul costheta2 sub dup Xnorm mul exch Ynorm mul VecAdd
+    } ifelse
 } bind def
 
 % X_in Y_in X_norm Y_norm ReflectVec -> X_out Y_out
