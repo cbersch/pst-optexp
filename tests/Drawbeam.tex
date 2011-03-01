@@ -145,8 +145,53 @@
   \addtopsstyle{Beam}{linecolor=bl}
   \multido{\i=0+1}{4}{%
     \pstVerb{\i\space 650 580 sub 3 div mul 580 add tx@addDict begin wavelengthToRGB end }%
-    \Drawbeam[startpos=0 0.2 \i\space 0.2 mul add, nMul=1 \i\space 0.05 mul add]{(A)}{1}{(B)}.
+    \Drawbeam[startpos=0 0.6, nMul=1.2 \i\space 0.05 mul sub]{(A)}{1}{(B)}.
   }%
+\end{pspicture}
+\end{LTXexample}
+\bigskip
+
+\begin{LTXexample}[width=6cm]
+\begin{pspicture}[showgrid=true](5,3)
+  \pnode(1,1){A}\pnode(4,1){B}
+  \pnode(5,3){C}
+  \optbox[optboxwidth=1, endbox](B)(A){}
+  \lens(A)(B){}
+  \mirror(A)(B)(C){}
+  \optplate[position=1](B)(C){}
+  \Drawbeam[startpos=0 -0.2]{1}{2}{3}{(C)}.
+\end{pspicture}
+\end{LTXexample}
+\bigskip
+
+\begin{LTXexample}[width=6cm]
+\begin{pspicture}[showgrid=true](5,3)
+  \pnode(1,1){A}\pnode(4,1){B}
+  \pnode(5,3){C}
+  \optbox[optboxwidth=1, endbox](B)(A){}
+  \lens(A)(B){}
+  \mirror(A)(B)(C){}
+  \optplate[position=1](B)(C){}
+  \Drawbeam[beamConnectComp, startpos=0 0.2]{1}{2}{3}{(C)}.
+\end{pspicture}
+\end{LTXexample}
+
+\subsection{Ambiguous components (beamsplitter)}
+\begin{LTXexample}[width=6cm]
+\begin{pspicture}[showgrid=true](5,3)
+  \pnode(1,1){A}\pnode(1,1.5){B}
+  \pnode(3,1.25){C}
+  \optplate[position=0](A)(C){}
+  \beamsplitter[n=1.5, compname=BS](A)(C)(B){}
+  \optplate[position=0](B)(C){}
+  \addtopsstyle{Beam}{linejoin=2}
+  \Drawbeam{1}{BS}{3}.
+  \addtopsstyle{Beam}{linecolor=red, linestyle=dashed}
+  \multido{\i=0+15}{1}{%
+    \rput(\OENodeLabel{BS}){\pnode(2;\i){D}}
+    \Drawbeam{1}{BS}{(D)}.
+    }%
+
 \end{pspicture}
 \end{LTXexample}
 \end{document}
