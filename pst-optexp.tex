@@ -206,15 +206,6 @@
 \define@boolkey[psset]{optexp}[POE@label@]{innerlabel}[true]{}%
 % for internal use only
 \define@key[psset]{optexp}{ref@angle}{\edef\POK@label@refangle{#1}}%
-% labelrelative is obsolete
-\define@choicekey[psset]{optexp}{labelrelative}[\val\nr]{true,false}[true]{%
-  \ifcase\nr\relax
-     \psset{labelref=relative}%
-  \or
-     \psset{labelref=global}%
-  \fi
-  \PackageWarning{pst-optexp}{labelrelative is obsolete, please use labelref=relative instead}%
-}%
 %
 % Debug
 \define@boolkey[psset]{optexp}[POE@debug@]{showoptdots}[true]{}
@@ -236,25 +227,6 @@
       lensradiusright=#1}%
    \edef\POK@lens@radius{#1}%
 }%
-% Lens Type (only for backward compatibility)
-% 0 -> plainconvex
-% 1 -> convexplain
-% 2 -> biconvex
-% 3 -> plainconcave
-% 4 -> concaveplain
-% 5 -> biconcave
-%
-\define@key[psset]{optexp}{lenstype}{%
-  \def\pst@tempA{#1}
-  \edef\POK@lens@type{%
-    \ifx\POS@lens@type@plainconvex\pst@tempA 0\else
-    \ifx\POS@lens@type@convexplain\pst@tempA 1\else
-    \ifx\POS@lens@type@biconvex\pst@tempA 2\else
-    \ifx\POS@lens@type@plainconcave\pst@tempA 3\else
-    \ifx\POS@lens@type@concaveplain\pst@tempA 4\else
-    \ifx\POS@lens@type@biconcave\pst@tempA 5%
-    \fi\fi\fi\fi\fi\fi%
-}}
 \define@key[psset]{optexp}{lens}{%
   \pst@expandafter\psset@@lens{#1} {} {} {} {} {}\@nil
 }%
@@ -278,24 +250,12 @@
 %
 % Pinhole
 \define@key[psset]{optexp}{innerheight}{\edef\POK@pinhole@iheight{#1}}
-\define@key[psset]{optexp}{iwidth}{%
-   \edef\POK@pinhole@iheight{#1}%
-   \PackageWarning{pst-optexp}{iwidth is obsolete, use innerheight instead}
-}
 \define@key[psset]{optexp}{outerheight}{\edef\POK@pinhole@oheight{#1}}
-\define@key[psset]{optexp}{owidth}{%
-   \edef\POK@pinhole@oheight{#1}%
-   \PackageWarning{pst-optexp}{owidth is obsolete, use outerheight instead}
-}
 \define@key[psset]{optexp}{phlinewidth}{\edef\POK@pinhole@linewidth{#1}}
 %
 % Beamsplitter
 \define@key[psset]{optexp}{bssize}{\edef\POK@bssize{#1}}
 \define@key[psset]{optexp}{bsstyle}{\edef\POK@bsstyle{#1}}
-\define@key[psset]{optexp}{bswidth}{%
-   \edef\POK@bssize{#1}%
-   \PackageWarning{pst-optexp}{bswidth is obsolete, use bssize instead}%
-}
 %
 % Crystal
 \define@key[psset]{optexp}{crystalwidth}{\edef\POK@crystal@width{#1}}
@@ -353,19 +313,11 @@
    {\PackageError{pst-optexp}{Unknown value '\val' for key dettype}}
 %
 % Polarization
-\define@key[psset]{optexp}{polwidth}{%
-   \edef\POK@polarization@size{#1}%
-   \PackageWarning{pst-optexp}{polwidth is obsolete, use polsize instead}%
-}
 \define@key[psset]{optexp}{polsize}{\edef\POK@polarization@size{#1}}
 \define@key[psset]{optexp}{pollinewidth}{\edef\POK@polarization@linewidth{#1}}
 \define@choicekey+[psset]{optexp}{poltype}[\val\nr]{parallel,misc,perp,rcirc,lcirc}%
    {\edef\POK@pol@type{#1}}
    {\PackageError{pst-optexp}{Unknown value '\val' for key poltype}}
-\define@key[psset]{optexp}{pol}{%
-   \edef\POK@poltype{#1}%
-   \PackageWarning{pst-optexp}{pol is obsolete, use poltype instead}%
-}
 %
 % Optical Diode
 \define@key[psset]{optexp}{optdiodesize}{\edef\POK@diode@size{#1}}
@@ -1548,7 +1500,6 @@
 % lens
         ,lenswidth=0.2
         ,lensheight=1
-        ,lenstype=\@empty
         ,lensradius=\@empty
         ,lensradiusleft=1
         ,lensradiusright=1
@@ -1858,11 +1809,7 @@
                    \POK@refractiveindex}%
 }%
 \def\lens@iii{%
-   %
-   % use old lens code to maintain backward compatibility
-   \ifx\POK@lens@type\@empty
    \addbefore@par{linejoin=1}%
-   % NEW CODE!
    \begin@ClosedObj
    \edef\@lens@newwd{0\space}%
    \edef\@lens@wd{\POK@lens@width\space\pst@number\psxunit mul 2 div }%
@@ -1970,97 +1917,6 @@
                    \fi
                    \POK@refractiveindex}%
     \end@ClosedObj
-    %
-    % OLD CODE (compatibility)
-    \else
-       \pst@draw@lens
-   \fi
-\ignorespaces}%
-%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-% LENS (old) maintained for backward compatibility
-% used only if lensheight and lenswidth must be used to draw the lens 
-% (i.e. when lensradius is not defined)
-%
-\def\pst@draw@lens{%
-%
-  \edef\@l@h{\POK@lens@height\space 2 div\space}%
-  \edef\@l@a{\POK@lens@width\space 2 div\space}%
-  % 
-  \ifnum\POK@lens@type<3
-  % CONVEX
-     \ifx\POK@lens@radius\@empty
-        \edef\@l@r{\@l@a 2 div \@l@h dup mul 2 \@l@a mul div add\space}%
-     \else
-        \edef\@l@r{\POK@lens@radius\space}%
-        \edef\@l@a{\@l@r dup dup mul \@l@h dup mul sub sqrt sub\space}%
-     \fi
-     % 
-     % define some parameters only for convex lenses
-     \edef\@l@d{\@l@r \@l@a sub\space}%
-     \edef\@l@alpha{\@l@h \@l@d atan\space}%
-     \edef\@l@y{\@l@d\space}%
-  \else
-     % CONCAVE
-     \ifx\POK@lens@radius\@empty
-        \edef\@l@r{\@l@h 1.5 mul\space}%
-     \else
-        \edef\@l@r{\POK@lens@radius\space}%
-     \fi%
-     %
-     % define some parameters only for concave lenses
-     \edef\@l@d{\@l@r dup mul \@l@h dup mul sub sqrt\space}%
-     \edef\@l@alpha{\@l@h \@l@d atan\space}%
-     \edef\@l@y{\@l@r \@l@a add\space}%
-  \fi%
-  % 
-  %
-  \def\temp@LeftPlot{%
-     \parametricplot[liftpen=1]{-1}{1}{%   
-        \@l@r \@l@alpha t mul 180 add cos mul \@l@y add \@l@r \@l@alpha t mul 180 add sin mul}%
-  }%
-  \def\temp@RightPlot{%
-     \parametricplot[liftpen=1]{-1}{1}{%  
-        \@l@r \@l@alpha t mul cos mul \@l@y sub \@l@r \@l@alpha t mul sin mul}%
-  }%      
-  %
-  %
-  \pscustom{%
-  \ifcase\POK@lens@type
-     % plainconvex
-     \temp@RightPlot%
-     \closepath%
-  \or
-     % convexplain
-     \temp@LeftPlot%
-     \closepath%
-  \or
-     % biconvex
-    \temp@LeftPlot%
-     \temp@RightPlot%
-     \closepath
-  \or
-     % plainconcave
-     \temp@LeftPlot%
-     \psline[liftpen=1](! 0 \@l@h neg)%
-                       (! 0 \@l@h)%
-                       (! \@l@r \@l@d sub \@l@a add \@l@h)%
-     \closepath
-  \or%
-     % concaveplain
-     \temp@RightPlot%
-     \psline[liftpen=1](! 0 \@l@h)%
-                       (! 0 \@l@h neg)%
-                       (! \@l@r \@l@d sub \@l@a add neg \@l@h neg)%
-     \closepath
-  \or
-     % biconcave
-     \temp@RightPlot%
-     \temp@LeftPlot%
-     \closepath
-  \fi
-  }%
 \ignorespaces}%
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
