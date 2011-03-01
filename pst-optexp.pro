@@ -465,6 +465,7 @@ tx@OptexpDict begin
 % [(name) draw], draw is a boolean which is true if the inner beams should be
 % drawn.
 /PushAmbCompPlanesOnStack {
+    (PushAmpCompPlanesOnStack) ==
 %    counttomark /t ED t copy t{==} repeat
     currentdict /outToPlane undef
     PN PlaneNum eq not {
@@ -493,7 +494,9 @@ tx@OptexpDict begin
 	/CurrTmp /CurrLow load def
 	/CurrVecTmp /CurrVecLow load def
     } ifelse
-    % CurrTmp is the current point of the beam, CurrVecTmp its vector.
+    % CurrTmp is the current point of the beam on the previous plane, CurrVecTmp
+    % its outgoing vector.
+    % The first plane is the one nearest to the current point.
     PN 1 eq not 1 N eq not and {% not first comp and not single interface
 	CurrTmp name GetNearestPlane /nextPlane ED
 	%
@@ -504,27 +507,33 @@ tx@OptexpDict begin
 	3 1 roll ToVec /CurrVecTmp ED
 	[ nextPlane name name cvn load /n get 5 -1 roll true ] cvx % always draw to first interface
     } if
-
     %
     % now add CenterPlane
-    1 N eq {% only a single interface
+    1 N eq {
+	% only a single interface
 	[ (C) name name cvn load /n get 
 	PN 1 eq {
+	    % its the first comp
 	    trans
 	} {
 	    PN PlaneNum eq {
+		% its the last comp
 		trans
 	    } {
+		% somewhere in the middle, check the mode (trans or refl)
 		CurrVecTmp (C) name GetPlaneVec NormalVec outToPlane GetPlaneCenter (C) name GetPlaneCenter @ABVect SProd
 		0 lt { trans } { refl } ifelse % mode
 	    } ifelse
 	} ifelse
 	true ] cvx
     } {
+	% ambcomp has more than one interfaces
 	PN PlaneNum eq {
+	    % its the last comp, just put the center plane on the stack
 	    [ (C) name name cvn load /n get trans draw ] cvx exch
 	    /PlaneNumTmp PlaneNumTmp 1 add def
 	} {
+	    %
 	    outToPlane GetPlaneCenter name GetNearestPlane /nextPlane ED
 	    %
 	    % check if mode of center is trans or refl
