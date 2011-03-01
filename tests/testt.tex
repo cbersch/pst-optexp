@@ -1,0 +1,31 @@
+%%% testtt2.tex --- 
+
+%% Author: cbersch
+%% Version: $Id: testt.tex,v 0.0 2011/03/01 14:04:37 Exp$
+
+
+\documentclass{scrartcl}
+\usepackage[latin1]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[ngerman]{babel}
+\usepackage{lmodern}
+\usepackage{textcomp}
+\usepackage{pst-optexp}
+
+%%\revision$Header: /home/cbersch/work/pst-optexp/tests/testt.tex,v 0.0 2011/03/01 12:13:59 cbersch Exp$
+
+\begin{document}
+\begin{pspicture}[showgrid=true](5,3)
+  \pnode(1,1){A}\pnode(1,1.5){B}
+  \pnode(3,1.25){C}
+  \optplate[position=0](A)(C){}
+  \beamsplitter[n=1.5, compname=BS](A)(C)(B){}
+  \optplate[position=0](B)(C){}
+  \rput(\OENodeLabel{BS}){\pnode(2;0.001){D}}
+  \psdot(D)
+  \Drawbeam{1}{BS}{(D)}.
+  \addtopsstyle{Beam}{linecolor=red, linestyle=dashed, strokeopacity=0.2}
+  \rput(\OENodeLabel{BS}){\pnode(2;10){D}}
+  \Drawbeam{1}{BS}{(D)}.
+\end{pspicture}
+\end{document}
