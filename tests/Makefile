@@ -24,7 +24,7 @@ POE=$(shell kpsewhich pst-optexp.tex pst-optexp.pro)
 all: $(addsuffix .pdf, $(FILELIST))
 
 %.pdf: %.ps
-	epstopdf $<
+	ps2pdf $<
 
 %.ps: %.dvi
 	dvips -q $< 2>&1 >/dev/null

@@ -466,7 +466,8 @@ tx@OptexpDict begin
 % drawn.
 /PushAmbCompPlanesOnStack {
     (PushAmpCompPlanesOnStack) ==
-%    counttomark /t ED t copy t{==} repeat
+    counttomark /t ED t copy t{==} repeat
+    (stack dumped) ==
     currentdict /outToPlane undef
     PN PlaneNum eq not {
 	% not the last plane, there should be another one on the stack
@@ -533,44 +534,69 @@ tx@OptexpDict begin
 	    [ (C) name name cvn load /n get trans draw ] cvx exch
 	    /PlaneNumTmp PlaneNumTmp 1 add def
 	} {
+	    % check the mode
+	    [ (C) name name cvn load /n get 
+	    CurrVecTmp (C) name GetPlaneVec NormalVec outToPlane GetPlaneCenter (C) name GetPlaneCenter @ABVect SProd
+	    0 lt { trans } { refl } ifelse % mode
+	    draw ] cvx exch
+	    /PlaneNumTmp PlaneNumTmp 1 add def
 	    %
-	    outToPlane GetPlaneCenter name GetNearestPlane /nextPlane ED
-	    %
-	    % check if mode of center is trans or refl
-	    nextPlane name GetPlaneCenter (C) name GetPlaneCenter @ABVect
-	    PN 1 eq {
-		trans
-		3 1 roll ToVec /CurrVecTmp ED
-		[ (C) name name cvn load /n get 5 -1 roll draw ] cvx
-	    }{
-		2 copy CurrVecTmp (C) name GetPlaneVec NormalVec SProd
-		0 lt { trans } { refl } ifelse % dX dY mode
-		3 1 roll ToVec /CurrVecTmp ED
-		[ (C) name name cvn load /n get 5 -1 roll draw ] cvx exch
-		/PlaneNumTmp PlaneNumTmp 1 add def
-	    } ifelse
+%	    outToPlane GetPlaneCenter name GetNearestPlane /nextPlane ED
+%	    %
+%	    % check if mode of center is trans or refl
+%	    nextPlane name GetPlaneCenter (C) name GetPlaneCenter @ABVect
+%	    PN 1 eq {
+%		trans
+%		3 1 roll ToVec /CurrVecTmp ED
+%		[ (C) name name cvn load /n get 5 -1 roll draw ] cvx
+%	    }{
+%		2 copy CurrVecTmp (C) name GetPlaneVec NormalVec SProd
+%		0 lt { trans } { refl } ifelse % dX dY mode
+%		3 1 roll ToVec /CurrVecTmp ED
+%		[ (C) name name cvn load /n get 5 -1 roll draw ] cvx exch
+%		/PlaneNumTmp PlaneNumTmp 1 add def
+%	    } ifelse
 	} ifelse
     } ifelse
-
     PN PlaneNum eq not 1 N eq not and {% not last comp and not single interface
-	%
-	% now check for mode of outgoing plane
-	CurrVecTmp nextPlane name GetPlaneVec NormalVec
-	outToPlane GetPlaneCenter nextPlane name GetPlaneCenter @ABVect SProd
-	0 lt { trans } { refl } ifelse %dX dY mode
-	[ nextPlane name 1 5 -1 roll draw ] cvx
-	PN 1 eq {
-	    exch
-	} {
-	    3 1 roll
-	} ifelse
+	% now check which is the outgoing plane
+	name /outToPlane load GetNextPlane
+	[ exch name 1 trans draw ] cvx 3 1 roll
 	/PlaneNumTmp PlaneNumTmp 1 add def
-    } if
+    } if    
 %    (PlaneNum) == PlaneNum ==
 %    (PlaneNumTmp) == PlaneNumTmp ==
 %    (PN) == PN ==
-%    counttomark /t ED t copy t{==} repeat
+    counttomark /t ED t copy t{==} repeat
+    (-----------------------------------------------)==
     /PlaneNum PlaneNumTmp def
+} bind def
+% 
+% (CompName) {outToPlane} -> PlaneNumber
+/GetNextPlane {
+    2 copy (C) 3 -1 roll % (CompName) {outToPlane} {outToPlane} (C) (CompName)
+    GetPlaneCenter 3 -1 roll exec GetPlaneCenter 4 2 roll 4 copy @ABVect /VecY ED /VecX ED @ABDist /centerDist ED
+    (centerDist) == centerDist ==
+    /sprod 1 def
+    % (CompName) {outToPlane}
+    exch dup 3 1 roll cvn load /N get 1 1 3 -1 roll {
+	% iterate through all planes of CompName
+	% (CompName) {outToPlane} n
+	3 copy 3 -1 roll 2 copy% (CompName) {outToPlane} n {outToPlane} n (CompName) n (CompName)
+	%/t 8 def t copy t{==}repeat
+	GetPlaneVec VecX VecY 4 2 roll NormalVec VecX VecY SProd dup sprod lt 
+	5 2 roll % sprod bool {outToPlane} n (CompName)
+	GetPlaneCenter 3 -1 roll exec GetPlaneCenter @ABDist dup (dist) == == centerDist lt and
+	{
+	    (nextPlaneasdf) ==
+	    /sprod ED /nextPlane ED
+	    nextPlane ==
+	} {
+	    (sprod) == == (nextPlane) == ==
+%	    pop pop
+	} ifelse
+    } for
+    pop pop nextPlane
 } bind def
 %
 % [ CompN ... Comp1 {options} {start point} {input vector}
@@ -601,7 +627,10 @@ tx@OptexpDict begin
 	    (on stack) == counttomark /t ED t copy t {==} repeat	
 	    PushAmbCompPlanesOnStack
 %	    (completed planes on stack)==
-%	    counttomark /t ED t copy t{==}repeat
+	    counttomark /t ED t copy t{==}repeat
+	    (PN) == PN ==
+	    PlaneNum ==
+	    (###############################)==
 %	    (done)==
 	} {
 %	    (on stack) ==
@@ -972,6 +1001,7 @@ tx@OptexpDict begin
 } bind def
 %
 % must be called within a OptExpComp dictionary
+% PlaneNum -> (P@PlaneNum)
 /PlaneName {
     dup N eq {
 	pop (N)
