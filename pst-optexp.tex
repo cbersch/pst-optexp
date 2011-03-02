@@ -27,7 +27,7 @@
 %
 %
 \def\fileversion{3.0alpha}
-\def\filedate{2011/02/09}
+\def\filedate{2011/03/02}
 \message{`pst-optexp' v\fileversion, \filedate\space (CB)}
 %
 \edef\PstAtCode{\the\catcode`\@} \catcode`\@=11\relax
@@ -52,6 +52,7 @@
 \newif\ifPOE@usefiberstyle
 \newif\ifPOE@connjoin
 \newif\ifPOE@fiber@
+\newif\ifPOE@beam
 \newif\ifPOE@beam@startIn
 \newif\ifPOE@beam@stopIn
 \newif\ifPOE@beam@beamIn
@@ -485,7 +486,7 @@
       % to keep the bookkeeping global
       \xdef\POE@complist{\POK@compname\ifx\POE@complist\@empty\else,\fi\POE@complist}%
    \fi
-   \typeout{\POK@compname, cnt=\the\poe@cnt^^J}
+%   \typeout{\POK@compname, cnt=\the\poe@cnt^^J}
 }%
 \define@key[psset]{optexp}{connjoin}{%
    \edef\pst@temp{#1}%
@@ -624,21 +625,6 @@
        \@nameuse{psls@\pslinestyle}
        grestore
     }%
-  \fi
-  \addto@pscode{ end}%
-  \let\psk@fillstyle\relax
-  \end@SpecialObj%
-}%
-\def\ConnectComponents@iii{%
-  \ifx\pslinestyle\@none\else
-    \addto@pscode{ {} 
-      gsave 
-      \pst@number\pslinewidth SLW
-      \pst@usecolor\pslinecolor
-      \tx@setStrokeTransparency
-      DrawBeam
-      \@nameuse{psls@\pslinestyle}
-      grestore }%
   \fi
   \addto@pscode{ end}%
   \let\psk@fillstyle\relax
@@ -788,9 +774,10 @@
 \def\psoe@cs@out@B{\pst@optexpdict (\POK@basicname) true GetInternalBeamNodes end }%
 %
 %
-\define@choicekey[psset]{optexp}{beam}[\val\nr]{}[]{%
-   \psset{conn=i-o}%
-}
+\define@boolkey[psset]{optexp}[POE@]{beam}[true]{}
+%\define@choicekey[psset]{optexp}{beam}[\val\nr]{}[]{%
+%   \psset{conn=i-o}%
+%}
 \define@choicekey[psset]{optexp}{fiber}[\val\nr]{}[]{%
    \psset{conn=f-f, fiber@=true}%
 }
@@ -815,8 +802,8 @@
 \def\OENodeExt#1{\OENodeOld{#1}{\POS@optexp@extnode@postfix}}%
 \def\OENodeIn#1{\OENode{#1}{1}}%
 \def\OENodeOut#1{\OENode{#1}{N}}%
-%\def\OENodeA#1{\OENode{#1}{A}}%
-%\def\OENodeB#1{\OENode{#1}{B}}%
+\def\OENodeA#1{\OENode{#1}{A}}%
+\def\OENodeB#1{\OENode{#1}{B}}%
 \def\OENodeLabel#1{\OENodeOld{#1}{Label}}%
 %
 \def\newOptexpComp{\@ifnextchar[{\newOptexpComp@i}{\newOptexpComp@i[]}}%
@@ -914,7 +901,20 @@
 %   \new@optexpdipole[fiber,#1]{#2}{#3}%
 %}%
 %
-\def\draw@InternalConnections{%
+%\def\draw@InternalConnections{}%
+\def\draw@InternalConnections{%+
+  \ifPOE@beam
+    \edef\poe@tmp{\the\poe@cnt}% I don't know how to do it with expansion
+    \ifPOE@endbox
+      \Drawbeam{(\optexp@nodeA)}{\poe@tmp}.
+    \else
+      \Drawbeam{(\optexp@nodeA)}{\poe@tmp}{(\optexp@nodeB)}.
+    \fi
+  \else
+    \draw@InternalConnectionsOld
+  \fi
+}%
+\def\draw@InternalConnectionsOld{%
    \ifPOE@endbox
       \@nameuse{\psk@connIn}
    \else
@@ -2263,7 +2263,7 @@
 \def\doveprism@comp{%
   \newOptexpComp{ {\POK@doveprism@size\space neg 0} {1 1} trans {NewPlaneInt}
                   {0 \POK@doveprism@size\space -0.5 mul} {1 0} refl {NewPlaneInt}
-                  {\POK@doveprism@size\space neg 0} {1 1} trans {NewPlaneInt} \POK@refractiveindex }%
+                  {\POK@doveprism@size\space 0} {-1 1} trans {NewPlaneInt} \POK@refractiveindex }%
 \ignorespaces}%
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

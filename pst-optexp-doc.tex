@@ -28,6 +28,32 @@
 \newcommand{\paramitem}[3]{\item[\param{#1}:] \paramvalue{#2} (\defaultparam{#3})}
 \newcommand{\styleitem}[2]{\item[\param{#1}:] \paramvalue{#2}}
 \newcommand{\styleshape}[1]{\texttt{#1}}
+
+\newcommand{\nodedesc}[1]{\Largr{#1}}
+\newcommand{\nodedescin}{\nodedesc{In}}%
+\newcommand{\nodedescout}{\nodedesc{Out}}%
+
+\newcommand{\dipoledesc}[1]{%
+  \Lcs{#1}\OptArgs%
+  \nodedescin%
+  \nodedescout%
+  \Largb{label}%
+}
+\newcommand{\tripoledesc}[1]{%
+  \Lcs{#1}\OptArgs%
+  \nodedescin%
+  \nodedesc{center}%
+  \nodedescout%
+  \Largb{label}%
+}
+
+\newcommand{\fiberdipoledesc}[1]{%
+  \Lcs{#1}\OptArgs%
+  \nodedescin%
+  \nodedescout%
+  \Largb{label}%
+}
+
 \newcolumntype{T}{>{\ttfamily}l}
 \newcolumntype{B}{>{\bfseries}l}
 \newcommand{\refstringexplanation}[0]{%
@@ -55,6 +81,9 @@
 \psset{usefiberstyle=true}
 \addtopsstyle{Fiber}{linecolor=red,linewidth=1.5\pslinewidth}
 \addtopsstyle{Beam}{linewidth=1.5\pslinewidth}
+
+\lstset{explpreset={pos=l,width=-99pt,overhang=0pt,hsep=\columnsep,vsep=\bigskipamount,rframe={}},
+    escapechar=§}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{document}\title{\texttt{pstricks-add}\\additionals Macros for \texttt{pstricks}%
 %\thanks{%
@@ -636,6 +665,11 @@ automatic beam connections the \styleshape{Beam} style is used.
 
 \subsection{Lens}\label{sec:lens}
 
+\begin{BDef}
+\dipoledesc{lens}
+%\Lcs{\Larga{macro}}
+\end{BDef}
+
 \begin{description}
 \paramitem{lensheight}{<num>}{1}
 \paramitem{lenswidth}{<num>}{0.2}
@@ -691,17 +725,12 @@ numbers defines two different radii. The third optional value defines
 the \Lkeyword{lensheight} and the fourth one the \Lkeyword{lenswidth}
 which is use only if \Lkeyword{thicklens} is set to \Lkeyword{true}.
 
-\textbf{Compatibility:} The whole implementation of the lens was
-changed in version 1.2. It allows a much more flexible definition of different lens
-types. However, I could not get full compatibility with the older way to
-define lens using only \Lkeyword{lensheight} and \Lkeyword{lenswidth}. To use
-this old behaviour, you have to set the \Lkeyword{lenstype} explicitly, but
-then you have no access to the new features! All users are encouraged to
-adapt their code to use the new parameters, as the old code will be
-removed in future versions.
-
 \medskip
 \subsection{Optical Plate}
+
+\begin{BDef}
+\dipoledesc{optplate}
+\end{BDef}
 
 \begin{description}
 \paramitem{plateheight}{<num>}{1}
@@ -729,6 +758,10 @@ removed in future versions.
 
 \subsection{Retardation Plate}
 
+\begin{BDef}
+\dipoledesc{optretplate}
+\end{BDef}
+
 \begin{description}
 \paramitem{plateheight}{<num>}{1}
 \paramitem{platewidth}{<num>}{0.1}
@@ -747,6 +780,10 @@ removed in future versions.
 \medskip
 
 \subsection{Pinhole}
+
+\begin{BDef}
+\dipoledesc{pinhole}
+\end{BDef}
 
 \begin{description}
 \paramitem{outerheight}{<num>}{1}
@@ -767,6 +804,10 @@ removed in future versions.
 \medskip
 
 \subsection{Crystal}\label{sec:crystal}
+
+\begin{BDef}
+\dipoledesc{crystal}
+\end{BDef}
 
 \begin{description}
 \paramitem{crystalwidth}{<num>}{1.4}
@@ -794,6 +835,10 @@ parameters see Sec.~\ref{sec:box} about boxes.  \medskip
 \medskip
 
 \subsection{Box}\label{sec:box}
+
+\begin{BDef}
+\dipoledesc{optbox}
+\end{BDef}
 
 \begin{description}
 \paramitem{optboxheight}{<num>}{0.8}
@@ -874,6 +919,10 @@ operator.
 
 \subsection{Detector}
 
+\begin{BDef}
+\dipoledesc{optdetector}
+\end{BDef}
+
 \begin{description}
 \paramitem{detsize}{<num>}{0.8}
 \paramitem{dettype}{round|diode}{round}
@@ -905,10 +954,14 @@ before \nxLPack{pst-optexp}.
   \optdetector[beam, dettype=diode](A)(B){detector}
 \end{pspicture}
 \end{LTXexample}
-
 \medskip
 
 \subsection{Optical Diode}\label{sec:optdiode}
+
+
+\begin{BDef}
+\dipoledesc{optdiode}
+\end{BDef}
 
 \begin{description}
 \paramitem{optdiodesize}{<num>}{0.8}
@@ -919,13 +972,18 @@ before \nxLPack{pst-optexp}.
 \begin{LTXexample}[width=3.5cm]
 \begin{pspicture}[showgrid=true](3,2)
    \optdiode[conn=o-o](0,1)(3,1){Diode}
-   \Drawbeam[beamIn=false,linecolor=red]{(0,1)}{1}{(3,1)}.
+%   \Drawbeam[beamIn=false,linecolor=red]{(0,1)}{1}{(3,1)}.
 \end{pspicture}
 \end{LTXexample}
 
 \medskip
 
 \subsection{Dove Prism}\label{sec:doveprism}
+
+\begin{BDef}
+\dipoledesc{doveprism}
+\end{BDef}
+
 \begin{description}
   \paramitem{doveprismsize}{<num>}{0.6}
 \end{description}
@@ -937,10 +995,13 @@ before \nxLPack{pst-optexp}.
   \doveprism[beam](0,1)(3,1){Dove}
 \end{pspicture}
 \end{LTXexample}
-
 \medskip
 
 \subsection{Polarization}
+
+\begin{BDef}
+\Lcs{polarization}\OptArgs\coord{\text{in}}\coord{\text{out}}
+\end{BDef}
 
 \begin{description}
 \paramitem{poltype}{parallel|perp|misc|lcirc|rcirc}{parallel}
@@ -969,6 +1030,10 @@ before \nxLPack{pst-optexp}.
 \medskip
 
 \subsection{Mirror}\label{sec:mirror}
+
+\begin{BDef}
+\tripoledesc{mirror}
+\end{BDef}
 
 \begin{description}
 \paramitem{mirrorwidth}{<num>}{1}
@@ -1052,6 +1117,10 @@ piezo mirror, the default piece of wire is omitted.
 
 \subsection{Beamsplitter}
 
+\begin{BDef}
+\tripoledesc{beamsplitter}
+\end{BDef}
+
 \begin{description}
 \paramitem{bssize}{<num>}{0.8}
 \paramitem{bsstyle}{cube|plate}{cube}
@@ -1083,6 +1152,10 @@ piezo mirror, the default piece of wire is omitted.
 
 
 \subsection{Optical Grid}
+
+\begin{BDef}
+\tripoledesc{optgrid}
+\end{BDef}
 
 \begin{description}
 \paramitem{optgridcount}{<integer>}{10}
@@ -1145,6 +1218,11 @@ piezo mirror, the default piece of wire is omitted.
 \medskip
 
 \subsection{Prism}\label{sec:prism}
+
+\begin{BDef}
+\tripoledesc{optprism}
+\end{BDef}
+
 \begin{description}
   \paramitem{prismsize}{<num>}{1}
   \paramitem{prismangle}{<num>}{60}
@@ -1167,6 +1245,11 @@ the \Lkeyword{prismangle}.
 \medskip
 
 \subsection{Right-Angle Prism}\label{sec:raprism}
+
+\begin{BDef}
+\tripoledesc{raprism}
+\end{BDef}
+
 \begin{description}
   \paramitem{raprismsize}{<num>}{1.5}
 \end{description}
@@ -1189,6 +1272,11 @@ prism.
 \medskip
 
 \subsection{Penta Prism}\label{sec:ppprism}
+
+\begin{BDef}
+\tripoledesc{pentaprism}
+\end{BDef}
+
 \begin{description}
   \paramitem{pentaprismsize}{<num>}{0.7}
 \end{description}
@@ -1254,6 +1342,11 @@ style. In the documentation this parameter is enabled to show the parts
 which would be highlighted.
 
 \subsection{Fiber}
+
+\begin{BDef}
+\fiberdipoledesc{optfiber}
+\end{BDef}
+
 \begin{description}
 \paramitem{fiberloops}{<integer>}{3}
 \paramitem{fiberloopradius}{<num>}{0.4}
@@ -1270,6 +1363,11 @@ which would be highlighted.
 \medskip
 
 \subsection{Amplifier}
+
+\begin{BDef}
+\fiberdipoledesc{optamp}
+\end{BDef}
+
 \begin{description}
 \paramitem{optampsize}{<num>}{0.8}
 \end{description}
@@ -1285,6 +1383,11 @@ which would be highlighted.
 \medskip
 
 \subsection{Mach-Zehnder Modulator}
+
+\begin{BDef}
+\fiberdipoledesc{optmzm}
+\end{BDef}
+
 \begin{description}
 \paramitem{optmzmsize}{<num>}{0.8}
 \end{description}
@@ -1300,6 +1403,11 @@ which would be highlighted.
 \medskip
 
 \subsection{Filter}
+
+\begin{BDef}
+\fiberdipoledesc{optfilter}
+\end{BDef}
+
 \begin{description}
 \paramitem{filtersize}{<num>}{0.8}
 \paramitem{filtertype}{bandpass|bandstop}{bandpass}
@@ -1324,6 +1432,11 @@ which would be highlighted.
 \medskip
 
 \subsection{Polarization Controller}
+
+\begin{BDef}
+\fiberdipoledesc{polcontrol}
+\end{BDef}
+
 \begin{description}
 \paramitem{polcontrolsize}{<num>}{0.15}
 \end{description}
@@ -1339,6 +1452,11 @@ which would be highlighted.
 \medskip
 
 \subsection{Isolator}
+
+\begin{BDef}
+\fiberdipoledesc{optisolator}
+\end{BDef}
+
 \begin{description}
 \paramitem{isolatorsize}{<num>}{0.6}
 \end{description}
@@ -1354,6 +1472,11 @@ which would be highlighted.
 \medskip
 
 \subsection{Optical Switch}
+
+\begin{BDef}
+\fiberdipoledesc{optswitch}
+\end{BDef}
+
 \begin{description}
 \paramitem{switchsize}{<num>}{0.8}
 \paramitem{switchstyle}{opened|closed}{opened}
@@ -1379,6 +1502,10 @@ which would be highlighted.
 
 \subsection{Fiber Delay Line}
 
+\begin{BDef}
+\fiberdipoledesc{fiberdelayline}
+\end{BDef}
+
 \begin{description}
   \paramitem{fdlsize}{<num>}{0.6}
 \end{description}
@@ -1396,6 +1523,10 @@ which would be highlighted.
 
 \subsection{Fiber Polarizer}
 
+\begin{BDef}
+\fiberdipoledesc{optfiberpolarizer}
+\end{BDef}
+
 \begin{description}
   \paramitem{fiberpolsize}{<num>}{0.6}
 \end{description}
@@ -1411,6 +1542,10 @@ which would be highlighted.
 \medskip
 
 \subsection{Fiber Collimator}
+
+\begin{BDef}
+\Lcs{fibercollimator}\nodedescin\OptArg*{\nodedesc{A}}\OptArg*{\nodedesc{B}}\nodedescout\Largb{label}%
+\end{BDef}
 
 \begin{description}
 \paramitem{fibercolsize}{<num>}{0.3}

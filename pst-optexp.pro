@@ -506,56 +506,47 @@ tx@OptexpDict begin
 	(C) name GetPlaneCenter nextPlane name GetPlaneCenter @ABVect 2 copy 6 2 roll SProd 
 	0 lt { trans }{ refl } ifelse
 	3 1 roll ToVec /CurrVecTmp ED
-	[ nextPlane name name cvn load /n get 5 -1 roll true ] cvx % always draw to first interface
+	[ nextPlane name
+	connectPlaneNodes {
+	    1
+	}{
+	    name cvn load /n get
+	} ifelse
+	5 -1 roll true ] cvx % always draw to first interface
     } if
     %
     % now add CenterPlane
     1 N eq {
 	% only a single interface
-	[ (C) name name cvn load /n get 
-	PN 1 eq {
-	    % its the first comp
+	[ (C) name 1 
+	PN 1 eq PN PlaneNum eq or {
+	    % its the first or last comp
 	    trans
 	} {
-	    PN PlaneNum eq {
-		% its the last comp
-		trans
-	    } {
-		% somewhere in the middle, check the mode (trans or refl)
-		CurrVecTmp (C) name GetPlaneVec NormalVec outToPlane GetPlaneCenter (C) name GetPlaneCenter @ABVect SProd
-		0 lt { trans } { refl } ifelse % mode
-	    } ifelse
+	    % somewhere in the middle, check the mode (trans or refl)
+	    CurrVecTmp (C) name GetPlaneVec NormalVec outToPlane GetPlaneCenter (C) name GetPlaneCenter @ABVect SProd
+	    0 lt { trans } { refl } ifelse % mode
 	} ifelse
 	true ] cvx
     } {
 	% ambcomp has more than one interfaces
 	PN PlaneNum eq {
 	    % its the last comp, just put the center plane on the stack
-	    [ (C) name name cvn load /n get trans draw ] cvx exch
+	    [ (C) name 1 trans draw ] cvx exch
 	    /PlaneNumTmp PlaneNumTmp 1 add def
 	} {
 	    % check the mode
-	    [ (C) name name cvn load /n get 
+	    [ (C) name
+	    connectPlaneNodes {
+		1
+	    } {
+		name cvn load /n get
+	    } ifelse
 	    CurrVecTmp (C) name GetPlaneVec NormalVec outToPlane GetPlaneCenter (C) name GetPlaneCenter @ABVect SProd
 	    0 lt { trans } { refl } ifelse % mode
 	    draw ] cvx exch
 	    /PlaneNumTmp PlaneNumTmp 1 add def
 	    %
-%	    outToPlane GetPlaneCenter name GetNearestPlane /nextPlane ED
-%	    %
-%	    % check if mode of center is trans or refl
-%	    nextPlane name GetPlaneCenter (C) name GetPlaneCenter @ABVect
-%	    PN 1 eq {
-%		trans
-%		3 1 roll ToVec /CurrVecTmp ED
-%		[ (C) name name cvn load /n get 5 -1 roll draw ] cvx
-%	    }{
-%		2 copy CurrVecTmp (C) name GetPlaneVec NormalVec SProd
-%		0 lt { trans } { refl } ifelse % dX dY mode
-%		3 1 roll ToVec /CurrVecTmp ED
-%		[ (C) name name cvn load /n get 5 -1 roll draw ] cvx exch
-%		/PlaneNumTmp PlaneNumTmp 1 add def
-%	    } ifelse
 	} ifelse
     } ifelse
     PN PlaneNum eq not 1 N eq not and {% not last comp and not single interface
