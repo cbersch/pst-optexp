@@ -434,31 +434,6 @@ tx@OptexpDict begin
     pop pop pop nearestPlane
 } bind def
 %
-% Plane1 Plane2 -> PlaneNumber1 CompName1 PlaneNumber2 CompName2
-/GetNearestPlanes {
-    dup xcheck not {% second is ambiguous
-	1 index xcheck not {% also first is ambiguous
-	    1 index % P1 P2 P1
-	    0 get (C) exch GetPlaneCenter % P1 P2 XC1 YC1
-	    3 -1 roll 0 get dup 4 1 roll GetNearestPlane % CompName2 P1 nextPlane2
-	    3 -1 roll 2 copy GetPlaneCenter 5 -1 roll % nextPlane2 CompName2 X2 Y2 P1
-	    0 get dup 4 1 roll GetNearestPlane exch % nextPlane2 CompName2 nextPlane1 CompName1
-	    4 2 roll
-	} {% first not ambiguous
-	    exch exec pop pop pop 2 copy GetPlaneCenter % Plane2 nextPlane1 CompName1 X1 Y1
-	    5 -1 roll 0 get dup 4 1 roll GetNearestPlane exch % nextPlane1 CompName1 nextPlane2 CompName2
-	} ifelse
-    } {
-	1 index xcheck not {% only first is ambiguous
-    	    exec pop pop pop 2 copy GetPlaneCenter % Plane1 nextPlane2 CompName2 X2 Y2
-	    5 -1 roll 0 get dup 4 1 roll GetNearestPlane exch % nextPlane2 CompName2 nextPlane1 CompName1
-	    4 2 roll
-	} {% none is ambiguous
-	    exec pop pop pop 3 -1 roll exec pop pop pop 4 2 roll
-	} ifelse
-    } ifelse
-} bind def
-%
 % Components which do not have an unambiguous behaviour (beamslitter, can
 % transmit and reflect) like lenses (transmission only) or mirrors (reflection
 % only), must be evaluated to see which mode should be used.  Argument is
@@ -615,13 +590,13 @@ tx@OptexpDict begin
 %	(PN) == PN ==
 %	/Curr load ==
 	dup xcheck not {% array, not executable
-	    (on stack) == counttomark /t ED t copy t {==} repeat	
+%	    (on stack) == counttomark /t ED t copy t {==} repeat	
 	    PushAmbCompPlanesOnStack
 %	    (completed planes on stack)==
 	    counttomark /t ED t copy t{==}repeat
-	    (PN) == PN ==
-	    PlaneNum ==
-	    (###############################)==
+%	    (PN) == PN ==
+%	    PlaneNum ==
+%	    (###############################)==
 %	    (done)==
 	} {
 %	    (on stack) ==
@@ -948,9 +923,9 @@ tx@OptexpDict begin
 	    begin % comp dict
 %		(comp dict) == name ==
 		desc eq {
-		    first {1}{N}ifelse dup -1 1 dup
+		    N N -1 1 1
 		} {
-		    first{N}{1} ifelse dup 1 N dup
+		    1 1 1 N N
 		} ifelse
 		5 1 roll % stop start start inc stop
 		{% iterate over all planes
