@@ -239,4 +239,24 @@
   \Drawbeam[beamConnectComp]{1}{BS}{(D)}.
 \end{pspicture}
 \end{LTXexample}
+
+\begin{LTXexample}[width=6cm]
+\newpsobject{MOLensIn}{lens}{lens=0.5 0.5 0.5}
+\newpsobject{MOLensOut}{lens}{lens=1.5 1.5 1.5}
+\begin{pspicture}[showgrid=true](5,2) 
+   \pnode(0,1){A}\pnode(5,1){B}
+   \psset{n=1}
+   \MOLensIn[abspos=0.5](A)(B){}
+   \MOLensOut[abspos=1](A)(B){}
+   \MOLensOut[abspos=4](A)(B){}
+   \MOLensIn[abspos=4.5](A)(B){}
+%   \addtopsstyle{Beam}{beamExtended}
+   \DrawCustomBeam{%
+     \Drawbeam[startpos=0 0.1]{(A)}{1}.
+     \Drawbeam[invec=1 1]{1}{2}.
+     \Drawbeam[invec=1 0, stopInside=false]{2}{3}.
+     \Drawbeam[invec=1 -1, startInside]{3}{4}.
+   }
+\end{pspicture}
+\end{LTXexample}
 \end{document}

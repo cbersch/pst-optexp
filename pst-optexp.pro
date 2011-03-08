@@ -576,6 +576,7 @@ tx@OptexpDict begin
     counttomark /N ED
     PrearrangePlanes
     PushAllPlanesOnStack
+    (planes on stack) == counttomark /t ED t copy t {==} repeat
     2 copy /InVec load TransformInVec /CurrVec ED
     continueBeam currentdict /lastBeamPoint known and {
 	/lastBeamPoint load /Curr ED
@@ -906,18 +907,18 @@ tx@OptexpDict begin
 	/last false def
 	/first false def
 	dup 1 eq {
-	    /first true def pop drawFirstInner
+	    /first true def pop startDrawInside
 	} {
 	    numComp eq {
-		drawLastInner
+		stopDrawInside
 		/last true def
 	    } {
-		drawOtherInner
+		beamInside
 	    } ifelse
-	} ifelse /drawInner ED
+	} ifelse /drawInside ED
 	load dup /ambiguous get {
 %	    (amb) ==
-	    /name get drawInner [ 3 1 roll ]
+	    /name get drawInside [ 3 1 roll ]
 	    counttomark 1 roll pop
 	} {
 	    begin % comp dict
@@ -936,7 +937,7 @@ tx@OptexpDict begin
 		    eq first not and { % the first plane
 			true    % always draw the line to the first plane of a component
 		    } {
-			drawInner % the other beams depend on some options
+			drawInside % the other beams depend on some options
 		    } ifelse % on stack: stop i draw?
 		    exch dup 4 -1 roll eq connectPlaneNodes or {% draw i i stop
 			1 % after the last component plane we have always air
@@ -955,8 +956,11 @@ tx@OptexpDict begin
 %		    (added mode)==
 		    3 1 roll 5 1 roll % i name refrIndex mode draw
 		    [ 6 1 roll ] cvx counttomark 1 roll
-		    last drawInner not and continueBeam not and {
-			exit
+		    last {
+			continueBeam stopInside not and
+			continueBeam not stopDrawInside not and or {
+			    exit
+			} if
 		    } if
 		} for pop pop
 	    end
