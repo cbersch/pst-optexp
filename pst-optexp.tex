@@ -53,9 +53,11 @@
 \newif\ifPOE@connjoin
 \newif\ifPOE@fiber@
 \newif\ifPOE@beam
-\newif\ifPOE@beam@startIn
-\newif\ifPOE@beam@stopIn
-\newif\ifPOE@beam@beamIn
+\newif\ifPOE@beam@startInside
+\newif\ifPOE@beam@stopInside
+\newif\ifPOE@beam@startDrawInside
+\newif\ifPOE@beam@stopDrawInside
+\newif\ifPOE@beam@beamInside
 \newif\ifPOE@beam@beamExtended
 \newif\ifPOE@beam@beamConnectComp
 \newif\ifPOE@beam@beamContinue
@@ -566,9 +568,11 @@
 \define@key[psset]{optexp}{startpos}{\edef\POK@beam@startpos{#1}}%
 \define@key[psset]{optexp}{beamdiv}{\edef\POK@beam@divergence{#1}}%
 \define@key[psset]{optexp}{beamwidth}{\edef\POK@beam@inwidth{#1}}%
-\define@boolkey[psset]{optexp}[POE@beam@]{startIn}[true]{}%
-\define@boolkey[psset]{optexp}[POE@beam@]{stopIn}[true]{}%
-\define@boolkey[psset]{optexp}[POE@beam@]{beamIn}[true]{}%
+\define@boolkey[psset]{optexp}[POE@beam@]{startInside}[true]{}%
+\define@boolkey[psset]{optexp}[POE@beam@]{stopInside}[true]{}%
+\define@boolkey[psset]{optexp}[POE@beam@]{startDrawInside}[true]{}%
+\define@boolkey[psset]{optexp}[POE@beam@]{stopDrawInside}[true]{}%
+\define@boolkey[psset]{optexp}[POE@beam@]{beamInside}[true]{}%
 \define@boolkey[psset]{optexp}[POE@beam@]{beamExtended}[true]{}%
 \define@boolkey[psset]{optexp}[POE@beam@]{beamConnectComp}[true]{}%
 \define@boolkey[psset]{optexp}[POE@beam@]{beamContinue}[true]{}%
@@ -592,10 +596,12 @@
   \addto@pscode{%
      \pst@optexpdict 
      1 setlinejoin
-     /drawFirstInner \ifPOE@beam@startIn true \else false \fi def
-     /drawLastInner \ifPOE@beam@stopIn true \else false \fi def
-     /drawOtherInner \ifPOE@beam@beamIn true \else false \fi def
+     /startDrawInside \ifPOE@beam@startDrawInside true \else false \fi def
+     /stopDrawInside \ifPOE@beam@stopDrawInside true \else false \fi def
+     /beamInside \ifPOE@beam@beamInside true \else false \fi def
      /continueBeam \ifPOE@beam@beamContinue true \else false \fi def
+     /startInside \ifPOE@beam@startInside true \else false \fi def
+     /stopInside \ifPOE@beam@stopInside true \else false \fi def
      /connectPlaneNodes \ifPOE@beam@beamConnectComp true \else false \fi def
   }%
   \optexp@getcomps[\Drawbeam@ii%
@@ -1592,9 +1598,9 @@
         ,connjoin=1
         %
         % beam
-        ,startIn=false
-        ,stopIn=false
-        ,beamIn=true
+        ,startInside=false
+        ,stopInside=false
+        ,beamInside=true
 %        ,startpos=0 0
         ,invec=\@empty
         ,startpos=\@empty
