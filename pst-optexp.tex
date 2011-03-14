@@ -716,6 +716,55 @@
    \edef\optexp@comps{#1 \optexp@comps}%
 }%
 %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\def\optexp@getnode#1#2\@nil{%
+  \ifx#1(\relax
+    \optexp@getcoor(#2%
+  \else\ifcat#1a\relax
+    \optexp@getcomp{(OE@#1#2)}%
+  \else
+    \optexp@getcomp{(OE@\POS@optexp@basicname@default#1#2)}%
+  \fi\fi%
+}%
+\def\optexp@getcoor(#1){%
+  \pst@getcoor{#1}\pst@tempa
+  \expandafter\optexp@getcomp{{\pst@tempa}}
+}%
+\def\Drawfiber{\pst@object{Drawfiber}}%
+\def\Drawfiber@i#1#2{%
+  \def\optexp@comps{}%
+  \optexp@getnode#1\@nil
+  \optexp@getnode#2\@nil
+  \pnode(! \optexp@comps \pst@optexpdict NearestNode end \tx@UserCoor 2 copy == ==){OE@@F1}
+  \pnode(! \optexp@comps exch \pst@optexpdict NearestNode end \tx@UserCoor 2 copy == ==){OE@@F2}
+  \psdot(OE@@F1)
+  \psdot[linecolor=red](OE@@F2)
+  \nccurve[style=Fiber]{OE@@F1}{OE@@F2}
+}%
+\def\Drawfiber@ii{%
+  \addto@pscode{ {/nMul \POK@refractiveindex@mul\space def} }%
+  \ifx\POK@beam@startpos\@empty
+      \addto@pscode{ {0 0} }%
+    \else
+      \addto@pscode{ {\POK@beam@startpos \tx@ScreenCoor} }%
+    \fi
+    \addto@pscode{%
+       {\ifx\POK@beam@invec\@empty 0 0 \else \POK@beam@invec\fi} 
+       gsave 
+       \pst@number\pslinewidth SLW
+       \pst@usecolor\pslinecolor
+       \tx@setStrokeTransparency
+       DrawBeam 
+       \@nameuse{psls@\pslinestyle}
+       grestore
+    }%
+  \fi
+  \addto@pscode{ end}%
+  \let\psk@fillstyle\relax
+  \end@SpecialObj%
+}%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
 % The macro for 'manual' ray drawing
 \def\drawbeam{%
    \def\conntable{,a-a,b-b,A-A,B-B}%
@@ -786,6 +835,9 @@
 %}
 \define@choicekey[psset]{optexp}{fiber}[\val\nr]{}[]{%
    \psset{conn=f-f, fiber@=true}%
+}
+\define@choicekey[psset]{optexp}{nofiber}[\val\nr]{}[]{%
+   \psset{conn=-, fiber@=false}%
 }
 %
 % The fiber@ parameter is for internal use only to allow using \pscustom and connjoin
@@ -994,8 +1046,8 @@
    \@ifundefined{#2@i}{%
       \@namedef{#2}{\pst@object{#2}}%
       \expandafter\def\csname #2@i\endcsname(##1)(##2)##3{%
-         \addbefore@par{#3}%
-         \addafter@par{fiber,#1}%
+         \addbefore@par{fiber, #3}%
+         \addafter@par{#1}%
          \begin@OptexpObj
             \pst@regNodes{##1}{##2}
             \pst@adjustTempNodes

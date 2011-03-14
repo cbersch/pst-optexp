@@ -1118,4 +1118,74 @@ tx@OptexpDict begin
     VecAdd % Xt1-(Yt1-Yp) Yt1+(Xt1-Xp) Xt1 Yt1 Xt2 Yt2 Xt2-(Yt2-Yp) Yt2+(Xt2-Xp)
     tx@EcldDict begin InterLines end
 } bind def
+%
+% CompA|NodeA CombB|NodeB -> NearestNodeA coordinates
+/NearestNode {
+    /CompB ED dup
+    xcheck not {
+	/CompA ED
+	/CompB load dup xcheck not {
+	    pop 1 CompB GetPlaneCenter
+	} if ToVec /CompB ED
+	(N@) CompA strcat 
+	1 {% name and counter on stack
+	    2 copy dup % name cnt name cnt cnt
+	    3 string cvs 3 -1 roll exch strcat dup % name cnt cnt (namecnt) (namecnt)
+	    tx@NodeDict exch known {%
+		tx@NodeDict begin GetCenter end
+		CompB @ABDist
+		% cnt cnt dist
+		exch 1 eq {% init /dist
+		    /dist ED
+		    /planeNum ED
+		} {
+		    dup dist lt {
+			/dist ED
+			/planeNum ED
+		    } {
+			pop pop
+		    } ifelse
+		} ifelse
+	    } {
+		pop pop pop dup (N) strcat
+		tx@NodeDict begin GetCenter end
+		CompB @ABDist
+		dup dist lt {
+		    /dist ED
+		    /planeNum (N) def
+		} {
+		    pop
+		} ifelse
+		exit
+	    } ifelse
+	} loop
+	planeNum exch GetPlaneCenter
+    } {% else, it is a node and we already have the appropriate coordinates on the stack
+	exec
+    } ifelse
+} bind def
+
+%/GetInternalNodeNames {
+%    /reverse exch def
+%    (N@) exch strcat 
+%    1 % counter
+%    {% counter and name on stack
+%	2 copy dup 3 string cvs 3 -1 roll exch strcat dup
+%	tx@NodeDict exch known {%
+%	    reverse {
+%		4 1 roll pop
+%	    } {
+%		exch 2 add 1 roll
+%	    } ifelse
+%	} {
+%	    reverse {
+%		pop pop pop (N) strcat
+%	    } {
+%		pop pop exch (N) strcat exch 1 roll
+%	    } ifelse
+%	    exit
+%	} ifelse
+%	1 add
+%    } loop
+%} bind def
 end % tx@OptexpDict
