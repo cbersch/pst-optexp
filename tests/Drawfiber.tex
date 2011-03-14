@@ -1,7 +1,7 @@
 %%% Drawfiber.tex --- 
 
 %% Author: cbersch
-%% Version: $Id: Drawfiber.tex,v 0.0 2011/03/14 15:41:40 Exp$
+%% Version: $Id: Drawfiber.tex,v 0.0 2011/03/14 16:42:45 Exp$
 
 
 \documentclass{scrartcl}
@@ -15,12 +15,21 @@
 %%\revision$Header: /home/cbersch/work/pst-optexp/tests/Drawfiber.tex,v 0.0 2011/03/14 09:37:36 cbersch Exp$
 
 \begin{document}
-\addtopsstyle{Fiber}{linecolor=red, angleA=90}
+\addtopsstyle{Fiber}{linecolor=red}
+% \begin{pspicture}[showgrid=true](10,5)
+%   \pnode(0, 1){A}
+%   \pnode(5, 1){B}
+%   \optmzm[nofiber](A)(B){}
+%   \Drawfiber[addtoFiber={angleB=180}]{(A)}{1}
+% \end{pspicture}
+
 \begin{pspicture}[showgrid=true](10,5)
-  \pnode(0, 1){A}
-  \pnode(5, 1){B}
-  \optmzm[nofiber](A)(B){}
-%  \addtopsstyle{Fiber}{angleB=180}
-  \Drawfiber[addtoFiber={angleB=180}]{(A)}{1}
+  \pnode(0, 3){A}
+  \pnode(0, 1){B}
+  \pnode(5, 3){C}
+  \pnode(5, 1){D}
+  \optcoupler(A)(B)(C)(D){}
+  \Drawfiber{(A)}{1}
+%  \Drawfiber[addtoFiber={angleB=180}]{(A)}{1}
 \end{pspicture}
 \end{document}

@@ -1143,7 +1143,7 @@ tx@OptexpDict begin
 			/dist ED
 			dup /planeNum ED
 		    } {
-			exch pop
+			pop
 		    } ifelse
 		} ifelse
 		1 add % increment counter

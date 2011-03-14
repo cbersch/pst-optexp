@@ -1116,7 +1116,7 @@
    \@ifundefined{#2@i}{%
       \@namedef{#2}{\pst@object{#2}}%
       \expandafter\def\csname #2@i\endcsname(##1)(##2)(##3)(##4)##5{%
-         \addbefore@par{#3}%
+         \addbefore@par{fiber, #3}%
          \addafter@par{#1}%
          %
          \begin@OptexpObj
@@ -1143,12 +1143,14 @@
             \pst@draw@component{##5}{\@nameuse{#2@ii}}
             % 
             % connect the fibers
-            \psset{angleA=! \pst@optexpdict N@\optexp@nodeB\space N@\optexp@nodeA\space FiberAngleA end,
-                   angleB=! \pst@optexpdict N@\optexp@nodeB\space N@\optexp@nodeA\space FiberAngleB end}
-            \pccurve[style=FiberIn1](##1)(\optexp@nodeA @1)
-            \pccurve[style=FiberIn2](##2)(\optexp@nodeA @2)
-            \pccurve[style=FiberOut1](\optexp@nodeB @1)(##3)
-            \pccurve[style=FiberOut2](\optexp@nodeB @2)(##4)
+            \ifPOE@fiber@
+              \psset{angleA=! \pst@optexpdict N@\optexp@nodeB\space N@\optexp@nodeA\space FiberAngleA end,
+                     angleB=! \pst@optexpdict N@\optexp@nodeB\space N@\optexp@nodeA\space FiberAngleB end}
+              \pccurve[style=FiberIn1](##1)(\POK@basicname 1)
+              \pccurve[style=FiberIn2](##2)(\POK@basicname 2)
+              \pccurve[style=FiberOut1](\POK@basicname 3)(##3)
+              \pccurve[style=FiberOut2](\POK@basicname N)(##4)
+            \fi
          \end@OptexpObj
       }%
       \@namedef{#2@ii}{%
@@ -1164,6 +1166,7 @@
 % 
 \def\wdmsplitter{\pst@object{wdmsplitter}}%
 \def\wdmsplitter@i(#1)(#2)(#3)#4{%
+   \addbefore@par{fiber}%
    \begin@OptexpObj
       \pnode(#1){\optexp@nodeA}
       \ifx\POK@align\POS@optexp@top
@@ -1179,21 +1182,24 @@
       \fi\fi
       %
       \pst@draw@component{#4}\wdmsplitter@ii
-      %
-      % default connection angles
-      \psset{angleA=! \pst@optexpdict N@\optexp@nodeB\space N@\optexp@nodeA\space FiberAngleA end,
-             angleB=! \pst@optexpdict N@\optexp@nodeB\space N@\optexp@nodeA\space FiberAngleB end}
-      % 
-      % connect the fibers
-      \pccurve[style=FiberIn](#1)(\optexp@nodeA @)     
-      \pccurve[style=FiberOut1](\optexp@nodeB @1)(#2)
-      \pccurve[style=FiberOut2](\optexp@nodeB @2)(#3)
+      \ifPOE@fiber@
+        %
+        % default connection angles
+        \psset{angleA=! \pst@optexpdict N@\optexp@nodeB\space N@\optexp@nodeA\space FiberAngleA end,
+               angleB=! \pst@optexpdict N@\optexp@nodeB\space N@\optexp@nodeA\space FiberAngleB end}
+        % 
+        % connect the fibers
+        \pccurve[style=FiberIn](#1)(\optexp@nodeA @)     
+        \pccurve[style=FiberOut1](\optexp@nodeB @1)(#2)
+        \pccurve[style=FiberOut2](\optexp@nodeB @2)(#3)
+      \fi
    \end@OptexpObj
 }%
 %
 %
 \def\wdmcoupler{\pst@object{wdmcoupler}}%
 \def\wdmcoupler@i(#1)(#2)(#3)#4{%
+   \addbefore@par{fiber}%
    \begin@OptexpObj
       \pnode(#3){\optexp@nodeB}
       \ifx\POK@align\POS@optexp@top
@@ -1209,15 +1215,17 @@
       \fi\fi
       %
       \pst@draw@component{#4}\wdmcoupler@ii
-      %
-      % default connection angles
-      \psset{angleA=! \pst@optexpdict N@\optexp@nodeB\space N@\optexp@nodeA\space FiberAngleA end,
-             angleB=! \pst@optexpdict N@\optexp@nodeB\space N@\optexp@nodeA\space FiberAngleB end}
-      % 
-      % connect the fibers
-      \pccurve[style=FiberOut](\optexp@nodeB @)(#3)
-      \pccurve[style=FiberIn1](#1)(\optexp@nodeA @1)
-      \pccurve[style=FiberIn2](#2)(\optexp@nodeA @2)
+      \ifPOE@fiber@
+        %
+        % default connection angles
+        \psset{angleA=! \pst@optexpdict N@\optexp@nodeB\space N@\optexp@nodeA\space FiberAngleA end,
+               angleB=! \pst@optexpdict N@\optexp@nodeB\space N@\optexp@nodeA\space FiberAngleB end}
+        % 
+        % connect the fibers
+        \pccurve[style=FiberOut](\optexp@nodeB @)(#3)
+        \pccurve[style=FiberIn1](#1)(\optexp@nodeA @1)
+        \pccurve[style=FiberIn2](#2)(\optexp@nodeA @2)
+      \fi
    \end@OptexpObj
 }%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -2603,12 +2611,12 @@
       \pst@Verb{/@yshift 0 def}%
    \fi\fi
    \ifx\POK@coupler@type\POS@coupler@type@none
-      \pnode(! \@sz -0.5 mul @yshift \@sep add){\optexp@nodeA @1}
-      \pnode(! \@sz -0.5 mul @yshift \@sep sub){\optexp@nodeA @2}
-      \pnode(! \@sz 0.5 mul @yshift \@sep add){\optexp@nodeB @1}
-      \pnode(! \@sz 0.5 mul @yshift \@sep sub){\optexp@nodeB @2}
-      \psline[style=Fiber](\optexp@nodeA @1)(\optexp@nodeB @1)
-      \psline[style=Fiber](\optexp@nodeA @2)(\optexp@nodeB @2)
+      \pnode(! \@sz -0.5 mul @yshift \@sep add){\POK@basicname 1}
+      \pnode(! \@sz -0.5 mul @yshift \@sep sub){\POK@basicname 2}
+      \pnode(! \@sz 0.5 mul @yshift \@sep add){\POK@basicname 3}
+      \pnode(! \@sz 0.5 mul @yshift \@sep sub){\POK@basicname N}
+      \psline[style=Fiber](\POK@basicname 1)(\POK@basicname 3)
+      \psline[style=Fiber](\POK@basicname 2)(\POK@basicname N)
    \else\ifx\POK@coupler@type\POS@coupler@type@elliptic
       \psellipse[dimen=outer](!0 @yshift)(! \@sz \@sz 0.4 mul)
       \ifPOE@variable
@@ -2621,10 +2629,10 @@
       \psline(! \@csz neg dup)(! \@csz dup)
       \psline(! \@csz neg \@csz)(! \@csz dup neg)
    \fi\fi
-      \pnode(! \@sz neg \getCLW 0.3 mul add @yshift \@sep add){\optexp@nodeA @1}
-      \pnode(! \@sz neg \getCLW 0.3 mul add @yshift \@sep sub){\optexp@nodeA @2}
-      \pnode(! \@sz \getCLW 0.3 mul sub @yshift \@sep add){\optexp@nodeB @1}
-      \pnode(! \@sz \getCLW 0.3 mul sub @yshift \@sep sub){\optexp@nodeB @2}
+      \pnode(! \@sz neg \getCLW 0.3 mul add @yshift \@sep add){\POK@basicname 1}
+      \pnode(! \@sz neg \getCLW 0.3 mul add @yshift \@sep sub){\POK@basicname 2}
+      \pnode(! \@sz \getCLW 0.3 mul sub @yshift \@sep add){\POK@basicname 3}
+      \pnode(! \@sz \getCLW 0.3 mul sub @yshift \@sep sub){\POK@basicname N}
       \pnode(! 0 @yshift){\optexp@nodeLabel}
    \fi
 }%
