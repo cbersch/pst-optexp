@@ -589,7 +589,7 @@
 }%
 \def\Drawbeam{\pst@object{Drawbeam}}%
 \def\Drawbeam@i{%
-  \addbefore@par{style=Beam}%
+  \addafter@par{style=Beam}%
   \begin@SpecialObj%
   \let\pst@linetype\pst@arrowtype
   \pst@addarrowdef%
@@ -721,9 +721,9 @@
   \ifx#1(\relax
     \optexp@getcoor(#2%
   \else\ifcat#1a\relax
-    \optexp@getcomp{(OE@#1#2)}%
+    \optexp@getcomp{(#1#2)}%
   \else
-    \optexp@getcomp{(OE@\POS@optexp@basicname@default#1#2)}%
+    \optexp@getcomp{(\POS@optexp@basicname@default#1#2)}%
   \fi\fi%
 }%
 \def\optexp@getcoor(#1){%
@@ -732,36 +732,16 @@
 }%
 \def\Drawfiber{\pst@object{Drawfiber}}%
 \def\Drawfiber@i#1#2{%
-  \def\optexp@comps{}%
-  \optexp@getnode#1\@nil
-  \optexp@getnode#2\@nil
-  \pnode(! \optexp@comps \pst@optexpdict NearestNode end \tx@UserCoor 2 copy == ==){OE@@F1}
-  \pnode(! \optexp@comps exch \pst@optexpdict NearestNode end \tx@UserCoor 2 copy == ==){OE@@F2}
-  \psdot(OE@@F1)
-  \psdot[linecolor=red](OE@@F2)
-  \nccurve[style=Fiber]{OE@@F1}{OE@@F2}
-}%
-\def\Drawfiber@ii{%
-  \addto@pscode{ {/nMul \POK@refractiveindex@mul\space def} }%
-  \ifx\POK@beam@startpos\@empty
-      \addto@pscode{ {0 0} }%
-    \else
-      \addto@pscode{ {\POK@beam@startpos \tx@ScreenCoor} }%
-    \fi
-    \addto@pscode{%
-       {\ifx\POK@beam@invec\@empty 0 0 \else \POK@beam@invec\fi} 
-       gsave 
-       \pst@number\pslinewidth SLW
-       \pst@usecolor\pslinecolor
-       \tx@setStrokeTransparency
-       DrawBeam 
-       \@nameuse{psls@\pslinestyle}
-       grestore
-    }%
-  \fi
-  \addto@pscode{ end}%
-  \let\psk@fillstyle\relax
-  \end@SpecialObj%
+  \addafter@par{style=Fiber}%
+  \begingroup
+    \use@par
+    \def\optexp@comps{}%
+    \optexp@getnode#1\@nil
+    \optexp@getnode#2\@nil
+    \pnode(! \optexp@comps exch \pst@optexpdict NearestNode end \tx@UserCoor){OE@@F1}
+    \pnode(! \optexp@comps \pst@optexpdict NearestNode end \tx@UserCoor){OE@@F2}
+    \nccurve{OE@@F1}{OE@@F2}
+  \endgroup
 }%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
