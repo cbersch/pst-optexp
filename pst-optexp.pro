@@ -1125,30 +1125,31 @@ tx@OptexpDict begin
     xcheck not {
 	/CompA ED
 	/CompB load dup xcheck not {
-	    pop 1 CompB GetPlaneCenter
-	} if ToVec /CompB ED
+	    pop 1 CompB GetPlaneCenter ToVec
+	} if /CompB ED
 	(N@) CompA strcat 
 	1 {% name and counter on stack
 	    2 copy dup % name cnt name cnt cnt
 	    3 string cvs 3 -1 roll exch strcat dup % name cnt cnt (namecnt) (namecnt)
 	    tx@NodeDict exch known {%
-		tx@NodeDict begin GetCenter end
+		cvn load tx@NodeDict begin GetCenter end
 		CompB @ABDist
 		% cnt cnt dist
 		exch 1 eq {% init /dist
 		    /dist ED
-		    /planeNum ED
+		    dup /planeNum ED
 		} {
 		    dup dist lt {
 			/dist ED
-			/planeNum ED
+			dup /planeNum ED
 		    } {
-			pop pop
+			exch pop
 		    } ifelse
 		} ifelse
+		1 add % increment counter
 	    } {
 		pop pop pop dup (N) strcat
-		tx@NodeDict begin GetCenter end
+		cvn load tx@NodeDict begin GetCenter end
 		CompB @ABDist
 		dup dist lt {
 		    /dist ED
@@ -1159,7 +1160,7 @@ tx@OptexpDict begin
 		exit
 	    } ifelse
 	} loop
-	planeNum exch GetPlaneCenter
+	planeNum 3 string cvs strcat cvn load tx@NodeDict begin GetCenter end
     } {% else, it is a node and we already have the appropriate coordinates on the stack
 	exec
     } ifelse
