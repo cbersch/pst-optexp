@@ -1125,7 +1125,7 @@ tx@OptexpDict begin
     xcheck not {
 	/CompA ED
 	/CompB load dup xcheck not {
-	    pop 1 CompB GetPlaneCenter ToVec
+	    (N@) exch strcat (1) strcat cvn load tx@NodeDict begin GetCenter end ToVec
 	} if /CompB ED
 	(N@) CompA strcat 
 	1 {% name and counter on stack

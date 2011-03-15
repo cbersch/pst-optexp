@@ -52,8 +52,12 @@
 \newif\ifPOE@usefiberstyle
 \newif\ifPOE@connjoin
 \newif\ifPOE@fiber@
-\newif\ifPOE@fiberin
-\newif\ifPOE@fiberout
+\newif\ifPOE@fiberin@
+\newif\ifPOE@fiberin@top
+\newif\ifPOE@fiberin@bottom
+\newif\ifPOE@fiberout@
+\newif\ifPOE@fiberout@top
+\newif\ifPOE@fiberout@bottom
 \newif\ifPOE@beam
 \newif\ifPOE@beam@startInside
 \newif\ifPOE@beam@stopInside
@@ -123,6 +127,7 @@
                 hatchsep=1.4\POK@mirror@linewidth,%
                 fillstyle=hlines}%
 \newpsstyle{PiezoMirror}{fillstyle=solid,fillcolor=black!30}%
+\newpsstyle{IsolatorArrow}{linewidth=2\pslinewidth, arrowinset=0}
 \newpsstyle{Beam}{linecolor=green!90!black,linewidth=\pslinewidth}%
 \define@key[psset]{optexp}{newBeam}{\newpsstyle{Beam}{#1}}
 \define@key[psset]{optexp}{addtoBeam}{\addtopsstyle{Beam}{#1}}
@@ -275,9 +280,7 @@
 \define@key[psset]{optexp}{mirrorwidth}{\edef\POK@mirror@width{#1}}
 \define@key[psset]{optexp}{mirrorlinewidth}{\edef\POK@mirror@linewidth{#1}}
 %\define@key[psset]{optexp}{mirrortype}{\edef\POK@mirror@type{#1}}% piezo, extended, plain
-\define@choicekey+[psset]{optexp}{mirrortype}[\val\nr]{piezo,extended,plain}%
-   {\edef\POK@mirror@type{#1}}%
-   {\PackageError{pst-optexp}{Unknown value '\val' for mirrortype}}
+\define@choicekey*[psset]{optexp}{mirrortype}[\val\nr]{piezo,extended,plain}{\edef\POK@mirror@type{#1}}
 \define@key[psset]{optexp}{mirrordepth}{\edef\POK@mirror@depth{#1}}
 \define@key[psset]{optexp}{mirrorradius}{\edef\POK@mirror@radius{#1}}
 \define@boolkey[psset]{optexp}[POE@]{variable}[true]{}
@@ -286,9 +289,7 @@
 \define@key[psset]{optexp}{optgridcount}{\edef\POK@optgrid@count{#1}}
 \define@key[psset]{optexp}{optgridwidth}{\edef\POK@optgrid@width{#1}}
 \define@key[psset]{optexp}{optgridheight}{\edef\POK@optgrid@height{#1}}
-\define@choicekey+[psset]{optexp}{optgridtype}[\val\nr]{binary,blazed}%
-   {\edef\POK@optgrid@type{#1}}
-   {\PackageError{pst-optexp}{Unknown value '\val' for optgridtype}}
+\define@choicekey*[psset]{optexp}{optgridtype}[\val\nr]{binary,blazed}{\edef\POK@optgrid@type{#1}}%
 \define@key[psset]{optexp}{optgriddepth}{\edef\POK@optgrid@depth{#1}}
 \define@key[psset]{optexp}{optgridlinewidth}{\edef\POK@optgrid@linewidth{#1}}
 \define@boolkey[psset]{optexp}[POE@]{reverse}[true]{}
@@ -816,17 +817,41 @@
 %   \psset{conn=i-o}%
 %}
 \define@choicekey[psset]{optexp}{fiber}[\val\nr]{}[]{%
-   \psset{conn=f-f, fiber@=true, fiberin=true, fiberout=true}%
+   \psset{conn=f-f, fiberin, fiberout}%
 }
 \define@choicekey[psset]{optexp}{nofiber}[\val\nr]{}[]{%
-   \psset{conn=-, fiber@=false, fiberin=false, fiberout=false}%
+   \psset{conn=-, fiberin=none, fiberout=none}%
 }
-\define@boolkey[psset]{optexp}[POE@]{fiberin}[true]{}
-\define@boolkey[psset]{optexp}[POE@]{fiberout}[true]{}
-%
-% The fiber@ parameter is for internal use only to allow using \pscustom and connjoin
-% when drawing internal beams.
+\define@choicekey*[psset]{optexp}{fiberin}[\val\nr]{none,top,bottom,both}[both]{%
+  \ifcase\nr\relax
+    \psset{fiberin@=false, fiberin@top=false, fiberin@bottom=false}
+  \or
+    \psset{fiberin@=true, fiberin@top, fiberin@bottom=false, fiber@}
+  \or
+    \psset{fiberin@=true, fiberin@top=false, fiberin@bottom=true, fiber@}
+  \or
+    \psset{fiberin@=true, fiberin@top=true, fiberin@bottom=true, fiber@}
+  \fi
+}%
+\define@choicekey*[psset]{optexp}{fiberout}[\val\nr]{none,top,bottom,both}[both]{%
+  \ifcase\nr\relax
+    \psset{fiberout@=false, fiberout@top=false, fiberout@bottom=false}
+  \or
+    \psset{fiberout@=true, fiberout@top, fiberout@bottom=false, fiber@}
+  \or
+    \psset{fiberout@=true, fiberout@top=false, fiberout@bottom=true, fiber@}
+  \or
+    \psset{fiberout@=true, fiberout@top=true, fiberout@bottom=true, fiber@}
+  \fi
+}%
 \define@boolkey[psset]{optexp}[POE@]{fiber@}[true]{}
+\define@boolkey[psset]{optexp}[POE@]{fiberin@}[true]{}
+\define@boolkey[psset]{optexp}[POE@]{fiberin@top}[true]{}
+\define@boolkey[psset]{optexp}[POE@]{fiberin@bottom}[true]{}
+\define@boolkey[psset]{optexp}[POE@]{fiberout@}[true]{}
+\define@boolkey[psset]{optexp}[POE@]{fiberout@top}[true]{}
+\define@boolkey[psset]{optexp}[POE@]{fiberout@bottom}[true]{}
+%
 \def\optexp@nodeIn{\POK@basicname 1}%
 \def\optexp@nodeOut{\POK@basicname N}%
 \def\optexp@nodeA{\POK@basicname A}%
@@ -961,8 +986,12 @@
       \@nameuse{\psk@connIn}
    \else
       \ifPOE@fiber@
-         \@nameuse{\psk@connIn}
-         \@nameuse{\psk@connOut}
+        \ifPOE@fiberin@
+          \@nameuse{\psk@connIn}
+        \fi
+        \ifPOE@fiberout@
+          \@nameuse{\psk@connOut}
+        \fi
       \else
          \ifPOE@connjoin
             \def\tmp@A{psoe@cs@in@i}%
@@ -1149,12 +1178,16 @@
             % connect the fibers
             \psset{angleA=! \pst@optexpdict N@\optexp@nodeB\space N@\optexp@nodeA\space FiberAngleA end,
                    angleB=! \pst@optexpdict N@\optexp@nodeB\space N@\optexp@nodeA\space FiberAngleB end}
-            \ifPOE@fiberin
+            \ifPOE@fiberin@top
               \pccurve[style=FiberIn1](##1)(\POK@basicname 1)
+            \fi
+            \ifPOE@fiberin@bottom
               \pccurve[style=FiberIn2](##2)(\POK@basicname 2)
             \fi
-            \ifPOE@fiberout
+            \ifPOE@fiberout@top
               \pccurve[style=FiberOut1](\POK@basicname 3)(##3)
+            \fi
+            \ifPOE@fiberout@bottom
               \pccurve[style=FiberOut2](\POK@basicname N)(##4)
             \fi
          \end@OptexpObj
@@ -1194,11 +1227,13 @@
              angleB=! \pst@optexpdict N@\optexp@nodeB\space N@\optexp@nodeA\space FiberAngleB end}
       % 
       % connect the fibers
-      \ifPOE@fiberin
+      \ifPOE@fiberin@
         \pccurve[style=FiberIn](#1)(\POK@basicname 1)     
       \fi
-      \ifPOE@fiberout
+      \ifPOE@fiberout@top
         \pccurve[style=FiberOut1](\POK@basicname 2)(#2)
+      \fi
+      \ifPOE@fiberout@bottom
         \pccurve[style=FiberOut2](\POK@basicname N)(#3)
       \fi
    \end@OptexpObj
@@ -1229,11 +1264,13 @@
              angleB=! \pst@optexpdict N@\optexp@nodeB\space N@\optexp@nodeA\space FiberAngleB end}
       % 
       % connect the fibers
-      \ifPOE@fiberout
+      \ifPOE@fiberout@
         \pccurve[style=FiberOut](\POK@basicname N)(#3)
       \fi
-      \ifPOE@fiberin
+      \ifPOE@fiberin@top
         \pccurve[style=FiberIn1](#1)(\POK@basicname 1)
+      \fi
+      \ifPOE@fiberin@bottom
         \pccurve[style=FiberIn2](#2)(\POK@basicname 2)
       \fi
    \end@OptexpObj
@@ -2533,7 +2570,7 @@
    \edef\@ht{\POK@isolator@size\space 2 div\space}%
    \edef\@wd{\POK@isolator@size\space 0.8 mul\space}%
    \psframe[dimen=outer](! \@wd neg \@ht neg)(! \@wd \@ht)
-   \psline[linewidth=2\pslinewidth,arrowinset=0]{->}(! \@wd neg 0.6 mul 0)(!\@wd 0.6 mul 0)
+   \psline[style=IsolatorArrow]{->}(! \@wd neg 0.6 mul 0)(!\@wd 0.6 mul 0)
    \pnode(! \@wd neg 0){\optexp@nodeIn}
    \pnode(! \@wd 0){\optexp@nodeOut}
 \ignorespaces}%
