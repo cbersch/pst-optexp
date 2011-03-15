@@ -405,7 +405,8 @@ Sec.~\ref{sec:mirror}) which does not depend on the actual value of \Lkeyword{ex
 
 \begin{LTXexample}[pos=t, vsep=8mm]
 \begin{pspicture}[showgrid=true](11,3) 
-   \psset{conn=o-o, labelangle=-90, labeloffset=0.3}
+   \psset{%conn=o-o, 
+     labelangle=-90, labeloffset=0.3}
    \optbox[extnode=tl](0,2.5)(3,2.5){\texttt{tl}}\psdot(ExtNode)
    \optbox[extnode=l](0,1.5)(3,1.5){\texttt{l}}\psdot(ExtNode)
    \optbox[extnode=bl](0,0.5)(3,0.5){\texttt{bl}}\psdot(ExtNode)
@@ -459,199 +460,199 @@ Sec.~\ref{sec:mirror}) which does not depend on the actual value of \Lkeyword{ex
     node and for some only a fixed node makes sense.}\label{tab:nodes}
 \end{table}
 
-\subsection{Connecting Objects}\label{sec:connecting}
+% \subsection{Connecting Objects}\label{sec:connecting}
 
-\begin{description}
-\paramitem{conn}{<conn definition>}{-}
-\item[\param{fiber}:] alias for \Lkeyword{conn=f-f}
-\item[\param{beam}:] alias for \Lkeyword{conn=o-i}
-\paramitem{connjoin}{<int>}{1}
-\end{description}
+% \begin{description}
+% \paramitem{conn}{<conn definition>}{-}
+% \item[\param{fiber}:] alias for \Lkeyword{conn=f-f}
+% \item[\param{beam}:] alias for \Lkeyword{conn=o-i}
+% \paramitem{connjoin}{<int>}{1}
+% \end{description}
 
-\noindent Simple experimental setups with a few objects can usually be
-realized by defining some nodes, arranging the object in between and
-drawing the beams at the end. If, however, objects with changed internal
-optical path (all the prisms) or without visible internal beam (optical
-diode) are involved, this simple method is not applicable anymore.
+% \noindent Simple experimental setups with a few objects can usually be
+% realized by defining some nodes, arranging the object in between and
+% drawing the beams at the end. If, however, objects with changed internal
+% optical path (all the prisms) or without visible internal beam (optical
+% diode) are involved, this simple method is not applicable anymore.
 
-For this case several different possibilities of connecting objects are
-available: \Lkeyword{conn} specifies the kind of connections in front of and
-behind the object. Its syntax is analogous to the PSTricks
-\Lkeyword{arrows} parameter. By default it is set to \paramvalue{-} and no
-connections are drawn. Tab.~\ref{tab:conn} lists all possible values and
-their scope for the \paramvalue{<conn definition>}.
+% For this case several different possibilities of connecting objects are
+% available: \Lkeyword{conn} specifies the kind of connections in front of and
+% behind the object. Its syntax is analogous to the PSTricks
+% \Lkeyword{arrows} parameter. By default it is set to \paramvalue{-} and no
+% connections are drawn. Tab.~\ref{tab:conn} lists all possible values and
+% their scope for the \paramvalue{<conn definition>}.
 
-\begin{table}\centering
-\addtolength{\extrarowheight}{1.5mm}
-\begin{tabularx}{0.9\textwidth}{TXl}
-  \toprule
-  \multicolumn{1}{l}{conn style} & description & scope\\
-  \midrule
-  i & Draw beam from the first reference node to its assigned outer node 
-      and then through all internal nodes and end at the other 
-      outer node. & \multirow{3}{*}{optexp objects}\\
-  o & Draw beam from the first reference node to its assigned outer node.  & \\
-  f & Draw fiber from the first reference node to its assigned outer node. & \\
-  \midrule
-  a & Left outer node & \multirow{4}{*}{\Lcs{drawbeam} macro}\\
-  A & Connect left outer node to all internal nodes and then to the right outer node & \\
-  b & Right outer node & \\
-  B & Connect right outer node to all internal nodes and then to the left outer node & \\
-  \bottomrule
-\end{tabularx}
-\caption{All possible values for the \paramvalue{<conn definition>}, their detailed description and scope.}\label{tab:conn}
-\end{table}
+% \begin{table}\centering
+% \addtolength{\extrarowheight}{1.5mm}
+% \begin{tabularx}{0.9\textwidth}{TXl}
+%   \toprule
+%   \multicolumn{1}{l}{conn style} & description & scope\\
+%   \midrule
+%   i & Draw beam from the first reference node to its assigned outer node 
+%       and then through all internal nodes and end at the other 
+%       outer node. & \multirow{3}{*}{optexp objects}\\
+%   o & Draw beam from the first reference node to its assigned outer node.  & \\
+%   f & Draw fiber from the first reference node to its assigned outer node. & \\
+%   \midrule
+%   a & Left outer node & \multirow{4}{*}{\Lcs{drawbeam} macro}\\
+%   A & Connect left outer node to all internal nodes and then to the right outer node & \\
+%   b & Right outer node & \\
+%   B & Connect right outer node to all internal nodes and then to the left outer node & \\
+%   \bottomrule
+% \end{tabularx}
+% \caption{All possible values for the \paramvalue{<conn definition>}, their detailed description and scope.}\label{tab:conn}
+% \end{table}
 
-The first letter (before the dash) in the \paramvalue{<conn definition>}
-refers to which object node the first reference node should be connected
-to, the second letter (after the dash) affects the connection from the
-object to the second reference node. Tab.~\ref{tab:conn} lists all
-possibilities for \Lkeyword{conn} within an object: \paramvalue{f} draws
-a fiber connection and \paramvalue{o} a beam connection to the
-appropriate outer node. \paramvalue{i} draws a beam connection to the
-appropriate outer node and then through all internal nodes and end at
-the other outer node. The boolean parameter \Lkeyword{beam} is an alias
-for \Lkeyword{conn=o-i}. The beam style is controlled by the
-psstyle \styleshape{Beam} which can be changed
-using \Lcs{newpsstyle} and \Lcs{addtopsstyle}.
+% The first letter (before the dash) in the \paramvalue{<conn definition>}
+% refers to which object node the first reference node should be connected
+% to, the second letter (after the dash) affects the connection from the
+% object to the second reference node. Tab.~\ref{tab:conn} lists all
+% possibilities for \Lkeyword{conn} within an object: \paramvalue{f} draws
+% a fiber connection and \paramvalue{o} a beam connection to the
+% appropriate outer node. \paramvalue{i} draws a beam connection to the
+% appropriate outer node and then through all internal nodes and end at
+% the other outer node. The boolean parameter \Lkeyword{beam} is an alias
+% for \Lkeyword{conn=o-i}. The beam style is controlled by the
+% psstyle \styleshape{Beam} which can be changed
+% using \Lcs{newpsstyle} and \Lcs{addtopsstyle}.
 
-All fiber-optical units define \Lkeyword{conn=f-f} which means that
-input and output connections are \paramvalue{f}ibers. The boolean
-parameter \Lkeyword{fiber} is an alias for \Lkeyword{conn=f-f}. The
-fiber connection style can be changed by adapting the \styleshape{Fiber*}
-styles (see Sec.~\ref{sec:fiberstyles}).
+% All fiber-optical units define \Lkeyword{conn=f-f} which means that
+% input and output connections are \paramvalue{f}ibers. The boolean
+% parameter \Lkeyword{fiber} is an alias for \Lkeyword{conn=f-f}. The
+% fiber connection style can be changed by adapting the \styleshape{Fiber*}
+% styles (see Sec.~\ref{sec:fiberstyles}).
 
-The way how to really use this kind of connections should become more
-clear after looking at the following examples in this section.
+% The way how to really use this kind of connections should become more
+% clear after looking at the following examples in this section.
 
-\medskip
+% \medskip
 
-\begin{LTXexample}[width=4.5cm]
-\begin{pspicture}[showgrid=true](4,5)
-  \addtopsstyle{Beam}{arrows=->, arrowscale=1.5}
-  \psset{labeloffset=0}
-  \doveprism[conn=o-](0,4.5)(4,4.5){\texttt{o-}}
-  \doveprism[conn=i-](0,3.5)(4,3.5){\texttt{i-}}
-  \doveprism[conn=-o](0,2.5)(4,2.5){\texttt{-o}}
-  \doveprism[conn=-i](0,1.5)(4,1.5){\texttt{-i}}
-  \optbox[conn=-f](0,0.5)(4,0.5){\texttt{-f}}
-\end{pspicture}
-\end{LTXexample}
+% \begin{LTXexample}[width=4.5cm]
+% \begin{pspicture}[showgrid=true](4,5)
+%   \addtopsstyle{Beam}{arrows=->, arrowscale=1.5}
+%   \psset{labeloffset=0}
+%   \doveprism[conn=o-](0,4.5)(4,4.5){\texttt{o-}}
+%   \doveprism[conn=i-](0,3.5)(4,3.5){\texttt{i-}}
+%   \doveprism[conn=-o](0,2.5)(4,2.5){\texttt{-o}}
+%   \doveprism[conn=-i](0,1.5)(4,1.5){\texttt{-i}}
+%   \optbox[conn=-f](0,0.5)(4,0.5){\texttt{-f}}
+% \end{pspicture}
+% \end{LTXexample}
 
-\medskip 
+% \medskip 
 
-The following example shows how this \Lkeyword{conn} parameter can be used in some kinds
-of experimental setups using objects with changed internal optical path (here a
-penta prism). Instead of drawing the beam at the end with a \Lcs{psline},
-the beams are created at definition time of the respective object.
+% The following example shows how this \Lkeyword{conn} parameter can be used in some kinds
+% of experimental setups using objects with changed internal optical path (here a
+% penta prism). Instead of drawing the beam at the end with a \Lcs{psline},
+% the beams are created at definition time of the respective object.
 
-\begin{LTXexampleFloat}
-\begin{LTXexample}[width=4.5cm]
-\begin{pspicture}[showgrid=true](4,5)
-   \pnode(1,1){A}\pnode(1,4){G}\pnode(3,4){B}
-   \optbox[endbox, labelref=relative, labeloffset=0, optboxwidth=1](G)(A){Laser}
-   \lens[lens=0.5 0.5 0.5, abspos=0.3](A)(G){}
-   \pinhole[abspos=0.5](A)(G){}
-   \lens[lens=2, abspos=0.8](A)(G){}
-   \lens[abspos=2, labelangle=180](A)(G){L}
-   \optplate[abspos=1.5, labeloffset=1](A)(G){SLM}
-   \lens[abspos=1](G)(B){L}
-   \optbox[endbox, labeloffset=0, optboxwidth=1](G)(B){CCD}
-   \pentaprism[beam, labeloffset=1](A)(G)(B){PP}
-\end{pspicture}
-\end{LTXexample}
-\caption{Code example on how to use the \Lkeyword{conn} parameter in experimental setups.}\label{lst:conn}
-\end{LTXexampleFloat}
+% \begin{LTXexampleFloat}
+% \begin{LTXexample}[width=4.5cm]
+% \begin{pspicture}[showgrid=true](4,5)
+%    \pnode(1,1){A}\pnode(1,4){G}\pnode(3,4){B}
+%    \optbox[endbox, labelref=relative, labeloffset=0, optboxwidth=1](G)(A){Laser}
+%    \lens[lens=0.5 0.5 0.5, abspos=0.3](A)(G){}
+%    \pinhole[abspos=0.5](A)(G){}
+%    \lens[lens=2, abspos=0.8](A)(G){}
+%    \lens[abspos=2, labelangle=180](A)(G){L}
+%    \optplate[abspos=1.5, labeloffset=1](A)(G){SLM}
+%    \lens[abspos=1](G)(B){L}
+%    \optbox[endbox, labeloffset=0, optboxwidth=1](G)(B){CCD}
+%    \pentaprism[beam, labeloffset=1](A)(G)(B){PP}
+% \end{pspicture}
+% \end{LTXexample}
+% \caption{Code example on how to use the \Lkeyword{conn} parameter in experimental setups.}\label{lst:conn}
+% \end{LTXexampleFloat}
 
-\begin{BDef}
-\Lcs{drawbeam}\OptArg{conn=\ldots}\Largb{<from>}\Largb{<to>}
-\end{BDef}
-This method works unless objects without internal beams (e.g. an optical
-diode, Sec.~\ref{sec:optdiode}) or with internal reflections (e.g. a
-Dove prism, Sec.~\ref{sec:doveprism}) are used in the straight light
-paths of the setup. One possibility would be to create additional nodes,
-but this may be not very comfortable. Therefore, \LPack{pst-optexp}
-provides a macro \Lcs{drawbeam} which connects a named object
-(Sec.~\ref{sec:namedobj}) to another named object or a node.
+% \begin{BDef}
+% \Lcs{drawbeam}\OptArg{conn=\ldots}\Largb{<from>}\Largb{<to>}
+% \end{BDef}
+% This method works unless objects without internal beams (e.g. an optical
+% diode, Sec.~\ref{sec:optdiode}) or with internal reflections (e.g. a
+% Dove prism, Sec.~\ref{sec:doveprism}) are used in the straight light
+% paths of the setup. One possibility would be to create additional nodes,
+% but this may be not very comfortable. Therefore, \LPack{pst-optexp}
+% provides a macro \Lcs{drawbeam} which connects a named object
+% (Sec.~\ref{sec:namedobj}) to another named object or a node.
 
-\medskip
+% \medskip
 
-\noindent If \paramvalue{<from>} or \paramvalue{<to>} is a node, it must be written
-including the round braces. The call
+% \noindent If \paramvalue{<from>} or \paramvalue{<to>} is a node, it must be written
+% including the round braces. The call
 
-\medskip
+% \medskip
 
-\begin{lstlisting}
-\drawbeam{Obj}{(1;45)}
-\end{lstlisting}
+% \begin{lstlisting}
+% \drawbeam{Obj}{(1;45)}
+% \end{lstlisting}
 
-\medskip\noindent connects the named object \nodename{Obj} to the node.
+% \medskip\noindent connects the named object \nodename{Obj} to the node.
 
-The type of beam connection which \Lcs{drawbeam} draws is again
-controlled by the parameter \Lkeyword{conn}. Almost every optical
-object does not have distinguished inputs and outputs and can be used in
-either directions. Therefore, it does not make sense to speak about
-`input` and `output` when referring to the object nodes, but rather
-about node A (\nodename{left outer node}) and node B (\nodename{right outer
-  node}). Consequently, the two letters of parameter \Lkeyword{conn}
-can take the values \paramvalue{a}, \paramvalue{A}, \paramvalue{b}
-or \paramvalue{B} when used together with \Lcs{drawbeam}. The detailed
-descriptions of the individual possibilities are listed in
-Tab.~\ref{tab:conn}. The letter before the dash in \Lkeyword{conn}
-refers to the \paramvalue{<from>} object, the other one to
-the \paramvalue{<to>} object. Again, the next examples should clearify
-how to apply the \Lcs{drawbeam} macro together with the
-different \Lkeyword{conn} settings.
+% The type of beam connection which \Lcs{drawbeam} draws is again
+% controlled by the parameter \Lkeyword{conn}. Almost every optical
+% object does not have distinguished inputs and outputs and can be used in
+% either directions. Therefore, it does not make sense to speak about
+% `input` and `output` when referring to the object nodes, but rather
+% about node A (\nodename{left outer node}) and node B (\nodename{right outer
+%   node}). Consequently, the two letters of parameter \Lkeyword{conn}
+% can take the values \paramvalue{a}, \paramvalue{A}, \paramvalue{b}
+% or \paramvalue{B} when used together with \Lcs{drawbeam}. The detailed
+% descriptions of the individual possibilities are listed in
+% Tab.~\ref{tab:conn}. The letter before the dash in \Lkeyword{conn}
+% refers to the \paramvalue{<from>} object, the other one to
+% the \paramvalue{<to>} object. Again, the next examples should clearify
+% how to apply the \Lcs{drawbeam} macro together with the
+% different \Lkeyword{conn} settings.
 
-\begin{LTXexampleFloat}
-  \begin{LTXexample}[width=4.5cm]
-    \begin{pspicture}[showgrid=true](4,6) \psset{labeloffset=0.6}
-      \addtopsstyle{Beam}{arrows=->, arrowscale=1.5}
-      \doveprism[compname=Dove1](0,0.8)(3,0.8){Dove1}
-      \drawbeam[conn=b-]{Dove1}{(3,0.8)}
-      \doveprism[compname=Dove2](0,2.3)(3,2.3){Dove2}
-      \drawbeam[conn=B-]{Dove2}{(3,2.3)}
-      \doveprism[compname=Dove3](0,3.8)(3,3.8){Dove3}
-      \drawbeam[conn=-a]{(0,3.8)}{Dove3}
-      \doveprism[compname=Dove4](0,5.3)(3,5.3){Dove4}
-      \drawbeam[conn=-A]{(0,5.3)}{Dove4}
-    \end{pspicture}
-  \end{LTXexample}
-\end{LTXexampleFloat}
+% \begin{LTXexampleFloat}
+%   \begin{LTXexample}[width=4.5cm]
+%     \begin{pspicture}[showgrid=true](4,6) \psset{labeloffset=0.6}
+%       \addtopsstyle{Beam}{arrows=->, arrowscale=1.5}
+%       \doveprism[compname=Dove1](0,0.8)(3,0.8){Dove1}
+%       \drawbeam[conn=b-]{Dove1}{(3,0.8)}
+%       \doveprism[compname=Dove2](0,2.3)(3,2.3){Dove2}
+%       \drawbeam[conn=B-]{Dove2}{(3,2.3)}
+%       \doveprism[compname=Dove3](0,3.8)(3,3.8){Dove3}
+%       \drawbeam[conn=-a]{(0,3.8)}{Dove3}
+%       \doveprism[compname=Dove4](0,5.3)(3,5.3){Dove4}
+%       \drawbeam[conn=-A]{(0,5.3)}{Dove4}
+%     \end{pspicture}
+%   \end{LTXexample}
+% \end{LTXexampleFloat}
 
-With the help of the \Lcs{drawbeam} macro we can adapt
-Listing~\ref{lst:conn} to use an optical diode before the beam clearing
-and connect it to the other components. In order to illustrate the beams
-that are drawn by the different mechanisms, they are colorcoded in the
-resulting Listing~\ref{lst:conn2}: \emph{green} is the direct connecting
-of the optical diode, \emph{red} is the \nxLcs{drawbeam} connection and
-\emph{blue} the direct connecting of the penta prism.
+% With the help of the \Lcs{drawbeam} macro we can adapt
+% Listing~\ref{lst:conn} to use an optical diode before the beam clearing
+% and connect it to the other components. In order to illustrate the beams
+% that are drawn by the different mechanisms, they are colorcoded in the
+% resulting Listing~\ref{lst:conn2}: \emph{green} is the direct connecting
+% of the optical diode, \emph{red} is the \nxLcs{drawbeam} connection and
+% \emph{blue} the direct connecting of the penta prism.
 
-\begin{LTXexampleFloat}
-\begin{LTXexample}[width=4.5cm]
-\begin{pspicture}[showgrid=true](4,6)
-   \pnode(1,1){A}\pnode(1,5){G}\pnode(3,5){B}
-   \optbox[endbox, labelref=relative, labeloffset=0, optboxwidth=1](G)(A){Laser}
-   \lens[lens=0.5 0.5 0.5, abspos=1.5](A)(G){}
-   \pinhole[abspos=1.7](A)(G){}
-   \lens[lens=2, abspos=2](A)(G){}
-   \lens[abspos=3, labelangle=180](A)(G){L}
-   \optplate[abspos=2.5, labeloffset=1](A)(G){SLM}
-   \lens[abspos=1](G)(B){L}
-   \optbox[endbox, labeloffset=0, optboxwidth=1](G)(B){CCD}
-   \optdiode[abspos=0.8, conn=o-, compname=OD](A)(G){OD}
-   \addtopsstyle{Beam}{linecolor=blue}
-   \pentaprism[conn=-i, labeloffset=1, compname=PP](A)(G)(B){PP}
-   \addtopsstyle{Beam}{linecolor=red}
-   \drawbeam[conn=b-a]{OD}{PP}
-\end{pspicture}
-\end{LTXexample}
-\caption{More soffisticated code example which employs both connecting
-  methods. The beam connections are colorcoded: \emph{green} is the
-  direct connecting of the optical diode, \emph{red} is the
-  \Lcs{drawbeam} connection and \emph{blue} the direct connecting of the
-  penta prism.}\label{lst:conn2}
-\end{LTXexampleFloat}
+% \begin{LTXexampleFloat}
+% \begin{LTXexample}[width=4.5cm]
+% \begin{pspicture}[showgrid=true](4,6)
+%    \pnode(1,1){A}\pnode(1,5){G}\pnode(3,5){B}
+%    \optbox[endbox, labelref=relative, labeloffset=0, optboxwidth=1](G)(A){Laser}
+%    \lens[lens=0.5 0.5 0.5, abspos=1.5](A)(G){}
+%    \pinhole[abspos=1.7](A)(G){}
+%    \lens[lens=2, abspos=2](A)(G){}
+%    \lens[abspos=3, labelangle=180](A)(G){L}
+%    \optplate[abspos=2.5, labeloffset=1](A)(G){SLM}
+%    \lens[abspos=1](G)(B){L}
+%    \optbox[endbox, labeloffset=0, optboxwidth=1](G)(B){CCD}
+%    \optdiode[abspos=0.8, conn=o-, compname=OD](A)(G){OD}
+%    \addtopsstyle{Beam}{linecolor=blue}
+%    \pentaprism[conn=-i, labeloffset=1, compname=PP](A)(G)(B){PP}
+%    \addtopsstyle{Beam}{linecolor=red}
+%    \drawbeam[conn=b-a]{OD}{PP}
+% \end{pspicture}
+% \end{LTXexample}
+% \caption{More soffisticated code example which employs both connecting
+%   methods. The beam connections are colorcoded: \emph{green} is the
+%   direct connecting of the optical diode, \emph{red} is the
+%   \Lcs{drawbeam} connection and \emph{blue} the direct connecting of the
+%   penta prism.}\label{lst:conn2}
+% \end{LTXexampleFloat}
 
 \newpage
 
@@ -910,8 +911,10 @@ operator.
   \pnode(0,1){A}
   \pnode(3,1){B}
   \optbox[labeloffset=0.7, optboxwidth=0.5, optboxheight=1, angle=20, n=2.3, compname=Box](A)(B){glass plate}
-  \drawbeam[conn=-a]{(A|\OENodeIn{Box})}{Box}
-  \drawbeam[conn=B-]{Box}{(B|\OENodeOut{Box})}
+%  \drawbeam[conn=-a]{(A|\OENodeIn{Box})}{Box}
+%  \drawbeam[conn=B-]{Box}{(B|\OENodeOut{Box})}
+  \drawbeam{(A|\OENodeIn{Box})}{Box}.
+  \drawbeam{Box}{(B|\OENodeOut{Box})}.
 \end{pspicture}
 \end{LTXexample}
 
@@ -971,8 +974,8 @@ before \nxLPack{pst-optexp}.
 
 \begin{LTXexample}[width=3.5cm]
 \begin{pspicture}[showgrid=true](3,2)
-   \optdiode[conn=o-o](0,1)(3,1){Diode}
-%   \Drawbeam[beamIn=false,linecolor=red]{(0,1)}{1}{(3,1)}.
+   \optdiode(0,1)(3,1){Diode}
+%   \drawbeam[beamIn=false,linecolor=red]{(0,1)}{1}{(3,1)}.
 \end{pspicture}
 \end{LTXexample}
 
@@ -1802,9 +1805,9 @@ it is very cumbersome to specify all parameters every time.
    \MOLensOut[abspos=4](A)(B){}
    \MOLensIn[abspos=4.5](A)(B){}
    \addtopsstyle{Beam}{beamExtended}
-   \DrawCustomBeam{%
-     \Drawbeam[beamwidth=0.1]{(A)}{1}.
-     \Drawbeam[beamdiv=1]{1}{2}.
+   \drawCustomBeam{%
+     \drawbeam[beamwidth=0.1]{(A)}{1}.
+     \drawbeam[beamdiv=1]{1}{2}.
    }
 \end{pspicture}
 \end{LTXexample}
@@ -1895,7 +1898,7 @@ incorporate this in a new released version.
 \pnode(-2,0){LaserOut}\pnode(0,0){Grat}
 \pnode(4;45){Out}\pnode(2.5;67.5){Mvar}
 \optbox[optboxwidth=2,labeloffset=0, endbox](Grat)(LaserOut){diode laser}
-\mirror[variable,conn=o-](Grid)(Mvar)(Grid){M$_\mathrm{var}$}
+%\mirror[variable,conn=o-](Grid)(Mvar)(Grid){M$_\mathrm{var}$}
 \optgrid[beam](LaserOut)(Grat)(Out){grating}
 \optretplate[position=0.3,labeloffset=0.8]%
   (LaserOut)(Grat){$\nicefrac{\lambda}{4}$}
@@ -1908,8 +1911,10 @@ incorporate this in a new released version.
     \addtopsstyle{Beam}{linecolor=green!90!black}
     \pnode(1.6,1){Laser}\pnode(7.6,1){Diode}
     \optbox[endbox,labeloffset=0](Diode)(Laser){Laser}%
-    \optbox[abspos=4, optboxwidth=1, optboxheight=0.6, labeloffset=1, compname=PC, conn=o-, angle=-10, rotateref=l, refractiveindex=2.3](Laser)(Diode){Photonic Crystal}
-    \optdetector[dettype=diode, conn=o-](\OENodeOut{PC})(Diode|\OENodeOut{PC}){PD}
+%    \optbox[abspos=4, optboxwidth=1, optboxheight=0.6, labeloffset=1, compname=PC, conn=o-, angle=-10, rotateref=l, refractiveindex=2.3](Laser)(Diode){Photonic Crystal}
+%    \optdetector[dettype=diode, conn=o-](\OENodeOut{PC})(Diode|\OENodeOut{PC}){PD}
+    \optbox[abspos=4, optboxwidth=1, optboxheight=0.6, labeloffset=1, compname=PC, angle=-10, rotateref=l, refractiveindex=2.3](Laser)(Diode){Photonic Crystal}
+    \optdetector[dettype=diode](\OENodeOut{PC})(Diode|\OENodeOut{PC}){PD}
     \defShiftedNode(\OENodeIn{PC})(2;170){Angle1}
     \psline[linestyle=dashed](\OENodeIn{PC})(Angle1)
     \psarc{<->}(\OENodeIn{PC}){1.3}{330}{30}
@@ -1924,9 +1929,11 @@ incorporate this in a new released version.
 \pnode(2.3,2.3){Lin}\pnode([Xnodesep=0.5]Lin){Lout}
 \pnode([Xnodesep=1.5]Lout){EAMout}
 \pnode([Xnodesep=1.5]EAMout){Det}
-\optbox[fiber, labeloffset=-0.2, endbox, compname=L, extnode=b](Lout)(Lin){%
+\optbox[fiber, 
+labeloffset=-0.2, endbox, compname=L, extnode=b](Lout)(Lin){%
     \psGauss[yunit=0.03,sigma=0.03]{-0.5}{0.5}}
-\optbox[fiber, labeloffset=0, optboxwidth=1, compname=EAM, extnode=b](Lout)(EAMout){EAM}
+\optbox[fiber, 
+labeloffset=0, optboxwidth=1, compname=EAM, extnode=b](Lout)(EAMout){EAM}
 \optfiber[labeloffset=0.3](EAMout)(Det){fibre}
 \optdetector(EAMout)(Det){OSA}
 \pnode([Xnodesep=-1,offset=-1]LExtNode){Osc}
@@ -1936,6 +1943,7 @@ incorporate this in a new released version.
 \wire(LExtNode)(PSin)\wire(EAMExtNode)(PSout)
 \end{pspicture}
 \end{LTXexample}
+\end{document}
 
 \begin{LTXexample}[pos=t, vsep=8mm]
 \begin{pspicture}(0.9,0.9)(10.4,5.9)
@@ -1966,14 +1974,14 @@ incorporate this in a new released version.
 \newOptexpDipole{LCLV}{}\psset{lens=1.2 0 1}
 \pnode(2.4,1){BS1}\pnode([offset=3]BS1){M1}\pnode([Xnodesep=5.5]M1){PP}\pnode(PP|BS1){BS2}
 \LCLV[position=0.2, compname=LCLV](BS1)(BS2){LCLV}\beamsplitter[compname=BS](BS2)(BS1)(M1){BS}
-\optretplate(BS1)(M1){P}\mirror[conn=i-](BS1)(M1)(PP){M}\lens[position=0.2](M1)(PP){L}
+%\optretplate(BS1)(M1){P}\mirror[conn=i-](BS1)(M1)(PP){M}\lens[position=0.2](M1)(PP){L}
 \pinhole(M1)(PP){}\lens[position=0.2](PP)(M1){L}\pentaprism[beam](M1)(PP)(BS2){PP}
 \beamsplitter(PP)(BS2)(BS1){BS}\lens(BS2)(BS1){L}
-\doveprism[compname=Dove,conn=i-,position=0.27](BS2)(BS1){D}
-\drawbeam[conn=b-b]{Dove}{LCLV}\drawbeam[conn=b-a]{BS}{LCLV}
+%\doveprism[compname=Dove,conn=i-,position=0.27](BS2)(BS1){D}
+%\drawbeam[conn=b-b]{Dove}{LCLV}\drawbeam[conn=b-a]{BS}{LCLV}
 \psline[arrowscale=1.3, style=Beam]{->}(BS2)([offset=-1]BS2)
 \addtopsstyle{Beam}{arrowscale=1.3, ArrowInside=-<}
-\optbox[labeloffset=0, endbox, conn=o-](BS1)([Xnodesep=-1]BS1){Nd:YAG}
+%\optbox[labeloffset=0, endbox, conn=o-](BS1)([Xnodesep=-1]BS1){Nd:YAG}
 \end{pspicture}
 \end{LTXexample}
 
@@ -2028,7 +2036,7 @@ incorporate this in a new released version.
   \optcoupler[couplertype=none](CPLin1)(CPLin2)(CPLout1)(CPLout2){}
   \optamp(CPLout1)([Xnodesep=1.5]CPLout1){EDFA}
   \optfilter([Xnodesep=1.5]CPLout1)([Xnodesep=3]CPLout1){BPF}
-  \optbox[endbox, labeloffset=0, conn=f-f]([Xnodesep=3]CPLout1)([Xnodesep=3.1]CPLout1){RX}
+%  \optbox[endbox, labeloffset=0, conn=f-f]([Xnodesep=3]CPLout1)([Xnodesep=3.1]CPLout1){RX}
   \pnode([Xnodesep=2]CPLout2){LoopRU}\pnode([offset=-3.5]LoopRU){LoopRL}
   \pnode([Xnodesep=-5]CPLin2){LoopLU}\pnode([offset=-3.5]LoopLU){LoopLL}
   \optamp(CPLout2)(LoopRU){EDFA}
