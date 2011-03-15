@@ -738,9 +738,19 @@
   \addafter@par{style=Fiber}%
   \begingroup
     \use@par
-    \def\optexp@comps{}%
-    \optexp@getnode#1\@nil
-    \optexp@getnode#2\@nil
+    \def\optexp@comps{}%      
+    \def\pst@tempa{#1}
+    \ifx\pst@tempa\@empty
+      \expandafter\optexp@getcomp{(\getLastCompname@i)}
+    \else
+      \optexp@getnode#1\@nil
+    \fi
+    \def\pst@tempa{#2}
+    \ifx\pst@tempa\@empty
+      \expandafter\optexp@getcomp{(\getLastCompname@i)}
+    \else
+      \optexp@getnode#2\@nil
+    \fi
     \pnode(! \optexp@comps exch \pst@optexpdict NearestNode end \tx@UserCoor){OE@@F1}
     \pnode(! \optexp@comps \pst@optexpdict NearestNode end \tx@UserCoor){OE@@F2}
     \nccurve{OE@@F1}{OE@@F2}
