@@ -861,6 +861,7 @@
 \define@boolkey[psset]{optexp}[POE@]{fiberout@}[true]{}
 \define@boolkey[psset]{optexp}[POE@]{fiberout@top}[true]{}
 \define@boolkey[psset]{optexp}[POE@]{fiberout@bottom}[true]{}
+\define@boolkey[psset]{optexp}[POE@]{relangle}[true]{}
 %
 \def\optexp@nodeIn{\POK@basicname 1}%
 \def\optexp@nodeOut{\POK@basicname N}%
@@ -1233,20 +1234,47 @@
       \pst@draw@component{#4}\wdmsplitter@ii
       %
       % default connection angles
-      \psset{angleA=! \pst@optexpdict N@\optexp@nodeB\space N@\optexp@nodeA\space FiberAngleA end,
-             angleB=! \pst@optexpdict N@\optexp@nodeB\space N@\optexp@nodeA\space FiberAngleB end}
       % 
       % connect the fibers
       \ifPOE@fiberin@
-        \pccurve[style=FiberIn](#1)(\POK@basicname 1)     
+        \optexp@nccurve(#1)(\POK@basicname 1){FiberIn}
       \fi
       \ifPOE@fiberout@top
-        \pccurve[style=FiberOut1](\POK@basicname 2)(#2)
+        \optexp@nccurve(\POK@basicname 2)(#2){FiberOut1}
       \fi
       \ifPOE@fiberout@bottom
-        \pccurve[style=FiberOut2](\POK@basicname N)(#3)
+        \optexp@nccurve(\POK@basicname N)(#3){FiberOut2}
       \fi
    \end@OptexpObj
+}%
+\def\optexp@nccurve{\pst@object{optexp@nccurve}}%
+\def\optexp@nccurve@i(#1)(#2)#3{%
+  \addbefore@par{style=#3}%
+  \begingroup
+    \edef\pst@tempa{\psk@angleA}
+    \edef\pst@tempb{\psk@angleB}
+    \let\psk@angleA\relax
+    \let\psk@angleB\relax
+    \use@par
+    \ifPOE@relangle
+      \ifx\psk@angleA\relax\else
+        \edef\pst@tempa\psk@angleA
+      \fi
+      \ifx\psk@angleB\relax\else
+        \edef\pst@tempb\psk@angleB
+      \fi
+%      \psset{angleA=! \pst@optexpdict N@\optexp@nodeB\space N@\optexp@nodeA\space FiberAngleA end \pst@tempa\space add,%
+%             angleB=! \pst@optexpdict N@\optexp@nodeB\space N@\optexp@nodeA\space FiberAngleB end \pst@tempb\space add}%
+%    \else
+    %   \ifx\psk@angleA\relax
+    %     \psset{angleA=! \pst@optexpdict N@\optexp@nodeB\space N@\optexp@nodeA\space FiberAngleA end}%
+    %   \fi
+    %   \ifx\psk@angleB\relax
+    %     \psset{angleB=! \pst@optexpdict N@\optexp@nodeB\space N@\optexp@nodeA\space FiberAngleB end}%  
+    %   \fi
+    \fi
+    \pccurve(#1)(#2)
+  \endgroup
 }%
 %
 %
