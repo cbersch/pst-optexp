@@ -452,12 +452,6 @@
 \def\getref@optexp@rotate@l{\def\POK@rotate@xref{-1}}%
 \def\getref@optexp@rotate@r{\def\POK@rotate@xref{1}}%
 %
-%
-%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% THIS IS THE COMPLETE AND NEW CODE FOR ALL CONNECTIONS %%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
 \define@key[psset]{optexp}{b@sicname}{%
    \edef\pst@temp{#1}%
    \ifx\pst@temp\@empty%
@@ -493,6 +487,16 @@
    \fi
 %   \typeout{\POK@compname, cnt=\the\poe@cnt^^J}
 }%
+%
+\def\pst@optexp@getfirstchar#1#2\@nil{#1}%
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% THIS IS THE OLD CODE FOR ALL CONNECTIONS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% maintained for backward compatibilyt %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+\ifPOE@compat
+%
 \define@key[psset]{optexp}{connjoin}{%
    \edef\pst@temp{#1}%
    \ifnum\pst@temp<0
@@ -566,6 +570,117 @@
       \psline@ii
 }%
 %
+% IN
+\def\psoe@cs@in@a{tx@NodeDict begin /N@\optexp@nodeIn\space load GetCenter end }%
+\def\psoe@cs@in@A{\pst@optexpdict (\POK@basicname) true GetInternalBeamNodes end }%
+\def\psoe@cs@in@b{tx@NodeDict begin /N@\optexp@nodeOut\space load GetCenter end }%
+\def\psoe@cs@in@B{\pst@optexpdict (\POK@basicname) false GetInternalBeamNodes end }%
+%
+% OUT
+%
+\def\psoe@cs@out@a{tx@NodeDict begin N@\optexp@nodeIn\space GetCenter end }%
+\def\psoe@cs@out@A{\pst@optexpdict (\POK@basicname) false GetInternalBeamNodes end }%
+\def\psoe@cs@out@b{tx@NodeDict begin N@\optexp@nodeOut\space GetCenter end }%
+\def\psoe@cs@out@B{\pst@optexpdict (\POK@basicname) true GetInternalBeamNodes end }%
+\def\drawbeam{%
+   \def\conntable{,a-a,b-b,A-A,B-B}%
+   \begingroup
+   \psset{style=Beam}%
+   \pst@object{drawbeam}%
+}%
+\def\drawbeam@i#1#2{%
+   \def\pst@tempA{\pst@optexp@getfirstchar#1\@nil}%
+   \def\pst@tempB{\pst@optexp@getfirstchar#2\@nil}%
+   \ifPOE@connjoin
+      \psset{linejoin=\POK@connjoin}%
+   \fi
+   \begin@OpenObj%
+   \if(\pst@tempB
+      % second parameter is a node
+      \pst@optexp@@getcoor#2
+      \def\psk@connOut{pst@coor}%
+   \else
+      \pst@optexp@check@compname{#2}%
+      \edef\POK@basicnameB{#2}%
+   \fi
+   \if(\pst@tempA
+   %   % first parameter is a node
+      \pst@optexp@@getcoor#1%
+      \def\psk@connIn{pst@coor}%
+   \else
+      \pst@optexp@check@compname{#1}%
+      \edef\POK@basicnameA{#1}%
+   \fi
+   \let\POK@basicname\POK@basicnameB
+   \addto@pscode{[ \@nameuse{\psk@connOut}}%
+   \let\POK@basicname\POK@basicnameA
+   \addto@pscode{\@nameuse{\psk@connIn}}%
+   \psline@ii
+   \endgroup
+\ignorespaces}%
+%
+\def\pst@optexp@@getcoor(#1){%
+  \pst@@getcoor{#1}%
+\ignorespaces}%
+%
+\def\draw@InternalConnections{%
+   \ifPOE@endbox
+      \@nameuse{\psk@connIn}
+   \else
+      \ifPOE@fiber@
+        \ifPOE@fiberin@
+          \@nameuse{\psk@connIn}
+        \fi
+        \ifPOE@fiberout@
+          \@nameuse{\psk@connOut}
+        \fi
+      \else
+         \ifPOE@connjoin
+            \def\tmp@A{psoe@cs@in@i}%
+            \ifx\tmp@A\psk@connIn
+               \def\tmp@B{psoe@cs@out@o}
+               \ifx\tmp@B\psk@connOut
+                  \pscustom[style=Beam, linejoin=\POK@connjoin]{\@nameuse{\psk@connIn}\@nameuse{\psk@connOut}}%
+               \else\ifx\@empty\psk@connOut
+                  \pscustom[style=Beam, linejoin=\POK@connjoin]{\@nameuse{\psk@connIn}\@nameuse{\psk@connOut}}%
+               \else
+                  \@nameuse{\psk@connIn}\@nameuse{\psk@connOut}%
+               \fi\fi
+           \else
+               \def\tmp@A{psoe@cs@in@o}%
+               \ifx\tmp@A\psk@connIn
+                  \def\tmp@B{psoe@cs@out@o}
+                  \ifx\tmp@B\psk@connOut
+                     \pscustom[style=Beam, linejoin=\POK@connjoin]{\@nameuse{\psk@connIn}\@nameuse{\psk@connOut}}%
+                  \else\ifx\@empty\psk@connOut
+                     \pscustom[style=Beam, linejoin=\POK@connjoin]{\@nameuse{\psk@connIn}\@nameuse{\psk@connOut}}%
+                  \else
+                     \@nameuse{\psk@connIn}\@nameuse{\psk@connOut}%
+                  \fi\fi
+               \else
+                  \@nameuse{\psk@connIn}\@nameuse{\psk@connOut}%
+               \fi
+            \fi
+         \else
+            \@nameuse{\psk@connIn}\@nameuse{\psk@connOut}%
+         \fi
+      \fi
+   \fi
+}%
+\define@choicekey[psset]{optexp}{fiber}[\val\nr]{}[]{%
+   \psset{conn=f-f, fiberin, fiberout}%
+}
+\define@choicekey[psset]{optexp}{nofiber}[\val\nr]{}[]{%
+   \psset{conn=-, fiberin=none, fiberout=none}%
+}
+\psset{conn=-, connjoin=1}
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% End of compatibility code %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+\else
+%
 %
 \define@key[psset]{optexp}{invec}{\edef\POK@beam@invec{#1}}%
 \define@key[psset]{optexp}{startpos}{\edef\POK@beam@startpos{#1}}%
@@ -579,8 +694,8 @@
 \define@boolkey[psset]{optexp}[POE@beam@]{beamExtended}[true]{}%
 \define@boolkey[psset]{optexp}[POE@beam@]{beamConnectComp}[true]{}%
 \define@boolkey[psset]{optexp}[POE@beam@]{beamContinue}[true]{}%
-\def\DrawCustomBeam{\pst@object{DrawCustomBeam}}%
-\def\DrawCustomBeam@i#1{%
+\def\drawCustomBeam{\pst@object{drawCustomBeam}}%
+\def\drawCustomBeam@i#1{%
    \addbefore@par{beamContinue}%
    \begin@SpecialObj%
    \def\begin@SpecialObj{%
@@ -590,8 +705,8 @@
    #1%
    \end@SpecialObj%
 }%
-\def\Drawbeam{\pst@object{Drawbeam}}%
-\def\Drawbeam@i{%
+\def\drawbeam{\pst@object{drawbeam}}%
+\def\drawbeam@i{%
   \addafter@par{style=Beam}%
   \begin@SpecialObj%
   \let\pst@linetype\pst@arrowtype
@@ -607,16 +722,16 @@
      /stopInside \ifPOE@beam@stopInside true \else false \fi def
      /connectPlaneNodes \ifPOE@beam@beamConnectComp true \else false \fi def
   }%
-  \optexp@getcomps[\Drawbeam@ii%
+  \optexp@getcomps[\drawbeam@ii%
 }%
-\def\Drawbeam@ii{%
+\def\drawbeam@ii{%
   \ifPOE@beam@beamExtended
-    \DrawExtendedBeam@iii
+    \drawExtendedBeam@iii
   \else
-    \Drawbeam@iii
+    \drawbeam@iii
   \fi
 }%
-\def\Drawbeam@iii{%
+\def\drawbeam@iii{%
   \ifx\pslinestyle\@none\else
     \addto@pscode{ {/nMul \POK@refractiveindex@mul\space def} }%
     \ifx\POK@beam@startpos\@empty
@@ -639,7 +754,7 @@
   \let\psk@fillstyle\relax
   \end@SpecialObj%
 }%
-\def\DrawExtendedBeam@iii{%
+\def\drawExtendedBeam@iii{%
   \def\pst@fill##1{ gsave ##1 grestore }%
   \addto@pscode{ {/nMul \POK@refractiveindex@mul\space def} }%
   % the input vectors
@@ -699,14 +814,17 @@
 \def\optexp@@getcomps{%
   \@ifnextchar.{\optexp@aftercomps\@gobble}{\optexp@@@getcomps}%
 }%
-\def\optexp@@@getcomps#1{\optexp@@@@getcomps#1\@nil}%
-\def\optexp@@@@getcomps#1#2\@nil{%
-  \ifx#1(\relax
-    \optexp@getplanenode(#2%
-  \else\ifcat a#1\relax
-    \optexp@getcomp{(OE@#1#2)}%
+\def\optexp@@@getcomps#1{\expandafter\optexp@@@@getcomps#1\@nil}%
+\def\optexp@@@@getcomps#1\@nil{%
+  \edef\pst@tempb{\pst@optexp@getfirstchar#1\@nil}%
+  \message{^^J--\pst@tempa--^^J}
+  \def\pst@tempc{(}
+  \ifx\pst@tempb\pst@tempc\relax
+    \optexp@getplanenode#1%
+  \else\ifcat a\pst@tempb\relax
+    \optexp@getcomp{(OE@#1)}%
   \else
-    \optexp@getcomp{(OE@\POS@optexp@basicname@default#1#2)}%
+    \optexp@getcomp{(OE@\POS@optexp@basicname@default#1)}%
   \fi\fi%
   \optexp@@getcomps%
 }%
@@ -720,21 +838,27 @@
 }%
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\def\optexp@getnode#1#2\@nil{%
-  \ifx#1(\relax
-    \optexp@getcoor(#2%
-  \else\ifcat#1a\relax
-    \optexp@getcomp{(#1#2)}%
+\def\optexp@getnode#1\@nil{%
+  \edef\pst@tempb{\pst@optexp@getfirstchar#1\@nil}%
+  \def\pst@tempc{(}
+  \message{^^J----\pst@tempb----^^J}
+  \ifx\pst@tempb\pst@tempc\relax
+    \message{getcoor, #1^^J^^J}
+    \optexp@getcoor#1%
+  \else\ifcat\pst@tempb a\relax
+    \message{getcomp, #1^^J^^J}
+    \optexp@getcomp{(#1)}%
   \else
-    \optexp@getcomp{(\POS@optexp@basicname@default#1#2)}%
+    \message{getcomp temp, #1^^J^^J}
+    \optexp@getcomp{(\POS@optexp@basicname@default#1)}%
   \fi\fi%
 }%
 \def\optexp@getcoor(#1){%
   \pst@getcoor{#1}\pst@tempa
   \expandafter\optexp@getcomp{{\pst@tempa}}
 }%
-\def\Drawfiber{\pst@object{Drawfiber}}%
-\def\Drawfiber@i#1#2{%
+\def\drawfiber{\pst@object{drawfiber}}%
+\def\drawfiber@i#1#2{%
   \addafter@par{style=Fiber}%
   \begingroup
     \use@par
@@ -743,58 +867,46 @@
     \ifx\pst@tempa\@empty
       \expandafter\optexp@getcomp{(\getLastCompname@i)}
     \else
-      \optexp@getnode#1\@nil
+      \expandafter\optexp@getnode#1\@nil
     \fi
-    \def\pst@tempa{#2}
+    \edef\pst@tempa{#2}
     \ifx\pst@tempa\@empty
       \expandafter\optexp@getcomp{(\getLastCompname@i)}
     \else
-      \optexp@getnode#2\@nil
+      \expandafter\optexp@getnode#2\@nil
     \fi
     \pnode(! \optexp@comps exch \pst@optexpdict NearestNode end \tx@UserCoor){OE@@F1}
     \pnode(! \optexp@comps \pst@optexpdict NearestNode end \tx@UserCoor){OE@@F2}
     \nccurve{OE@@F1}{OE@@F2}
   \endgroup
 }%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-% The macro for 'manual' ray drawing
-\def\drawbeam{%
-   \def\conntable{,a-a,b-b,A-A,B-B}%
-   \begingroup
-   \psset{style=Beam}%
-   \pst@object{drawbeam}%
+\def\draw@InternalConnections{%
+%  \edef\poe@tmp{\the\poe@cnt}% I don't know how to do it with expansion
+  \ifPOE@beam
+    \ifPOE@endbox
+      \drawbeam{(\optexp@nodeA)}{\POK@basicname}.
+    \else
+      \drawbeam{(\optexp@nodeA)}{\POK@basicname}{(\optexp@nodeB)}.
+    \fi
+  \else
+    \ifPOE@fiberin@
+      \optexp@pccurve(\optexp@nodeA)(\POK@basicname 1){FiberIn}
+    \fi
+    \ifPOE@fiberout@
+      \optexp@pccurve(\POK@basicname N)(\optexp@nodeB){FiberOut1}
+    \fi
+  \fi
 }%
-\def\drawbeam@i#1#2{%
-   \def\pst@tempA{\pst@optexp@getfirstchar#1\@nil}%
-   \def\pst@tempB{\pst@optexp@getfirstchar#2\@nil}%
-   \ifPOE@connjoin
-      \psset{linejoin=\POK@connjoin}%
-   \fi
-   \begin@OpenObj%
-   \if(\pst@tempB
-      % second parameter is a node
-      \pst@optexp@@getcoor#2
-      \def\psk@connOut{pst@coor}%
-   \else
-      \pst@optexp@check@compname{#2}%
-      \edef\POK@basicnameB{#2}%
-   \fi
-   \if(\pst@tempA
-   %   % first parameter is a node
-      \pst@optexp@@getcoor#1%
-      \def\psk@connIn{pst@coor}%
-   \else
-      \pst@optexp@check@compname{#1}%
-      \edef\POK@basicnameA{#1}%
-   \fi
-   \let\POK@basicname\POK@basicnameB
-   \addto@pscode{[ \@nameuse{\psk@connOut}}%
-   \let\POK@basicname\POK@basicnameA
-   \addto@pscode{\@nameuse{\psk@connIn}}%
-   \psline@ii
-   \endgroup
-\ignorespaces}%
+\define@choicekey[psset]{optexp}{fiber}[\val\nr]{}[]{%
+   \psset{fiberin, fiberout}%
+}
+\define@choicekey[psset]{optexp}{nofiber}[\val\nr]{}[]{%
+   \psset{fiberin=none, fiberout=none}%
+}
+\fi
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% END OF NEW CONNECTION CODE %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 \def\pst@optexp@check@compname#1{%
    % check if 'compname' is defined
@@ -803,35 +915,9 @@
       \PackageError{pst-optexp}{^^Jcompname '#1' undefined!^^J}
    \fi
 }%
-\def\pst@optexp@getfirstchar#1#2\@nil{#1}%
-\def\pst@optexp@@getcoor(#1){%
-  \pst@@getcoor{#1}%
-\ignorespaces}%
-%
-% IN
-\def\psoe@cs@in@a{tx@NodeDict begin /N@\optexp@nodeIn\space load GetCenter end }%
-\def\psoe@cs@in@A{\pst@optexpdict (\POK@basicname) true GetInternalBeamNodes end }%
-\def\psoe@cs@in@b{tx@NodeDict begin /N@\optexp@nodeOut\space load GetCenter end }%
-\def\psoe@cs@in@B{\pst@optexpdict (\POK@basicname) false GetInternalBeamNodes end }%
-%
-% OUT
-%
-\def\psoe@cs@out@a{tx@NodeDict begin N@\optexp@nodeIn\space GetCenter end }%
-\def\psoe@cs@out@A{\pst@optexpdict (\POK@basicname) false GetInternalBeamNodes end }%
-\def\psoe@cs@out@b{tx@NodeDict begin N@\optexp@nodeOut\space GetCenter end }%
-\def\psoe@cs@out@B{\pst@optexpdict (\POK@basicname) true GetInternalBeamNodes end }%
 %
 %
 \define@boolkey[psset]{optexp}[POE@]{beam}[true]{}
-%\define@choicekey[psset]{optexp}{beam}[\val\nr]{}[]{%
-%   \psset{conn=i-o}%
-%}
-\define@choicekey[psset]{optexp}{fiber}[\val\nr]{}[]{%
-   \psset{conn=f-f, fiberin, fiberout}%
-}
-\define@choicekey[psset]{optexp}{nofiber}[\val\nr]{}[]{%
-   \psset{conn=-, fiberin=none, fiberout=none}%
-}
 \define@choicekey*[psset]{optexp}{fiberin}[\val\nr]{none,top,bottom,both}[both]{%
   \ifcase\nr\relax
     \psset{fiberin@=false, fiberin@top=false, fiberin@bottom=false}
@@ -975,67 +1061,6 @@
 \def\newOptexpTripole{\@ifnextchar[{\new@optexptripole}{\new@optexptripole[]}}
 \def\newOptexpFiberDipole{\@ifnextchar[{\new@optexpfiberdipole}{\new@optexpfiberdipole[]}}
 \def\newOptexpFiberQuadrupole{\@ifnextchar[{\new@optexpfiberquadrupole}{\new@optexpfiberquadrupole[]}}
-%\def\new@optexpfiberdipole[#1]#2#3{%
-%   \new@optexpdipole[fiber,#1]{#2}{#3}%
-%}%
-%
-%\def\draw@InternalConnections{}%
-\def\draw@InternalConnections{%+
-  \ifPOE@beam
-    \edef\poe@tmp{\the\poe@cnt}% I don't know how to do it with expansion
-    \ifPOE@endbox
-      \Drawbeam{(\optexp@nodeA)}{\poe@tmp}.
-    \else
-      \Drawbeam{(\optexp@nodeA)}{\poe@tmp}{(\optexp@nodeB)}.
-    \fi
-  \else
-    \draw@InternalConnectionsOld
-  \fi
-}%
-\def\draw@InternalConnectionsOld{%
-   \ifPOE@endbox
-      \@nameuse{\psk@connIn}
-   \else
-      \ifPOE@fiber@
-        \ifPOE@fiberin@
-          \@nameuse{\psk@connIn}
-        \fi
-        \ifPOE@fiberout@
-          \@nameuse{\psk@connOut}
-        \fi
-      \else
-         \ifPOE@connjoin
-            \def\tmp@A{psoe@cs@in@i}%
-            \ifx\tmp@A\psk@connIn
-               \def\tmp@B{psoe@cs@out@o}
-               \ifx\tmp@B\psk@connOut
-                  \pscustom[style=Beam, linejoin=\POK@connjoin]{\@nameuse{\psk@connIn}\@nameuse{\psk@connOut}}%
-               \else\ifx\@empty\psk@connOut
-                  \pscustom[style=Beam, linejoin=\POK@connjoin]{\@nameuse{\psk@connIn}\@nameuse{\psk@connOut}}%
-               \else
-                  \@nameuse{\psk@connIn}\@nameuse{\psk@connOut}%
-               \fi\fi
-           \else
-               \def\tmp@A{psoe@cs@in@o}%
-               \ifx\tmp@A\psk@connIn
-                  \def\tmp@B{psoe@cs@out@o}
-                  \ifx\tmp@B\psk@connOut
-                     \pscustom[style=Beam, linejoin=\POK@connjoin]{\@nameuse{\psk@connIn}\@nameuse{\psk@connOut}}%
-                  \else\ifx\@empty\psk@connOut
-                     \pscustom[style=Beam, linejoin=\POK@connjoin]{\@nameuse{\psk@connIn}\@nameuse{\psk@connOut}}%
-                  \else
-                     \@nameuse{\psk@connIn}\@nameuse{\psk@connOut}%
-                  \fi\fi
-               \else
-                  \@nameuse{\psk@connIn}\@nameuse{\psk@connOut}%
-               \fi
-            \fi
-         \else
-            \@nameuse{\psk@connIn}\@nameuse{\psk@connOut}%
-         \fi
-      \fi
-   \fi
-}%
 %
 % Creates new macros ...@i and ...@ii which provide most code for the arrangement
 % of the objects. A \optexp@nodeLabel is predefined as well as two internal nodes if compname is
@@ -1185,21 +1210,18 @@
             \fi\fi
             %
             \pst@draw@component{##5}{\@nameuse{#2@ii}}
-            % 
             % connect the fibers
-            \psset{angleA=! \pst@optexpdict N@\optexp@nodeB\space N@\optexp@nodeA\space FiberAngleA end,
-                   angleB=! \pst@optexpdict N@\optexp@nodeB\space N@\optexp@nodeA\space FiberAngleB end}
             \ifPOE@fiberin@top
-              \pccurve[style=FiberIn1](##1)(\POK@basicname 1)
+              \optexp@pccurve(##1)(\POK@basicname 1){FiberIn1}
             \fi
             \ifPOE@fiberin@bottom
-              \pccurve[style=FiberIn2](##2)(\POK@basicname 2)
+              \optexp@pccurve(##2)(\POK@basicname 2){FiberIn2}
             \fi
             \ifPOE@fiberout@top
-              \pccurve[style=FiberOut1](\POK@basicname 3)(##3)
+              \optexp@pccurve(\POK@basicname 3)(##3){FiberOut1}
             \fi
             \ifPOE@fiberout@bottom
-              \pccurve[style=FiberOut2](\POK@basicname N)(##4)
+              \optexp@pccurve(\POK@basicname N)(##4){FiberOut2}
             \fi
          \end@OptexpObj
       }%
@@ -1237,42 +1259,35 @@
       % 
       % connect the fibers
       \ifPOE@fiberin@
-        \optexp@nccurve(#1)(\POK@basicname 1){FiberIn}
+        \optexp@pccurve(#1)(\POK@basicname 1){FiberIn}
       \fi
       \ifPOE@fiberout@top
-        \optexp@nccurve(\POK@basicname 2)(#2){FiberOut1}
+        \optexp@pccurve(\POK@basicname 2)(#2){FiberOut1}
       \fi
       \ifPOE@fiberout@bottom
-        \optexp@nccurve(\POK@basicname N)(#3){FiberOut2}
+        \optexp@pccurve(\POK@basicname N)(#3){FiberOut2}
       \fi
    \end@OptexpObj
 }%
-\def\optexp@nccurve{\pst@object{optexp@nccurve}}%
-\def\optexp@nccurve@i(#1)(#2)#3{%
+\def\optexp@pccurve{\pst@object{optexp@pccurve}}%
+\def\optexp@pccurve@i(#1)(#2)#3{%
   \addbefore@par{style=#3}%
   \begingroup
-    \edef\pst@tempa{\psk@angleA}
-    \edef\pst@tempb{\psk@angleB}
     \let\psk@angleA\relax
     \let\psk@angleB\relax
     \use@par
-    \ifPOE@relangle
-      \ifx\psk@angleA\relax\else
-        \edef\pst@tempa\psk@angleA
-      \fi
-      \ifx\psk@angleB\relax\else
-        \edef\pst@tempb\psk@angleB
-      \fi
-%      \psset{angleA=! \pst@optexpdict N@\optexp@nodeB\space N@\optexp@nodeA\space FiberAngleA end \pst@tempa\space add,%
-%             angleB=! \pst@optexpdict N@\optexp@nodeB\space N@\optexp@nodeA\space FiberAngleB end \pst@tempb\space add}%
-%    \else
-    %   \ifx\psk@angleA\relax
-    %     \psset{angleA=! \pst@optexpdict N@\optexp@nodeB\space N@\optexp@nodeA\space FiberAngleA end}%
-    %   \fi
-    %   \ifx\psk@angleB\relax
-    %     \psset{angleB=! \pst@optexpdict N@\optexp@nodeB\space N@\optexp@nodeA\space FiberAngleB end}%  
-    %   \fi
-    \fi
+    \ifx\psk@angleA\relax
+      % angleA was not changed by the style
+      \psset{angleA=! \pst@optexpdict N@\optexp@nodeB\space N@\optexp@nodeA\space FiberAngleA end}%
+    \else\ifPOE@relangle
+        \psset{angleA=! \pst@optexpdict N@\optexp@nodeB\space N@\optexp@nodeA\space FiberAngleA end \psk@angleA\space add}%
+    \fi\fi
+    \ifx\psk@angleB\relax
+      % angleA was not changed by the style
+      \psset{angleB=! \pst@optexpdict N@\optexp@nodeB\space N@\optexp@nodeA\space FiberAngleB end}%
+    \else\ifPOE@relangle
+        \psset{angleB=! \pst@optexpdict N@\optexp@nodeB\space N@\optexp@nodeA\space FiberAngleB end \psk@angleB\space add}%
+    \fi\fi
     \pccurve(#1)(#2)
   \endgroup
 }%
@@ -1562,7 +1577,7 @@
 }%
 \def\fibercollimator{\pst@object{fibercollimator}}
 \def\fibercollimator@i(#1)(#2){%
-   \addbefore@par{conn=o-f}
+%   \addbefore@par{conn=o-f}
    \def\pst@tempA{#1}%        
    \def\pst@tempB{#2}%
    \def\pst@tempC{}%
@@ -1589,9 +1604,10 @@
          \pnode(0,0){\optexp@nodeOut}%
          \fibercollimator@v%
       }%
-      \@nameuse{\psk@connIn}%
+      \edef\poe@tmp{\the\poe@cnt}% I don't know how to do it with expansion
+      \drawbeam{(\optexp@nodeA)}{\poe@tmp}.
       \ifx\@empty\pst@tempC
-         \@nameuse{\psk@connOut}%
+        \drawbeam{\poe@tmp}{(\optexp@nodeB)}.
       \else\ifx\@empty\pst@tempD
          \psbezier[style=FiberOut](\pst@tempC)(\pst@tempB)(\pst@tempB)(\optexp@nodeOut)%
       \else
@@ -1718,11 +1734,9 @@
         ,switchstyle=opened
         ,fdlsize=0.6
         ,fibercolsize=0.3
-        ,conn=-
         ,usefiberstyle=false
         ,bsstyle=cube
         ,compshift=0
-        ,connjoin=1
         %
         % beam
         ,startInside=false
@@ -2795,4 +2809,3 @@
 %
 %
 \endinput
-%
