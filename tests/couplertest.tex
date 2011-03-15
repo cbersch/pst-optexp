@@ -2,7 +2,7 @@
 %%% couplertest.tex --- 
 %
 %% Author: Christoph Bersch
-%% Version: $Id: couplertest.tex,v 0.0 2011/03/14 17:03:12 christoph Exp$
+%% Version: $Id: couplertest.tex,v 0.0 2011/03/15 10:35:23 christoph Exp$
 %
 %
 \documentclass{scrartcl}
@@ -10,16 +10,66 @@
 \usepackage[T1]{fontenc}
 \usepackage[ngerman]{babel}
 \usepackage{pst-optexp}
-
+\setlength{\parindent}{0pt}
 \begin{document}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{pspicture}[showgrid=true](10,10)
-  \psset{fiberin=false}
-  \optcoupler[fiberin=false, couplertype=none](0,2)(0,0)(4,2)(4,0){50 \%}
-  \wdmcoupler[fiberin=false](6,2)(6,0)(8,1){Pump}
-  \wdmsplitter[couplertype=none, fiberin=false](6,4.5)(8,5)(8,4){Pump}
+\section*{fiberin}
+\subsection*{\ttfamily fiberin=both}
+\begin{pspicture}[showgrid=true](11,2)
+  \optcoupler[couplertype=none](0, 2)(0,1)(3,2)(3,1){50 \%}
+  \wdmcoupler(4,2)(4,1)(7,1.5){wdmcoupler}
+  \wdmsplitter[couplertype=none](8,1.5)(11,2)(11,1){wdmsplitter}
+\end{pspicture}
+
+\subsection*{\ttfamily fiberin=top}
+\begin{pspicture}[showgrid=true](11,2)
+  \optcoupler[fiberin=top, couplertype=none](0, 2)(0,1)(3,2)(3,1){50 \%}
+  \wdmcoupler[fiberin=top](4,2)(4,1)(7,1.5){wdmcoupler}
+  \wdmsplitter[fiberin=top, couplertype=none](8,1.5)(11,2)(11,1){wdmsplitter}
+\end{pspicture}
+
+\subsection*{\ttfamily fiberin=bottom}
+\begin{pspicture}[showgrid=true](11,2)
+  \optcoupler[fiberin=bottom, couplertype=none](0, 2)(0,1)(3,2)(3,1){50 \%}
+  \wdmcoupler[fiberin=bottom](4,2)(4,1)(7,1.5){wdmcoupler}
+  \wdmsplitter[fiberin=bottom, couplertype=none](8,1.5)(11,2)(11,1){wdmsplitter}
+\end{pspicture}
+
+\subsection*{\ttfamily fiberin=none}
+\begin{pspicture}[showgrid=true](11,2)
+  \optcoupler[fiberin=none, couplertype=none](0, 2)(0,1)(3,2)(3,1){50 \%}
+  \wdmcoupler[fiberin=none](4,2)(4,1)(7,1.5){wdmcoupler}
+  \wdmsplitter[fiberin=none, couplertype=none](8,1.5)(11,2)(11,1){wdmsplitter}
 \end{pspicture}
 
 
+\section*{fiberout}
+\subsection*{\ttfamily fiberout=both}
+\begin{pspicture}[showgrid=true](11,2)
+  \optcoupler[couplertype=none](0, 2)(0,1)(3,2)(3,1){50 \%}
+  \wdmcoupler(4,2)(4,1)(7,1.5){wdmcoupler}
+  \wdmsplitter[couplertype=none](8,1.5)(11,2)(11,1){wdmsplitter}
+\end{pspicture}
+
+\subsection*{\ttfamily fiberout=top}
+\begin{pspicture}[showgrid=true](11,2)
+  \optcoupler[fiberout=top, couplertype=none](0, 2)(0,1)(3,2)(3,1){50 \%}
+  \wdmcoupler[fiberout=top](4,2)(4,1)(7,1.5){wdmcoupler}
+  \wdmsplitter[fiberout=top, couplertype=none](8,1.5)(11,2)(11,1){wdmsplitter}
+\end{pspicture}
+
+\subsection*{\ttfamily fiberout=bottom}
+\begin{pspicture}[showgrid=true](11,2)
+  \optcoupler[fiberout=bottom, couplertype=none](0, 2)(0,1)(3,2)(3,1){50 \%}
+  \wdmcoupler[fiberout=bottom](4,2)(4,1)(7,1.5){wdmcoupler}
+  \wdmsplitter[fiberout=bottom, couplertype=none](8,1.5)(11,2)(11,1){wdmsplitter}
+\end{pspicture}
+
+\subsection*{\ttfamily fiberout=none}
+\begin{pspicture}[showgrid=true](11,2)
+  \optcoupler[fiberout=none, couplertype=none](0, 2)(0,1)(3,2)(3,1){50 \%}
+  \wdmcoupler[fiberout=none](4,2)(4,1)(7,1.5){wdmcoupler}
+  \wdmsplitter[fiberout=none, couplertype=none](8,1.5)(11,2)(11,1){wdmsplitter}
+\end{pspicture}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \end{document}
