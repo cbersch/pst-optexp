@@ -1,7 +1,7 @@
 %%% autobox.tex --- 
 
 %% Author: cbersch
-%% Version: $Id: autobox.tex,v 0.0 2008/07/16 08:47:45 Exp$
+%% Version: $Id: autobox.tex,v 0.0 2011/03/16 16:55:30 Exp$
 
 
 \documentclass{scrartcl}
@@ -16,13 +16,21 @@
 \psset{labelstyle=\footnotesize}
 \begin{document}
 \begin{pspicture}[showgrid=true](10,10)
-  \savebox{\mybox}{\psframebox{blubber}}
-  \rput[b](0,0){\usebox{\mybox}}
+  \savebox{\mybox}{\psframebox[framesep=0]{blubber}}
+  \rput(0, 0.5\ht\mybox){\usebox{\mybox}}
   %
   \optbox[endbox, labeloffset=0](0,2)(5,2){\parbox{\optboxwidth}{\centering 980\,nm\\pump}}
   \optbox[endbox, labeloffset=0](0,3)(5,3){\begin{tabular}{@{}c@{}}980\,nm\\pump\end{tabular}}
 %
   \optbox[endbox, labeloffset=0](0,4)(5,4){\parbox{\optboxwidth}{\centering 980\,nm\\laser}}
   \optbox[endbox, labeloffset=0](0,5)(5,5){\begin{tabular}{@{}c@{}}980\,nm\\laser\end{tabular}}
+\end{pspicture}
+
+\begin{pspicture}[showgrid=true](5,5)
+  \savebox{\mybox}{\rule{1cm}{1cm}}
+  \makeatletter
+  \pst@getlength{\wd\mybox}\blubb
+  \blubb
+  \makeatother
 \end{pspicture}
 \end{document}
