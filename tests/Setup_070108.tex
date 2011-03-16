@@ -15,7 +15,7 @@
 
 %\psgrid
 \psset{linecolor=green!90!black,linewidth=1.5\pslinewidth}
-\psset{plateheight=0.7, labeloffset=0.6,labelstyle=\normalsize, lensheight=0.8, bswidth=0.5, lenswidth=0.2, owidth=0.7}
+\psset{plateheight=0.7, labeloffset=0.6,labelstyle=\normalsize, lensheight=0.8, bssize=0.5, lenswidth=0.2, outerheight=0.7}
 
 \pnode(0,8){Lasera}
 \pnode(1.5,8){Laserb}
@@ -106,21 +106,21 @@
 \mirror[labelangle=-45,labeloffset=0.4](LBM1)(LBM2)(LBM3){M}
 \beamsplitter(LBM1)(BS3)(LBM4){BS}
 \mirror[labelangle=135, labeloffset=0.4](BS3)(LBM4)(BS4){M}
-\beamsplitter[bswidth=0.7, labelangle=-35, labeloffset=0.8](LBM2)(BS4)(LBM5){BS}
+\beamsplitter[bssize=0.7, labelangle=-35, labeloffset=0.8](LBM2)(BS4)(LBM5){BS}
 \mirror[labelangle=135, labeloffset=0.4](LBM2)(LBM3)(BS5){M}
 \mirror[labelangle=-45, labeloffset=0.4](BS4)(LBM5)(BS6){M}
-\beamsplitter[bswidth=0.7](LBM3)(BS5)(BS6){BS}
+\beamsplitter[bssize=0.7](LBM3)(BS5)(BS6){BS}
 \beamsplitter[labelangle=-90](BS5)(BS6)(CCD){BS}
 \mirror[labeloffset=0.4, labelangle=-45](BS2)(PB1M1)(PB1BS2){M}
 \beamsplitter[labelangle=-90](PB1M1)(PB1BS2)(CCD){BS}
-\optbox[endbox, labelrelative](BS6)(CCD){CCD1}
+\optbox[endbox, labelref=relative](BS6)(CCD){CCD1}
 \crystal[voltage, lamp, crystalwidth=1, crystalheight=0.4,fillstyle=solid, fillcolor=yellow!90!black, labeloffset=0.7, position=0.3](BS6)(CCD){SBN}
 \lens(BS6)(CCD){L}
 \beamsplitter[labelangle=90](BS6)(BSFT)(CCD2){BS}
 \beamsplitter[labelangle=90](BSFT)(PBSCCD)(CCD3){PBS}
-\optbox[endbox, labelrelative](BSFT)(CCD2){CCD2}
+\optbox[endbox, labelref=relative](BSFT)(CCD2){CCD2}
 \lens[labelangle=180, position=0.6](BSFT)(CCD2){L}
-\optbox[endbox, labelrelative](PBSCCD)(CCD3){CCD3}
+\optbox[endbox, labelref=relative](PBSCCD)(CCD3){CCD3}
 \optretplate(Laserb)(BS1){HWP}
 \lens[position=0.25](LBM1)(LBM2){L}
 \pinhole[position=0.3, labelangle=90](LBM1)(LBM2){PH}
@@ -128,8 +128,8 @@
 \optplate[plateheight=0.4, labelangle=0, labeloffset=0.4](9.15,3.9)(9.15,4.1){B}
 
 \optplate[labelangle=0](BS5)(BS6){LP}
-\polarization[pol=perp, position=0.6](BS5)(BS6){}
-\polarization[pol=parallel](PB1BS2)(BS6){}
+\polarization[poltype=perp, position=0.6](BS5)(BS6){}
+\polarization[poltype=parallel](PB1BS2)(BS6){}
 
 \optplate[position=0.2](BS2)(PB1M1){PM}
 \lens[position=0.3,labelangle=180](BS2)(PB1M1){MO}
