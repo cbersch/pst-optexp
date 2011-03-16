@@ -577,7 +577,12 @@ tx@OptexpDict begin
     PrearrangePlanes
     PushAllPlanesOnStack
     (planes on stack) == counttomark /t ED t copy t {==} repeat
-    2 copy /InVec load TransformInVec /CurrVec ED
+    startvecAbsolute not {
+	2 copy /InVec load TransformInVec
+    } {
+	/InVec load
+    } ifelse
+    /CurrVec ED
     continueBeam currentdict /lastBeamPoint known and {
 	/lastBeamPoint load /Curr ED
     }{
