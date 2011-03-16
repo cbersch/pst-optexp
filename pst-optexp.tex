@@ -110,9 +110,9 @@
 \edef\POS@optexp@center{center}
 \edef\POS@optexp@closed{closed}
 \edef\POS@optexp@opened{opened}
-\edef\POS@optexp@basicname@default{tempNode@}
-%\edef\POS@optexp@basicname@postfix{Intern}
-\edef\POS@optexp@extnode@postfix{ExtNode}
+\edef\POS@optexp@basicname@default{@}
+\edef\POS@optexp@basicname@prefix{OE@}
+\edef\POS@optexp@extnode@postfix{Ext}
 \edef\POS@detector@round{round}
 \edef\POS@detector@diode{diode}
 \edef\POS@bs@cube{cube}
@@ -400,7 +400,7 @@
 %
 % Code for the extnode parameter (additional input node)
 %
-\define@key[psset]{optexp}{extnoden@me}{\edef\POK@extnode@name{#1}}
+\define@key[psset]{optexp}{extnoden@me}{\edef\POK@extnode@name{\POS@optexp@basicname@prefix#1\POS@optexp@extnode@postfix}}
 %
 % (this part was copied and adapted from \psset@@ref from pstricks.tex)
 \define@key[psset]{optexp}{extnode}{%
@@ -452,15 +452,7 @@
 \def\getref@optexp@rotate@l{\def\POK@rotate@xref{-1}}%
 \def\getref@optexp@rotate@r{\def\POK@rotate@xref{1}}%
 %
-\define@key[psset]{optexp}{b@sicname}{%
-   \edef\pst@temp{#1}%
-   \ifx\pst@temp\@empty%
-      \edef\POK@basicname{\POS@optexp@basicname@default}%
-   \else%
-      \edef\POK@basicname{#1}%
-   \fi%
-   \edef\POK@basicname@ps{(\POK@basicname)}%
-}%
+\define@key[psset]{optexp}{b@sicname}{\edef\POK@basicname{\POS@optexp@basicname@prefix#1}}%
 \def\POE@complist{}%
 \g@addto@macro{\endpspicture}{\gdef\POE@complist{}\global\poe@cnt 0\relax}%
 \define@key[psset]{optexp}{@compname}{%
@@ -468,12 +460,12 @@
    \ifx\pst@tmp\@empty
       \edef\POK@compname{\POS@optexp@basicname@default\the\poe@cnt}
       \psset{b@sicname=\POS@optexp@basicname@default\the\poe@cnt}%
-      \psset{extnoden@me=\POS@optexp@extnode@postfix}%
+      \psset{extnoden@me=\POS@optexp@basicname@default\the\poe@cnt}%
    \else
 %      \global\advance\poe@cnt by -1
       \edef\POK@compname{#1}%
       \psset{b@sicname=#1}%
-      \psset{extnoden@me=#1\POS@optexp@extnode@postfix}%
+      \psset{extnoden@me=#1}%
    \fi
    % check if compname was already defined
    \@expandtwoargs\in@{,\POK@compname,}{,\POE@complist,}%
@@ -817,13 +809,13 @@
 \def\optexp@@@getcomps#1{\expandafter\optexp@@@@getcomps#1\@nil}%
 \def\optexp@@@@getcomps#1\@nil{%
   \edef\pst@tempb{\pst@optexp@getfirstchar#1\@nil}%
-  \def\pst@tempc{(}
+  \def\pst@tempc{(}%
   \ifx\pst@tempb\pst@tempc\relax
     \optexp@getplanenode#1%
   \else\ifcat a\pst@tempb\relax
-    \optexp@getcomp{(OE@#1)}%
+    \optexp@getcomp{(\POS@optexp@basicname@prefix#1)}%
   \else
-    \optexp@getcomp{(OE@\POS@optexp@basicname@default#1)}%
+    \optexp@getcomp{(\POS@optexp@basicname@prefix\POS@optexp@basicname@default#1)}%
   \fi\fi%
   \optexp@@getcomps%
 }%
@@ -846,9 +838,9 @@
     \optexp@getcoor#1%
     \global\POE@iscompfalse
   \else\ifcat\pst@tempb a\relax
-    \optexp@getcomp{(#1)}%
+    \optexp@getcomp{(\POS@optexp@basicname@prefix#1)}%
   \else
-    \optexp@getcomp{(\POS@optexp@basicname@default#1)}%
+    \optexp@getcomp{(\POS@optexp@basicname@prefix\POS@optexp@basicname@default#1)}%
   \fi\fi%
 }%
 \def\optexp@getcoor(#1){%
@@ -867,7 +859,7 @@
     \else
       \expandafter\optexp@getnode#1\@nil
       \ifPOE@iscomp
-        \def\oe@tempa{#1}
+        \def\oe@tempa{\POS@optexp@basicname@prefix#1}
       \else
         \def\oe@tempa{}
       \fi
@@ -880,7 +872,7 @@
     \else
       \expandafter\optexp@getnode#2\@nil
       \ifPOE@iscomp
-        \def\oe@tempb{#2}
+        \def\oe@tempb{\POS@optexp@basicname@prefix#2}
       \else
         \def\oe@tempb{}
       \fi
@@ -896,9 +888,9 @@
 %  \edef\poe@tmp{\the\poe@cnt}% I don't know how to do it with expansion
   \ifPOE@beam
     \ifPOE@endbox
-      \drawbeam{(\optexp@nodeA)}{\POK@basicname}.
+      \drawbeam{(\optexp@nodeA)}{\POK@compname}.
     \else
-      \drawbeam{(\optexp@nodeA)}{\POK@basicname}{(\optexp@nodeB)}.
+      \drawbeam{(\optexp@nodeA)}{\POK@compname}{(\optexp@nodeB)}.
     \fi
   \else
     \ifPOE@endbox
@@ -978,28 +970,28 @@
 %
 %
 \def\getLastCompname@ii#1,#2,#3\@nil{#1}%
-\def\getLastCompname@i{\expandafter\getLastCompname@ii \POE@complist,\relax,\@nil}%
-\def\OENode#1#2{OE@\ifx.#1.\getLastCompname@i\else#1\fi#2}%
+\def\getLastCompname@i{\POS@optexp@basicname@prefix\expandafter\getLastCompname@ii \POE@complist,\relax,\@nil}%
+\def\OENode#1#2{\ifx.#1.\getLastCompname@i\else\POS@optexp@basicname@prefix#1\fi#2}%
 \def\OENodeOld#1#2{\ifx.#1.\getLastCompname@i\else#1\fi#2}%
-\def\OENodeExt#1{\OENodeOld{#1}{\POS@optexp@extnode@postfix}}%
+\def\OENodeExt#1{\OENode{#1}{\POS@optexp@extnode@postfix}}%
 \def\OENodeIn#1{\OENode{#1}{1}}%
 \def\OENodeOut#1{\OENode{#1}{N}}%
 \def\OENodeA#1{\OENode{#1}{A}}%
 \def\OENodeB#1{\OENode{#1}{B}}%
-\def\OENodeLabel#1{\OENodeOld{#1}{Label}}%
+\def\OENodeLabel#1{\OENode{#1}{Label}}%
 %
 \def\newOptexpComp{\@ifnextchar[{\newOptexpComp@i}{\newOptexpComp@i[]}}%
 \def\newOptexpComp@i[#1]#2{%
-    \pst@Verb{\pst@optexpdict #1 [ #2 (OE@\POK@compname) {\tx@ScreenCoor} false NewOptexpComp end}%
+    \pst@Verb{\pst@optexpdict #1 [ #2 (\POS@optexp@basicname@prefix\POK@compname) {\tx@ScreenCoor} false NewOptexpComp end}%
 }%
 \def\newOptexpCompAmb{\@ifnextchar[{\newOptexpCompAmb@i}{\newOptexpCompAmb@i[]}}%
 \def\newOptexpCompAmb@i[#1]#2{%
-    \pst@Verb{\pst@optexpdict #1 [ #2 (OE@\POK@compname) {\tx@ScreenCoor} true NewOptexpComp end}%
+    \pst@Verb{\pst@optexpdict #1 [ #2 (\POS@optexp@basicname@prefix\POK@compname) {\tx@ScreenCoor} true NewOptexpComp end}%
 }%
 \def\newOptexpPlane(#1)(#2)#3{%
     \pst@getcoor{#1}\pst@tempOrig%
     \pst@getcoor{#2}\pst@tempDiff%
-    \pst@Verb{\pst@optexpdict [ {\pst@tempOrig} {\pst@tempDiff} trans {NewPlaneInt} 1 (OE@#3) {} false NewOptexpComp end}%
+    \pst@Verb{\pst@optexpdict [ {\pst@tempOrig} {\pst@tempDiff} trans {NewPlaneInt} 1 (\POS@optexp@basicname@prefix#3) {} false NewOptexpComp end}%
 }%
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
