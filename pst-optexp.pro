@@ -622,6 +622,7 @@ tx@OptexpDict begin
 		X Y
 %		PN 1 eq { (inplane center) == 2 copy == == } if
 		CompMtrx transform CM itransform % n1 X Y
+		2 copy ToVec 4 1 roll
 %		PN 1 eq { (inplane center transformed) == 2 copy == == } if
 		currentdict /RX known {
 		    RX RY
@@ -635,21 +636,43 @@ tx@OptexpDict begin
 	    end
 %	    (comp dict end)==
 	end
-%	(done) ==
+%		counttomark /t ED t copy t{==}repeat
+	(done) ==
+% {Xp Yp} Xp Yp dXp dYp trans|refl n2 X0 Y0 X_in Y_in curved?
+	12 -1 roll /CurrCenter ED
+	PN 1 gt {
+	    CurrCenter CurrCenterTmp @ABVect NormalizeVec
+	    PN 2 gt connectPlaneNodes and ModeTmp trans eq and {
+		(asdfasd)==
+		2 copy relAngle matrix rotate dtransform
+%		counttomark /t ED t copy t{==}repeat
+		7 -2 roll pop pop 5 2 roll
+	    } if
+	    CurrVec VecAngle /relAngle ED
+	} if
+%	(before interface) == counttomark /t ED t copy t{==}repeat
 	{ CurvedInterface }{ PlainInterface } ifelse
-%	(*Interface done) == 
-%	(after dict) == counttomark /t ED t copy t{==}repeat
+	(*Interface done) == 
+%	(after dict) ==
+%	counttomark /t ED t copy t{==}repeat
 	PN 1 eq {
+	    (PN = 1)==
 	    pop pop 2 copy ToVec /Curr ED
 	    /n1 1 def
 	    counttomark 2 roll
+	    /CurrCenterTmp /CurrCenter load def
 	} {
+	    (PN) == PN ==
 	    ToVec /CurrVec ED 2 copy
 	    ToVec /Curr ED 
 	    draw
 	    counttomark 3 roll
+	    /CurrCenterTmp /CurrCenter load def
 	} ifelse
+	(blubb)==
+        /CurrCenterTmp /CurrCenter load def
 	/lastBeamPoint /Curr load def
+	/ModeTmp Mode def
 	
 	PN PlaneNum eq {
 	    exit
@@ -657,10 +680,14 @@ tx@OptexpDict begin
 	    /PN PN 1 add def
 	} ifelse
 %	counttomark /t ED t copy t{==}repeat
-%	(---)==
+	(---)==
     } loop
     currentdict /CurrVec undef
     currentdict /Curr undef
+} bind def
+% X_p Y_p X_r Y_r trans|refl n2 X0 Y0 X_in Y_in ConnectInterface -> X' Y' X_out Y_out
+/ConnectInterface {
+
 } bind def
 %
 %
