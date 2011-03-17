@@ -440,9 +440,9 @@ tx@OptexpDict begin
 % [(name) draw], draw is a boolean which is true if the inner beams should be
 % drawn.
 /PushAmbCompPlanesOnStack {
-    (PushAmpCompPlanesOnStack) ==
-    counttomark /t ED t copy t{==} repeat
-    (stack dumped) ==
+%    (PushAmpCompPlanesOnStack) ==
+%    counttomark /t ED t copy t{==} repeat
+%    (stack dumped) ==
     currentdict /outToPlane undef
     PN PlaneNum eq not {
 	% not the last plane, there should be another one on the stack
@@ -533,8 +533,8 @@ tx@OptexpDict begin
 %    (PlaneNum) == PlaneNum ==
 %    (PlaneNumTmp) == PlaneNumTmp ==
 %    (PN) == PN ==
-    counttomark /t ED t copy t{==} repeat
-    (-----------------------------------------------)==
+%    counttomark /t ED t copy t{==} repeat
+%    (-----------------------------------------------)==
     /PlaneNum PlaneNumTmp def
 } bind def
 % 
@@ -542,7 +542,7 @@ tx@OptexpDict begin
 /GetNextPlane {
     2 copy (C) 3 -1 roll % (CompName) {outToPlane} {outToPlane} (C) (CompName)
     GetPlaneCenter 3 -1 roll exec GetPlaneCenter 4 2 roll 4 copy @ABVect /VecY ED /VecX ED @ABDist /centerDist ED
-    (centerDist) == centerDist ==
+%    (centerDist) == centerDist ==
     /sprod 1 def
     % (CompName) {outToPlane}
     exch dup 3 1 roll cvn load /N get 1 1 3 -1 roll {
@@ -552,14 +552,11 @@ tx@OptexpDict begin
 	%/t 8 def t copy t{==}repeat
 	GetPlaneVec VecX VecY 4 2 roll NormalVec VecX VecY SProd dup sprod lt 
 	5 2 roll % sprod bool {outToPlane} n (CompName)
-	GetPlaneCenter 3 -1 roll exec GetPlaneCenter @ABDist dup (dist) == == centerDist lt and
+	GetPlaneCenter 3 -1 roll exec GetPlaneCenter @ABDist centerDist lt and
 	{
-	    (nextPlaneasdf) ==
 	    /sprod ED /nextPlane ED
-	    nextPlane ==
 	} {
-	    (sprod) == == (nextPlane) == ==
-%	    pop pop
+	    pop pop
 	} ifelse
     } for
     pop pop nextPlane
@@ -576,7 +573,7 @@ tx@OptexpDict begin
     counttomark /N ED
     PrearrangePlanes
     PushAllPlanesOnStack
-    (planes on stack) == counttomark /t ED t copy t {==} repeat
+%    (planes on stack) == counttomark /t ED t copy t {==} repeat
     startvecAbsolute not {
 	2 copy /InVec load TransformInVec
     } {
@@ -599,7 +596,7 @@ tx@OptexpDict begin
 %	    (on stack) == counttomark /t ED t copy t {==} repeat	
 	    PushAmbCompPlanesOnStack
 %	    (completed planes on stack)==
-	    counttomark /t ED t copy t{==}repeat
+%	    counttomark /t ED t copy t{==}repeat
 %	    (PN) == PN ==
 %	    PlaneNum ==
 %	    (###############################)==
@@ -1019,7 +1016,7 @@ tx@OptexpDict begin
 % cos(alpha) = a·b/(|a||b|)
 % ax ay bx by -> angle
 /VecAngle {
-    4 copy SProd 5 1 roll tx@Dict begin Pyth 3 1 roll Pyth end mul div dup == (Acos) == Acos
+    4 copy SProd 5 1 roll tx@Dict begin Pyth 3 1 roll Pyth end mul div Acos
 } bind def
 % ax ay bx by VecAdd ax+bx ay+by
 /VecAdd {
@@ -1041,17 +1038,17 @@ tx@OptexpDict begin
 % see <http://en.wikipedia.org/wiki/Snell%27s_law#Vector_form>
 % X_in Y_in X_norm Y_norm n1 n2 RefractVec -> X_out Y_out
 /RefractVec {
-    (PN) == PN ==
+%    (PN) == PN ==
     div /n ED 4 2 roll NormalizeVec /Yin ED /Xin ED /Ynorm ED /Xnorm ED
     n 1 eq {
-	(n = 1) ==
+%	(n = 1) ==
 	Xin Yin
     }{
-	(n = ) == n ==
-	(Xin) == Xin  == (Yin) == Yin ==
-	(Xnorm) == Xnorm == (Ynorm) == Ynorm ==
+%	(n = ) == n ==
+%	(Xin) == Xin  == (Yin) == Yin ==
+%	(Xnorm) == Xnorm == (Ynorm) == Ynorm ==
 	/costheta1 Xnorm Ynorm Xin neg Yin neg SProd def
-	(costheta1) == costheta1 ==
+%	(costheta1) == costheta1 ==
 	/costheta2 1 n dup mul 1 costheta1 dup mul sub mul sub sqrt def
 	n Xin mul n Yin mul n costheta1 mul costheta2 sub dup Xnorm mul exch Ynorm mul VecAdd
     } ifelse
