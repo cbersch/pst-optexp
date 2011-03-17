@@ -203,7 +203,7 @@ tx@OptexpDict begin
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 % {x y} {dx dy} Name {scaling procedure}
-/NewNodeComp {
+/NewTempNodeComp {
   /sc ED
   dup cvn
   6 dict dup 3 1 roll def begin
@@ -223,6 +223,10 @@ tx@OptexpDict begin
       end
       /adjustRel true def
   end
+} bind def
+%[ { x y } { dx dy | rx ry} type {New..Int} refrIndex CompName {scaling proc} amb
+/NewNodeComp {
+    [ 5 1 roll trans {NewPlaneInt} 1 5 3 roll false NewOptexpComp
 } bind def
 %
 % { x y } { rx ry } {scaling proc}
