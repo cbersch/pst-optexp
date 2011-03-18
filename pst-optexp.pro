@@ -640,36 +640,47 @@ tx@OptexpDict begin
 	(done) ==
 % {Xp Yp} Xp Yp dXp dYp trans|refl n2 X0 Y0 X_in Y_in curved?
 	12 -1 roll /CurrCenter ED
-	PN 1 gt {
-	    CurrCenter CurrCenterTmp @ABVect NormalizeVec
-	    PN 2 gt connectPlaneNodes and ModeTmp trans eq and {
-		(asdfasd)==
-		2 copy relAngle matrix rotate dtransform
-%		counttomark /t ED t copy t{==}repeat
-		7 -2 roll pop pop 5 2 roll
+	%PN 1 gt {
+	%    CurrCenter CurrCenterTmp @ABVect NormalizeVec CurrVec VecAngle /relAngle ED
+	%    (PN) == PN == relAngle ==
+	%} if
+	connectPlaneNodes {
+	    PN 2 eq {% initialize relAngle, the angle between plane connection and input vector
+		CurrCenter CurrCenterTmp @ABVect NormalizeVec CurrVec VecAngle /relAngle ED
 	    } if
-	    CurrVec VecAngle /relAngle ED
+	    PN 3 ge {
+		(PN >= 3) ==
+		ModeTmp trans eq {% previous plane was transmittive, recalculate the input vector
+		    (trans) ==
+		    CurrCenter CurrCenterTmp @ABVect NormalizeVec
+		    relAngle matrix rotate dtransform
+		    %		counttomark /t ED t copy t{==}repeat
+		    5 -2 roll pop pop 3 -1 roll
+		} {% else, the previous plane was reflective, recalculate relAngle
+		    CurrCenter CurrCenterTmp @ABVect NormalizeVec CurrVec VecAngle /relAngle ED
+		} ifelse
+	    } if
 	} if
 %	(before interface) == counttomark /t ED t copy t{==}repeat
 	{ CurvedInterface }{ PlainInterface } ifelse
-	(*Interface done) == 
+%	(*Interface done) == 
 %	(after dict) ==
 %	counttomark /t ED t copy t{==}repeat
 	PN 1 eq {
-	    (PN = 1)==
+%	    (PN = 1)==
 	    pop pop 2 copy ToVec /Curr ED
 	    /n1 1 def
 	    counttomark 2 roll
 	    /CurrCenterTmp /CurrCenter load def
 	} {
-	    (PN) == PN ==
+%	    (PN) == PN ==
 	    ToVec /CurrVec ED 2 copy
 	    ToVec /Curr ED 
 	    draw
 	    counttomark 3 roll
 	    /CurrCenterTmp /CurrCenter load def
 	} ifelse
-	(blubb)==
+%	(blubb)==
         /CurrCenterTmp /CurrCenter load def
 	/lastBeamPoint /Curr load def
 	/ModeTmp Mode def
@@ -680,7 +691,7 @@ tx@OptexpDict begin
 	    /PN PN 1 add def
 	} ifelse
 %	counttomark /t ED t copy t{==}repeat
-	(---)==
+%	(---)==
     } loop
     currentdict /CurrVec undef
     currentdict /Curr undef
@@ -1047,7 +1058,8 @@ tx@OptexpDict begin
 % cos(alpha) = a·b/(|a||b|)
 % ax ay bx by -> angle
 /VecAngle {
-    4 copy SProd 5 1 roll tx@Dict begin Pyth 3 1 roll Pyth end mul div Acos
+    4 copy 4 copy SProd 5 1 roll tx@Dict begin Pyth 3 1 roll Pyth end mul div Acos
+    5 2 roll mul 4 1 roll 3 -1 roll mul 3 -1 roll sub 0 le {-1}{1} ifelse mul
 } bind def
 % ax ay bx by VecAdd ax+bx ay+by
 /VecAdd {
