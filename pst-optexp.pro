@@ -629,7 +629,7 @@ tx@OptexpDict begin
 		} {
 		    DX DY %PN 1 eq { (inplane) == 2 copy == == } if
 		} ifelse
-		CompMtrx dtransform CM idtransform  % PN 1 eq { (inplane transformed) == 2 copy == == } if
+		CompMtrx dtransform CM idtransform  
 		Mode 6 -1 roll
 		Curr CurrVec
 		currentdict /RX known 
@@ -637,7 +637,7 @@ tx@OptexpDict begin
 %	    (comp dict end)==
 	end
 %		counttomark /t ED t copy t{==}repeat
-	(done) ==
+%	(done) ==
 % {Xp Yp} Xp Yp dXp dYp trans|refl n2 X0 Y0 X_in Y_in curved?
 	12 -1 roll /CurrCenter ED
 	%PN 1 gt {
@@ -649,9 +649,9 @@ tx@OptexpDict begin
 		CurrCenter CurrCenterTmp @ABVect NormalizeVec CurrVec VecAngle /relAngle ED
 	    } if
 	    PN 3 ge {
-		(PN >= 3) ==
+%		(PN >= 3) ==
 		ModeTmp trans eq {% previous plane was transmittive, recalculate the input vector
-		    (trans) ==
+%		    (trans) ==
 		    CurrCenter CurrCenterTmp @ABVect NormalizeVec
 		    relAngle matrix rotate dtransform
 		    %		counttomark /t ED t copy t{==}repeat
@@ -671,14 +671,12 @@ tx@OptexpDict begin
 	    pop pop 2 copy ToVec /Curr ED
 	    /n1 1 def
 	    counttomark 2 roll
-	    /CurrCenterTmp /CurrCenter load def
 	} {
 %	    (PN) == PN ==
 	    ToVec /CurrVec ED 2 copy
 	    ToVec /Curr ED 
 	    draw
 	    counttomark 3 roll
-	    /CurrCenterTmp /CurrCenter load def
 	} ifelse
 %	(blubb)==
         /CurrCenterTmp /CurrCenter load def
@@ -754,8 +752,15 @@ tx@OptexpDict begin
     exec
     PrearrangePlanes
     PushAllPlanesOnStack
-    2 copy /InvecLow load TransformInVec /CurrVecLow ED
-    2 copy /InvecUp load TransformInVec /CurrVecUp ED
+    startvecAbsolute not {
+	2 copy /InvecLow load TransformInVec /CurrVecLow ED
+	2 copy /InvecUp load TransformInVec /CurrVecUp ED
+    } {
+	/InvecLow load /CurrVecLow ED
+	/InvecUp load /CurrVecUp ED
+    } ifelse
+%    (invec done)==
+%    counttomark /t ED t copy t{==}repeat
     continueBeam currentdict /lastBeamPointLow known currentdict /lastBeamPointUp known and and {
 	/lastBeamPointLow load /CurrLow ED
 	/lastBeamPointUp load /CurrUp ED
@@ -763,6 +768,7 @@ tx@OptexpDict begin
 	2 copy /StartLow load TransformStartPos /CurrLow ED
 	2 copy /StartUp load TransformStartPos /CurrUp ED
     } ifelse
+%    (startpos done)==
     counttomark /PlaneNum ED /n1 1 def
     /CurrR false def
     /PN 1 def
@@ -777,42 +783,105 @@ tx@OptexpDict begin
 	/draw ED
 	/Mode ED
 	3 1 roll cvn load begin % comp dict
+%	    (before pushing on stack) ==
+%	    counttomark /t ED t copy t{==}repeat
 	    PlaneName cvn load begin % plane dict
 %		(PlaneDict) ==
 		X Y CompMtrx transform CM itransform
+		2 copy ToVec 4 1 roll
+%		(2-------) ==
+%		counttomark /t ED t copy t{==}repeat
 		currentdict /RX known {
 		    RX RY 
 		} {
 		    DX DY
 		} ifelse
 		CompMtrx dtransform CM idtransform 4 copy
-		Mode 10 -1 roll % X Y DX DY X Y DX DY mode n1
+		Mode 10 -1 roll % {X Y} X Y DX DY X Y DX DY mode n1
+%		(3-------) ==
+%		counttomark /t ED t copy t{==}repeat
 		6 copy
 		currentdict /RX known
 	    end
 	end
 	/curved ED
 	/oldn1 n1 def
+	% {X Y} X Y DX DY X Y DX DY mode n1 X Y DX DY mode n1
+%	(all on stack) == PN == counttomark /t ED t copy t{==}repeat
+	17 -1 roll /CurrPCenter ED
 	% new upper vector and intersection point
-	CurrUp CurrVecUp curved {
+	CurrUp CurrVecUp %(CurrUp) == 4 copy == == == == (done)==
+	connectPlaneNodes {
+	    PN 2 eq {% initialize relAngle, the angle between plane connection and input vector
+%		(PN = 2) ==
+		%counttomark /t ED t copy t{==}repeat
+		CurrPCenter CurrPCenterTmp @ABVect NormalizeVec CurrVecUp VecAngle /relAngleUp ED
+%		(relAngleUp) == relAngleUp ==
+%		(done) ==
+	    } if
+	    PN 3 ge {
+%		(PN >= 3) ==
+		ModeTmp trans eq {% previous plane was transmittive, recalculate the input vector
+%		    (trans) ==
+%		    counttomark /t ED t copy t{==}repeat
+%		    (relAngleUp) == relAngleUp ==
+		    CurrPCenter CurrPCenterTmp @ABVect NormalizeVec %(connvec) == 2 copy == == (done)==
+		    relAngleUp matrix rotate dtransform %(connvec transformed) == 2 copy == == (done)==
+%		    counttomark /t ED t copy t{==}repeat
+		    4 2 roll pop pop
+%		    (done) ==
+		} {% else, the previous plane was reflective, recalculate relAngle
+		    CurrPCenter CurrPCenterTmp @ABVect NormalizeVec CurrVecUp VecAngle /relAngleUp ED
+		} ifelse
+	    } if
+	} if
+%	(after connectPlaneNodes) ==
+%	counttomark /t ED t copy t{==}repeat
+%	(################) ==
+	2 copy ToVec /OldVecUp ED
+	curved {
 %	    (curved) ==
 	    CurvedInterface
 	} {
 %	    (plain) == 
 	    PlainInterface
 	} ifelse
-	/CurrVecUp load /OldVecUp ED /CurrUp load /OldUp ED
+	%/CurrVecUp load /OldVecUp ED
+	/CurrUp load /OldUp ED
 	ToVec /CurrVecUp ED
 	ToVec /CurrUp ED
 %	(upper done)==
 	/n1 oldn1 def
 	% new lower vector and intersection point
-	CurrLow CurrVecLow curved {
+	CurrLow CurrVecLow
+	%
+	connectPlaneNodes {
+	    PN 2 eq {% initialize relAngle, the angle between plane connection and input vector
+		CurrPCenter CurrPCenterTmp @ABVect NormalizeVec CurrVecLow VecAngle /relAngleLow ED
+	    } if
+	    PN 3 ge {
+%		(PN >= 3) ==
+		ModeTmp trans eq {% previous plane was transmittive, recalculate the input vector
+%		    (trans) ==
+		    CurrPCenter CurrPCenterTmp @ABVect NormalizeVec
+		    relAngleLow matrix rotate dtransform
+		    %		counttomark /t ED t copy t{==}repeat
+		    4 2 roll pop pop
+%		    (done) ==
+		} {% else, the previous plane was reflective, recalculate relAngle
+		    CurrPCenter CurrPCenterTmp @ABVect NormalizeVec CurrVecLow VecAngle /relAngleLow ED
+		} ifelse
+	    } if
+	} if
+	2 copy ToVec /OldVecLow ED
+	curved {
 	    CurvedInterface
 	} {
 	    PlainInterface
 	} ifelse
-	/CurrVecLow load /OldVecLow ED /CurrLow load /OldLow ED
+%	(interface done)==
+	%/CurrVecLow load /OldVecLow ED
+	/CurrLow load /OldLow ED
 	ToVec /CurrVecLow ED
 	ToVec /CurrLow ED
 %	(lower done)==
@@ -854,6 +923,7 @@ tx@OptexpDict begin
 	} {
 %	    (skip) ==
 	} ifelse
+%	(done) ==
 	Mode refl eq draw and
 	draw not DrawnSegm 0 gt and or {
 	    fillBeam
@@ -865,6 +935,14 @@ tx@OptexpDict begin
 	} {
 	    /PN PN 1 add def
 	} ifelse
+%	(redef) ==
+	/CurrPCenterTmp /CurrPCenter load def
+%	(currpcentertmp done)==
+	/ModeTmp Mode def
+%	(mode done) ==
+%	2 copy == ==
+%	counttomark /t ED t copy t{==}repeat
+%	(----------------------) ==
     } loop
     /CurrUp load /lastBeamPointUp ED
     /CurrLow load /lastBeamPointLow ED
