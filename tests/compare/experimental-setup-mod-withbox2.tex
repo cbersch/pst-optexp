@@ -1,0 +1,171 @@
+\documentclass{scrartcl}
+\usepackage[latin1]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage{pstricks}
+\usepackage{pst-optexp}
+\usepackage{pst-circ}
+%\usepackage{pst-eps}
+\usepackage{amsmath}
+\usepackage[scaled=0.8]{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+
+\SpecialCoor
+
+\makeatletter
+%
+%%% synthesizer %%%
+%
+\define@key[psset]{pst-circ}{synthstyle}{\def\psk@synthstyle{#1}}
+\define@key[psset]{pst-circ}{rectwidth}{\def\psk@rectwidth{#1}}
+\define@key[psset]{pst-circ}{synthoutput}{\def\psk@synth@output{#1}}
+\def\pst@synthstyle@rect{rect}
+\def\pst@synthstyle@pulse{pulse}
+\def\pst@synthstyle@triangle{triangle}
+\def\pst@synthstyle@sawtooth{sawtooth}
+
+\def\synthesizer{\@ifnextchar[{\pst@synthesizer}{\pst@synthesizer[]}}
+\def\pst@synthesizer[#1]{%
+    \@ifnextchar({\pst@synthesizeri[#1]{0}}{\pst@synthesizeri[#1]}%
+}
+\def\pst@synthesizeri[#1]#2(#3)#4#5{%
+  \begingroup
+    \psset{#1}%
+    \rput{#2}(#3){%
+        \pscircle[#5](0,0){0.5}
+        \ifx\psk@synthstyle\pst@synthstyle@rect
+            \psline(-0.3, -0.15)%
+                   (! -0.3 0.6 1 \psk@rectwidth\space sub mul add -0.15)%
+                   (! -0.3 0.6 1 \psk@rectwidth\space sub mul add 0.15)%
+                   (0.3, 0.15)(0.3, -0.15)%
+        \else\ifx\psk@synthstyle\pst@synthstyle@pulse
+            \pscurve{c-c}(-0.3, -0.15)(-0.15,-0.15)(-0.1, -0.14)
+            (-0.04,0)(-0.01,0.13)(0, 0.15)(0.01,0.13)(0.04, 0)(0.1,-0.14)(0.15,-0.15)(0.3,-0.15)%
+        \else\ifx\psk@synthstyle\pst@synthstyle@sawtooth
+            \psline(-0.3,-0.15)(0,0.15)(0,-0.15)(0.3,0.15)(0.3,-0.15)
+        \else\ifx\psk@synthstyle\pst@synthstyle@triangle
+            \psline(-0.3,-0.15)(-0.1,0.15)(0.1,-0.15)(0.3,0.15)
+        \fi\fi\fi\fi
+        %
+        \pnode(#3){C@}
+        \ifx\psk@synthoutput\pst@LOoutput@left     
+            \rput[t]{#2}([offset=-0.6]C@){#4}
+            \ifPst@inputarrow
+                \psline[arrows=->,arrowinset=0](-0.5,0)(-1,0)
+            \else
+                \psline(-0.5,0)(-1,0)
+            \fi
+        \fi
+        \ifx\psk@synthoutput\pst@LOoutput@top
+             \rput[t]{#2}([offset=-0.6]C@){#4}
+            \ifPst@inputarrow
+                \psline[arrows=->,arrowinset=0](0,0.5)(0,1)
+            \else
+                \psline(0,0.5)(0,1)
+            \fi
+        \fi
+        \ifx\psk@synthoutput\pst@LOoutput@right
+            \rput[t]{#2}([offset=-0.6]C@){#4}
+            \ifPst@inputarrow
+                \psline[arrows=->,arrowinset=0](0.5,0)(1,0)
+            \else
+                \psline(0.5,0)(1,0)
+            \fi
+        \fi
+        \ifx\psk@synthoutput\pst@LOoutput@bottom
+            \rput[b]{#2}([offset=0.6]C@){#4}
+            \ifPst@inputarrow
+                \psline[arrows=->,arrowinset=0](0,-0.5)(0,-1)
+            \else
+                \psline(0,-0.5)(0,-1)
+            \fi
+        \fi
+    }
+    \endgroup
+    \ignorespaces%
+}%
+\makeatother
+\begin{document}
+\thispagestyle{empty}
+\footnotesize
+\psset{unit=0.8, 
+  usefiberstyle, 
+  optboxheight=0.7, 
+  optmzmsize=0.7, 
+  optboxwidth=1.2, 
+  switchsize=0.7, 
+  labeloffset=0.7, 
+  arrowinset=0}
+\addtopsstyle{Fiber}{linewidth=2\pslinewidth}
+%\begin{TeXtoEPS}
+  \begin{pspicture}[showgrid=false](1.1,5.9)(11.2,10.9)
+   % 
+   %
+   % mark the SBS part
+   \pspolygon[fillstyle=solid,fillcolor=gray!15,linearc=0.2, linestyle=dashed, dash=3pt 2pt]%
+        (2,9.38)(7.58,9.38)(7.58,6)(6.2,6)(6.2,8.28)(2,8.28)(2,9.38)
+   %
+   %
+   \pnode(2.3,10){CWLaser}
+   \pnode([Xnodesep=0.2]CWLaser){MZMin}
+   \pnode([Xnodesep=1.5]MZMin){MZMout}
+   \pnode([Xnodesep=3.5]MZMout){EDFAout}
+   % 
+   % Generation of periodic field
+   \optbox[endbox, fiber, compname=CW, labeloffset=0](MZMin)(CWLaser){$\text{LD}_\text{cw}$}
+   \optmzm[compname=MZMcw, labelangle=180, extnode=b](MZMin)(MZMout){$\text{MZM}_{\text{TPF}}$}
+   \optamp[position=0.7,labelangle=180](MZMout)(EDFAout){EDFA}
+   \rput[b](4.3,10.1){%
+     \psplot[plotpoints=200,xunit=0.4]{0}{3.1416}{%
+       360 3.14159 div x 3 mul mul sin 2 exp 0.3 mul
+     }%
+   }
+   % 
+   % pulse laser
+   \pnode([Xnodesep=3.7,offset=-3]CWLaser){PL}
+   \pnode([Xnodesep=0.3]PL){MZMPin}
+   \pnode(EDFAout|MZMPin){MZMPout}
+   \optbox[fiber, compname=PL, endbox, labeloffset=0, extnode=l](MZMPin)(PL){SIG}
+   \optmzm[compname=MZMP, extnode=t](MZMPin)(MZMPout){MZM}
+%    \rput[b](4.2,6.2){%
+%       \psplot[plotpoints=200,xunit=0.4]{0.2}{3.8}{%
+%          2.7182818 x 1 sub 0.1 div 2 exp neg exp 0.4 mul 
+%          2.7182818 x 3 sub 0.1 div 2 exp neg exp 0.4 mul add
+%       }%
+%    }%
+   %
+   % 
+   \makeatletter
+   \pnode(!tx@NodeDict begin N@EDFAout GetCenter N@MZMPout GetCenter 3 1 roll pop add 0.5 mul \pst@number\psyunit div exch \pst@number\psxunit div 1.3 add exch end){CPLout}
+   \makeatother
+   \wdmcoupler[labeloffset=0.5, labelangle=20, position=0.75, couplersize=0.3](EDFAout)(MZMPout)(CPLout){90/10}
+   \pnode([Xnodesep=1.7]CPLout){HNLF}
+   \pnode([Xnodesep=0.1]HNLF){OSA}
+   \optfiber[labeloffset=-1.1](CPLout)(HNLF){HNLF}
+   \optdetector[fiber](HNLF)(OSA){OSA}
+   %
+   % electrical stuff
+   \pnode([offset=-1.6]\OENodeExt{MZMcw}){SWb}
+   \pnode([offset=-0.35]SWb){Osci}
+   \bgroup
+   \uput{0.5}[180](Osci){SYN}
+   \oscillator[linewidth=0.67\pslinewidth, unit=0.7, output=none]{180}(Osci){}{}
+   \egroup
+   \optswitch[position=0.47,addtoFiber={arrows=<-,linewidth=0.5\pslinewidth, linecolor=black}, labeloffset=0.8,extnode=t, compname=SW](\OENodeExt{MZMcw})(SWb){SW}
+   \pnode([Xnodesep=1.2]\OENodeExt{SW}){synth} 
+   \synthesizer[synthstyle=rect, rectwidth=0.3,unit=0.7](synth){}{}
+   \uput{0.4}[-35](synth){PG}
+   \psline[arrows=<-](\OENodeExt{SW})([Xnodesep=0.85]\OENodeExt{SW})
+   \pcangle[angleA=90, armB=0, arrows=<-](\OENodeExt{MZMP})([Xnodesep=1.55]\OENodeExt{SW})
+   \pnode(Osci|\OENodeExt{PL}){PSPL}
+   \makeatletter
+   \pnode(! tx@NodeDict begin /N@PSPL load GetCenter /N@OE@PLExt load GetCenter pop 3 -1 roll add 0.5 mul \pst@number\psxunit div exch \pst@number\psyunit div end){PS}
+   \makeatother
+   \pscircle(PS){0.35}
+   \psline[arrowinset=0]{->}([Xnodesep=-0.4,offset=-0.4]PS)([Xnodesep=0.45,offset=0.45]PS)
+   \uput{0.5}[-90](PS){PS}
+   \psline[arrows=->]([Xnodesep=0.35]PS)(\OENodeExt{PL})
+   \pcangle[angleA=-90,angleB=180, armB=0.1]([offset=-0.35]Osci)([Xnodesep=-0.35]PS)
+  \end{pspicture}
+%\end{TeXtoEPS}
+\end{document}
