@@ -1,7 +1,7 @@
 %%% Drawfiber.tex --- 
 
 %% Author: cbersch
-%% Version: $Id: Drawfiber.tex,v 0.0 2011/03/16 09:52:53 Exp$
+%% Version: $Id: Drawfiber.tex,v 0.0 2011/03/20 22:38:40 Exp$
 
 
 \documentclass{scrartcl}
@@ -16,21 +16,24 @@
 
 \begin{document}
 \addtopsstyle{Fiber}{linecolor=red}
- \begin{pspicture}[showgrid=true](10,5)
+ \begin{pspicture}[showgrid=false](10,5)
+   \addtopsstyle{Fiber}{angleA=30}
    \pnode(0, 1){A}
    \pnode(5, 1){B}
    \optbox(A)(B){}
    \drawfiber{(A)}{}
-%   \Drawfiber[addtoFiber={angleB=180}]{(A)}{1}
+   \drawfiber{}{(B)}
+%
+   \pnode(2, 3){C}
+   \pnode(4,2){D}
+   \optbox(C)(D){}
+   \drawfiber{(C)}{}
+   \drawfiber{}{(D)}
+%
+   \pnode(7,4){E}
+   \pnode(7,0){F}
+   \optbox(E)(F){}
+   \drawfiber{}{(F)}
+   \drawfiber{(E)}{}
  \end{pspicture}
-
-% \begin{pspicture}[showgrid=true](10,5)
-%   \pnode(0, 3){A}
-%   \pnode(0, 1){B}
-%   \pnode(5, 3){C}
-%   \pnode(5, 1){D}
-%   \optcoupler(A)(B)(C)(D){}
-%   \Drawfiber{(A)}{1}
-% %  \Drawfiber[addtoFiber={angleB=180}]{(A)}{1}
-% \end{pspicture}
 \end{document}

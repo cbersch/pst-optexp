@@ -14,6 +14,9 @@ tx@OptexpDict begin
     copy length exch
     putinterval
 } bind def
+/nametostring {
+    dup length string cvs
+} bind def
 %
 % XB YB  XA YA XG YG
 /calcNodes {
@@ -126,7 +129,7 @@ tx@OptexpDict begin
 % Calculate angle of line from nodeA to nodeB
 % nodeB nodeA -> angle
 /FiberAngleB {%
-    GetCenter 3 -1 roll GetCenter exch 3 1 roll sub 3 1 roll sub atan
+    @GetCenter 3 -1 roll @GetCenter exch 3 1 roll sub 3 1 roll sub atan
 } bind def
 %
 % Calculate angle of line from nodeB to nodeA
@@ -168,7 +171,7 @@ tx@OptexpDict begin
 % basicnodename reverse GetInternalBeamNodes x_n y_n ... x_1 y_1 (if reverse = false)
 /GetInternalBeamNodes {
     [ 3 1 roll GetInternalNodeNames ]
-    { cvn tx@NodeDict begin load GetCenter end } forall
+    { @GetCenter } forall
 } bind def
 %
 % Initialize some global variables for positioning of external nodes
@@ -572,6 +575,7 @@ tx@OptexpDict begin
     /InVec ED /StartPoint ED
     % preset options
     /nMul 1 def
+    /nAdd 0 def
     % execute options
     exec
     counttomark /N ED
@@ -748,6 +752,7 @@ tx@OptexpDict begin
     currentdict /fillBeam known not { /fillBeam {gsave fill grestore} def } if
     /DrawnSegm 0 def
     /nMul 1 def
+    /nAdd 0 def
     % execute user options
     exec
     PrearrangePlanes
@@ -1156,6 +1161,7 @@ tx@OptexpDict begin
 } bind def
 /@ABVect { tx@EcldDict begin ABVect end } bind def
 /@ABDist { tx@EcldDict begin ABDist end } bind def
+/@GetCenter { cvn load tx@NodeDict begin GetCenter end } bind def
 % see <http://en.wikipedia.org/wiki/Snell%27s_law#Vector_form>
 % X_in Y_in X_norm Y_norm n1 n2 RefractVec -> X_out Y_out
 /RefractVec {
@@ -1188,7 +1194,7 @@ tx@OptexpDict begin
     2 copy /Yr ED /Xr ED 
     tx@Dict begin Pyth end /radius ED /Yp ED /Xp ED
     /X0n X0 Xp sub def /Y0n Y0 Yp sub def
-    n2 1 gt { /n2 n2 nMul mul def } if
+    n2 1 gt { /n2 n2 nMul mul nAdd add def } if
     tx@EcldDict begin
 	X0n Y0n 2 copy 2 copy Xin 3 -1 roll add Yin 3 -1 roll add
 	2 copy 6 2 roll EqDr radius InterLineCircle
@@ -1220,7 +1226,7 @@ tx@OptexpDict begin
 % Xp Yp dXp dYp trans|refl n2 X0 Y0 X_in Y_in PlainInterface -> X' Y' X_out Y_out
 /PlainInterface {%
     /Yin ED /Xin ED /Y0 ED /X0 ED /n2 ED /mode ED /dYp ED /dXp ED /Yp ED /Xp ED
-    n2 1 gt { /n2 n2 nMul mul def } if
+    n2 1 gt { /n2 n2 nMul mul nAdd add def } if
     tx@EcldDict begin
 	Xp Yp Xp dXp add Yp dYp add X0 Y0 X0 Xin add Y0 Yin add InterLines Xin Yin
 	Xin Yin dXp dYp NormalVec
@@ -1244,18 +1250,18 @@ tx@OptexpDict begin
 %
 % CompA|NodeA CombB|NodeB -> NearestNodeA coordinates
 /NearestNode {
-    /CompB ED dup
-    xcheck not {
-	/CompA ED
-	/CompB load dup xcheck not {
-	    (N@) exch strcat (1) strcat cvn load tx@NodeDict begin GetCenter end ToVec
+    dup xcheck not { nametostring } if /CompB ED
+    dup xcheck not {% CompA
+	nametostring /CompA ED
+	/CompB load dup xcheck not {% CompB
+	    (N@) exch strcat (1) strcat @GetCenter ToVec
 	} if /CompB ED
-	(N@) CompA strcat 
+	(N@) CompA strcat
 	1 {% name and counter on stack
 	    2 copy dup % name cnt name cnt cnt
 	    3 string cvs 3 -1 roll exch strcat dup % name cnt cnt (namecnt) (namecnt)
 	    tx@NodeDict exch known {%
-		cvn load tx@NodeDict begin GetCenter end
+		@GetCenter
 		CompB @ABDist
 		% cnt cnt dist
 		exch 1 eq {% init /dist
@@ -1272,7 +1278,7 @@ tx@OptexpDict begin
 		1 add % increment counter
 	    } {
 		pop pop pop dup (N) strcat
-		cvn load tx@NodeDict begin GetCenter end
+		@GetCenter
 		CompB @ABDist
 		dup dist lt {
 		    /dist ED
@@ -1283,12 +1289,31 @@ tx@OptexpDict begin
 		exit
 	    } ifelse
 	} loop
-	planeNum 3 string cvs strcat cvn load tx@NodeDict begin GetCenter end
+	planeNum 3 string cvs strcat @GetCenter
     } {% else, it is a node and we already have the appropriate coordinates on the stack
 	exec
     } ifelse
 } bind def
 
+% Calculate angle of line from CompA to CompB
+% CompA|nodeA CompB|nodeB -> angleA
+/RelFiberAngle {%
+    dup xcheck not { nametostring } if /CompB ED
+    dup xcheck not { nametostring } if /CompA ED
+    /CompA load xcheck {% nodeA
+	/CompB load /CompA load CompA 4 2 roll NearestNode @ABVect exch atan
+    } {% CompA
+	/CompB load xcheck {% nodeB
+            /CompA load /CompB load NearestNode CompB @ABVect exch atan
+	} {
+	    CompA CompB 2 copy NearestNode 4 2 roll exch NearestNode 4 2 roll @ABVect % BX-AX BY-AY
+	    2 copy exch atan 3 1 roll
+	    CompA (N@) exch strcat dup (A) strcat exch (B) strcat
+	    cvn load @GetCenter 3 -1 roll cvn load @GetCenter @ABVect 
+	    SProd 0 lt { 180 add } if
+	} ifelse
+    } ifelse
+} bind def
 %/GetInternalNodeNames {
 %    /reverse exch def
 %    (N@) exch strcat 
