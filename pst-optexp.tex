@@ -27,7 +27,7 @@
 %
 %
 \def\fileversion{3.0alpha}
-\def\filedate{2011/03/02}
+\def\filedate{2011/03/20}
 \message{`pst-optexp' v\fileversion, \filedate\space (CB)}
 %
 \edef\PstAtCode{\the\catcode`\@} \catcode`\@=11\relax
@@ -304,6 +304,7 @@
 \define@key[psset]{optexp}{refractiveindex}{\edef\POK@optbox@n{#1}}
 \define@key[psset]{optexp}{n}{\edef\POK@refractiveindex{#1}}
 \define@key[psset]{optexp}{nMul}{\edef\POK@refractiveindex@mul{#1}}
+\define@key[psset]{optexp}{nAdd}{\edef\POK@refractiveindex@add{#1}}
 %
 % Plate
 \define@key[psset]{optexp}{platelinewidth}{\edef\POK@plate@linewidth{#1}}
@@ -540,7 +541,9 @@
 }%
 \def\drawbeam@iii{%
   \ifx\pslinestyle\@none\else
-    \addto@pscode{ {/nMul \POK@refractiveindex@mul\space def} }%
+    \addto@pscode{%
+     {/nMul \POK@refractiveindex@mul\space def
+      /nAdd \POK@refractiveindex@add\space def} }%
     \ifx\POK@beam@startpos\@empty
       \addto@pscode{ {0 0} }%
     \else
@@ -563,7 +566,9 @@
 }%
 \def\drawExtendedBeam@iii{%
   \def\pst@fill##1{ gsave ##1 grestore }%
-  \addto@pscode{ {/nMul \POK@refractiveindex@mul\space def} }%
+  \addto@pscode{%
+   {/nMul \POK@refractiveindex@mul\space def
+    /nAdd \POK@refractiveindex@add\space def} }%
   % the input vectors
   \ifx\POK@beam@invec\@empty
      \ifx\POK@beam@divergence\@empty
@@ -591,18 +596,12 @@
        \addto@pscode{ newpath gsave \pst@number\pslinewidth SLW \pst@usecolor\pslinecolor \tx@setStrokeTransparency StrokeExtendedBeam \@nameuse{psls@\pslinestyle} grestore }%
     \fi
   \else
-    \ifx\pslinestyle\@none%
-%       \addto@pscode{ newpath gsave }%
-%       \addto@pscode{ newpath gsave /fillBeam [ }
-%       \psk@fillstyle
-%       \addto@pscode{] cvx def}%
-       \addto@pscode{ ExtendedBeam grestore }%
-    \else
-       \addto@pscode{counttomark 1 add copy newpath gsave }%
-       \addto@pscode{/fillBeam { \psk@fillstyle } def }%
-       \addto@pscode{currentdict /lastBeamPointLow known { /TmpLastBeamPointLow /lastBeamPointLow load def} if }%
-       \addto@pscode{currentdict /lastBeamPointUp known { /TmpLastBeamPointUp /lastBeamPointUp load def} if }%
-       \addto@pscode{ExtendedBeam grestore }%
+    \addto@pscode{counttomark 1 add copy newpath gsave }%
+    \addto@pscode{/fillBeam { \psk@fillstyle } def }%
+    \addto@pscode{currentdict /lastBeamPointLow known { /TmpLastBeamPointLow /lastBeamPointLow load def} if }%
+    \addto@pscode{currentdict /lastBeamPointUp known { /TmpLastBeamPointUp /lastBeamPointUp load def} if }%
+    \addto@pscode{ ExtendedBeam grestore }%
+    \ifx\pslinestyle\@none\else
        \addto@pscode{pop newpath }%currentdict dup /lastBeamPointLow undef /lastBeamPointUp undef }%
        \addto@pscode{currentdict dup /TmpLastBeamPointLow known { /lastBeamPointLow /TmpLastBeamPointLow load def /TmpLastBeamPointLow undef } { /lastBeamPointLow undef } ifelse }%
        \addto@pscode{currentdict dup /TmpLastBeamPointUp known { /lastBeamPointUp /TmpLastBeamPointUp load def /TmpLastBeamPointUp undef } { /lastBeamPointUp undef } ifelse }%
@@ -639,64 +638,65 @@
    \advance\poe@node@cnt by 1
    \optexp@getcomp{{\pst@coor} {0 1} (\POS@optexp@basicname@default N@\the\poe@node@cnt) {\tx@UserCoor} NewTempNodeComp (\POS@optexp@basicname@default N@\the\poe@node@cnt) }%
 }%
-\def\optexp@getcomp#1{%
-   \edef\optexp@comps{#1 \optexp@comps}%
-}%
 %
-\newif\ifPOE@iscomp
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \def\optexp@getnode#1\@nil{%
   \edef\pst@tempb{\pst@optexp@getfirstchar#1\@nil}%
   \def\pst@tempc{(}
-  \POE@iscomptrue
   \ifx\pst@tempb\pst@tempc\relax
-    \optexp@getcoor#1%
-    \global\POE@iscompfalse
-  \else\ifcat\pst@tempb a\relax
-    \optexp@getcomp{(\POS@optexp@basicname@prefix#1)}%
+    \optexp@getcoor#1
+    \edef\oe@temp{{\pst@coor}}%
   \else
-    \optexp@getcomp{(\POS@optexp@basicname@prefix\POS@optexp@basicname@default#1)}%
-  \fi\fi%
+    \ifcat\pst@tempb a\relax
+      \edef\oe@temp{/\POS@optexp@basicname@prefix#1\space}%
+    \else
+      \edef\oe@temp{/\POS@optexp@basicname@prefix\POS@optexp@basicname@default#1\space}%
+    \fi
+  \fi%
 }%
 \def\optexp@getcoor(#1){%
-  \pst@getcoor{#1}\pst@tempa
-  \expandafter\optexp@getcomp{{\pst@tempa}}
+  \pst@@getcoor{#1}
 }%
 \def\drawfiber{\pst@object{drawfiber}}%
 \def\drawfiber@i#1#2{%
+  \addbefore@par{style=Fiber}%
   \begingroup
+    \let\psk@angleA\relax
+    \let\psk@angleB\relax
     \use@par
-    \def\optexp@comps{}%      
     \def\oe@tempa{#1}
     \ifx\oe@tempa\@empty
-      \expandafter\optexp@getcomp{(\getLastCompname@i)}
-      \edef\oe@tempa{\getLastCompname@i}
+      \edef\optexp@comps{/\getLastCompname@i\space}
     \else
       \expandafter\optexp@getnode#1\@nil
-      \ifPOE@iscomp
-        \def\oe@tempa{\POS@optexp@basicname@prefix#1}
-      \else
-        \def\oe@tempa{}
-      \fi
+      \edef\optexp@comps{\oe@temp}
     \fi
     %
     \def\oe@tempb{#2}
     \ifx\oe@tempb\@empty
-      \expandafter\optexp@getcomp{(\getLastCompname@i)}
-      \edef\oe@tempb{\getLastCompname@i}
+      \edef\optexp@comps{/\getLastCompname@i\space \optexp@comps}
     \else
       \expandafter\optexp@getnode#2\@nil
-      \ifPOE@iscomp
-        \def\oe@tempb{\POS@optexp@basicname@prefix#2}
-      \else
-        \def\oe@tempb{}
-      \fi
+      \edef\optexp@comps{\oe@temp\space \optexp@comps}
     \fi
     %
-    \optexp@pccurve@[style=Fiber]%
-                    (! \optexp@comps exch \pst@optexpdict NearestNode end \tx@UserCoor)%
-                    (! \optexp@comps \pst@optexpdict NearestNode end \tx@UserCoor)%
-                    {\oe@tempa}{\oe@tempb}
+    \message{--\meaning\psk@angleA--}
+    \message{^^Joptexp@comps --\optexp@comps--^^J}
+    \ifx\relax\psk@angleA
+      \message{angleA relax}
+      \psset{angleA=! \pst@optexpdict \optexp@comps RelFiberAngle end}%
+    \else
+      \ifPOE@relangle
+        \psset{angleA=! \pst@optexpdict \optexp@comps RelFiberAngle end \psk@angleA\space add}%
+    \fi\fi
+    \ifx\psk@angleB\relax
+      \psset{angleB=! \pst@optexpdict \optexp@comps exch RelFiberAngle end}%
+    \else
+      \ifPOE@relangle
+        \psset{angleB=! \pst@optexpdict \optexp@comps exch RelFiberAngle end \psk@angleB\space add}%
+    \fi\fi
+    \pccurve(! \optexp@comps exch \pst@optexpdict NearestNode end \tx@UserCoor)%
+            (! \optexp@comps \pst@optexpdict NearestNode end \tx@UserCoor)
   \endgroup
 }%
 \def\draw@InternalConnections{%
@@ -1095,46 +1095,60 @@
    \end@OptexpObj
 }%
 \def\optexp@pccurve{\@ifnextchar[{\optexp@pccurve@i}{\optexp@pccurve@i[]}}
-\def\optexp@pccurve@i[#1](#2)(#3){\optexp@pccurve@[#1](#2)(#3){\POK@basicname}{\POK@basicname}}%
+\def\optexp@pccurve@i[#1]{\optexp@pccurve@[#1]{(\POK@basicname) dup }}%
 \def\optexp@pccurve@{\pst@object{optexp@pccurve@}}%
-\def\optexp@pccurve@@i(#1)(#2)#3#4{%
-%  \addbefore@par{style=#3}%
+\def\optexp@pccurve@@i#1{%
   \begingroup
-    \edef\psk@angleA@old{\psk@angleA}
-    \edef\psk@angleB@old{\psk@angleB}
-    \let\psk@angleA\relax
-    \let\psk@angleB\relax
-    \edef\pst@tempa{#3}
-    \edef\pst@tempb{#4}
     \use@par
-    \ifx\psk@angleA\relax
-      % angleA was not changed by the style
-      \ifx\pst@tempa\@empty
-        \psset{angleA=\psk@angleA@old}
-      \else
-        \psset{angleA=! \pst@optexpdict N@\pst@tempa B N@\pst@tempa A FiberAngleA end}%
-      \fi
-    \else\ifPOE@relangle
-      \ifx\pst@tempa\@empty\else
-        \psset{angleA=! \pst@optexpdict N@\pst@tempa B N@\pst@tempa A FiberAngleA end \psk@angleA\space add}%
-      \fi
-    \fi
-    \fi
-    \ifx\psk@angleB\relax
-      % angleB was not changed by the style
-      \ifx\pst@tempb\@empty
-        \psset{angleB=\psk@angleB@old}
-      \else
-        \psset{angleB=! \pst@optexpdict N@\pst@tempb B\space N@\pst@tempb A FiberAngleB end}%
-      \fi
-    \else\ifPOE@relangle
-      \ifx\pst@tempb\@empty\else
-        \psset{angleB=! \pst@optexpdict N@\pst@tempb B N@\pst@tempb A FiberAngleB end \psk@angleB\space add}%
-      \fi
-    \fi\fi
-    \pccurve(#1)(#2)
+    % \ifPOE@relangle
+    %   \psset{angleA=! \pst@optexpdict #1 RelFiberAngleA end \psk@angleA\space add,
+    %          angleB=! \pst@optexpdict #1 RelFiberAngleB end \psk@angleA\space add}
+    % \fi
+    \pccurve(! #1 exch \pst@optexpdict NearestNode end \tx@UserCoor)%
+            (! #1 \pst@optexpdict NearestNode end \tx@UserCoor)
   \endgroup
 }%
+% \def\optexp@pccurve{\@ifnextchar[{\optexp@pccurve@i}{\optexp@pccurve@i[]}}
+% \def\optexp@pccurve@i[#1](#2)(#3){\optexp@pccurve@[#1](#2)(#3){\POK@basicname}{\POK@basicname}}%
+% \def\optexp@pccurve@{\pst@object{optexp@pccurve@}}%
+% \def\optexp@pccurve@@i(#1)(#2)#3#4{%
+% %  \addbefore@par{style=#3}%
+%   \begingroup
+%     \edef\psk@angleA@old{\psk@angleA}
+%     \edef\psk@angleB@old{\psk@angleB}
+%     \let\psk@angleA\relax
+%     \let\psk@angleB\relax
+%     \edef\pst@tempa{#3}
+%     \edef\pst@tempb{#4}
+%     \use@par
+%     \ifx\psk@angleA\relax
+%       % angleA was not changed by the style
+%       \ifx\pst@tempa\@empty
+%         \psset{angleA=\psk@angleA@old}
+%       \else
+%         \psset{angleA=! \pst@optexpdict N@\pst@tempa B N@\pst@tempa A FiberAngleA end}%
+%       \fi
+%     \else\ifPOE@relangle
+%       \ifx\pst@tempa\@empty\else
+%         \psset{angleA=! \pst@optexpdict N@\pst@tempa B N@\pst@tempa A FiberAngleA end \psk@angleA\space add}%
+%       \fi
+%     \fi
+%     \fi
+%     \ifx\psk@angleB\relax
+%       % angleB was not changed by the style
+%       \ifx\pst@tempb\@empty
+%         \psset{angleB=\psk@angleB@old}
+%       \else
+%         \psset{angleB=! \pst@optexpdict N@\pst@tempb B\space N@\pst@tempb A FiberAngleB end}%
+%       \fi
+%     \else\ifPOE@relangle
+%       \ifx\pst@tempb\@empty\else
+%         \psset{angleB=! \pst@optexpdict N@\pst@tempb B N@\pst@tempb A FiberAngleB end \psk@angleB\space add}%
+%       \fi
+%     \fi\fi
+%     \pccurve(#1)(#2)
+%   \endgroup
+% }%
 %
 %
 \def\wdmcoupler{\pst@object{wdmcoupler}}%
@@ -1593,6 +1607,7 @@
         ,beamdiv=\@empty
         ,n=1.5
         ,nMul=1
+        ,nAdd=0
 }%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
