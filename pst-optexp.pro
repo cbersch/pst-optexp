@@ -1298,21 +1298,40 @@ tx@OptexpDict begin
 % Calculate angle of line from CompA to CompB
 % CompA|nodeA CompB|nodeB -> angleA
 /RelFiberAngle {%
+%    2 copy == ==
     dup xcheck not { nametostring } if /CompB ED
     dup xcheck not { nametostring } if /CompA ED
     /CompA load xcheck {% nodeA
-	/CompB load /CompA load CompA 4 2 roll NearestNode @ABVect exch atan
-    } {% CompA
+	(nodeA) ==
 	/CompB load xcheck {% nodeB
-            /CompA load /CompB load NearestNode CompB @ABVect exch atan
+	    (nodeB) ==
+	    /CompB load /CompA load CompA 4 2 roll NearestNode @ABVect exch atan
+	} {% compB
+	    (compB) ==
+	    /CompB load /CompA load CompB CompA 5 -2 roll NearestNode @ABVect 3 -1 roll
+	    (N@) exch strcat dup (A) strcat exch (B) strcat 
+	    @GetCenter 3 -1 roll @GetCenter @ABVect 2 copy exch atan
+	    5 1 roll SProd 0 lt { 180 add } if
+	} ifelse
+    } {% CompA
+	(compA) ==
+	/CompB load xcheck {% nodeB
+	    (nodeB) ==
+	    CompA /CompB load CompA CompB 5 -2 roll NearestNode @ABVect 3 -1 roll
+	    (N@) exch strcat dup (A) strcat exch (B) strcat 
+	    @GetCenter 3 -1 roll @GetCenter @ABVect 2 copy exch atan
+	    5 1 roll SProd 0 ge { 180 add } if
+            %/CompA load /CompB load NearestNode CompB @ABVect exch atan
 	} {
-	    CompA CompB 2 copy NearestNode 4 2 roll exch NearestNode 4 2 roll @ABVect % BX-AX BY-AY
-	    2 copy exch atan 3 1 roll
-	    CompA (N@) exch strcat dup (A) strcat exch (B) strcat
-	    cvn load @GetCenter 3 -1 roll cvn load @GetCenter @ABVect 
-	    SProd 0 lt { 180 add } if
+	    (compB) ==
+	    CompB CompA 2 copy dup 5 1 roll NearestNode % compA compB compA BX BY
+	    4 2 roll exch NearestNode % compA BX BY AX AY
+	    @ABVect 3 -1 roll % dx dy compA
+	    (N@) exch strcat dup (A) strcat exch (B) strcat @GetCenter 3 -1 roll @GetCenter @ABVect
+	    2 copy exch atan 5 1 roll SProd 0 ge {180 add} if
 	} ifelse
     } ifelse
+    (--------)==
 } bind def
 %/GetInternalNodeNames {
 %    /reverse exch def

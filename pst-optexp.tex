@@ -638,18 +638,24 @@
    \advance\poe@node@cnt by 1
    \optexp@getcomp{{\pst@coor} {0 1} (\POS@optexp@basicname@default N@\the\poe@node@cnt) {\tx@UserCoor} NewTempNodeComp (\POS@optexp@basicname@default N@\the\poe@node@cnt) }%
 }%
+\def\optexp@getcomp#1{%
+   \edef\optexp@comps{#1 \optexp@comps}%
+}%
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \def\optexp@getnode#1\@nil{%
   \edef\pst@tempb{\pst@optexp@getfirstchar#1\@nil}%
   \def\pst@tempc{(}
   \ifx\pst@tempb\pst@tempc\relax
+    \message{^^J0, -#1-^^J}
     \optexp@getcoor#1
     \edef\oe@temp{{\pst@coor}}%
   \else
     \ifcat\pst@tempb a\relax
+      \message{^^J1, #1^^J}
       \edef\oe@temp{/\POS@optexp@basicname@prefix#1\space}%
     \else
+      \message{^^J2^^J}
       \edef\oe@temp{/\POS@optexp@basicname@prefix\POS@optexp@basicname@default#1\space}%
     \fi
   \fi%
@@ -665,18 +671,28 @@
     \let\psk@angleB\relax
     \use@par
     \def\oe@tempa{#1}
+    \message{^^J first arg is -#1-^^J}
     \ifx\oe@tempa\@empty
+      \message{^^Jfirst is empty}
       \edef\optexp@comps{/\getLastCompname@i\space}
+      \message{done}
     \else
       \expandafter\optexp@getnode#1\@nil
+      \message{^^Jfirst is  --\oe@temp--^^J}
+      \message{blubb}
       \edef\optexp@comps{\oe@temp}
+      \message{blaab}
     \fi
     %
     \def\oe@tempb{#2}
+    \message{^^J second arg is -#2-^^J}
     \ifx\oe@tempb\@empty
+      \message{^^Jsecond is empty}
       \edef\optexp@comps{/\getLastCompname@i\space \optexp@comps}
     \else
+      \message{asdfasdf}
       \expandafter\optexp@getnode#2\@nil
+      \message{^^Jsecond is --\oe@temp--}
       \edef\optexp@comps{\oe@temp\space \optexp@comps}
     \fi
     %
@@ -710,14 +726,14 @@
   \else
     \ifPOE@endbox
       \ifPOE@fiberin@
-        \optexp@pccurve[style=FiberIn](\optexp@nodeA)(\POK@basicname 1)
+        \drawfiber[style=FiberIn]{(\optexp@nodeA)}{(\POK@basicname 1)}
       \fi
     \else
       \ifPOE@fiberin@
-        \optexp@pccurve[style=FiberIn](\optexp@nodeA)(\POK@basicname 1)
-      \fi
+        \drawfiber[style=FiberIn]{(\optexp@nodeA)}{(\POK@basicname 1)}
+              \fi
       \ifPOE@fiberout@
-        \optexp@pccurve[style=FiberOut1](\POK@basicname N)(\optexp@nodeB)
+        \drawfiber[style=FiberOut1]{(\POK@basicname N)}{(\optexp@nodeB)}
       \fi
     \fi
   \fi
@@ -1037,16 +1053,16 @@
             \pst@draw@component{##5}{\@nameuse{#2@ii}}
             % connect the fibers
             \ifPOE@fiberin@top
-              \optexp@pccurve[style=FiberIn1](##1)(\POK@basicname 1)
+              \drawfiber[style=FiberIn1]{(##1)}{\POK@compname}
             \fi
             \ifPOE@fiberin@bottom
-              \optexp@pccurve[style=FiberIn2](##2)(\POK@basicname 2)
+              \drawfiber[style=FiberIn2]{(##2)}{\POK@compname}
             \fi
             \ifPOE@fiberout@top
-              \optexp@pccurve[style=FiberOut1](\POK@basicname 3)(##3)
+              \drawfiber[style=FiberOut1]{\POK@compname}{(##3)}
             \fi
             \ifPOE@fiberout@bottom
-              \optexp@pccurve[style=FiberOut2](\POK@basicname N)(##4)
+              \drawfiber[style=FiberOut2]{\POK@compname}{(##4)}
             \fi
          \end@OptexpObj
       }%
@@ -1084,71 +1100,16 @@
       % 
       % connect the fibers
       \ifPOE@fiberin@
-        \optexp@pccurve[style=FiberIn](#1)(\POK@basicname 1)
+        \drawfiber[style=FiberIn]{(#1)}{\POK@compname}
       \fi
       \ifPOE@fiberout@top
-        \optexp@pccurve[style=FiberOut1](\POK@basicname 2)(#2)
+        \drawfiber[style=FiberOut1]{\POK@compname}{(#2)}
       \fi
       \ifPOE@fiberout@bottom
-        \optexp@pccurve[style=FiberOut2](\POK@basicname N)(#3)
+        \drawfiber[style=FiberOut2]{\POK@compname}{(#3)}
       \fi
    \end@OptexpObj
 }%
-\def\optexp@pccurve{\@ifnextchar[{\optexp@pccurve@i}{\optexp@pccurve@i[]}}
-\def\optexp@pccurve@i[#1]{\optexp@pccurve@[#1]{(\POK@basicname) dup }}%
-\def\optexp@pccurve@{\pst@object{optexp@pccurve@}}%
-\def\optexp@pccurve@@i#1{%
-  \begingroup
-    \use@par
-    % \ifPOE@relangle
-    %   \psset{angleA=! \pst@optexpdict #1 RelFiberAngleA end \psk@angleA\space add,
-    %          angleB=! \pst@optexpdict #1 RelFiberAngleB end \psk@angleA\space add}
-    % \fi
-    \pccurve(! #1 exch \pst@optexpdict NearestNode end \tx@UserCoor)%
-            (! #1 \pst@optexpdict NearestNode end \tx@UserCoor)
-  \endgroup
-}%
-% \def\optexp@pccurve{\@ifnextchar[{\optexp@pccurve@i}{\optexp@pccurve@i[]}}
-% \def\optexp@pccurve@i[#1](#2)(#3){\optexp@pccurve@[#1](#2)(#3){\POK@basicname}{\POK@basicname}}%
-% \def\optexp@pccurve@{\pst@object{optexp@pccurve@}}%
-% \def\optexp@pccurve@@i(#1)(#2)#3#4{%
-% %  \addbefore@par{style=#3}%
-%   \begingroup
-%     \edef\psk@angleA@old{\psk@angleA}
-%     \edef\psk@angleB@old{\psk@angleB}
-%     \let\psk@angleA\relax
-%     \let\psk@angleB\relax
-%     \edef\pst@tempa{#3}
-%     \edef\pst@tempb{#4}
-%     \use@par
-%     \ifx\psk@angleA\relax
-%       % angleA was not changed by the style
-%       \ifx\pst@tempa\@empty
-%         \psset{angleA=\psk@angleA@old}
-%       \else
-%         \psset{angleA=! \pst@optexpdict N@\pst@tempa B N@\pst@tempa A FiberAngleA end}%
-%       \fi
-%     \else\ifPOE@relangle
-%       \ifx\pst@tempa\@empty\else
-%         \psset{angleA=! \pst@optexpdict N@\pst@tempa B N@\pst@tempa A FiberAngleA end \psk@angleA\space add}%
-%       \fi
-%     \fi
-%     \fi
-%     \ifx\psk@angleB\relax
-%       % angleB was not changed by the style
-%       \ifx\pst@tempb\@empty
-%         \psset{angleB=\psk@angleB@old}
-%       \else
-%         \psset{angleB=! \pst@optexpdict N@\pst@tempb B\space N@\pst@tempb A FiberAngleB end}%
-%       \fi
-%     \else\ifPOE@relangle
-%       \ifx\pst@tempb\@empty\else
-%         \psset{angleB=! \pst@optexpdict N@\pst@tempb B N@\pst@tempb A FiberAngleB end \psk@angleB\space add}%
-%       \fi
-%     \fi\fi
-%     \pccurve(#1)(#2)
-%   \endgroup
-% }%
 %
 %
 \def\wdmcoupler{\pst@object{wdmcoupler}}%
@@ -1169,20 +1130,16 @@
       \fi\fi
       %
       \pst@draw@component{#4}\wdmcoupler@ii
-      %
-      % default connection angles
-      \psset{angleA=! \pst@optexpdict N@\optexp@nodeB\space N@\optexp@nodeA\space FiberAngleA end,
-             angleB=! \pst@optexpdict N@\optexp@nodeB\space N@\optexp@nodeA\space FiberAngleB end}
       % 
       % connect the fibers
       \ifPOE@fiberout@
-        \pccurve[style=FiberOut](\POK@basicname N)(#3)
+        \drawfiber[style=FiberOut]{\POK@compname}{(#3)}
       \fi
       \ifPOE@fiberin@top
-        \pccurve[style=FiberIn1](#1)(\POK@basicname 1)
+        \drawfiber[style=FiberIn1]{(#1)}{\POK@compname}
       \fi
       \ifPOE@fiberin@bottom
-        \pccurve[style=FiberIn2](#2)(\POK@basicname 2)
+        \drawfiber[style=FiberIn2]{(#2)}{\POK@compname}
       \fi
    \end@OptexpObj
 }%
