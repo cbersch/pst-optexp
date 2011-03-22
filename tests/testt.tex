@@ -1,7 +1,7 @@
 %%% testt.tex --- 
 
 %% Author: cbersch
-%% Version: $Id: testt.tex,v 0.0 2011/03/22 09:56:08 Exp$
+%% Version: $Id: testt.tex,v 0.0 2011/03/22 22:02:54 Exp$
 
 
 \documentclass{scrartcl}
@@ -15,14 +15,25 @@
 %%\revision$Header: /home/cbersch/work/pst-optexp/tests/testt.tex,v 0.0 2011/03/01 12:13:59 cbersch Exp$
 
 \begin{document}
-\vspace*{1cm}
+\begin{pspicture}(5,2)
+  \begin{optexp}
+    \pnode(0.5,1){A}
+    \pnode(4.5,1){B}
+    \doveprism(A)(B){}
+    \addtopsstyle{Beam}{beamConnectComp}
+    \drawbeam[addtoBeam={linecolor=red}, startpos=0 -0.1]{(A)}{1}{(B)}.
+    \drawbeam[addtoBeam={linecolor=black}]{(A)}{1}{(B)}.
+    \drawbeam[startpos=0 0.1]{(A)}{1}{(B)}.
+  \end{optexp}
+\end{pspicture}
 
-\begin{pspicture}[showgrid=true](3,2)
-  \pnode(0,2){A}
-  \pnode(0,0){B}
-  \pnode(3,2){C}
-  \pnode(3,0){D}
-% \optcoupler(A)(B)(C)(D){Coupler}
-  \optisolator[fiberout=none](A)(C){}
+\begin{pspicture}(5,2)
+    \pnode(0.5,1){A}
+    \pnode(4.5,1){B}
+    \doveprism(A)(B){}
+    \addtopsstyle{Beam}{beamConnectComp}
+    \drawbeam[addtoBeam={linecolor=red}, startpos=0 -0.1]{(A)}{1}{(B)}.
+    \drawbeam[addtoBeam={linecolor=black}]{(A)}{1}{(B)}.
+    \drawbeam[startpos=0 0.1]{(A)}{1}{(B)}.
 \end{pspicture}
 \end{document}

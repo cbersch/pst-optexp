@@ -39,6 +39,9 @@
 %
 % IF's
 %
+\newif\ifPOE@firstrun
+\newif\ifPOE@secondrun
+\newif\ifPOE@optexpenv
 \newif\ifPOE@variable
 \newif\ifPOE@voltage
 \newif\ifPOE@caxisinv
@@ -164,6 +167,9 @@
 % Parameterdefinitions
 %
 % General
+\define@boolkey[psset]{optexp}[POE@]{firstrun}[true]{}
+\define@boolkey[psset]{optexp}[POE@]{secondrun}[true]{}
+\define@boolkey[psset]{optexp}[POE@]{optexpenv}[true]{}
 \define@boolkey[psset]{optexp}[POE@component@]{optional}[true]{}
 \define@key[psset]{optexp}{position}{\edef\POK@position{#1}}
 \define@key[psset]{optexp}{abspos}{\edef\POK@abspos{#1}}
@@ -650,6 +656,11 @@
   \fi
   \addto@pscode{ end}%
   \let\psk@fillstyle\relax
+  \ifPOE@optexpenv
+    \ifPOE@secondrun
+      \def\pst@code{}
+    \fi
+  \fi
   \end@SpecialObj%
 }%
 \def\drawExtendedBeam@iii{%
@@ -922,8 +933,18 @@
         \pnode(0,0){\optexp@nodeLabel}%
         \pnode(0,0){\optexp@nodeIn}%
         \pnode(0,0){\optexp@nodeOut}%
-        \@ifundefined{#2@comp}{\dipole@comp}{\@nameuse{#2@comp}}%
-        \@nameuse{#2@iii}%
+        \@ifundefined{#2@iii}{%
+          \ifPOE@firstrun
+            \@ifundefined{#2@nodes}{\dipole@nodes}{\@nameuse{#2@nodes}}%
+          \fi
+          \ifPOE@secondrun
+            \@nameuse{#2@comp}%
+          \fi
+        }{%
+          \ifPOE@firstrun
+            \@nameuse{#2@iii}%
+          \fi
+        }%
       }%
    }{%
      \@pstrickserr{OptExp dipole object `#2' already defined}\@eha}%
@@ -947,7 +968,18 @@
         \pnode(0,0){\optexp@nodeLabel}%
         \pnode(0,0){\optexp@nodeIn}%
         \pnode(0,0){\optexp@nodeOut}%
-        \@nameuse{#2@iii}%
+        \@ifundefined{#2@iii}{%
+          \ifPOE@firstrun
+            \@ifundefined{#2@nodes}{\dipole@nodes}{\@nameuse{#2@nodes}}%
+          \fi
+          \ifPOE@secondrun
+            \@nameuse{#2@comp}%
+          \fi
+        }{%
+          \ifPOE@firstrun
+            \@nameuse{#2@iii}%
+          \fi
+        }%
       }%
    }{%
      \@pstrickserr{OptExp dipole object `#2' already defined}\@eha}%
@@ -972,7 +1004,18 @@
         \pnode(0,0){\optexp@nodeLabel}%
         \pnode(0,0){\optexp@nodeIn}%
         \pnode(0,0){\optexp@nodeOut}%
-        \@nameuse{#2@iii}%
+        \@ifundefined{#2@iii}{%
+          \ifPOE@firstrun
+            \@ifundefined{#2@nodes}{\dipole@nodes}{\@nameuse{#2@nodes}}%
+          \fi
+          \ifPOE@secondrun
+            \@nameuse{#2@comp}%
+          \fi
+        }{%
+          \ifPOE@firstrun
+            \@nameuse{#2@iii}%
+          \fi
+        }%
       }%
    }{%
      \@pstrickserr{OptExp dipole object `#2' already defined}\@eha}%
@@ -1011,8 +1054,18 @@
         \pnode(0,0){\optexp@nodeLabel}%
         \pnode(0,0){\optexp@nodeIn}%
         \pnode(0,0){\optexp@nodeOut}%
-        \@ifundefined{#2@comp}{\tripole@comp}{\@nameuse{#2@comp}}%
-        \@nameuse{#2@iii}%
+        \@ifundefined{#2@iii}{%
+          \ifPOE@firstrun
+            \@ifundefined{#2@nodes}{\tripole@nodes}{\@nameuse{#2@nodes}}%
+          \fi
+          \ifPOE@secondrun
+            \@nameuse{#2@comp}%
+          \fi
+        }{%
+          \ifPOE@firstrun
+            \@nameuse{#2@iii}%
+          \fi
+        }%
       }%
    }{%
      \@pstrickserr{OptExp tripole object `#2' already defined}\@eha}%
@@ -1450,7 +1503,10 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \psset[optexp]{%
 % general
-        position=\@empty
+        firstrun=true
+        ,secondrun=true
+        ,optexpenv=false
+        ,position=\@empty
         ,abspos=\@empty
         ,angle=0
         ,rotateref=c
@@ -1623,10 +1679,10 @@
 \ignorespaces}%
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\def\tripole@comp{%
+\def\tripole@nodes{%
   \newOptexpComp{ {0 0} {1 0} refl {NewPlaneInt} 1}%
 \ignorespaces}%
-\def\dipole@comp{%
+\def\dipole@nodes{%
   \newOptexpComp{ {0 0} {0 1} trans {NewPlaneInt} 1}%
 \ignorespaces}%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1752,7 +1808,8 @@
                    \fi
                    \POK@n}%
 }%
-\def\lens@iii{%
+\def\lens@comp{%
+   \message{^^J^^Jlens@comp^^J^^J}
    \addbefore@par{linejoin=1}%
    \begin@ClosedObj
    \edef\@lens@newwd{0\space}%
@@ -1845,21 +1902,21 @@
     % 
     % now complete the object
     \addto@pscode{closepath 1 setlinejoin end }%
-    \pnode(! \pst@optexpdict\space\@lens@th\space -2 div 0 end){\optexp@nodeIn}
-    \pnode(! \pst@optexpdict\space\@lens@th\space 2 div 0 end){\optexp@nodeOut}
-    \newOptexpComp{{\@lens@th\space -2 div 0} 
-                   \ifdim\POK@lensradiusLeft pt=0pt 
-                      {0 1} trans {NewPlaneInt}
-                   \else 
-                      {\POK@lensradiusLeft\space 0} trans {NewCurvedInt}
-                   \fi
-                   {\@lens@th\space 2 div 0} 
-                   \ifdim\POK@lensradiusRight pt=0pt
-                      {0 1} trans {NewPlaneInt}
-                   \else
-                      {\POK@lensradiusRight\space neg 0} trans {NewCurvedInt} 
-                   \fi
-                   \POK@n}%
+    % \pnode(! \pst@optexpdict\space\@lens@th\space -2 div 0 end){\optexp@nodeIn}
+    % \pnode(! \pst@optexpdict\space\@lens@th\space 2 div 0 end){\optexp@nodeOut}
+    % \newOptexpComp{{\@lens@th\space -2 div 0} 
+    %                \ifdim\POK@lensradiusLeft pt=0pt 
+    %                   {0 1} trans {NewPlaneInt}
+    %                \else 
+    %                   {\POK@lensradiusLeft\space 0} trans {NewCurvedInt}
+    %                \fi
+    %                {\@lens@th\space 2 div 0} 
+    %                \ifdim\POK@lensradiusRight pt=0pt
+    %                   {0 1} trans {NewPlaneInt}
+    %                \else
+    %                   {\POK@lensradiusRight\space neg 0} trans {NewCurvedInt} 
+    %                \fi
+    %                \POK@n}%
     \end@ClosedObj
 \ignorespaces}%
 %
@@ -2197,7 +2254,7 @@
 %
 % DOVE PRISM
 %
-\def\doveprism@iii{%
+\def\doveprism@comp{%
    \edef\@ht{\POK@doveprismsize\space 0.5 mul\space}%
    \edef\@wd{\POK@doveprismsize\space 1.5 mul\space}%
    \pspolygon(! \@wd neg \@ht neg)%
@@ -2208,7 +2265,7 @@
    \pnode(! 0 \@ht neg){\optexp@node{2}}
    \pnode(!\@wd \@ht add 0.5 mul 0){\optexp@nodeOut}
 \ignorespaces}%
-\def\doveprism@comp{%
+\def\doveprism@nodes{%
   \newOptexpComp{ {\POK@doveprismsize\space neg 0} {1 1} trans {NewPlaneInt}
                   {0 \POK@doveprismsize\space -0.5 mul} {1 0} refl {NewPlaneInt}
                   {\POK@doveprismsize\space 0} {-1 1} trans {NewPlaneInt} \POK@n }%
@@ -2218,7 +2275,7 @@
 %
 % PENTA PRISM
 %
-\def\pentaprism@iii{%
+\def\pentaprism@comp{%
    \edef\@pp@size{\POK@pentaprismsize\space}%
    \pscustom{%
       \psline(! \@pp@size 2 sqrt div 0)%
@@ -2228,16 +2285,8 @@
          (! 0 \@pp@size 2 sqrt div neg)%
       \closepath
    }%
-   \newOptexpComp{ {\@pp@size 2 sqrt -2 mul div dup } {-1 1} trans {NewPlaneInt}
-                   {\@pp@size 2 sqrt div 67.5 cos \@pp@size mul 67.5 sin 2 mul div sub \@pp@size 2 div}
-                   { 67.5 cos \@pp@size mul 67.5 sin div neg \@pp@size} refl {NewPlaneInt}
-                   {\@pp@size 2 sqrt div neg 67.5 cos \@pp@size mul 67.5 sin 2 mul div add \@pp@size 2 div}
-                   { 67.5 cos \@pp@size mul 67.5 sin div \@pp@size} refl {NewPlaneInt}
-                    {\@pp@size 2 sqrt 2 mul div dup neg} {1 1} trans {NewPlaneInt} \POK@n}%   
-   \pnode(! \@pp@size 2 sqrt div 67.5 cos \@pp@size mul 67.5 sin 2 mul div sub \@pp@size 2 div){\optexp@nodeIn}%
-   \pnode(! 67.5 cos \@pp@size mul 67.5 sin 2 mul div \@pp@size 2 sqrt div sub \@pp@size 2 div){\optexp@nodeOut}%
 }%
-\def\pentaprism@comp{%
+\def\pentaprism@nodes{%
    \edef\@pp@size{\POK@pentaprismsize\space}%
    \newOptexpComp{ {\@pp@size 2 sqrt -2 mul div dup } {-1 1} trans {NewPlaneInt}
                    {\@pp@size 2 sqrt div 67.5 cos \@pp@size mul 67.5 sin 2 mul div sub \@pp@size 2 div}
@@ -2251,7 +2300,7 @@
 %
 % PRISM
 %
-\def\optprism@iii{%
+\def\optprism@comp{%
    % 
    \edef\@sz{\POK@prismsize\space}%
    \edef\@altan{\POK@prismangle\space 0.5 mul tan\space}%
@@ -2259,13 +2308,8 @@
    \pspolygon(! \@sz neg \@altan mul \@sz -0.4 mul \@hshift sub)
              (! \@sz \@altan mul \@sz -0.4 mul \@hshift sub)
              (! 0 \@sz 0.6 mul \@hshift sub)
-   \pnode(! \@sz -0.5 mul \@altan mul \@hshift neg){\optexp@nodeIn}
-   \pnode(! \@sz 0.5 mul \@altan mul \@hshift neg){\optexp@nodeOut}
-   \newOptexpComp{ {\@sz -0.6 mul \@altan mul \@hshift neg} {90 \POK@prismangle\space 0.5 mul sub dup cos exch sin} trans {NewPlaneInt}
-                   {\@sz 0.6 mul \@altan mul \@hshift neg} {90 \POK@prismangle\space 0.5 mul add dup cos exch sin} trans {NewPlaneInt} \POK@n }%
 }%
-\def\optprism@comp{%
-   % 
+\def\optprism@nodes{%
    \edef\@sz{\POK@prismsize\space}%
    \edef\@altan{\POK@prismangle\space 0.5 mul tan\space}%
    \edef\@hshift{\@sz 0.6 mul \@altan mul \pst@optexpdict OEangle end 0.5 mul tan div\space}%
@@ -2277,20 +2321,14 @@
 %
 % RIGHT-ANGLE PRISM
 %
-\def\rightangleprism@iii{%
+\def\rightangleprism@comp{%
    \edef\@sz{\POK@raprismsize\space 0.5 mul\space}%
    \edef\@ht{\pst@optexpdict OEangle 0.5 mul sin modA mul end\space}%
    \pspolygon(! \@sz neg \@ht \@sz sub)
              (! \@sz \@ht \@sz sub)
              (! 0 \@ht)%
-   \newOptexpComp{ {\@ht neg \@ht \@sz sub} {1 0} trans {NewPlaneInt}
-                   {\@ht neg 0} {1 1} refl {NewPlaneInt}
-                   {\@ht 0} {1 -1} refl {NewPlaneInt}
-                   {\@ht dup \@sz sub } {1 0} trans {NewPlaneInt} \POK@n }%
-   \pnode(! \@ht neg 0){\optexp@nodeIn}
-   \pnode(! \@ht 0){\optexp@nodeOut}
 \ignorespaces}%
-\def\rightangleprism@comp{%
+\def\rightangleprism@nodes{%
    \edef\@sz{\POK@raprismsize\space 0.5 mul\space}%
    \edef\@ht{\pst@optexpdict OEangle 0.5 mul sin modA mul end\space}%
    \newOptexpComp{ {\@ht neg \@ht \@sz sub} {1 0} trans {NewPlaneInt}
