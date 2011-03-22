@@ -129,7 +129,9 @@ tx@OptexpDict begin
 % Calculate angle of line from nodeA to nodeB
 % nodeB nodeA -> angle
 /FiberAngleB {%
-    @GetCenter 3 -1 roll @GetCenter exch 3 1 roll sub 3 1 roll sub atan
+    (FiberAngleB) == 2 copy == ==
+    nametostring @GetCenter 3 -1 roll nametostring @GetCenter exch 3 1 roll sub 3 1 roll sub atan
+    (done) ==
 } bind def
 %
 % Calculate angle of line from nodeB to nodeA
@@ -145,6 +147,7 @@ tx@OptexpDict begin
 %
 % basicnodename reverse GetInternalNodeNames
 /GetInternalNodeNames {
+    (GetInternalNodeNames) ==
     /reverse exch def
     (N@) exch strcat 
     1 % counter
@@ -166,12 +169,15 @@ tx@OptexpDict begin
 	} ifelse
 	1 add
     } loop
+    (done) == stack
 } bind def
 %
 % basicnodename reverse GetInternalBeamNodes x_n y_n ... x_1 y_1 (if reverse = false)
 /GetInternalBeamNodes {
-    [ 3 1 roll GetInternalNodeNames ]
-    { @GetCenter } forall
+    (GetInternalBeamNodes) ==
+    [ 3 1 roll GetInternalNodeNames ] dup ==
+    { dup == @GetCenter } forall
+    (done) ==
 } bind def
 %
 % Initialize some global variables for positioning of external nodes
@@ -1161,7 +1167,7 @@ tx@OptexpDict begin
 } bind def
 /@ABVect { tx@EcldDict begin ABVect end } bind def
 /@ABDist { tx@EcldDict begin ABDist end } bind def
-/@GetCenter { cvn load tx@NodeDict begin GetCenter end } bind def
+/@GetCenter { cvn tx@NodeDict begin load GetCenter end } bind def
 % see <http://en.wikipedia.org/wiki/Snell%27s_law#Vector_form>
 % X_in Y_in X_norm Y_norm n1 n2 RefractVec -> X_out Y_out
 /RefractVec {
