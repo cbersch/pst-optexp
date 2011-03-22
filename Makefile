@@ -30,8 +30,9 @@ $(MAIN).dvi : $(MAIN).tex
 	if ! test -f $(basename $<).idx ; then touch $(basename $<).idx; fi
 	makeindex -s gglo.ist -t $(basename $<).glg -o $(basename $<).gls \
 	  $(basename $<).glo
-	makeindex -t $(basename $<).ilg -s pst-doc.ist -o $(basename $<).ind \
-	  $(basename $<).idx
+#	makeindex -t $(basename $<).ilg -s pst-doc.ist -o $(basename $<).ind \
+#	  $(basename $<).idx
+	makeindex -t $(basename $<).ilg -o $(basename $<).ind $(basename $<).idx
 	$(LATEX) $<
 	$(LATEX) $<
 
