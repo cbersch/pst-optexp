@@ -1248,20 +1248,24 @@ tx@OptexpDict begin
     tx@EcldDict begin InterLines end
 } bind def
 %
-% CompA|NodeA CombB|NodeB -> NearestNodeA coordinates
+% CompA|NodeA CombB|NodeB -> Coordinates of nodeA or the node of CompA which is nearest to nodeB
 /NearestNode {
     dup xcheck not { nametostring } if /CompB ED
     dup xcheck not {% CompA
 	nametostring /CompA ED
 	/CompB load dup xcheck not {% CompB
+	    (NN CompB) ==
 	    (N@) exch strcat (1) strcat @GetCenter ToVec
-	} if /CompB ED
+	} {
+	    (NN nodeB) == dup ==
+	    %gsave STV exec itransform ToVec grestore dup ==
+	} ifelse /CompB ED
 	(N@) CompA strcat
 	1 {% name and counter on stack
 	    2 copy dup % name cnt name cnt cnt
 	    3 string cvs 3 -1 roll exch strcat dup % name cnt cnt (namecnt) (namecnt)
 	    tx@NodeDict exch known {%
-		@GetCenter
+		@GetCenter 2 copy ToVec ==
 		CompB @ABDist
 		% cnt cnt dist
 		exch 1 eq {% init /dist
@@ -1289,26 +1293,30 @@ tx@OptexpDict begin
 		exit
 	    } ifelse
 	} loop
-	planeNum 3 string cvs strcat @GetCenter
+	planeNum 3 string cvs strcat dup (NearestNode = ) exch strcat == @GetCenter
     } {% else, it is a node and we already have the appropriate coordinates on the stack
+	(NN nodeA) ==
 	exec
     } ifelse
 } bind def
 
-% Calculate angle of line from CompA to CompB
+% Calculate start angle of pccurve from CompA to CompB
 % CompA|nodeA CompB|nodeB -> angleA
-/RelFiberAngle {%
-%    2 copy == ==
+/RelFiberAngleB { RelFiberAngleA 180 add } bind def
+/RelFiberAngleA {%
+    (----------RelFiberAngle----------) ==
     dup xcheck not { nametostring } if /CompB ED
     dup xcheck not { nametostring } if /CompA ED
+    (CompA) == /CompA load ==
+    (CompB) == /CompB load ==
     /CompA load xcheck {% nodeA
 	(nodeA) ==
 	/CompB load xcheck {% nodeB
 	    (nodeB) ==
-	    /CompB load /CompA load CompA 4 2 roll NearestNode @ABVect exch atan
+	    CompB CompA @ABVect exch atan
 	} {% compB
 	    (compB) ==
-	    /CompB load /CompA load CompB CompA 5 -2 roll NearestNode @ABVect 3 -1 roll
+	    CompB CompA CompB /CompA load NearestNode 4 2 roll @ABVect 3 -1 roll
 	    (N@) exch strcat dup (A) strcat exch (B) strcat 
 	    @GetCenter 3 -1 roll @GetCenter @ABVect 2 copy exch atan
 	    5 1 roll SProd 0 lt { 180 add } if
@@ -1317,10 +1325,10 @@ tx@OptexpDict begin
 	(compA) ==
 	/CompB load xcheck {% nodeB
 	    (nodeB) ==
-	    CompA /CompB load CompA CompB 5 -2 roll NearestNode @ABVect 3 -1 roll
-	    (N@) exch strcat dup (A) strcat exch (B) strcat 
+	    CompA CompB CompA /CompB load NearestNode @ABVect 3 -1 roll
+	    (N@) exch strcat dup (A) strcat exch (B) strcat 	    
 	    @GetCenter 3 -1 roll @GetCenter @ABVect 2 copy exch atan
-	    5 1 roll SProd 0 ge { 180 add } if
+	    5 1 roll SProd 0 lt { 180 add } if
             %/CompA load /CompB load NearestNode CompB @ABVect exch atan
 	} {
 	    (compB) ==
@@ -1331,7 +1339,7 @@ tx@OptexpDict begin
 	    2 copy exch atan 5 1 roll SProd 0 ge {180 add} if
 	} ifelse
     } ifelse
-    (--------)==
+    (-------- end --------)==
 } bind def
 %/GetInternalNodeNames {
 %    /reverse exch def
