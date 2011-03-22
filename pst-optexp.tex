@@ -663,35 +663,39 @@
 \def\optexp@getcoor(#1){%
   \pst@@getcoor{#1}
 }%
-\def\drawfiber{\pst@object{drawfiber}}%
-\def\drawfiber@i#1#2{%
-  \addbefore@par{style=Fiber}%
+\def\drawfiber{\drawfiber@{Fiber}}%
+\def\drawfiber@#1{%
+  \def\pst@par{style=#1}%
+  \@ifnextchar[{\drawfiber@i}{\drawfiber@i[]}%
+}%
+\def\drawfiber@i[#1]#2#3{%
+  \addafter@par{#1}%
   \begingroup
     \let\psk@angleA\relax
-    \let\psk@angleB\relax
+%    \let\psk@angleB\relax
     \use@par
-    \def\oe@tempa{#1}
-    \message{^^J first arg is -#1-^^J}
+    \def\oe@tempa{#2}
+    \message{^^J first arg is -#2-^^J}
     \ifx\oe@tempa\@empty
       \message{^^Jfirst is empty}
       \edef\optexp@comps{/\getLastCompname@i\space}
       \message{done}
     \else
-      \expandafter\optexp@getnode#1\@nil
+      \expandafter\optexp@getnode#2\@nil
       \message{^^Jfirst is  --\oe@temp--^^J}
       \message{blubb}
       \edef\optexp@comps{\oe@temp}
       \message{blaab}
     \fi
     %
-    \def\oe@tempb{#2}
-    \message{^^J second arg is -#2-^^J}
+    \def\oe@tempb{#3}
+    \message{^^J second arg is -#3-^^J}
     \ifx\oe@tempb\@empty
       \message{^^Jsecond is empty}
       \edef\optexp@comps{/\getLastCompname@i\space \optexp@comps}
     \else
       \message{asdfasdf}
-      \expandafter\optexp@getnode#2\@nil
+      \expandafter\optexp@getnode#3\@nil
       \message{^^Jsecond is --\oe@temp--}
       \edef\optexp@comps{\oe@temp\space \optexp@comps}
     \fi
@@ -700,17 +704,17 @@
     \message{^^Joptexp@comps --\optexp@comps--^^J}
     \ifx\relax\psk@angleA
       \message{angleA relax}
-      \psset{angleA=! \pst@optexpdict \optexp@comps RelFiberAngle end}%
+      \psset{angleA=! \pst@optexpdict \optexp@comps exch RelFiberAngleA end}%
     \else
       \ifPOE@relangle
-        \psset{angleA=! \pst@optexpdict \optexp@comps RelFiberAngle end \psk@angleA\space add}%
+        \psset{angleA=! \pst@optexpdict \optexp@comps exch RelFiberAngleA end \psk@angleA\space add}%
     \fi\fi
-    \ifx\psk@angleB\relax
-      \psset{angleB=! \pst@optexpdict \optexp@comps exch RelFiberAngle end}%
-    \else
-      \ifPOE@relangle
-        \psset{angleB=! \pst@optexpdict \optexp@comps exch RelFiberAngle end \psk@angleB\space add}%
-    \fi\fi
+    % \ifx\psk@angleB\relax
+    %   \psset{angleB=! \pst@optexpdict \optexp@comps exch RelFiberAngleB end}%
+    % \else
+    %   \ifPOE@relangle
+    %     \psset{angleB=! \pst@optexpdict \optexp@comps exch RelFiberAngleB end \psk@angleB\space add}%
+    % \fi\fi
     \pccurve(! \optexp@comps exch \pst@optexpdict NearestNode end \tx@UserCoor)%
             (! \optexp@comps \pst@optexpdict NearestNode end \tx@UserCoor)
   \endgroup
@@ -726,14 +730,14 @@
   \else
     \ifPOE@endbox
       \ifPOE@fiberin@
-        \drawfiber[style=FiberIn]{(\optexp@nodeA)}{(\POK@basicname 1)}
+        \drawfiber@{FiberIn}{(\optexp@nodeA)}{(\POK@basicname 1)}
       \fi
     \else
       \ifPOE@fiberin@
-        \drawfiber[style=FiberIn]{(\optexp@nodeA)}{(\POK@basicname 1)}
+        \drawfiber@{FiberIn}{(\optexp@nodeA)}{(\POK@basicname 1)}
               \fi
       \ifPOE@fiberout@
-        \drawfiber[style=FiberOut1]{(\POK@basicname N)}{(\optexp@nodeB)}
+        \drawfiber@{FiberOut1}{(\POK@basicname N)}{(\optexp@nodeB)}
       \fi
     \fi
   \fi
@@ -1053,16 +1057,16 @@
             \pst@draw@component{##5}{\@nameuse{#2@ii}}
             % connect the fibers
             \ifPOE@fiberin@top
-              \drawfiber[style=FiberIn1]{(##1)}{\POK@compname}
+              \drawfiber@{FiberIn1}{(##1)}{\POK@compname}
             \fi
             \ifPOE@fiberin@bottom
-              \drawfiber[style=FiberIn2]{(##2)}{\POK@compname}
+              \drawfiber@{FiberIn2}{(##2)}{\POK@compname}
             \fi
             \ifPOE@fiberout@top
-              \drawfiber[style=FiberOut1]{\POK@compname}{(##3)}
+              \drawfiber@{FiberOut1}{\POK@compname}{(##3)}
             \fi
             \ifPOE@fiberout@bottom
-              \drawfiber[style=FiberOut2]{\POK@compname}{(##4)}
+              \drawfiber@{FiberOut2}{\POK@compname}{(##4)}
             \fi
          \end@OptexpObj
       }%
@@ -1100,13 +1104,13 @@
       % 
       % connect the fibers
       \ifPOE@fiberin@
-        \drawfiber[style=FiberIn]{(#1)}{\POK@compname}
+        \drawfiber@{FiberIn}{(#1)}{\POK@compname}
       \fi
       \ifPOE@fiberout@top
-        \drawfiber[style=FiberOut1]{\POK@compname}{(#2)}
+        \drawfiber@{FiberOut1}{\POK@compname}{(#2)}
       \fi
       \ifPOE@fiberout@bottom
-        \drawfiber[style=FiberOut2]{\POK@compname}{(#3)}
+        \drawfiber@{FiberOut2}{\POK@compname}{(#3)}
       \fi
    \end@OptexpObj
 }%
@@ -1133,13 +1137,13 @@
       % 
       % connect the fibers
       \ifPOE@fiberout@
-        \drawfiber[style=FiberOut]{\POK@compname}{(#3)}
+        \drawfiber@{FiberOut}{\POK@compname}{(#3)}
       \fi
       \ifPOE@fiberin@top
-        \drawfiber[style=FiberIn1]{(#1)}{\POK@compname}
+        \drawfiber@{FiberIn1}{(#1)}{\POK@compname}
       \fi
       \ifPOE@fiberin@bottom
-        \drawfiber[style=FiberIn2]{(#2)}{\POK@compname}
+        \drawfiber@{FiberIn2}{(#2)}{\POK@compname}
       \fi
    \end@OptexpObj
 }%
