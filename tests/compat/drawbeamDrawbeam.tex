@@ -3,10 +3,27 @@
 \usepackage[T1]{fontenc}
 \usepackage{lmodern}
 \usepackage{pstricks}
-\usepackage{pst-optexp}
+\usepackage[compat]{pst-optexp}
 
 \begin{document}
 \section*{Compare \textbackslash drawbeam with \textbackslash Drawbeam}
+\begin{pspicture}[showgrid=true](4,6)
+   \pnode(1,1){A}\pnode(1,5){G}\pnode(3,5){B}
+   \optbox[endbox, labelref=relative, labeloffset=0, optboxwidth=1](G)(A){Laser}
+   \lens[lens=0.5 0.5 0.5, abspos=1.5](A)(G){}
+   \pinhole[abspos=1.7](A)(G){}
+   \lens[lens=2, abspos=2](A)(G){}
+   \lens[abspos=3, labelangle=180](A)(G){L}
+   \optplate[abspos=2.5, labeloffset=1](A)(G){SLM}
+   \lens[abspos=1](G)(B){L}
+   \optbox[endbox, labeloffset=0, optboxwidth=1](G)(B){CCD}
+   \optdiode[abspos=0.8, conn=o-, compname=OD](A)(G){OD}
+   \addtopsstyle{Beam}{linecolor=blue}
+   \pentaprism[conn=-i, labeloffset=1, compname=PP](A)(G)(B){PP}
+   \addtopsstyle{Beam}{linecolor=red}
+   \drawbeam[conn=b-a]{OD}{PP}
+\end{pspicture}
+
 \begin{pspicture}[showgrid=true](5,4)
   \pnode(1,1){A}
   \pnode(4,1){B}
@@ -14,16 +31,6 @@
   \pentaprism[conn=o-,compname=PP](A)(B)(C){PP}
   \optdiode[conn=o-,compname=Box](A)(B){Box}
   \drawbeam[conn=b-B]{Box}{PP}
-\end{pspicture}
-\hspace{\fill}
-\begin{pspicture}[showgrid=true](5,4)
-  \pnode(1,1){A}
-  \pnode(4,1){B}
-  \pnode(4,4){C}
-  \pentaprism[conn=o-,compname=PP](A)(B)(C){PP}
-  \optdiode[conn=o-,compname=Box](A)(B){Box}
-  \drawbeam{(A)}{Box}.
-  \drawbeam{Box}{PP}{(C)}.
 \end{pspicture}
 \bigskip
 
@@ -37,17 +44,4 @@
    \pentaprism[conn=-i, compname=PP1](A)(G)(B){PP}
    \drawbeam[conn=b-a]{OD}{PP1}
 \end{pspicture}
-\hspace{\fill}
-\begin{pspicture}[showgrid=true](4,6)
-   \pnode(1,1.5){A}\pnode(1,5){G}\pnode(3,5){B}
-   \optbox[endbox, label=0 . . relative](G)(A){Laser}
-   \optdiode[abspos=1, compname=OD](A)(G){OD}
-   \lens[abspos=2](A)(G){L}
-   \pentaprism[compname=PP1](A)(G)(B){PP}
-   \lens[abspos=1](G)(B){L}
-   \optdetector(G)(B){CCD}
-%   \drawbeam[arrows=->]{(A)}{OD}.
-%   \drawbeam[arrows=->]{OD}{3}{PP1}{5}{6}.
-\end{pspicture}
-\bigskip
 \end{document}
