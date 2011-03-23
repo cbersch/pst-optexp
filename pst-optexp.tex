@@ -39,8 +39,8 @@
 %
 % IF's
 %
-\newif\ifPOE@firstrun
-\newif\ifPOE@secondrun
+\newif\ifPOE@bglayer
+\newif\ifPOE@toplayer
 \newif\ifPOE@optexpenv
 \newif\ifPOE@variable
 \newif\ifPOE@voltage
@@ -167,8 +167,8 @@
 % Parameterdefinitions
 %
 % General
-\define@boolkey[psset]{optexp}[POE@]{firstrun}[true]{}
-\define@boolkey[psset]{optexp}[POE@]{secondrun}[true]{}
+\define@boolkey[psset]{optexp}[POE@]{bglayer}[true]{}
+\define@boolkey[psset]{optexp}[POE@]{toplayer}[true]{}
 \define@boolkey[psset]{optexp}[POE@]{optexpenv}[true]{}
 \define@boolkey[psset]{optexp}[POE@component@]{optional}[true]{}
 \define@key[psset]{optexp}{position}{\edef\POK@position{#1}}
@@ -559,23 +559,25 @@
       \edef\optexp@comps{\oe@temp\space \optexp@comps}
     \fi
     %
-    \pnode(! \optexp@comps exch \pst@optexpdict NearestNode end \tx@UserCoor){@@A}
-    \pnode(! \optexp@comps \pst@optexpdict NearestNode end \tx@UserCoor){@@B}
-    \pst@getcoor{@@A}\pst@tempa
-    \pst@getcoor{@@B}\pst@tempb
-    \ifx\relax\psk@angleA
-      \psset{angleA=! \pst@optexpdict \pst@tempb \pst@tempa \optexp@comps exch RelFiberAngle end}%
-    \else
-      \ifPOE@relangle
-        \psset{angleA=! \pst@optexpdict \pst@tempb \pst@tempa \optexp@comps exch RelFiberAngle end \psk@angleA\space add}%
-    \fi\fi
-    \ifx\psk@angleB\relax
-      \psset{angleB=! \pst@optexpdict \pst@tempa \pst@tempb \optexp@comps RelFiberAngle end}%
-    \else
-      \ifPOE@relangle
-        \psset{angleB=! \pst@optexpdict \pst@tempa \pst@tempb \optexp@comps RelFiberAngle end \psk@angleB\space add }%
-    \fi\fi
-    \nccurve{@@A}{@@B}
+    \ifPOE@bglayer
+      \pnode(! \optexp@comps exch \pst@optexpdict NearestNode end \tx@UserCoor){@@A}
+      \pnode(! \optexp@comps \pst@optexpdict NearestNode end \tx@UserCoor){@@B}
+      \pst@getcoor{@@A}\pst@tempa
+      \pst@getcoor{@@B}\pst@tempb
+      \ifx\relax\psk@angleA
+        \psset{angleA=! \pst@optexpdict \pst@tempb \pst@tempa \optexp@comps exch RelFiberAngle end}%
+      \else
+        \ifPOE@relangle
+          \psset{angleA=! \pst@optexpdict \pst@tempb \pst@tempa \optexp@comps exch RelFiberAngle end \psk@angleA\space add}%
+      \fi\fi
+      \ifx\psk@angleB\relax
+        \psset{angleB=! \pst@optexpdict \pst@tempa \pst@tempb \optexp@comps RelFiberAngle end}%
+      \else
+        \ifPOE@relangle
+          \psset{angleB=! \pst@optexpdict \pst@tempa \pst@tempb \optexp@comps RelFiberAngle end \psk@angleB\space add }%
+      \fi\fi
+      \nccurve{@@A}{@@B}
+    \fi
   \endgroup
 }%
 %
@@ -657,7 +659,7 @@
   \addto@pscode{ end}%
   \let\psk@fillstyle\relax
   \ifPOE@optexpenv
-    \ifPOE@secondrun
+    \ifPOE@toplayer
       \def\pst@code{}
     \fi
   \fi
@@ -708,6 +710,11 @@
     \fi%
   \fi%
   \addto@pscode{end }%
+  \ifPOE@optexpenv
+    \ifPOE@toplayer
+      \def\pst@code{}
+    \fi
+  \fi
   \end@SpecialObj%
 }%
 %
@@ -931,17 +938,17 @@
       }%
       \@namedef{#2@ii}{%
         \pnode(0,0){\optexp@nodeLabel}%
-        \pnode(0,0){\optexp@nodeIn}%
-        \pnode(0,0){\optexp@nodeOut}%
+%        \pnode(0,0){\optexp@nodeIn}%
+%        \pnode(0,0){\optexp@nodeOut}%
         \@ifundefined{#2@iii}{%
-          \ifPOE@firstrun
+          \ifPOE@bglayer
             \@ifundefined{#2@nodes}{\dipole@nodes}{\@nameuse{#2@nodes}}%
           \fi
-          \ifPOE@secondrun
+          \ifPOE@toplayer
             \@nameuse{#2@comp}%
           \fi
         }{%
-          \ifPOE@firstrun
+          \ifPOE@bglayer
             \@nameuse{#2@iii}%
           \fi
         }%
@@ -965,20 +972,22 @@
          \end@OptexpObj
       }%
       \@namedef{#2@ii}{%
-        \pnode(0,0){\optexp@nodeLabel}%
-        \pnode(0,0){\optexp@nodeIn}%
-        \pnode(0,0){\optexp@nodeOut}%
+%        \ifPOE@bglayer
+          \pnode(0,0){\optexp@nodeLabel}%
+          \pnode(0,0){\optexp@nodeIn}%
+          \pnode(0,0){\optexp@nodeOut}%
+%        \fi%
         \@ifundefined{#2@iii}{%
-          \ifPOE@firstrun
+          \ifPOE@bglayer
             \@ifundefined{#2@nodes}{\dipole@nodes}{\@nameuse{#2@nodes}}%
-          \fi
-          \ifPOE@secondrun
+          \fi%
+          \ifPOE@toplayer
             \@nameuse{#2@comp}%
-          \fi
+          \fi%
         }{%
-          \ifPOE@firstrun
+          \ifPOE@bglayer
             \@nameuse{#2@iii}%
-          \fi
+          \fi%
         }%
       }%
    }{%
@@ -1002,17 +1011,17 @@
       }%
       \@namedef{#2@ii}{%
         \pnode(0,0){\optexp@nodeLabel}%
-        \pnode(0,0){\optexp@nodeIn}%
-        \pnode(0,0){\optexp@nodeOut}%
+%        \pnode(0,0){\optexp@nodeIn}%
+%        \pnode(0,0){\optexp@nodeOut}%
         \@ifundefined{#2@iii}{%
-          \ifPOE@firstrun
+          \ifPOE@bglayer
             \@ifundefined{#2@nodes}{\dipole@nodes}{\@nameuse{#2@nodes}}%
           \fi
-          \ifPOE@secondrun
+          \ifPOE@toplayer
             \@nameuse{#2@comp}%
           \fi
         }{%
-          \ifPOE@firstrun
+          \ifPOE@bglayer
             \@nameuse{#2@iii}%
           \fi
         }%
@@ -1052,17 +1061,17 @@
       }%
       \@namedef{#2@ii}{%
         \pnode(0,0){\optexp@nodeLabel}%
-        \pnode(0,0){\optexp@nodeIn}%
-        \pnode(0,0){\optexp@nodeOut}%
+%        \pnode(0,0){\optexp@nodeIn}%
+%        \pnode(0,0){\optexp@nodeOut}%
         \@ifundefined{#2@iii}{%
-          \ifPOE@firstrun
+          \ifPOE@bglayer
             \@ifundefined{#2@nodes}{\tripole@nodes}{\@nameuse{#2@nodes}}%
           \fi
-          \ifPOE@secondrun
+          \ifPOE@toplayer
             \@nameuse{#2@comp}%
           \fi
         }{%
-          \ifPOE@firstrun
+          \ifPOE@bglayer
             \@nameuse{#2@iii}%
           \fi
         }%
@@ -1402,8 +1411,8 @@
       \pst@adjustTempNodes
       \pst@draw@component{#4}{%
          \pnode(0,0){\optexp@nodeLabel}%
-         \pnode(0,0){\optexp@nodeIn}%
-         \pnode(0,0){\optexp@nodeOut}%
+%         \pnode(0,0){\optexp@nodeIn}%
+%         \pnode(0,0){\optexp@nodeOut}%
          \newOptexpComp{{ 0 0 } { 0 1 } trans {NewPlaneInt} 1 }%
          #3
       }%
@@ -1416,8 +1425,8 @@
       \pst@calcNodes{#1}{#2}{#3}
       \pst@draw@component{#5}{%
          \pnode(0,0){\optexp@nodeLabel}% 
-         \pnode(0,0){\optexp@nodeIn}% 
-         \pnode(0,0){\optexp@nodeOut}% 
+%         \pnode(0,0){\optexp@nodeIn}% 
+%         \pnode(0,0){\optexp@nodeOut}% 
          \newOptexpComp{{ 0 0 } { 1 0 } refl {NewPlaneInt} 1 }%
          #4
       }%
@@ -1465,8 +1474,8 @@
       \pst@adjustTempNodes
       \pst@draw@component{#1}{%
          \pnode(0,0){\optexp@nodeLabel}%
-         \pnode(0,0){\optexp@nodeIn}%
-         \pnode(0,0){\optexp@nodeOut}%
+%         \pnode(0,0){\optexp@nodeIn}%
+%         \pnode(0,0){\optexp@nodeOut}%
          \fibercollimator@v%
       }%
       \edef\poe@tmp{\the\poe@cnt}% I don't know how to do it with expansion
@@ -1503,8 +1512,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \psset[optexp]{%
 % general
-        firstrun=true
-        ,secondrun=true
+        bglayer=true
+        ,toplayer=true
         ,optexpenv=false
         ,position=\@empty
         ,abspos=\@empty
@@ -1612,7 +1621,7 @@
 % DRAW COMPONENTS
 %
 % This macro is called by every unit
-%
+% The first parameter contains the label, the second one the drawing code
 \def\pst@draw@component#1#2{%
     %
     \def\@@comp{%
@@ -1656,24 +1665,27 @@
     \fi
     \endgroup
     %
-    % Now put the label
-    \ifPOE@label@innerlabel
-       \ifdim\optboxwidth>0pt
-          \psset{labeloffset=0, labelref=relative}
-          \put@Label{\parbox{\optboxwidth}{#1}}%
-       \else
-          \put@Label{#1}%
-       \fi
-    \else
-       \put@Label{#1}%
-    \fi
-    %
-    % Show some special dots for debugging
-    \ifPOE@debug@showoptdots
-        \psdot[linecolor=red](\optexp@nodeLabel)
-        \psdot[linecolor=red](\optexp@nodeLabelShifted)
-        \psdot[linecolor=black](\optexp@nodeA)
-        \psdot[linecolor=black](\optexp@nodeB)
+    \ifPOE@toplayer
+      %
+      % Now put the label
+      \ifPOE@label@innerlabel
+         \ifdim\optboxwidth>0pt
+            \psset{labeloffset=0, labelref=relative}
+            \put@Label{\parbox{\optboxwidth}{#1}}%
+         \else
+            \put@Label{#1}%
+         \fi
+      \else
+         \put@Label{#1}%
+      \fi
+      %
+      % Show some special dots for debugging
+      \ifPOE@debug@showoptdots
+          \psdot[linecolor=red](\optexp@nodeLabel)
+          \psdot[linecolor=red](\optexp@nodeLabelShifted)
+          \psdot[linecolor=black](\optexp@nodeA)
+          \psdot[linecolor=black](\optexp@nodeB)
+      \fi
     \fi
     %
 \ignorespaces}%
@@ -1693,22 +1705,21 @@
 %
 % MIRROR
 %
-\def\mirror@iii{%
-   \edef\@mirror@ht{\POK@mirrorwidth\space\pst@number\psyunit mul 2 div }%
-   \edef\@mirror@dp{\POK@mirrordepth\space\pst@number\psxunit mul }%
-   \edef\@mirror@r{\POK@mirrorradius\space\pst@number\psxunit mul }%
-   \edef\@mirror@postcode{neg 5 -1 roll exch 5 2 roll 90 add exch 90 add exch ArcR }%
-   \edef\@mirror@extpostcode{neg \@mirror@dp add 5 -1 roll exch 5 2 roll 90 add exch 90 add }%
-   %
-   \newOptexpComp%[\ifdim\POK@mirrorradius pt >0pt /useSecond true def \fi]%
-                 {{ 0 0 } 
+\def\mirror@nodes{%
+   \newOptexpComp{{ 0 0 } 
                   \ifdim\POK@mirrorradius pt=0pt
                      { 1 0 } refl {NewPlaneInt}
                   \else
                      { 0 \POK@mirrorradius\space neg} refl {NewCurvedInt}
                   \fi
                   1 }%
-   %
+}%
+\def\mirror@comp{%
+   \edef\@mirror@ht{\POK@mirrorwidth\space\pst@number\psyunit mul 2 div }%
+   \edef\@mirror@dp{\POK@mirrordepth\space\pst@number\psxunit mul }%
+   \edef\@mirror@r{\POK@mirrorradius\space\pst@number\psxunit mul }%
+   \edef\@mirror@postcode{neg 5 -1 roll exch 5 2 roll 90 add exch 90 add exch ArcR }%
+   \edef\@mirror@extpostcode{neg \@mirror@dp add 5 -1 roll exch 5 2 roll 90 add exch 90 add }%
    %
    % concave mirrors
    %
@@ -1809,7 +1820,6 @@
                    \POK@n}%
 }%
 \def\lens@comp{%
-   \message{^^J^^Jlens@comp^^J^^J}
    \addbefore@par{linejoin=1}%
    \begin@ClosedObj
    \edef\@lens@newwd{0\space}%
@@ -1924,21 +1934,20 @@
 %
 % PINHOLE
 %
-\def\pinhole@iii{%
+\def\pinhole@comp{%
   \psline[linewidth=\POK@phlinewidth]%
          (! 0 \POK@outerheight\space 2 div)%
          (! 0 \POK@innerheight\space 2 div)%
   \psline[linewidth=\POK@phlinewidth]%
          (! 0 \POK@outerheight\space -2 div)%
          (! 0 \POK@innerheight\space -2 div)%
-  \newOptexpComp{{0 0} {0 1} trans {NewPlaneInt} 1}%
 \ignorespaces}%
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 % BEAMSPLITTER
 %
-\def\beamsplitter@iii{%
+\def\beamsplitter@nodes{%
    \edef\@bs@wd{\POK@bssize\space 2.0 div\space}%
    \ifx\POK@bsstyle\POS@bsstyle@cube
       \psline{cc-cc}(! \@bs@wd neg 2 sqrt mul 0)(! \@bs@wd 2 sqrt mul 0)
@@ -1954,26 +1963,31 @@
    \fi\fi
 \ignorespaces}%
 \def\beamsplitter@comp{%
-  \edef\@bs@wd{\POK@bssize\space 2.0 div\space}%
-  \ifx\POK@bsstyle\POS@bsstyle@cube
-    \newOptexpCompAmb{ {\@bs@wd 2 sqrt div neg dup } {-1 1} trans {NewPlaneInt}
-                       {\@bs@wd 2 sqrt div dup neg } {1 1} trans {NewPlaneInt}
-                       {\@bs@wd 2 sqrt div dup } {-1 1} trans {NewPlaneInt}
-                       {\@bs@wd 2 sqrt div neg dup neg } {1 1} trans {NewPlaneInt} 
-                       {0 0} {1 0} trans {NewPlaneInt} \POK@n}%
-  \else\ifx\POK@bsstyle\POS@bsstyle@plate
-    \newOptexpCompAmb{ {0 0} {1 0} trans {NewPlaneInt} 1 }%
-  \fi\fi
+   \edef\@bs@wd{\POK@bssize\space 2.0 div\space}%
+   \ifx\POK@bsstyle\POS@bsstyle@cube
+      \psline{cc-cc}(! \@bs@wd neg 2 sqrt mul 0)(! \@bs@wd 2 sqrt mul 0)
+      \rput[c]{45}(0,0){\psframe(! \@bs@wd neg \@bs@wd neg)(! \@bs@wd \@bs@wd)}
+   \else\ifx\POK@bsstyle\POS@bsstyle@plate
+      \psline(! \@bs@wd neg 2 sqrt mul 0)(! \@bs@wd 2 sqrt mul 0)
+   \fi\fi
 \ignorespaces}%
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 % CRYSTAL
 %
-\def\crystal@iii{%
+\def\crystal@nodes{%
+  \edef\@wd{\POK@crystalwidth\space 0.5 mul\space}%
+  \edef\@ht{\POK@crystalheight\space 0.5 mul\space}%
+  \psrotate(! \@wd \POK@rotate@xref\space mul \@ht \POK@rotate@yref\space mul){\POK@angle}{%
+    \pnode(0,0){\optexp@nodeLabel}
+    \newOptexpComp{{ \@wd neg 0 } { 0 1 } trans {NewPlaneInt} { \@wd 0 } { 0 1 } trans {NewPlaneInt} \POK@n }%
+  }%
+}%
+\def\crystal@comp{%
    \pst@Verb{%
-      /@@x \POK@crystalwidth\space 0.5 mul def
-      /@@y \POK@crystalheight\space 0.5 mul def
+     /@@x \POK@crystalwidth\space 0.5 mul def
+     /@@y \POK@crystalheight\space 0.5 mul def
    }%
    \psrotate(! @@x \POK@rotate@xref\space mul @@y \POK@rotate@yref\space mul)
       {\POK@angle}{%
@@ -2011,13 +2025,13 @@
                (! 0 @@y)(! 0 @@y neg \@c@caxisL sub)%
          \fi
       \fi
-      \pnode(0,0){\optexp@nodeLabel}
-      \pnode(! @@x neg 0){\optexp@nodeIn}
-      \pnode(! @@x 
-         \ifx\POK@optbox@n\@empty 0 \else
-            \POK@angle\space sin neg dup dup mul neg \POK@optbox@n\space dup mul add sqrt div 2 @@x mul mul
-         \fi
-      ){\optexp@nodeOut}
+      % \pnode(0,0){\optexp@nodeLabel}
+      % \pnode(! @@x neg 0){\optexp@nodeIn}
+      % \pnode(! @@x 
+      %    \ifx\POK@optbox@n\@empty 0 \else
+      %       \POK@angle\space sin neg dup dup mul neg \POK@optbox@n\space dup mul add sqrt div 2 @@x mul mul
+      %    \fi
+      % ){\optexp@nodeOut}
 %      \pnode(! \@c@wd neg 0){\optexp@nodeIn}
 %      \pnode(! \@c@wd 0){\optexp@nodeOut}
    }%
@@ -2047,11 +2061,11 @@
 %
 % POLARIZATION
 %
-\def\polarization@iii{%
-%
-  \edef\@pol@size{\POK@polsize\space 2 div\space}%
+\def\polarization@nodes{}%
+\def\polarization@comp{%
+  \edef\@pol@size{\POK@polsize\space 0.5 mul\space}%
   \ifx\POK@poltype\POS@pol@polparallel
-     \psline[linestyle=solid,linewidth=\POK@pollinewidth,arrowscale=0.8]{<->}%
+     \psline[linestyle=solid, linewidth=\POK@pollinewidth, arrowscale=0.8]{<->}%
         (! 0 \@pol@size neg)(! 0 \@pol@size)%
   \fi
   \ifx\POK@poltype\POS@pol@polperp
@@ -2078,7 +2092,7 @@
 %
 % OPTICAL GRID
 %
-\def\optgrid@iii{%
+\def\optgrid@comp{%
    \edef\@g@cnt{\POK@optgridcount\space}%
    \edef\@g@wd{\POK@optgridwidth\space 2 div\space}%
    \edef\@g@ht{\POK@optgridheight\space}%
@@ -2127,19 +2141,34 @@
 %
 % OPTBOX
 %
-\def\optbox@iii{%
+\def\optbox@nodes{%
+  \edef\@wd{\POK@optboxwidth\space 0.5 mul\space}%
+  \edef\@ht{\POK@optboxheight\space 0.5 mul\space}%
+  \ifPOE@endbox
+    \psrotate(! \@wd \@wd \POK@rotate@xref\space mul add
+                0 \@ht \POK@rotate@yref\space mul add){\POK@angle}{%
+      \newOptexpComp{{ 0 0 } { 0 1 } trans {NewPlaneInt} { \@wd 2 mul 0 } { 0 1 } trans {NewPlaneInt} \POK@n }%
+      \pnode(! \@wd 0){\optexp@nodeLabel}%
+    }%
+  \else
+    \psrotate(! \@wd \@wd \POK@rotate@xref\space mul add
+                0 \@ht \POK@rotate@yref\space mul add){\POK@angle}{%
+      \newOptexpComp{{ \@wd neg 0 } { 0 1 } trans {NewPlaneInt} { \@wd 0 } { 0 1 } trans {NewPlaneInt} \POK@n }%
+      \pnode(0, 0){\optexp@nodeLabel}%   
+    }%
+  \fi
+}%
+\def\optbox@comp{%
    \pst@Verb{%
-      /@@x \POK@optboxwidth\space 0.5 mul def
-      /@@y \POK@optboxheight\space 0.5 mul def
+     /@@x \POK@optboxwidth\space 0.5 mul def
+     /@@y \POK@optboxheight\space 0.5 mul def
    }%
    \ifPOE@endbox
-      \newOptexpComp{{ 0 0 } { 0 1 } trans {NewPlaneInt} { @@x 2 mul 0 } { 0 1 } trans {NewPlaneInt} \POK@n }%  
+      %\newOptexpComp{{ 0 0 } { 0 1 } trans {NewPlaneInt} { @@x 2 mul 0 } { 0 1 } trans {NewPlaneInt} \POK@n }%  
       \pst@Verb{/@@x0 @@x def}%
       \psrotate(! @@x0 @@x \POK@rotate@xref\space mul add
                   @@y0 @@y \POK@rotate@yref\space mul add){\POK@angle}{%
-         \pnode(! @@x 0){\optexp@nodeLabel}%
          \psframe[dimen=outer](! 0 @@y neg)(! @@x 2 mul @@y)
-         \pnode(\optexp@nodeB){\optexp@nodeIn}
       }%
    \else
       % 
@@ -2148,35 +2177,35 @@
 %                  { @@x 0 } { 0 1 } trans {NewPlaneInt} 1 (\POK@compname) {\tx@ScreenCoor} NewOptexpComp end}%
       \psrotate(! @@x0 @@x \POK@rotate@xref\space mul add
                   @@y0 @@y \POK@rotate@yref\space mul add){\POK@angle}{%
-         \newOptexpComp{{ @@x neg 0 } { 0 1 } trans {NewPlaneInt} { @@x 0 } { 0 1 } trans {NewPlaneInt} \POK@n }%
-         \pnode(! @@x neg 0){\optexp@nodeIn}
-         \pnode(! @@x 
-            \ifx\POK@optbox@n\@empty 0 \else
-               \POK@angle\space sin neg dup dup mul neg \POK@optbox@n\space dup mul add sqrt div 2 @@x mul mul
-            \fi
-         ){\optexp@nodeOut}   
-         \pnode(0,0){\optexp@nodeLabel}
+%         \newOptexpComp{{ @@x neg 0 } { 0 1 } trans {NewPlaneInt} { @@x 0 } { 0 1 } trans {NewPlaneInt} \POK@n }%
+%         \pnode(! @@x neg 0){\optexp@nodeIn}
+%         \pnode(! @@x 
+%            \ifx\POK@optbox@n\@empty 0 \else
+%               \POK@angle\space sin neg dup dup mul neg \POK@optbox@n\space dup mul add sqrt div 2 @@x mul mul
+%            \fi
+%         ){\optexp@nodeOut}   
+%         \pnode(0,0){\optexp@nodeLabel}
          \psframe[dimen=outer](! @@x neg @@y neg)(! @@x @@y)
       }%
    \fi
 \ignorespaces}%
 %
-\def\optbox@comp{%
-  \ifPOE@endbox
-    \newOptexpComp{ {0 0} {0 1} trans {NewPlaneInt} 
-                    {@@x 2 mul 0} { 0 1 } trans {NewPlaneInt} \POK@n }% 
-  \else
-    \newOptexpComp{ {\POK@optboxwidth\space 0.5 mul neg 0 } { 0 1 } trans {NewPlaneInt} 
-                    {\POK@optboxwidth\space 0.5 mul 0} {0 1} trans {NewPlaneInt} \POK@n }%
-  \fi
-\ignorespaces}%
+% \def\optbox@comp{%
+%   \ifPOE@endbox
+%     \newOptexpComp{ {0 0} {0 1} trans {NewPlaneInt} 
+%                     {@@x 2 mul 0} { 0 1 } trans {NewPlaneInt} \POK@n }% 
+%   \else
+%     \newOptexpComp{ {\POK@optboxwidth\space 0.5 mul neg 0 } { 0 1 } trans {NewPlaneInt} 
+%                     {\POK@optboxwidth\space 0.5 mul 0} {0 1} trans {NewPlaneInt} \POK@n }%
+%   \fi
+% \ignorespaces}%
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 % OPTPLATE
 %
-\def\optplate@iii{%
-   \newOptexpComp{{ 0 0} { 0 1 } trans {NewPlaneInt} 1 }%
+\def\optplate@comp{%
+%   \newOptexpComp{{ 0 0} { 0 1 } trans {NewPlaneInt} 1 }%
    \psline[linewidth=\POK@platelinewidth]%
           (! \POK@plateheight\space 2 div \POK@angle\space 2 copy sin mul 3 1 roll cos mul neg)%
           (! \POK@plateheight\space 2 div \POK@angle\space 2 copy sin mul neg 3 1 roll cos mul )%
@@ -2186,11 +2215,18 @@
 %
 % DETECTOR
 %
-\def\optdetector@iii{%
+\def\optdetector@nodes{%
+  \newOptexpComp{{ 0 0} { 0 1 } trans {NewPlaneInt} 1 }%
+  \ifx\POK@dettype\POS@dettype@round
+    \pnode(! \POK@detsize\space 0.2 mul 0){\optexp@nodeLabel}%
+  \else\ifx\POK@dettype@diode
+    \pnode(! \POK@detsize\space 0.5 mul 0){\optexp@nodeLabel}
+  \fi\fi
+}%
+\def\optdetector@comp{%
    \pnode(\optexp@nodeB){\optexp@nodeIn}
-   \newOptexpComp{{ 0 0} { 0 1 } trans {NewPlaneInt} 1 }%
+%   \newOptexpComp{{ 0 0} { 0 1 } trans {NewPlaneInt} 1 }%
    \ifx\POK@dettype\POS@dettype@round
-      \pnode(! \POK@detsize\space .2 mul 0){\optexp@nodeLabel}%
       \begin@ClosedObj
          % I could have use pswedge but then a correction of the component size
          % depending on the current linewidth is not possible
@@ -2210,7 +2246,6 @@
       \psline(! \@sz 0.2 mul \@sz 0.3 mul)(! \@sz 0.7 mul 0)
       \psline(! \@sz 0.2 mul 0)(! \@sz 0.7 mul \@sz -0.3 mul)
       \pst@Verb{/@@x0 \@sz def /@@x \@sz def /@@y \@sz def}%
-      \pnode(! \@sz 0){\optexp@nodeLabel}
    \fi\fi
 \ignorespaces}%
 %
@@ -2218,15 +2253,13 @@
 %
 % OPTRETPLATE
 %
-\def\optretplate@iii{%
+\def\optretplate@comp{%
    \edef\@p@ht{\POK@plateheight\space 2 div\space}%
    \edef\@p@wd{\POK@platewidth\space 2 div\space}%
    \psframe(! \@p@wd neg \@p@ht neg)(! \@p@wd \@p@ht)
    \psline{cc-cc}(! \@p@wd neg \@p@ht)(! \@p@wd \@p@ht neg)
-   \newOptexpComp{ {\@p@wd neg 0} {0 1} trans {NewPlaneInt} 
-                   {\@p@wd 0} {0 1} trans {NewPlaneInt} 1 }%
 \ignorespaces}%
-\def\optretplate@comp{%
+\def\optretplate@nodes{%
    \newOptexpComp{ {\POK@platewidth\space -0.5 mul 0} {0 1} trans {NewPlaneInt} 
                    {\POK@platewidth\space 0.5 mul 0} {0 1} trans {NewPlaneInt} 1 }%
 \ignorespaces}%
@@ -2235,19 +2268,19 @@
 %
 % OPTDIODE
 %
-\def\optdiode@iii{%
+\def\optdiode@nodes{%
+   \newOptexpComp{ {\POK@optdiodesize\space -0.5 mul 0} {0 1} trans {NewPlaneInt} 
+                   {\POK@optdiodesize\space 0.5 mul 0} {0 1} trans {NewPlaneInt} 1 }%
+\ignorespaces}%
+\def\optdiode@comp{%
    \edef\@sz{\POK@optdiodesize\space}%
    \psframe[dimen=outer](! \@sz -0.5 mul dup)(!\@sz 0.5 mul dup)
    \pspolygon(! \@sz -0.2 mul \@sz -0.2 mul)
              (! \@sz -0.2 mul \@sz 0.2 mul)
              (! \@sz 0.2 mul 0)
    \psline(! \@sz 0.2 mul \getCLWH add \@sz 0.2 mul)(! \@sz 0.2 mul \getCLWH add \@sz -0.2 mul)
-   \pnode(! \@sz -0.5 mul 0){\optexp@nodeIn}
-   \pnode(! \@sz 0.5 mul 0){\optexp@nodeOut}
-\ignorespaces}%
-\def\optdiode@comp{%
-   \newOptexpComp{ {\POK@optdiodesize\space -0.5 mul 0} {0 1} trans {NewPlaneInt} 
-                   {\POK@optdiodesize\space 0.5 mul 0} {0 1} trans {NewPlaneInt} 1 }%
+%   \pnode(! \@sz -0.5 mul 0){\optexp@nodeIn}
+%   \pnode(! \@sz 0.5 mul 0){\optexp@nodeOut}
 \ignorespaces}%
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -2261,9 +2294,9 @@
              (! \@wd \@ht neg)%
              (! \@ht dup)%
              (! \@ht neg \@ht)%
-   \pnode(!\@wd \@ht add -0.5 mul 0){\optexp@nodeIn}
-   \pnode(! 0 \@ht neg){\optexp@node{2}}
-   \pnode(!\@wd \@ht add 0.5 mul 0){\optexp@nodeOut}
+%   \pnode(!\@wd \@ht add -0.5 mul 0){\optexp@nodeIn}
+%   \pnode(! 0 \@ht neg){\optexp@node{2}}
+%   \pnode(!\@wd \@ht add 0.5 mul 0){\optexp@nodeOut}
 \ignorespaces}%
 \def\doveprism@nodes{%
   \newOptexpComp{ {\POK@doveprismsize\space neg 0} {1 1} trans {NewPlaneInt}
