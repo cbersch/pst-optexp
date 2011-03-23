@@ -3,7 +3,7 @@
 % version 0.4 2010-10-26 (cb)
 % For distribution, see pstricks.tex.
 %
-/tx@OptexpDict 20 dict def
+/tx@OptexpDict 50 dict def
 tx@OptexpDict begin
 %
 % str1 str2 -> str1str2
@@ -1321,27 +1321,4 @@ tx@OptexpDict begin
 	5 1 roll SProd 0 lt { 180 add } if
     } ifelse
 } bind def
-%/GetInternalNodeNames {
-%    /reverse exch def
-%    (N@) exch strcat 
-%    1 % counter
-%    {% counter and name on stack
-%	2 copy dup 3 string cvs 3 -1 roll exch strcat dup
-%	tx@NodeDict exch known {%
-%	    reverse {
-%		4 1 roll pop
-%	    } {
-%		exch 2 add 1 roll
-%	    } ifelse
-%	} {
-%	    reverse {
-%		pop pop pop (N) strcat
-%	    } {
-%		pop pop exch (N) strcat exch 1 roll
-%	    } ifelse
-%	    exit
-%	} ifelse
-%	1 add
-%    } loop
-%} bind def
 end % tx@OptexpDict
