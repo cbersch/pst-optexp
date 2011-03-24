@@ -23,6 +23,9 @@ POE=$(shell kpsewhich pst-optexp.tex pst-optexp.pro)
 
 all: $(addsuffix .pdf, $(FILELIST))
 
+connectall.tex: connectall.py $(POE)
+	./connectall.py
+
 %.pdf: %.ps
 	ps2pdf $<
 
