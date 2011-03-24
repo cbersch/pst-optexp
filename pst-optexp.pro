@@ -498,7 +498,7 @@ tx@OptexpDict begin
 	connectPlaneNodes {
 	    1
 	}{
-	    name cvn load /n get
+	    nforce 0 eq { name cvn load /n get } { nforce } ifelse
 	} ifelse
 	5 -1 roll true ] cvx % always draw to first interface
     } if
@@ -582,6 +582,7 @@ tx@OptexpDict begin
     % preset options
     /nMul 1 def
     /nAdd 0 def
+    /nforce 0 def
     % execute options
     exec
     counttomark /N ED
@@ -759,6 +760,7 @@ tx@OptexpDict begin
     /DrawnSegm 0 def
     /nMul 1 def
     /nAdd 0 def
+    /nforce 0 def
     % execute user options
     exec
     PrearrangePlanes
@@ -937,11 +939,11 @@ tx@OptexpDict begin
 %	(done) ==
 	Mode refl eq draw and
 	draw not DrawnSegm 0 gt and or {
-	    fillBeam
+	    fillBeam newpath
 	    /DrawnSegm 0 def
 	} if
 	PN PlaneNum eq {
-	    DrawnSegm 0 gt { fillBeam } if
+	    DrawnSegm 0 gt { fillBeam newpath } if
 	    exit
 	} {
 	    /PN PN 1 add def
@@ -1075,7 +1077,7 @@ tx@OptexpDict begin
 		    exch dup 4 -1 roll eq connectPlaneNodes or {% draw i i stop
 			1 % after the last component plane we have always air
 		    }{ % otherwise the respective refractive index of the component
-			n
+			nforce 0 eq { n } {nforce} ifelse
 		    }ifelse % draw i refrIndex
 		    exch dup N eq {
 			pop (N)
