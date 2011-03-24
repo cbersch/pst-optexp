@@ -27,7 +27,7 @@
 %
 %
 \def\fileversion{3.0alpha}
-\def\filedate{2011/03/23}
+\def\filedate{2011/03/24}
 \message{`pst-optexp' v\fileversion, \filedate\space (CB)}
 %
 \edef\PstAtCode{\the\catcode`\@} \catcode`\@=11\relax
@@ -611,6 +611,7 @@
 }%
 \def\drawbeam{\pst@object{drawbeam}}%
 \def\drawbeam@i{%
+  \addbefore@par{n=0}%
   \addafter@par{style=Beam}%
   \begin@SpecialObj%
   \let\pst@linetype\pst@arrowtype
@@ -640,14 +641,16 @@
   \ifx\pslinestyle\@none\else
     \addto@pscode{%
      {/nMul \POK@nmul\space def
-      /nAdd \POK@nadd\space def} }%
+      /nAdd \POK@nadd\space def
+      /nforce \POK@n\space def} }%
     \ifx\POK@startpos\@empty
       \addto@pscode{ {0 0} }%
     \else
-      \addto@pscode{ {\POK@startpos \tx@ScreenCoor} }%
+      \addto@pscode{ [\POK@startpos\space counttomark 1 eq { 0 exch } if \tx@ScreenCoor] cvx }%
     \fi
     \addto@pscode{%
-       {\ifx\POK@startvec\@empty 0 0 \else \POK@startvec\fi} 
+       [\ifx\POK@startvec\@empty 0 0 \else \POK@startvec\fi\space 
+        counttomark 1 eq { 1 exch } if ] cvx
        gsave 
        \pst@number\pslinewidth SLW
        \pst@usecolor\pslinecolor
@@ -672,21 +675,20 @@
    {/nMul \POK@nmul\space def
     /nAdd \POK@nadd\space def} }%
   % the input vectors
-  \ifx\POK@startvec\@empty
-     \ifx\POK@beamdiv\@empty
-        \addto@pscode{ {0 0} dup }%
-     \else
-        \addto@pscode{ {\POK@beamdiv\space dup cos exch sin } {\POK@beamdiv\space dup cos exch sin neg } }%
-     \fi
-  \else
-     \addto@pscode{ {\POK@startvec} dup }%
-  \fi
+    \addto@pscode{%
+      [\ifx\POK@startvec\@empty 1 0 \else\POK@startvec\fi\space
+       counttomark 1 eq { 1 exch } if 
+       \ifx\POK@beamdiv\@empty 0 \else \POK@beamdiv\fi\space
+       matrix rotate 3 copy itransform ToVec
+       5 1 roll transform ] cvx exch
+    }%
   % the start positions
-  \ifx\POK@beamwidth\@empty
-     \addto@pscode{ {0 0} dup }%
-  \else
-     \addto@pscode{ {0 \POK@beamwidth\space 2 div \tx@ScreenCoor} {0 \POK@beamwidth\space -2 div \tx@ScreenCoor} }%
-  \fi
+  \addto@pscode{%
+    [\ifx\POK@startpos\@empty 0 0 \else\POK@startpos\fi
+     counttomark 1 eq { 0 exch } if
+     \ifx\POK@beamwidth\@empty 0 \else \POK@beamwidth\space 0.5 mul \fi\space
+     3 copy add \tx@ScreenCoor\space ToVec 5 1 roll sub \tx@ScreenCoor] cvx
+  }
   % rearrange options
   \addto@pscode{ exch 4 -1 roll 4 2 roll exch }% 
   %
