@@ -1,0 +1,50 @@
+\documentclass{scrartcl}
+\usepackage[latin1]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[ngerman]{babel}
+\usepackage{lmodern}
+\usepackage{pst-optexp}
+
+\begin{document}
+\newpsobject{MOLensIn}{lens}{lens=0.5 0.5 0.5}
+\newpsobject{MOLensOut}{lens}{lens=1.5 1.5 1.5}
+\begin{pspicture}[showgrid=true](5,2) 
+   \pnode(0,1){A}\pnode(5,1){B}
+   \psset{n=1}
+   \begin{optexp}
+   \MOLensIn[abspos=0.5](A)(B){}
+   \MOLensOut[abspos=1](A)(B){}
+   \MOLensOut[abspos=4](A)(B){}
+   \MOLensIn[abspos=4.5](A)(B){}
+%   \addtopsstyle{Beam}{beamExtended}
+   \custombeam{%
+     \drawbeam[startpos=0 0.1, stopInside]{(A)}{1}.
+     \drawbeam[startvec=1 1]{1}{2}.
+     \drawbeam[startvec=1 0, stopInside]{2}{3}.
+     \drawbeam[startvec=1 -1]{3}{4}.
+     \drawbeam{4}{(B)}.
+   }%
+ \end{optexp}
+\end{pspicture}
+\bigskip
+
+\begin{pspicture}[showgrid=true](5,2) 
+   \pnode(0,1){A}\pnode(5,1){B}
+   \psset{n=1}
+   \begin{optexp}
+   \MOLensIn[abspos=0.5](A)(B){}
+   \MOLensOut[abspos=1](A)(B){}
+   \MOLensOut[abspos=4](A)(B){}
+   \MOLensIn[abspos=4.5](A)(B){}
+   \addtopsstyle{Beam}{beamExtended, fillstyle=solid, fillcolor=red, opacity=0.3}
+   \custombeam{%
+     \drawbeam[beamwidth=0.2, stopInside]{(A)}{1}.
+     \drawbeam[beamdiv=45]{1}{2}.
+     \drawbeam[stopInside]{2}{3}.
+     \drawbeam[beamdiv=-45]{3}{4}.
+     \drawbeam{4}{(B)}.
+   }%
+ \end{optexp}
+\end{pspicture}
+
+\end{document}
