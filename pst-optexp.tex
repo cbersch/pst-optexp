@@ -609,7 +609,7 @@
    #1%
    \end@SpecialObj%
    \fi
-}%
+\ignorespaces}%
 \def\drawbeam{\pst@object{drawbeam}}%
 \def\drawbeam@i{%
   \addbefore@par{n=0}%
@@ -665,7 +665,7 @@
   \let\psk@fillstyle\relax
   \ifPOE@optexpenv
     \ifPOE@toplayer
-      \def\pst@code{}
+      \def\pst@code{}%
     \fi
   \fi
   \end@SpecialObj%
@@ -689,9 +689,9 @@
      counttomark 1 eq { 0 exch } if
      \ifx\POK@beamwidth\@empty 0 \else \POK@beamwidth\space 0.5 mul \fi\space
      3 copy add \tx@ScreenCoor\space ToVec 5 1 roll sub \tx@ScreenCoor] cvx
-  }
+  }%
   % rearrange options
-  \addto@pscode{ exch 4 -1 roll 4 2 roll exch }% 
+  \addto@pscode{ exch 4 -1 roll 4 2 roll exch counttomark /t ED t copy t{==}repeat }% 
   %
   % stroke and/or fill
   \ifx\psk@fillstyle\relax
@@ -716,7 +716,7 @@
   \addto@pscode{end }%
   \ifPOE@optexpenv
     \ifPOE@toplayer
-      \def\pst@code{}
+      \def\pst@code{}%
     \fi
   \fi
   \end@SpecialObj%
@@ -1004,14 +1004,15 @@
          \addbefore@par{#3}%
          \addafter@par{ref@angle=180,#1}%
          \begin@OptexpMultipole
-            \ifPOE@bglayer
-              \pst@calcNodes{##1}{##2}{##3}
+%           \message{^^J\optexp@nodeA^^J}%
+%            \ifPOE@bglayer
+              \pst@calcNodes{##1}{##2}{##3}%
               % adjust tempNode@A and tempNode@B for the connections
               % \pnode(##1){tempNode@A}
               % \pnode(##3){tempNode@B}
               % check if node must be switched, therefore we implement this
               % directly as PS code
-            \fi
+%            \fi
             \pst@draw@component{##4}{\@nameuse{#2@ii}}
             \ifPOE@bglayer
               \pst@getcoor{##1}\pst@tempA%
@@ -1089,9 +1090,11 @@
 \ignorespaces}%
 \def\define@iimacro#1{%
   \@namedef{#1@ii}{%
-    \pnode(0,0){\optexp@nodeLabel}%
-    \pnode(0,0){\optexp@nodeIn}%
-    \pnode(0,0){\optexp@nodeOut}%
+    \ifPOE@bglayer
+      \pnode(0,0){\optexp@nodeLabel}%
+      \pnode(0,0){\optexp@nodeIn}%
+      \pnode(0,0){\optexp@nodeOut}%
+    \fi
     \@ifundefined{#1@iii}{%
       \ifPOE@bglayer
         \@ifundefined{#1@nodes}{\dipole@nodes}{\@nameuse{#1@nodes}}%
@@ -1341,11 +1344,12 @@
       % 
       \ifx\POK@position\@empty
          \ifx\POK@abspos\@empty
-            \ncput[nrot=:U,npos=]{\put@RelLabel{#1}}
+            \ncput[nrot=:U,npos=]{\put@RelLabel{#1}}%
          \else
-            \nlput[nrot=:U](\optexp@nodeA)(\optexp@nodeB){\POK@abspos}{\put@RelLabel{#1}}
+            \nlput[nrot=:U](\optexp@nodeA)(\optexp@nodeB){\POK@abspos}{\put@RelLabel{#1}}%
          \fi
       \else
+        \message{^^Jasdfsd#1^^J}%
          \ncput[nrot=:U,npos=\POK@position]{\put@RelLabel{#1}}
       \fi
       %
@@ -1603,15 +1607,16 @@
 % The first parameter contains the label, the second one the drawing code
 \def\pst@draw@component#1#2{%
     %
+%    \message{^^J\POK@compname^^J}
     \def\@@comp{%
-       #2
+       #2%
        \ifx\POK@extnode\@empty\else
-          \pnode(! \pst@optexpdict ExtNode end){\POK@extnoden@me}
+          \pnode(! \pst@optexpdict ExtNode end){\POK@extnoden@me}%
        \fi
     }%
     \ifPOE@endbox%
        \ifx\POK@labeloffset\@empty
-          \psset{labeloffset=0}
+          \psset{labeloffset=0}%
        \fi
        \psset{position=1}%
     \fi%
@@ -1624,7 +1629,7 @@
     % 
     \begingroup
     %   
-    \psset{style=OptComp}
+    \psset{style=OptComp}%
     % 
     % linestyle to use, if component should be marked as optional
     \ifPOE@component@optional
@@ -1635,31 +1640,33 @@
     % 
     % then check if absolute positioning is wanted
         \ifx\POK@abspos\@empty
-           \ncput[nrot=:U,npos=]{\put@Comp{\@@comp}}
+           \ncput[nrot=:U,npos=]{\put@Comp{\@@comp}}%
         \else
-           \nlput[nrot=:U](\optexp@nodeA)(\optexp@nodeB){\POK@abspos}{\put@Comp{\@@comp}}
+           \nlput[nrot=:U](\optexp@nodeA)(\optexp@nodeB){\POK@abspos}{\put@Comp{\@@comp}}%
         \fi
     \else
-       \ncput[nrot=:U,npos=\POK@position]{\put@Comp{\@@comp}}
+       \ncput[nrot=:U,npos=\POK@position]{\put@Comp{\@@comp}}%
     \fi
     \endgroup
     %
     \ifPOE@toplayer
       %
       % Now put the label
-      \ifPOE@label@innerlabel
-         \ifdim\optboxwidth>0pt
-            \psset{labeloffset=0, labelref=relative}
-            \put@Label{\parbox{\optboxwidth}{#1}}%
-         \else
-            \put@Label{#1}%
-         \fi
-      \else
+%      \ifPOE@label@innerlabel
+%         \ifdim\optboxwidth>0pt
+%            \psset{labeloffset=0, labelref=relative}%
+%            \put@Label{\parbox{\optboxwidth}{#1}}%
+%         \else
+%            \put@Label{#1}%
+%         \fi
+%      \else
          \put@Label{#1}%
-      \fi
-      %
-      % Show some special dots for debugging
-      \ifPOE@debug@showoptdots
+%      \fi
+    \fi
+    %
+    % Show some special dots for debugging
+    \ifPOE@debug@showoptdots
+      \ifPOE@bglayer
           \psdot[linecolor=red](\optexp@nodeLabel)
           \psdot[linecolor=red](\optexp@nodeLabelShifted)
           \psdot[linecolor=black](\optexp@nodeA)
