@@ -396,7 +396,7 @@ tx@OptexpDict begin
     @ABVect % {InVec} dX dY
     3 -1 roll exec 2 copy 6 2 roll % Xi Yi dX dY Xi Yi 
     0 eq exch 0 eq and not {% invec != (0,0)
-	exch atan matrix rotate dtransform
+	exch atan (transform invec by ) == dup == matrix rotate dtransform
     } {
 	4 2 roll pop pop
     } ifelse
@@ -600,6 +600,8 @@ tx@OptexpDict begin
     }{
 	2 copy /StartPoint load  TransformStartPos /Curr ED
     } ifelse
+    (StartVec) == /CurrVec load ==
+    (CurrentPoint) == /Curr load ==
 %    (TraceBeam, transformations done) == 
     counttomark /PlaneNum ED /n1 1 def % init the refractive index
     /PN 1 def
@@ -678,22 +680,22 @@ tx@OptexpDict begin
 %	(after dict) ==
 %	counttomark /t ED t copy t{==}repeat
 	PN 1 eq {
-%	    (PN = 1)==
+	    (PN = 1)==
 	    pop pop 2 copy ToVec /Curr ED
-	    /n1 1 def
+%	    /n1 1 def
 	    counttomark 2 roll
 	} {
-%	    (PN) == PN ==
+	    (PN) == PN ==
 	    ToVec /CurrVec ED 2 copy
 	    ToVec /Curr ED 
 	    draw
 	    counttomark 3 roll
 	} ifelse
+	(n1 = ) == n1 ==
 %	(blubb)==
         /CurrCenterTmp /CurrCenter load def
 	/lastBeamPoint /Curr load def
 	/ModeTmp Mode def
-	
 	PN PlaneNum eq {
 	    exit
 	} {
@@ -742,12 +744,15 @@ tx@OptexpDict begin
     currentdict /lastBeamPointLow known {
 	/lastBeamPointLow load /lastBeamPoint ED
     } if
+    (StrokeExtendedBeam LOW)==
     DrawBeam /lastBeamPoint load /lastBeamPointLow ED
     currentdict /lastBeamPoint undef
     currentdict /lastBeamPointUp known {
 	/lastBeamPointUp load /lastBeamPoint ED
     } if
-    DrawBeam /lastBeamPoint load /lastBeamPointUp ED 
+   (StrokeExtendedBeam HIGH)==
+    DrawBeam /lastBeamPoint load /lastBeamPointUp ED
+    (--------)==
 } bind def
 %
 % [ CompN ... Comp1 {options} {start point up} {input vector up} {start point low} {input vector low} 
@@ -781,6 +786,11 @@ tx@OptexpDict begin
 	2 copy /StartLow load TransformStartPos /CurrLow ED
 	2 copy /StartUp load TransformStartPos /CurrUp ED
     } ifelse
+%    (StartVecUp) == /CurrVecUp load ==
+%    (CurrentPoint Up) == /CurrUp load ==
+%    (StartVecLow) == /CurrVecLow load ==
+%    (CurrentPoint Low) == /CurrLow load ==
+%    () ==
 %    (startpos done)==
     counttomark /PlaneNum ED /n1 1 def
     /CurrR false def
@@ -825,6 +835,7 @@ tx@OptexpDict begin
 	% new upper vector and intersection point
 	CurrUp CurrVecUp %(CurrUp) == 4 copy == == == == (done)==
 	connectPlaneNodes {
+%	    (--------------------------------------------------connectPlaneNodes)==
 	    PN 2 eq {% initialize relAngle, the angle between plane connection and input vector
 %		(PN = 2) ==
 		%counttomark /t ED t copy t{==}repeat
@@ -915,33 +926,37 @@ tx@OptexpDict begin
 	    pop pop
 	    /CurrCenter false def
 	} ifelse
-%	(center done) == 
-	draw {
-	    /DrawnSegm dup load 1 add def
+%	(center done) ==
+        PN 1 gt {
+	    draw {
+		/DrawnSegm dup load 1 add def
 %	    (draw) == 
-	    OldUp moveto CurrUp lineto
-	    curved {
-		CurrCenter CurrUp CurrLow TangentCrosspoint
-		CurrLow CurrR arct
-	    } {
-		CurrLow lineto
-	    } ifelse
-	    OldLow lineto
-	    OldR type /booleantype eq not {% previous interface was also curved
-		OldCenter OldLow OldUp TangentCrosspoint
-		OldUp OldR arct
-	    } {
-		OldUp lineto
-	    } ifelse
-	} {
-%	    (skip) ==
-	} ifelse
+		OldUp moveto CurrUp lineto
+		curved {
+		    CurrCenter CurrUp CurrLow TangentCrosspoint
+		    CurrLow CurrR arct
+		} {
+		    CurrLow lineto
+		} ifelse
+		OldLow lineto
+		OldR type /booleantype eq not {% previous interface was also curved
+		    OldCenter OldLow OldUp TangentCrosspoint
+		    OldUp OldR arct
+		} {
+		    OldUp lineto
+		} ifelse
+	    } if
 %	(done) ==
-	Mode refl eq draw and
-	draw not DrawnSegm 0 gt and or {
-	    fillBeam newpath
-	    /DrawnSegm 0 def
-	} if
+	    Mode refl eq draw and
+	    draw not DrawnSegm 0 gt and or {
+		fillBeam newpath
+		/DrawnSegm 0 def
+	    } if
+	} {
+%	    PN == 1
+	    /CurrVecUp /OldVecUp load def
+	    /CurrVecLow /OldVecLow load def
+	} ifelse
 	PN PlaneNum eq {
 	    DrawnSegm 0 gt { fillBeam newpath } if
 	    exit
@@ -1233,6 +1248,7 @@ tx@OptexpDict begin
 %
 % Xp Yp dXp dYp trans|refl n2 X0 Y0 X_in Y_in PlainInterface -> X' Y' X_out Y_out
 /PlainInterface {%
+%    (plain ifc) == 2 copy ToVec ==
     /Yin ED /Xin ED /Y0 ED /X0 ED /n2 ED /mode ED /dYp ED /dXp ED /Yp ED /Xp ED
     n2 1 gt { /n2 n2 nMul mul nAdd add def } if
     tx@EcldDict begin
