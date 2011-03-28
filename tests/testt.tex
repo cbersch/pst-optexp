@@ -1,7 +1,7 @@
 %%% testt.tex --- 
 
 %% Author: cbersch
-%% Version: $Id: testt.tex,v 0.0 2011/03/23 09:29:38 Exp$
+%% Version: $Id: testt.tex,v 0.0 2011/03/28 12:51:15 Exp$
 
 
 \documentclass{scrartcl}
@@ -15,19 +15,21 @@
 %%\revision$Header: /home/cbersch/work/pst-optexp/tests/testt.tex,v 0.0 2011/03/01 12:13:59 cbersch Exp$
 
 \begin{document}
-\begin{pspicture}(5,2)
-  \begin{optexp}
+\begin{pspicture}[showgrid=true](7,2)
     \pnode(0.5,1){A}
     \pnode(4.5,1){B}
+    \pnode(7,1){C}
+  \begin{optexp}
     \doveprism(A)(B){}
+    \lens(B)(C){}
     \addtopsstyle{Beam}{beamConnectComp}
     \drawbeam[addtoBeam={linecolor=red}, startpos=0 -0.1]{(A)}{1}{(B)}.
     \drawbeam[addtoBeam={linecolor=black}]{(A)}{1}{(B)}.
-    \drawbeam[startpos=0 0.1]{(A)}{1}{(B)}.
+    \drawbeam[startpos=0 0.1]{(A)}{1}{2}{(C)}.
   \end{optexp}
 \end{pspicture}
 
-\begin{pspicture}(5,2)
+\begin{pspicture}[showgrid=true](5,2)
     \pnode(0.5,1){A}
     \pnode(4.5,1){B}
     \doveprism(A)(B){}
