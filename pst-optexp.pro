@@ -595,7 +595,7 @@ tx@OptexpDict begin
 	/InVec load
     } ifelse
     /CurrVec ED
-    continueBeam currentdict /lastBeamPoint known and {
+    custombeam currentdict /lastBeamPoint known and {
 	/lastBeamPoint load /Curr ED
     }{
 	2 copy /StartPoint load  TransformStartPos /Curr ED
@@ -774,7 +774,7 @@ tx@OptexpDict begin
     } ifelse
 %    (invec done)==
 %    counttomark /t ED t copy t{==}repeat
-    continueBeam currentdict /lastBeamPointLow known currentdict /lastBeamPointUp known and and {
+    custombeam currentdict /lastBeamPointLow known currentdict /lastBeamPointUp known and and {
 	/lastBeamPointLow load /CurrLow ED
 	/lastBeamPointUp load /CurrUp ED
     } {
@@ -1042,10 +1042,10 @@ tx@OptexpDict begin
 	/last false def
 	/first false def
 	dup 1 eq {
-	    /first true def pop startDrawInside
+	    /first true def pop beaminsidefirst
 	} {
 	    numComp eq {
-		stopDrawInside
+		beaminsidelast
 		/last true def
 	    } {
 		beamInside
@@ -1092,8 +1092,8 @@ tx@OptexpDict begin
 		    3 1 roll 5 1 roll % i name refrIndex mode draw
 		    [ 6 1 roll ] cvx counttomark 1 roll
 		    last {
-			continueBeam stopInside not and
-			continueBeam not stopDrawInside not and or {
+			custombeam stopInside not and
+			custombeam not beaminsidelast not and or {
 			    exit
 			} if
 		    } if

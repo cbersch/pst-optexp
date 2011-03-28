@@ -64,13 +64,13 @@
 \newif\ifPOE@beam
 \newif\ifPOE@startInside
 \newif\ifPOE@stopInside
-\newif\ifPOE@startDrawInside
-\newif\ifPOE@stopDrawInside
+\newif\ifPOE@beaminsidefirst
+\newif\ifPOE@beaminsidelast
 \newif\ifPOE@startvecAbsolute
 \newif\ifPOE@beamInside
 \newif\ifPOE@beamExtended
 \newif\ifPOE@beamConnectComp
-\newif\ifPOE@beamContinue
+\newif\ifPOE@custombeam\POE@custombeamfalse
 %
 \newcount\poe@cnt
 \newcount\poe@node@cnt
@@ -591,17 +591,16 @@
 \define@key[psset]{optexp}{beamwidth}{\edef\POK@beamwidth{#1}}%
 \define@boolkey[psset]{optexp}[POE@]{startInside}[true]{}%
 \define@boolkey[psset]{optexp}[POE@]{stopInside}[true]{}%
-\define@boolkey[psset]{optexp}[POE@]{startDrawInside}[true]{}%
-\define@boolkey[psset]{optexp}[POE@]{stopDrawInside}[true]{}%
+\define@boolkey[psset]{optexp}[POE@]{beaminsidefirst}[true]{}%
+\define@boolkey[psset]{optexp}[POE@]{beaminsidelast}[true]{}%
 \define@boolkey[psset]{optexp}[POE@]{beamInside}[true]{}%
 \define@boolkey[psset]{optexp}[POE@]{beamExtended}[true]{}%
 \define@boolkey[psset]{optexp}[POE@]{beamConnectComp}[true]{}%
-\define@boolkey[psset]{optexp}[POE@]{beamContinue}[true]{}%
 \define@boolkey[psset]{optexp}[POE@]{startvecAbsolute}[true]{}%
-\def\drawCustomBeam{\pst@object{drawCustomBeam}}%
-\def\drawCustomBeam@i#1{%
-   \addbefore@par{beamContinue}%
+\def\custombeam{\pst@object{custombeam}}%
+\def\custombeam@i#1{%
    \begin@SpecialObj%
+   \POE@custombeamtrue
    \def\begin@SpecialObj{%
       \begingroup%
       \use@par%
@@ -619,10 +618,10 @@
   \addto@pscode{%
      \pst@optexpdict 
      1 setlinejoin
-     /startDrawInside \ifPOE@startDrawInside true \else false \fi def
-     /stopDrawInside \ifPOE@stopDrawInside true \else false \fi def
+     /beaminsidefirst \ifPOE@beaminsidefirst true \else false \fi def
+     /beaminsidelast \ifPOE@beaminsidelast true \else false \fi def
      /beamInside \ifPOE@beamInside true \else false \fi def
-     /continueBeam \ifPOE@beamContinue true \else false \fi def
+     /custombeam \ifPOE@custombeam true \else false \fi def
      /startInside \ifPOE@startInside true \else false \fi def
      /stopInside \ifPOE@stopInside true \else false \fi def
      /connectPlaneNodes \ifPOE@beamConnectComp true \else false \fi def
