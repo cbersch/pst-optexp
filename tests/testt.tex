@@ -1,7 +1,7 @@
 %%% testt.tex --- 
 
 %% Author: cbersch
-%% Version: $Id: testt.tex,v 0.0 2011/03/28 21:28:02 Exp$
+%% Version: $Id: testt.tex,v 0.0 2011/03/29 09:37:56 Exp$
 
 
 \documentclass{scrartcl}
@@ -15,11 +15,36 @@
 %%\revision$Header: /home/cbersch/work/pst-optexp/tests/testt.tex,v 0.0 2011/03/01 12:13:59 cbersch Exp$
 
 \begin{document}
-\begin{pspicture}[showgrid=true](5,2)
+\begin{pspicture}[showgrid=true](7,2)
     \pnode(0,1){A}
     \pnode(4,1){B}
-    \begin{optexp}
-    \optbox[endbox, showoptdots](B)(A){Label}
-  \end{optexp}
+    \pnode(7,0.999){C}
+    \optprism(A)(B)(C){}
+    \drawbeam[beaminsidefirst]{1}{(C)}.
+\end{pspicture}
+\vspace*{5mm}
+
+\begin{pspicture}[showgrid=true](7,2)
+    \pnode(0,1){A}
+    \pnode(4,1){B}
+    \pnode(7,0){C}
+    \optprism(A)(B)(C){}
+    \addtopsstyle{Beam}{fillcolor=red, fillstyle=solid}
+    \custombeam{%
+    \drawbeam[beamExtended, beamwidth=0.1, beamdiv=2, beaminsidefirst]{1}{(C)}.
+    }%
+\end{pspicture}
+
+\vspace*{5mm}
+
+\begin{pspicture}[showgrid=true](7,2)
+    \pnode(0,1){A}
+    \pnode(4,1){B}
+    \pnode(7,0){C}
+    \lens(A)(B){}
+    \addtopsstyle{Beam}{fillcolor=red, fillstyle=solid}
+    \custombeam{%
+      \drawbeam[beamExtended, beamwidth=0.1, beaminsidefirst, startpos=0.3]{1}{(C)}.
+    }%
 \end{pspicture}
 \end{document}
