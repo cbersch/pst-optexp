@@ -49,7 +49,7 @@
 \bigskip
 
 \begin{pspicture}[showgrid=true](4,5)
-  \psset{n=2}
+  \psset{n=1}
   \begin{optexp}
   \pnode(1,1){A}\pnode(1,4){G}\pnode(3,4){B}
   \optbox[endbox, labelref=relative, labeloffset=0, optboxwidth=1](G)(A){Laser}
@@ -57,17 +57,20 @@
   \pinhole[abspos=0.45](A)(G){}
   \lens[lens=2, abspos=0.8](A)(G){}
   \optplate[abspos=1.5, labeloffset=1](A)(G){SLM}
-  \lens[n=1.3, abspos=2, labelangle=180](A)(G){L}
-  \pentaprism[n=1, labeloffset=1](A)(G)(B){PP}
+  \lens[abspos=2, labelangle=180](A)(G){L}
+  \pentaprism[labeloffset=1](A)(G)(B){PP}
   \lens[abspos=1](G)(B){L}
   \optbox[labeloffset=0, optboxwidth=1, endbox](G)(B){CCD}
-  \addtopsstyle{Beam}{beamwidth=0.1, beamExtended, linewidth=0.2\pslinewidth,fillstyle=solid,
-    fillcolor=green!20!white, beamInside}
+  \addtopsstyle{Beam}{beamwidth=0.1, beamExtended, linewidth=0.2\pslinewidth,fillstyle=solid, opacity=0.2,
+    fillcolor=green , beamInside}%, beamConnectComp}
   \custombeam{%
-    \drawbeam[nMul=2, beaminsidelast]{1}{2}{4}.
-    \drawbeam[n=1,stopInside=false, beaminsidelast=false]{4}{5}{6}.
-    \drawbeam{6}{7}{8}.
-    \drawbeam[beaminsidefirst, n=1]{8}{9}.
+    \drawbeam[beaminsidelast]{1}{2}.
+    \drawbeam[beamdiv=-30]{2}{4}.
+    \drawbeam[beaminsidefirst, beaminsidelast]{4}{5}{6}.
+    % Note: beamdiv here is positive for a contracting beam
+    % because upper and lower beams were crossed before.
+    \drawbeam[beamdiv=4]{6}{7}{8}.
+    \drawbeam[beaminsidefirst]{8}{9}.
   }
   \end{optexp}
 \end{pspicture}
