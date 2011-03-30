@@ -585,6 +585,8 @@ tx@OptexpDict begin
     /nforce 0 def
     % execute options
     exec
+    /startInside startInside beaminsidefirst or def
+    /stopInside stopInside beaminsidelast or def
     counttomark /N ED
     PrearrangePlanes
     PushAllPlanesOnStack
@@ -768,6 +770,8 @@ tx@OptexpDict begin
     /nforce 0 def
     % execute user options
     exec
+    /startInside startInside beaminsidefirst or def
+    /stopInside stopInside beaminsidelast or def
     PrearrangePlanes
     PushAllPlanesOnStack
     startvecAbsolute not {
