@@ -1186,6 +1186,7 @@
   \end@OptexpObj
 }%
 \define@iimacro{wdmcoupler}%
+%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %   Some of the components need three points to be positioned. 
@@ -2636,28 +2637,43 @@
 %
 % WDM COUPLER
 %
-\def\wdmcoupler@ii{%
-   \edef\@sz{\POK@couplersize\space}%
-   \edef\@sep{\POK@couplersep\space 0.5 mul\space}%
-   \ifx\POK@align\POS@top
-      \pst@Verb{/@yshift \@sep neg def}%
-   \else\ifx\POK@align\POS@bottom
-      \pst@Verb{/@yshift \@sep def}%
-   \else
-      \pst@Verb{/@yshift 0 def}%
-   \fi\fi
-   \ifx\POK@couplertype\POS@couplertype@elliptic
-      \psellipse[dimen=outer](!0 @yshift)(! \@sz \@sz 0.4 mul)
-      \pnode(! \@sz neg \getCLW 0.3 mul add @yshift \@sep add){\POK@b@sicname 1}
-      \pnode(! \@sz neg \getCLW 0.3 mul add @yshift \@sep sub){\POK@b@sicname 2}
-      \pnode(!0 @yshift){\optexp@nodeLabel}
-      \pnode(! \@sz \getCLW 0.3 mul sub 0){\POK@b@sicname N}      
-   \else\ifx\POK@couplertype\POS@couplertype@none
-      \pnode(0,0){\POK@b@sicname 1}
-      \pnode(0,0){\POK@b@sicname 2}
-      \pnode(0,0){\POK@b@sicname N}
-      \pnode(0,0){\optexp@nodeLabel}
-   \fi\fi
+\def\wdmcoupler@nodes{%
+  \edef\@sz{\POK@couplersize\space}%
+  \edef\@sep{\POK@couplersep\space 0.5 mul\space}%
+  %
+  \ifx\POK@align\POS@top
+    \def\@yshift{\@sep neg\space}%
+  \else\ifx\POK@align\POS@bottom
+    \def\@yshift{\@sep\space}%
+  \else
+    \def\@yshift{0 }%
+  \fi\fi
+  \ifx\POK@couplertype\POS@couplertype@elliptic
+    \pnode(! \@sz neg \getCLW 0.3 mul add \@yshift \@sep add){\POK@b@sicname 1}
+    \pnode(! \@sz neg \getCLW 0.3 mul add \@yshift \@sep sub){\POK@b@sicname 2}
+    \pnode(!0 \@yshift){\optexp@nodeLabel}
+    \pnode(! \@sz \getCLW 0.3 mul sub 0){\POK@b@sicname N}      
+  \else\ifx\POK@couplertype\POS@couplertype@none
+    \pnode(0,0){\POK@b@sicname 1}
+    \pnode(0,0){\POK@b@sicname 2}
+    \pnode(0,0){\POK@b@sicname N}
+    \pnode(0,0){\optexp@nodeLabel}
+  \fi\fi
+}%
+\def\wdmcoupler@comp{%
+  \edef\@sz{\POK@couplersize\space}%
+  \edef\@sep{\POK@couplersep\space 0.5 mul\space}%
+  %
+  \ifx\POK@align\POS@top
+    \def\@yshift{\@sep neg\space}%
+  \else\ifx\POK@align\POS@bottom
+    \def\@yshift{\@sep\space}%
+  \else
+    \def\@yshift{0 }%
+  \fi\fi
+  \ifx\POK@couplertype\POS@couplertype@elliptic
+    \psellipse[dimen=outer](!0 \@yshift)(! \@sz \@sz 0.4 mul)
+  \fi
 }%
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -2712,5 +2728,7 @@
    \newOptexpComp{ {\@sz neg 0} {0 1} trans {NewPlaneInt} 1 }%
    \pnode(!\@sz 0){\optexp@nodeOut}
 }%
+%
+\catcode`\@=\PstAtCode\relax
 %
 \endinput
