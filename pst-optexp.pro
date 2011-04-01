@@ -1,12 +1,12 @@
 %
 % PostScript prologue for pst-optexp.tex.
-% version 0.4 2010-10-26 (cb)
+% version 1.0 2011-04-01 (cb)
 % For distribution, see pstricks.tex.
 %
-/tx@OptexpDict 50 dict def
+/tx@OptexpDict 60 dict def
 tx@OptexpDict begin
-%
-% str1 str2 -> str1str2
+% concatenate two string
+% (str1) (str2) -> (str1str2)
 /strcat {
     exch 2 copy
     length exch length add
@@ -14,6 +14,7 @@ tx@OptexpDict begin
     copy length exch
     putinterval
 } bind def
+% convert a literal name to string
 /nametostring {
     dup length string cvs
 } bind def
@@ -67,11 +68,14 @@ tx@OptexpDict begin
         /Y@B exch def
     }if
 } bind def
-%
+% Calculate the height a1 of a pole cap
 % R1 height -> a1
 /segLen {% 
     dup mul neg exch abs dup 3 1 roll dup mul add sqrt sub
 } bind def
+% Calculate some parameters for the left plane of a convex lens.
+% Defines /a1 as the pole height and /ArcL which are used later in the code.
+%
 % height R1 -> y |R1| alpha_bottom alpha_top R1
 /leftConvex {
    /R1 exch def /h exch def
@@ -83,7 +87,7 @@ tx@OptexpDict begin
    /ArcL /arc load def
    R1
 } bind def
-%
+% Analogous to /leftConvex
 % height R1 -> y |R1| alpha_bottom alpha_top R1
 /leftConcave {
    /R1 exch def /h exch def
@@ -96,7 +100,7 @@ tx@OptexpDict begin
    /a1 0.5 a1 mul def
    R1
 } bind def
-%
+% Analogous to /leftConvex, /a2 and /ArcR are defined
 % height R2 -> y |R2| alpha_bottom alpha_top R2
 /rightConvex {
    /R2 exch def /h exch def
@@ -108,7 +112,7 @@ tx@OptexpDict begin
    R2
    /ArcR /arc load def
 } bind def
-%
+% Analogous to /rightConvex
 % height R2 -> y |R2| alpha_bottom alpha_top R2
 /rightConcave {
    /R2 exch def /h exch def
@@ -121,17 +125,15 @@ tx@OptexpDict begin
    /a2 0.5 a2 mul def
    R2
 } bind def
-%
+% Calculate the center between two nodes 
 % x1 y1 x2 y2 -> (x1+x2)/2 (y1+y2)/2
 /mwNode {
     exch 3 1 roll add 2 div 3 1 roll add 2 div exch
 } bind def
-% Calculate angle of line from nodeA to nodeB
+% Calculate angle of a line from nodeA to nodeB. nodeA and nodeB must be given as literal names
 % nodeB nodeA -> angle
 /FiberAngleB {%
-    (FiberAngleB) == 2 copy == ==
     nametostring @GetCenter 3 -1 roll nametostring @GetCenter exch 3 1 roll sub 3 1 roll sub atan
-    (done) ==
 } bind def
 %
 % Calculate angle of line from nodeB to nodeA
@@ -144,10 +146,9 @@ tx@OptexpDict begin
     @@x0 @xref @@x mul add 
     @@y0 @yref @@y mul add 
 } bind def
-%
-% basicnodename reverse GetInternalNodeNames
+% Push all internal node names of (basicnodename) on the stack.
+% (basicnodename) reverse GetInternalNodeNames
 /GetInternalNodeNames {
-    (GetInternalNodeNames) ==
     /reverse exch def
     (N@) exch strcat 
     1 % counter
@@ -169,18 +170,16 @@ tx@OptexpDict begin
 	} ifelse
 	1 add
     } loop
-    (done) == stack
 } bind def
 %
-% basicnodename reverse GetInternalBeamNodes x_n y_n ... x_1 y_1 (if reverse = false)
+% (basicnodename) reverse -> x_n y_n ... x_1 y_1 (if reverse = false)
 /GetInternalBeamNodes {
-    (GetInternalBeamNodes) ==
-    [ 3 1 roll GetInternalNodeNames ] dup ==
-    { dup == @GetCenter } forall
-    (done) ==
+    [ 3 1 roll GetInternalNodeNames ]
+    { @GetCenter } forall
 } bind def
 %
 % Initialize some global variables for positioning of external nodes
+% This is called at the beginning of _every_ component
 /InitOptexpComp {%
     tx@Dict begin
 	/@@x 0 def
@@ -208,7 +207,7 @@ tx@OptexpDict begin
     } ifelse
 } bind def
 %
-% added for version 2.2
+% added for version 3.0
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 % {x y} {dx dy} Name {scaling procedure}
@@ -402,18 +401,6 @@ tx@OptexpDict begin
     } ifelse
     ToVec
 } bind def
-%/TransformInVec {
-%    3 1 roll exec pop pop pop GetPlaneCenter
-%    3 -1 roll exec pop pop pop GetPlaneCenter
-%    4 2 roll @ABVect
-%    3 -1 roll exec 2 copy 6 2 roll
-%    0 eq exch 0 eq and not {    
-%	exch atan matrix rotate dtransform
-%    } {
-%	4 2 roll pop pop
-%    } ifelse
-%    ToVec
-%} bind def
 %
 % startpos is relative to the connection between first and second components
 % transform to absolute coordinates and shift by first plane center
@@ -580,8 +567,8 @@ tx@OptexpDict begin
 /TraceBeam {%
     /InVec ED /StartPoint ED
     % preset options
-    /nMul 1 def
-    /nAdd 0 def
+    /nmul 1 def
+    /nadd 0 def
     /nforce 0 def
     % execute options
     exec
@@ -602,8 +589,6 @@ tx@OptexpDict begin
     }{
 	2 copy /StartPoint load  TransformStartPos /Curr ED
     } ifelse
-    (StartVec) == /CurrVec load ==
-    (CurrentPoint) == /Curr load ==
 %    (TraceBeam, transformations done) == 
     counttomark /PlaneNum ED /n1 1 def % init the refractive index
     /PN 1 def
@@ -682,18 +667,15 @@ tx@OptexpDict begin
 %	(after dict) ==
 %	counttomark /t ED t copy t{==}repeat
 	PN 1 eq {
-	    (PN = 1)==
 	    pop pop 2 copy ToVec /Curr ED
 %	    /n1 1 def
 	    counttomark 2 roll
 	} {
-	    (PN) == PN ==
 	    ToVec /CurrVec ED 2 copy
 	    ToVec /Curr ED 
 	    draw
 	    counttomark 3 roll
 	} ifelse
-	(n1 = ) == n1 ==
 %	(blubb)==
         /CurrCenterTmp /CurrCenter load def
 	/lastBeamPoint /Curr load def
@@ -709,21 +691,10 @@ tx@OptexpDict begin
     currentdict /CurrVec undef
     currentdict /Curr undef
 } bind def
-% X_p Y_p X_r Y_r trans|refl n2 X0 Y0 X_in Y_in ConnectInterface -> X' Y' X_out Y_out
-/ConnectInterface {
-
-} bind def
 %
-%
-/DrawBeam {
-%    (DrawBeam)==
-%    counttomark /t ED t copy t {==} repeat
-%    (TraceBeam)==
-%    connectPlaneNodes {
-%	ConnectPlaneNodes
-%    } {
-	TraceBeam %2 copy (go to start point)== == ==
-%    } ifelse
+% [ CompN ... Comp1 {options} {start point} {input vector}
+/Drawbeam {
+    TraceBeam
     counttomark 2 eq {
 	% first ray misses the next interface
 	pop pop
@@ -733,9 +704,9 @@ tx@OptexpDict begin
 	{CP 4 2 roll ArrowB lineto pop pop } {moveto} ifelse
 	pop
     } ifelse
-%    (---------------------------------) ==
 } bind def
-%
+% Stroke an extendend beam. Only rearranges the input parameters and calls Drawbeam twice, for the upper
+% and lower beam.
 % [ CompN ... Comp1 {options} {start point up} {input vector up} {start point low} {input vector low}
 /StrokeExtendedBeam {
     5 -1 roll dup 6 1 roll 3 1 roll % {opt} {sup} {inup} {opt} {slow} {inlow}
@@ -746,27 +717,24 @@ tx@OptexpDict begin
     currentdict /lastBeamPointLow known {
 	/lastBeamPointLow load /lastBeamPoint ED
     } if
-    (StrokeExtendedBeam LOW)==
-    DrawBeam /lastBeamPoint load /lastBeamPointLow ED
+    Drawbeam /lastBeamPoint load /lastBeamPointLow ED
     currentdict /lastBeamPoint undef
     currentdict /lastBeamPointUp known {
 	/lastBeamPointUp load /lastBeamPoint ED
     } if
-   (StrokeExtendedBeam HIGH)==
-    DrawBeam /lastBeamPoint load /lastBeamPointUp ED
-    (--------)==
+    Drawbeam /lastBeamPoint load /lastBeamPointUp ED
 } bind def
-%
+% Fill an extended beam. This must have an own procedure, because all segments
+% of the beam must be filled separately.
+% 
 % [ CompN ... Comp1 {options} {start point up} {input vector up} {start point low} {input vector low} 
-/ExtendedBeam {
-%    (ExtendedBeam) ==
-%    counttomark /t ED t copy t {==} repeat
+/FillExtendedBeam {
     /InvecLow ED /StartLow ED /InvecUp ED /StartUp ED 
     % preset options
     currentdict /fillBeam known not { /fillBeam {gsave fill grestore} def } if
     /DrawnSegm 0 def
-    /nMul 1 def
-    /nAdd 0 def
+    /nmul 1 def
+    /nadd 0 def
     /nforce 0 def
     % execute user options
     exec
@@ -980,8 +948,8 @@ tx@OptexpDict begin
     /CurrLow load /lastBeamPointLow ED
 %    (---------------------------------) ==
 } bind def
-%
-%
+% Check if 'compname' is ambiguous (i.e. a beamsplitter)
+% (compname) -> bool
 /isAmb { cvn load /ambiguous get } bind def
 %
 % [ CompN .. Comp1 PrearrangePlanes -> [ desc|asc CompN .. desc|asc Comp1 
@@ -1123,8 +1091,8 @@ tx@OptexpDict begin
 %	(stack)==  counttomark /t ED t copy t {==}repeat
     } for
 } bind def
-%
-% must be called within a OptExpComp dictionary
+% Construct the plane name from PlaneNum. This must be called within a dict of a
+% optexpcomp, because the last node ends with (N) instead of the number.
 % PlaneNum -> (P@PlaneNum)
 /PlaneName {
     dup N eq {
@@ -1221,7 +1189,7 @@ tx@OptexpDict begin
     2 copy /Yr ED /Xr ED 
     tx@Dict begin Pyth end /radius ED /Yp ED /Xp ED
     /X0n X0 Xp sub def /Y0n Y0 Yp sub def
-    n2 1 gt { /n2 n2 nMul mul nAdd add def } if
+    n2 1 gt { /n2 n2 nmul mul nadd add def } if
     tx@EcldDict begin
 	X0n Y0n 2 copy 2 copy Xin 3 -1 roll add Yin 3 -1 roll add
 	2 copy 6 2 roll EqDr radius InterLineCircle
@@ -1254,7 +1222,7 @@ tx@OptexpDict begin
 /PlainInterface {%
 %    (plain ifc) == 2 copy ToVec ==
     /Yin ED /Xin ED /Y0 ED /X0 ED /n2 ED /mode ED /dYp ED /dXp ED /Yp ED /Xp ED
-    n2 1 gt { /n2 n2 nMul mul nAdd add def } if
+    n2 1 gt { /n2 n2 nmul mul nadd add def } if
     tx@EcldDict begin
 	Xp Yp Xp dXp add Yp dYp add X0 Y0 X0 Xin add Y0 Yin add InterLines Xin Yin
 	Xin Yin dXp dYp NormalVec

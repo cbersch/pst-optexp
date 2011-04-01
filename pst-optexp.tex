@@ -27,7 +27,7 @@
 %
 %
 \def\fileversion{3.0alpha}
-\def\filedate{2011/03/24}
+\def\filedate{2011/04/01}
 \message{`pst-optexp' v\fileversion, \filedate\space (CB)}
 %
 \edef\PstAtCode{\the\catcode`\@} \catcode`\@=11\relax
@@ -36,8 +36,8 @@
 \def\pst@optexpdict{tx@OptexpDict begin }
 \SpecialCoor
 %
-%
-% IF's
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% IFs for the boolean keys.
 %
 \newif\ifPOE@bglayer
 \newif\ifPOE@toplayer
@@ -48,7 +48,6 @@
 \newif\ifPOE@reverse
 \newif\ifPOE@lamp
 \newif\ifPOE@component@optional
-\newif\ifPOE@reversepath
 \newif\ifPOE@debug@showoptdots
 \newif\ifPOE@endbox
 \newif\ifPOE@thicklens
@@ -68,17 +67,21 @@
 \newif\ifPOE@beaminsidelast
 \newif\ifPOE@startvecAbsolute
 \newif\ifPOE@beamInside
-\newif\ifPOE@beamExtended
+\newif\ifPOE@beamextended
 \newif\ifPOE@beamConnectComp
 \newif\ifPOE@custombeam\POE@custombeamfalse
 %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Counters
+%
+% count the components in a pspicture environment
 \newcount\poe@cnt
+% count the temporal planes which are created for connections to nodes
 \newcount\poe@node@cnt
-\newdimen\optboxwidth
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-% Strings
+% Fixed strings for choicekeys.
 %
 \def\POS@pol@polperp{perp}
 \def\POS@pol@polparallel{parallel}
@@ -90,35 +93,84 @@
 \def\POS@mirrortype@extended{extended}
 \def\POS@optgridtype@blazed{blazed}
 \def\POS@optgridtype@binary{binary}
-%
 \def\POS@labelref@relative{relative}
 \def\POS@labelref@relgrav{relgrav}
 \def\POS@labelref@global{global}
-%
 \def\POS@filtertype@bandpass{bandpass}
 \def\POS@filtertype@bandstop{bandstop}
-%
 \def\POS@couplertype@none{none}
 \def\POS@couplertype@elliptic{elliptic}
 \def\POS@couplertype@crossswitch{crossswitch}
-%
 \def\POS@top{top}
 \def\POS@bottom{bottom}
 \def\POS@center{center}
 \def\POS@closed{closed}
 \def\POS@opened{opened}
-\def\POS@basicname@default{@}
-\def\POS@basicname@prefix{OE@}
-\def\POS@extnode@postfix{Ext}
 \def\POS@dettype@round{round}
 \def\POS@dettype@diode{diode}
 \def\POS@bsstyle@cube{cube}
 \def\POS@bsstyle@plate{plate}
 %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% psstyles
+% Some strings which control the naming scheme of internal nodes and components.
 %
-\newpsstyle{OptionalStyle}{linestyle=dashed,dash=1.5pt 1pt}%
+% Default name stem for all internal nodes
+\def\POS@basicname@default{@}
+% The nodes and component names are prefix with this string
+\def\POS@basicname@prefix{OE@}
+% The postfix for external nodes
+\def\POS@extnode@postfix{Ext}
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% psstyles 
+%
+% Definition of all psstyles and the related keys to change them on the fly
+% inside the optional parameters of the referred macro.
+%
+% Basic style for the device look.
+\newpsstyle{OptComp}{}%
+\define@key[psset]{optexp}{newOptComp}{\newpsstyle{OptComp}{#1}}
+\define@key[psset]{optexp}{addtoOptComp}{\addtopsstyle{OptComp}{#1}}
+%
+% Style for devices marked as 'optional', inherits from OptComp by default.
+\newpsstyle{OptionalStyle}{style=OptComp, linestyle=dashed,dash=1.5pt 1pt}%
+%
+% Style for beams drawn with \drawbeam
+\newpsstyle{Beam}{linecolor=green!90!black,linewidth=\pslinewidth}%
+\define@key[psset]{optexp}{newBeam}{\newpsstyle{Beam}{#1}}
+\define@key[psset]{optexp}{addtoBeam}{\addtopsstyle{Beam}{#1}}
+%
+% Basic look of all fiber connections.
+\newpsstyle{Fiber}{}%
+\define@key[psset]{optexp}{newFiber}{\newpsstyle{Fiber}{#1}}
+\define@key[psset]{optexp}{addtoFiber}{\addtopsstyle{Fiber}{#1}}
+%
+% Input fiber connections, inherits from Fiber
+\newpsstyle{FiberIn}{style=Fiber}%
+\define@key[psset]{optexp}{newFiberIn}{\newpsstyle{FiberIn}{#1}}
+\define@key[psset]{optexp}{addtoFiberIn}{\addtopsstyle{FiberIn}{#1}}
+%
+% Output fiber connections, inherits from Fiber
+\newpsstyle{FiberOut}{style=Fiber}%
+\define@key[psset]{optexp}{newFiberOut}{\newpsstyle{FiberOut}{#1}}
+\define@key[psset]{optexp}{addtoFiberOut}{\addtopsstyle{FiberOut}{#1}}
+%
+% Used for upper (1) and lower (2) input fibers, if present. Inherits from FiberIn.
+\newpsstyle{FiberIn1}{style=FiberIn}%
+\define@key[psset]{optexp}{newFiberIn1}{\newpsstyle{FiberIn1}{#1}}
+\define@key[psset]{optexp}{addtoFiberIn1}{\addtopsstyle{FiberIn1}{#1}}
+\newpsstyle{FiberIn2}{style=FiberIn}%
+\define@key[psset]{optexp}{newFiberIn2}{\newpsstyle{FiberIn2}{#1}}
+\define@key[psset]{optexp}{addtoFiberIn2}{\addtopsstyle{FiberIn2}{#1}}
+%
+% Used for upper (1) and lower (2) output fibers, if present. Inherits from FiberOut.
+\newpsstyle{FiberOut1}{style=FiberOut}%
+\define@key[psset]{optexp}{newFiberOut1}{\newpsstyle{FiberOut1}{#1}}
+\define@key[psset]{optexp}{addtoFiberOut1}{\addtopsstyle{FiberOut1}{#1}}
+\newpsstyle{FiberOut2}{style=FiberOut}%
+\define@key[psset]{optexp}{newFiberOut2}{\newpsstyle{FiberOut2}{#1}}
+\define@key[psset]{optexp}{addtoFiberOut2}{\addtopsstyle{FiberOut2}{#1}}
+%
+% Special styles to change only a part of some devices.
 \newpsstyle{ExtendedMirror}{linestyle=none,%
                 hatchwidth=0.5\POK@mirrorlinewidth,
                 hatchsep=1.4\POK@mirrorlinewidth,%
@@ -126,67 +178,51 @@
 \newpsstyle{PiezoMirror}{fillstyle=solid,fillcolor=black!30}%
 \newpsstyle{IsolatorArrow}{linewidth=2\pslinewidth, arrowinset=0}
 \newpsstyle{FdlArrow}{arrowinset=0, arrows=->}
-\newpsstyle{Beam}{linecolor=green!90!black,linewidth=\pslinewidth}%
-\define@key[psset]{optexp}{newBeam}{\newpsstyle{Beam}{#1}}
-\define@key[psset]{optexp}{addtoBeam}{\addtopsstyle{Beam}{#1}}
-%
-\newpsstyle{Fiber}{}%
-\define@key[psset]{optexp}{newFiber}{\newpsstyle{Fiber}{#1}}
-\define@key[psset]{optexp}{addtoFiber}{\addtopsstyle{Fiber}{#1}}
-%
-\newpsstyle{FiberIn}{style=Fiber}%
-\define@key[psset]{optexp}{newFiberIn}{\newpsstyle{FiberIn}{#1}}
-\define@key[psset]{optexp}{addtoFiberIn}{\addtopsstyle{FiberIn}{#1}}
-%
-\newpsstyle{FiberOut}{style=Fiber}%
-\define@key[psset]{optexp}{newFiberOut}{\newpsstyle{FiberOut}{#1}}
-\define@key[psset]{optexp}{addtoFiberOut}{\addtopsstyle{FiberOut}{#1}}
-%
-\newpsstyle{FiberIn1}{style=FiberIn}%
-\define@key[psset]{optexp}{newFiberIn1}{\newpsstyle{FiberIn1}{#1}}
-\define@key[psset]{optexp}{addtoFiberIn1}{\addtopsstyle{FiberIn1}{#1}}
-%
-\newpsstyle{FiberIn2}{style=FiberIn}%
-\define@key[psset]{optexp}{newFiberIn2}{\newpsstyle{FiberIn2}{#1}}
-\define@key[psset]{optexp}{addtoFiberIn2}{\addtopsstyle{FiberIn2}{#1}}
-%
-\newpsstyle{FiberOut1}{style=FiberOut}%
-\define@key[psset]{optexp}{newFiberOut1}{\newpsstyle{FiberOut1}{#1}}
-\define@key[psset]{optexp}{addtoFiberOut1}{\addtopsstyle{FiberOut1}{#1}}
-%
-\newpsstyle{FiberOut2}{style=FiberOut}%
-\define@key[psset]{optexp}{newFiberOut2}{\newpsstyle{FiberOut2}{#1}}
-\define@key[psset]{optexp}{addtoFiberOut2}{\addtopsstyle{FiberOut2}{#1}}
-%
-\newpsstyle{OptComp}{}%
-\define@key[psset]{optexp}{newOptComp}{\newpsstyle{OptComp}{#1}}
-\define@key[psset]{optexp}{addtoOptComp}{\addtopsstyle{OptComp}{#1}}
-%
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 % Parameterdefinitions
 %
 % General
+\define@boolkey[psset]{optexp}[POE@component@]{optional}[true]{}
+\define@boolkey[psset]{optexp}[POE@]{usefiberstyle}[true]{}
+\define@boolkey[psset]{optexp}[POE@debug@]{showoptdots}[true]{}
+\define@choicekey*[psset]{optexp}{namingscheme}[\val\nr]{old,new}[new]{%
+  \ifcase\nr\relax
+    % old naming scheme
+    \edef\POS@basicname@default{tempNode}
+    \edef\POS@basicname@prefix{}
+    \edef\POS@extnode@postfix{ExtNode}
+    \pst@OptexpVerb{/basenamePostfix (Intern) def }    
+  \or
+    \edef\POS@basicname@default{@}
+    \edef\POS@basicname@prefix{OE@}
+    \edef\POS@extnode@postfix{Ext}
+    \pst@OptexpVerb{/basenamePostfix () def }
+  \fi
+}%
+%
+% Positioning
+\define@key[psset]{optexp}{position}{\edef\POK@position{#1}}
+\define@key[psset]{optexp}{abspos}{\edef\POK@abspos{#1}}
+\define@key[psset]{optexp}{compshift}{\pst@checknum{#1}\POK@compshift}
+\define@key[psset]{optexp}{angle}{\pst@checknum{#1}\POK@angle}
+%
+% Layering
 \define@boolkey[psset]{optexp}[POE@]{bglayer}[true]{}
 \define@boolkey[psset]{optexp}[POE@]{toplayer}[true]{}
 \define@boolkey[psset]{optexp}[POE@]{optexpenv}[true]{}
-\define@boolkey[psset]{optexp}[POE@component@]{optional}[true]{}
-\define@key[psset]{optexp}{position}{\edef\POK@position{#1}}
-\define@key[psset]{optexp}{abspos}{\edef\POK@abspos{#1}}
-\define@key[psset]{optexp}{angle}{\edef\POK@angle{#1}}
-\define@boolkey[psset]{optexp}[POE@]{usefiberstyle}[true]{}
 %
 % Label
-\define@key[psset]{optexp}{labelangle}{\edef\POK@labelangle{#1}}
-\define@key[psset]{optexp}{labeloffset}{\edef\POK@labeloffset{#1}}
+\define@key[psset]{optexp}{labelangle}{\pst@checknum{#1}\POK@labelangle}
+\define@key[psset]{optexp}{labeloffset}{\pst@checknum{#1}\POK@labeloffset}
 \define@key[psset]{optexp}{labelstyle}{\def\POK@labelstyle{#1}}
 \define@key[psset]{optexp}{labelalign}{\def\POK@labelalign{#1}}
 \define@key[psset]{optexp}{labelref}{\edef\POK@labelref{#1}}
 \define@key[psset]{optexp}{label}{%
   \pst@expandafter\psset@@label{#1} {} {} {} {} {}\@nil
 }%
-% offset angle align ref
+% parameters: offset angle align ref, intermediate ones can be skipped with a dot
 \def\psset@@label#1 #2 #3 #4 #5\@nil{%
   \edef\@empty@dot{.}%
   \edef\pst@temp{#4}%
@@ -214,12 +250,8 @@
      \fi
   \fi
 }%
-\define@boolkey[psset]{optexp}[POE@label@]{innerlabel}[true]{}%
-% for internal use only
-\define@key[psset]{optexp}{ref@angle}{\edef\POK@labelrefangle{#1}}%
-%
-% Debug
-\define@boolkey[psset]{optexp}[POE@debug@]{showoptdots}[true]{}
+% for internal use only! Set the reference angle for the labelangle parameter.
+\define@key[psset]{optexp}{ref@angle}{\pst@checknum{#1}\POK@labelrefangle}%
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
@@ -227,20 +259,24 @@
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
+% Dipoles
+% 
 % Lens
-\define@key[psset]{optexp}{lensheight}{\edef\POK@lensheight{#1}}
-\define@key[psset]{optexp}{lenswidth}{\edef\POK@lenswidth{#1}}
-\define@key[psset]{optexp}{lensradiusleft}{\edef\POK@lensradiusLeft{#1}}
-\define@key[psset]{optexp}{lensradiusright}{\edef\POK@lensradiusRight{#1}}
+\define@key[psset]{optexp}{lensheight}{\pst@checknum{#1}\POK@lensheight}
+\define@key[psset]{optexp}{lenswidth}{\pst@checknum{#1}\POK@lenswidth}
+\define@key[psset]{optexp}{lensradiusleft}{\pst@checknum{#1}\POK@lensradiusleft}
+\define@key[psset]{optexp}{lensradiusright}{\pst@checknum{#1}\POK@lensradiusright}
 \define@boolkey[psset]{optexp}[POE@]{thicklens}[true]{}
 \define@key[psset]{optexp}{lensradius}{%
-   \psset{lensradiusleft=#1,%
-      lensradiusright=#1}%
-   \edef\POK@lensradius{#1}%
+  \edef\pst@temp{#1}%
+  \ifx\pst@temp\@empty\else
+    \psset{lensradiusleft=#1, lensradiusright=#1}%
+  \fi
 }%
 \define@key[psset]{optexp}{lens}{%
   \pst@expandafter\psset@@lens{#1} {} {} {} {} {}\@nil
 }%
+% parameters: radiusleft radiusright height width.
 \def\psset@@lens#1 #2 #3 #4 #5\@nil{%
   \edef\pst@temp{#4}%
   \ifx\pst@temp\@empty\else
@@ -260,146 +296,146 @@
 }%
 %
 % Pinhole
-\define@key[psset]{optexp}{innerheight}{\edef\POK@innerheight{#1}}
-\define@key[psset]{optexp}{outerheight}{\edef\POK@outerheight{#1}}
+\define@key[psset]{optexp}{innerheight}{\pst@checknum{#1}\POK@innerheight}
+\define@key[psset]{optexp}{outerheight}{\pst@checknum{#1}\POK@outerheight}
 \define@key[psset]{optexp}{phlinewidth}{\edef\POK@phlinewidth{#1}}
 %
-% Beamsplitter
-\define@key[psset]{optexp}{bssize}{\edef\POK@bssize{#1}}
-\define@key[psset]{optexp}{bsstyle}{\edef\POK@bsstyle{#1}}
-%
 % Crystal
-\define@key[psset]{optexp}{crystalwidth}{\edef\POK@crystalwidth{#1}}
-\define@key[psset]{optexp}{crystalheight}{\edef\POK@crystalheight{#1}}
-\define@key[psset]{optexp}{caxislength}{\edef\POK@caxislength{#1}}
+\define@key[psset]{optexp}{crystalwidth}{\pst@checknum{#1}\POK@crystalwidth}
+\define@key[psset]{optexp}{crystalheight}{\pst@checknum{#1}\POK@crystalheight}
+\define@key[psset]{optexp}{caxislength}{\pst@checknum{#1}\POK@caxislength}
 \define@boolkey[psset]{optexp}[POE@]{voltage}[true]{}
 \define@boolkey[psset]{optexp}[POE@]{caxisinv}[true]{}
 \define@boolkey[psset]{optexp}[POE@]{lamp}[true]{}
-\define@key[psset]{optexp}{lampscale}{\def\POK@lampscale{#1}}
-%
-% Mirror
-\define@key[psset]{optexp}{mirrorwidth}{\edef\POK@mirrorwidth{#1}}
-\define@key[psset]{optexp}{mirrorlinewidth}{\edef\POK@mirrorlinewidth{#1}}
-\define@choicekey*[psset]{optexp}{mirrortype}[\val\nr]{piezo,extended,plain}{\edef\POK@mirrortype{#1}}
-\define@key[psset]{optexp}{mirrordepth}{\edef\POK@mirrordepth{#1}}
-\define@key[psset]{optexp}{mirrorradius}{\edef\POK@mirrorradius{#1}}
-\define@boolkey[psset]{optexp}[POE@]{variable}[true]{}
-%
-% Grid
-\define@key[psset]{optexp}{optgridcount}{\edef\POK@optgridcount{#1}}
-\define@key[psset]{optexp}{optgridwidth}{\edef\POK@optgridwidth{#1}}
-\define@key[psset]{optexp}{optgridheight}{\edef\POK@optgridheight{#1}}
-\define@choicekey*[psset]{optexp}{optgridtype}[\val\nr]{binary,blazed}{\edef\POK@optgridtype{#1}}%
-\define@key[psset]{optexp}{optgriddepth}{\edef\POK@optgriddepth{#1}}
-\define@key[psset]{optexp}{optgridlinewidth}{\edef\POK@optgridlinewidth{#1}}
-\define@boolkey[psset]{optexp}[POE@]{reverse}[true]{}
+\define@key[psset]{optexp}{lampscale}{\pst@checknum{#1}\POK@lampscale}
 %
 % Box
-\define@key[psset]{optexp}{optboxwidth}{%
-   \pssetlength\optboxwidth{#1}%
-   \edef\POK@optboxwidth{#1}%
-}
-\define@key[psset]{optexp}{optboxheight}{\edef\POK@optboxheight{#1}}
+\define@key[psset]{optexp}{optboxwidth}{\pst@checknum{#1}\POK@optboxwidth}
+\define@key[psset]{optexp}{optboxheight}{\pst@checknum{#1}\POK@optboxheight}
 \define@boolkey[psset]{optexp}[POE@]{endbox}[true]{}
-\define@key[psset]{optexp}{refractiveindex}{\edef\POK@optbox@n{#1}}
-\define@key[psset]{optexp}{n}{\edef\POK@n{#1}}
-\define@key[psset]{optexp}{nMul}{\edef\POK@nmul{#1}}
-\define@key[psset]{optexp}{nAdd}{\edef\POK@nadd{#1}}
 %
 % Plate
 \define@key[psset]{optexp}{platelinewidth}{\edef\POK@platelinewidth{#1}}
-\define@key[psset]{optexp}{plateheight}{\edef\POK@plateheight{#1}}
+\define@key[psset]{optexp}{plateheight}{\pst@checknum{#1}\POK@plateheight}
 %
 % Optical Retardation Plate
-\define@key[psset]{optexp}{platewidth}{\edef\POK@platewidth{#1}}
+\define@key[psset]{optexp}{platewidth}{\pst@checknum{#1}\POK@platewidth}
 %
 % Detector
-\define@key[psset]{optexp}{detsize}{\edef\POK@detsize{#1}}
+\define@key[psset]{optexp}{detsize}{\pst@checknum{#1}\POK@detsize}
 \define@choicekey+[psset]{optexp}{dettype}[\val\nr]{round,diode}%
    {\edef\POK@dettype{\val}}
    {\PackageError{pst-optexp}{Unknown value '\val' for key dettype}}
 %
 % Polarization
-\define@key[psset]{optexp}{polsize}{\edef\POK@polsize{#1}}
+\define@key[psset]{optexp}{polsize}{\pst@checknum{#1}\POK@polsize}
 \define@key[psset]{optexp}{pollinewidth}{\edef\POK@pollinewidth{#1}}
 \define@choicekey+[psset]{optexp}{poltype}[\val\nr]{parallel,misc,perp,rcirc,lcirc}%
    {\edef\POK@poltype{#1}}
    {\PackageError{pst-optexp}{Unknown value '\val' for key poltype}}
 %
 % Optical Diode
-\define@key[psset]{optexp}{optdiodesize}{\edef\POK@optdiodesize{#1}}
-%
-% Penta Prism
-\define@key[psset]{optexp}{pentaprismsize}{\edef\POK@pentaprismsize{#1}}
-%
-% Right-Angle Prism
-\define@key[psset]{optexp}{raprismsize}{\edef\POK@raprismsize{#1}}
-%
-% Prism
-\define@key[psset]{optexp}{prismsize}{\edef\POK@prismsize{#1}}
-\define@key[psset]{optexp}{prismangle}{\edef\POK@prismangle{#1}}
+\define@key[psset]{optexp}{optdiodesize}{\pst@checknum{#1}\POK@optdiodesize}
 %
 % Dove Prism
-\define@key[psset]{optexp}{doveprismsize}{\edef\POK@doveprismsize{#1}}
+\define@key[psset]{optexp}{doveprismsize}{\pst@checknum{#1}\POK@doveprismsize}
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Tripoles
+%
+% Beamsplitter
+\define@key[psset]{optexp}{bssize}{\pst@checknum{#1}\POK@bssize}
+\define@key[psset]{optexp}{bsstyle}{\edef\POK@bsstyle{#1}}
+%
+% Mirror
+\define@key[psset]{optexp}{mirrorwidth}{\pst@checknum{#1}\POK@mirrorwidth}
+\define@key[psset]{optexp}{mirrorlinewidth}{\edef\POK@mirrorlinewidth{#1}}
+\define@choicekey*[psset]{optexp}{mirrortype}[\val\nr]{piezo,extended,plain}{\edef\POK@mirrortype{#1}}
+\define@key[psset]{optexp}{mirrordepth}{\pst@checknum{#1}\POK@mirrordepth}
+\define@key[psset]{optexp}{mirrorradius}{\pst@checknum{#1}\POK@mirrorradius}
+\define@boolkey[psset]{optexp}[POE@]{variable}[true]{}
+%
+% Grid
+\define@key[psset]{optexp}{optgridcount}{\pst@checknum{#1}\POK@optgridcount}
+\define@key[psset]{optexp}{optgridwidth}{\pst@checknum{#1}\POK@optgridwidth}
+\define@key[psset]{optexp}{optgridheight}{\pst@checknum{#1}\POK@optgridheight}
+\define@choicekey*[psset]{optexp}{optgridtype}[\val\nr]{binary,blazed}{\edef\POK@optgridtype{#1}}%
+\define@key[psset]{optexp}{optgriddepth}{\pst@checknum{#1}\POK@optgriddepth}
+\define@key[psset]{optexp}{optgridlinewidth}{\edef\POK@optgridlinewidth{#1}}
+\define@boolkey[psset]{optexp}[POE@]{reverse}[true]{}
+%
+%
+\define@key[psset]{optexp}{refractiveindex}{\pst@checknum{#1}\POK@n}
+\define@key[psset]{optexp}{n}{\pst@checknum{#1}\POK@n}
+\define@key[psset]{optexp}{nmul}{\edef\POK@nmul{#1}}
+\define@key[psset]{optexp}{nadd}{\edef\POK@nadd{#1}}
+%
+% Penta Prism
+\define@key[psset]{optexp}{pentaprismsize}{\pst@checknum{#1}\POK@pentaprismsize}
+%
+% Right-Angle Prism
+\define@key[psset]{optexp}{raprismsize}{\pst@checknum{#1}\POK@raprismsize}
+%
+% Prism
+\define@key[psset]{optexp}{prismsize}{\pst@checknum{#1}\POK@prismsize}
+\define@key[psset]{optexp}{prismangle}{\pst@checknum{#1}\POK@prismangle}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 % Parameters for fiber-optical components
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Dipoles
 %
 % Fiber
-\define@key[psset]{optexp}{fiberloops}{\edef\POK@fiberloops{#1}}
-\define@key[psset]{optexp}{fiberloopradius}{\edef\POK@fiberloopradius{#1}}
-\define@key[psset]{optexp}{fiberloopsep}{\edef\POK@fiberloopsep{#1}}
+\define@key[psset]{optexp}{fiberloops}{\pst@checknum{#1}\POK@fiberloops}
+\define@key[psset]{optexp}{fiberloopradius}{\pst@checknum{#1}\POK@fiberloopradius}
+\define@key[psset]{optexp}{fiberloopsep}{\pst@checknum{#1}\POK@fiberloopsep}
 %
 % Filter
-\define@key[psset]{optexp}{filtersize}{\edef\POK@filtersize{#1}}
+\define@key[psset]{optexp}{filtersize}{\pst@checknum{#1}\POK@filtersize}
 \define@choicekey+[psset]{optexp}{filtertype}[\val\nr]{bandstop,bandpass}%
    {\edef\POK@filtertype{#1}}%
    {\PackageError{pst-optexp}{Unknown value '\val' for key filtertype}}
 %
 % Polarization controller
-\define@key[psset]{optexp}{polcontrolsize}{\edef\POK@polcontrolsize{#1}}
+\define@key[psset]{optexp}{polcontrolsize}{\pst@checknum{#1}\POK@polcontrolsize}
 %
 % Optical amplifier
-\define@key[psset]{optexp}{optampsize}{\edef\POK@optampsize{#1}}
+\define@key[psset]{optexp}{optampsize}{\pst@checknum{#1}\POK@optampsize}
 %
-% Mach-Zehnder-Modulator
-\define@key[psset]{optexp}{optmzmsize}{\edef\POK@optmzmsize{#1}}
+% Mach-Zehnder modulator
+\define@key[psset]{optexp}{optmzmsize}{\pst@checknum{#1}\POK@optmzmsize}
 %
 % Isolator
-\define@key[psset]{optexp}{isolatorsize}{\edef\POK@isolatorsize{#1}}
+\define@key[psset]{optexp}{isolatorsize}{\pst@checknum{#1}\POK@isolatorsize}
 %
 % Fiber polarizer
-\define@key[psset]{optexp}{fiberpolsize}{\edef\POK@fiberpolsize{#1}}
+\define@key[psset]{optexp}{fiberpolsize}{\pst@checknum{#1}\POK@fiberpolsize}
 %
 % Optical switch
-\define@key[psset]{optexp}{switchsize}{\edef\POK@switchsize{#1}}
+\define@key[psset]{optexp}{switchsize}{\pst@checknum{#1}\POK@switchsize}
 \define@choicekey+[psset]{optexp}{switchstyle}[\val\nr]{opened,closed}%
    {\edef\POK@switchstyle{#1}}%
    {\PackageError{pst-optexp}{Unknown value '\val' for key switchstyle}}
 %
 % Fiber delay line
-\define@key[psset]{optexp}{fdlsize}{\edef\POK@fdlsize{#1}}
+\define@key[psset]{optexp}{fdlsize}{\pst@checknum{#1}\POK@fdlsize}
 %
 % Fiber collimator 
-\define@key[psset]{optexp}{fibercolsize}{\edef\POK@fibercolsize{#1}}
+\define@key[psset]{optexp}{fibercolsize}{\pst@checknum{#1}\POK@fibercolsize}
 %
 % Coupler
-\define@key[psset]{optexp}{couplersize}{\edef\POK@couplersize{#1}}
-\define@key[psset]{optexp}{coupleroutshift}{\edef\POK@coupleroutshift{#1}}
-\define@key[psset]{optexp}{couplersep}{\edef\POK@couplersep{#1}}
+\define@key[psset]{optexp}{couplersize}{\pst@checknum{#1}\POK@couplersize}
+\define@key[psset]{optexp}{coupleroutshift}{\pst@checknum{#1}\POK@coupleroutshift}
+\define@key[psset]{optexp}{couplersep}{\pst@checknum{#1}\POK@couplersep}
 \define@choicekey+[psset]{optexp}{couplertype}[\val\nr]{none,elliptic,crossswitch}%
    {\edef\POK@couplertype{#1}}%
    {\PackageError{pst-optexp}{Unknown value '\val' for key couplertype}}
 \define@key[psset]{optexp}{align}{\edef\POK@align{#1}}
 %
-%
-\define@key[psset]{optexp}{compshift}{\edef\POK@compshift{#1}}
-%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-% Code for the extnode parameter (additional input node)
+% External node
 %
 \define@key[psset]{optexp}{extnoden@me}{\edef\POK@extnoden@me{\POS@basicname@prefix#1\POS@extnode@postfix}}
 %
@@ -454,8 +490,12 @@
 \def\getref@optexp@rotate@r{\def\POK@rotate@xref{1}}%
 %
 \define@key[psset]{optexp}{b@sicname}{\edef\POK@b@sicname{\POS@basicname@prefix#1}}%
+%
+% List with all component names define until now. Is kept for a single pspicture environment
 \def\POE@complist{}%
 \g@addto@macro{\endpspicture}{\gdef\POE@complist{}\global\poe@cnt 0\relax}%
+%
+% Set the component name. If the parameter is empty, a generated name is used.
 \define@key[psset]{optexp}{@compname}{%
    \edef\pst@tmp{#1}
    \ifx\pst@tmp\@empty
@@ -463,7 +503,6 @@
       \psset{b@sicname=\POS@basicname@default\the\poe@cnt}%
       \psset{extnoden@me=\POS@basicname@default\the\poe@cnt}%
    \else
-%      \global\advance\poe@cnt by -1
       \edef\POK@compname{#1}%
       \psset{b@sicname=#1}%
       \psset{extnoden@me=#1}%
@@ -478,12 +517,14 @@
       % to keep the bookkeeping global
       \xdef\POE@complist{\POK@compname\ifx\POE@complist\@empty\else,\fi\POE@complist}%
    \fi
-%   \typeout{\POK@compname, cnt=\the\poe@cnt^^J}
 }%
-%
+% 
 \def\pst@optexp@getfirstchar#1#2\@nil{#1}%
 %
+% Connect a component directly with its reference nodes using \drawbeam
 \define@boolkey[psset]{optexp}[POE@]{beam}[true]{}
+%
+% Select which input fibers are drawn directly
 \define@choicekey*[psset]{optexp}{fiberin}[\val\nr]{none,top,bottom,both}[both]{%
   \ifcase\nr\relax
     \psset{fiberin@=false, fiberin@top=false, fiberin@bottom=false}
@@ -495,6 +536,8 @@
     \psset{fiberin@=true, fiberin@top=true, fiberin@bottom=true, fiber@}
   \fi
 }%
+%
+% Select which input fibers are drawn directly
 \define@choicekey*[psset]{optexp}{fiberout}[\val\nr]{none,top,bottom,both}[both]{%
   \ifcase\nr\relax
     \psset{fiberout@=false, fiberout@top=false, fiberout@bottom=false}
@@ -506,6 +549,8 @@
     \psset{fiberout@=true, fiberout@top=true, fiberout@bottom=true, fiber@}
   \fi
 }%
+%
+% These are the internal boolkeys for the fiber choices done with 'fiberin' and 'fiberout'
 \define@boolkey[psset]{optexp}[POE@]{fiber@}[true]{}
 \define@boolkey[psset]{optexp}[POE@]{fiberin@}[true]{}
 \define@boolkey[psset]{optexp}[POE@]{fiberin@top}[true]{}
@@ -513,7 +558,6 @@
 \define@boolkey[psset]{optexp}[POE@]{fiberout@}[true]{}
 \define@boolkey[psset]{optexp}[POE@]{fiberout@top}[true]{}
 \define@boolkey[psset]{optexp}[POE@]{fiberout@bottom}[true]{}
-\define@boolkey[psset]{optexp}[POE@]{relangle}[true]{}
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \def\optexp@getnode#1\@nil{%
@@ -582,9 +626,12 @@
   \endgroup
 }%
 %
-\expandafter\ifx\csname pstoptexp@compat\endcsname\relax% NEW CODE
+\expandafter\ifx\csname pstoptexp@compat\endcsname\relax%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
+% New code for \drawbeam
 %
+\define@boolkey[psset]{optexp}[POE@]{relangle}[true]{}
 \define@key[psset]{optexp}{startvec}{\edef\POK@startvec{#1}}%
 \define@key[psset]{optexp}{startpos}{\edef\POK@startpos{#1}}%
 \define@key[psset]{optexp}{beamdiv}{\edef\POK@beamdiv{#1}}%
@@ -594,9 +641,12 @@
 \define@boolkey[psset]{optexp}[POE@]{beaminsidefirst}[true]{}%
 \define@boolkey[psset]{optexp}[POE@]{beaminsidelast}[true]{}%
 \define@boolkey[psset]{optexp}[POE@]{beamInside}[true]{}%
-\define@boolkey[psset]{optexp}[POE@]{beamExtended}[true]{}%
+\define@boolkey[psset]{optexp}[POE@]{beamextended}[true]{}%
 \define@boolkey[psset]{optexp}[POE@]{beamConnectComp}[true]{}%
 \define@boolkey[psset]{optexp}[POE@]{startvecAbsolute}[true]{}%
+%
+% Inside custombeam, sequential uses of \drawbeam can use the ending
+% points of previous calls and the lines are combined to a single one
 \def\custombeam{\pst@object{custombeam}}%
 \def\custombeam@i#1{%
    \ifPOE@bglayer
@@ -610,6 +660,8 @@
    \end@SpecialObj%
    \fi
 \ignorespaces}%
+%
+%
 \def\drawbeam{\pst@object{drawbeam}}%
 \def\drawbeam@i{%
   \addbefore@par{n=0}%
@@ -632,8 +684,8 @@
   \optexp@getcomps[\drawbeam@ii%
 }%
 \def\drawbeam@ii{%
-  \ifPOE@beamExtended
-    \drawExtendedBeam@iii
+  \ifPOE@beamextended
+    \drawextendedbeam@iii
   \else
     \drawbeam@iii
   \fi
@@ -641,8 +693,8 @@
 \def\drawbeam@iii{%
   \ifx\pslinestyle\@none\else
     \addto@pscode{%
-     {/nMul \POK@nmul\space def
-      /nAdd \POK@nadd\space def
+     {/nmul \POK@nmul\space def
+      /nadd \POK@nadd\space def
       /nforce \POK@n\space def} }%
     \ifx\POK@startpos\@empty
       \addto@pscode{ {0 0} }%
@@ -656,7 +708,7 @@
        \pst@number\pslinewidth SLW
        \pst@usecolor\pslinecolor
        \tx@setStrokeTransparency
-       DrawBeam 
+       Drawbeam 
        \@nameuse{psls@\pslinestyle}
        grestore
     }%
@@ -670,11 +722,11 @@
   \fi
   \end@SpecialObj%
 }%
-\def\drawExtendedBeam@iii{%
+\def\drawextendedbeam@iii{%
   \def\pst@fill##1{ gsave ##1 grestore }%
   \addto@pscode{%
-   {/nMul \POK@nmul\space def
-    /nAdd \POK@nadd\space def
+   {/nmul \POK@nmul\space def
+    /nadd \POK@nadd\space def
     /nforce \POK@n\space def} }%
   % the input vectors
     \addto@pscode{%
@@ -692,26 +744,38 @@
      3 copy add \tx@ScreenCoor\space ToVec 5 1 roll sub \tx@ScreenCoor] cvx
   }%
   % rearrange options
-  \addto@pscode{ exch 4 -1 roll 4 2 roll exch counttomark /t ED t copy t{==}repeat }% 
+  \addto@pscode{ exch 4 -1 roll 4 2 roll exch }% 
   %
   % stroke and/or fill
   \ifx\psk@fillstyle\relax
      \ifx\pslinestyle\@none
        \addto@pscode{ cleartomark pop }%
     \else
-       \addto@pscode{ newpath gsave \pst@number\pslinewidth SLW \pst@usecolor\pslinecolor \tx@setStrokeTransparency StrokeExtendedBeam \@nameuse{psls@\pslinestyle} grestore }%
+       % stroke only
+       \addto@pscode{ newpath 
+                      gsave 
+                        \pst@number\pslinewidth SLW \pst@usecolor\pslinecolor \tx@setStrokeTransparency 
+                        StrokeExtendedBeam \@nameuse{psls@\pslinestyle} 
+                      grestore }%
     \fi
   \else
     \addto@pscode{counttomark 1 add copy newpath gsave }%
     \addto@pscode{/fillBeam { \psk@fillstyle } def }%
     \addto@pscode{currentdict /lastBeamPointLow known { /TmpLastBeamPointLow /lastBeamPointLow load def} if }%
     \addto@pscode{currentdict /lastBeamPointUp known { /TmpLastBeamPointUp /lastBeamPointUp load def} if }%
-    \addto@pscode{ ExtendedBeam grestore }%
+    \addto@pscode{ FillExtendedBeam grestore }%
     \ifx\pslinestyle\@none\else
        \addto@pscode{pop newpath }%currentdict dup /lastBeamPointLow undef /lastBeamPointUp undef }%
        \addto@pscode{currentdict dup /TmpLastBeamPointLow known { /lastBeamPointLow /TmpLastBeamPointLow load def /TmpLastBeamPointLow undef } { /lastBeamPointLow undef } ifelse }%
        \addto@pscode{currentdict dup /TmpLastBeamPointUp known { /lastBeamPointUp /TmpLastBeamPointUp load def /TmpLastBeamPointUp undef } { /lastBeamPointUp undef } ifelse }%
-       \addto@pscode{gsave \pst@number\pslinewidth SLW \pst@usecolor\pslinecolor \tx@setStrokeTransparency StrokeExtendedBeam \@nameuse{psls@\pslinestyle}  grestore }%
+       \addto@pscode{%
+         gsave 
+           \pst@number\pslinewidth SLW 
+           \pst@usecolor\pslinecolor 
+           \tx@setStrokeTransparency 
+           StrokeExtendedBeam 
+           \@nameuse{psls@\pslinestyle}  
+         grestore }%
     \fi%
   \fi%
   \addto@pscode{end }%
@@ -790,8 +854,8 @@
         ,startvecAbsolute=false
         ,beamwidth=0
         ,beamdiv=\@empty
-        ,nMul=1
-        ,nAdd=0
+        ,nmul=1
+        ,nadd=0
 }%
 \else
   \input{pst-optexp-compat.tex}
@@ -1351,7 +1415,6 @@
             \nlput[nrot=:U](\optexp@nodeA)(\optexp@nodeB){\POK@abspos}{\put@RelLabel{#1}}%
          \fi
       \else
-        \message{^^Jasdfsd#1^^J}%
          \ncput[nrot=:U,npos=\POK@position]{\put@RelLabel{#1}}
       \fi
       %
@@ -1437,42 +1500,47 @@
 }%
 \def\fibercollimator{\pst@object{fibercollimator}}
 \def\fibercollimator@i(#1)(#2){%
-%   \addbefore@par{conn=o-f}
    \def\pst@tempA{#1}%        
    \def\pst@tempB{#2}%
    \def\pst@tempC{}%
    \def\pst@tempD{}%
    \@ifnextchar({\fibercollimator@ii}{\fibercollimator@iv}%
 }%
-%
 \def\fibercollimator@ii(#1){%
    \def\pst@tempC{#1}%
    \@ifnextchar({\fibercollimator@iii}{\fibercollimator@iv}%
 }%
-%
 \def\fibercollimator@iii(#1)#2{%
    \def\pst@tempD{#1}%
    \fibercollimator@iv{#2}%
 }
 \def\fibercollimator@iv#1{%
+   \addbefore@par{fiberout=both}%
    \begin@OptexpObj
       \pst@regNodes{\pst@tempA}{\pst@tempB}%
       \pst@adjustTempNodes
       \pst@draw@component{#1}{%
          \pnode(0,0){\optexp@nodeLabel}%
-%         \pnode(0,0){\optexp@nodeIn}%
-%         \pnode(0,0){\optexp@nodeOut}%
-         \fibercollimator@v%
+         \ifPOE@bglayer
+           \fibercollimator@nodes
+         \fi
+         \ifPOE@toplayer
+           \fibercollimator@comp
+         \fi
       }%
-      \edef\poe@tmp{\the\poe@cnt}% I don't know how to do it with expansion
-      \drawbeam{(\optexp@nodeA)}{\poe@tmp}.
-      \ifx\@empty\pst@tempC
-        \drawfiber{\poe@tmp}{(\optexp@nodeB)}.
-      \else\ifx\@empty\pst@tempD
-         \psbezier[style=FiberOut](\pst@tempC)(\pst@tempB)(\pst@tempB)(\optexp@nodeOut)%
-      \else
-         \psbezier[style=FiberOut](\pst@tempD)(\pst@tempC)(\pst@tempB)(\optexp@nodeOut)%
-      \fi\fi
+      \ifPOE@bglayer
+        \edef\poe@tmp{\the\poe@cnt}% I don't know how to do it with expansion
+        \drawbeam{(\optexp@nodeA)}{\poe@tmp}.
+        \ifPOE@fiberout@
+          \ifx\@empty\pst@tempC
+            \drawfiber{\poe@tmp}{(\optexp@nodeB)}.
+          \else\ifx\@empty\pst@tempD
+             \psbezier[style=FiberOut](\pst@tempC)(\pst@tempB)(\pst@tempB)(\optexp@nodeOut)%
+          \else
+             \psbezier[style=FiberOut](\pst@tempD)(\pst@tempC)(\pst@tempB)(\optexp@nodeOut)%
+          \fi\fi
+        \fi
+      \fi
    \end@OptexpObj
 }%
 %
@@ -1498,7 +1566,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \psset[optexp]{%
 % general
-        bglayer=true
+        namingscheme=new
+        ,bglayer=true
         ,toplayer=true
         ,position=\@empty
         ,abspos=\@empty
@@ -1517,7 +1586,7 @@
         ,innerheight=0.1
 % beamsplitter
         ,bssize=0.8
-%        ,bsstyle=cube
+        ,bsstyle=cube
 % crystal
         ,crystalwidth=1.4
         ,crystalheight=0.6
@@ -1543,7 +1612,6 @@
 % optbox
         ,optboxwidth=1.4
         ,optboxheight=0.8
-        ,refractiveindex=\@empty
 % optplate
         ,plateheight=1
         ,platelinewidth=2\pslinewidth
@@ -1654,16 +1722,7 @@
     \ifPOE@toplayer
       %
       % Now put the label
-%      \ifPOE@label@innerlabel
-%         \ifdim\optboxwidth>0pt
-%            \psset{labeloffset=0, labelref=relative}%
-%            \put@Label{\parbox{\optboxwidth}{#1}}%
-%         \else
-%            \put@Label{#1}%
-%         \fi
-%      \else
-         \put@Label{#1}%
-%      \fi
+      \put@Label{#1}%
     \fi
     %
     % Show some special dots for debugging
@@ -1787,23 +1846,23 @@
 %
 \def\lens@nodes{%
   \edef\@lens@th{0}% 
-  \ifdim\POK@lensradiusLeft pt=0pt\else
-    \edef\@lens@th{\ifPOE@thicklens \POK@lenswidth\space 2 div \else \POK@lensradiusLeft\space\POK@lensheight\space 2 div segLen \fi}%     
+  \ifdim\POK@lensradiusleft pt=0pt\else
+    \edef\@lens@th{\ifPOE@thicklens \POK@lenswidth\space 2 div \else \POK@lensradiusleft\space\POK@lensheight\space 2 div segLen \fi}%     
   \fi
-  \ifdim\POK@lensradiusRight pt=0pt\else
-    \edef\@lens@th{\@lens@th\space\ifPOE@thicklens \POK@lenswidth\space 2 div\else \POK@lensradiusRight\space\POK@lensheight\space 2 div segLen \fi\space add}%
+  \ifdim\POK@lensradiusright pt=0pt\else
+    \edef\@lens@th{\@lens@th\space\ifPOE@thicklens \POK@lenswidth\space 2 div\else \POK@lensradiusright\space\POK@lensheight\space 2 div segLen \fi\space add}%
   \fi
   \newOptexpComp{{\@lens@th\space -2 div 0} 
-                  \ifdim\POK@lensradiusLeft pt=0pt 
+                  \ifdim\POK@lensradiusleft pt=0pt 
                       {0 1} trans {NewPlaneInt}
                    \else 
-                      {\POK@lensradiusLeft\space 0} trans {NewCurvedInt}
+                      {\POK@lensradiusleft\space 0} trans {NewCurvedInt}
                    \fi
                    {\@lens@th\space 2 div 0} 
-                   \ifdim\POK@lensradiusRight pt=0pt
+                   \ifdim\POK@lensradiusright pt=0pt
                       {0 1} trans {NewPlaneInt}
                    \else
-                      {\POK@lensradiusRight\space neg 0} trans {NewCurvedInt} 
+                      {\POK@lensradiusright\space neg 0} trans {NewCurvedInt} 
                    \fi
                    \POK@n}%
 }%
@@ -1817,42 +1876,42 @@
       \pst@optexpdict 
       /@wd \POK@lenswidth\space\pst@number\psxunit mul 2 div def
       /@ht \POK@lensheight\space\pst@number\psyunit mul 2 div def
-      /@rL \POK@lensradiusLeft\space\pst@number\psxunit mul def
-      /@rR \POK@lensradiusRight\space\pst@number\psxunit mul def
+      /@rL \POK@lensradiusleft\space\pst@number\psxunit mul def
+      /@rR \POK@lensradiusright\space\pst@number\psxunit mul def
       /@th 0 def	
    }%
    % 
    % distinguish between all the different lens-combination possibilities
    % 
-    \ifdim\POK@lensradiusLeft pt=0pt\else
+    \ifdim\POK@lensradiusleft pt=0pt\else
        % this takes the /a1 definition from the leftC* procedures
        % the macro is necessary for the outer nodes
        \edef\@lens@newwd{%
-          \POK@lensradiusLeft\space\POK@lensheight\space 2 div segLen
-          \ifdim\POK@lensradiusLeft pt<0pt
+          \POK@lensradiusleft\space\POK@lensheight\space 2 div segLen
+          \ifdim\POK@lensradiusleft pt<0pt
              0.5 mul
           \fi\space
        }%
        %
-       \edef\@lens@th{\ifPOE@thicklens \POK@lenswidth\space 2 div \else \POK@lensradiusLeft\space\POK@lensheight\space 2 div segLen \fi}%
+       \edef\@lens@th{\ifPOE@thicklens \POK@lenswidth\space 2 div \else \POK@lensradiusleft\space\POK@lensheight\space 2 div segLen \fi}%
        \addto@pscode{%
          /@th \ifPOE@thicklens @wd \else @rL @ht segLen \fi def
          @ht @rL
-         \ifdim\POK@lensradiusLeft pt<0pt
+         \ifdim\POK@lensradiusleft pt<0pt
             leftConcave
          \else
             leftConvex
          \fi
        }%
     \fi
-    \ifdim\POK@lensradiusRight pt=0pt\else
+    \ifdim\POK@lensradiusright pt=0pt\else
        % this takes the /a1 definition from the rightC* procedures
        % the macro is necessary for the outer nodes
-       \edef\@lens@th{\@lens@th\space\ifPOE@thicklens \POK@lenswidth\space 2 div\else \POK@lensradiusRight\space\POK@lensheight\space 2 div segLen \fi\space add}%
+       \edef\@lens@th{\@lens@th\space\ifPOE@thicklens \POK@lenswidth\space 2 div\else \POK@lensradiusright\space\POK@lensheight\space 2 div segLen \fi\space add}%
        \addto@pscode{%
          /@th @th \ifPOE@thicklens @wd \else @rR @ht segLen \fi add def
          @ht @rR
-         \ifdim\POK@lensradiusRight pt<0pt
+         \ifdim\POK@lensradiusright pt<0pt
             rightConcave
          \else
             rightConvex
@@ -1864,8 +1923,8 @@
     % 
     % 1) Left is plain  -  right concave
     % \- right convex
-    \ifdim\POK@lensradiusLeft pt=0pt
-       \ifdim\POK@lensradiusRight pt=0pt\else
+    \ifdim\POK@lensradiusleft pt=0pt
+       \ifdim\POK@lensradiusright pt=0pt\else
           \addto@pscode{%
              @th 2 div sub neg 5 1 roll
              @th 2 div neg @ht neg moveto ArcR
@@ -1877,8 +1936,8 @@
     % 
     % 2) Right is plain -  left concave
     % \- left convex
-    \ifdim\POK@lensradiusRight pt=0pt
-       \ifdim\POK@lensradiusLeft pt=0pt\else
+    \ifdim\POK@lensradiusright pt=0pt
+       \ifdim\POK@lensradiusleft pt=0pt\else
           \addto@pscode{%
              @th 2 div sub 5 1 roll
              @th 2 div @ht moveto ArcL
@@ -1888,8 +1947,8 @@
     \fi
     % 
     % 3) right and left are both curved
-    \ifdim\POK@lensradiusRight pt=0pt\else
-       \ifdim\POK@lensradiusLeft pt=0pt\else
+    \ifdim\POK@lensradiusright pt=0pt\else
+       \ifdim\POK@lensradiusleft pt=0pt\else
           \addto@pscode{%
              @th 2 div dup
              7 1 roll sub neg 5 1 roll
@@ -1903,16 +1962,16 @@
     % \pnode(! \pst@optexpdict\space\@lens@th\space -2 div 0 end){\optexp@nodeIn}
     % \pnode(! \pst@optexpdict\space\@lens@th\space 2 div 0 end){\optexp@nodeOut}
     % \newOptexpComp{{\@lens@th\space -2 div 0} 
-    %                \ifdim\POK@lensradiusLeft pt=0pt 
+    %                \ifdim\POK@lensradiusleft pt=0pt 
     %                   {0 1} trans {NewPlaneInt}
     %                \else 
-    %                   {\POK@lensradiusLeft\space 0} trans {NewCurvedInt}
+    %                   {\POK@lensradiusleft\space 0} trans {NewCurvedInt}
     %                \fi
     %                {\@lens@th\space 2 div 0} 
-    %                \ifdim\POK@lensradiusRight pt=0pt
+    %                \ifdim\POK@lensradiusright pt=0pt
     %                   {0 1} trans {NewPlaneInt}
     %                \else
-    %                   {\POK@lensradiusRight\space neg 0} trans {NewCurvedInt} 
+    %                   {\POK@lensradiusright\space neg 0} trans {NewCurvedInt} 
     %                \fi
     %                \POK@n}%
     \end@ClosedObj
@@ -2630,7 +2689,7 @@
     \edef\@csz{\POK@couplersize\space 0.5 mul\space}
     \psline(! \@csz neg dup)(! \@csz dup)
     \psline(! \@csz neg \@csz)(! \@csz dup neg)
-  \fi\fi
+  \fi\fi\fi
 }%
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -2721,12 +2780,15 @@
 %
 % FIBER COLLIMATOR
 %
-\def\fibercollimator@v{%
+\def\fibercollimator@nodes{%
    \def\@sz{\POK@fibercolsize\space 0.5 mul\space}%
-   \pspolygon(! \@sz neg \getCLWH add \@sz neg)(!\@sz 0)(!\@sz neg \getCLWH add \@sz)
    \pnode(!\@sz neg 0){\optexp@nodeIn}
    \newOptexpComp{ {\@sz neg 0} {0 1} trans {NewPlaneInt} 1 }%
    \pnode(!\@sz 0){\optexp@nodeOut}
+}%
+\def\fibercollimator@comp{%
+   \def\@sz{\POK@fibercolsize\space 0.5 mul\space}%
+   \pspolygon(! \@sz neg \getCLWH add \@sz neg)(!\@sz 0)(!\@sz neg \getCLWH add \@sz)
 }%
 %
 \catcode`\@=\PstAtCode\relax
