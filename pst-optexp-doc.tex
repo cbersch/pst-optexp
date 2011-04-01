@@ -13,6 +13,8 @@
 \usepackage{multicol}
 \usepackage{multirow}
 \usepackage{float}
+\usepackage{prettyref}
+\newrefformat{sec}{Sec.~\ref{#1}}
 %
 \newfloat{LTXexampleFloat}{H}{expl}
 \floatname{LTXexampleFloat}{Listing}
@@ -84,15 +86,10 @@
 
 \lstset{explpreset={pos=l,width=-99pt,overhang=0pt,hsep=\columnsep,vsep=\bigskipamount,rframe={}},
     escapechar=§}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{document}\title{\texttt{pstricks-add}\\additionals Macros for \texttt{pstricks}%
-%\thanks{%
-%    This document was written with \texttt{Kile: 1.7 (Qt: 3.1.1; KDE: 3.3;}
-%    \url{http://sourceforge.net/projects/kile/}) and the PDF output
-%    was build with VTeX/Free (\url{http://www.micropress-inc.com/linux})}
-\\
-    \small v.\verPstOptExp}
- \title{\texttt{pst-optexp}\\ A PSTricks package to draw optical experimental setups}
+\begin{document}
+ \title{\texttt{pst-optexp}\\ A PSTricks package to draw optical experimental setups\\ \small v.\verPstOptExp}
  \author{Christoph Bersch}
  \date{\datePstOptExp}
 \maketitle
@@ -108,6 +105,13 @@ setups. Mechanisms for proper alignment of different components are
 provided internally. This way the user does not have to care for proper
 orientation of the elements. Macros for convenient definition of new 
 user-defined components are also provided.
+
+\section{Backward compatibility}
+
+Version 3.0 introduced a lot of advanced features which made it too difficult to
+maintain full backward compatibility with version 2.x. However, using the
+\Lkeyword{compat} package option allows you to compile old setups but without
+profiting from the new features.
 
 \section{Concept and General Behavior}\label{sec:general}
 
@@ -130,28 +134,21 @@ For free-ray setups one usually has a few straight light paths in which
 several different objects are to be arranged. In this case it is very
 convenient to define only two nodes for each light path. The objects are
 placed on this light path using the different positioning parameters
-(see Sec.~\ref{sec:positioning}) of the package. After having arranged
-everything, the beams themselves are drawn. If objects with multiple
-internal reflections (e.g. prisms, see Sections \ref{sec:doveprism},
-\ref{sec:prism} -- \ref{sec:ppprism}) or objects without internal beams
-(e.g. optical diodes, see Sec.~\ref{sec:optdiode}) are involved. The
-different possibilities are explained in Sec.~\ref{sec:connecting}.
+(see \prettyref{sec:positioning}) of the package. After having arranged
+everything, the beams themselves are drawn (see \prettyref{sec:connecting}).
 
-The fiber-optical objects can be classified as dipoles, tripoles and
-quadrupoles which have a corresponding number of fiber
-connections. Their handling differs in some aspects from the free-ray
-objects. The fiber optics are directly connected to the reference
-nodes. Every input and output fiber can be flexibly customized for each
-object (see Sec.~\ref{sec:styles}). Positioning of the fiber dipoles is
-handled equivalently to the free-ray dipoles. Tripoles and quadrupoles
-can be found only as different coupler types. Their positioning
-mechanisms are a bit more involved and explained in
-Sec.~\ref{sec:coupler}.
+The fiber-optical objects can be classified as dipoles, tripoles and quadrupoles
+which have a corresponding number of fiber connections. Their handling differs
+in some aspects from the free-ray objects. The fiber optics are directly
+connected to the reference nodes. Every input and output fiber can be flexibly
+customized for each object (see \prettyref{sec:styles}). Positioning of the
+fiber dipoles is handled equivalently to the free-ray dipoles. Tripoles and
+quadrupoles can be found only as different coupler types. Their positioning
+mechanisms are a bit more involved and explained in the respective section
+(\prettyref{sec:coupler}).
 
 Some hybrid dipoles (optbox, detector etc.) can be used both as
-fiber-optical or free-ray elements. The way they are treated regarding
-the connections to the reference points can be controlled by the
-parameters explained in Sec.~\ref{sec:connecting}.
+fiber-optical or free-ray elements. 
 
 \subsection{General Settings}
 
@@ -1800,7 +1797,7 @@ it is very cumbersome to specify all parameters every time.
    \MOLensOut[abspos=1](A)(B){}
    \MOLensOut[abspos=4](A)(B){}
    \MOLensIn[abspos=4.5](A)(B){}
-   \addtopsstyle{Beam}{beamExtended}
+   \addtopsstyle{Beam}{beamextended}
    \custombeam{%
      \drawbeam[beamwidth=0.1]{(A)}{1}.
      \drawbeam[beamdiv=1]{1}{2}.
