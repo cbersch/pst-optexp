@@ -39,6 +39,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % IFs for the boolean keys.
 %
+\newif\ifPOE@compat\POE@compatfalse
 \newif\ifPOE@bglayer
 \newif\ifPOE@toplayer
 \newif\ifPOE@optexpenv
@@ -110,6 +111,8 @@
 \def\POS@dettype@diode{diode}
 \def\POS@bsstyle@cube{cube}
 \def\POS@bsstyle@plate{plate}
+%
+\def\pst@OptexpVerb#1{\pst@Verb{\pst@optexpdict #1 end }}%
 %
 % Some strings which control the naming scheme of internal nodes and components.
 %
@@ -856,6 +859,7 @@
         ,beamdiv=\@empty
         ,nmul=1
         ,nadd=0
+        ,namingscheme=new
 }%
 \else
   \input{pst-optexp-compat.tex}
@@ -920,7 +924,6 @@
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-\def\pst@OptexpVerb#1{\pst@Verb{\pst@optexpdict #1 end }}%
 \def\begin@OptexpObj{%
    \define@key[psset]{optexp}{compname}{\psset{@compname=##1}}
    \global\advance\poe@cnt by 1
@@ -1515,6 +1518,9 @@
    \fibercollimator@iv{#2}%
 }
 \def\fibercollimator@iv#1{%
+  \ifPOE@compat
+    \addbefore@par{conn=o-f}%
+  \fi
    \addbefore@par{fiberout=both}%
    \begin@OptexpObj
       \pst@regNodes{\pst@tempA}{\pst@tempB}%
@@ -1530,10 +1536,18 @@
       }%
       \ifPOE@bglayer
         \edef\poe@tmp{\the\poe@cnt}% I don't know how to do it with expansion
-        \drawbeam{(\optexp@nodeA)}{\poe@tmp}.
+        \ifPOE@compat
+          \@nameuse{\psk@connIn}
+        \else
+          \drawbeam{(\optexp@nodeA)}{\poe@tmp}.
+        \fi
         \ifPOE@fiberout@
           \ifx\@empty\pst@tempC
-            \drawfiber{\poe@tmp}{(\optexp@nodeB)}.
+            \ifPOE@compat
+              \@nameuse{\psk@connOut}
+            \else
+              \drawfiber{\poe@tmp}{(\optexp@nodeB)}
+            \fi
           \else\ifx\@empty\pst@tempD
              \psbezier[style=FiberOut](\pst@tempC)(\pst@tempB)(\pst@tempB)(\optexp@nodeOut)%
           \else
@@ -1566,8 +1580,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \psset[optexp]{%
 % general
-        namingscheme=new
-        ,bglayer=true
+        bglayer=true
         ,toplayer=true
         ,position=\@empty
         ,abspos=\@empty

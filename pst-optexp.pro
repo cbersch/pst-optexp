@@ -146,6 +146,7 @@ tx@OptexpDict begin
     @@x0 @xref @@x mul add 
     @@y0 @yref @@y mul add 
 } bind def
+%
 % Push all internal node names of (basicnodename) on the stack.
 % (basicnodename) reverse GetInternalNodeNames
 /GetInternalNodeNames {

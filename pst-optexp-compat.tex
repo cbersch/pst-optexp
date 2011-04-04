@@ -3,10 +3,6 @@
 % maintained for backward compatibility%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-\edef\POS@basicname@default{tempNode}
-\edef\POS@basicname@prefix{}
-\edef\POS@extnode@postfix{ExtNode}
-%
 \define@key[psset]{optexp}{connjoin}{%
    \edef\pst@temp{#1}%
    \ifnum\pst@temp<0
@@ -110,7 +106,7 @@
       \pst@optexp@@getcoor#2
       \def\psk@connOut{pst@coor}%
    \else
-      \pst@optexp@check@compname{#2}%
+%      \pst@optexp@check@compname{#2}%
       \edef\POK@b@sicnameB{#2}%
    \fi
    \if(\pst@tempA
@@ -118,7 +114,7 @@
       \pst@optexp@@getcoor#1%
       \def\psk@connIn{pst@coor}%
    \else
-      \pst@optexp@check@compname{#1}%
+%      \pst@optexp@check@compname{#1}%
       \edef\POK@b@sicnameA{#1}%
    \fi
    \let\POK@b@sicname\POK@b@sicnameB
@@ -186,11 +182,15 @@
 \define@choicekey[psset]{optexp}{nofiber}[\val\nr]{}[]{%
    \psset{conn=-, fiberin=none, fiberout=none}%
 }
-\psset{conn=-, connjoin=1}
+\POE@compattrue
+\psset[optexp]{%
+  conn=-
+  , connjoin=1
+  , namingscheme=old
+}
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % End of compatibility code %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-\message{end of compat code^^J}
 \endinput
