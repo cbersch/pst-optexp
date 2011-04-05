@@ -196,12 +196,10 @@
     \edef\POS@basicname@default{tempNode}
     \edef\POS@basicname@prefix{}
     \edef\POS@extnode@postfix{ExtNode}
-    \pst@OptexpVerb{/basenamePostfix (Intern) def }    
   \or
     \edef\POS@basicname@default{@}
     \edef\POS@basicname@prefix{OE@}
     \edef\POS@extnode@postfix{Ext}
-    \pst@OptexpVerb{/basenamePostfix () def }
   \fi
 }%
 %
@@ -496,7 +494,12 @@
 %
 % List with all component names define until now. Is kept for a single pspicture environment
 \def\POE@complist{}%
-\g@addto@macro{\endpspicture}{\gdef\POE@complist{}\global\poe@cnt 0\relax}%
+\g@addto@macro{\endpspicture}{%
+  \@for\x:={\POE@complist}\do{%
+    \pst@OptexpVerb{[ (\x) false GetInternalNodeNames counttomark { cvn tx@NodeDict exch undef } repeat pop }%
+  }%
+  \gdef\POE@complist{}\global\poe@cnt 0\relax
+}%
 %
 % Set the component name. If the parameter is empty, a generated name is used.
 \define@key[psset]{optexp}{@compname}{%
@@ -504,10 +507,19 @@
    \ifx\pst@tmp\@empty
       \edef\POK@compname{\POS@basicname@default\the\poe@cnt}
       \psset{b@sicname=\POS@basicname@default\the\poe@cnt}%
-      \psset{extnoden@me=\POS@basicname@default\the\poe@cnt}%
+      \ifPOE@compat
+        \psset{extnoden@me={}}%
+      \else
+        \psset{extnoden@me=\POS@basicname@default\the\poe@cnt}%
+      \fi
    \else
       \edef\POK@compname{#1}%
-      \psset{b@sicname=#1}%
+      \ifPOE@compat
+        \def\POS@basicname@prefix{}
+        \psset{b@sicname=#1Intern}%
+      \else
+        \psset{b@sicname=#1}%   
+      \fi
       \psset{extnoden@me=#1}%
    \fi
    % check if compname was already defined
@@ -561,6 +573,7 @@
 \define@boolkey[psset]{optexp}[POE@]{fiberout@}[true]{}
 \define@boolkey[psset]{optexp}[POE@]{fiberout@top}[true]{}
 \define@boolkey[psset]{optexp}[POE@]{fiberout@bottom}[true]{}
+\define@boolkey[psset]{optexp}[POE@]{relangle}[true]{}
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \def\optexp@getnode#1\@nil{%
@@ -606,18 +619,19 @@
       \expandafter\optexp@getnode#3\@nil
       \edef\optexp@comps{\oe@temp\space \optexp@comps}
     \fi
-    %
+    
     \ifPOE@bglayer
       \pnode(! \optexp@comps exch \pst@optexpdict NearestNode end \tx@UserCoor){@@A}
       \pnode(! \optexp@comps \pst@optexpdict NearestNode end \tx@UserCoor){@@B}
       \pst@getcoor{@@A}\pst@tempa
       \pst@getcoor{@@B}\pst@tempb
-      \ifx\relax\psk@angleA
+      \ifx\psk@angleA\relax
         \psset{angleA=! \pst@optexpdict \pst@tempb \pst@tempa \optexp@comps exch RelFiberAngle end}%
       \else
         \ifPOE@relangle
           \psset{angleA=! \pst@optexpdict \pst@tempb \pst@tempa \optexp@comps exch RelFiberAngle end \psk@angleA\space add}%
-      \fi\fi
+        \fi
+      \fi
       \ifx\psk@angleB\relax
         \psset{angleB=! \pst@optexpdict \pst@tempa \pst@tempb \optexp@comps RelFiberAngle end}%
       \else
@@ -634,7 +648,6 @@
 %
 % New code for \drawbeam
 %
-\define@boolkey[psset]{optexp}[POE@]{relangle}[true]{}
 \define@key[psset]{optexp}{startvec}{\edef\POK@startvec{#1}}%
 \define@key[psset]{optexp}{startpos}{\edef\POK@startpos{#1}}%
 \define@key[psset]{optexp}{beamdiv}{\edef\POK@beamdiv{#1}}%
@@ -823,21 +836,21 @@
 %  \edef\poe@tmp{\the\poe@cnt}% I don't know how to do it with expansion
   \ifPOE@beam
     \ifPOE@endbox
-      \drawbeam{(\optexp@nodeA)}{\POK@compname}.
+      \drawbeam[addtoBeam={beamConnectComp}]{(\optexp@refnodeA)}{\POK@compname}.
     \else
-      \drawbeam{(\optexp@nodeA)}{\POK@compname}{(\optexp@nodeB)}.
+      \drawbeam[addtoBeam={beamConnectComp}]{(\optexp@refnodeA)}{\POK@compname}{(\optexp@refnodeB)}.
     \fi
   \else
     \ifPOE@endbox
       \ifPOE@fiberin@
-        \drawfiber@{FiberIn}{(\optexp@nodeA)}{\POK@compname}
+        \drawfiber@{FiberIn}{(\optexp@refnodeA)}{\POK@compname}
       \fi
     \else
       \ifPOE@fiberin@
-        \drawfiber@{FiberIn}{(\optexp@nodeA)}{\POK@compname}
+        \drawfiber@{FiberIn}{(\optexp@refnodeA)}{\POK@compname}
               \fi
       \ifPOE@fiberout@
-        \drawfiber@{FiberOut}{\POK@compname}{(\optexp@nodeB)}
+        \drawfiber@{FiberOut}{\POK@compname}{(\optexp@refnodeB)}
       \fi
     \fi
   \fi
@@ -880,8 +893,8 @@
 %
 \def\optexp@nodeIn{\POK@b@sicname 1}%
 \def\optexp@nodeOut{\POK@b@sicname N}%
-\def\optexp@nodeA{\POK@b@sicname A}%
-\def\optexp@nodeB{\POK@b@sicname B}%
+\def\optexp@refnodeA{\POK@b@sicname A}%
+\def\optexp@refnodeB{\POK@b@sicname B}%
 \def\optexp@nodeLabel{\POK@b@sicname Label}%
 \def\optexp@nodeLabelShifted{\POK@b@sicname LabelShifted}%
 \def\optexp@node#1{\POK@b@sicname #1}%
@@ -901,11 +914,11 @@
 %
 \def\newOptexpComp{\@ifnextchar[{\newOptexpComp@i}{\newOptexpComp@i[]}}%
 \def\newOptexpComp@i[#1]#2{%
-    \pst@Verb{\pst@optexpdict #1 [ #2 (\POS@basicname@prefix\POK@compname) {\tx@ScreenCoor} false NewOptexpComp end}%
+    \pst@Verb{\pst@optexpdict #1 [ #2 (\POK@b@sicname) {\tx@ScreenCoor} false NewOptexpComp end}%
 }%
 \def\newOptexpCompAmb{\@ifnextchar[{\newOptexpCompAmb@i}{\newOptexpCompAmb@i[]}}%
 \def\newOptexpCompAmb@i[#1]#2{%
-    \pst@Verb{\pst@optexpdict #1 [ #2 (\POS@basicname@prefix\POK@compname) {\tx@ScreenCoor} true NewOptexpComp end}%
+    \pst@Verb{\pst@optexpdict #1 [ #2 (\POK@b@sicname) {\tx@ScreenCoor} true NewOptexpComp end}%
 }%
 \def\optplane(#1)(#2)#3{%
     \pst@getcoor{#1}\pst@tempOrig%
@@ -1072,7 +1085,7 @@
          \addbefore@par{#3}%
          \addafter@par{ref@angle=180,#1}%
          \begin@OptexpMultipole
-%           \message{^^J\optexp@nodeA^^J}%
+%           \message{^^J\optexp@refnodeA^^J}%
 %            \ifPOE@bglayer
               \pst@calcNodes{##1}{##2}{##3}%
               % adjust tempNode@A and tempNode@B for the connections
@@ -1088,9 +1101,9 @@
               \pst@Verb{%
                  \pst@optexpdict
                  tx@NodeDict begin
-                     {\pst@tempA } false chirality 0 le { /N@\optexp@nodeB\space }{ /N@\optexp@nodeA\space } ifelse
+                     {\pst@tempA } false chirality 0 le { /N@\optexp@refnodeB\space }{ /N@\optexp@refnodeA\space } ifelse
                      10 {InitPnode } NewNode
-                     {\pst@tempB } false chirality 0 le { /N@\optexp@nodeA\space }{ /N@\optexp@nodeB\space } ifelse
+                     {\pst@tempB } false chirality 0 le { /N@\optexp@refnodeA\space }{ /N@\optexp@refnodeB\space } ifelse
                      10 {InitPnode } NewNode
                  end end
               }%
@@ -1115,22 +1128,22 @@
       %
         \ifPOE@bglayer
           \ifx\POK@align\POS@top
-            \pnode(##1){\optexp@nodeA}
-            \pnode(##3){\optexp@nodeB}
+            \pnode(##1){\optexp@refnodeA}
+            \pnode(##3){\optexp@refnodeB}
           \else\ifx\POK@align\POS@bottom
-            \pnode(##2){\optexp@nodeA}
-            \pnode(##4){\optexp@nodeB}
+            \pnode(##2){\optexp@refnodeA}
+            \pnode(##4){\optexp@refnodeB}
           \else
             \pst@getcoor{##1}\pst@tempA%
             \pst@getcoor{##2}\pst@tempB%
             \pnode(!\pst@tempA\pst@number\psyunit div exch \pst@number\psxunit div exch
                     \pst@tempB\pst@number\psyunit div exch \pst@number\psxunit div exch 
-                    \pst@optexpdict mwNode end){\optexp@nodeA}
+                    \pst@optexpdict mwNode end){\optexp@refnodeA}
             \pst@getcoor{##3}\pst@tempA%
             \pst@getcoor{##4}\pst@tempB%
             \pnode(!\pst@tempA\pst@number\psyunit div exch \pst@number\psxunit div exch
                     \pst@tempB\pst@number\psyunit div exch \pst@number\psxunit div exch 
-                    \pst@optexpdict mwNode end){\optexp@nodeB}
+                    \pst@optexpdict mwNode end){\optexp@refnodeB}
          \fi\fi
        \fi
        %
@@ -1144,7 +1157,7 @@
            \drawfiber@{FiberIn2}{(##2)}{\POK@compname}
          \fi
          \ifPOE@fiberout@top
-           \drawfiber@{FiberOut1}{\POK@compname}{(##3)}
+           \drawfiber@{FiberOut}{\POK@compname}{(##3)}
          \fi
          \ifPOE@fiberout@bottom
            \drawfiber@{FiberOut2}{\POK@compname}{(##4)}
@@ -1160,8 +1173,8 @@
   \@namedef{#1@ii}{%
     \ifPOE@bglayer
       \pnode(0,0){\optexp@nodeLabel}%
-      \pnode(0,0){\optexp@nodeIn}%
-      \pnode(0,0){\optexp@nodeOut}%
+%      \pnode(0,0){\optexp@nodeIn}%
+%      \pnode(0,0){\optexp@nodeOut}%
     \fi
     \@ifundefined{#1@iii}{%
       \ifPOE@bglayer
@@ -1186,17 +1199,17 @@
   \addbefore@par{fiber}%
   \begin@OptexpObj
     \ifPOE@bglayer
-      \pnode(#1){\optexp@nodeA}
+      \pnode(#1){\optexp@refnodeA}
       \ifx\POK@align\POS@top
-         \pnode(#2){\optexp@nodeB}
+         \pnode(#2){\optexp@refnodeB}
       \else\ifx\POK@align\POS@bottom
-         \pnode(#3){\optexp@nodeB}
+         \pnode(#3){\optexp@refnodeB}
       \else
          \pst@getcoor{#2}\pst@tempA%
          \pst@getcoor{#3}\pst@tempB%
          \pnode(!\pst@tempA\pst@number\psyunit div exch \pst@number\psxunit div exch
                  \pst@tempB\pst@number\psyunit div exch \pst@number\psxunit div exch 
-                 \pst@optexpdict mwNode end \POK@coupleroutshift\space add){\optexp@nodeB}
+                 \pst@optexpdict mwNode end \POK@coupleroutshift\space add){\optexp@refnodeB}
       \fi\fi
     \fi
     %
@@ -1223,17 +1236,17 @@
   \addbefore@par{fiber}%
   \begin@OptexpObj
     \ifPOE@bglayer
-      \pnode(#3){\optexp@nodeB}
+      \pnode(#3){\optexp@refnodeB}
       \ifx\POK@align\POS@top
-         \pnode(#1){\optexp@nodeA}
+         \pnode(#1){\optexp@refnodeA}
       \else\ifx\POK@align\POS@bottom
-         \pnode(#2){\optexp@nodeA}
+         \pnode(#2){\optexp@refnodeA}
       \else
          \pst@getcoor{#1}\pst@tempA%
          \pst@getcoor{#2}\pst@tempB%
          \pnode(!\pst@tempA\pst@number\psyunit div exch \pst@number\psxunit div exch
                  \pst@tempB\pst@number\psyunit div exch \pst@number\psxunit div exch 
-                 \pst@optexpdict mwNode end){\optexp@nodeA}
+                 \pst@optexpdict mwNode end){\optexp@refnodeA}
       \fi\fi
     \fi
     %
@@ -1281,8 +1294,8 @@
      calcNodes
      /ExchCoorSwitch 
      Y@A X@A neg Y@B X@B neg ExchCoor def
-     X@A Y@A end){\optexp@nodeA}%
-  \pnode(! \pst@optexpdict X@B Y@B end){\optexp@nodeB}%
+     X@A Y@A end){\optexp@refnodeA}%
+  \pnode(! \pst@optexpdict X@B Y@B end){\optexp@refnodeB}%
 }\ignorespaces}%
 %
 %
@@ -1291,11 +1304,11 @@
 % macros the given points are assigned to the temporary nodes.
 %
 \def\pst@regNodes#1#2{%
-    \pnode(#1){\optexp@nodeA}
-    \pnode(#2){\optexp@nodeB}
+    \pnode(#1){\optexp@refnodeA}
+    \pnode(#2){\optexp@refnodeB}
 \ignorespaces}%
 \def\pst@adjustTempNodes{%
-    \pst@Verb{tx@NodeDict begin N@\optexp@nodeA\space GetCenter N@\optexp@nodeB\space GetCenter end
+    \pst@Verb{tx@NodeDict begin N@\optexp@refnodeA\space GetCenter N@\optexp@refnodeB\space GetCenter end
               \pst@optexpdict ExchCoor dup end
               {/@xref \POK@xref\space neg def /@yref \POK@yref\space neg def} 
               {/@xref \POK@xref\space def /@yref \POK@yref\space def} ifelse
@@ -1408,14 +1421,14 @@
           } ifelse
       } if >%
       % 
-      \ncline[linestyle=none,fillstyle=none,npos=]{\optexp@nodeA}{\optexp@nodeB}%
+      \ncline[linestyle=none,fillstyle=none,npos=]{\optexp@refnodeA}{\optexp@refnodeB}%
       % 
       % 
       \ifx\POK@position\@empty
          \ifx\POK@abspos\@empty
             \ncput[nrot=:U,npos=]{\put@RelLabel{#1}}%
          \else
-            \nlput[nrot=:U](\optexp@nodeA)(\optexp@nodeB){\POK@abspos}{\put@RelLabel{#1}}%
+            \nlput[nrot=:U](\optexp@refnodeA)(\optexp@refnodeB){\POK@abspos}{\put@RelLabel{#1}}%
          \fi
       \else
          \ncput[nrot=:U,npos=\POK@position]{\put@RelLabel{#1}}
@@ -1459,16 +1472,22 @@
 \def\optdipole{\pst@object{optdipole}}
 \def\optdipole@i(#1)(#2)#3#4{%
    \begin@OptexpObj
-      \pst@regNodes{#1}{#2}
-      \pst@adjustTempNodes
+      \ifPOE@bglayer
+        \pst@regNodes{#1}{#2}
+        \pst@adjustTempNodes
+      \fi
       \pst@draw@component{#4}{%
-         \pnode(0,0){\optexp@nodeLabel}%
-%         \pnode(0,0){\optexp@nodeIn}%
-%         \pnode(0,0){\optexp@nodeOut}%
-         \newOptexpComp{{ 0 0 } { 0 1 } trans {NewPlaneInt} 1 }%
-         #3
+        \ifPOE@bglayer
+          \pnode(0,0){\optexp@nodeLabel}%
+          \newOptexpComp{{ 0 0 } { 0 1 } trans {NewPlaneInt} 1 }%
+        \fi
+        \ifPOE@toplayer
+          #3
+        \fi
       }%
-      \draw@InternalConnections
+      \ifPOE@bglayer
+        \draw@InternalConnections
+      \fi
    \end@OptexpObj
 }%
 \def\opttripole{\pst@object{opttripole}}
@@ -1492,9 +1511,9 @@
       \pst@Verb{%
         \pst@optexpdict
          tx@NodeDict begin
-            {\pst@tempA } false chirality 0 le { /N@\optexp@nodeB\space }{ /N@\optexp@nodeA\space } ifelse
+            {\pst@tempA } false chirality 0 le { /N@\optexp@refnodeB\space }{ /N@\optexp@refnodeA\space } ifelse
              10 {InitPnode } NewNode
-             {\pst@tempB } false chirality 0 le { /N@\optexp@nodeA\space }{ /N@\optexp@nodeB\space } ifelse
+             {\pst@tempB } false chirality 0 le { /N@\optexp@refnodeA\space }{ /N@\optexp@refnodeB\space } ifelse
              10 {InitPnode } NewNode
          end end
       }%
@@ -1539,14 +1558,14 @@
         \ifPOE@compat
           \@nameuse{\psk@connIn}
         \else
-          \drawbeam{(\optexp@nodeA)}{\poe@tmp}.
+          \drawbeam{(\optexp@refnodeA)}{\poe@tmp}.
         \fi
         \ifPOE@fiberout@
           \ifx\@empty\pst@tempC
             \ifPOE@compat
               \@nameuse{\psk@connOut}
             \else
-              \drawfiber{\poe@tmp}{(\optexp@nodeB)}
+              \drawfiber{\poe@tmp}{(\optexp@refnodeB)}
             \fi
           \else\ifx\@empty\pst@tempD
              \psbezier[style=FiberOut](\pst@tempC)(\pst@tempB)(\pst@tempB)(\optexp@nodeOut)%
@@ -1580,7 +1599,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \psset[optexp]{%
 % general
-        bglayer=true
+        relangle=false
+        ,bglayer=true
         ,toplayer=true
         ,position=\@empty
         ,abspos=\@empty
@@ -1704,7 +1724,7 @@
        \psset{position=1}%
     \fi%
     % 
-    \ncline[linestyle=none,fillstyle=none,npos=]{\optexp@nodeA}{\optexp@nodeB}%
+    \ncline[linestyle=none,fillstyle=none,npos=]{\optexp@refnodeA}{\optexp@refnodeB}%
     % 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
     % 
@@ -1725,7 +1745,7 @@
         \ifx\POK@abspos\@empty
            \ncput[nrot=:U,npos=]{\put@Comp{\@@comp}}%
         \else
-           \nlput[nrot=:U](\optexp@nodeA)(\optexp@nodeB){\POK@abspos}{\put@Comp{\@@comp}}%
+           \nlput[nrot=:U](\optexp@refnodeA)(\optexp@refnodeB){\POK@abspos}{\put@Comp{\@@comp}}%
         \fi
     \else
        \ncput[nrot=:U,npos=\POK@position]{\put@Comp{\@@comp}}%
@@ -1743,8 +1763,8 @@
       \ifPOE@bglayer
           \psdot[linecolor=red](\optexp@nodeLabel)
           \psdot[linecolor=red](\optexp@nodeLabelShifted)
-          \psdot[linecolor=black](\optexp@nodeA)
-          \psdot[linecolor=black](\optexp@nodeB)
+          \psdot[linecolor=black](\optexp@refnodeA)
+          \psdot[linecolor=black](\optexp@refnodeB)
       \fi
     \fi
     %
@@ -2012,11 +2032,16 @@
    \ifx\POK@bsstyle\POS@bsstyle@cube
       \psline{cc-cc}(! \@bs@wd neg 2 sqrt mul 0)(! \@bs@wd 2 sqrt mul 0)
       \rput[c]{45}(0,0){\psframe(! \@bs@wd neg \@bs@wd neg)(! \@bs@wd \@bs@wd)}
-      \newOptexpCompAmb{ {\@bs@wd 2 sqrt div neg dup } {-1 1} trans {NewPlaneInt}
-                         {\@bs@wd 2 sqrt div dup neg } {1 1} trans {NewPlaneInt}
-                         {\@bs@wd 2 sqrt div dup } {-1 1} trans {NewPlaneInt}
-                         {\@bs@wd 2 sqrt div neg dup neg } {1 1} trans {NewPlaneInt} 
-                         {0 0} {1 0} trans {NewPlaneInt} \POK@n}%
+      \ifPOE@compat
+        % the old beamsplitter had only one defined plane
+        \newOptexpCompAmb{ {0 0} {1 0} trans {NewPlaneInt} 1 }%
+      \else
+        \newOptexpCompAmb{ {\@bs@wd 2 sqrt div neg dup } {-1 1} trans {NewPlaneInt}
+                           {\@bs@wd 2 sqrt div dup neg } {1 1} trans {NewPlaneInt}
+                           {\@bs@wd 2 sqrt div dup } {-1 1} trans {NewPlaneInt}
+                           {\@bs@wd 2 sqrt div neg dup neg } {1 1} trans {NewPlaneInt} 
+                           {0 0} {1 0} trans {NewPlaneInt} \POK@n}%
+      \fi
    \else\ifx\POK@bsstyle\POS@bsstyle@plate
       \psline(! \@bs@wd neg 2 sqrt mul 0)(! \@bs@wd 2 sqrt mul 0)
       \newOptexpCompAmb{ {0 0} {1 0} trans {NewPlaneInt} 1 }%
@@ -2211,8 +2236,8 @@
       \pnode(! \@wd 0){\optexp@nodeLabel}%
     }%
   \else
-    \psrotate(! \@wd \@wd \POK@rotate@xref\space mul add
-                0 \@ht \POK@rotate@yref\space mul add){\POK@angle}{%
+    \psrotate(! \@wd \POK@rotate@xref\space mul
+                \@ht \POK@rotate@yref\space mul){\POK@angle}{%
       \newOptexpComp{{ \@wd neg 0 } { 0 1 } trans {NewPlaneInt} { \@wd 0 } { 0 1 } trans {NewPlaneInt} \POK@n }%
       \pnode(0, 0){\optexp@nodeLabel}%   
     }%
@@ -2284,7 +2309,7 @@
   \fi\fi
 }%
 \def\optdetector@comp{%
-   \pnode(\optexp@nodeB){\optexp@nodeIn}
+   \pnode(\optexp@refnodeB){\optexp@nodeIn}
 %   \newOptexpComp{{ 0 0} { 0 1 } trans {NewPlaneInt} 1 }%
    \ifx\POK@dettype\POS@dettype@round
       \begin@ClosedObj

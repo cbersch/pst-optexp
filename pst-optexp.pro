@@ -396,7 +396,7 @@ tx@OptexpDict begin
     @ABVect % {InVec} dX dY
     3 -1 roll exec 2 copy 6 2 roll % Xi Yi dX dY Xi Yi 
     0 eq exch 0 eq and not {% invec != (0,0)
-	exch atan (transform invec by ) == dup == matrix rotate dtransform
+	exch atan matrix rotate dtransform
     } {
 	4 2 roll pop pop
     } ifelse
@@ -473,25 +473,6 @@ tx@OptexpDict begin
     } ifelse
     % CurrTmp is the current point of the beam on the previous plane, CurrVecTmp
     % its outgoing vector.
-    % The first plane is the one nearest to the current point.
-    PN 1 eq not 1 N eq not and {% not first comp and not single interface
-	CurrTmp name GetNearestPlane /nextPlane ED
-	%
-	% check if mode is trans or refl
-	CurrVecTmp nextPlane name GetPlaneVec NormalVec
-	(C) name GetPlaneCenter nextPlane name GetPlaneCenter @ABVect 2 copy 6 2 roll SProd 
-	0 lt { trans }{ refl } ifelse
-	3 1 roll ToVec /CurrVecTmp ED
-	[ nextPlane name
-	connectPlaneNodes {
-	    1
-	}{
-	    nforce 0 eq { name cvn load /n get } { nforce } ifelse
-	} ifelse
-	5 -1 roll true ] cvx % always draw to first interface
-    } if
-    %
-    % now add CenterPlane
     1 N eq {
 	% only a single interface
 	[ (C) name 1 
@@ -505,38 +486,58 @@ tx@OptexpDict begin
 	} ifelse
 	true ] cvx
     } {
-	% ambcomp has more than one interfaces
-	PN PlaneNum eq {
-	    % its the last comp, just put the center plane on the stack
-	    [ (C) name 1 trans draw ] cvx exch
-	    /PlaneNumTmp PlaneNumTmp 1 add def
-	} {
-	    % check the mode
+	% three interfaces
+	PN 1 eq {
+	    % first component
 	    [ (C) name
+	      nforce 0 eq { name cvn load /n get } { nforce } ifelse
+	      trans draw ] cvx
+	      % now check which is the outgoing plane
+	      name /outToPlane load GetNextPlane
+	      [ exch name 1 trans draw ] cvx exch
+	      /PlaneNumTmp PlaneNumTmp 1 add def
+	} {
+	    CurrTmp name GetNearestPlane /nextPlane ED
+	    %
+	    % check if mode is trans or refl
+	    CurrVecTmp nextPlane name GetPlaneVec NormalVec
+	    (C) name GetPlaneCenter nextPlane name GetPlaneCenter @ABVect 2 copy 6 2 roll SProd 
+	    0 lt { trans }{ refl } ifelse
+	    3 1 roll ToVec /CurrVecTmp ED
+	    [ nextPlane name
 	    connectPlaneNodes {
 		1
-	    } {
-		name cvn load /n get
+	    }{
+		nforce 0 eq { name cvn load /n get } { nforce } ifelse
 	    } ifelse
-	    CurrVecTmp (C) name GetPlaneVec NormalVec outToPlane GetPlaneCenter (C) name GetPlaneCenter @ABVect SProd
-	    0 lt { trans } { refl } ifelse % mode
-	    draw ] cvx exch
-	    /PlaneNumTmp PlaneNumTmp 1 add def
-	    %
+	    5 -1 roll true ] cvx % always draw to first interface
+	    PN PlaneNum eq {
+		% its the last comp, just put the center plane on the stack
+		[ (C) name
+		  nforce 0 eq { name cvn load /n get } { nforce } ifelse
+		  trans draw ] cvx exch
+		  /PlaneNumTmp PlaneNumTmp 1 add def
+	    } {
+		% check the mode
+		[ (C) name
+		connectPlaneNodes {
+		    1
+		} {
+		    nforce 0 eq { name cvn load /n get } { nforce } ifelse
+		} ifelse
+		CurrVecTmp (C) name GetPlaneVec NormalVec outToPlane GetPlaneCenter (C) name GetPlaneCenter @ABVect SProd
+		0 lt { trans } { refl } ifelse % mode
+		draw ] cvx exch
+		% now check which is the outgoing plane
+		name /outToPlane load GetNextPlane
+		[ exch name 1 trans draw ] cvx 3 1 roll
+		/PlaneNumTmp PlaneNumTmp 2 add def
+	    } ifelse
 	} ifelse
     } ifelse
-    PN PlaneNum eq not 1 N eq not and {% not last comp and not single interface
-	% now check which is the outgoing plane
-	name /outToPlane load GetNextPlane
-	[ exch name 1 trans draw ] cvx 3 1 roll
-	/PlaneNumTmp PlaneNumTmp 1 add def
-    } if    
-%    (PlaneNum) == PlaneNum ==
-%    (PlaneNumTmp) == PlaneNumTmp ==
-%    (PN) == PN ==
-%    counttomark /t ED t copy t{==} repeat
 %    (-----------------------------------------------)==
     /PlaneNum PlaneNumTmp def
+%    counttomark /t ED t copy t{==} repeat
 } bind def
 % 
 % (CompName) {outToPlane} -> PlaneNumber
@@ -615,7 +616,6 @@ tx@OptexpDict begin
 	/draw ED
 	/Mode ED
 	3 1 roll % n PlaneNumber CompName
-%	3 copy == == ==
 %        (load comp dict) ==
 	cvn load begin % comp dict
 %	    (comp dict) ==
@@ -1002,8 +1002,8 @@ tx@OptexpDict begin
 % CompA desc|asc CompB desc|asc
 /AdjustRelRot {
     exch dup cvn load /adjustRel known {
-	dup 3 -1 roll desc eq {(N)}{1} ifelse exch GetPlaneCenter 5 3 roll
-	desc eq {1}{(N)} ifelse exch GetPlaneCenter
+	dup dup 4 2 roll isAmb { exch pop (C)}{ desc eq {(N)}{1} ifelse } ifelse exch GetPlaneCenter 5 3 roll
+	exch dup 3 1 roll isAmb { pop (C)}{ desc eq {1}{(N)} ifelse } ifelse exch GetPlaneCenter
 	@ABVect exch atan exch
 	cvn load begin
 	    adjustRel {
