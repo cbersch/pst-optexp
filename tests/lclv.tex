@@ -1,0 +1,91 @@
+%%% lclv.tex --- 
+
+%% Author: cbersch
+%% Version: $Id: testt.tex,v 0.0 2011/04/05 15:03:32 Exp$
+
+
+\documentclass{scrartcl}
+\usepackage[latin1]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[ngerman]{babel}
+\usepackage{lmodern}
+\usepackage{textcomp}
+\usepackage{graphicx}
+\usepackage{pst-optexp}
+
+%%\revision$Header: /home/cbersch/work/pst-optexp/tests/testt.tex,v 0.0 2011/03/01 12:13:59 cbersch Exp$
+
+\begin{document}
+\makeatletter
+\def\LCLV@nodes{%
+  \newOptexpComp{ {-0.12 0} {0 1} trans {NewPlaneInt}
+                  {0.15 0} {0 1} trans {NewPlaneInt} \POK@n}%
+}%
+\def\LCLV@comp{%
+  \psframe[fillstyle=solid,fillcolor=black,dimen=outer](-0.12,-0.5)(0,0.5)
+  \psframe[fillstyle=solid,fillcolor=gray!50,dimen=outer](0,-0.5)(0.15,0.5)
+}%
+\makeatother
+\newOptexpDipole{LCLV}{}
+\begin{pspicture}(9,5)
+\psset{lens=1.2 0 1}
+\pnode(2.4,1){BS1}\pnode([offset=3]BS1){M1}\pnode([Xnodesep=5.5]M1){PP}\pnode(PP|BS1){BS2}
+\LCLV[position=0.2, compname=LCLV](BS1)(BS2){LCLV}\beamsplitter[compname=BS](BS2)(BS1)(M1){BS}
+\optretplate(BS1)(M1){P}\mirror(BS1)(M1)(PP){M}\lens[position=0.2](M1)(PP){L}
+\pinhole(M1)(PP){}\lens[position=0.2](PP)(M1){L}
+\pentaprism(M1)(PP)(BS2){PP}
+\beamsplitter(PP)(BS2)(BS1){BS}
+\doveprism[compname=Dove,position=0.27](BS2)(BS1){D}
+\lens(BS2)(BS1){L}
+\optbox[labeloffset=0, endbox](BS1)([Xnodesep=-1]BS1){Nd:YAG}
+\drawbeam[beamConnectComp]{LCLV}{BS}{3}{4}{5}{6}{7}{8}{9}{Dove}{11}{LCLV}.
+\end{pspicture}
+\vspace{1cm}
+
+\begin{pspicture}(9,5)
+\psset{lens=1.2 0 1}
+\pnode(2.4,1){BS1}\pnode([offset=3]BS1){M1}\pnode([Xnodesep=5.5]M1){PP}\pnode(PP|BS1){BS2}
+\begin{optexp}
+\LCLV[position=0.2, compname=LCLV](BS1)(BS2){LCLV}\beamsplitter[compname=BS](BS2)(BS1)(M1){BS}
+\optretplate(BS1)(M1){P}\mirror(BS1)(M1)(PP){M}\lens[position=0.2](M1)(PP){L}
+\pinhole(M1)(PP){}\lens[position=0.2](PP)(M1){L}
+\pentaprism(M1)(PP)(BS2){PP}
+\beamsplitter(PP)(BS2)(BS1){BS}
+\doveprism[compname=Dove,position=0.27](BS2)(BS1){D}
+\lens(BS2)(BS1){L}
+\optbox[labeloffset=0, endbox](BS1)([Xnodesep=-1]BS1){Nd:YAG}
+\addtopsstyle{Beam}{beamConnectComp, beamextended, beamwidth=0.3, fillstyle=solid, opacity=0.3, fillcolor=green, linewidth=0.4\pslinewidth}
+\custombeam{%
+  \drawbeam{LCLV}{BS}{3}{4}{5}.
+  \drawbeam[beamdiv=-5.1]{5}{6}{7}.
+  \drawbeam{7}{8}{9}{Dove}{11}.
+  \drawbeam[beamdiv=10]{11}{LCLV}.
+}
+\end{optexp}
+\end{pspicture}
+
+\vspace{1cm}
+
+\begin{pspicture}(9,5)
+\psset{lens=1.2 0 1}
+\pnode(2.4,1){BS1}\pnode([offset=3]BS1){M1}\pnode([Xnodesep=5.5]M1){PP}\pnode(PP|BS1){BS2}
+\begin{optexp}
+\LCLV[position=0.2, compname=LCLV](BS1)(BS2){LCLV}\beamsplitter[compname=BS](BS2)(BS1)(M1){BS}
+\optretplate(BS1)(M1){P}\mirror(BS1)(M1)(PP){M}\lens[n=1.72, position=0.2](M1)(PP){L}
+\pinhole(M1)(PP){}\lens[n=1.72, position=0.2](PP)(M1){L}
+\pentaprism(M1)(PP)(BS2){PP}
+\beamsplitter(PP)(BS2)(BS1){BS}
+\doveprism[n=2.3,compname=Dove,position=0.27](BS2)(BS1){D}
+\lens[n=2.5](BS2)(BS1){L}
+\optbox[labeloffset=0, endbox](BS1)([Xnodesep=-1]BS1){Nd:YAG}
+\addtopsstyle{Beam}{beamextended, beamwidth=0.3, fillstyle=solid, opacity=0.3, fillcolor=green, linewidth=0.4\pslinewidth}
+\drawbeam{LCLV}{BS}{3}{4}{5}{6}{7}{8}{9}{Dove}{11}{LCLV}.
+\drawbeam[beaminsidelast]{([Xnodesep=-1]BS1)}{BS}.
+\drawbeam[addtoBeam={beaminsidelast, beamextended=false, arrows=->, linewidth=3\pslinewidth, arrowinset=0}]{([Xnodesep=-1]BS1)}{BS}.
+\drawbeam[addtoBeam={beaminsidefirst}]{9}{([offset=-1]BS2)}.
+\drawbeam[addtoBeam={beaminsidefirst, beamextended=false, arrows=->, linewidth=3\pslinewidth, arrowinset=0}]{9}{([offset=-1]BS2)}.
+\addtopsstyle{Beam}{linecolor=red, fillstyle=none}
+\drawbeam[n=1.72]{LCLV}{BS}{3}{4}{5}{6}{7}{8}{9}{Dove}{11}{LCLV}.
+\end{optexp}
+\end{pspicture}
+\end{document}
