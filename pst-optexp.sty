@@ -6,19 +6,17 @@
 \RequirePackage{multido}
 \RequirePackage{pst-eucl}
 \RequirePackage{pstricks-add}
-%\RequirePackage{environ}
+\RequirePackage{environ}
 \DeclareOption{compat}{\gdef\pstoptexp@compat{}}
 %
 \ProcessOptions\relax
 %
-\RequirePackage{environ}
 \long\def\optexp@collect#1{%
-%  \POE@optexpenvtrue
   \psset{optexpenv, bglayer=true, toplayer=false}#1%
   \gdef\POE@complist{}\global\poe@cnt=0\relax%
   \psset{bglayer=false, toplayer=true, addtoBeam={linecolor=red, linestyle=dashed}}%
   #1}%
-\newenvironment{optexp}{\psset{optexpenv}\Collect@Body\optexp@collect}{}
+\newenvironment{optexp}{\Collect@Body\optexp@collect}{}
 %
 \input{pst-optexp.tex}
 \ProvidesFile{pst-optexp.tex}
