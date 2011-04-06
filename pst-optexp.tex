@@ -808,8 +808,11 @@
   \def\optexp@comps{}%
   \optexp@@getcomps%
 }%
+% \def\optexp@@getcomps{%
+%   \@ifnextchar.{\optexp@aftercomps\@gobble}{\optexp@@@getcomps}%
+% }%
 \def\optexp@@getcomps{%
-  \@ifnextchar.{\optexp@aftercomps\@gobble}{\optexp@@@getcomps}%
+  \@ifnextchar\bgroup{\optexp@@@getcomps}{\optexp@aftercomps}%
 }%
 \def\optexp@@@getcomps#1{\expandafter\optexp@@@@getcomps#1\@nil}%
 \def\optexp@@@@getcomps#1\@nil{%
@@ -836,9 +839,9 @@
 %  \edef\poe@tmp{\the\poe@cnt}% I don't know how to do it with expansion
   \ifPOE@beam
     \ifPOE@endbox
-      \drawbeam[addtoBeam={beamConnectComp}]{(\optexp@refnodeA)}{\POK@compname}.
+      \drawbeam[addtoBeam={beamConnectComp}]{(\optexp@refnodeA)}{\POK@compname}
     \else
-      \drawbeam[addtoBeam={beamConnectComp}]{(\optexp@refnodeA)}{\POK@compname}{(\optexp@refnodeB)}.
+      \drawbeam[addtoBeam={beamConnectComp}]{(\optexp@refnodeA)}{\POK@compname}{(\optexp@refnodeB)}
     \fi
   \else
     \ifPOE@endbox
@@ -1558,7 +1561,7 @@
         \ifPOE@compat
           \@nameuse{\psk@connIn}
         \else
-          \drawbeam{(\optexp@refnodeA)}{\poe@tmp}.
+          \drawbeam{(\optexp@refnodeA)}{\poe@tmp}
         \fi
         \ifPOE@fiberout@
           \ifx\@empty\pst@tempC

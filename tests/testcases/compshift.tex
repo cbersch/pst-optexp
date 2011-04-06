@@ -1,7 +1,7 @@
 %%% compshift.tex --- 
 
 %% Author: cbersch
-%% Version: $Id: compshift.tex,v 0.0 2009/03/31 10:58:43 Exp$
+%% Version: $Id: compshift.tex,v 0.0 2011/04/06 11:51:16 Exp$
 
 
 \documentclass{scrartcl}
@@ -15,7 +15,12 @@
 
 \begin{document}
 \begin{pspicture}[showgrid=true](10,10)
-  \lens[compshift=0.3,beam](0,1)(5,1){Lens}
-  \mirror[compshift=0.3,beam](0,3)(5,5)(3,2){Mirror}
+  \pnode(0,1){A}\pnode(5,1){B}
+  \lens[compshift=0.3](A)(B){Lens}
+  \drawbeam[startvecAbsolute, startvec=0]{(A)}{1}{(B)}.
+  \pnode(0,3){C}\pnode(5,5){D}\pnode(3,2){E}
+  \psdot(D)
+  \mirror[compshift=0.3](C)(D)(E){Mirror}
+  \drawbeam{(C)}{2}{(E)}
 \end{pspicture}
 \end{document}
