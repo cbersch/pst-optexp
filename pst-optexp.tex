@@ -679,14 +679,17 @@
    \fi
 \ignorespaces}%
 %
+\def\begin@DrawbeamObj{%
+  \begin@SpecialObj%
+  \let\pst@linetype\pst@arrowtype
+  \pst@addarrowdef%
+}%
 %
 \def\drawbeam{\pst@object{drawbeam}}%
 \def\drawbeam@i{%
   \addbefore@par{n=0}%
   \addafter@par{style=Beam}%
-  \begin@SpecialObj%
-  \let\pst@linetype\pst@arrowtype
-  \pst@addarrowdef%
+  \begin@DrawbeamObj
   \addto@pscode{%
      \pst@optexpdict 
      1 setlinejoin
@@ -708,6 +711,27 @@
     \drawbeam@iii
   \fi
 }%
+\def\end@DrawbeamObj{%
+  \ifx\pslinestyle\@none\else
+    \addto@pscode{%
+       Drawbeam 
+       gsave 
+       \pst@number\pslinewidth SLW
+       \pst@usecolor\pslinecolor
+       \tx@setStrokeTransparency
+       \@nameuse{psls@\pslinestyle}
+       grestore
+    }%
+  \fi
+  \addto@pscode{ end}%
+  \let\psk@fillstyle\relax
+  \ifPOE@optexpenv
+    \ifPOE@toplayer
+      \def\pst@code{}%
+    \fi
+  \fi
+  \end@SpecialObj%
+}%
 \def\drawbeam@iii{%
   \ifx\pslinestyle\@none\else
     \addto@pscode{%
@@ -722,23 +746,9 @@
     \addto@pscode{%
        [\ifx\POK@startvec\@empty 0 0 \else \POK@startvec\fi\space 
         counttomark 1 eq { 1 exch } if ] cvx
-       gsave 
-       \pst@number\pslinewidth SLW
-       \pst@usecolor\pslinecolor
-       \tx@setStrokeTransparency
-       Drawbeam 
-       \@nameuse{psls@\pslinestyle}
-       grestore
     }%
   \fi
-  \addto@pscode{ end}%
-  \let\psk@fillstyle\relax
-  \ifPOE@optexpenv
-    \ifPOE@toplayer
-      \def\pst@code{}%
-    \fi
-  \fi
-  \end@SpecialObj%
+  \end@DrawbeamObj
 }%
 \def\drawextendedbeam@iii{%
   \def\pst@fill##1{ gsave ##1 grestore }%

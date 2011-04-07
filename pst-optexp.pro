@@ -1051,6 +1051,13 @@ tx@OptexpDict begin
 		} {
 		    1 1 1 N N
 		} ifelse
+		% start start inc stop stop
+		first startInside not and {
+		    % first comp and we do not start inside
+		    5 -2 roll % inc stop stop start start
+		    pop pop % inc stop stop
+		    2 copy 5 2 roll
+		} if
 		5 1 roll % stop start start inc stop
 		{% iterate over all planes
 		    % stop start i
@@ -1091,6 +1098,9 @@ tx@OptexpDict begin
 	} ifelse
 %	(stack)==  counttomark /t ED t copy t {==}repeat
     } for
+    (Planes on stack:) ==
+    counttomark /t ED t copy t {==} repeat
+    (-------------------------------) ==
 } bind def
 % Construct the plane name from PlaneNum. This must be called within a dict of a
 % optexpcomp, because the last node ends with (N) instead of the number.
