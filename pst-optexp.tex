@@ -642,6 +642,8 @@
     \fi
   \endgroup
 }%
+\def\bglayer#1{\ifPOE@bglayer #1\fi\ignorespaces}
+\def\toplayer#1{\ifPOE@toplayer #1\fi\ignorespaces}
 %
 \expandafter\ifx\csname pstoptexp@compat\endcsname\relax%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1457,7 +1459,6 @@
 \newOptexpDipole{optplate}{}%
 \newOptexpDipole{optretplate}{}%
 \newOptexpDipole[endbox]{optdetector}{}%
-\@ifundefined{PSTcircLoaded}{\newpsobject{detector}{optdetector}}{}{}%
 \newOptexpDipole{optdiode}{}%
 \newOptexpDipole{doveprism}{}%
 %
@@ -1717,7 +1718,9 @@
     \def\@@comp{%
        #2%
        \ifx\POK@extnode\@empty\else
-          \pnode(! \pst@optexpdict ExtNode end){\POK@extnoden@me}%
+          \ifPOE@bglayer
+            \pnode(! \pst@optexpdict ExtNode end){\POK@extnoden@me}%
+          \fi
        \fi
     }%
     \ifPOE@endbox%
@@ -2307,13 +2310,14 @@
   \newOptexpComp{{ 0 0} { 0 1 } trans {NewPlaneInt} 1 }%
   \ifx\POK@dettype\POS@dettype@round
     \pnode(! \POK@detsize\space 0.2 mul 0){\optexp@nodeLabel}%
+    \pst@Verb{/@@x0 \POK@detsize\space 0.5 mul def}%
   \else\ifx\POK@dettype@diode
     \pnode(! \POK@detsize\space 0.5 mul 0){\optexp@nodeLabel}
+    \pst@Verb{\POK@detsize\space 0.5 mul dup dup /@@x0 ED /@@x ED /@@y ED}%
   \fi\fi
 }%
 \def\optdetector@comp{%
    \pnode(\optexp@refnodeB){\optexp@nodeIn}
-%   \newOptexpComp{{ 0 0} { 0 1 } trans {NewPlaneInt} 1 }%
    \ifx\POK@dettype\POS@dettype@round
       \begin@ClosedObj
          % I could have use pswedge but then a correction of the component size
@@ -2321,7 +2325,6 @@
          \addto@pscode{CLW 0.5 mul 0 \POK@detsize\space\pst@number\psrunit mul 0.5 mul 
             CLW sub -90 90 arc closepath }%
       \end@ClosedObj
-      \pst@Verb{/@@x0 \POK@detsize\space 0.5 mul def}%
    \else\ifx\POK@dettype\POS@dettype@diode
       \edef\@sz{\POK@detsize\space 0.5 mul\space}%
       \psframe[dimen=outer](! 0 \@sz neg)(!\@sz 2 mul \@sz)
@@ -2331,9 +2334,7 @@
       \psline(! \@sz 0.8 mul \@sz 0.4 mul \getCLWH add)(! \@sz 1.6 mul \@sz 0.4 mul \getCLWH add)
       \psset{arrows=->, arrowinset=0, arrowscale=0.8}
       \psline(! \@sz 0.2 mul \@sz 0.3 mul)(! \@sz 0.7 mul \@sz 0.15 mul)
-%      \psline(! \@sz 0.2 mul \@sz 0.3 mul)(! \@sz 0.7 mul 0)
       \psline(! \@sz 0.2 mul 0)(! \@sz 0.7 mul \@sz -0.15 mul)
-      \pst@Verb{/@@x0 \@sz def /@@x \@sz def /@@y \@sz def}%
    \fi\fi
 \ignorespaces}%
 %
