@@ -568,6 +568,7 @@ tx@OptexpDict begin
 % -> Yn Xn drawToN? ... Y1 X1 drawTo1? Y0 X0
 /TraceBeam {%
     /InVec ED /StartPoint ED
+    /oldbeaminsidelast currentdict /beaminsidelast known { beaminsidelast } { false } ifelse def
     % preset options
     /nmul 1 def
     /nadd 0 def
@@ -591,7 +592,9 @@ tx@OptexpDict begin
     }{
 	2 copy /StartPoint load  TransformStartPos /Curr ED
     } ifelse
-%    (TraceBeam, transformations done) == 
+%    (TraceBeam, transformations done) ==
+%    counttomark /t ED t copy t {==} repeat
+%    (=========================) ==
     counttomark /PlaneNum ED /n1 1 def % init the refractive index
     /PN 1 def
 %    (start loop)==
@@ -668,15 +671,24 @@ tx@OptexpDict begin
 %	(after dict) ==
 %	counttomark /t ED t copy t{==}repeat
 	PN 1 eq {
-	    pop pop 2 copy ToVec /Curr ED
-%	    /n1 1 def
-	    counttomark 2 roll
+	    pop pop
+	    /draw beaminsidefirst oldbeaminsidelast xor def
 	} {
-	    ToVec /CurrVec ED 2 copy
-	    ToVec /Curr ED 
-	    draw
-	    counttomark 3 roll
+	    ToVec /CurrVec ED
 	} ifelse
+	2 copy
+	ToVec /Curr ED 
+	draw
+	counttomark 3 roll
+%	PN 1 eq {
+%	    pop pop 2 copy ToVec /Curr ED
+%	    counttomark 2 roll
+%	} {
+%	    ToVec /CurrVec ED 2 copy
+%	    ToVec /Curr ED 
+%	    draw
+%	    counttomark 3 roll
+%	} ifelse
 %	(blubb)==
         /CurrCenterTmp /CurrCenter load def
 	/lastBeamPoint /Curr load def
@@ -696,11 +708,11 @@ tx@OptexpDict begin
 % [ CompN ... Comp1 {options} {start point} {input vector}
 /Drawbeam {
     TraceBeam
-    counttomark 2 eq {
+    counttomark 3 eq {
 	% first ray misses the next interface
-	pop pop
+	pop pop pop
     }{
-	5 copy 3 -1 roll pop ArrowA pop pop pop pop % go to Startpoint
+	pop 5 copy 3 -1 roll pop ArrowA pop pop pop pop % go to Startpoint
 	counttomark 3 idiv -1 2 {
 	    pop {
 		lineto
