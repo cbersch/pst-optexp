@@ -133,7 +133,7 @@ tx@OptexpDict begin
 % Calculate angle of a line from nodeA to nodeB. nodeA and nodeB must be given as literal names
 % nodeB nodeA -> angle
 /FiberAngleB {%
-    nametostring @GetCenter 3 -1 roll nametostring @GetCenter exch 3 1 roll sub 3 1 roll sub atan
+    @GetCenter 3 -1 roll @GetCenter exch 3 1 roll sub 3 1 roll sub atan
 } bind def
 %
 % Calculate angle of line from nodeB to nodeA
@@ -701,9 +701,15 @@ tx@OptexpDict begin
 	pop pop
     }{
 	5 copy 3 -1 roll pop ArrowA pop pop pop pop % go to Startpoint
-	counttomark 3 idiv -1 2 { pop {lineto}{moveto}ifelse } for
+	counttomark 3 idiv -1 2 {
+	    pop {
+		lineto
+	    }{
+		moveto
+	    }ifelse
+	} for
 	{CP 4 2 roll ArrowB lineto pop pop } {moveto} ifelse
-	pop
+	pop % remove [
     } ifelse
 } bind def
 % Stroke an extendend beam. Only rearranges the input parameters and calls Drawbeam twice, for the upper
@@ -1167,7 +1173,7 @@ tx@OptexpDict begin
 } bind def
 /@ABVect { tx@EcldDict begin ABVect end } bind def
 /@ABDist { tx@EcldDict begin ABDist end } bind def
-/@GetCenter { cvn tx@NodeDict begin load GetCenter end } bind def
+/@GetCenter { dup type /stringtype eq { cvn } if tx@NodeDict begin load GetCenter end } bind def
 % see <http://en.wikipedia.org/wiki/Snell%27s_law#Vector_form>
 % X_in Y_in X_norm Y_norm n1 n2 RefractVec -> X_out Y_out
 /RefractVec {

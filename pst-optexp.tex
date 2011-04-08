@@ -27,7 +27,7 @@
 %
 %
 \def\fileversion{3.0alpha}
-\def\filedate{2011/04/01}
+\def\filedate{2011/04/08}
 \message{`pst-optexp' v\fileversion, \filedate\space (CB)}
 %
 \edef\PstAtCode{\the\catcode`\@} \catcode`\@=11\relax
@@ -138,7 +138,7 @@
 \newpsstyle{OptionalStyle}{style=OptComp, linestyle=dashed,dash=1.5pt 1pt}%
 %
 % Style for beams drawn with \drawbeam
-\newpsstyle{Beam}{linecolor=green!90!black,linewidth=\pslinewidth}%
+\newpsstyle{Beam}{linecolor=green!90!black,linewidth=\pslinewidth, linejoin=1}%
 \define@key[psset]{optexp}{newBeam}{\newpsstyle{Beam}{#1}}
 \define@key[psset]{optexp}{addtoBeam}{\addtopsstyle{Beam}{#1}}
 %
@@ -692,7 +692,6 @@
   \begin@DrawbeamObj
   \addto@pscode{%
      \pst@optexpdict 
-     1 setlinejoin
      /beaminsidefirst \ifPOE@beaminsidefirst true \else false \fi def
      /beaminsidelast \ifPOE@beaminsidelast true \else false \fi def
      /beamInside \ifPOE@beamInside true \else false \fi def
@@ -716,10 +715,11 @@
     \addto@pscode{%
        Drawbeam 
        gsave 
-       \pst@number\pslinewidth SLW
-       \pst@usecolor\pslinecolor
-       \tx@setStrokeTransparency
-       \@nameuse{psls@\pslinestyle}
+         \tx@setlinejoin
+         \pst@number\pslinewidth SLW
+         \pst@usecolor\pslinecolor
+         \tx@setStrokeTransparency
+         \@nameuse{psls@\pslinestyle}
        grestore
     }%
   \fi
@@ -779,31 +779,54 @@
      \ifx\pslinestyle\@none
        \addto@pscode{ cleartomark pop }%
     \else
-       % stroke only
-       \addto@pscode{ newpath 
-                      gsave 
-                        \pst@number\pslinewidth SLW \pst@usecolor\pslinecolor \tx@setStrokeTransparency 
-                        StrokeExtendedBeam \@nameuse{psls@\pslinestyle} 
-                      grestore }%
+      % stroke only
+      \addto@pscode{%
+        newpath 
+        gsave 
+          \tx@setlinejoin
+          \pst@number\pslinewidth SLW 
+          \pst@usecolor\pslinecolor 
+          \tx@setStrokeTransparency 
+          StrokeExtendedBeam
+          \@nameuse{psls@\pslinestyle} 
+        grestore 
+      }%
     \fi
   \else
-    \addto@pscode{counttomark 1 add copy newpath gsave }%
-    \addto@pscode{/fillBeam { \psk@fillstyle } def }%
-    \addto@pscode{currentdict /lastBeamPointLow known { /TmpLastBeamPointLow /lastBeamPointLow load def} if }%
-    \addto@pscode{currentdict /lastBeamPointUp known { /TmpLastBeamPointUp /lastBeamPointUp load def} if }%
-    \addto@pscode{ FillExtendedBeam grestore }%
+    \addto@pscode{%
+      counttomark 1 add copy 
+      newpath 
+      gsave
+        /fillBeam { \psk@fillstyle } def
+        currentdict /lastBeamPointLow known { /TmpLastBeamPointLow /lastBeamPointLow load def} if
+        currentdict /lastBeamPointUp known { /TmpLastBeamPointUp /lastBeamPointUp load def} if
+        FillExtendedBeam
+      grestore
+    }%
     \ifx\pslinestyle\@none\else
-       \addto@pscode{pop newpath }%currentdict dup /lastBeamPointLow undef /lastBeamPointUp undef }%
-       \addto@pscode{currentdict dup /TmpLastBeamPointLow known { /lastBeamPointLow /TmpLastBeamPointLow load def /TmpLastBeamPointLow undef } { /lastBeamPointLow undef } ifelse }%
-       \addto@pscode{currentdict dup /TmpLastBeamPointUp known { /lastBeamPointUp /TmpLastBeamPointUp load def /TmpLastBeamPointUp undef } { /lastBeamPointUp undef } ifelse }%
        \addto@pscode{%
+         pop newpath
+         currentdict dup /TmpLastBeamPointLow known { 
+           /lastBeamPointLow /TmpLastBeamPointLow load def 
+           /TmpLastBeamPointLow undef 
+         } { 
+           /lastBeamPointLow undef 
+         } ifelse
+         currentdict dup /TmpLastBeamPointUp known {
+           /lastBeamPointUp /TmpLastBeamPointUp load def 
+           /TmpLastBeamPointUp undef 
+         } { 
+           /lastBeamPointUp undef 
+         } ifelse
          gsave 
+           \tx@setlinejoin
            \pst@number\pslinewidth SLW 
            \pst@usecolor\pslinecolor 
            \tx@setStrokeTransparency 
            StrokeExtendedBeam 
            \@nameuse{psls@\pslinestyle}  
-         grestore }%
+         grestore 
+       }%
     \fi%
   \fi%
   \addto@pscode{end }%
@@ -1000,10 +1023,8 @@
 \def\defShiftedNode(#1)(#2)#3{%
      \pst@getcoor{#1}\pst@tempOrig%
      \pst@getcoor{#2}\pst@tempDiff%
-     \pnode(!%
-        \pst@tempDiff \pst@tempOrig
-        3 -1 roll add \pst@number\psyunit div
-        3 1 roll add \pst@number\psxunit div exch){#3}%
+     \pnode(!\pst@tempDiff \pst@tempOrig 
+             3 -1 roll add 3 1 roll add exch \tx@UserCoor){#3}%
 }%
 %
 % New high-level macros 
@@ -1151,14 +1172,10 @@
           \else
             \pst@getcoor{##1}\pst@tempA%
             \pst@getcoor{##2}\pst@tempB%
-            \pnode(!\pst@tempA\pst@number\psyunit div exch \pst@number\psxunit div exch
-                    \pst@tempB\pst@number\psyunit div exch \pst@number\psxunit div exch 
-                    \pst@optexpdict mwNode end){\optexp@refnodeA}
+            \pnode(!\pst@tempA \pst@tempB \pst@optexpdict mwNode end \tx@UserCoor){\optexp@refnodeA}
             \pst@getcoor{##3}\pst@tempA%
             \pst@getcoor{##4}\pst@tempB%
-            \pnode(!\pst@tempA\pst@number\psyunit div exch \pst@number\psxunit div exch
-                    \pst@tempB\pst@number\psyunit div exch \pst@number\psxunit div exch 
-                    \pst@optexpdict mwNode end){\optexp@refnodeB}
+            \pnode(!\pst@tempA \pst@tempB \pst@optexpdict mwNode end \tx@UserCoor){\optexp@refnodeB}
          \fi\fi
        \fi
        %
@@ -1303,9 +1320,9 @@
   \pst@getcoor{#3}\pst@tempc%
   \pnode(!%
      \pst@optexpdict
-     \pst@tempa \pst@number\psyunit div exch \pst@number\psxunit div exch 
-     \pst@tempc \pst@number\psyunit div exch \pst@number\psxunit div exch 
-     \pst@tempb \pst@number\psyunit div exch \pst@number\psxunit div exch 
+     \pst@tempa \tx@UserCoor
+     \pst@tempc \tx@UserCoor
+     \pst@tempb \tx@UserCoor
      calcNodes
      /ExchCoorSwitch 
      Y@A X@A neg Y@B X@B neg ExchCoor def
@@ -1323,14 +1340,24 @@
     \pnode(#2){\optexp@refnodeB}
 \ignorespaces}%
 \def\pst@adjustTempNodes{%
-    \pst@Verb{tx@NodeDict begin N@\optexp@refnodeA\space GetCenter N@\optexp@refnodeB\space GetCenter end
-              \pst@optexpdict ExchCoor dup end
-              {/@xref \POK@xref\space neg def /@yref \POK@yref\space neg def} 
-              {/@xref \POK@xref\space def /@yref \POK@yref\space def} ifelse
-              \pst@optexpdict /ExchCoorSwitch ED end
-              tx@OptexpDict /chirality known not {\pst@optexpdict /chirality 1 def 
-              end } if
+    \pst@Verb{\pst@optexpdict
+      (N@\optexp@refnodeA) @GetCenter (N@\optexp@refnodeB) @GetCenter
+      currentdict /chirality known not {%
+        /chirality 1 def 
+      } if
+      ExchCoor dup /ExchCoorSwitch ED 
+      end
+      {/@xref \POK@xref\space neg def /@yref \POK@yref\space neg def} 
+      {/@xref \POK@xref\space def /@yref \POK@yref\space def} ifelse
     }%
+    % \pst@Verb{tx@NodeDict begin N@\optexp@refnodeA\space GetCenter N@\optexp@refnodeB\space GetCenter end
+    %           \pst@optexpdict ExchCoor dup end
+    %           {/@xref \POK@xref\space neg def /@yref \POK@yref\space neg def} 
+    %           {/@xref \POK@xref\space def /@yref \POK@yref\space def} ifelse
+    %           \pst@optexpdict /ExchCoorSwitch ED end
+    %           tx@OptexpDict /chirality known not {\pst@optexpdict /chirality 1 def 
+    %           end } if
+    % }%
 \ignorespaces}%
 %
 %
@@ -1349,8 +1376,7 @@
          /rot@angle #4 \POK@labelrefangle\space add def
          /XDiff@Rot rot@angle cos XDiff mul rot@angle sin YDiff mul add def
          /YDiff@Rot rot@angle cos YDiff mul rot@angle sin XDiff mul sub def
-         XShifted XDiff@Rot add \pst@number\psxunit div
-         YShifted YDiff@Rot add \pst@number\psyunit div neg
+         XShifted XDiff@Rot add YShifted YDiff@Rot add neg \tx@UserCoor
        ){#3}%
     % reset reference label to 0
     \psset{ref@angle=0}
