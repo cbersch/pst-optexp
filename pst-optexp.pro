@@ -919,6 +919,7 @@ tx@OptexpDict begin
 	} ifelse
 %	(center done) ==
         PN 1 gt {
+%	    gsave
 	    draw {
 		/DrawnSegm dup load 1 add def
 %	    (draw) == 
@@ -943,6 +944,7 @@ tx@OptexpDict begin
 		fillBeam newpath
 		/DrawnSegm 0 def
 	    } if
+%	    grestore
 	} {
 %	    PN == 1
 	    /CurrVecUp /OldVecUp load def
