@@ -707,7 +707,7 @@ tx@OptexpDict begin
 %
 % [ CompN ... Comp1 {options} {start point} {input vector}
 /Drawbeam {
-    TraceBeam
+%    TraceBeam
     counttomark 3 eq {
 	% first ray misses the next interface
 	pop pop pop
@@ -727,7 +727,7 @@ tx@OptexpDict begin
 % Stroke an extendend beam. Only rearranges the input parameters and calls Drawbeam twice, for the upper
 % and lower beam.
 % [ CompN ... Comp1 {options} {start point up} {input vector up} {start point low} {input vector low}
-/StrokeExtendedBeam {
+/TraceExtendedBeam {
     5 -1 roll dup 6 1 roll 3 1 roll % {opt} {sup} {inup} {opt} {slow} {inlow}
     counttomark 6 sub /numComp ED
     numComp 7 add 6 roll numComp 1 add copy % {opt} {sup} {inup} {opt} {slow} {inlow} [ CompN .. Comp1 [ CompN .. Comp1
@@ -736,12 +736,13 @@ tx@OptexpDict begin
     currentdict /lastBeamPointLow known {
 	/lastBeamPointLow load /lastBeamPoint ED
     } if
-    Drawbeam /lastBeamPoint load /lastBeamPointLow ED
+    TraceBeam /lastBeamPoint load /lastBeamPointLow ED
     currentdict /lastBeamPoint undef
     currentdict /lastBeamPointUp known {
 	/lastBeamPointUp load /lastBeamPoint ED
     } if
-    Drawbeam /lastBeamPoint load /lastBeamPointUp ED
+    counttomark 1 add dup numComp 4 add add exch roll
+    TraceBeam /lastBeamPoint load /lastBeamPointUp ED
 } bind def
 % Fill an extended beam. This must have an own procedure, because all segments
 % of the beam must be filled separately.
