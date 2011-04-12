@@ -779,11 +779,11 @@
   % stroke and/or fill
   \ifx\psk@fillstyle\relax
      \ifx\pslinestyle\@none
-       \addto@pscode{ cleartomark pop }%
+       \addto@pscode{ cleartomark }%
     \else
       % stroke only
       \addto@pscode{%
-        newpath 
+%        newpath 
         gsave 
           \tx@setlinejoin
           \pst@number\pslinewidth SLW 
@@ -797,17 +797,19 @@
   \else
     \addto@pscode{%
       counttomark 1 add copy 
-      newpath 
+%      newpath 
       gsave
         /fillBeam { \psk@fillstyle } def
         currentdict /lastBeamPointLow known { /TmpLastBeamPointLow /lastBeamPointLow load def} if
         currentdict /lastBeamPointUp known { /TmpLastBeamPointUp /lastBeamPointUp load def} if
         FillExtendedBeam
-      grestore
+      grestore pop
     }%
-    \ifx\pslinestyle\@none\else
+    \ifx\pslinestyle\@none
+      \addto@pscode{ cleartomark }%
+    \else
        \addto@pscode{%
-         pop newpath
+%         newpath
          currentdict dup /TmpLastBeamPointLow known { 
            /lastBeamPointLow /TmpLastBeamPointLow load def 
            /TmpLastBeamPointLow undef 
