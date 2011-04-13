@@ -676,13 +676,19 @@
       \begingroup%
       \use@par%
       \def\end@SpecialObj{\endgroup\ignorespaces}}%
+   \let\@oldsinglebegin\begin@SingleBeam
+   \def\begin@SingleBeam{\message{^^JRedefining begin@ExtendedBeam^^J}\def\begin@ExtendedBeam{\@pstrickserr{You can't switch between single and extended beam in custom mode.}\@ehpb}\@oldsinglebegin}%
+   \let\@oldextendedbegin\begin@ExtendedBeam
+   \def\begin@ExtendedBeam{\message{^^JRedefining begin@SingleBeam^^J}\def\begin@SingleBeam{\@pstrickserr{You can't switch between single and extended beam in custom mode.}\@ehpb}\@oldextendedbegin}%
    #1%
    \end@SpecialObj%
    \fi
 \ignorespaces}%
 %
 \def\begin@DrawbeamObj{%
+      \message{^^J--------------|\pst@par|------------------^^J}
   \begin@SpecialObj%
+      \message{^^J--------------|\pst@par|------------------^^J}
   \let\pst@linetype\pst@arrowtype
   \pst@addarrowdef%
   \addto@pscode{%
@@ -723,7 +729,14 @@
   \fi
   \end@SpecialObj%
 }%
+\def\begin@SingleBeam{%
+  \let\@strokesinglebeam\@@strokesinglebeam
+}%
+\def\begin@ExtendedBeam{%
+  \let\@strokeextendedbeam\@@strokeextendedbeam
+}%
 \def\drawbeam@iii{%
+  \begin@SingleBeam
   \ifx\pslinestyle\@none\else
     \addto@pscode{%
      {/nmul \psk@oe@nmul\space def
@@ -742,7 +755,7 @@
     \@strokesinglebeam
   \fi
 }%
-\def\@strokesinglebeam{%
+\def\@@strokesinglebeam{%
   \addto@pscode{%
     gsave 
       Drawbeam 
@@ -755,6 +768,7 @@
   }%
 }%
 \def\drawextendedbeam@iii{%
+  \begin@ExtendedBeam
   \def\pst@fill##1{ gsave ##1 grestore }%
   \addto@pscode{%
    {/nmul \psk@oe@nmul\space def
@@ -795,7 +809,7 @@
     }%
   \fi%
 }%
-\def\@strokeextendedbeam{%
+\def\@@strokeextendedbeam{%
   \ifx\psk@fillstyle\relax
      \ifx\pslinestyle\@none
        \addto@pscode{ cleartomark }%
