@@ -1343,4 +1343,19 @@ tx@OptexpDict begin
 	5 1 roll SProd 0 lt { 180 add } if
     } ifelse
 } bind def
+
+/restoreBeamPoints {
+    tx@OptexpDict dup /TmpLastBeamPointLow known { 
+        /lastBeamPointLow /TmpLastBeamPointLow load def 
+        /TmpLastBeamPointLow undef 
+    } { 
+        /lastBeamPointLow undef 
+    } ifelse
+    tx@OptexpDict dup /TmpLastBeamPointUp known {
+        /lastBeamPointUp /TmpLastBeamPointUp load def 
+        /TmpLastBeamPointUp undef 
+    } { 
+        /lastBeamPointUp undef 
+    } ifelse
+} bind def
 end % tx@OptexpDict
