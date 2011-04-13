@@ -685,13 +685,6 @@
   \begin@SpecialObj%
   \let\pst@linetype\pst@arrowtype
   \pst@addarrowdef%
-}%
-%
-\def\drawbeam{\pst@object{drawbeam}}%
-\def\drawbeam@i{%
-  \addbefore@par{n=0}%
-  \addafter@par{style=Beam}%
-  \begin@DrawbeamObj
   \addto@pscode{%
      \pst@optexpdict 
      /beaminsidefirst \ifPst@oe@beaminsidefirst true \else false \fi def
@@ -703,6 +696,13 @@
      /connectPlaneNodes \ifPst@oe@beamConnectComp true \else false \fi def
      /startvecAbsolute \ifPst@oe@startvecAbsolute true \else false \fi def
   }%
+}%
+%
+\def\drawbeam{\pst@object{drawbeam}}%
+\def\drawbeam@i{%
+  \addbefore@par{n=0}%
+  \addafter@par{style=Beam}%
+  \begin@DrawbeamObj
   \optexp@getcomps[\drawbeam@ii%
 }%
 \def\drawbeam@ii{%
@@ -711,21 +711,9 @@
   \else
     \drawbeam@iii
   \fi
+  \end@DrawbeamObj
 }%
 \def\end@DrawbeamObj{%
-  \ifx\pslinestyle\@none\else
-    \addto@pscode{%
-       TraceBeam
-       Drawbeam 
-       gsave 
-         \tx@setlinejoin
-         \pst@number\pslinewidth SLW
-         \pst@usecolor\pslinecolor
-         \tx@setStrokeTransparency
-         \@nameuse{psls@\pslinestyle}
-       grestore
-    }%
-  \fi
   \addto@pscode{ end}%
   \let\psk@fillstyle\relax
   \ifPst@oe@optexpenv
@@ -750,8 +738,21 @@
        [\ifx\psk@oe@startvec\@empty 0 0 \else \psk@oe@startvec\fi\space 
         counttomark 1 eq { 1 exch } if ] cvx
     }%
+    \addto@pscode{ TraceBeam }%
+    \@strokesinglebeam
   \fi
-  \end@DrawbeamObj
+}%
+\def\@strokesinglebeam{%
+  \addto@pscode{%
+    gsave 
+      Drawbeam 
+      \tx@setlinejoin
+      \pst@number\pslinewidth SLW
+      \pst@usecolor\pslinecolor
+      \tx@setStrokeTransparency
+      \@nameuse{psls@\pslinestyle}
+    grestore
+  }%
 }%
 \def\drawextendedbeam@iii{%
   \def\pst@fill##1{ gsave ##1 grestore }%
@@ -778,28 +779,13 @@
   \addto@pscode{ exch 4 -1 roll 4 2 roll exch }% 
   %
   % stroke and/or fill
-  \ifx\psk@fillstyle\relax
-     \ifx\pslinestyle\@none
-       \addto@pscode{ cleartomark }%
-    \else
-      % stroke only
-      \addto@pscode{%
-%        newpath 
-        gsave 
-          \tx@setlinejoin
-          \pst@number\pslinewidth SLW 
-          \pst@usecolor\pslinecolor 
-          \tx@setStrokeTransparency 
-          TraceExtendedBeam
-          Drawbeam Drawbeam
-          \@nameuse{psls@\pslinestyle} 
-        grestore 
-      }%
-    \fi
-  \else
+  \@fillextendedbeam
+  \@strokeextendedbeam
+}%
+\def\@fillextendedbeam{
+  \ifx\psk@fillstyle\relax\else
     \addto@pscode{%
       counttomark 1 add copy 
-%      newpath 
       gsave
         /fillBeam { \psk@fillstyle } def
         currentdict /lastBeamPointLow known { /TmpLastBeamPointLow /lastBeamPointLow load def} if
@@ -807,42 +793,46 @@
         FillExtendedBeam
       grestore pop
     }%
+  \fi%
+}%
+\def\@strokeextendedbeam{%
+  \ifx\psk@fillstyle\relax
+     \ifx\pslinestyle\@none
+       \addto@pscode{ cleartomark }%
+    \else
+      % stroke only
+      \addto@pscode{%
+%        newpath 
+        TraceExtendedBeam
+        gsave 
+          \tx@setlinejoin
+          \pst@number\pslinewidth SLW 
+          \pst@usecolor\pslinecolor 
+          \tx@setStrokeTransparency 
+          Drawbeam Drawbeam
+          \@nameuse{psls@\pslinestyle} 
+        grestore 
+      }%
+    \fi
+  \else
     \ifx\pslinestyle\@none
       \addto@pscode{ cleartomark }%
     \else
        \addto@pscode{%
 %         newpath
-         currentdict dup /TmpLastBeamPointLow known { 
-           /lastBeamPointLow /TmpLastBeamPointLow load def 
-           /TmpLastBeamPointLow undef 
-         } { 
-           /lastBeamPointLow undef 
-         } ifelse
-         currentdict dup /TmpLastBeamPointUp known {
-           /lastBeamPointUp /TmpLastBeamPointUp load def 
-           /TmpLastBeamPointUp undef 
-         } { 
-           /lastBeamPointUp undef 
-         } ifelse
+         restoreBeamPoints
+         TraceExtendedBeam 
          gsave 
            \tx@setlinejoin
            \pst@number\pslinewidth SLW 
            \pst@usecolor\pslinecolor 
            \tx@setStrokeTransparency 
-           TraceExtendedBeam 
            Drawbeam Drawbeam
            \@nameuse{psls@\pslinestyle}  
          grestore 
        }%
     \fi%
   \fi%
-  \addto@pscode{end }%
-  \ifPst@oe@optexpenv
-    \ifPst@oe@toplayer
-      \def\pst@code{}%
-    \fi
-  \fi
-  \end@SpecialObj%
 }%
 %
 \def\optexp@getcomps#1#2{%
