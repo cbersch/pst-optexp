@@ -676,19 +676,17 @@
       \begingroup%
       \use@par%
       \def\end@SpecialObj{\endgroup\ignorespaces}}%
-   \let\@oldsinglebegin\begin@SingleBeam
-   \def\begin@SingleBeam{\message{^^JRedefining begin@ExtendedBeam^^J}\def\begin@ExtendedBeam{\@pstrickserr{You can't switch between single and extended beam in custom mode.}\@ehpb}\@oldsinglebegin}%
-   \let\@oldextendedbegin\begin@ExtendedBeam
-   \def\begin@ExtendedBeam{\message{^^JRedefining begin@SingleBeam^^J}\def\begin@SingleBeam{\@pstrickserr{You can't switch between single and extended beam in custom mode.}\@ehpb}\@oldextendedbegin}%
+   \let\@drawbeam\drawbeam
+   \def\drawbeam{\def\drawextendedbeam{\errmessage{pst-optexp error: You can't switch from single to extended beam in custom mode}}\@drawbeam}%
+   \let\@drawextendedbeam\drawextendedbeam
+   \def\drawextendedbeam{\def\drawbeam{\errmessage{pst-optexp error: You can't switch from extended to single beam in custom mode}}\@drawextendedbeam}%
    #1%
    \end@SpecialObj%
    \fi
 \ignorespaces}%
 %
 \def\begin@DrawbeamObj{%
-      \message{^^J--------------|\pst@par|------------------^^J}
   \begin@SpecialObj%
-      \message{^^J--------------|\pst@par|------------------^^J}
   \let\pst@linetype\pst@arrowtype
   \pst@addarrowdef%
   \addto@pscode{%
@@ -711,13 +709,12 @@
   \begin@DrawbeamObj
   \optexp@getcomps[\drawbeam@ii%
 }%
-\def\drawbeam@ii{%
-  \ifPst@oe@beamextended
-    \drawextendedbeam@iii
-  \else
-    \drawbeam@iii
-  \fi
-  \end@DrawbeamObj
+\def\drawextendedbeam{\pst@object{drawextendedbeam}}%
+\def\drawextendedbeam@i{%
+  \addbefore@par{n=0}%
+  \addafter@par{style=Beam}%
+  \begin@DrawbeamObj
+  \optexp@getcomps[\drawextendedbeam@ii%
 }%
 \def\end@DrawbeamObj{%
   \addto@pscode{ end}%
@@ -735,7 +732,7 @@
 \def\begin@ExtendedBeam{%
   \let\@strokeextendedbeam\@@strokeextendedbeam
 }%
-\def\drawbeam@iii{%
+\def\drawbeam@ii{%
   \begin@SingleBeam
   \ifx\pslinestyle\@none\else
     \addto@pscode{%
@@ -754,6 +751,7 @@
     \addto@pscode{ TraceBeam }%
     \@strokesinglebeam
   \fi
+  \end@DrawbeamObj
 }%
 \def\@@strokesinglebeam{%
   \addto@pscode{%
@@ -767,7 +765,7 @@
     grestore
   }%
 }%
-\def\drawextendedbeam@iii{%
+\def\drawextendedbeam@ii{%
   \begin@ExtendedBeam
   \def\pst@fill##1{ gsave ##1 grestore }%
   \addto@pscode{%
@@ -795,8 +793,9 @@
   % stroke and/or fill
   \@fillextendedbeam
   \@strokeextendedbeam
+  \end@DrawbeamObj
 }%
-\def\@fillextendedbeam{
+\def\@fillextendedbeam{%
   \ifx\psk@fillstyle\relax\else
     \addto@pscode{%
       counttomark 1 add copy 
