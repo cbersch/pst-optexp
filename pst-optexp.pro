@@ -1358,4 +1358,17 @@ tx@OptexpDict begin
         /lastBeamPointUp undef 
     } ifelse
 } bind def
+
+% rearrange points of single beam
+/rearrangePoints {
+    counttomark dup 2 add -1 roll pop counttomark 1 sub exch roll
+} bind def
+% rearrange points of extended beam
+%[ A B [ C D -> [ C A D B
+/rearrangePointsExt {
+    counttomark /t ED t 1 add -1 roll pop % [ A B C D
+    counttomark t sub /@rest ED
+    @rest 2 idiv t add t 2 idiv roll % [ A D B C
+    @rest t add t 2 idiv roll % [ C A D B
+} bind def
 end % tx@OptexpDict
