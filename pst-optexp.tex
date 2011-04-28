@@ -535,8 +535,6 @@
      \fi
    \fi
 }%
-% 
-\def\pst@optexp@getfirstchar#1#2\@nil{#1}%
 %
 % Connect a component directly with its reference nodes using \drawbeam
 \define@boolkey[psset]{optexp}[Pst@oe@]{beam}[true]{}
@@ -579,16 +577,14 @@
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \def\optexp@getnode#1\@nil{%
-  \edef\pst@tempb{\pst@optexp@getfirstchar#1\@nil}%
-  \def\pst@tempc{(}
-  \ifx\pst@tempb\pst@tempc\relax
+  \ifx(#1\relax
     \optexp@getcoor#1
     \edef\oe@temp{{\pst@coor}}%
   \else
-    \ifcat\pst@tempb a\relax
-      \edef\oe@temp{/\pst@str@basicname@prefix#1\space}%
-    \else
+    \ifnum9<1#1 %
       \edef\oe@temp{/\pst@str@basicname@prefix\pst@str@basicname@default#1\space}%
+    \else
+      \edef\oe@temp{/\pst@str@basicname@prefix#1\space}%
     \fi
   \fi%
 }%
@@ -860,15 +856,13 @@
   \@ifnextchar\bgroup{\optexp@@@getcomps}{\optexp@aftercomps}%
 }%
 \def\optexp@@@getcomps#1{\expandafter\optexp@@@@getcomps#1\@nil}%
-\def\optexp@@@@getcomps#1\@nil{%
-  \edef\pst@tempb{\pst@optexp@getfirstchar#1\@nil}%
-  \def\pst@tempc{(}%
-  \ifx\pst@tempb\pst@tempc\relax
-    \optexp@getplanenode#1%
-  \else\ifcat a\pst@tempb\relax
-    \optexp@getcomp{(\pst@str@basicname@prefix#1)}%
+\def\optexp@@@@getcomps#1#2\@nil{%
+  \ifx(#1\relax
+    \optexp@getplanenode#1#2%
+  \else\ifnum9<1#1
+    \optexp@getcomp{(\pst@str@basicname@prefix\pst@str@basicname@default#1#2)}%
   \else
-    \optexp@getcomp{(\pst@str@basicname@prefix\pst@str@basicname@default#1)}%
+    \optexp@getcomp{(\pst@str@basicname@prefix#1#2)}%
   \fi\fi%
   \optexp@@getcomps%
 }%
