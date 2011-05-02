@@ -1,7 +1,7 @@
 %%% test.tex --- 
 
 %% Author: cbersch
-%% Version: $Id: test.tex,v 0.0 2011/04/08 14:32:15 Exp$
+%% Version: $Id: test.tex,v 0.0 2011/04/30 14:30:23 Exp$
 
 
 \documentclass{scrartcl}
@@ -14,9 +14,33 @@
 %%\revision$Header: /home/cbersch/Desktop/test.tex,v 0.0 2009/10/26 14:28:23 cbersch Exp$
 
 \begin{document}
-\begin{pspicture}[showgrid=true](5,5)
-  \pnode(0,0){A}\pnode(5,0){B}
-  \lens(A)(B){}
-  \drawbeam{(A)}{1}
+\begin{pspicture}[showgrid=true](12, 4)
+  \psset{labeloffset=0.3}
+  \pnode(12, 2){Ref}
+  \optplane(Ref)(0,1){RefPlane}
+  \addtopsstyle{Beam}{linecolor=blue, beamdiv=10, beamInside=false, fillstyle=solid, fillcolor=red, opacity=0.3, linestyle=none}
+  \multido{\i=1+1, \ii=165+10}{4}{%
+    \rput(Ref){\pnode(6;\ii){A\i}}
+    \optbox[optboxwidth=0.5, optboxheight=0.5, endbox, compname=Box\i, extnode=l](Ref)(A\i){}
+    \lens[lens=0 -0.6 0.6, abspos=0.5, compname=L\i](A\i)(Ref){}
+    \lens[lens=1.2 1.2 0.8, abspos=1.1, n=1.55, compname=LC\i](A\i)(Ref){}
+    \drawextendedbeam{Box\i}{L\i}{LC\i}{RefPlane}
+  }
+  \rput(Ref){\pnode(7;170){TopCplOut}\pnode(7;190){BottomCplOut}}
+  \pnode([Xnodesep=-1]TopCplOut){TopCpl}
+  \pnode([Xnodesep=-1]BottomCplOut){BottomCpl}
+  \wdmsplitter[compname=TopCpl, nofiber](TopCpl)(TopCplOut)(TopCplOut){50/50}
+  \drawfiber[angleA=0, angleB=165]{}{(\OENodeExt{Box1})}
+  % \drawfiber[angleA=0, angleB=175]{}{(\OENodeExt{Box2})}
+  % \wdmsplitter[compname=BottomCpl, nofiber](BottomCpl)(BottomCplOut)(BottomCplOut){50/50}
+  % \drawfiber[angleA=0, angleB=185]{}{(\OENodeExt{Box3})}
+  % \drawfiber[angleA=0, angleB=195]{}{(\OENodeExt{Box4})}
+  % \pnode([Xnodesep=-2]TopCpl){Laser1}
+  % \pnode([Xnodesep=-2]BottomCpl){Laser2}
+  % \optbox[endbox, label=0](TopCpl)(Laser1){Laser1}
+  % \optbox[endbox, label=0](BottomCpl)(Laser2){Laser2}
+  % \optcoupler[compname=Cpl, fiberout=none](Laser1)(Laser2)(TopCpl)(BottomCpl){50/50}
+%  \drawfiber{Cpl}{TopCpl}
+%  \drawfiber{Cpl}{BottomCpl}
 \end{pspicture}
 \end{document}
