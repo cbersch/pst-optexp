@@ -668,6 +668,8 @@
   \ifPst@oe@bglayer
   \addafter@par{style=Beam}%
   \begin@SpecialObj%
+    \let\pst@linetype\pst@arrowtype
+    \pst@addarrowdef%
     \Pst@oe@custombeamtrue
     \def\begin@SpecialObj{%
       \begingroup%
@@ -675,32 +677,37 @@
       \def\end@SpecialObj{\endgroup\ignorespaces}}%
     \let\@drawbeam\drawbeam
     \def\drawbeam{%
+      \let\@strokebeam\@strokesinglebeam
       \def\drawextendedbeam{%
         \errmessage{pst-optexp error: You can't switch from single to extended beam in custom mode}%
       }%
       \@drawbeam
     }%
-  \let\@drawextendedbeam\drawextendedbeam
-  \def\drawextendedbeam{%
-    \def\drawbeam{%
-      \errmessage{pst-optexp error: You can't switch from extended to single beam in custom mode}%
+    \let\@drawextendedbeam\drawextendedbeam
+    \def\drawextendedbeam{%
+      \let\@strokebeam\@strokeextendedbeam
+      \def\drawbeam{%
+        \errmessage{pst-optexp error: You can't switch from extended to single beam in custom mode}%
+      }%
+      \@drawextendedbeam
     }%
-    \@drawextendedbeam
-  }%
-  \def\begin@ExtendedBeamObj{%
-    \begin@BeamObj
-    \let\@strokebeam\relax
-  }%
-  \def\begin@SingleBeamObj{%
-    \begin@BeamObj
-    \let\@strokebeam\relax
-  }%
-  #1%
-  \ifx\pslinestyle\@none\else
-    \addto@pscode{\pst@optexpdict }%
-    \@strokesinglebeam
-    \addto@pscode{ end }%
-  \fi
+    \def\begin@ExtendedBeamObj{%
+      \begin@BeamObj
+      \def\@strokebeam{\addto@pscode{ rearrangeExtBeamPoints }}%
+    }%
+    \def\begin@SingleBeamObj{%
+      \begin@BeamObj
+      \def\@strokebeam{\addto@pscode{ rearrangeSingleBeamPoints }}%
+    }%
+    \addto@pscode{[ }%
+    #1%
+    \ifx\pslinestyle\@none
+      \addto@pscode{ cleartomark }%
+    \else
+      \addto@pscode{\pst@optexpdict }%
+      \@strokebeam
+      \addto@pscode{ end }%
+    \fi
   \end@SpecialObj%
   \fi
 \ignorespaces}%
@@ -725,7 +732,7 @@
   \begin@BeamObj
   \let\pst@linetype\pst@arrowtype
   \pst@addarrowdef%
-  \let\@strokebeam\@strokeextendebeam
+  \let\@strokebeam\@strokeextendedbeam
 }%
 \def\begin@SingleBeamObj{%
   \addafter@par{style=Beam}%
@@ -812,11 +819,6 @@
   \addto@pscode{ exch 4 -1 roll 4 2 roll exch }% 
   %
   % stroke and/or fill
-  \@fillextendedbeam
-  \@strokeextendedbeam
-  \end@BeamObj
-}%
-\def\@fillextendedbeam{%
   \ifx\psk@fillstyle\relax\else
     \addto@pscode{%
       counttomark 1 add copy 
@@ -828,45 +830,21 @@
       grestore pop
     }%
   \fi%
+  % stroke
+  \ifx\pslinestyle\@none
+    \addto@pscode{ cleartomark }%
+  \else
+    \ifx\psk@fillstyle\relax\else
+      \addto@pscode{ restoreBeamPoints }%
+    \fi
+    \addto@pscode{ TraceExtendedBeam }%
+    \@strokebeam
+  \fi
+  \end@BeamObj
 }%
 \def\@strokeextendedbeam{%
-  \ifx\psk@fillstyle\relax
-     \ifx\pslinestyle\@none
-       \addto@pscode{ cleartomark }%
-    \else
-      % stroke only
-      \addto@pscode{%
-%        newpath 
-        TraceExtendedBeam
-        gsave 
-          \tx@setlinejoin
-          \pst@number\pslinewidth SLW 
-          \pst@usecolor\pslinecolor 
-          \tx@setStrokeTransparency 
-          Drawbeam Drawbeam
-          \@nameuse{psls@\pslinestyle} 
-        grestore 
-      }%
-    \fi
-  \else
-    \ifx\pslinestyle\@none
-      \addto@pscode{ cleartomark }%
-    \else
-       \addto@pscode{%
-%         newpath
-         restoreBeamPoints
-         TraceExtendedBeam 
-         gsave 
-           \tx@setlinejoin
-           \pst@number\pslinewidth SLW 
-           \pst@usecolor\pslinecolor 
-           \tx@setStrokeTransparency 
-           Drawbeam Drawbeam
-           \@nameuse{psls@\pslinestyle}  
-         grestore 
-       }%
-    \fi%
-  \fi%
+  \@strokesinglebeam
+  \@strokesinglebeam
 }%
 %
 \def\optexp@getcomps#1#2{%

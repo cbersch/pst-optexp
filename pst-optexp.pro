@@ -1119,9 +1119,9 @@ tx@OptexpDict begin
 	} ifelse
 %	(stack)==  counttomark /t ED t copy t {==}repeat
     } for
-    (Planes on stack:) ==
-    counttomark /t ED t copy t {==} repeat
-    (-------------------------------) ==
+%    (Planes on stack:) ==
+%    counttomark /t ED t copy t {==} repeat
+%    (-------------------------------) ==
 } bind def
 % Construct the plane name from PlaneNum. This must be called within a dict of a
 % optexpcomp, because the last node ends with (N) instead of the number.
@@ -1360,15 +1360,41 @@ tx@OptexpDict begin
 } bind def
 
 % rearrange points of single beam
-/rearrangePoints {
-    counttomark dup 2 add -1 roll pop counttomark 1 sub exch roll
+% [ A [ B -> [ B A
+/rearrangeSingleBeamPoints {
+    counttomark dup 2 add -1 roll pop % [ A B cnt
+    dup counttomark 2 sub eq not { % [ A B cnt cnt!=counttomark
+	% not the first beam
+	4 1 roll pop pop pop 3 sub % [ A B cnt-3
+    } if
+    counttomark 1 sub exch roll
 } bind def
 % rearrange points of extended beam
-%[ A B [ C D -> [ C A D B
-/rearrangePointsExt {
-    counttomark /t ED t 1 add -1 roll pop % [ A B C D
-    counttomark t sub /@rest ED
-    @rest 2 idiv t add t 2 idiv roll % [ A D B C
-    @rest t add t 2 idiv roll % [ C A D B
+%[ A [ B [ C [ D -> [ C A [ D B
+/rearrangeExtBeamPoints {
+    counttomark 1 add -1 roll pop % [ A [ B [ C D
+    counttomark /t ED t 1 add -1 roll pop % [ A [ B C D
+    counttomark t eq {
+	% B is empty, first beam
+	counttomark 1 add 1 [ 3 1 roll roll
+	% [ C [ D
+    } {
+	counttomark 1 add -1 roll pop % [ A B C D
+	counttomark t sub /@rest ED
+	% check if first point of C/D is the same as last point of A/B
+	% due to symmetry, need to check only D and B
+	t @rest 2 idiv add -3 roll 6 copy pop 3 -1 roll pop
+	3 -1 roll sub abs 1e-5 lt 3 1 roll sub abs 1e-5 lt and { % same points
+	    t @rest 2 idiv add 3 roll	
+	    pop pop pop t 2 idiv -3 roll pop pop pop
+	    /t t 6 sub def
+	} {
+	    t @rest 2 idiv add 3 roll
+	} ifelse
+	t t 2 idiv roll % [ A B D C
+	counttomark t 2 idiv roll % [ C A B D
+	counttomark 2 idiv t 2 idiv roll % [ C A D B
+	counttomark 2 idiv 1 add 1 [ 3 1 roll roll
+    } ifelse
 } bind def
 end % tx@OptexpDict
