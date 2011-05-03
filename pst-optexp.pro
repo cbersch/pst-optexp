@@ -680,22 +680,17 @@ tx@OptexpDict begin
 	ToVec /Curr ED 
 	draw
 	counttomark 3 roll
-%	PN 1 eq {
-%	    pop pop 2 copy ToVec /Curr ED
-%	    counttomark 2 roll
-%	} {
-%	    ToVec /CurrVec ED 2 copy
-%	    ToVec /Curr ED 
-%	    draw
-%	    counttomark 3 roll
-%	} ifelse
-%	(blubb)==
         /CurrCenterTmp /CurrCenter load def
 	/lastBeamPoint /Curr load def
 	/ModeTmp Mode def
 	PN PlaneNum eq {
 	    exit
 	} {
+	    CurrVec 0 eq exch 0 eq and {
+		% last refraction was total internal reflection, exit!
+		PlaneNum PN sub {pop} repeat
+		exit
+	    } if
 	    /PN PN 1 add def
 	} ifelse
 %	counttomark /t ED t copy t{==}repeat
@@ -955,6 +950,12 @@ tx@OptexpDict begin
 	    DrawnSegm 0 gt { fillBeam newpath } if
 	    exit
 	} {
+	    CurrVecUp 0 eq exch 0 eq and CurrVecLow 0 eq exch 0 eq and or {
+		% last refraction was total internal reflection, exit!
+		PlaneNum PN sub {pop} repeat
+		DrawnSegm 0 gt { fillBeam newpath } if	
+		exit
+	    } if
 	    /PN PN 1 add def
 	} ifelse
 %	(redef) ==
@@ -1192,7 +1193,7 @@ tx@OptexpDict begin
 % see <http://en.wikipedia.org/wiki/Snell%27s_law#Vector_form>
 % X_in Y_in X_norm Y_norm n1 n2 RefractVec -> X_out Y_out
 /RefractVec {
-%    (PN) == PN ==
+    (PN) == PN ==
     div /n ED 4 2 roll NormalizeVec /Yin ED /Xin ED /Ynorm ED /Xnorm ED
     n 1 eq {
 %	(n = 1) ==
@@ -1203,9 +1204,16 @@ tx@OptexpDict begin
 %	(Xnorm) == Xnorm == (Ynorm) == Ynorm ==
 	/costheta1 Xnorm Ynorm Xin neg Yin neg SProd def
 %	(costheta1) == costheta1 ==
-	/costheta2 1 n dup mul 1 costheta1 dup mul sub mul sub sqrt def
-	n Xin mul n Yin mul n costheta1 mul costheta2 sub dup Xnorm mul exch Ynorm mul VecAdd
+	1 n dup mul 1 costheta1 dup mul sub mul sub
+	dup 0 lt {%
+	    % would be total internal reflection, stop
+	    pop 0 0
+	} {
+	    sqrt /costheta2 ED
+	    n Xin mul n Yin mul n costheta1 mul costheta2 sub dup Xnorm mul exch Ynorm mul VecAdd
+	} ifelse
     } ifelse
+    (RefractVec done)== 2 copy == ==
 } bind def
 
 % X_in Y_in X_norm Y_norm ReflectVec -> X_out Y_out
