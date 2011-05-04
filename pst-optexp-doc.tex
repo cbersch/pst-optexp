@@ -125,9 +125,11 @@
       tx@addDict begin wavelengthToRGB end }%
     \drawbeam[nadd=-0.002 \i\space mul]{(In)}{3}{4}{5}{2}{1}{6}{7}{8}{(Out)}
   }%
-  \newpsstyle{Beam}{}
-  \psline[ArrowInside=->, linewidth=3\pslinewidth, arrowinset=0](In)(\OENodeIn{@3})(\OENodeOut{@4})
-  \drawbeam[startvec=0.005,startpos=0.1, addtoBeam={arrows=<-, linewidth=3\pslinewidth, arrowinset=0}]{([Xnodesep=-0.2]Out)}{8}{7}
+  \newpsstyle{Beam}{linecolor=red}
+  \bglayer{%
+    \psline[style=Beam,ArrowInside=->, linewidth=2\pslinewidth, arrowinset=0](In)(\OENodeIn{@3})(\OENodeOut{@4})
+  }
+  \drawbeam[startvec=0.005,startpos=0.1, addtoBeam={arrows=<-, linewidth=2\pslinewidth, arrowinset=0}]{([Xnodesep=-0.2]Out)}{8}{7}
 \end{optexp}
 \rput(4,4.5){%
   \psframe[fillstyle=solid,fillcolor=gray!70](-0.1, -0.6)(0.1, 0.7)
@@ -2023,7 +2025,7 @@ labeloffset=0, optboxwidth=1, compname=EAM, extnode=b](Lout)(EAMout){EAM}
 \makeatletter
 \def\LCLV@nodes{%
   \newOptexpComp{ {-0.12 0} {0 1} trans {NewPlaneInt}
-                  {0.15 0} {0 1} trans {NewPlaneInt} \POK@n}%
+                  {0.15 0} {0 1} trans {NewPlaneInt} \psk@oe@n}%
 }%
 \def\LCLV@comp{%
   \psframe[fillstyle=solid,fillcolor=black,dimen=outer](-0.12,-0.5)(0,0.5)
