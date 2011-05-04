@@ -1,0 +1,33 @@
+\documentclass{scrartcl}
+\usepackage[latin1]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[ngerman]{babel}
+\usepackage{lmodern}
+\usepackage{pst-optexp}
+
+\begin{document}
+\begin{pspicture}[showgrid=true](3,5)
+  \pnode(0,4){A}\optplane(A)(0,3){A}
+  \pnode(4,2){B}\optplane(B)(1,0){B}
+  \optprism[n=1.8](A)([Xnodesep=2]A)(B){}
+  \drawbeam{A}{1}{B}
+  \drawbeam[startvec=0.1]{A}{1}{B}
+
+  \pnode(0,2){C}\optplane(C)(0,1){C}
+  \pnode(4,0){D}\optplane(D)(1,0){D}
+  \optprism[n=1.8](C)([Xnodesep=2]C)(D){}
+  \addtopsstyle{Beam}{fillcolor=red, fillstyle=solid, opacity=0.3}
+  \drawextendedbeam[beamdiv=5]{C}{2}{D}
+\end{pspicture}
+\vspace*{1cm}
+
+\begin{pspicture}[showgrid=true](5,3)
+  \optbox[compname=Box](0,2)(2,2){}
+  \lens[compname=Lens](2,2)(4,2){}
+  \optplane(4,2)(0,1){A}
+  \drawbeam[startvec=0]{Box}{Lens}{A}
+  \drawbeam[startvec=0.3]{Box}{Lens}{A}
+  \drawbeam[startvec=0.51]{Box}{Lens}{A}
+  \drawbeam[startvec=0.6]{Box}{Lens}{A}
+\end{pspicture}
+\end{document}
