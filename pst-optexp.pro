@@ -682,6 +682,7 @@ tx@OptexpDict begin
 	counttomark 3 roll
         /CurrCenterTmp /CurrCenter load def
 	/lastBeamPoint /Curr load def
+	/lastVec /CurrVec load def
 	/ModeTmp Mode def
 	PN PlaneNum eq {
 	    exit
@@ -719,10 +720,21 @@ tx@OptexpDict begin
 	pop % remove [
     } ifelse
 } bind def
+/sign {
+    0 ge { 1 } { -1 } ifelse
+} bind def
 % Stroke an extendend beam. Only rearranges the input parameters and calls Drawbeam twice, for the upper
 % and lower beam.
 % [ CompN ... Comp1 {options} {start point up} {input vector up} {start point low} {input vector low}
 /TraceExtendedBeam {
+    % correct rotation of input vectors
+%    5 -1 roll dup 6 1 roll exec % execute options
+%    dup exec 5 -1 roll dup 6 1 roll exec % lowx lowy upx upy
+%    4 -1 roll mul 3 1 roll mul sub sign beamdiv sign eq {
+%	(----------------------------------------------------------not eq) ==
+%	exec beamdiv 2 mul matrix rotate dup 4 1 roll itransform ToVec exch
+%	4 -1 roll exec 3 -1 roll transform ToVec 3 1 roll
+%    } {(---------ka-------------------------------------- equal sign) == }ifelse
     5 -1 roll dup 6 1 roll 3 1 roll % {opt} {sup} {inup} {opt} {slow} {inlow}
     counttomark 6 sub /numComp ED
     numComp 7 add 6 roll numComp 1 add copy % {opt} {sup} {inup} {opt} {slow} {inlow} [ CompN .. Comp1 [ CompN .. Comp1
@@ -731,13 +743,22 @@ tx@OptexpDict begin
     currentdict /lastBeamPointLow known {
 	/lastBeamPointLow load /lastBeamPoint ED
     } if
-    TraceBeam /lastBeamPoint load /lastBeamPointLow ED
+    TraceBeam
+    /lastBeamPoint load /lastBeamPointLow ED
+    /lastVec load /lastVecLow ED
     currentdict /lastBeamPoint undef
     currentdict /lastBeamPointUp known {
 	/lastBeamPointUp load /lastBeamPoint ED
     } if
     counttomark 1 add dup numComp 4 add add exch roll
-    TraceBeam /lastBeamPoint load /lastBeamPointUp ED
+    TraceBeam
+    /lastBeamPoint load /lastBeamPointUp ED
+    /lastVec load /lastVecUp ED
+    lastBeamPointUp lastBeamPointLow @ABVect lastVecUp lastVecLow 3 -1 roll add 3 1 roll add exch
+    4 -1 roll mul 3 1 roll mul sub 0 gt {
+	% swap upper and lower beam points for next beam
+	/lastBeamPointUp load /lastBeamPointLow load /lastBeamPointUp ED /lastBeamPointLow ED
+    } if
 } bind def
 % Fill an extended beam. This must have an own procedure, because all segments
 % of the beam must be filled separately.
@@ -967,8 +988,15 @@ tx@OptexpDict begin
 %	counttomark /t ED t copy t{==}repeat
 %	(----------------------) ==
     } loop
-    /CurrUp load /lastBeamPointUp ED
-    /CurrLow load /lastBeamPointLow ED
+    CurrUp CurrLow @ABVect CurrVecUp CurrVecLow 3 -1 roll add 3 1 roll add exch
+    4 -1 roll mul 3 1 roll mul sub 0 gt {
+	% swap upper and lower beam points for next beam
+	/lastBeamPointUp /CurrLow load def
+	/lastBeamPointLow /CurrUp load def
+    } {
+	/lastBeamPointLow /CurrLow load def
+	/lastBeamPointUp /CurrUp load def
+    } ifelse
 %    (---------------------------------) ==
 } bind def
 % Check if 'compname' is ambiguous (i.e. a beamsplitter)
@@ -1193,7 +1221,6 @@ tx@OptexpDict begin
 % see <http://en.wikipedia.org/wiki/Snell%27s_law#Vector_form>
 % X_in Y_in X_norm Y_norm n1 n2 RefractVec -> X_out Y_out
 /RefractVec {
-    (PN) == PN ==
     div /n ED 4 2 roll NormalizeVec /Yin ED /Xin ED /Ynorm ED /Xnorm ED
     n 1 eq {
 %	(n = 1) ==
@@ -1213,7 +1240,6 @@ tx@OptexpDict begin
 	    n Xin mul n Yin mul n costheta1 mul costheta2 sub dup Xnorm mul exch Ynorm mul VecAdd
 	} ifelse
     } ifelse
-    (RefractVec done)== 2 copy == ==
 } bind def
 
 % X_in Y_in X_norm Y_norm ReflectVec -> X_out Y_out
