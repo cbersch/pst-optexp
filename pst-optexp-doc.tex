@@ -31,19 +31,37 @@ footinclude=false,oneside]{pst-doc}
 \newcommand{\paramitem}[3]{\item[\param{#1}:] \paramvalue{#2} (\defaultparam{#3})}
 \newcommand{\styleitem}[2]{\item[\param{#1}:] \paramvalue{#2}}
 \newcommand{\styleshape}[1]{\texttt{#1}}
+\newcommand{\parampar}[1]{\paragraph{\Lkeyword{#1}}}
+\newcommand{\stylepar}[1]{\paragraph{\Lstyle{#1}}\xLkeyword{addto#1}\xLkeyword{new#1}}
 
 \newcommand{\nodedesc}[1]{\Largr{#1}}
 \newcommand{\nodedescin}{\nodedesc{In}}%
 \newcommand{\nodedescout}{\nodedesc{Out}}%
 
+\def\Lstyle#1{\texttt{#1}\xLstyle{#1}}
+\def\xLstyle#1{\index{#1@\texttt{#1}}\index{Style!#1@\texttt{#1}}}
+\def\nxLstyle#1{\texttt{#1}}
+
+\def\Ldipole#1{\nxLcs{#1}\xLdipole{#1}}
+\def\xLdipole#1{\index{#1@\nxLcs{#1}}\index{Dipole object!#1@\nxLcs{#1}}}
+
+\def\Ltripole#1{\nxLcs{#1}\xLtripole{#1}}
+\def\xLtripole#1{\index{#1@\nxLcs{#1}}\index{Tripole object!#1@\nxLcs{#1}}}
+
+\def\Lfdipole#1{\nxLcs{#1}\xLfdipole{#1}}
+\def\xLfdipole#1{\index{#1@\nxLcs{#1}}\index{Fiber dipole object!#1@\nxLcs{#1}}}
+
+\def\Lfmultipole#1{\nxLcs{#1}\xLmultipole{#1}}
+\def\xLmultipole#1{\index{#1@\nxLcs{#1}}\index{Fiber multipole object!#1@\nxLcs{#1}}}
+
 \newcommand{\dipoledesc}[1]{%
-  \Lcs{#1}\OptArgs%
+  \Ldipole{#1}\OptArgs%
   \nodedescin%
   \nodedescout%
   \Largb{label}%
 }
 \newcommand{\tripoledesc}[1]{%
-  \Lcs{#1}\OptArgs%
+  \Ltripole{#1}\OptArgs%
   \nodedescin%
   \nodedesc{center}%
   \nodedescout%
@@ -51,7 +69,14 @@ footinclude=false,oneside]{pst-doc}
 }
 
 \newcommand{\fiberdipoledesc}[1]{%
-  \Lcs{#1}\OptArgs%
+  \Lfdipole{#1}\OptArgs%
+  \nodedescin%
+  \nodedescout%
+  \Largb{label}%
+}
+
+\newcommand{\fibermultipoledesc}[1]{%
+  \Lfmultipole{#1}\OptArgs%
   \nodedescin%
   \nodedescout%
   \Largb{label}%
@@ -204,24 +229,32 @@ fiber-optical or free-ray elements.
 \paramitem{angle}{<degree>}{0}
 \paramitem{compshift}{<num>}{0}
 \paramitem{optional}{<boolean>}{false}
+\styleitem{OptionalStyle}{<psstyle>}{}
 \paramitem{showoptdots}{<boolean>}{false}
 \end{description}
 
-\noindent\Lkeyword{optional} can be used with every object and marks it as
-optional. The style of an optional element can be configured by changing
-the psstyle \Lkeyword{OptionalStyle}.
+Some generic parameters which can be used for all objects.
 
-\Lkeyword{showoptdots} draws some internal nodes which are used to
-place the object and the label. The black points are used for
-positioning, the red points mark the label references.
+\parampar{angle}
+Rotate an object by \nxLkeyword{angle} degrees.
+
+\parampar{optional} 
+Can be used with every object and marks it as optional. The style of an
+optional element can be configured by changing the psstyle
+\Lkeyword{OptionalStyle}.
+
+\parampar{showoptdots}
+Draw some internal nodes which are used to place the object and the
+label. The black points are used for positioning, the red points mark
+the label references.
 
 \medskip
 
-\begin{LTXexample}[pos=t, vsep=0.8cm]
-\begin{pspicture}[showgrid=true](8,2)
+\begin{LTXexample}[width=6.5cm]
+\begin{pspicture}[showgrid=true](6,2)
 \psset{beam}
-\lens[optional](0,1)(3,1){L}
-\mirror[showoptdots](4,1)(7,1)(7,0){mirror}
+\lens[optional](0,1)(2,1){L}
+\mirror[showoptdots](3,1)(5,1)(5,0){mirror}
 \end{pspicture}
 \end{LTXexample}
 \medskip
@@ -235,21 +268,30 @@ positioning, the red points mark the label references.
 \paramitem{newOptComp}{<psstyle>}{}
 \end{description}
 
-\noindent\Lkeyword{OptComp} affects only the appearence of the optical
+The appearance of many functional parts of \LPack{pst-optexp} objects is
+controlled via psstyles. These are collections of parameters which are
+applied only to selected subparts of the objects. In general, these
+psstyles can be overwritten with the \Lcs{newpsstyle} macro and extended
+with the \Lcs{addtopsstyle} macro.
+
+\stylepar{OptComp} 
+Affects only the appearence of the optical
 components. This was introduced, because using only the standard
 graphics parameters changes also the connections that are drawn within
 the component.
 
 \medskip
 
-\begin{LTXexample}[pos=t, vsep=0.8cm]
-\begin{pspicture}[showgrid=true](8,2)
+\begin{LTXexample}[width=4.5cm]%pos=t, vsep=0.8cm]
+\begin{pspicture}[showgrid=true](4,4)
   \psset{beam}
   \addtopsstyle{OptComp}{linestyle=dashed, dash=2pt 2pt}
   % wrong, also beam width is changed
-  \mirror[linewidth=3\pslinewidth](0,1)(3,1)(3,0){mirror}
+  \mirror[linewidth=3\pslinewidth]%
+         (0,3)(3,3)(3,2){mirror}
   % correct result
-  \mirror[addtoOptComp={linewidth=3\pslinewidth}](5,1)(7,1)(7,0){mirror}
+  \mirror[addtoOptComp={linewidth=3\pslinewidth}]%
+         (0,1)(3,1)(3,0){mirror}
 \end{pspicture}
 \end{LTXexample}
 
