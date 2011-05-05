@@ -1,5 +1,7 @@
-\documentclass[11pt,english,BCOR10mm,DIV12,bibliography=totoc,parskip=false,smallheadings,
-    headexclude,footexclude,oneside]{pst-doc}
+\documentclass[%
+11pt, english, DIV12, parskip=false, headings=small,
+headinclude=false,
+footinclude=false,oneside]{pst-doc}
 
 \usepackage[latin1]{inputenc}
 %
@@ -22,7 +24,6 @@
 % New commands
 %
 \newcommand{\OptExpPackage}{\textsf{`pst-optexp'}}
-\newcommand{\parameter}[1]{\texttt{#1}}
 \newcommand{\nodename}[1]{\emph{#1}}
 \newcommand{\param}[1]{\normalfont\texttt{#1}}
 \newcommand{\paramvalue}[1]{\texttt{#1}}
@@ -108,8 +109,6 @@
   \psset{mirrortype=extended, mirrordepth=0.15}
   \newpsstyle{ExtendedMirror}{linestyle=none, hatchwidth=0.5\pslinewidth, hatchsep=1.2\pslinewidth,%
                 fillstyle=hlines}%
-              
-  %\addtopsstyle{OptComp}{linewidth=1.5\pslinewidth}
   \begin{optexp}
   \mirror[mirrorwidth=4, mirrorradius=10.4](M2)(M1)(M2){}
   \mirror[mirrorwidth=4, mirrorradius=10.4](M1)(M2)(M1){}
@@ -157,8 +156,10 @@ user-defined components are also provided.
 
 Version 3.0 introduced a lot of advanced features which made it too difficult to
 maintain full backward compatibility with version 2.x. However, using the
-\Lkeyword{compat} package option allows you to compile old setups but without
-profiting from the new features.
+\Loption{compat} package option allows you to compile old setups but without
+profiting from the new features. If you only need the old naming scheme, because
+you accessed internal nodes directly, then you must only set
+\Lkeyword{oldnamingscheme}.
 
 \section{Concept and General Behavior}\label{sec:general}
 
@@ -204,7 +205,6 @@ fiber-optical or free-ray elements.
 \paramitem{compshift}{<num>}{0}
 \paramitem{optional}{<boolean>}{false}
 \paramitem{showoptdots}{<boolean>}{false}
-
 \end{description}
 
 \noindent\Lkeyword{optional} can be used with every object and marks it as
@@ -230,9 +230,9 @@ positioning, the red points mark the label references.
 
 \begin{description}
 \styleitem{OptionalStyle}{<psstyle>}
+\styleitem{OptComp}{<psstyle>}
 \paramitem{addtoOptComp}{<psstyle>}{}
 \paramitem{newOptComp}{<psstyle>}{}
-\styleitem{OptComp}{<psstyle>}
 \end{description}
 
 \noindent\Lkeyword{OptComp} affects only the appearence of the optical
@@ -260,7 +260,15 @@ the component.
 \begin{description}
 \paramitem{position}{<num>}{\{\}}
 \paramitem{abspos}{<num>}{\{\}}
+\paramitem{compshift}{<num>}{\{\}}
 \end{description}
+
+\paragraph{\Lkeyword{position}}
+equivalent to the \Lkeyword{npos}
+parameter of \Lcs{ncput} (can be any number from 0 to 1) and controls the
+relative position of object between the two reference points. It is only
+not available for the free-ray tripoles.
+
 
 \noindent\Lkeyword{position} is equivalent to the \Lkeyword{npos}
 parameter of \Lcs{ncput} (can be any number from 0 to 1) and controls the
@@ -2246,19 +2254,14 @@ PiezoMirror    & Affects the additional part for \Lkeyword{mirrortype=piezo}\\
 
 \section{Requirements}
 
-\LPack{pst-optexp} version 2.1 requires at least version 2.87 of
-\LPack{pstricks-add} and \LaTeX. It does not work with plain \TeX.
+\LPack{pst-optexp} version 3.0 requires at least version 2.87 of
+\LPack{pstricks-add}, \LPack{multido}, \LPack{pst-eucl}, \LPack{environ} and
+\LaTeX. It does not work with plain \TeX.
 
 \section{Todo}
 
 \begin{itemize}
 \item Automatic sizing of optboxes (like a \Lcs{psframebox}
-\item Even more soffisticated beam drawing (draw beam before object contours)
-\item Drawing of extended beams with focusing and so on could be integrated to
-some extent in future versions. But as the topic is rather difficult if
-you want to do it properly (components should be placed above the beam,
-but the new nodes are available only when the component is drawn) it
-could take very long until this feature will be implemented.
 \end{itemize}
 \section{Acknowledgements}
 
