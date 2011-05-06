@@ -505,7 +505,7 @@ tx@OptexpDict begin
 	    0 lt { trans }{ refl } ifelse
 	    3 1 roll ToVec /CurrVecTmp ED
 	    [ nextPlane name
-	    connectPlaneNodes {
+	    connectplanes {
 		1
 	    }{
 		nforce 0 eq { name cvn load /n get } { nforce } ifelse
@@ -520,7 +520,7 @@ tx@OptexpDict begin
 	    } {
 		% check the mode
 		[ (C) name
-		connectPlaneNodes {
+		connectplanes {
 		    1
 		} {
 		    nforce 0 eq { name cvn load /n get } { nforce } ifelse
@@ -648,7 +648,7 @@ tx@OptexpDict begin
 	%    CurrCenter CurrCenterTmp @ABVect NormalizeVec CurrVec VecAngle /relAngle ED
 	%    (PN) == PN == relAngle ==
 	%} if
-	connectPlaneNodes {
+	connectplanes {
 	    PN 2 eq {% initialize relAngle, the angle between plane connection and input vector
 		CurrCenter CurrCenterTmp @ABVect NormalizeVec CurrVec VecAngle /relAngle ED
 	    } if
@@ -842,8 +842,8 @@ tx@OptexpDict begin
 	17 -1 roll /CurrPCenter ED
 	% new upper vector and intersection point
 	CurrUp CurrVecUp %(CurrUp) == 4 copy == == == == (done)==
-	connectPlaneNodes {
-%	    (--------------------------------------------------connectPlaneNodes)==
+	connectplanes {
+%	    (--------------------------------------------------connectplanes)==
 	    PN 2 eq {% initialize relAngle, the angle between plane connection and input vector
 %		(PN = 2) ==
 		%counttomark /t ED t copy t{==}repeat
@@ -867,7 +867,7 @@ tx@OptexpDict begin
 		} ifelse
 	    } if
 	} if
-%	(after connectPlaneNodes) ==
+%	(after connectplanes) ==
 %	counttomark /t ED t copy t{==}repeat
 %	(################) ==
 	2 copy ToVec /OldVecUp ED
@@ -887,7 +887,7 @@ tx@OptexpDict begin
 	% new lower vector and intersection point
 	CurrLow CurrVecLow
 	%
-	connectPlaneNodes {
+	connectplanes {
 	    PN 2 eq {% initialize relAngle, the angle between plane connection and input vector
 		CurrPCenter CurrPCenterTmp @ABVect NormalizeVec CurrVecLow VecAngle /relAngleLow ED
 	    } if
@@ -1119,7 +1119,7 @@ tx@OptexpDict begin
 		    } {
 			drawInside % the other beams depend on some options
 		    } ifelse % on stack: stop i draw?
-		    exch dup 4 -1 roll eq connectPlaneNodes or {% draw i i stop
+		    exch dup 4 -1 roll eq connectplanes or {% draw i i stop
 			1 % after the last component plane we have always air
 		    }{ % otherwise the respective refractive index of the component
 			nforce 0 eq { n } {nforce} ifelse
