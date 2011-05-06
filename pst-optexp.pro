@@ -726,7 +726,7 @@ tx@OptexpDict begin
 % Stroke an extendend beam. Only rearranges the input parameters and calls Drawbeam twice, for the upper
 % and lower beam.
 % [ CompN ... Comp1 {options} {start point up} {input vector up} {start point low} {input vector low}
-/TraceExtendedBeam {
+/TraceWideBeam {
     % correct rotation of input vectors
 %    5 -1 roll dup 6 1 roll exec % execute options
 %    dup exec 5 -1 roll dup 6 1 roll exec % lowx lowy upx upy
@@ -760,11 +760,11 @@ tx@OptexpDict begin
 	/lastBeamPointUp load /lastBeamPointLow load /lastBeamPointUp ED /lastBeamPointLow ED
     } if
 } bind def
-% Fill an extended beam. This must have an own procedure, because all segments
+% Fill a wide beam. This must have an own procedure, because all segments
 % of the beam must be filled separately.
 % 
 % [ CompN ... Comp1 {options} {start point up} {input vector up} {start point low} {input vector low} 
-/FillExtendedBeam {
+/FillWideBeam {
     /InvecLow ED /StartLow ED /InvecUp ED /StartUp ED 
     % preset options
     currentdict /fillBeam known not { /fillBeam {gsave fill grestore} def } if
@@ -1403,9 +1403,9 @@ tx@OptexpDict begin
     } if
     counttomark 1 sub exch roll
 } bind def
-% rearrange points of extended beam
+% rearrange points of wide beam
 %[ A [ B [ C [ D -> [ C A [ D B
-/rearrangeExtBeamPoints {
+/rearrangeWideBeamPoints {
     counttomark 1 add -1 roll pop % [ A [ B [ C D
     counttomark /t ED t 1 add -1 roll pop % [ A [ B C D
     counttomark t eq {

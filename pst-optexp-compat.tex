@@ -3,18 +3,19 @@
 % maintained for backward compatibility%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-\def\optexp@nodeA{\POK@b@sicname 1}%
-\def\optexp@nodeB{\POK@b@sicname N}%
+\newif\ifPst@oe@connjoin
+\def\optexp@nodeA{\psk@oe@b@sicname 1}%
+\def\optexp@nodeB{\psk@oe@b@sicname N}%
 \def\POS@basicname@postfix{Intern}%
 \define@key[psset]{optexp}{connjoin}{%
    \edef\pst@temp{#1}%
    \ifnum\pst@temp<0
-       \POE@connjoinfalse
+       \Pst@oe@connjoinfalse
    \else\ifnum\pst@temp>2
-       \POE@connjoinfalse
+       \Pst@oe@connjoinfalse
    \else
-       \POE@connjointrue
-       \edef\POK@connjoin{\pst@temp}
+       \Pst@oe@connjointrue
+       \edef\psk@oe@connjoin{\pst@temp}
    \fi\fi
 }%
 \define@key[psset]{optexp}{conn}{%
@@ -60,7 +61,7 @@
       \addto@pscode{%
          [
          \pst@optexpdict
-            (\POK@b@sicname) false GetInternalBeamNodes 
+            (\psk@oe@b@sicname) false GetInternalBeamNodes 
             (N@\optexp@refnodeA) @GetCenter 
          end
       }%
@@ -73,7 +74,7 @@
          [
          \pst@optexpdict
             (N@\optexp@refnodeB) @GetCenter
-            (\POK@b@sicname) false GetInternalBeamNodes 
+            (\psk@oe@b@sicname) false GetInternalBeamNodes 
          end
       }%
       \psline@ii
@@ -81,16 +82,16 @@
 %
 % IN
 \def\psoe@cs@in@a{(N@\optexp@nodeA) \pst@optexpdict @GetCenter end }%
-\def\psoe@cs@in@A{\pst@optexpdict (\POK@b@sicname) true GetInternalBeamNodes end }%
+\def\psoe@cs@in@A{\pst@optexpdict (\psk@oe@b@sicname) true GetInternalBeamNodes end }%
 \def\psoe@cs@in@b{(N@\optexp@nodeB) \pst@optexpdict @GetCenter end }%
-\def\psoe@cs@in@B{\pst@optexpdict (\POK@b@sicname) false GetInternalBeamNodes end }%
+\def\psoe@cs@in@B{\pst@optexpdict (\psk@oe@b@sicname) false GetInternalBeamNodes end }%
 %
 % OUT
 %
 \def\psoe@cs@out@a{(N@\optexp@nodeA) \pst@optexpdict @GetCenter end }%
-\def\psoe@cs@out@A{\pst@optexpdict (\POK@b@sicname) false GetInternalBeamNodes end }%
+\def\psoe@cs@out@A{\pst@optexpdict (\psk@oe@b@sicname) false GetInternalBeamNodes end }%
 \def\psoe@cs@out@b{(N@\optexp@nodeB) \pst@optexpdict @GetCenter end }%
-\def\psoe@cs@out@B{\pst@optexpdict (\POK@b@sicname) true GetInternalBeamNodes end }%
+\def\psoe@cs@out@B{\pst@optexpdict (\psk@oe@b@sicname) true GetInternalBeamNodes end }%
 \def\drawbeam{%
    \def\conntable{,a-a,b-b,A-A,B-B}%
    \begingroup
@@ -102,8 +103,8 @@
 \def\drawbeam@i#1#2{%
    \def\pst@tempA{\pst@optexp@getfirstchar#1\@nil}%
    \def\pst@tempB{\pst@optexp@getfirstchar#2\@nil}%
-   \ifPOE@connjoin
-      \psset{linejoin=\POK@connjoin}%
+   \ifPst@oe@connjoin
+      \psset{linejoin=\psk@oe@connjoin}%
    \fi
    \begin@OpenObj%
    \if(\pst@tempB
@@ -112,7 +113,7 @@
       \def\psk@connOut{pst@coor}%
    \else
       \pst@optexp@check@compname{#2}%
-      \edef\POK@b@sicnameB{#2\POS@basicname@postfix}%
+      \edef\psk@oe@b@sicnameB{#2\POS@basicname@postfix}%
    \fi
    \if(\pst@tempA
    %   % first parameter is a node
@@ -120,11 +121,11 @@
       \def\psk@connIn{pst@coor}%
    \else
       \pst@optexp@check@compname{#1}%
-      \edef\POK@b@sicnameA{#1\POS@basicname@postfix}%
+      \edef\psk@oe@b@sicnameA{#1\POS@basicname@postfix}%
    \fi
-   \let\POK@b@sicname\POK@b@sicnameB
+   \let\psk@oe@b@sicname\psk@oe@b@sicnameB
    \addto@pscode{[ \@nameuse{\psk@connOut}}%
-   \let\POK@b@sicname\POK@b@sicnameA
+   \let\psk@oe@b@sicname\psk@oe@b@sicnameA
    \addto@pscode{\@nameuse{\psk@connIn}}%
    \psline@ii
    \endgroup
@@ -135,25 +136,25 @@
 \ignorespaces}%
 %
 \def\draw@InternalConnections{%
-   \ifPOE@endbox
+   \ifPst@oe@endbox
       \@nameuse{\psk@connIn}
    \else
-      \ifPOE@fiber@
-        \ifPOE@fiberin@
+      \ifPst@oe@fiber@
+        \ifPst@oe@fiberin@
           \@nameuse{\psk@connIn}
         \fi
-        \ifPOE@fiberout@
+        \ifPst@oe@fiberout@
           \@nameuse{\psk@connOut}
         \fi
       \else
-         \ifPOE@connjoin
+         \ifPst@oe@connjoin
             \def\tmp@A{psoe@cs@in@i}%
             \ifx\tmp@A\psk@connIn
                \def\tmp@B{psoe@cs@out@o}
                \ifx\tmp@B\psk@connOut
-                  \pscustom[style=Beam, linejoin=\POK@connjoin]{\@nameuse{\psk@connIn}\@nameuse{\psk@connOut}}%
+                  \pscustom[style=Beam, linejoin=\psk@oe@connjoin]{\@nameuse{\psk@connIn}\@nameuse{\psk@connOut}}%
                \else\ifx\@empty\psk@connOut
-                  \pscustom[style=Beam, linejoin=\POK@connjoin]{\@nameuse{\psk@connIn}\@nameuse{\psk@connOut}}%
+                  \pscustom[style=Beam, linejoin=\psk@oe@connjoin]{\@nameuse{\psk@connIn}\@nameuse{\psk@connOut}}%
                \else
                   \@nameuse{\psk@connIn}\@nameuse{\psk@connOut}%
                \fi\fi
@@ -164,9 +165,9 @@
                   \ifx\tmp@B\psk@connOut
                      \@nameuse{\psk@connIn}\@nameuse{\psk@connOut}%
                   \else\ifx\@empty\psk@connOut
-                     \pscustom[style=Beam, linejoin=\POK@connjoin]{\@nameuse{\psk@connIn}\@nameuse{\psk@connOut}}%
+                     \pscustom[style=Beam, linejoin=\psk@oe@connjoin]{\@nameuse{\psk@connIn}\@nameuse{\psk@connOut}}%
                   \else
-                     \pscustom[style=Beam, linejoin=\POK@connjoin]{\@nameuse{\psk@connIn}\@nameuse{\psk@connOut}}%
+                     \pscustom[style=Beam, linejoin=\psk@oe@connjoin]{\@nameuse{\psk@connIn}\@nameuse{\psk@connOut}}%
                   \fi\fi
                \else
                   \@nameuse{\psk@connIn}\@nameuse{\psk@connOut}%
@@ -187,7 +188,7 @@
 \define@choicekey[psset]{optexp}{nofiber}[\val\nr]{}[]{%
    \psset{conn=-, fiberin=none, fiberout=none}%
 }
-\POE@compattrue
+\Pst@oe@compattrue
 \psset[optexp]{%
   conn=-
   , connjoin=1

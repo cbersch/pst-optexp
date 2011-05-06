@@ -53,7 +53,6 @@
 \newif\ifPst@oe@endbox
 \newif\ifPst@oe@thicklens
 \newif\ifPst@oe@usefiberstyle
-\newif\ifPst@oe@connjoin
 \newif\ifPst@oe@fiber@
 \newif\ifPst@oe@fiberin@
 \newif\ifPst@oe@fiberin@top
@@ -680,22 +679,22 @@
     \let\@drawbeam\drawbeam
     \def\drawbeam{%
       \let\@strokebeam\@strokesinglebeam
-      \def\drawextendedbeam{%
-        \errmessage{pst-optexp error: You can't switch from single to extended beam in custom mode}%
+      \def\drawwidebeam{%
+        \errmessage{pst-optexp error: You can't switch from single to wide beam in custom mode}%
       }%
       \@drawbeam
     }%
-    \let\@drawextendedbeam\drawextendedbeam
-    \def\drawextendedbeam{%
-      \let\@strokebeam\@strokeextendedbeam
+    \let\@drawwidebeam\drawwidebeam
+    \def\drawwidebeam{%
+      \let\@strokebeam\@strokewidebeam
       \def\drawbeam{%
-        \errmessage{pst-optexp error: You can't switch from extended to single beam in custom mode}%
+        \errmessage{pst-optexp error: You can't switch from wide to single beam in custom mode}%
       }%
-      \@drawextendedbeam
+      \@drawwidebeam
     }%
-    \def\begin@ExtendedBeamObj{%
+    \def\begin@WideBeamObj{%
       \begin@BeamObj
-      \def\@strokebeam{\addto@pscode{ rearrangeExtBeamPoints }}%
+      \def\@strokebeam{\addto@pscode{ rearrangeWideBeamPoints }}%
     }%
     \def\begin@SingleBeamObj{%
       \begin@BeamObj
@@ -729,12 +728,12 @@
      /startvecabsolute \ifPst@oe@startvecabsolute true \else false \fi def
   }%
 }%
-\def\begin@ExtendedBeamObj{%
+\def\begin@WideBeamObj{%
   \addafter@par{style=Beam}%
   \begin@BeamObj
   \let\pst@linetype\pst@arrowtype
   \pst@addarrowdef%
-  \let\@strokebeam\@strokeextendedbeam
+  \let\@strokebeam\@strokewidebeam
 }%
 \def\begin@SingleBeamObj{%
   \addafter@par{style=Beam}%
@@ -749,10 +748,10 @@
   \begin@SingleBeamObj
   \optexp@getcomps[\drawbeam@ii%
 }%
-\def\drawextendedbeam{\pst@object{drawextendedbeam}}%
-\def\drawextendedbeam@i{%
-  \begin@ExtendedBeamObj
-  \optexp@getcomps[\drawextendedbeam@ii%
+\def\drawwidebeam{\pst@object{drawwidebeam}}%
+\def\drawwidebeam@i{%
+  \begin@WideBeamObj
+  \optexp@getcomps[\drawwidebeam@ii%
 }%
 \def\end@BeamObj{%
   \addto@pscode{ end}%
@@ -796,7 +795,7 @@
     grestore
   }%
 }%
-\def\drawextendedbeam@ii{%
+\def\drawwidebeam@ii{%
   \def\pst@fill##1{ gsave ##1 grestore }%
   \addto@pscode{%
    {/nmul \psk@oe@nmul\space def
@@ -830,7 +829,7 @@
         /fillBeam { \psk@fillstyle } def
         currentdict /lastBeamPointLow known { /TmpLastBeamPointLow /lastBeamPointLow load def} if
         currentdict /lastBeamPointUp known { /TmpLastBeamPointUp /lastBeamPointUp load def} if
-        FillExtendedBeam
+        FillWideBeam
       grestore pop
     }%
   \fi%
@@ -841,12 +840,12 @@
     \ifx\psk@fillstyle\relax\else
       \addto@pscode{ restoreBeamPoints }%
     \fi
-    \addto@pscode{ TraceExtendedBeam }%
+    \addto@pscode{ TraceWideBeam }%
     \@strokebeam
   \fi
   \end@BeamObj
 }%
-\def\@strokeextendedbeam{%
+\def\@strokewidebeam{%
   \@strokesinglebeam
   \@strokesinglebeam
 }%
