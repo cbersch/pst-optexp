@@ -581,7 +581,7 @@ tx@OptexpDict begin
     PrearrangePlanes
     PushAllPlanesOnStack
 %    (planes on stack) == counttomark /t ED t copy t {==} repeat
-    startvecAbsolute not {
+    startvecabsolute not {
 	2 copy /InVec load TransformInVec
     } {
 	/InVec load
@@ -778,7 +778,7 @@ tx@OptexpDict begin
     /stopInside stopInside beaminsidelast or def
     PrearrangePlanes
     PushAllPlanesOnStack
-    startvecAbsolute not {
+    startvecabsolute not {
 	2 copy /InvecLow load TransformInVec /CurrVecLow ED
 	2 copy /InvecUp load TransformInVec /CurrVecUp ED
     } {
