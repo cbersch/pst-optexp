@@ -68,9 +68,9 @@
 \newif\ifPst@oe@beaminsidelast
 \newif\ifPst@oe@startvecabsolute
 \newif\ifPst@oe@beamInside
-\newif\ifPst@oe@beamextended
-\newif\ifPst@oe@beamConnectComp
+\newif\ifPst@oe@connectplanes
 \newif\ifPst@oe@custombeam\Pst@oe@custombeamfalse
+\newif\ifPst@oe@insideobj\Pst@oe@insideobjfalse
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Counters
@@ -502,38 +502,41 @@
 }%
 %
 % Set the component name. If the parameter is empty, a generated name is used.
-\define@key[psset]{optexp}{@compname}{%
-   \edef\pst@tmp{#1}
-   \ifx\pst@tmp\@empty
-      \edef\psk@oe@compname{\pst@str@basicname@default\the\poe@cnt}
-      \psset{b@sicname=\pst@str@basicname@default\the\poe@cnt}%
-      \ifPst@oe@compat
-        \psset{extnoden@me={}}%
-      \else
-        \psset{extnoden@me=\pst@str@basicname@default\the\poe@cnt}%
-      \fi
-   \else
-      \edef\psk@oe@compname{#1}%
-      \ifPst@oe@compat
-        \def\pst@str@basicname@prefix{}
-        \psset{b@sicname=#1Intern}%
-      \else
-        \psset{b@sicname=#1}%   
-      \fi
-      \psset{extnoden@me=#1}%
-   \fi
-   \ifPst@oe@bglayer
-     % check if compname was already defined
-     \@expandtwoargs\in@{,\psk@oe@compname,}{,\Pst@oe@complist,}%
-     \ifin@
-        \PackageWarning{pst-optexp}%
-           {^^Jcompname '\psk@oe@compname' already used. Previously defined nodes will be overwritten!^^J}%
+\define@key[psset]{optexp}{compname}{%
+  \ifPst@oe@insideobj\else
+    \PackageError{pst-optexp}{compname allowed only inside an object}
+  \fi
+  \edef\pst@tmp{#1}
+  \ifx\pst@tmp\@empty
+    \edef\psk@oe@compname{\pst@str@basicname@default\the\poe@cnt}
+    \psset{b@sicname=\pst@str@basicname@default\the\poe@cnt}%
+    \ifPst@oe@compat
+      \psset{extnoden@me={}}%
      \else
-        % Use definition of \XKV@addtolist@x with an \xdef instead of \edef in order
-        % to keep the bookkeeping global
-        \xdef\Pst@oe@complist{\psk@oe@compname\ifx\Pst@oe@complist\@empty\else,\fi\Pst@oe@complist}%
+       \psset{extnoden@me=\pst@str@basicname@default\the\poe@cnt}%
      \fi
-   \fi
+  \else
+    \edef\psk@oe@compname{#1}%
+    \ifPst@oe@compat
+      \def\pst@str@basicname@prefix{}
+      \psset{b@sicname=#1Intern}%
+    \else
+      \psset{b@sicname=#1}%   
+    \fi
+    \psset{extnoden@me=#1}%
+  \fi
+  \ifPst@oe@bglayer
+    % check if compname was already defined
+    \@expandtwoargs\in@{,\psk@oe@compname,}{,\Pst@oe@complist,}%
+    \ifin@
+      \PackageWarning{pst-optexp}%
+           {^^Jcompname '\psk@oe@compname' already used. Previously defined nodes will be overwritten!^^J}%
+    \else
+      % Use definition of \XKV@addtolist@x with an \xdef instead of \edef in order
+      % to keep the bookkeeping global
+      \xdef\Pst@oe@complist{\psk@oe@compname\ifx\Pst@oe@complist\@empty\else,\fi\Pst@oe@complist}%
+    \fi
+  \fi
 }%
 %
 % Connect a component directly with its reference nodes using \drawbeam
@@ -657,8 +660,7 @@
 \define@boolkey[psset]{optexp}[Pst@oe@]{beaminsidefirst}[true]{}%
 \define@boolkey[psset]{optexp}[Pst@oe@]{beaminsidelast}[true]{}%
 \define@boolkey[psset]{optexp}[Pst@oe@]{beamInside}[true]{}%
-\define@boolkey[psset]{optexp}[Pst@oe@]{beamextended}[true]{}%
-\define@boolkey[psset]{optexp}[Pst@oe@]{beamConnectComp}[true]{}%
+\define@boolkey[psset]{optexp}[Pst@oe@]{connectplanes}[true]{}%
 \define@boolkey[psset]{optexp}[Pst@oe@]{startvecabsolute}[true]{}%
 %
 % Inside custombeam, sequential uses of \drawbeam can use the ending
@@ -723,7 +725,7 @@
      /custombeam \ifPst@oe@custombeam true \else false \fi def
      /startInside \ifPst@oe@startInside true \else false \fi def
      /stopInside \ifPst@oe@stopInside true \else false \fi def
-     /connectPlaneNodes \ifPst@oe@beamConnectComp true \else false \fi def
+     /connectplanes \ifPst@oe@connectplanes true \else false \fi def
      /startvecabsolute \ifPst@oe@startvecabsolute true \else false \fi def
   }%
 }%
@@ -883,9 +885,9 @@
 %  \edef\poe@tmp{\the\poe@cnt}% I don't know how to do it with expansion
   \ifPst@oe@beam
     \ifPst@oe@endbox
-      \drawbeam[addtoBeam={beamConnectComp}]{(\optexp@refnodeA)}{\psk@oe@compname}
+      \drawbeam[addtoBeam={connectplanes}]{(\optexp@refnodeA)}{\psk@oe@compname}
     \else
-      \drawbeam[addtoBeam={beamConnectComp}]{(\optexp@refnodeA)}{\psk@oe@compname}{(\optexp@refnodeB)}
+      \drawbeam[addtoBeam={connectplanes}]{(\optexp@refnodeA)}{\psk@oe@compname}{(\optexp@refnodeB)}
     \fi
   \else
     \ifPst@oe@endbox
@@ -985,12 +987,12 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 \def\begin@OptexpObj{%
-   \define@key[psset]{optexp}{compname}{\psset{@compname=##1}}
    \global\advance\poe@cnt by 1
    % init comp name
    \addbefore@par{compname={}}
    \pst@killglue
    \begingroup
+      \Pst@oe@insideobjtrue
       \pst@OptexpVerb{InitOptexpComp}%
       \use@par
       % Usually the shift refers to the y-direction, shifting in x-direction
@@ -1726,7 +1728,6 @@
         ,ref@angle=0
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % fiber optics
-        ,@compname=\@empty
         ,extnode=\@empty
         ,fiberloops=3
         ,fiberloopradius=0.4
@@ -1751,6 +1752,9 @@
         ,compshift=0
         ,n=1.5
 }%
+\Pst@oe@insideobjtrue
+\psset[optexp]{compname=\@empty}
+\Pst@oe@insideobjfalse
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 % DRAW COMPONENTS
