@@ -17,9 +17,43 @@ footinclude=false,oneside]{pst-doc}
 \usepackage{float}
 \usepackage{prettyref}
 \newrefformat{sec}{Sec.~\ref{#1}}
+\lstset{%
+  language=[LaTeX]TeX,
+  texcsstyle = [200]\color{red},
+  moretexcs = [200]{lens, mirror, beamsplitter}
+}
 %
-\newfloat{LTXexampleFloat}{H}{expl}
-\floatname{LTXexampleFloat}{Listing}
+% Addition from GL
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage {etoolbox}
+\AtBeginEnvironment {lstlisting}% if you use lstlistings
+            {\let\lsthk@OutputBox \lsthk@OutputBox@H@@k }
+%\AtBeginDocument{\preto\FV@VerbatimBegin {\let\lsthk@OutputBox 
+%\lsthk@OutputBox@H@@k }}
+\providerobustcmd*\ifrefundefined [1]{\begingroup \csname 
+@safe@activestrue \endcsname %<babel>
+     \expandafter\endgroup \csname @\ifcsname r@#1\endcsname second\else
+                                                             first\fi 
+oftwo\endcsname
+}% \ifrefundefined
+\def\lsthk@OutputBox@H@@k {\begingroup \let\lst@UM \@empty
+     \edef \@tempc {sec:\detokenize\expandafter{\the\lst@token }}%\edef 
+\@tempc {\@tempc }
+     \ifrefundefined {\@tempc}   \endgroup \sethyperlistings
+}% \lsthk@OutputBox@fcltxH@@k
+\def\sethyperlistings {\global\let \hyperlistingsreference =\@tempc
+     \endgroup \aftergroup \dohyperlistings }% after \hbox
+\def\dohyperlistings {\def\lst@alloverstyle ##1{\hyperlistings ##1}}
+\def\hyperlistings {\setbox \@tempboxa
+     \hbox   \bgroup
+             \rlap {\hypersetup {linkcolor=.}\relax  \fboxrule \z@
+             \hyperref [\hyperlistingsreference]
+                     {\boxframe 
+{\wd\@tempboxa}{\ht\@tempboxa}{\dp\@tempboxa}}}%
+             \unhbox \@tempboxa
+             \egroup
+}% \hyperlistings
+% -----------------------------------------------------------
 %
 % New commands
 %
@@ -88,10 +122,7 @@ footinclude=false,oneside]{pst-doc}
   A \paramvalue{<ref string>} is any combination of \paramvalue{c}
   (center), \paramvalue{t} (top), \paramvalue{b} (bottom), \paramvalue{l}
   (left), \paramvalue{r} (right)}
-%
-% Settings
-%\setkomafont{sectioning}{\normalfont\normalcolor\bfseries}
-%
+
 \makeatletter
 \renewenvironment{description}
   {\list{}{\labelwidth\z@ \itemindent-0.5\leftmargin
@@ -99,12 +130,6 @@ footinclude=false,oneside]{pst-doc}
     \let\makelabel\descriptionlabel}}
   {\endlist}
 \makeatother
-%
-%\clearscrheadfoot
-%\setheadsepline{0.4pt}
-%\ihead{\OptExpPackage}\ohead{A PSTricks package to draw optical experimental setups}
-%\ofoot{\pagemark}
-%\pagestyle{scrheadings}
 
 \psset{usefiberstyle=true}
 \addtopsstyle{Fiber}{linecolor=red,linewidth=1.5\pslinewidth}
@@ -1640,7 +1665,45 @@ Or if you need a coupler with a particular input angle you can do it be extendin
 
 \parampar{startpos}
 
-\parampar{startvec}
+This is the start position of the beam at the first interface. Can be
+any code which evaluates in Postscript to one or two numbers. If is only
+one number then the $x$-coordinate is set to \texttt{0}.
+
+\begin{LTXexample}[width=5cm]
+\begin{pspicture}(5,5)
+  \pnode(1.5,0.5){A}\pnode(4.5,0.5){B}\pnode(3.5,4.5){C} 
+  \optbox[endbox](B)(A){}
+  \mirror[mirrorradius=4](A)(B)(C){} 
+  \mirror[mirrortype=extended](B)(C)(B){} 
+  \drawbeam[addtoBeam={linecolor=red},
+              startpos=-0.2]{1}{2}{3}
+  \drawbeam[addtoBeam={linecolor=blue},
+              startpos=0]{1}{2}{3}
+  \drawbeam[addtoBeam={linecolor=green},
+              startpos=0.2]{1}{2}{3}
+\end{pspicture}
+\end{LTXexample}
+
+\medskip
+
+\parampar{startvec} This is the start vector of the beam.
+
+\begin{LTXexample}[width=5cm]
+\begin{pspicture}(5,5)
+  \pnode(1.5,0.5){A}\pnode(4.5,0.5){B}\pnode(3.5,4.5){C} 
+  \optbox[endbox](B)(A){}
+  \mirror[mirrorradius=2](A)(B)(C){} 
+  \mirror[mirrortype=extended](B)(C)(B){} 
+  \drawbeam[addtoBeam={linecolor=red},
+              startvec=0.05]{1}{2}{3}
+  \drawbeam[addtoBeam={linecolor=blue},
+              startvec=0]{1}{2}{3}
+  \drawbeam[addtoBeam={linecolor=green},
+              startvec=-0.05]{1}{2}{3}
+\end{pspicture}
+\end{LTXexample}
+
+\medskip
 
 \parampar{startvecabsolute}
 
