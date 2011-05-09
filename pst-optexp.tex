@@ -855,21 +855,22 @@
   \def\optexp@comps{}%
   \optexp@@getcomps%
 }%
-% \def\optexp@@getcomps{%
-%   \@ifnextchar.{\optexp@aftercomps\@gobble}{\optexp@@@getcomps}%
-% }%
+%
 \def\optexp@@getcomps{%
   \@ifnextchar\bgroup{\optexp@@@getcomps}{\optexp@aftercomps}%
 }%
-\def\optexp@@@getcomps#1{\expandafter\optexp@@@@getcomps#1\@nil}%
+\def\optexp@@@getcomps#1{\def\oe@temp{#1\@empty}\expandafter\optexp@@@@getcomps\oe@temp\@nil}%
 \def\optexp@@@@getcomps#1#2\@nil{%
-  \ifx(#1\relax
+  \edef\oe@temp{#1}%
+  \ifx\oe@temp\@empty
+    \optexp@getcomp{(\getLastCompname@i)}%
+  \else\ifx(#1\relax
     \optexp@getplanenode#1#2%
   \else\ifnum9<1#1
     \optexp@getcomp{(\pst@str@basicname@prefix\pst@str@basicname@default#1#2)}%
   \else
     \optexp@getcomp{(\pst@str@basicname@prefix#1#2)}%
-  \fi\fi%
+  \fi\fi\fi%
   \optexp@@getcomps%
 }%
 \def\optexp@getplanenode(#1){%
