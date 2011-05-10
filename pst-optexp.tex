@@ -50,6 +50,7 @@
 \newif\ifPst@oe@lamp
 \newif\ifPst@oe@component@optional
 \newif\ifPst@oe@debug@showoptdots
+\newif\ifPst@oe@debug@showifcnodes
 \newif\ifPst@oe@endbox
 \newif\ifPst@oe@thicklens
 \newif\ifPst@oe@usefiberstyle
@@ -189,6 +190,7 @@
 \define@boolkey[psset]{optexp}[Pst@oe@component@]{optional}[true]{}
 \define@boolkey[psset]{optexp}[Pst@oe@]{usefiberstyle}[true]{}
 \define@boolkey[psset]{optexp}[Pst@oe@debug@]{showoptdots}[true]{}
+\define@boolkey[psset]{optexp}[Pst@oe@debug@]{showifcnodes}[true]{}
 \define@choicekey*[psset]{optexp}{namingscheme}[\val\nr]{old,new}[new]{%
   \ifcase\nr\relax
     % old naming scheme
@@ -1822,8 +1824,27 @@
           \psdot[linecolor=black](\optexp@refnodeB)
       \fi
     \fi
+    \ifPst@oe@debug@showifcnodes
+      \ifPst@oe@bglayer
+        \oeifcnodes[linecolor=blue]{\psk@oe@b@sicname}
+      \fi
+    \fi
     %
 \ignorespaces}%
+\def\oeifcnodes{\pst@object{oeifcnodes}}
+\def\oeifcnodes@i#1{%
+  \begin@SpecialObj%
+  \solid@star%
+  \addto@pscode{
+    \psk@dotsize
+    \@nameuse{psds@\psk@dotstyle}
+    tx@OptexpDict begin
+      [ (#1) false GetInternalBeamNodes
+      counttomark 2 idiv { Dot } repeat
+      pop
+    end
+    }%
+  \end@SpecialObj}
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \def\tripole@nodes{%
