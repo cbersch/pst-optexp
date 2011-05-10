@@ -1,6 +1,6 @@
 \documentclass[%
 11pt, english, parskip=false, headings=small,
-headinclude=false,
+headinclude=false, 
 footinclude=false,oneside]{pst-doc}
 
 \KOMAoptions{DIV=9}
@@ -27,33 +27,37 @@ footinclude=false,oneside]{pst-doc}
 % Addition from GL
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \usepackage {etoolbox}
-\AtBeginEnvironment {lstlisting}% if you use lstlistings
-            {\let\lsthk@OutputBox \lsthk@OutputBox@H@@k }
-%\AtBeginDocument{\preto\FV@VerbatimBegin {\let\lsthk@OutputBox 
-%\lsthk@OutputBox@H@@k }}
-\providerobustcmd*\ifrefundefined [1]{\begingroup \csname 
-@safe@activestrue \endcsname %<babel>
-     \expandafter\endgroup \csname @\ifcsname r@#1\endcsname second\else
-                                                             first\fi 
-oftwo\endcsname
+\makeatletter
+\AtBeginEnvironment{LTXexample}{\let\lsthk@OutputBox\lsthk@OutputBox@H@@k\let\lstbasicfont\footnotesize}
+\AtBeginEnvironment{lstlisting}{\let\lsthk@OutputBox\lsthk@OutputBox@H@@k\let\lstbasicfont\footnotesize}
+%\AtBeginDocument{\preto\FV@VerbatimBegin{\let\lsthk@OutputBox\lsthk@OutputBox@H@@k\let\lstbasicfont\footnotesize}}
+%\AtBeginDocument{\preto\FV@VerbatimBegin{\let\lsthk@OutputBox\lsthk@OutputBox@H@@k\let\lstbasicfont\footnotesize}}
+\providerobustcmd*\ifrefundefined [1]{%
+  \begingroup%
+    \csname @safe@activestrue\endcsname%
+    \expandafter\endgroup\csname @\ifcsname r@#1\endcsname second\else first\fi oftwo\endcsname
 }% \ifrefundefined
-\def\lsthk@OutputBox@H@@k {\begingroup \let\lst@UM \@empty
-     \edef \@tempc {sec:\detokenize\expandafter{\the\lst@token }}%\edef 
-\@tempc {\@tempc }
-     \ifrefundefined {\@tempc}   \endgroup \sethyperlistings
+\def\lsthk@OutputBox@H@@k{%
+    \begingroup%
+      \let\lst@UM\@empty%
+      \edef\@tempc{sec:\detokenize\expandafter{\the\lst@token }}%\edef
+      \ifrefundefined{\@tempc}%
+    \endgroup%
+    \sethyperlistings%
 }% \lsthk@OutputBox@fcltxH@@k
 \def\sethyperlistings {\global\let \hyperlistingsreference =\@tempc
      \endgroup \aftergroup \dohyperlistings }% after \hbox
 \def\dohyperlistings {\def\lst@alloverstyle ##1{\hyperlistings ##1}}
-\def\hyperlistings {\setbox \@tempboxa
-     \hbox   \bgroup
-             \rlap {\hypersetup {linkcolor=.}\relax  \fboxrule \z@
-             \hyperref [\hyperlistingsreference]
-                     {\boxframe 
-{\wd\@tempboxa}{\ht\@tempboxa}{\dp\@tempboxa}}}%
-             \unhbox \@tempboxa
-             \egroup
+\def\hyperlistings{%
+    \setbox\@tempboxa\hbox%
+    \bgroup%
+      \rlap{\hypersetup {linkcolor=.}\relax\fboxrule\z@%
+      \hyperref[\hyperlistingsreference]{\boxframe{\wd\@tempboxa}{\ht\@tempboxa}{\dp\@tempboxa}}}%
+      \unhbox\@tempboxa%
+    \egroup%
 }% \hyperlistings
+\let\lsthk@OutputBox\lsthk@OutputBox@H@@k
+\makeatother
 % -----------------------------------------------------------
 \newlength{\marglistwidth}
 \newlength{\marglistsep}
@@ -72,6 +76,11 @@ oftwo\endcsname
      \item[##1]%
      \xLkeyword{##1}%
      \texttt{##2} \ifx##3\relax\else (default: \texttt{##3})\fi\par\nobreak
+     \vspace{\itemsep}}%
+   \def\styleitem##1##2{%
+     \item[##1]%
+     \xLkeyword{##1}\xLkeyword{addto##1}\xLkeyword{new##1}%
+     \texttt{<psstyle>} \ifx##2\relax\else (default: \texttt{##2})\fi\par\nobreak
      \vspace{\itemsep}}}%
   {\endlist}
 \newcommand*{\marglistfont}{\sffamily\small}
@@ -166,6 +175,27 @@ oftwo\endcsname
 
 \lstset{explpreset={pos=l,width=-99pt,overhang=0pt,hsep=\columnsep,vsep=\bigskipamount,rframe={}},
     escapechar=§}
+
+\makeatletter
+\renewcommand\maketitle{%
+\thispagestyle{empty}%
+\begin{titlepage}
+\begin{pspicture}(1.6in,0.685in)(10,21.7)
+  \psframe[fillstyle=solid,linecolor=lightgray,fillcolor=lightgray,linestyle=solid](0,-5.75)(21.5,10)
+  \psframe[fillstyle=solid,linecolor=Orange!85!Red,fillcolor=Orange!85!Red,linestyle=solid](0,10)(21.5,10.5)
+  \psframe[fillstyle=solid,linecolor=Orange!85!Red,fillcolor=Orange!85!Red,linestyle=solid](0,21.1)(21.5,21.2)
+  \rput[lb](3,22){\Huge\sffamily\color{Orange!65!Red}\psscalebox{2}{\textbf{PSTricks}}}
+  \rput[lb](3,14.1){\parbox{15cm}{\sffamily\RaggedRight\bfseries\huge\@title}}
+  \rput[lb](3,12.6){\parbox{13cm}{\sffamily\Large\@subtitle}}
+  \rput[lb](3,7.6){\parbox{13cm}{\sffamily\@date}}
+  \rput[lb](3,-2.6){\parbox[b]{17cm}{\sffamily\RaggedRight 
+    \ifx\@docauthor\empty~\else Documentation by\fi\hfill\makebox[7cm][l]{Package author(s):}\\
+    \ifx\@docauthor\empty~\else{\bfseries\tabular[t]{@{}l@{}}\@docauthor\endtabular}\fi\hfill\makebox[7cm][l]{%
+      \bfseries\tabular[t]{@{}l@{}}\@author\endtabular}}}
+ \rput[C](11,4){\bgImage}%
+\end{pspicture}%
+\end{titlepage}}
+\makeatother
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
  \title{\texttt{pst-optexp}\\ A PSTricks package to draw optical experimental setups\\ \small v.\verPstOptExp}
@@ -323,20 +353,14 @@ the label references.
 
 \subsection{Using PSStyles}\label{sec:styles}
 
-\begin{description}
-\styleitem{OptionalStyle}{<psstyle>}
-\styleitem{OptComp}{<psstyle>}
-\paramitem{addtoOptComp}{<psstyle>}{}
-\paramitem{newOptComp}{<psstyle>}{}
-\end{description}
-
 The appearance of many functional parts of \LPack{pst-optexp} objects is
 controlled via psstyles. These are collections of parameters which are
 applied only to selected subparts of the objects. In general, these
 psstyles can be overwritten with the \Lcs{newpsstyle} macro and extended
 with the \Lcs{addtopsstyle} macro.
 
-\stylepar{OptComp} 
+\begin{fieldlist}
+\styleitem{OptComp}{}
 Affects only the appearence of the optical
 components. This was introduced, because using only the standard
 graphics parameters changes also the connections that are drawn within
@@ -357,7 +381,8 @@ the component.
 \end{pspicture}
 \end{LTXexample}
 
-\medskip
+\styleitem{OptionalStyle}{style=OptComp, linestyle=dashed, dash=1.5pt 1pt}
+\end{fieldlist}
 
 \subsection{Positioning}\label{sec:positioning}
 \begin{fieldlist}
@@ -369,9 +394,9 @@ reference points. It is only not available for the free-ray tripoles.
 
 \medskip
 
-\begin{LTXexample}[width=3.5cm]
-\begin{pspicture}[showgrid=true](3,2) 
-  \lens[beam, position=0.8](0,1.2)(3,1.2){L}
+\begin{LTXexample}[width=3cm]
+\begin{pspicture}(3,1.5) 
+  \lens[beam, position=0.8](0,1)(3,1){L}
 \end{pspicture}
 \end{LTXexample}
 
@@ -399,7 +424,7 @@ two reference nodes. Its value is given in psunits.
 
 \bigskip
 
-\begin{LTXexample}[width=3.5cm]
+\begin{LTXexample}[width=3cm]
 \begin{pspicture}(3,2) 
   \mirror[beam, compshift=0.2, startvecabsolute, startvec=1 0, labelangle=45](0,1)(2,1)(2,0){mirror}
 \end{pspicture}
@@ -490,17 +515,15 @@ label-related parameter. It takes up to four space-separated arguments
 \end{LTXexample}
 
 \end{fieldlist}
-\end{document}
+
 \subsection{Named Objects}\label{sec:namedobj}
 
-\begin{description}
-  \paramitem{compname}{<string>}{\{\}}
-\end{description}
-
-\noindent Every \LPack{pst-optexp} object of an experimental setup can
+\begin{fieldlist}
+\fielditem{compname}{<string>}{}
+Every \LPack{pst-optexp} object of an experimental setup can
 be assigned a name that is unique within one pspicture environment. The
 name is defined with the parameter \Lkeyword{compname} which is
-defineable only directly within a \LPack{pst-optexp} object: 
+defineable only directly within a \LPack{pst-optexp} object.
 
 \medskip
 
@@ -508,25 +531,24 @@ defineable only directly within a \LPack{pst-optexp} object:
 \optbox[compname=MyBox](A)(B){Box} % valid use of 'compname'
 \psset{compname=MyName}            % not valid, gives an error
 \end{lstlisting}
-
+\end{fieldlist}
 \medskip
 
 \subsection{Nodes For External Usage}\label{sec:extnode}
 
-\begin{description}
-\paramitem{extnode}{<ref string>\footnote{\refstringexplanation}}{\{\}}
-\end{description}
-
-\noindent Some of the objects can provide a supplementary node for additional
+Some of the objects can provide a supplementary node for additional
 connections. A laser diode may be connected for example to a frequency synthesizer
 (use package \LPack{pst-circ}) or a detector to a computer.
 
-\Lkeyword{extnode} controls the position of the additional node and
+\begin{fieldlist}
+\fielditem{extnode}{<refstring>}{}
+
+Controls the position of the additional node and
 takes a \paramvalue{<ref string>} as its argument. By default this
 parameter is empty (\paramvalue{\{\}}) and no node is created.
 
 The name of the new node depends on the \Lkeyword{compname} parameter
-(see Sec.~\ref{sec:namedobj} for naming conventions). If \Lkeyword{compname} is empty
+(see Sec.~\ref{sec:namedobj} for naming conventions). If \nxLkeyword{compname} is empty
 the new node is named \nodename{ExtNode} by default and overwritten by
 following objects.
 
@@ -592,7 +614,8 @@ Sec.~\ref{sec:mirror}) which does not depend on the actual value of \Lkeyword{ex
     \Lkeyword{extnode} is not empty. Some allow different positions of the
     node and for some only a fixed node makes sense.}\label{tab:nodes}
 \end{table}
-
+\end{fieldlist}
+\end{document}
 \newpage
 
 \section{Free-Ray Objects}
