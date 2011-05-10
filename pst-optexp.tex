@@ -884,7 +884,6 @@
    \edef\optexp@comps{#1 \optexp@comps}%
 }%
 \def\draw@InternalConnections{%
-%  \edef\poe@tmp{\the\poe@cnt}% I don't know how to do it with expansion
   \ifPst@oe@beam
     \ifPst@oe@endbox
       \drawbeam[addtoBeam={connectplanes}]{(\optexp@refnodeA)}{\psk@oe@compname}
@@ -899,7 +898,7 @@
     \else
       \ifPst@oe@fiberin@
         \drawfiber@{FiberIn}{(\optexp@refnodeA)}{\psk@oe@compname}
-              \fi
+      \fi
       \ifPst@oe@fiberout@
         \drawfiber@{FiberOut}{\psk@oe@compname}{(\optexp@refnodeB)}
       \fi
@@ -1593,41 +1592,42 @@
   \ifPst@oe@compat
     \addbefore@par{conn=o-f}%
   \fi
-   \addbefore@par{fiberout=both}%
-   \begin@OptexpObj
-      \pst@regNodes{\pst@tempA}{\pst@tempB}%
-      \pst@adjustTempNodes
-      \pst@draw@component{#1}{%
-         \pnode(0,0){\optexp@nodeLabel}%
-         \ifPst@oe@bglayer
-           \fibercollimator@nodes
-         \fi
-         \ifPst@oe@toplayer
-           \fibercollimator@comp
-         \fi
-      }%
-      \ifPst@oe@bglayer
-        \edef\poe@tmp{\the\poe@cnt}% I don't know how to do it with expansion
-        \ifPst@oe@compat
-          \@nameuse{\psk@connIn}
-        \else
-          \drawbeam{(\optexp@refnodeA)}{\poe@tmp}
-        \fi
-        \ifPst@oe@fiberout@
-          \ifx\@empty\pst@tempC
-            \ifPst@oe@compat
-              \@nameuse{\psk@connOut}
-            \else
-              \drawfiber{\poe@tmp}{(\optexp@refnodeB)}
-            \fi
-          \else\ifx\@empty\pst@tempD
-             \psbezier[style=FiberOut](\pst@tempC)(\pst@tempB)(\pst@tempB)(\optexp@nodeOut)%
-          \else
-             \psbezier[style=FiberOut](\pst@tempD)(\pst@tempC)(\pst@tempB)(\optexp@nodeOut)%
-          \fi\fi
+  \addbefore@par{fiberout=both}%
+  \begin@OptexpObj
+    \pst@regNodes{\pst@tempA}{\pst@tempB}%
+    \pst@adjustTempNodes
+    \pst@draw@component{#1}{%
+       \pnode(0,0){\optexp@nodeLabel}%
+       \ifPst@oe@bglayer
+         \fibercollimator@nodes
+       \fi
+       \ifPst@oe@toplayer
+         \fibercollimator@comp
+       \fi
+    }%
+    \ifPst@oe@bglayer
+      \ifPst@oe@compat
+        \@nameuse{\psk@connIn}
+      \else
+        \ifPst@oe@beam
+          \drawbeam{(\optexp@refnodeA)}{\psk@oe@compname}
         \fi
       \fi
-   \end@OptexpObj
+      \ifPst@oe@fiberout@
+        \ifx\@empty\pst@tempC
+          \ifPst@oe@compat
+            \@nameuse{\psk@connOut}
+          \else
+            \drawfiber{\psk@oe@compname}{(\optexp@refnodeB)}
+          \fi
+        \else\ifx\@empty\pst@tempD
+          \psbezier[style=FiberOut](\pst@tempC)(\pst@tempB)(\pst@tempB)(\optexp@nodeOut)%
+        \else
+          \psbezier[style=FiberOut](\pst@tempD)(\pst@tempC)(\pst@tempB)(\optexp@nodeOut)%
+        \fi\fi
+      \fi
+    \fi
+  \end@OptexpObj
 }%
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
