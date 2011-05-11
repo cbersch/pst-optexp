@@ -180,6 +180,7 @@
                 fillstyle=hlines}%
 \newpsstyle{PiezoMirror}{fillstyle=solid,fillcolor=black!30}%
 \newpsstyle{IsolatorArrow}{linewidth=2\pslinewidth, arrowinset=0}
+\newpsstyle{CrystalCaxis}{linestyle=dashed, dash=2pt 2pt, linewidth=0.7\pslinewidth, arrowinset=0, arrows=->}
 \newpsstyle{FdlArrow}{arrowinset=0, arrows=->}
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1073,7 +1074,7 @@
         \fi
       \end@OptexpObj
     }%
-    \define@iimacro{#2}%
+    \dipole@iimacro{#2}%
   }{%
     \@pstrickserr{OptExp dipole object `#2' already defined}\@eha}%
 \ignorespaces}%
@@ -1096,7 +1097,7 @@
         \fi
         \end@OptexpObj
       }%
-      \define@iimacro{#2}%
+      \dipole@iimacro{#2}%
    }{%
      \@pstrickserr{OptExp fiber dipole object `#2' already defined}\@eha}%
 \ignorespaces}%
@@ -1120,7 +1121,7 @@
         \fi
       \end@OptexpObj
     }%
-    \define@iimacro{#2}%
+    \dipole@iimacro{#2}%
    }{%
      \@pstrickserr{OptExp dipole object `#2' already defined}\@eha}%
 \ignorespaces}%
@@ -1159,7 +1160,7 @@
             \fi
          \end@OptexpMultipole
       }%
-      \define@iimacro{#2}%
+      \tripole@iimacro{#2}%
    }{%
      \@pstrickserr{OptExp tripole object `#2' already defined}\@eha}%
 \ignorespaces}%
@@ -1209,20 +1210,37 @@
        \fi
      \end@OptexpObj
     }%
-    \define@iimacro{#2}%
+    \dipole@iimacro{#2}%
   }{%
     \@pstrickserr{OptExp fiber quadrupole object `#2' already defined}\@eha}%
 \ignorespaces}%
-\def\define@iimacro#1{%
+\def\dipole@iimacro#1{%
   \@namedef{#1@ii}{%
     \ifPst@oe@bglayer
       \pnode(0,0){\optexp@nodeLabel}%
-%      \pnode(0,0){\optexp@nodeIn}%
-%      \pnode(0,0){\optexp@nodeOut}%
     \fi
     \@ifundefined{#1@iii}{%
       \ifPst@oe@bglayer
         \@ifundefined{#1@nodes}{\dipole@nodes}{\@nameuse{#1@nodes}}%
+      \fi
+      \ifPst@oe@toplayer
+        \@nameuse{#1@comp}%
+      \fi
+    }{%
+      \ifPst@oe@bglayer
+        \@nameuse{#1@iii}%
+      \fi
+    }%
+  }
+\ignorespaces}%
+\def\tripole@iimacro#1{%
+  \@namedef{#1@ii}{%
+    \ifPst@oe@bglayer
+      \pnode(0,0){\optexp@nodeLabel}%
+    \fi
+    \@ifundefined{#1@iii}{%
+      \ifPst@oe@bglayer
+        \@ifundefined{#1@nodes}{\tripole@nodes}{\@nameuse{#1@nodes}}%
       \fi
       \ifPst@oe@toplayer
         \@nameuse{#1@comp}%
@@ -1272,7 +1290,7 @@
     \fi
   \end@OptexpObj
 }%
-\define@iimacro{wdmsplitter}%
+\dipole@iimacro{wdmsplitter}%
 %
 %
 \def\wdmcoupler{\pst@object{wdmcoupler}}%
@@ -1309,7 +1327,7 @@
     \fi
   \end@OptexpObj
 }%
-\define@iimacro{wdmcoupler}%
+\dipole@iimacro{wdmcoupler}%
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
@@ -1976,114 +1994,107 @@
                    \psk@oe@n}%
 }%
 \def\lens@comp{%
-   \addbefore@par{linejoin=1}%
-   \begin@ClosedObj
-   \edef\@lens@newwd{0\space}%
-   \edef\@lens@wd{\psk@oe@lenswidth\space\pst@number\psxunit mul 2 div }%
-   \edef\@lens@th{0}%
-   \addto@pscode{%
-      \pst@optexpdict 
-      /@wd \psk@oe@lenswidth\space\pst@number\psxunit mul 2 div def
-      /@ht \psk@oe@lensheight\space\pst@number\psyunit mul 2 div def
-      /@rL \psk@oe@lensradiusleft\space\pst@number\psxunit mul def
-      /@rR \psk@oe@lensradiusright\space\pst@number\psxunit mul def
-      /@th 0 def	
-   }%
-   % 
-   % distinguish between all the different lens-combination possibilities
-   % 
+  \addbefore@par{linejoin=1}%
+  \begin@ClosedObj
+  \edef\@lens@newwd{0\space}%
+  \edef\@lens@wd{\psk@oe@lenswidth\space\pst@number\psxunit mul 2 div }%
+  \edef\@lens@th{0}%
+  \addto@pscode{%
+    \pst@optexpdict 
+    /@wd \psk@oe@lenswidth\space\pst@number\psxunit mul 2 div def
+    /@ht \psk@oe@lensheight\space\pst@number\psyunit mul 2 div def
+    /@rL \psk@oe@lensradiusleft\space\pst@number\psxunit mul def
+    /@rR \psk@oe@lensradiusright\space\pst@number\psxunit mul def
+    /@th 0 def	
+  }%
+  % 
+  % distinguish between all the different lens-combination possibilities
+  \ifdim\psk@oe@lensradiusleft pt=0pt\else
+    % this takes the /a1 definition from the leftC* procedures
+    % the macro is necessary for the outer nodes
+    \edef\@lens@newwd{%
+      \psk@oe@lensradiusleft\space\psk@oe@lensheight\space 2 div segLen
+      \ifdim\psk@oe@lensradiusleft pt<0pt
+        0.5 mul\space
+      \fi
+    }%
+    \edef\@lens@th{%
+      \ifPst@oe@thicklens
+        \psk@oe@lenswidth\space 2 div 
+      \else
+        \psk@oe@lensradiusleft\space\psk@oe@lensheight\space 2 div segLen
+      \fi
+    }%
+    \addto@pscode{%
+      /@th \ifPst@oe@thicklens @wd \else @rL @ht segLen \fi def
+      @ht @rL
+      \ifdim\psk@oe@lensradiusleft pt<0pt
+        leftConcave
+      \else
+        leftConvex
+      \fi
+    }%
+  \fi
+  \ifdim\psk@oe@lensradiusright pt=0pt\else
+    % this takes the /a1 definition from the rightC* procedures
+    % the macro is necessary for the outer nodes
+    \edef\@lens@th{%
+      \@lens@th\space
+      \ifPst@oe@thicklens 
+        \psk@oe@lenswidth\space 2 div
+      \else
+        \psk@oe@lensradiusright\space\psk@oe@lensheight\space 2 div segLen 
+      \fi\space add
+    }%
+    \addto@pscode{%
+      /@th @th \ifPst@oe@thicklens @wd \else @rR @ht segLen \fi add def
+      @ht @rR
+      \ifdim\psk@oe@lensradiusright pt<0pt
+        rightConcave
+      \else
+        rightConvex
+      \fi
+    }%
+  \fi
+  % 
+  % check some special cases
+  % 
+  % 1) Left is plain - right concave / convex
+  \ifdim\psk@oe@lensradiusleft pt=0pt
+    \ifdim\psk@oe@lensradiusright pt=0pt\else
+      \addto@pscode{%
+        @th 2 div sub neg 5 1 roll
+        @th 2 div neg @ht neg moveto ArcR
+        @th 2 div neg @ht lineto
+      }%
+    \fi
+  \fi
+  %
+  % 2) Right is plain - left concave / convex
+  \ifdim\psk@oe@lensradiusright pt=0pt
     \ifdim\psk@oe@lensradiusleft pt=0pt\else
-       % this takes the /a1 definition from the leftC* procedures
-       % the macro is necessary for the outer nodes
-       \edef\@lens@newwd{%
-          \psk@oe@lensradiusleft\space\psk@oe@lensheight\space 2 div segLen
-          \ifdim\psk@oe@lensradiusleft pt<0pt
-             0.5 mul
-          \fi\space
-       }%
-       %
-       \edef\@lens@th{\ifPst@oe@thicklens \psk@oe@lenswidth\space 2 div \else \psk@oe@lensradiusleft\space\psk@oe@lensheight\space 2 div segLen \fi}%
-       \addto@pscode{%
-         /@th \ifPst@oe@thicklens @wd \else @rL @ht segLen \fi def
-         @ht @rL
-         \ifdim\psk@oe@lensradiusleft pt<0pt
-            leftConcave
-         \else
-            leftConvex
-         \fi
-       }%
+      \addto@pscode{%
+        @th 2 div sub 5 1 roll
+        @th 2 div @ht moveto ArcL
+        @th 2 div @ht neg lineto
+      }%
     \fi
-    \ifdim\psk@oe@lensradiusright pt=0pt\else
-       % this takes the /a1 definition from the rightC* procedures
-       % the macro is necessary for the outer nodes
-       \edef\@lens@th{\@lens@th\space\ifPst@oe@thicklens \psk@oe@lenswidth\space 2 div\else \psk@oe@lensradiusright\space\psk@oe@lensheight\space 2 div segLen \fi\space add}%
-       \addto@pscode{%
-         /@th @th \ifPst@oe@thicklens @wd \else @rR @ht segLen \fi add def
-         @ht @rR
-         \ifdim\psk@oe@lensradiusright pt<0pt
-            rightConcave
-         \else
-            rightConvex
-         \fi
-       }%
+  \fi
+  % 
+  % 3) right and left are both curved
+  \ifdim\psk@oe@lensradiusright pt=0pt\else
+    \ifdim\psk@oe@lensradiusleft pt=0pt\else
+      \addto@pscode{%
+        @th 2 div dup
+        7 1 roll sub neg 5 1 roll
+        ArcR sub 5 1 roll ArcL
+      }%
     \fi
-    % 
-    % check some special cases
-    % 
-    % 1) Left is plain  -  right concave
-    % \- right convex
-    \ifdim\psk@oe@lensradiusleft pt=0pt
-       \ifdim\psk@oe@lensradiusright pt=0pt\else
-          \addto@pscode{%
-             @th 2 div sub neg 5 1 roll
-             @th 2 div neg @ht neg moveto ArcR
-             @th 2 div neg @ht lineto
-          }%
-       \fi
-    \fi
-    % 
-    % 
-    % 2) Right is plain -  left concave
-    % \- left convex
-    \ifdim\psk@oe@lensradiusright pt=0pt
-       \ifdim\psk@oe@lensradiusleft pt=0pt\else
-          \addto@pscode{%
-             @th 2 div sub 5 1 roll
-             @th 2 div @ht moveto ArcL
-             @th 2 div @ht neg lineto
-          }%
-       \fi
-    \fi
-    % 
-    % 3) right and left are both curved
-    \ifdim\psk@oe@lensradiusright pt=0pt\else
-       \ifdim\psk@oe@lensradiusleft pt=0pt\else
-          \addto@pscode{%
-             @th 2 div dup
-             7 1 roll sub neg 5 1 roll
-             ArcR sub 5 1 roll ArcL
-          }%
-       \fi
-    \fi
-    % 
-    % now complete the object
-    \addto@pscode{closepath 1 setlinejoin end }%
-    % \pnode(! \pst@optexpdict\space\@lens@th\space -2 div 0 end){\optexp@nodeIn}
-    % \pnode(! \pst@optexpdict\space\@lens@th\space 2 div 0 end){\optexp@nodeOut}
-    % \newOptexpComp{{\@lens@th\space -2 div 0} 
-    %                \ifdim\psk@oe@lensradiusleft pt=0pt 
-    %                   {0 1} trans {NewPlaneInt}
-    %                \else 
-    %                   {\psk@oe@lensradiusleft\space 0} trans {NewCurvedInt}
-    %                \fi
-    %                {\@lens@th\space 2 div 0} 
-    %                \ifdim\psk@oe@lensradiusright pt=0pt
-    %                   {0 1} trans {NewPlaneInt}
-    %                \else
-    %                   {\psk@oe@lensradiusright\space neg 0} trans {NewCurvedInt} 
-    %                \fi
-    %                \psk@oe@n}%
-    \end@ClosedObj
+  \fi
+  % 
+  % now complete the object
+  \addto@pscode{closepath 1 setlinejoin end }%
+  \end@ClosedObj
 \ignorespaces}%
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -2104,33 +2115,33 @@
 % BEAMSPLITTER
 %
 \def\beamsplitter@nodes{%
-   \edef\@bs@wd{\psk@oe@bssize\space 2.0 div\space}%
-   \ifx\psk@oe@bsstyle\pst@str@bsstyle@cube
-      \psline{cc-cc}(! \@bs@wd neg 2 sqrt mul 0)(! \@bs@wd 2 sqrt mul 0)
-      \rput[c]{45}(0,0){\psframe(! \@bs@wd neg \@bs@wd neg)(! \@bs@wd \@bs@wd)}
-      \ifPst@oe@compat
-        % the old beamsplitter had only one defined plane
-        \newOptexpCompAmb{ {0 0} {1 0} trans {NewPlaneInt} 1 }%
-      \else
-        \newOptexpCompAmb{ {\@bs@wd 2 sqrt div neg dup } {-1 1} trans {NewPlaneInt}
-                           {\@bs@wd 2 sqrt div dup neg } {1 1} trans {NewPlaneInt}
-                           {\@bs@wd 2 sqrt div dup } {-1 1} trans {NewPlaneInt}
-                           {\@bs@wd 2 sqrt div neg dup neg } {1 1} trans {NewPlaneInt} 
-                           {0 0} {1 0} trans {NewPlaneInt} \psk@oe@n}%
-      \fi
-   \else\ifx\psk@oe@bsstyle\pst@str@bsstyle@plate
-      \psline(! \@bs@wd neg 2 sqrt mul 0)(! \@bs@wd 2 sqrt mul 0)
+  \edef\@bs@wd{\psk@oe@bssize\space 2.0 div\space}%
+  \ifx\psk@oe@bsstyle\pst@str@bsstyle@cube
+    \psline{cc-cc}(! \@bs@wd neg 2 sqrt mul 0)(! \@bs@wd 2 sqrt mul 0)
+    \rput[c]{45}(0,0){\psframe(! \@bs@wd neg \@bs@wd neg)(! \@bs@wd \@bs@wd)}
+    \ifPst@oe@compat
+      % the old beamsplitter had only one defined plane
       \newOptexpCompAmb{ {0 0} {1 0} trans {NewPlaneInt} 1 }%
-   \fi\fi
+    \else
+      \newOptexpCompAmb{ {\@bs@wd 2 sqrt div neg dup} {-1 1} trans {NewPlaneInt}
+                         {\@bs@wd 2 sqrt div dup neg} {1 1} trans {NewPlaneInt}
+                         {\@bs@wd 2 sqrt div dup} {-1 1} trans {NewPlaneInt}
+                         {\@bs@wd 2 sqrt div neg dup neg} {1 1} trans {NewPlaneInt} 
+                         {0 0} {1 0} trans {NewPlaneInt} \psk@oe@n}%
+    \fi
+  \else\ifx\psk@oe@bsstyle\pst@str@bsstyle@plate
+    \psline(! \@bs@wd neg 2 sqrt mul 0)(! \@bs@wd 2 sqrt mul 0)
+    \newOptexpCompAmb{ {0 0} {1 0} trans {NewPlaneInt} 1 }%
+  \fi\fi
 \ignorespaces}%
 \def\beamsplitter@comp{%
-   \edef\@bs@wd{\psk@oe@bssize\space 2.0 div\space}%
-   \ifx\psk@oe@bsstyle\pst@str@bsstyle@cube
-      \psline{cc-cc}(! \@bs@wd neg 2 sqrt mul 0)(! \@bs@wd 2 sqrt mul 0)
-      \rput[c]{45}(0,0){\psframe(! \@bs@wd neg \@bs@wd neg)(! \@bs@wd \@bs@wd)}
-   \else\ifx\psk@oe@bsstyle\pst@str@bsstyle@plate
-      \psline(! \@bs@wd neg 2 sqrt mul 0)(! \@bs@wd 2 sqrt mul 0)
-   \fi\fi
+  \edef\@bs@wd{\psk@oe@bssize\space 2.0 div\space}%
+  \ifx\psk@oe@bsstyle\pst@str@bsstyle@cube
+    \psline{cc-cc}(! \@bs@wd neg 2 sqrt mul 0)(! \@bs@wd 2 sqrt mul 0)
+    \rput[c]{45}(0,0){\psframe(! \@bs@wd neg \@bs@wd neg)(! \@bs@wd \@bs@wd)}
+  \else\ifx\psk@oe@bsstyle\pst@str@bsstyle@plate
+    \psline(! \@bs@wd neg 2 sqrt mul 0)(! \@bs@wd 2 sqrt mul 0)
+  \fi\fi
 \ignorespaces}%
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -2142,80 +2153,56 @@
   \edef\@ht{\psk@oe@crystalheight\space 0.5 mul\space}%
   \psrotate(! \@wd \psk@oe@rotate@xref\space mul \@ht \psk@oe@rotate@yref\space mul){\psk@oe@angle}{%
     \pnode(0,0){\optexp@nodeLabel}
-    \newOptexpComp{{ \@wd neg 0 } { 0 1 } trans {NewPlaneInt} { \@wd 0 } { 0 1 } trans {NewPlaneInt} \psk@oe@n }%
+    \newOptexpComp{{\@wd neg 0} {0 1} trans {NewPlaneInt} 
+                   {\@wd 0} {0 1} trans {NewPlaneInt} \psk@oe@n }%
   }%
 }%
 \def\crystal@comp{%
-   \pst@Verb{%
-     /@@x \psk@oe@crystalwidth\space 0.5 mul def
-     /@@y \psk@oe@crystalheight\space 0.5 mul def
-   }%
-   \psrotate(! @@x \psk@oe@rotate@xref\space mul @@y \psk@oe@rotate@yref\space mul)
-      {\psk@oe@angle}{%
-      \psframe(! @@x neg @@y neg)(! @@x @@y)
-      \ifPst@oe@voltage%
-         \psline(! @@x 4 div 3 mul neg @@y)%
-                (! @@x 4 div 3 mul neg @@y 0.2 add)
-         \pscircle[fillstyle=solid,%
-                   fillcolor=white](! @@x 4 div 3 mul neg @@y 0.2 add){0.04}
-         \psline(! @@x 4 div 3 mul neg @@y neg)%
-                (! @@x 4 div 3 mul neg @@y neg 0.2 sub)%
-         \psline(! @@x 4 div 3 mul neg 0.15 sub @@y neg 0.2 sub)%
-                (! @@x 4 div 3 mul neg 0.15 add @@y neg 0.2 sub)%
+  \pst@Verb{%
+    /@@x \psk@oe@crystalwidth\space 0.5 mul def
+    /@@y \psk@oe@crystalheight\space 0.5 mul def
+  }%
+  \psrotate(! @@x \psk@oe@rotate@xref\space mul @@y \psk@oe@rotate@yref\space mul){\psk@oe@angle}{%
+    \psframe(! @@x neg @@y neg)(! @@x @@y)
+    \ifPst@oe@voltage%
+      \psline(! @@x 4 div 3 mul neg @@y)(! @@x 4 div 3 mul neg @@y 0.2 add)
+      \pscircle[fillstyle=solid, fillcolor=white](! @@x 4 div 3 mul neg @@y 0.2 add){0.04}
+      \psline(! @@x 4 div 3 mul neg @@y neg)%
+             (! @@x 4 div 3 mul neg @@y neg 0.2 sub)%
+      \psline(! @@x 4 div 3 mul neg 0.15 sub @@y neg 0.2 sub)%
+             (! @@x 4 div 3 mul neg 0.15 add @@y neg 0.2 sub)%
+    \fi
+    \ifPst@oe@lamp
+      \rput{180}(! @@x @@y 1.4 \psk@oe@lampscale\space mul add){\crystal@lamp}%
+    \fi
+    \ifdim\psk@oe@caxislength pt>0pt
+      \edef\@c@caxisL{\psk@oe@caxislength\space 2 div\space}%
+      \ifPst@oe@caxisinv
+        % invert the c-axis
+        \psline[style=CrystalCaxis](! 0 @@y neg)(! 0 @@y \@c@caxisL add)%
+      \else
+        \psline[style=CrystalCaxis](! 0 @@y)(! 0 @@y neg \@c@caxisL sub)%
       \fi
-      % 
-      \ifPst@oe@lamp
-         \rput{180}(! @@x @@y 1.4 \psk@oe@lampscale\space mul add){\crystal@lamp}%
-      \fi
-      % plot c-axis only, if caxislength > 0
-      \ifdim\psk@oe@caxislength pt>0pt
-         \edef\@c@caxisL{\psk@oe@caxislength\space 2 div\space}%
-         \ifPst@oe@caxisinv
-            %
-            % invert the c-axis
-            \psline[linestyle=dashed,%
-                    dash=2pt 2pt,%
-                    linewidth=0.7\pslinewidth,%
-                    arrowinset=0]{->}%
-                   (! 0 @@y neg)(! 0 @@y \@c@caxisL add)%
-         \else
-            \psline[linestyle=dashed,%
-                    dash=2pt 2pt,%
-                    linewidth=0.7\pslinewidth,%
-                    arrowinset=0]{->}%
-               (! 0 @@y)(! 0 @@y neg \@c@caxisL sub)%
-         \fi
-      \fi
-      % \pnode(0,0){\optexp@nodeLabel}
-      % \pnode(! @@x neg 0){\optexp@nodeIn}
-      % \pnode(! @@x 
-      %    \ifx\psk@oe@optbox@n\@empty 0 \else
-      %       \psk@oe@angle\space sin neg dup dup mul neg \psk@oe@optbox@n\space dup mul add sqrt div 2 @@x mul mul
-      %    \fi
-      % ){\optexp@nodeOut}
-%      \pnode(! \@c@wd neg 0){\optexp@nodeIn}
-%      \pnode(! \@c@wd 0){\optexp@nodeOut}
-   }%
+    \fi
+  }%
 \ignorespaces}%
 %
 % LAMP FOR THE CRYSTAL
-%
 \def\crystal@lamp{%
   \psset{linewidth=0.6\pslinewidth}
-  \edef\@l@s{\psk@oe@lampscale\space}%
-  % 
-  \pscurve[fillstyle=none](! -0.05 \@l@s mul 0)%
-          (! -0.1 \@l@s mul 0.15 \@l@s mul)%
-          (! -0.2 \@l@s mul 0.25 \@l@s mul)%
-          (! -0.25 \@l@s mul 0.5 \@l@s mul)%
-          (! 0 0.7 \@l@s mul)%
-          (! 0.25 \@l@s mul 0.5 \@l@s mul)%
-          (! 0.2 \@l@s mul 0.25 \@l@s mul)%
-          (! 0.1 \@l@s mul 0.15 \@l@s mul)%
-          (! 0.05 \@l@s mul 0)
+  \edef\@sz{\psk@oe@lampscale\space}%
+  \pscurve[fillstyle=none](! -0.05 \@sz mul 0)%
+          (! -0.1 \@sz mul 0.15 \@sz mul)%
+          (! -0.2 \@sz mul 0.25 \@sz mul)%
+          (! -0.25 \@sz mul 0.5 \@sz mul)%
+          (! 0 0.7 \@sz mul)%
+          (! 0.25 \@sz mul 0.5 \@sz mul)%
+          (! 0.2 \@sz mul 0.25 \@sz mul)%
+          (! 0.1 \@sz mul 0.15 \@sz mul)%
+          (! 0.05 \@sz mul 0)
   \multido{\i=-210+40}{7}{%
-    \rput{\i}(! 0 0.45 \@l@s mul){\psline(! -0.35 \@l@s mul 0)(! -0.6 \@l@s mul 0)}
-  }
+    \rput{\i}(! 0 0.45 \@sz mul){\psline(! -0.35 \@sz mul 0)(! -0.6 \@sz mul 0)}
+  }%
 \ignorespaces}%
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -2226,26 +2213,22 @@
 \def\polarization@comp{%
   \edef\@pol@size{\psk@oe@polsize\space 0.5 mul\space}%
   \ifx\psk@oe@poltype\pst@str@pol@polparallel
-     \psline[linestyle=solid, linewidth=\psk@oe@pollinewidth, arrowscale=0.8]{<->}%
-        (! 0 \@pol@size neg)(! 0 \@pol@size)%
+    \psline[linestyle=solid, linewidth=\psk@oe@pollinewidth, arrowscale=0.8]{<->}(! 0 \@pol@size neg)(! 0 \@pol@size)%
   \fi
   \ifx\psk@oe@poltype\pst@str@pol@polperp
-     \psdot[dotsize=0.05](0,0)%
-     \pscircle[fillstyle=none,linestyle=solid,linewidth=\psk@oe@pollinewidth](0,0){0.12}%
+    \psdot[dotsize=0.05](0,0)%
+    \pscircle[fillstyle=none,linestyle=solid,linewidth=\psk@oe@pollinewidth](0,0){0.12}%
   \fi
   \ifx\psk@oe@poltype\pst@str@pol@polmisc
-     \psline[linestyle=solid,linewidth=\psk@oe@pollinewidth,arrowscale=0.8]{<->}%
-        (! 0 \@pol@size neg)(! 0 \@pol@size)%
-     \psdot[dotsize=0.05](0,0)%
-     \pscircle[fillstyle=none,linestyle=solid,linewidth=0.7\pslinewidth](0,0){0.12}%
+    \psline[linestyle=solid,linewidth=\psk@oe@pollinewidth,arrowscale=0.8]{<->}(! 0 \@pol@size neg)(! 0 \@pol@size)%
+    \psdot[dotsize=0.05](0,0)%
+    \pscircle[fillstyle=none,linestyle=solid,linewidth=0.7\pslinewidth](0,0){0.12}%
   \fi
   \ifx\psk@oe@poltype\pst@str@pol@polrcirc
-     \psellipticarc[linewidth=\psk@oe@pollinewidth]{->}%
-        (0,0)(! \@pol@size 2 div \@pol@size){20}{-20}%
+    \psellipticarc[linewidth=\psk@oe@pollinewidth]{->}(0,0)(! \@pol@size 2 div \@pol@size){20}{-20}%
   \fi
   \ifx\psk@oe@poltype\pst@str@pol@pollcirc
-     \psellipticarc[linewidth=\psk@oe@pollinewidth]{<-}%
-        (0,0)(! \@pol@size 2 div \@pol@size){20}{-20}
+    \psellipticarc[linewidth=\psk@oe@pollinewidth]{<-}(0,0)(! \@pol@size 2 div \@pol@size){20}{-20}
   \fi
 \ignorespaces}%
 %
@@ -2254,48 +2237,35 @@
 % OPTICAL GRID
 %
 \def\optgrid@comp{%
-   \edef\@g@cnt{\psk@oe@optgridcount\space}%
-   \edef\@g@wd{\psk@oe@optgridwidth\space 2 div\space}%
-   \edef\@g@ht{\psk@oe@optgridheight\space}%
-   \edef\@g@dp{\psk@oe@optgriddepth\space}%
-   \edef\@g@step{\psk@oe@optgridwidth\space\@g@cnt div\space}%
-   \ifx\psk@oe@optgridtype\pst@str@optgridtype@blazed
-      \ifPst@oe@reverse%
-         \pscustom[linewidth=\psk@oe@optgridlinewidth, linejoin=1]{%
-            \psline[liftpen=1](! \@g@wd \@g@dp)(! \@g@wd \@g@ht)%
-                              (! \@g@wd neg \@g@ht)(! \@g@wd neg \@g@dp)
-            \multido{\i=0+1}{\psk@oe@optgridcount}{%
-               \psline[liftpen=1](! \@g@wd neg \i\space \@g@step mul add \@g@dp)%
-                                 (! \@g@wd neg \i\space \@g@step mul add 0)%
-                                 (! \@g@wd neg \i\space 1 add \@g@step mul add \@g@dp)%
-            }%
-            \closepath
-         }%
-      \else%   
-         \pscustom[linewidth=\psk@oe@optgridlinewidth, linejoin=1]{%
-            \psline[liftpen=1](! \@g@wd \@g@dp)(! \@g@wd \@g@ht)%
-                              (! \@g@wd neg \@g@ht)(! \@g@wd neg \@g@dp)
-            \multido{\i=0+1}{\psk@oe@optgridcount}{%
-               \psline[liftpen=1](! \@g@wd neg \i\space \@g@step mul add \@g@dp)%
-                                 (! \@g@wd neg \i\space 1 add \@g@step mul add 0)%
-                                 (! \@g@wd neg \i\space 1 add \@g@step mul add \@g@dp)%
-            }%
-            \closepath
-         }%
-      \fi%
-   \else\ifx\psk@oe@optgridtype\pst@str@optgridtype@binary
-      \pscustom[linewidth=\psk@oe@optgridlinewidth]{%
-         \psline[liftpen=1](! \@g@wd \@g@dp)(! \@g@wd \@g@ht)%
-                           (! \@g@wd neg \@g@ht)(! \@g@wd neg \@g@dp)
-         \multido{\i=0+1}{\psk@oe@optgridcount}{%
-            \psline[liftpen=1](! \@g@wd neg \i\space \@g@step mul add \@g@dp)%
-                              (! \@g@wd neg \i\space \@g@step mul add 0)%
-                              (! \@g@wd neg \i\space 0.5 add \@g@step mul add 0)%
-                              (! \@g@wd neg \i\space 0.5 add \@g@step mul add \@g@dp)%
-                              (! \@g@wd neg \i\space 1 add \@g@step mul add \@g@dp)%
-         }%
+  \edef\@cnt{\psk@oe@optgridcount\space}%
+  \edef\@wd{\psk@oe@optgridwidth\space 2 div\space}%
+  \edef\@ht{\psk@oe@optgridheight\space}%
+  \edef\@dp{\psk@oe@optgriddepth\space}%
+  \edef\@step{\psk@oe@optgridwidth\space\@cnt div\space}%
+  \ifx\psk@oe@optgridtype\pst@str@optgridtype@blazed
+    \pscustom[linewidth=\psk@oe@optgridlinewidth, linejoin=1]{%
+      \psline[liftpen=1](! \@wd \@dp)(! \@wd \@ht)%
+                        (! \@wd neg \@ht)(! \@wd neg \@dp)
+      \multido{\i=0+1}{\psk@oe@optgridcount}{%
+        \psline[liftpen=1](! \@wd neg \i\space \@step mul add \@dp)%
+                          (! \@wd neg \i\space \ifPst@oe@reverse\else 1 add \fi \@step mul add 0)%
+                          (! \@wd neg \i\space 1 add \@step mul add \@dp)%
       }%
-   \fi\fi
+      \closepath
+    }%
+  \else\ifx\psk@oe@optgridtype\pst@str@optgridtype@binary
+    \pscustom[linewidth=\psk@oe@optgridlinewidth]{%
+      \psline[liftpen=1](! \@wd \@dp)(! \@wd \@ht)%
+                        (! \@wd neg \@ht)(! \@wd neg \@dp)
+      \multido{\i=0+1}{\psk@oe@optgridcount}{%
+        \psline[liftpen=1](! \@wd neg \i\space \@step mul add \@dp)%
+                          (! \@wd neg \i\space \@step mul add 0)%
+                          (! \@wd neg \i\space 0.5 add \@step mul add 0)%
+                          (! \@wd neg \i\space 0.5 add \@step mul add \@dp)%
+                          (! \@wd neg \i\space 1 add \@step mul add \@dp)%
+      }%
+    }%
+  \fi\fi
 \ignorespaces}%
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -2377,7 +2347,7 @@
 % DETECTOR
 %
 \def\optdetector@nodes{%
-  \newOptexpComp{{ 0 0} { 0 1 } trans {NewPlaneInt} 1 }%
+  \newOptexpComp{{ 0 0} { 0 1 } refl {NewPlaneInt} 1 }%
   \ifx\psk@oe@dettype\pst@str@dettype@round
     \pnode(! \psk@oe@detsize\space 0.2 mul 0){\optexp@nodeLabel}%
     \pst@Verb{/@@x0 \psk@oe@detsize\space 0.5 mul def}%

@@ -23,7 +23,8 @@ footinclude=false,oneside]{pst-doc}
   texcsstyle = [20]\color{DOrange!60!black},
   moretexcs = [20]{lens, mirror, beamsplitter, optbox},
   keywordstyle = [30]\color{green!30!black},
-  morekeywords = [30]{label}
+  morekeywords = [30]{label},
+  hsep=5mm
 }
 %
 % Addition from GL
@@ -617,7 +618,7 @@ Sec.~\ref{sec:mirror}) which does not depend on the actual value of \Lkeyword{ex
     node and for some only a fixed node makes sense.}\label{tab:nodes}
 \end{table}
 \end{fieldlist}
-\end{document}
+
 \newpage
 
 \section{Free-Ray Objects}
@@ -632,20 +633,14 @@ automatic beam connections the \styleshape{Beam} style is used.
 
 \begin{BDef}
 \dipoledesc{lens}
-%\Lcs{\Larga{macro}}
 \end{BDef}
 
-\begin{description}
-\paramitem{lensheight}{<num>}{1}
-\paramitem{lenswidth}{<num>}{0.2}
-\paramitem{lensradius}{<num> [<num>]}{\{\}}
-\paramitem{lensradiusleft}{<num>}{1}
-\paramitem{lensradiusright}{<num>}{1}
-\paramitem{lens}{<num> [<num> [<num> [<num>]]]}{\{\}}
-\paramitem{thicklens}{<boolean>}{false}
-\end{description}
-
-\medskip 
+\begin{fieldlist}
+\fielditem{lensheight}{<num>}{1}
+\fielditem{lensradius}{<num> [<num>]}{\{\}}
+\fielditem{lensradiusleft}{<num>}{1}
+\fielditem{lensradiusright}{<num>}{1}
+\fielditem{lens}{<num> [<num> [<num> [<num>]]]}{\{\}}
 
 \begin{LTXexample}[width=5.5cm]
 \begin{pspicture}[showgrid=true](5,6)
@@ -661,6 +656,14 @@ automatic beam connections the \styleshape{Beam} style is used.
   \lens[position=0.2,lens=1 -1](A)(B){L}
   \lens[lens=0 -1](A)(B){L}
   \lens[lens=1 0,position=0.7](A)(B){L}
+\end{pspicture}
+\end{LTXexample}
+
+\fielditem{thicklens}{<boolean>}{false}
+\fielditem{lenswidth}{<num>}{0.2}
+
+\begin{LTXexample}[width=5cm]
+\begin{pspicture}(5,2)
   % thick lenses
   \pnode(0,1){A}\pnode(5,1){B}
   \psline[style=Beam](A)(B)
@@ -668,6 +671,8 @@ automatic beam connections the \styleshape{Beam} style is used.
   \lens[lens=0 -1, position=0.7, fillstyle=solid, fillcolor=blue!30!white](A)(B){lens}
 \end{pspicture}
 \end{LTXexample}
+
+\end{fieldlist}
 
 \medskip
 
@@ -697,29 +702,25 @@ which is use only if \Lkeyword{thicklens} is set to \Lkeyword{true}.
 \dipoledesc{optplate}
 \end{BDef}
 
-\begin{description}
-\paramitem{plateheight}{<num>}{1}
-\paramitem{platelinewidth}{<num>}{2\nxLcs{pslinewidth}}
-\paramitem{angle}{<degree>}{0}
-\end{description}
+\begin{fieldlist}
+\fielditem{plateheight}{<num>}{1}
+\fielditem{platelinewidth}{<num>}{2\nxLcs{pslinewidth}}
 
-\medskip
-
-\begin{LTXexample}[width=3.5cm]
-\begin{pspicture}[showgrid=true](3,2)
-  \optplate[beam](0,1.2)(3,1.2){filter}
+\begin{LTXexample}[width=3cm]
+\begin{pspicture}(3,1.5)
+  \optplate[beam](0,1)(3,1){filter}
 \end{pspicture}
 \end{LTXexample}
 
-\medskip
+\fielditem{angle}{<degree>}{0}
 
-\begin{LTXexample}[width=3.5cm]
-\begin{pspicture}[showgrid=true](3,2)
+\begin{LTXexample}[width=3cm]
+\begin{pspicture}(3,1.5)
   \optplate[angle=10, beam](0,1.2)(3,1.2){glass plate}
 \end{pspicture}
 \end{LTXexample}
 
-\medskip
+\end{fieldlist}
 
 \subsection{Retardation Plate}
 
@@ -727,22 +728,18 @@ which is use only if \Lkeyword{thicklens} is set to \Lkeyword{true}.
 \dipoledesc{optretplate}
 \end{BDef}
 
-\begin{description}
-\paramitem{plateheight}{<num>}{1}
-\paramitem{platewidth}{<num>}{0.1}
-\end{description}
+\begin{fieldlist}
+\fielditem{plateheight}{<num>}{1}
+\fielditem{platewidth}{<num>}{0.1}
 
-\medskip
-
-\begin{LTXexample}[width=3.5cm]
-\begin{pspicture}[showgrid=true](3,2)
-  \pnode(0,1.2){A}
-  \pnode(3,1.2){B}
+\begin{LTXexample}[width=3cm]
+\begin{pspicture}(3,1.5)
+  \pnode(0,1){A}
+  \pnode(3,1){B}
   \optretplate[beam](A)(B){$\nicefrac{\lambda}{2}$}
 \end{pspicture}
 \end{LTXexample}
-
-\medskip
+\end{fieldlist}
 
 \subsection{Pinhole}
 
@@ -750,23 +747,19 @@ which is use only if \Lkeyword{thicklens} is set to \Lkeyword{true}.
 \dipoledesc{pinhole}
 \end{BDef}
 
-\begin{description}
-\paramitem{outerheight}{<num>}{1}
-\paramitem{innerheight}{<num>}{0.1}
-\paramitem{phlinewidth}{<num>}{2\nxLcs{pslinewidth}}
-\end{description}
+\begin{fieldlist}
+\fielditem{outerheight}{<num>}{1}
+\fielditem{innerheight}{<num>}{0.1}
+\fielditem{phlinewidth}{<num>}{2\nxLcs{pslinewidth}}
 
-\medskip
-
-\begin{LTXexample}[width=3.5cm]
-\begin{pspicture}[showgrid=true](3,2)
-  \pnode(0,1.2){A}
-  \pnode(3,1.2){B}
+\begin{LTXexample}[width=3cm]
+\begin{pspicture}(3,1.5)
+  \pnode(0,1){A}
+  \pnode(3,1){B}
   \pinhole[beam](A)(B){PH}
 \end{pspicture}
 \end{LTXexample}
-
-\medskip
+\end{fieldlist}
 
 \subsection{Crystal}\label{sec:crystal}
 
@@ -805,44 +798,37 @@ parameters see Sec.~\ref{sec:box} about boxes.  \medskip
 \dipoledesc{optbox}
 \end{BDef}
 
-\begin{description}
-\paramitem{optboxheight}{<num>}{0.8}
-\paramitem{optboxwidth}{<num>}{1.4}
-\paramitem{endbox}{<boolean>}{false}
-\paramitem{angle}{<degree>}{0}
-\paramitem{rotateref}{<ref string>\footnote{\refstringexplanation}}{c}
-\paramitem{refractiveindex}{<num>}{\{\}}
-\end{description}
+\begin{fieldlist}
+\fielditem{optboxheight}{<num>}{0.8}
+\fielditem{optboxwidth}{<num>}{1.4}
 
-\medskip 
-
-\begin{LTXexample}[width=3.5cm]
-\begin{pspicture}[showgrid=true](3,2)
+\begin{LTXexample}[width=3cm]
+\begin{pspicture}(3,2)
   \optbox[beam](0,0)(3,2){box}
 \end{pspicture}
 \end{LTXexample}
 
-\bigskip
+\fielditem{endbox}{<boolean>}{false}
 
-\begin{LTXexample}[width=3.5cm]
-\begin{pspicture}[showgrid=true](3,2)
-  \optbox[beam, endbox](0,0)(1.7,1){box}
+\begin{LTXexample}[width=3cm]
+\begin{pspicture}(3,2)
+  \optbox[beam, endbox](0,0)(1.5,1){box}
 \end{pspicture}
 \end{LTXexample}
 
 \bigskip
 
-\begin{LTXexample}[width=3.5cm]
-\begin{pspicture}[showgrid=true](3,2)
-  \pnode(0,0){A}
-  \pnode(1.7,1){B}
-  \optbox[beam, endbox, labelref=relative, labeloffset=0](A)(B){box}
+\begin{LTXexample}[width=3cm]
+\begin{pspicture}(3,2)
+  \pnode(0,0){A}\pnode(1.5,1){B}
+  \optbox[beam, endbox, label=0 . . relative](A)(B){box}
 \end{pspicture}
 \end{LTXexample}
 
-\medskip
+\fielditem{angle}{<degree>}{0}
+\fielditem{rotateref}{<ref string>\footnote{\refstringexplanation}}{c}
 
-\noindent The parameter \Lkeyword{angle} describes the tilt of the box
+The parameter \Lkeyword{angle} describes the tilt of the box
 relative to the reference line defined by the two reference nodes. The
 reference point for the rotation can be defined
 with \Lkeyword{rotateref} which can take any combination
@@ -853,15 +839,15 @@ also rotate, while the label is not affected.
 
 \medskip
 
-\begin{LTXexample}[width=3.5cm]
-\begin{pspicture}[showgrid=true](3,2)
+\begin{LTXexample}[width=3cm]
+\begin{pspicture}(3,2)
   \optbox[angle=20, beam, rotateref=l, labeloffset=0.5](0,1)(3,1){box}
 \end{pspicture}
 \end{LTXexample}
 
-\medskip
+\fielditem{refractiveindex}{<num>}{\{\}}
 
-\noindent Together with the parameter \Lkeyword{refractiveindex} this
+Together with the parameter \Lkeyword{refractiveindex} this
 can be exploited to sketch the refraction through a tilted homogeneous
 medium (e.g. a glass plate). Then, however, the reference nodes for the
 beam connection must be corrected which is rather easy using the outer
@@ -870,19 +856,15 @@ operator.
 
 \medskip
 
-\begin{LTXexample}[width=3.5cm]
-\begin{pspicture}[showgrid=true](3,2)
-  \pnode(0,1){A}
-  \pnode(3,1){B}
-  \optbox[labeloffset=0.7, optboxwidth=0.5, optboxheight=1, angle=20, n=2.3, compname=Box](A)(B){glass plate}
-%  \drawbeam[conn=-a]{(A|\OENodeIn{Box})}{Box}
-%  \drawbeam[conn=B-]{Box}{(B|\OENodeOut{Box})}
+\begin{LTXexample}[width=3cm]
+\begin{pspicture}(3,1.5)
+  \pnode(0,1){A}\pnode(3,1){B}
+  \optbox[labeloffset=0.8, optboxwidth=0.5, optboxheight=1, angle=20, n=2.3, compname=Box](A)(B){glass plate}
   \drawbeam{(A|\OENodeIn{Box})}{Box}
   \drawbeam{Box}{(B|\OENodeOut{Box})}
 \end{pspicture}
 \end{LTXexample}
-
-\medskip
+\end{fieldlist}
 
 \subsection{Detector}
 
@@ -890,38 +872,26 @@ operator.
 \dipoledesc{optdetector}
 \end{BDef}
 
-\begin{description}
-\paramitem{detsize}{<num>}{0.8}
-\paramitem{dettype}{round|diode}{round}
-\end{description}
+\begin{fieldlist}
+\fielditem{detsize}{<num>}{0.8}
 
-With \LPack{pst-optexp} version 2.0 the name for the detector was
-changed to \Lcs{optdetector} as the package \LPack{pst-circ} also
-provides a \Lcs{detector} macro. For compatibility reasons the old
-\nxLcs{detector} macro is available when \nxLPack{pst-circ} is not loaded
-before \nxLPack{pst-optexp}.
-
-
-  \medskip
-
-\begin{LTXexample}[width=3.5cm]
-\begin{pspicture}[showgrid=true](3,2)
+\begin{LTXexample}[width=3cm]
+\begin{pspicture}(3,2)
   \pnode(0,0){A}
-  \pnode(1.7,1){B}
+  \pnode(1.5,1){B}
   \optdetector[beam](A)(B){detector}
 \end{pspicture}
 \end{LTXexample}
 
-\bigskip 
+\fielditem{dettype}{round|diode}{round}
 
-\begin{LTXexample}[width=3.5cm]
-\begin{pspicture}[showgrid=true](3,2)
-  \pnode(0,0){A}
-  \pnode(1.7,1){B}
+\begin{LTXexample}[width=3cm]
+\begin{pspicture}(3,2)
+  \pnode(0,0){A}\pnode(1.5,1){B}
   \optdetector[beam, dettype=diode](A)(B){detector}
 \end{pspicture}
 \end{LTXexample}
-\medskip
+\end{fieldlist}
 
 \subsection{Optical Diode}\label{sec:optdiode}
 
@@ -1182,6 +1152,8 @@ piezo mirror, the default piece of wire is omitted.
 \end{LTXexample}
 
 \medskip
+
+\end{document}
 
 \subsection{Prism}\label{sec:prism}
 
