@@ -20,44 +20,46 @@ footinclude=false,oneside]{pst-doc}
 \newrefformat{sec}{Sec.~\ref{#1}}
 \lstset{%
   language=[LaTeX]TeX,
-  texcsstyle = [200]\color{DOrange!80!black},
-  moretexcs = [200]{lens, mirror, beamsplitter}
+  texcsstyle = [20]\color{DOrange!60!black},
+  moretexcs = [20]{lens, mirror, beamsplitter, optbox},
+  keywordstyle = [30]\color{green!30!black},
+  morekeywords = [30]{label}
 }
 %
 % Addition from GL
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \usepackage {etoolbox}
-\makeatletter
-\AtBeginEnvironment{LTXexample}{\let\lsthk@OutputBox\lsthk@OutputBox@H@@k\let\lstbasicfont\footnotesize}
-\AtBeginEnvironment{lstlisting}{\let\lsthk@OutputBox\lsthk@OutputBox@H@@k\let\lstbasicfont\footnotesize}
-%\AtBeginDocument{\preto\FV@VerbatimBegin{\let\lsthk@OutputBox\lsthk@OutputBox@H@@k\let\lstbasicfont\footnotesize}}
-%\AtBeginDocument{\preto\FV@VerbatimBegin{\let\lsthk@OutputBox\lsthk@OutputBox@H@@k\let\lstbasicfont\footnotesize}}
-\providerobustcmd*\ifrefundefined [1]{%
-  \begingroup%
-    \csname @safe@activestrue\endcsname%
-    \expandafter\endgroup\csname @\ifcsname r@#1\endcsname second\else first\fi oftwo\endcsname
-}% \ifrefundefined
-\def\lsthk@OutputBox@H@@k{%
-    \begingroup%
-      \let\lst@UM\@empty%
-      \edef\@tempc{sec:\detokenize\expandafter{\the\lst@token }}%\edef
-      \ifrefundefined{\@tempc}%
-    \endgroup%
-    \sethyperlistings%
-}% \lsthk@OutputBox@fcltxH@@k
-\def\sethyperlistings {\global\let \hyperlistingsreference =\@tempc
-     \endgroup \aftergroup \dohyperlistings }% after \hbox
-\def\dohyperlistings {\def\lst@alloverstyle ##1{\hyperlistings ##1}}
-\def\hyperlistings{%
-    \setbox\@tempboxa\hbox%
-    \bgroup%
-      \rlap{\hypersetup {linkcolor=.}\relax\fboxrule\z@%
-      \hyperref[\hyperlistingsreference]{\boxframe{\wd\@tempboxa}{\ht\@tempboxa}{\dp\@tempboxa}}}%
-      \unhbox\@tempboxa%
-    \egroup%
-}% \hyperlistings
-\let\lsthk@OutputBox\lsthk@OutputBox@H@@k
-\makeatother
+% \makeatletter
+% \AtBeginEnvironment{LTXexample}{\let\lsthk@OutputBox\lsthk@OutputBox@H@@k\let\lstbasicfont\footnotesize}
+% \AtBeginEnvironment{lstlisting}{\let\lsthk@OutputBox\lsthk@OutputBox@H@@k\let\lstbasicfont\footnotesize}
+% %\AtBeginDocument{\preto\FV@VerbatimBegin{\let\lsthk@OutputBox\lsthk@OutputBox@H@@k\let\lstbasicfont\footnotesize}}
+% %\AtBeginDocument{\preto\FV@VerbatimBegin{\let\lsthk@OutputBox\lsthk@OutputBox@H@@k\let\lstbasicfont\footnotesize}}
+% \providerobustcmd*\ifrefundefined [1]{%
+%   \begingroup%
+%     \csname @safe@activestrue\endcsname%
+%     \expandafter\endgroup\csname @\ifcsname r@#1\endcsname second\else first\fi oftwo\endcsname
+% }% \ifrefundefined
+% \def\lsthk@OutputBox@H@@k{%
+%     \begingroup%
+%       \let\lst@UM\@empty%
+%       \edef\@tempc{sec:\detokenize\expandafter{\the\lst@token }}%\edef
+%       \ifrefundefined{\@tempc}%
+%     \endgroup%
+%     \sethyperlistings%
+% }% \lsthk@OutputBox@fcltxH@@k
+% \def\sethyperlistings {\global\let \hyperlistingsreference =\@tempc
+%      \endgroup \aftergroup \dohyperlistings }% after \hbox
+% \def\dohyperlistings {\def\lst@alloverstyle ##1{\hyperlistings ##1}}
+% \def\hyperlistings{%
+%     \setbox\@tempboxa\hbox%
+%     \bgroup%
+%       \rlap{\hypersetup {linkcolor=.}\relax\fboxrule\z@%
+%       \hyperref[\hyperlistingsreference]{\boxframe{\wd\@tempboxa}{\ht\@tempboxa}{\dp\@tempboxa}}}%
+%       \unhbox\@tempboxa%
+%     \egroup%
+% }% \hyperlistings
+% \let\lsthk@OutputBox\lsthk@OutputBox@H@@k
+% \makeatother
 % -----------------------------------------------------------
 \newlength{\marglistwidth}
 \newlength{\marglistsep}
@@ -368,16 +370,15 @@ the component.
 
 \medskip
 
-\begin{LTXexample}[width=4.5cm]%pos=t, vsep=0.8cm]
-\begin{pspicture}[showgrid=true](4,4)
+\begin{LTXexample}[width=3cm]
+\begin{pspicture}(3,4)
   \psset{beam}
-  \addtopsstyle{OptComp}{linestyle=dashed, dash=2pt 2pt}
   % wrong, also beam width is changed
   \mirror[linewidth=3\pslinewidth]%
-         (0,3)(3,3)(3,2){mirror}
+         (0,3)(2,3)(2,2){mirror}
   % correct result
   \mirror[addtoOptComp={linewidth=3\pslinewidth}]%
-         (0,1)(3,1)(3,0){mirror}
+         (0,1)(2,1)(2,0){mirror}
 \end{pspicture}
 \end{LTXexample}
 
@@ -505,13 +506,14 @@ label-related parameter. It takes up to four space-separated arguments
 
 \medskip
 
-\begin{LTXexample}[width=4.5cm]
-  \begin{pspicture}[showgrid=true](0,0)(4,3)
-    \psset{endbox, beam}
-    \optbox[label=0.7](1.5,2.5)(2.5,2.5){label}
-    \optbox[label=1 -45](1.5,1)(2.5,1){label}
-    \optbox[label=0 . . relative](0.6,0.6)(0.6,1.6){label}
-  \end{pspicture}
+\begin{LTXexample}[width=4cm]
+\begin{pspicture}(0,0)(4,3)
+  \psset{endbox, beam}
+  \optbox[label=0.7](1.5,2.5)(2.5,2.5){label}
+  \optbox[label=1 -45](1.5,1)(2.5,1){$-45$}
+  \optbox[label=0 . . relative]%
+         (0.6,0.6)(0.6,1.6){relative}
+\end{pspicture}
 \end{LTXexample}
 
 \end{fieldlist}
