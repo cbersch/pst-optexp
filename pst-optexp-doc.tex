@@ -22,9 +22,10 @@ footinclude=false,oneside]{pst-doc}
   language=[LaTeX]TeX,
   texcsstyle = [20]\color{DOrange!60!black},
   moretexcs = [20]{lens, mirror, beamsplitter, optbox},
-  keywordstyle = [30]\color{green!30!black},
-  morekeywords = [30]{label},
-  hsep=5mm
+%  keywordstyle = [30]\color{green!30!black},
+%  morekeywords = [30]{label},
+  explpreset={pos=l,width=-99pt,overhang=0pt,hsep=5mm, varwidth,vsep=\bigskipamount,rframe={}},
+  escapechar=ß
 }
 %
 % Addition from GL
@@ -79,12 +80,17 @@ footinclude=false,oneside]{pst-doc}
      \item[##1]%
      \xLkeyword{##1}%
      \texttt{##2} \ifx##3\relax\else (default: \texttt{##3})\fi\par\nobreak
-     \vspace{\itemsep}}%
+     \vspace{0.5\itemsep}}%
    \def\styleitem##1##2{%
      \item[##1]%
-     \xLkeyword{##1}\xLkeyword{addto##1}\xLkeyword{new##1}%
+     \xLstyle{##1}\xLkeyword{addto##1}\xLkeyword{new##1}%
      \texttt{<psstyle>} \ifx##2\relax\else (default: \texttt{##2})\fi\par\nobreak
-     \vspace{\itemsep}}}%
+     \vspace{0.5\itemsep}}%
+   \def\styleonlyitem##1##2{%
+     \item[##1]%
+     \xLstyle{##1}
+     \texttt{<psstyle>} \ifx##2\relax\else (default: \texttt{##2})\fi\par\nobreak
+     \vspace{0.5\itemsep}}}%
   {\endlist}
 \newcommand*{\marglistfont}{\sffamily\small}
 
@@ -175,9 +181,6 @@ footinclude=false,oneside]{pst-doc}
 \psset{usefiberstyle=true}
 \addtopsstyle{Fiber}{linecolor=red,linewidth=1.5\pslinewidth}
 \addtopsstyle{Beam}{linewidth=1.5\pslinewidth}
-
-\lstset{explpreset={pos=l,width=-99pt,overhang=0pt,hsep=\columnsep,vsep=\bigskipamount,rframe={}},
-    escapechar=ß}
 
 \makeatletter
 \renewcommand\maketitle{%
@@ -332,27 +335,32 @@ Some generic parameters which can be used for all objects.
 Rotate an object by \nxLkeyword{angle} degrees.
 
 \fielditem{optional}{<boolean>}{false}
+\styleonlyitem{OptionalStyle}{linestyle=dashed, dash=1.5pt 1pt}
 
 Can be used with every object and marks it as optional. The style of an
 optional element can be configured by changing the psstyle
-\Lkeyword{OptionalStyle}.
+\nxLkeyword{OptionalStyle}.
+
+\begin{LTXexample}
+\begin{pspicture}(3,1.5)
+\lens[optional, beam](0,1)(3,1){L}
+\end{pspicture}
+\end{LTXexample}
 
 \fielditem{showoptdots}{<boolean>}{false}
 
 Draw some internal nodes which are used to place the object and the
 label. The black points are used for positioning, the red points mark
 the label references.
-\end{fieldlist}
 \medskip
 
-\begin{LTXexample}[width=6.5cm]
-\begin{pspicture}[showgrid=true](6,2)
-\psset{beam}
-\lens[optional](0,1)(2,1){L}
-\mirror[showoptdots](3,1)(5,1)(5,0){mirror}
+\begin{LTXexample}
+\begin{pspicture}(3,2)
+\mirror[showoptdots,
+          beam](0,1)(1.9,1)(1.9,0){mirror}
 \end{pspicture}
 \end{LTXexample}
-\medskip
+\end{fieldlist}
 
 \subsection{Using PSStyles}\label{sec:styles}
 
@@ -371,7 +379,7 @@ the component.
 
 \medskip
 
-\begin{LTXexample}[width=3cm]
+\begin{LTXexample}
 \begin{pspicture}(3,4)
   \psset{beam}
   % wrong, also beam width is changed
@@ -396,7 +404,7 @@ reference points. It is only not available for the free-ray tripoles.
 
 \medskip
 
-\begin{LTXexample}[width=3cm]
+\begin{LTXexample}
 \begin{pspicture}(3,1.5) 
   \lens[beam, position=0.8](0,1)(3,1){L}
 \end{pspicture}
@@ -408,7 +416,7 @@ two reference nodes. Its value is given in psunits.
 
 \medskip
 
-\begin{LTXexample}[width=3cm]
+\begin{LTXexample}
 \begin{pspicture}(3,1.5) 
   \lens[beam, abspos=1](0,1)(3,1){L}
 \end{pspicture}
@@ -416,7 +424,7 @@ two reference nodes. Its value is given in psunits.
 
 \fielditem{compshift}{<num>}{0}
 
-\begin{LTXexample}[width=3cm]
+\begin{LTXexample}
 \begin{pspicture}(3,2) 
   \lens[compshift=0.1, n=1](0,1)(3,1){L}
   \addtopsstyle{Beam}{startvecabs, startvec=1 0}
@@ -426,7 +434,7 @@ two reference nodes. Its value is given in psunits.
 
 \bigskip
 
-\begin{LTXexample}[width=3cm]
+\begin{LTXexample}
 \begin{pspicture}(3,2) 
   \mirror[beam, compshift=0.2, startvecabs, startvec=1 0, labelangle=45](0,1)(2,1)(2,0){mirror}
 \end{pspicture}
@@ -464,7 +472,7 @@ the following three examples.
 
 \medskip
 
-\begin{LTXexample}[width=5cm]
+\begin{LTXexample}
 \begin{pspicture}(-2,-2)(2.5,2)
   \psset{endbox, optboxwidth=1, optboxheight=0.6}
   \multido{\i=0+45}{8}{%
@@ -476,7 +484,7 @@ the following three examples.
 
 \bigskip
 
-\begin{LTXexample}[width=5cm]
+\begin{LTXexample}
 \begin{pspicture}(-2,-2)(2.5,2)
   \psset{endbox, optboxwidth=1, optboxheight=0.6}
   \multido{\i=0+72}{5}{%
@@ -487,7 +495,7 @@ the following three examples.
 
 \bigskip
 
-\begin{LTXexample}[width=5cm]
+\begin{LTXexample}
 \begin{pspicture}(-2,-2)(2.5,2)
   \psset{endbox, optboxwidth=1, optboxheight=0.6}
   \multido{\i=0+72}{5}{%
@@ -507,7 +515,7 @@ label-related parameter. It takes up to four space-separated arguments
 
 \medskip
 
-\begin{LTXexample}[width=4cm]
+\begin{LTXexample}
 \begin{pspicture}(0,0)(4,3)
   \psset{endbox, beam}
   \optbox[label=0.7](1.5,2.5)(2.5,2.5){label}
@@ -877,8 +885,7 @@ operator.
 
 \begin{LTXexample}[width=3cm]
 \begin{pspicture}(3,2)
-  \pnode(0,0){A}
-  \pnode(1.5,1){B}
+  \pnode(0,0){A}\pnode(1.5,1){B}
   \optdetector[beam](A)(B){detector}
 \end{pspicture}
 \end{LTXexample}
@@ -900,19 +907,15 @@ operator.
 \dipoledesc{optdiode}
 \end{BDef}
 
-\begin{description}
-\paramitem{optdiodesize}{<num>}{0.8}
-\end{description}
+\begin{fieldlist}
+\fielditem{optdiodesize}{<num>}{0.8}
 
-\medskip 
-
-\begin{LTXexample}[width=3.5cm]
-\begin{pspicture}[showgrid=true](3,2)
+\begin{LTXexample}[varwidth]
+\begin{pspicture}(3,2)
    \optdiode[beam, beamInside=false](0,1)(3,1){Diode}
 \end{pspicture}
 \end{LTXexample}
-
-\medskip
+\end{fieldlist}
 
 \subsection{Dove Prism}\label{sec:doveprism}
 
@@ -1153,8 +1156,6 @@ piezo mirror, the default piece of wire is omitted.
 
 \medskip
 
-\end{document}
-
 \subsection{Prism}\label{sec:prism}
 
 \begin{BDef}
@@ -1188,26 +1189,22 @@ the \Lkeyword{prismangle}.
 \tripoledesc{raprism}
 \end{BDef}
 
-\begin{description}
-  \paramitem{raprismsize}{<num>}{1.5}
-\end{description}
-
 The right-angle prisms is constructed such that the two incoming beams
 are parallel and the middle reference node is vertically centered in the
 prism.
 
-\medskip
+\begin{fieldlist}
+  \fielditem{raprismsize}{<num>}{1.5}
 
-\begin{LTXexample}[width=3.5cm]
+\begin{LTXexample}[width=3cm]
 \begin{pspicture}[showgrid=true](3,2)
   \pnode(0,1.5){A}
   \pnode(1.8,0.8){G}
   \pnode(0,0.5){B}
-  \rightangleprism[beam, showoptdots](A)(G)(B){RA}
+  \rightangleprism[beam](A)(G)(B){RA}
 \end{pspicture}
 \end{LTXexample}
-
-\medskip
+\end{fieldlist}
 
 \subsection{Penta Prism}\label{sec:ppprism}
 
@@ -1215,11 +1212,8 @@ prism.
 \tripoledesc{pentaprism}
 \end{BDef}
 
-\begin{description}
-  \paramitem{pentaprismsize}{<num>}{0.7}
-\end{description}
-
-\medskip
+\begin{fieldlist}
+  \fielditem{pentaprismsize}{<num>}{0.7}
 
 \begin{LTXexample}[width=3.5cm]
 \begin{pspicture}[showgrid=true](3,3)
@@ -1230,7 +1224,7 @@ prism.
 \end{pspicture}
 \end{LTXexample}
 
-\medskip
+\end{fieldlist}
 
 \subsection{Custom Components}\label{sec:custom}
 The macros \Lcs{optdipole} and \Lcs{opttripole} allow using everything as
@@ -2313,7 +2307,7 @@ labeloffset=0, optboxwidth=1, compname=EAM, extnode=b](Lout)(EAMout){EAM}
 \end{pspicture}
 \end{LTXexample}
 
-\begin{LTXexample}[pos=t,vsep=8mm]
+%\begin{LTXexample}[pos=t,vsep=8mm]
 \begin{pspicture}(0,-0.4)(9,6)
   \addtopsstyle{Beam}{linewidth=2\pslinewidth}
   \pnode(1.5,5){Laser}\pnode(4,5){PBS}\pnode(6.5,5){PBS2}
@@ -2346,10 +2340,10 @@ labeloffset=0, optboxwidth=1, compname=EAM, extnode=b](Lout)(EAMout){EAM}
   \beamsplitter(M4f3)(BS4f)(CCD){BS}\optbox[endbox,labeloffset=0, optboxwidth=1](BS4f)(CCD){CCD}
   \lens[abspos=0.7](BS4f)(BSFwd){L}\lens[abspos=0.7](BSBwd)(M4f1){L}
 \end{pspicture}
-\end{LTXexample}
+%\end{LTXexample}
 
 \psset{unit=0.8cm,labelstyle=\footnotesize}
-\begin{LTXexample}[pos=t]
+%\begin{LTXexample}[pos=t]
 \begin{pspicture}(0.5,4)(13.2,10.5)
   \addtopsstyle{Fiber}{linecolor=red!90!black}\psset{usefiberstyle, optboxwidth=1}
   \pnode(2,10){LD}\pnode([Xnodesep=5.5]LD){CPLin1}
@@ -2382,134 +2376,7 @@ labeloffset=0, optboxwidth=1, compname=EAM, extnode=b](Lout)(EAMout){EAM}
   \optswitch([Xnodesep=1.5]LoopLU)([Xnodesep=3.5]LoopLU){SW}
   \polcontrol([Xnodesep=3.5]LoopLU)(CPLin2){}
 \end{pspicture}
-\end{LTXexample}
-
-\section{Complete List of Parameters}
-
-\xkvview{family=optexp, columns={key, type, default}}
-
-% \begin{longtable}{TTT}
-% \toprule \multicolumn{1}{l}{parameter} & \multicolumn{1}{l}{allowed values} & \multicolumn{1}{l}{default}\\\midrule\endhead
-% \bottomrule\endfoot
-% abspos & <num> & \{\}\\
-% addtoBeam & <psstyle> & \\
-% addtoFiber* & <psstyle> & \\
-% addtoOptComp & <psstyle> & \\
-% align & top|bottom|center & center\\
-% angle & <degree> & 0\\
-% beam & \multicolumn{2}{l}{alias for \Lkeyword{conn=o-i}}\\
-% bssize & <num> & 0.8\\
-% bsstyle & cube|plate & cube\\
-% caxisinv & <boolean> & false\\
-% caxislength & <num> & 0.6\\
-% compname & <string> & \{\}\\
-% compshift & <num> & 0\\
-% conn & <conn definition> & -\\
-% connjoin & <int> & 1\\
-% couplersep & <num> & 0.1\\
-% couplersize & <num> & 0.2\\
-% couplertype & none|elliptic & elliptic\\
-% crystalheight & <num> & 0.6\\
-% crystalwidth & <num> & 1.4\\
-% detsize & <num> & 0.8\\
-% dettype & round|diode & round\\
-% doveprismsize & <num> & 0.6\\
-% endbox & <boolean> & false\\
-% extnode & <ref string> & \{\}\\
-% fdlsize & <num> & 0.6\\
-% fiber & \multicolumn{2}{l}{alias for \Lkeyword{conn=f-f}}\\
-% fibercolsize & <num> & 0.3\\
-% fiberloopradius & <num> & 0.4\\
-% fiberloops & <integer> & 3\\
-% fiberloopsep & <num> & 0.3\\
-% fiberpolsize & <num> & 0.6\\
-% filtersize & <num> & 0.8\\
-% filtertype & bandpass|bandstop & bandpass\\
-% innerheight & <num> & 0.1\\
-% isolatorsize & <num> & 0.6\\
-% label & <offset> <angle> <ref> <labelref> & \\
-% labelalign & <ref string> & c\\
-% labelangle & <num> & 0\\
-% labeloffset & <num> & 0.8\\
-% labelref & relative|relgrav|global & relgrav\\
-% labelstyle & <macro> & \cs{small}\\
-% lamp & <boolean> & false\\
-% lampscale & <num> & 0.3\\
-% lens & <num> [<num> [<num> [<num>]]] & \{\}\\
-% lensheight & <num> & 1\\
-% lensradius & <num> [<num>] & \{\}\\
-% lensradiusleft & <num> & 1\\
-% lensradiusright & <num> & 1\\
-% lenswidth & <num> & 0.2\\
-% mirrordepth & <num> & 0.1\\
-% mirrorlinewidth & <num> & 2\cs{pslinewidth}\\
-% mirrorradius & <num> & 0\\
-% mirrortype & normal|piezo|extended & normal\\
-% mirrorwidth & <num> & 1\\
-% newBeam & <psstyle> & \\
-% newFiber* & <psstyle> & \\
-% newOptComp & <psstyle> & \\
-% optampsize & <num> & 0.8\\
-% optboxheight & <num> & 0.8\\
-% optboxwidth & <num> & 1.4\\
-% optdiodesize & <num> & 0.8\\
-% optgridcount & <integer> & 10\\
-% optgriddepth & <num> & 0.05\\
-% optgridheight & <num> & 0.1\\
-% optgridlinewidth & <num> & 0.7\cs{pslinewidth}\\
-% optgridtype & blazed|binary & blazed\\
-% optgridwidth & <num> & 1\\
-% optional & <boolean> & false\\
-% optmzmsize & <num> & 0.8\\
-% outerheight & <num> & 1\\
-% pentaprismsize & <num> & 0.7\\
-% phlinewidth & <num> & 2\cs{pslinewidth}\\
-% plateheight & <num> & 1\\
-% platelinewidth & <num> & 2\cs{pslinewidth}\\
-% platewidth & <num> & 0.1\\
-% polcontrolsize & <num> & 0.15\\
-% pollinewidth & <num> & 0.7\cs{pslinewidth}\\
-% polsize & <num> & 0.6\\
-% poltype & parallel|perp|misc|lcirc|rcirc & parallel\\
-% position & <num> & \{\}\\
-% prismangle & <num> & 60\\
-% prismsize & <num> & 1\\
-% raprismsize & <num> & 1.5\\
-% refractiveindex & <num> & \{\}\\
-% reverse & <boolean> & false\\
-% rotateref & <ref string> & c\\
-% showoptdots & <boolean> & false\\
-% switchsize & <num> & 0.8\\
-% switchstyle & opened|closed & opened\\
-% thicklens & <boolean> & false\\
-% usefiberstyle & <boolean> & false\\
-% variable & <num> & false\\
-% voltage & <boolean> & false\\
-% \end{longtable}
-
-\section{Complete List of Styles}
-
-\begin{table}[H]
-\addtolength{\extrarowheight}{1.5mm}
-\begin{tabularx}{\linewidth}{BX}
-\toprule
-\multicolumn{1}{l}{style} & \multicolumn{1}{l}{description}\\
-\midrule
-Beam           & All automatic free-ray connections are drawn using this style\\
-ExtendedMirror & Affects the additional part for \Lkeyword{mirrortype=extended}\\
-Fiber          & Parent style for all fiber connections. For a detailed discussion see Sec.~\ref{sec:fiberstyles}\\
-FiberIn        & Left fiber style if only one connection to be drawn (inherits from \styleshape{Fiber})\\
-FiberIn1       & Upper left connection (used for couplers only, inherits from \styleshape{FiberIn})\\
-FiberIn2       & Lower left connection (used for couplers only, inherits from \styleshape{FiberIn})\\
-FiberOut       & Right fiber style if only one connection to be drawn (inherits from \styleshape{Fiber})\\
-FiberOut1      & Upper right connection (used for couplers only, inherits from \styleshape{FiberOut})\\
-FiberOut2      & Lower right connection (used for couplers only, inherits from \styleshape{FiberOut})\\
-OptComp        & Affects only the appearance of optical components without changing connections that may be drawn inside the component \\
-OptionalStyle  & Used for objects with parameter \Lkeyword{optional} set to \paramvalue{true}\\
-PiezoMirror    & Affects the additional part for \Lkeyword{mirrortype=piezo}\\
-\bottomrule
-\end{tabularx}
-\end{table}
+%\end{LTXexample}
 
 \section{Requirements}
 
@@ -2522,6 +2389,7 @@ PiezoMirror    & Affects the additional part for \Lkeyword{mirrortype=piezo}\\
 \begin{itemize}
 \item Automatic sizing of optboxes (like a \Lcs{psframebox}
 \end{itemize}
+
 \section{Acknowledgements}
 
 I thank all the people of the PSTricks mailinglist for the continuous help, especially Herbert Voﬂ.
