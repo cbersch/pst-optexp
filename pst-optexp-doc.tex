@@ -112,7 +112,7 @@ footinclude=false,oneside]{pst-doc}
 \newcommand{\paramitem}[3]{\item[\param{#1}:] \paramvalue{#2} (\defaultparam{#3})}
 \newcommand{\styleitem}[2]{\item[\param{#1}:] \paramvalue{#2}}
 \newcommand{\styleshape}[1]{\texttt{#1}}
-\newcommand{\parampar}[1]{\marginpar{\Lkeyword{#1}}}
+%\newcommand{\parampar}[1]{\marginpar{\Lkeyword{#1}}}
 \newcommand{\stylepar}[1]{\paragraph{\Lstyle{#1}}\xLkeyword{addto#1}\xLkeyword{new#1}}
 
 \newcommand{\nodedesc}[1]{\Largr{#1}}
@@ -241,7 +241,7 @@ footinclude=false,oneside]{pst-doc}
   }%
   \newpsstyle{Beam}{linecolor=red}
   \bglayer{%
-    \psline[style=Beam,ArrowInside=->, linewidth=2\pslinewidth, arrowinset=0](In)(\OENodeIn{@3})(\OENodeOut{@4})
+    \psline[style=Beam,ArrowInside=->, linewidth=2\pslinewidth, arrowinset=0](In)(\oenodein{@3})(\oenodeout{@4})
   }
   \drawbeam[startvec=0.005,startpos=0.1, addtoBeam={arrows=<-, linewidth=2\pslinewidth, arrowinset=0}]{([Xnodesep=-0.2]Out)}{8}{7}
 \end{optexp}
@@ -573,15 +573,15 @@ Sec.~\ref{sec:mirror}) which does not depend on the actual value of \Lkeyword{ex
 \begin{LTXexample}[pos=t, vsep=8mm]
 \begin{pspicture}[showgrid=true](11,3) 
    \psset{beam, beamInside=false, labelangle=-90, labeloffset=0.3}
-   \optbox[extnode=tl](0,2.5)(3,2.5){\texttt{tl}}\psdot(\OENodeExt{})
-   \optbox[extnode=l](0,1.5)(3,1.5){\texttt{l}}\psdot(\OENodeExt{})
-   \optbox[extnode=bl](0,0.5)(3,0.5){\texttt{bl}}\psdot(\OENodeExt{})
-   \optbox[extnode=t](4,2.5)(7,2.5){\texttt{t}}\psdot(\OENodeExt{})
-   \optbox[extnode=c](4,1.5)(7,1.5){\texttt{c}}\psdot(\OENodeExt{})
-   \optbox[extnode=b](4,0.5)(7,0.5){\texttt{b}}\psdot(\OENodeExt{})
-   \optbox[extnode=tr](8,2.5)(11,2.5){\texttt{tr}}\psdot(\OENodeExt{})
-   \optbox[extnode=r](8,1.5)(11,1.5){\texttt{r}}\psdot(\OENodeExt{})
-   \optbox[extnode=br](8,0.5)(11,0.5){\texttt{br}}\psdot(\OENodeExt{})
+   \optbox[extnode=tl](0,2.5)(3,2.5){\texttt{tl}}\psdot(\oenodeext{})
+   \optbox[extnode=l](0,1.5)(3,1.5){\texttt{l}}\psdot(\oenodeext{})
+   \optbox[extnode=bl](0,0.5)(3,0.5){\texttt{bl}}\psdot(\oenodeext{})
+   \optbox[extnode=t](4,2.5)(7,2.5){\texttt{t}}\psdot(\oenodeext{})
+   \optbox[extnode=c](4,1.5)(7,1.5){\texttt{c}}\psdot(\oenodeext{})
+   \optbox[extnode=b](4,0.5)(7,0.5){\texttt{b}}\psdot(\oenodeext{})
+   \optbox[extnode=tr](8,2.5)(11,2.5){\texttt{tr}}\psdot(\oenodeext{})
+   \optbox[extnode=r](8,1.5)(11,1.5){\texttt{r}}\psdot(\oenodeext{})
+   \optbox[extnode=br](8,0.5)(11,0.5){\texttt{br}}\psdot(\oenodeext{})
 \end{pspicture}
 \end{LTXexample}
 
@@ -868,8 +868,8 @@ operator.
 \begin{pspicture}(3,1.5)
   \pnode(0,1){A}\pnode(3,1){B}
   \optbox[labeloffset=0.8, optboxwidth=0.5, optboxheight=1, angle=20, n=2.3, compname=Box](A)(B){glass plate}
-  \drawbeam{(A|\OENodeIn{Box})}{Box}
-  \drawbeam{Box}{(B|\OENodeOut{Box})}
+  \drawbeam{(A|\oenodein{Box})}{Box}
+  \drawbeam{Box}{(B|\oenodeout{Box})}
 \end{pspicture}
 \end{LTXexample}
 \end{fieldlist}
@@ -1792,13 +1792,17 @@ objects and connects the two nearest
 \end{pspicture}
 \end{LTXexample}
 
-\parampar{startpos}
+\begin{fieldlist}
+
+\fielditem{startpos}{<num> [<num>]}{0 0}
 
 This is the start position of the beam at the first interface. Can be
 any code which evaluates in Postscript to one or two numbers. If is only
 one number then the $x$-coordinate is set to \texttt{0}.
 
-\begin{LTXexample}[width=5cm]
+\medskip
+
+\begin{LTXexample}
 \begin{pspicture}(5,5)
   \pnode(1.5,0.5){A}\pnode(4.5,0.5){B}\pnode(3.5,4.5){C} 
   \optbox[endbox](B)(A){}
@@ -1813,11 +1817,10 @@ one number then the $x$-coordinate is set to \texttt{0}.
 \end{pspicture}
 \end{LTXexample}
 
+\fielditem{startvec}{<num> [<num>]}{1 0} This is the start vector of the beam.
 \medskip
 
-\parampar{startvec} This is the start vector of the beam.
-
-\begin{LTXexample}[width=5cm]
+\begin{LTXexample}
 \begin{pspicture}(5,5)
   \pnode(1.5,0.5){A}\pnode(4.5,0.5){B}\pnode(3.5,4.5){C} 
   \optbox[endbox](B)(A){}
@@ -1834,23 +1837,26 @@ one number then the $x$-coordinate is set to \texttt{0}.
 
 \medskip
 
-\parampar{startvecabs}
+\fielditem{startvecabs}{<boolean>}{false}
 
-\parampar{connectplanes}
+\fielditem{connectplanes}{<boolean>}{false}
 
-\parampar{n}
+\fielditem{n}{<num>}{1.5}
 
-\parampar{beaminside}
+\fielditem{beaminside}{<boolean>}{false}
 
-\parampar{beaminsidelast}
+\fielditem{beaminsidelast}{<boolean>}{false}
 
-\parampar{beaminsidefirst}
+\fielditem{beaminsidefirst}{<boolean>}{false}
+\end{fieldlist}
 
 \subsection{Drawing wide beams}\label{sec:drawwidebeam}
 
-\parampar{beamwidth}
+\begin{fieldlist}
+\fielditem{beamwidth}{<num>}{0.1}
 
-\parampar{beamdiv}
+\fielditem{beamdiv}{<num>}{0}
+\end{fieldlist}
 
 \subsection{Drawing fibers}\label{sec:drawfiber}
 \begin{BDef}
@@ -1881,10 +1887,11 @@ one number then the $x$-coordinate is set to \texttt{0}.
   \Lcs{custombeam}\OptArgs\lcb\nxLcs{draw*beam}\rcb
 \end{BDef}
 
-\parampar{startinside}
+\begin{fieldlist}
+\fielditem{startinside}{<boolean>}{false}
 
-\parampar{stopinside}
-
+\fielditem{stopinside}{<boolean>}{false}
+\end{fieldlist}
 % \begin{description}
 % \paramitem{conn}{<conn definition>}{-}
 % \item[\param{fiber}:] alias for \Lkeyword{conn=f-f}
@@ -2232,14 +2239,14 @@ incorporate this in a new released version.
     \pnode(1.6,1){Laser}\pnode(7.6,1){Diode}
     \optbox[endbox,labeloffset=0](Diode)(Laser){Laser}%
 %    \optbox[abspos=4, optboxwidth=1, optboxheight=0.6, labeloffset=1, compname=PC, conn=o-, angle=-10, rotateref=l, refractiveindex=2.3](Laser)(Diode){Photonic Crystal}
-%    \optdetector[dettype=diode, conn=o-](\OENodeOut{PC})(Diode|\OENodeOut{PC}){PD}
+%    \optdetector[dettype=diode, conn=o-](\oenodeout{PC})(Diode|\oenodeout{PC}){PD}
     \optbox[abspos=4, optboxwidth=1, optboxheight=0.6, labeloffset=1, compname=PC, angle=-10, rotateref=l, refractiveindex=2.3](Laser)(Diode){Photonic Crystal}
-    \optdetector[dettype=diode](\OENodeOut{PC})(Diode|\OENodeOut{PC}){PD}
-    \defShiftedNode(\OENodeIn{PC})(2;170){Angle1}
-    \psline[linestyle=dashed](\OENodeIn{PC})(Angle1)
-    \psarc{<->}(\OENodeIn{PC}){1.3}{330}{30}
-    \psarc[arcsep=1pt]{<->}(\OENodeIn{PC}){2}{170}{180}
-    \uput{2.1}[175](\OENodeIn{PC}){\small $\varphi$}
+    \optdetector[dettype=diode](\oenodeout{PC})(Diode|\oenodeout{PC}){PD}
+    \defShiftedNode(\oenodein{PC})(2;170){Angle1}
+    \psline[linestyle=dashed](\oenodein{PC})(Angle1)
+    \psarc{<->}(\oenodein{PC}){1.3}{330}{30}
+    \psarc[arcsep=1pt]{<->}(\oenodein{PC}){2}{170}{180}
+    \uput{2.1}[175](\oenodein{PC}){\small $\varphi$}
 \end{pspicture}
 \end{LTXexample}
 
