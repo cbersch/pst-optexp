@@ -302,6 +302,7 @@
 \define@key[psset]{optexp}{innerheight}{\pst@checknum{#1}\psk@oe@innerheight}
 \define@key[psset]{optexp}{outerheight}{\pst@checknum{#1}\psk@oe@outerheight}
 \define@key[psset]{optexp}{phlinewidth}{\edef\psk@oe@phlinewidth{#1}}
+\define@key[psset]{optexp}{phwidth}{\edef\psk@oe@phwidth{#1}}
 %
 % Crystal
 \define@key[psset]{optexp}{crystalwidth}{\pst@checknum{#1}\psk@oe@crystalwidth}
@@ -1685,6 +1686,7 @@
         ,thicklens=false
 % pinhole
         ,phlinewidth=2\pslinewidth
+        ,phwidth=0
         ,outerheight=1
         ,innerheight=0.1
 % beamsplitter
@@ -2101,12 +2103,23 @@
 % PINHOLE
 %
 \def\pinhole@comp{%
-  \psline[linewidth=\psk@oe@phlinewidth]%
-         (! 0 \psk@oe@outerheight\space 2 div)%
-         (! 0 \psk@oe@innerheight\space 2 div)%
-  \psline[linewidth=\psk@oe@phlinewidth]%
-         (! 0 \psk@oe@outerheight\space -2 div)%
-         (! 0 \psk@oe@innerheight\space -2 div)%
+  \ifdim\psk@oe@phwidth pt=0pt
+    \psline[linewidth=\psk@oe@phlinewidth]%
+           (! 0 \psk@oe@outerheight\space 2 div)%
+           (! 0 \psk@oe@innerheight\space 2 div)%
+    \psline[linewidth=\psk@oe@phlinewidth]%
+           (! 0 \psk@oe@outerheight\space -2 div)%
+           (! 0 \psk@oe@innerheight\space -2 div)%
+  \else
+    \pspolygon*[linestyle=none](! 0 \psk@oe@innerheight\space 2 div)%
+               (! 0 \psk@oe@outerheight\space 2 div)%
+               (! \psk@oe@phwidth\space \psk@oe@outerheight\space 2 div)%
+               (! \psk@oe@phwidth\space \psk@oe@innerheight\space dup neg \psk@oe@outerheight\space add 2 div add 2 div)%
+    \pspolygon*[linestyle=none](! 0 \psk@oe@innerheight\space -2 div)%
+               (! 0 \psk@oe@outerheight\space -2 div)%
+               (! \psk@oe@phwidth\space \psk@oe@outerheight\space -2 div)%
+               (! \psk@oe@phwidth\space \psk@oe@innerheight\space dup neg \psk@oe@outerheight\space add 2 div add -2 div)%
+  \fi
 \ignorespaces}%
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -2145,13 +2158,9 @@
 % CRYSTAL
 %
 \def\crystal@nodes{%
-  \edef\@wd{\psk@oe@crystalwidth\space 0.5 mul\space}%
-  \edef\@ht{\psk@oe@crystalheight\space 0.5 mul\space}%
-  \psrotate(! \@wd \psk@oe@rotate@xref\space mul \@ht \psk@oe@rotate@yref\space mul){\psk@oe@angle}{%
-    \pnode(0,0){\optexp@nodeLabel}
-    \newOptexpComp{{\@wd neg 0} {0 1} trans {NewPlaneInt} 
-                   {\@wd 0} {0 1} trans {NewPlaneInt} \psk@oe@n }%
-  }%
+  \let\psk@oe@optboxwidth\psk@oe@crystalwidth
+  \let\psk@oe@optboxheight\psk@oe@crystalheight
+  \optbox@nodes
 }%
 \def\crystal@comp{%
   \pst@Verb{%
