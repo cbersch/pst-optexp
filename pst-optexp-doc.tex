@@ -80,17 +80,17 @@ footinclude=false,oneside]{pst-doc}
      \item[##1]%
      \xLkeyword{##1}%
      \texttt{##2} \ifx##3\relax\else (default: \texttt{##3})\fi\par\nobreak
-     \vspace{0.5\itemsep}}%
+     \vspace{\itemsep}}%
    \def\styleitem##1##2{%
      \item[##1]%
      \xLstyle{##1}\xLkeyword{addto##1}\xLkeyword{new##1}%
      \texttt{<psstyle>} \ifx##2\relax\else (default: \texttt{##2})\fi\par\nobreak
-     \vspace{0.5\itemsep}}%
+     \vspace{\itemsep}}%
    \def\styleonlyitem##1##2{%
      \item[##1]%
      \xLstyle{##1}
      \texttt{<psstyle>} \ifx##2\relax\else (default: \texttt{##2})\fi\par\nobreak
-     \vspace{0.5\itemsep}}}%
+     \vspace{\itemsep}}}%
   {\endlist}
 \newcommand*{\marglistfont}{\sffamily\small}
 
@@ -476,8 +476,7 @@ the following three examples.
 \begin{pspicture}(-2,-2)(2.5,2)
   \psset{endbox, optboxwidth=1, optboxheight=0.6}
   \multido{\i=0+45}{8}{%
-    \optbox[labelref=relative,
-            labeloffset=0](0,0)(1;\i){\i}
+    \optbox[label=0 . . relative](0,0)(1;\i){\i}
   }
 \end{pspicture}
 \end{LTXexample}
@@ -714,7 +713,7 @@ which is use only if \Lkeyword{thicklens} is set to \Lkeyword{true}.
 \fielditem{plateheight}{<num>}{1}
 \fielditem{platelinewidth}{<num>}{2\nxLcs{pslinewidth}}
 
-\begin{LTXexample}[width=3cm]
+\begin{LTXexample}
 \begin{pspicture}(3,1.5)
   \optplate[beam](0,1)(3,1){filter}
 \end{pspicture}
@@ -722,7 +721,7 @@ which is use only if \Lkeyword{thicklens} is set to \Lkeyword{true}.
 
 \fielditem{angle}{<degree>}{0}
 
-\begin{LTXexample}[width=3cm]
+\begin{LTXexample}
 \begin{pspicture}(3,1.5)
   \optplate[angle=10, beam](0,1.2)(3,1.2){glass plate}
 \end{pspicture}
@@ -740,11 +739,9 @@ which is use only if \Lkeyword{thicklens} is set to \Lkeyword{true}.
 \fielditem{plateheight}{<num>}{1}
 \fielditem{platewidth}{<num>}{0.1}
 
-\begin{LTXexample}[width=3cm]
+\begin{LTXexample}
 \begin{pspicture}(3,1.5)
-  \pnode(0,1){A}
-  \pnode(3,1){B}
-  \optretplate[beam](A)(B){$\nicefrac{\lambda}{2}$}
+  \optretplate[beam](0,1)(3,1){$\nicefrac{\lambda}{2}$}
 \end{pspicture}
 \end{LTXexample}
 \end{fieldlist}
@@ -760,11 +757,20 @@ which is use only if \Lkeyword{thicklens} is set to \Lkeyword{true}.
 \fielditem{innerheight}{<num>}{0.1}
 \fielditem{phlinewidth}{<num>}{2\nxLcs{pslinewidth}}
 
-\begin{LTXexample}[width=3cm]
+\begin{LTXexample}
 \begin{pspicture}(3,1.5)
-  \pnode(0,1){A}
-  \pnode(3,1){B}
-  \pinhole[beam](A)(B){PH}
+  \pinhole[beam](0,1)(3,1){PH}
+\end{pspicture}
+\end{LTXexample}
+
+\fielditem{phwidth}{<num>}{0}
+
+The pinhole is drawn in a more plastic style if the \nxLkeyword{phwidth} is not zero.
+
+\medskip
+\begin{LTXexample}
+\begin{pspicture}(3,1.5)
+  \pinhole[beam, phwidth=-0.1](0,1)(3,1){PH}
 \end{pspicture}
 \end{LTXexample}
 \end{fieldlist}
@@ -790,11 +796,13 @@ which is use only if \Lkeyword{thicklens} is set to \Lkeyword{true}.
 \noindent For a discussion of the \Lkeyword{angle} and \Lkeyword{rotateref}
 parameters see Sec.~\ref{sec:box} about boxes.  \medskip
 
-\begin{LTXexample}[width=3.5cm]
-\begin{pspicture}[showgrid=true](3,2)
-  \pnode(0,1.2){A}
-  \pnode(3,1.2){B}
-  \crystal[fillstyle=solid, fillcolor=yellow!90!black, labelangle=-45, labeloffset=1.2, voltage, lamp, beam](A)(B){SBN:Ce}
+\begin{LTXexample}
+\begin{pspicture}(3,2)
+  \begin{optexp}
+  \crystal[fillstyle=solid, fillcolor=yellow!90!black, 
+             label=1.2 -45, voltage, 
+             lamp, beam](0,1)(3,1){SBN:Ce}
+  \end{optexp}
 \end{pspicture}
 \end{LTXexample}
 
@@ -810,7 +818,7 @@ parameters see Sec.~\ref{sec:box} about boxes.  \medskip
 \fielditem{optboxheight}{<num>}{0.8}
 \fielditem{optboxwidth}{<num>}{1.4}
 
-\begin{LTXexample}[width=3cm]
+\begin{LTXexample}
 \begin{pspicture}(3,2)
   \optbox[beam](0,0)(3,2){box}
 \end{pspicture}
@@ -818,18 +826,10 @@ parameters see Sec.~\ref{sec:box} about boxes.  \medskip
 
 \fielditem{endbox}{<boolean>}{false}
 
-\begin{LTXexample}[width=3cm]
+\begin{LTXexample}
 \begin{pspicture}(3,2)
-  \optbox[beam, endbox](0,0)(1.5,1){box}
-\end{pspicture}
-\end{LTXexample}
-
-\bigskip
-
-\begin{LTXexample}[width=3cm]
-\begin{pspicture}(3,2)
-  \pnode(0,0){A}\pnode(1.5,1){B}
-  \optbox[beam, endbox, label=0 . . relative](A)(B){box}
+  \optbox[beam, endbox, label=0 . . relative]%
+           (0,0)(1.5,1){box}
 \end{pspicture}
 \end{LTXexample}
 
@@ -2256,39 +2256,44 @@ incorporate this in a new released version.
 
 \begin{LTXexample}[pos=t, vsep=8mm]
 \begin{pspicture}(6.4,3.2)
-\addtopsstyle{Fiber}{linecolor=red}
-\pnode(2.3,2.3){Lin}\pnode([Xnodesep=0.5]Lin){Lout}
-\pnode([Xnodesep=1.5]Lout){EAMout}
-\pnode([Xnodesep=1.5]EAMout){Det}
-\optbox[fiber, 
-labeloffset=-0.2, endbox, compname=L, extnode=b](Lout)(Lin){%
+  \addtopsstyle{Fiber}{linecolor=red}
+  \pnode(2.3,2.3){Lin}\pnode([Xnodesep=0.5]Lin){Lout}
+  \pnode([Xnodesep=1.5]Lout){EAMout}
+  \pnode([Xnodesep=1.5]EAMout){Det}
+  \optbox[fiber, label=-0.2, endbox, compname=L, extnode=b](Lout)(Lin){%
     \psGauss[yunit=0.03,sigma=0.03]{-0.5}{0.5}}
-\optbox[fiber, 
-labeloffset=0, optboxwidth=1, compname=EAM, extnode=b](Lout)(EAMout){EAM}
-\optfiber[labeloffset=0.3](EAMout)(Det){fibre}
-\optdetector(EAMout)(Det){OSA}
-\pnode([Xnodesep=-1,offset=-1]LExtNode){Osc}
-\pnode(LExtNode|Osc){PSin}\pnode(EAMExtNode|Osc){PSout}
-\oscillator[output=right](Osc){10\,GHz}{}
-\phaseshifter[labeloffset=-0.7](PSin)(PSout){$\tau$}
-\wire(LExtNode)(PSin)\wire(EAMExtNode)(PSout)
+  \optbox[fiber, label=0, optboxwidth=1, compname=EAM, extnode=b](Lout)(EAMout){EAM}
+  \optfiber[labeloffset=0.3](EAMout)(Det){fibre}
+  \optdetector(EAMout)(Det){OSA}
+  \pnode([Xnodesep=-1,offset=-1]\oenodeext{L}){Osc}
+  \pnode(\oenodeext{L}|Osc){PSin}\pnode(\oenodeext{EAM}|Osc){PSout}
+  \oscillator[output=right](Osc){10\,GHz}{}
+  \phaseshifter[arrowscale=1.5, inputarrow, labeloffset=-0.7](PSin)(PSout){$\tau$}
+  \psset{arrows=->, arrowinset=0, arrowscale=1.5}
+  \wire(PSin)(\oenodeext{L})
+  \wire(PSout)(\oenodeext{EAM})
 \end{pspicture}
 \end{LTXexample}
 
-\begin{LTXexample}[pos=t, vsep=8mm]
+\begin{LTXexample}[pos=t, vsep=8mm, preset=\centering]
 \begin{pspicture}(0.9,0.9)(10.4,5.9)
   \psset{arrowscale=1.5, arrowinset=0}
-  \addtopsstyle{Fiber}{linewidth=2\pslinewidth}
   \pnode(2,5){PC1in}\pnode(4,5){PC1out}\pnode(6,5){PC2in}
   \pnode(8,5){PC2out}\pnode(2,2){CplSig}\pnode(5,2){CplIn}
   \pnode(2,1){CplOut}\pnode(10,4.5){Pump}\pnode(8,2){PumpSig}
-  \optisolator[compshift=0.8, addtoFiberIn={angleA=180}, addtoFiberOut={angleB=180}, labelref=relative, labeloffset=0.6](CplSig)(PC1in){isolator}
+  \optisolator[compshift=0.8, addtoFiberIn={angleA=180}, 
+                 addtoFiberOut={angleB=180}, label=0.5 . l]%
+                 (CplSig)(PC1in){isolator}
   \polcontrol[addtoFiberIn={arrows=|-}](PC1in)(PC1out){}
   \optfiberpolarizer[labeloffset=0.6](PC1out)(PC2in){polarizer}
   \polcontrol[addtoFiberOut={arrows=-|}](PC2in)(PC2out){}
-  \wdmsplitter[labeloffset=0.3, align=bottom, addtoFiberIn={arrows=|-}, addtoFiberOut1={arrows=->}, addtoFiberOut2={arrows=-|}](CplIn)(CplOut)(CplSig){95/5}
-  \wdmcoupler[addtoFiberIn1={ArrowInside=->}, addtoFiberIn2={angleA=0}, addtoFiberOut={angleB=0,arrows=-|}, ncurv=0.9, align=bottom, compshift=0.8](Pump)(PC2out)(PumpSig){Pump}
-  \optbox[endbox,labeloffset=0,labelref=relative]([offset=-0.1]Pump)(Pump){980~nm}
+  \wdmsplitter[labeloffset=0.3, align=bottom, addtoFiberIn={arrows=|-}, 
+                 addtoFiberOut1={arrows=->}, addtoFiberOut2={arrows=-|}]%
+                 (CplIn)(CplOut)(CplSig){95/5}
+  \wdmcoupler[addtoFiberIn1={ArrowInside=->}, addtoFiberIn2={angleA=0}, 
+                addtoFiberOut={angleB=0,arrows=-|}, ncurv=0.9, 
+                align=bottom, compshift=0.8](Pump)(PC2out)(PumpSig){Pump}
+  \optbox[endbox, label=0 . . relative]([offset=-0.1]Pump)(Pump){980~nm}
   \optfiber[fiberloops=2, labeloffset=0.4](CplIn)(PumpSig){Er$^+$-doped}
 \end{pspicture}
 \end{LTXexample}
