@@ -955,12 +955,23 @@
 %
 \def\getLastCompname@ii#1,#2,#3\@nil{#1}%
 \def\getLastCompname@i{\pst@str@basicname@prefix\expandafter\getLastCompname@ii \Pst@oe@complist,\relax,\@nil}%
-\def\oenode#1#2{\ifx.#1.\getLastCompname@i\else\pst@str@basicname@prefix#1\fi#2}%
+\def\oenode#1#2{%
+  \ifx.#1.%
+    \getLastCompname@i
+  \else
+    \pst@str@basicname@prefix
+    \ifnum9<1#1 
+      \pst@str@basicname@default
+    \fi
+    #1%
+    \fi
+  #2%
+}%
 \def\oenodeext#1{\oenode{#1}{\pst@str@extnode@postfix}}%
 \def\oenodein#1{\oenode{#1}{1}}%
 \def\oenodeout#1{\oenode{#1}{N}}%
-\def\oenodea#1{\oenode{#1}{A}}%
-\def\oenodeb#1{\oenode{#1}{B}}%
+\def\oenoderefa#1{\oenode{#1}{A}}%
+\def\oenoderefb#1{\oenode{#1}{B}}%
 \def\oenodelabel#1{\oenode{#1}{Label}}%
 %
 \def\newOptexpComp{\@ifnextchar[{\newOptexpComp@i}{\newOptexpComp@i[]}}%

@@ -21,48 +21,11 @@ footinclude=false,oneside]{pst-doc}
 \lstset{%
   language=[LaTeX]TeX,
   texcsstyle = [20]\color{DOrange!60!black},
-  moretexcs = [20]{lens, optbox, oenode, oenodein, oenodeext, oenodeout, oenodea, oenodeb, optplate, optretplate, pinhole, crystal,optdetector, optdiode, doveprism, polarization, mirror, beamsplitter, optgrid, optprism, raprism, pentaprism, optdipole, optripole, optfiber, optamp, optmzm, optfilter, polcontrol, optisolator, optswitch, fiberdelayline, optfiberpolarizer, fibercollimator, optcoupler, wdmcoupler, wdmsplitter, drawbeam, drawwidebeam, drawfiber, custombeam},
-%  keywordstyle = [30]\color{green!30!black},
-%  morekeywords = [30]{label},
+  moretexcs = [20]{lens, optbox, oenode, oenodein, oenodeext, oenodeout, oenoderefa, oenoderefb, optplate, optretplate, pinhole, crystal,optdetector, optdiode, doveprism, polarization, mirror, beamsplitter, optgrid, optprism, raprism, pentaprism, optdipole, optripole, optfiber, optamp, optmzm, optfilter, polcontrol, optisolator, optswitch, fiberdelayline, optfiberpolarizer, fibercollimator, optcoupler, wdmcoupler, wdmsplitter, drawbeam, drawwidebeam, drawfiber, custombeam},
   explpreset={pos=l,width=-99pt,overhang=0pt,hsep=5mm, varwidth,vsep=\bigskipamount,rframe={}},
   escapechar=§
 }
-%
-% Addition from GL
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\usepackage {etoolbox}
-% \makeatletter
-% \AtBeginEnvironment{LTXexample}{\let\lsthk@OutputBox\lsthk@OutputBox@H@@k\let\lstbasicfont\footnotesize}
-% \AtBeginEnvironment{lstlisting}{\let\lsthk@OutputBox\lsthk@OutputBox@H@@k\let\lstbasicfont\footnotesize}
-% %\AtBeginDocument{\preto\FV@VerbatimBegin{\let\lsthk@OutputBox\lsthk@OutputBox@H@@k\let\lstbasicfont\footnotesize}}
-% %\AtBeginDocument{\preto\FV@VerbatimBegin{\let\lsthk@OutputBox\lsthk@OutputBox@H@@k\let\lstbasicfont\footnotesize}}
-% \providerobustcmd*\ifrefundefined [1]{%
-%   \begingroup%
-%     \csname @safe@activestrue\endcsname%
-%     \expandafter\endgroup\csname @\ifcsname r@#1\endcsname second\else first\fi oftwo\endcsname
-% }% \ifrefundefined
-% \def\lsthk@OutputBox@H@@k{%
-%     \begingroup%
-%       \let\lst@UM\@empty%
-%       \edef\@tempc{sec:\detokenize\expandafter{\the\lst@token }}%\edef
-%       \ifrefundefined{\@tempc}%
-%     \endgroup%
-%     \sethyperlistings%
-% }% \lsthk@OutputBox@fcltxH@@k
-% \def\sethyperlistings {\global\let \hyperlistingsreference =\@tempc
-%      \endgroup \aftergroup \dohyperlistings }% after \hbox
-% \def\dohyperlistings {\def\lst@alloverstyle ##1{\hyperlistings ##1}}
-% \def\hyperlistings{%
-%     \setbox\@tempboxa\hbox%
-%     \bgroup%
-%       \rlap{\hypersetup {linkcolor=.}\relax\fboxrule\z@%
-%       \hyperref[\hyperlistingsreference]{\boxframe{\wd\@tempboxa}{\ht\@tempboxa}{\dp\@tempboxa}}}%
-%       \unhbox\@tempboxa%
-%     \egroup%
-% }% \hyperlistings
-% \let\lsthk@OutputBox\lsthk@OutputBox@H@@k
-% \makeatother
-% -----------------------------------------------------------
+\usepackage{etoolbox}
 \newlength{\marglistwidth}
 \newlength{\marglistsep}
 
@@ -93,14 +56,6 @@ footinclude=false,oneside]{pst-doc}
      \vspace{\itemsep}}}%
   {\endlist}
 \newcommand*{\marglistfont}{\sffamily\small}
-
-\newenvironment*{marglist}
-  {\list{}{%
-     \setlength{\labelwidth}{\marglistwidth}%
-     \setlength{\labelsep}{\marglistsep}%
-     \setlength{\leftmargin}{0pt}%
-     \renewcommand*{\makelabel}[1]{\hss\marglistfont##1}}}
-  {\endlist}
 %
 % New commands
 %
@@ -134,6 +89,8 @@ footinclude=false,oneside]{pst-doc}
 
 \def\Lfmultipole#1{\nxLcs{#1}\xLmultipole{#1}}
 \def\xLmultipole#1{\index{#1@\nxLcs{#1}}\index{Fiber multipole object!#1@\nxLcs{#1}}}
+
+\newcommand{\objdesc}[1]{\textit{Obj}\ifx#1\relax\else$_{#1}$\fi\xspace}
 
 \newcommand{\dipoledesc}[1]{%
   \Ldipole{#1}\OptArgs%
@@ -276,7 +233,7 @@ maintain full backward compatibility with version 2.x. However, using the
 \Loption{compat} package option allows you to compile old setups but without
 profiting from the new features. If you only need the old naming scheme, because
 you accessed internal nodes directly, then you must only set
-\Lkeyword{oldnamingscheme}.
+\nxLkeyword{namingscheme=old}.
 \end{fieldlist}
 
 
@@ -526,14 +483,17 @@ label-related parameter. It takes up to four space-separated arguments
 
 \end{fieldlist}
 
-\subsection{Named Objects}\label{sec:namedobj}
+\subsection{Accessing Objects and Related Nodes}\label{sec:objnodes}
 
+\subsubsection{Naming Objects}\label{sec:namingobj}
 \begin{fieldlist}
-\fielditem{compname}{<string>}{}
-Every \LPack{pst-optexp} object of an experimental setup can
-be assigned a name that is unique within one pspicture environment. The
-name is defined with the parameter \Lkeyword{compname} which is
-defineable only directly within a \LPack{pst-optexp} object.
+  \fielditem{compname}{<string>}{} 
+
+  Every \LPack{pst-optexp} object of an
+  experimental setup can be assigned a name that is unique within one
+  \nxLkeyword{pspicture} environment. The name is defined with the parameter
+  \Lkeyword{compname} which is defineable only directly within a
+  \LPack{pst-optexp} object.
 
 \medskip
 
@@ -543,6 +503,36 @@ defineable only directly within a \LPack{pst-optexp} object.
 \end{lstlisting}
 \end{fieldlist}
 \medskip
+
+\subsubsection{Accessing Internal Nodes}\label{sec:internalnodes}
+\begin{BDef}
+  \Lcs{oenode}\Largb{Obj}\Largb{Node}
+\end{BDef}
+
+Every object defines several special internal nodes which are very useful for
+related positioning and drawing. You should always use the provided \nxLcs{oenode*}
+macros to access the node names.
+
+The basic macro is \nxLcs{oenode} which takes as first argument the name of the
+target object (for naming see \ref{sec:namingobj}) and as second argument the
+name of the requested special node. For most special nodes an appropriate macro is provided.
+
+\begin{BDef}
+  \Lcs{oenoderefa}\Largb{Obj}\\
+  \Lcs{oenoderefb}\Largb{Obj}
+\end{BDef}
+
+\nxLcs{oenoderefa} and \nxLcs{oenoderefb} refer to the reference nodes which are used to position \objdesc{}. For the dipole components 
+
+\begin{LTXexample}
+\begin{pspicture}(3,2)
+  \pnode(0,1){A}\pnode(3,1){B}\lens(A)(B){}
+  \psdot[linecolor=red](\oenoderefa{})
+  \psdot[linecolor=red, dotstyle=x, dotsize=0.2](A)
+  \psdot[linecolor=blue](\oenoderefb{})
+  \psdot[linecolor=blue, dotstyle=x, dotsize=0.2](B)
+\end{pspicture}
+\end{LTXexample}
 
 \subsection{Nodes For External Usage}\label{sec:extnode}
 
