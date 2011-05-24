@@ -266,7 +266,12 @@
 % 
 % Lens
 \define@key[psset]{optexp}{lensheight}{\pst@checknum{#1}\psk@oe@lensheight}
-\define@key[psset]{optexp}{lenswidth}{\pst@checknum{#1}\psk@oe@lenswidth}
+\define@key[psset]{optexp}{lenswidth}{%
+  \pst@checknum{#1}\psk@oe@lenswidth
+  \ifdim\psk@oe@lenswidth pt > 0pt
+    \psset{thicklens=true}
+  \fi
+}
 \define@key[psset]{optexp}{lensradiusleft}{\pst@checknum{#1}\psk@oe@lensradiusleft}
 \define@key[psset]{optexp}{lensradiusright}{\pst@checknum{#1}\psk@oe@lensradiusright}
 \define@boolkey[psset]{optexp}[Pst@oe@]{thicklens}[true]{}
@@ -888,21 +893,21 @@
 \def\draw@InternalConnections{%
   \ifPst@oe@beam
     \ifPst@oe@endbox
-      \drawbeam[connectplanes]{(\optexp@refnodeA)}{\psk@oe@compname}
+      \drawbeam[connectplanes]{(\oenoderefa{})}{\psk@oe@compname}
     \else
-      \drawbeam[connectplanes]{(\optexp@refnodeA)}{\psk@oe@compname}{(\optexp@refnodeB)}
+      \drawbeam[connectplanes]{(\oenoderefa{})}{\psk@oe@compname}{(\oenoderefb{})}
     \fi
   \else
     \ifPst@oe@endbox
       \ifPst@oe@fiberin@
-        \drawfiber@{FiberIn}{(\optexp@refnodeA)}{\psk@oe@compname}
+        \drawfiber@{FiberIn}{(\oenoderefa{})}{\psk@oe@compname}
       \fi
     \else
       \ifPst@oe@fiberin@
-        \drawfiber@{FiberIn}{(\optexp@refnodeA)}{\psk@oe@compname}
+        \drawfiber@{FiberIn}{(\oenoderefa{})}{\psk@oe@compname}
       \fi
       \ifPst@oe@fiberout@
-        \drawfiber@{FiberOut}{\psk@oe@compname}{(\optexp@refnodeB)}
+        \drawfiber@{FiberOut}{\psk@oe@compname}{(\oenoderefb{})}
       \fi
     \fi
   \fi
@@ -1161,9 +1166,9 @@
               \pst@Verb{%
                  \pst@optexpdict
                  tx@NodeDict begin
-                     {\pst@tempA } false chirality 0 le { /N@\optexp@refnodeB\space }{ /N@\optexp@refnodeA\space } ifelse
+                     {\pst@tempA } false chirality 0 le { /N@\oenoderefb{}\space }{ /N@\oenoderefa{}\space } ifelse
                      10 {InitPnode } NewNode
-                     {\pst@tempB } false chirality 0 le { /N@\optexp@refnodeA\space }{ /N@\optexp@refnodeB\space } ifelse
+                     {\pst@tempB } false chirality 0 le { /N@\oenoderefa{}\space }{ /N@\oenoderefb{}\space } ifelse
                      10 {InitPnode } NewNode
                  end end
               }%
@@ -1188,18 +1193,18 @@
       %
         \ifPst@oe@bglayer
           \ifx\psk@oe@align\pst@str@top
-            \pnode(##1){\optexp@refnodeA}
-            \pnode(##3){\optexp@refnodeB}
+            \pnode(##1){\oenoderefa{}}
+            \pnode(##3){\oenoderefb{}}
           \else\ifx\psk@oe@align\pst@str@bottom
-            \pnode(##2){\optexp@refnodeA}
-            \pnode(##4){\optexp@refnodeB}
+            \pnode(##2){\oenoderefa{}}
+            \pnode(##4){\oenoderefb{}}
           \else
             \pst@getcoor{##1}\pst@tempA%
             \pst@getcoor{##2}\pst@tempB%
-            \pnode(!\pst@tempA \pst@tempB \pst@optexpdict mwNode end \tx@UserCoor){\optexp@refnodeA}
+            \pnode(!\pst@tempA \pst@tempB \pst@optexpdict mwNode end \tx@UserCoor){\oenoderefa{}}
             \pst@getcoor{##3}\pst@tempA%
             \pst@getcoor{##4}\pst@tempB%
-            \pnode(!\pst@tempA \pst@tempB \pst@optexpdict mwNode end \tx@UserCoor){\optexp@refnodeB}
+            \pnode(!\pst@tempA \pst@tempB \pst@optexpdict mwNode end \tx@UserCoor){\oenoderefb{}}
          \fi\fi
        \fi
        %
@@ -1272,17 +1277,17 @@
   \addbefore@par{fiber}%
   \begin@OptexpObj
     \ifPst@oe@bglayer
-      \pnode(#1){\optexp@refnodeA}
+      \pnode(#1){\oenoderefa{}}
       \ifx\psk@oe@align\pst@str@top
-         \pnode(#2){\optexp@refnodeB}
+         \pnode(#2){\oenoderefb{}}
       \else\ifx\psk@oe@align\pst@str@bottom
-         \pnode(#3){\optexp@refnodeB}
+         \pnode(#3){\oenoderefb{}}
       \else
          \pst@getcoor{#2}\pst@tempA%
          \pst@getcoor{#3}\pst@tempB%
          \pnode(!\pst@tempA\pst@number\psyunit div exch \pst@number\psxunit div exch
                  \pst@tempB\pst@number\psyunit div exch \pst@number\psxunit div exch 
-                 \pst@optexpdict mwNode end \psk@oe@coupleroutshift\space add){\optexp@refnodeB}
+                 \pst@optexpdict mwNode end \psk@oe@coupleroutshift\space add){\oenoderefb{}}
       \fi\fi
     \fi
     %
@@ -1309,17 +1314,17 @@
   \addbefore@par{fiber}%
   \begin@OptexpObj
     \ifPst@oe@bglayer
-      \pnode(#3){\optexp@refnodeB}
+      \pnode(#3){\oenoderefb{}}
       \ifx\psk@oe@align\pst@str@top
-         \pnode(#1){\optexp@refnodeA}
+         \pnode(#1){\oenoderefa{}}
       \else\ifx\psk@oe@align\pst@str@bottom
-         \pnode(#2){\optexp@refnodeA}
+         \pnode(#2){\oenoderefa{}}
       \else
          \pst@getcoor{#1}\pst@tempA%
          \pst@getcoor{#2}\pst@tempB%
          \pnode(!\pst@tempA\pst@number\psyunit div exch \pst@number\psxunit div exch
                  \pst@tempB\pst@number\psyunit div exch \pst@number\psxunit div exch 
-                 \pst@optexpdict mwNode end){\optexp@refnodeA}
+                 \pst@optexpdict mwNode end){\oenoderefa{}}
       \fi\fi
     \fi
     %
@@ -1367,8 +1372,8 @@
      calcNodes
      /ExchCoorSwitch 
      Y@A X@A neg Y@B X@B neg ExchCoor def
-     X@A Y@A end){\optexp@refnodeA}%
-  \pnode(! \pst@optexpdict X@B Y@B end){\optexp@refnodeB}%
+     X@A Y@A end){\oenoderefa{}}%
+  \pnode(! \pst@optexpdict X@B Y@B end){\oenoderefb{}}%
 }\ignorespaces}%
 %
 %
@@ -1377,12 +1382,12 @@
 % macros the given points are assigned to the temporary nodes.
 %
 \def\pst@regNodes#1#2{%
-    \pnode(#1){\optexp@refnodeA}
-    \pnode(#2){\optexp@refnodeB}
+    \pnode(#1){\oenoderefa{}}
+    \pnode(#2){\oenoderefb{}}
 \ignorespaces}%
 \def\pst@adjustTempNodes{%
     \pst@Verb{\pst@optexpdict
-      (N@\optexp@refnodeA) @GetCenter (N@\optexp@refnodeB) @GetCenter
+      (N@\oenoderefa{}) @GetCenter (N@\oenoderefb{}) @GetCenter
       currentdict /chirality known not {%
         /chirality 1 def 
       } if
@@ -1391,7 +1396,7 @@
       {/@xref \psk@oe@xref\space neg def /@yref \psk@oe@yref\space neg def} 
       {/@xref \psk@oe@xref\space def /@yref \psk@oe@yref\space def} ifelse
     }%
-    % \pst@Verb{tx@NodeDict begin N@\optexp@refnodeA\space GetCenter N@\optexp@refnodeB\space GetCenter end
+    % \pst@Verb{tx@NodeDict begin N@\oenoderefa{}\space GetCenter N@\oenoderefb{}\space GetCenter end
     %           \pst@optexpdict ExchCoor dup end
     %           {/@xref \psk@oe@xref\space neg def /@yref \psk@oe@yref\space neg def} 
     %           {/@xref \psk@oe@xref\space def /@yref \psk@oe@yref\space def} ifelse
@@ -1503,14 +1508,14 @@
           } ifelse
       } if >%
       % 
-      \ncline[linestyle=none,fillstyle=none,npos=]{\optexp@refnodeA}{\optexp@refnodeB}%
+      \ncline[linestyle=none,fillstyle=none,npos=]{\oenoderefa{}}{\oenoderefb{}}%
       % 
       % 
       \ifx\psk@oe@position\@empty
          \ifx\psk@oe@abspos\@empty
             \ncput[nrot=:U,npos=]{\put@RelLabel{#1}}%
          \else
-            \nlput[nrot=:U](\optexp@refnodeA)(\optexp@refnodeB){\psk@oe@abspos}{\put@RelLabel{#1}}%
+            \nlput[nrot=:U](\oenoderefa{})(\oenoderefb{}){\psk@oe@abspos}{\put@RelLabel{#1}}%
          \fi
       \else
          \ncput[nrot=:U,npos=\psk@oe@position]{\put@RelLabel{#1}}
@@ -1592,9 +1597,9 @@
       \pst@Verb{%
         \pst@optexpdict
          tx@NodeDict begin
-            {\pst@tempA } false chirality 0 le { /N@\optexp@refnodeB\space }{ /N@\optexp@refnodeA\space } ifelse
+            {\pst@tempA } false chirality 0 le { /N@\oenoderefb{}\space }{ /N@\oenoderefa{}\space } ifelse
              10 {InitPnode } NewNode
-             {\pst@tempB } false chirality 0 le { /N@\optexp@refnodeA\space }{ /N@\optexp@refnodeB\space } ifelse
+             {\pst@tempB } false chirality 0 le { /N@\oenoderefa{}\space }{ /N@\oenoderefb{}\space } ifelse
              10 {InitPnode } NewNode
          end end
       }%
@@ -1639,7 +1644,7 @@
         \@nameuse{\psk@connIn}
       \else
         \ifPst@oe@beam
-          \drawbeam{(\optexp@refnodeA)}{\psk@oe@compname}
+          \drawbeam{(\oenoderefa{})}{\psk@oe@compname}
         \fi
       \fi
       \ifPst@oe@fiberout@
@@ -1647,7 +1652,7 @@
           \ifPst@oe@compat
             \@nameuse{\psk@connOut}
           \else
-            \drawfiber{\psk@oe@compname}{(\optexp@refnodeB)}
+            \drawfiber{\psk@oe@compname}{(\oenoderefb{})}
           \fi
         \else\ifx\@empty\pst@tempD
           \psbezier[style=FiberOut](\pst@tempC)(\pst@tempB)(\pst@tempB)(\optexp@nodeOut)%
@@ -1689,12 +1694,11 @@
         ,angle=0
         ,rotateref=c
 % lens
-        ,lenswidth=0.2
+        ,lenswidth=0
         ,lensheight=1
         ,lensradius=\@empty
         ,lensradiusleft=1
         ,lensradiusright=1
-        ,thicklens=false
 % pinhole
         ,phlinewidth=2\pslinewidth
         ,phwidth=0
@@ -1811,7 +1815,7 @@
        \psset{position=1}%
     \fi%
     % 
-    \ncline[linestyle=none,fillstyle=none,npos=]{\optexp@refnodeA}{\optexp@refnodeB}%
+    \ncline[linestyle=none,fillstyle=none,npos=]{\oenoderefa{}}{\oenoderefb{}}%
     % 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
     % 
@@ -1832,7 +1836,7 @@
         \ifx\psk@oe@abspos\@empty
            \ncput[nrot=:U,npos=]{\put@Comp{\@@comp}}%
         \else
-           \nlput[nrot=:U](\optexp@refnodeA)(\optexp@refnodeB){\psk@oe@abspos}{\put@Comp{\@@comp}}%
+           \nlput[nrot=:U](\oenoderefa{})(\oenoderefb{}){\psk@oe@abspos}{\put@Comp{\@@comp}}%
         \fi
     \else
        \ncput[nrot=:U,npos=\psk@oe@position]{\put@Comp{\@@comp}}%
@@ -1850,8 +1854,8 @@
       \ifPst@oe@bglayer
           \psdot[linecolor=red](\optexp@nodeLabel)
           \psdot[linecolor=red](\optexp@nodeLabelShifted)
-          \psdot[linecolor=black](\optexp@refnodeA)
-          \psdot[linecolor=black](\optexp@refnodeB)
+          \psdot[linecolor=black](\oenoderefa{})
+          \psdot[linecolor=black](\oenoderefb{})
       \fi
     \fi
     \ifPst@oe@debug@showifcnodes
@@ -2012,7 +2016,7 @@
   \edef\@lens@wd{\psk@oe@lenswidth\space\pst@number\psxunit mul 2 div }%
   \edef\@lens@th{0}%
   \addto@pscode{%
-    \pst@optexpdict 
+    \pst@optexpdict
     /@wd \psk@oe@lenswidth\space\pst@number\psxunit mul 2 div def
     /@ht \psk@oe@lensheight\space\pst@number\psyunit mul 2 div def
     /@rL \psk@oe@lensradiusleft\space\pst@number\psxunit mul def
@@ -2373,7 +2377,7 @@
   \fi\fi
 }%
 \def\optdetector@comp{%
-   \pnode(\optexp@refnodeB){\optexp@nodeIn}
+   \pnode(\oenoderefb{}){\optexp@nodeIn}
    \ifx\psk@oe@dettype\pst@str@dettype@round
       \begin@ClosedObj
          % I could have use pswedge but then a correction of the component size
