@@ -178,6 +178,7 @@
                 hatchwidth=0.5\psk@oe@mirrorlinewidth,
                 hatchsep=1.4\psk@oe@mirrorlinewidth,%
                 fillstyle=hlines}%
+\newpsstyle{VariableMirror}{linewidth=0.8\pslinewidth, arrowinset=0, arrowscale=0.8, arrows=<->}
 \newpsstyle{PiezoMirror}{fillstyle=solid,fillcolor=black!30}%
 \newpsstyle{IsolatorArrow}{linewidth=2\pslinewidth, arrowinset=0}
 \newpsstyle{CrystalCaxis}{linestyle=dashed, dash=2pt 2pt, linewidth=0.7\pslinewidth, arrowinset=0, arrows=->}
@@ -332,7 +333,7 @@
 %
 % Detector
 \define@key[psset]{optexp}{detsize}{\pst@checknum{#1}\psk@oe@detsize}
-\define@choicekey+[psset]{optexp}{dettype}[\val\nr]{round,diode}%
+\define@choicekey*+[psset]{optexp}{dettype}[\val\nr]{round,diode}%
    {\edef\psk@oe@dettype{\val}}
    {\PackageError{pst-optexp}{Unknown value '\val' for key dettype}}
 %
@@ -1905,81 +1906,82 @@
                   1 }%
 }%
 \def\mirror@comp{%
-   \edef\@mirror@ht{\psk@oe@mirrorwidth\space\pst@number\psyunit mul 2 div }%
-   \edef\@mirror@dp{\psk@oe@mirrordepth\space\pst@number\psxunit mul }%
-   \edef\@mirror@r{\psk@oe@mirrorradius\space\pst@number\psxunit mul }%
-   \edef\@mirror@postcode{neg 5 -1 roll exch 5 2 roll 90 add exch 90 add exch ArcR }%
-   \edef\@mirror@extpostcode{neg \@mirror@dp add 5 -1 roll exch 5 2 roll 90 add exch 90 add }%
-   %
-   % concave mirrors
-   %
-   \ifdim\psk@oe@mirrorradius pt<0pt
-      % always draw the input plane
-      \begin@OpenObj
-      \addto@pscode{\pst@optexpdict \@mirror@ht \@mirror@r rightConcave \@mirror@postcode end}%
-      \end@OpenObj
-      \ifx\psk@oe@mirrortype\pst@str@mirrortype@extended
-         % 
-         % extended concave mirror
-         \psset{style=ExtendedMirror}
-         \begin@ClosedObj
-         \addto@pscode{\pst@optexpdict \@mirror@ht \@mirror@r rightConcave \@mirror@postcode  
+  \edef\@mirror@ht{\psk@oe@mirrorwidth\space\pst@number\psyunit mul 2 div }%
+  \edef\@mirror@dp{\psk@oe@mirrordepth\space\pst@number\psxunit mul }%
+  \edef\@mirror@r{\psk@oe@mirrorradius\space\pst@number\psxunit mul }%
+  \edef\@mirror@postcode{neg 5 -1 roll exch 5 2 roll 90 add exch 90 add exch ArcR }%
+  \edef\@mirror@extpostcode{neg \@mirror@dp add 5 -1 roll exch 5 2 roll 90 add exch 90 add }%
+  %
+  % concave mirrors
+  %
+  \ifdim\psk@oe@mirrorradius pt<0pt
+    \ifx\psk@oe@mirrortype\pst@str@mirrortype@extended
+      % 
+      % extended concave mirror
+      \bgroup
+        \psset{style=ExtendedMirror}
+        \begin@ClosedObj
+          \addto@pscode{%
+            \pst@optexpdict \@mirror@ht \@mirror@r rightConcave \@mirror@postcode  
             \@mirror@ht \@mirror@r rightConcave \@mirror@extpostcode arc
             closepath end}%
-         \end@ClosedObj
-      \fi
-   %
-   %
-   % convex mirrors
-   %
-   \else\ifdim\psk@oe@mirrorradius pt>0pt
-      % always draw the input plane
-      \begin@OpenObj
-      \addto@pscode{\pst@optexpdict \@mirror@ht \@mirror@r rightConvex \@mirror@postcode end}%
-      \end@OpenObj
-      \ifx\psk@oe@mirrortype\pst@str@mirrortype@extended
-         % 
-         % extended convex mirror
-         \psset{style=ExtendedMirror}
-         \begin@ClosedObj
-         \addto@pscode{\pst@optexpdict \@mirror@ht \@mirror@r rightConvex \@mirror@postcode
+        \end@ClosedObj
+      \egroup
+    \fi
+    \begin@OpenObj
+      \addto@pscode{\pst@optexpdict \@mirror@ht \@mirror@r rightConcave \@mirror@postcode end}%
+    \end@OpenObj
+  %
+  % convex mirrors
+  %
+  \else\ifdim\psk@oe@mirrorradius pt>0pt
+    \ifx\psk@oe@mirrortype\pst@str@mirrortype@extended
+      % 
+      % extended convex mirror
+      \bgroup
+        \psset{style=ExtendedMirror}
+        \begin@ClosedObj
+          \addto@pscode{%
+            \pst@optexpdict \@mirror@ht \@mirror@r rightConvex \@mirror@postcode
             \@mirror@ht \@mirror@r rightConvex \@mirror@extpostcode arcn
             closepath end}%
-         \end@ClosedObj
-      \fi
-   \else
-      % 
-      % plain mirror 
-      %
-      \edef\@m@wd{\psk@oe@mirrorwidth\space 2 div }%
-      \ifPst@oe@variable
-         \psarc[linewidth=0.8\pslinewidth,arrowinset=0,arrowscale=0.8]{<->}
-            (! \@m@wd 0.4 sub 0){0.6}{-20}{20}
-         \psarc[linewidth=0.8\pslinewidth,arrowinset=0,arrowscale=0.8]{<->}
-            (! \@m@wd 0.4 sub neg 0){0.6}{160}{200}
+        \end@ClosedObj
+      \egroup
+    \fi
+   \begin@OpenObj
+     \addto@pscode{\pst@optexpdict \@mirror@ht \@mirror@r rightConvex \@mirror@postcode end}%
+   \end@OpenObj
+  \else
+    % 
+    % plain mirror 
+    %
+    \edef\@m@wd{\psk@oe@mirrorwidth\space 2 div }%
+    \ifPst@oe@variable
+      \psarc[style=VariableMirror](! \@m@wd 0.4 sub 0){0.6}{-20}{20}
+      \psarc[style=VariableMirror](! \@m@wd 0.4 sub neg 0){0.6}{160}{200}
      \fi%
-     \psline[linewidth=\psk@oe@mirrorlinewidth](! \@m@wd neg \getCLWH)(! \@m@wd \getCLWH)
      % 
      % mirrortype
      \ifx\psk@oe@mirrortype\pst@str@mirrortype@piezo%
-        % 
-        % piezo
-        \psframe[style=PiezoMirror,dimen=outer](! \@m@wd 4 div 0)(! \@m@wd -4 div \@m@wd 2.5 div)
-        \ifx\psk@oe@extnode\@empty
-           \psbezier(! 0 \@m@wd 2.5 div)%
-                    (! 0 \@m@wd 1.5 div)%
-                    (! \@m@wd 2 div \@m@wd 2 div)%
-                    (! \@m@wd 4 div \@m@wd)%
-        \else
-           \pst@Verb{/@@y0 \@m@wd 2.5 div def }%
-        \fi
-     \else\ifx\psk@oe@mirrortype\pst@str@mirrortype@extended%
-        % 
-        % extended
-        \psframe[style=ExtendedMirror]%
-           (! \@m@wd neg \psk@oe@mirrordepth\space )%
-           (! \@m@wd 0)%
-     \fi\fi
+       % 
+       % piezo
+       \psframe[style=PiezoMirror,dimen=outer](! \@m@wd 4 div 0)(! \@m@wd -4 div \@m@wd 2.5 div)
+       \ifx\psk@oe@extnode\@empty
+         \psbezier(! 0 \@m@wd 2.5 div)%
+                  (! 0 \@m@wd 1.5 div)%
+                  (! \@m@wd 2 div \@m@wd 2 div)%
+                  (! \@m@wd 4 div \@m@wd)%
+       \else
+         \pst@Verb{/@@y0 \@m@wd 2.5 div def }%
+       \fi
+    \else\ifx\psk@oe@mirrortype\pst@str@mirrortype@extended%
+      % 
+      % extended
+      \psframe[style=ExtendedMirror]%
+         (! \@m@wd neg \psk@oe@mirrordepth\space )%
+         (! \@m@wd 0)%
+    \fi\fi
+    \psline[linewidth=\psk@oe@mirrorlinewidth](! \@m@wd neg \getCLWH)(! \@m@wd \getCLWH)
   \fi\fi
 }%
 %
@@ -2229,7 +2231,6 @@
 %
 % POLARIZATION
 %
-\def\polarization@nodes{}%
 \def\polarization@comp{%
   \edef\@pol@size{\psk@oe@polsize\space 0.5 mul\space}%
   \ifx\psk@oe@poltype\pst@str@pol@polparallel
