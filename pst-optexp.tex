@@ -99,8 +99,11 @@
 \def\pst@str@labelref@global{global}
 \def\pst@str@filtertype@bandpass{bandpass}
 \def\pst@str@filtertype@bandstop{bandstop}
+\def\pst@str@filtertype@lowpass{lowpass}
+\def\pst@str@filtertype@highpass{highpass}
 \def\pst@str@couplertype@none{none}
 \def\pst@str@couplertype@elliptic{elliptic}
+\def\pst@str@couplertype@rectangular{rectangular}
 \def\pst@str@couplertype@crossswitch{crossswitch}
 \def\pst@str@top{top}
 \def\pst@str@bottom{bottom}
@@ -183,6 +186,7 @@
 \newpsstyle{IsolatorArrow}{linewidth=2\pslinewidth, arrowinset=0}
 \newpsstyle{CrystalCaxis}{linestyle=dashed, dash=2pt 2pt, linewidth=0.7\pslinewidth, arrowinset=0, arrows=->}
 \newpsstyle{FdlArrow}{arrowinset=0, arrows=->}
+\newpsstyle{VariableCoupler}{arrowinset=0, arrows=->}
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
@@ -403,7 +407,7 @@
 %
 % Filter
 \define@key[psset]{optexp}{filtersize}{\pst@checknum{#1}\psk@oe@filtersize}
-\define@choicekey+[psset]{optexp}{filtertype}[\val\nr]{bandstop,bandpass}%
+\define@choicekey+[psset]{optexp}{filtertype}[\val\nr]{bandstop,bandpass,lowpass,highpass}%
    {\edef\psk@oe@filtertype{#1}}%
    {\PackageError{pst-optexp}{Unknown value '\val' for key filtertype}}
 %
@@ -438,7 +442,7 @@
 \define@key[psset]{optexp}{couplersize}{\pst@checknum{#1}\psk@oe@couplersize}
 \define@key[psset]{optexp}{coupleroutshift}{\pst@checknum{#1}\psk@oe@coupleroutshift}
 \define@key[psset]{optexp}{couplersep}{\pst@checknum{#1}\psk@oe@couplersep}
-\define@choicekey+[psset]{optexp}{couplertype}[\val\nr]{none,elliptic,crossswitch}%
+\define@choicekey+[psset]{optexp}{couplertype}[\val\nr]{none,elliptic,crossswitch,rectangular}%
    {\edef\psk@oe@couplertype{#1}}%
    {\PackageError{pst-optexp}{Unknown value '\val' for key couplertype}}
 \define@key[psset]{optexp}{align}{\edef\psk@oe@align{#1}}
@@ -2590,7 +2594,6 @@
       t \@sz mul 0.7 mul t Pi mul RadtoDeg 90 add cos 0.2 \@sz mul mul}%
   }%
   \psframe[dimen=outer](! \@sz neg dup)(! \@sz dup)
-  \multips(! 0 -0.5 \@sz mul)(! 0 0.5 \@sz mul){3}{\filter@curve}
   \ifx\psk@oe@filtertype\pst@str@filtertype@bandpass
     \psline(! -0.3 \@sz mul -0.65 \@sz mul)%
            (! 0.3 \@sz mul -0.35 \@sz mul)%
@@ -2617,7 +2620,31 @@
           \psset{style=Fiber}
         \fi
         \filter@curve}
-  \fi\fi
+  \else\ifx\psk@oe@filtertype\pst@str@filtertype@lowpass
+    \psline(! -0.3 \@sz mul -0.15 \@sz mul)%
+           (! 0.3 \@sz mul 0.15 \@sz mul)%
+    \psline(! -0.3 \@sz mul 0.35 \@sz mul)%
+           (! 0.3 \@sz mul 0.65 \@sz mul)%
+    \rput(! 0 -0.5 \@sz mul){%
+      \ifPst@oe@usefiberstyle
+        \psset{style=Fiber}
+      \fi
+      \filter@curve}
+      \rput(0, 0){\filter@curve}
+      \rput(! 0 0.5 \@sz mul){\filter@curve}
+  \else\ifx\psk@oe@filtertype\pst@str@filtertype@highpass
+    \psline(! -0.3 \@sz mul -0.15 \@sz mul)%
+           (! 0.3 \@sz mul 0.15 \@sz mul)%
+    \psline(! -0.3 \@sz mul -0.65 \@sz mul)%
+           (! 0.3 \@sz mul -0.35 \@sz mul)%
+    \rput(! 0 0.5 \@sz mul){%
+      \ifPst@oe@usefiberstyle
+        \psset{style=Fiber}
+      \fi
+      \filter@curve}
+      \rput(0, 0){\filter@curve}
+      \rput(! 0 -0.5 \@sz mul){\filter@curve}
+  \fi\fi\fi\fi
 \ignorespaces}%
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -2738,7 +2765,7 @@
   \def\@wd{\psk@oe@fdlsize\space 0.8 mul\space}%
   \def\@ht{\psk@oe@fdlsize\space 0.5 mul\space}%
   \psframe[dimen=outer](! \@wd neg \@ht neg)(! \@wd \@ht)
-  \psline[style=FdlArrow](! \@wd -0.3 mul \@ht -1.5 mul)(! \@wd 0.3 mul \@ht 1.2 mul CLW \pst@number\psxunit div 5 mul add)
+  \psline[style=FdlArrow](! \@wd -0.3 mul \@ht -1.5 mul)(! \@wd 0.3 mul \@ht 1.2 mul CLW \pst@number\psyunit div 5 mul add)
 \ignorespaces}%
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -2783,16 +2810,19 @@
     \psline[style=Fiber](\psk@oe@b@sicname 2)(\psk@oe@b@sicname N)
   \else\ifx\psk@oe@couplertype\pst@str@couplertype@elliptic
     \psellipse[dimen=outer](!0 \@yshift)(! \@sz \@sz 0.4 mul)
-    \ifPst@oe@variable
-      \psline[arrowinset=0]{->}(!\@sz -0.5 mul \@sz neg \@yshift add)(!\@sz 0.5 mul \@sz \@yshift add)
-    \fi
+  \else\ifx\psk@oe@couplertype\pst@str@couplertype@rectangular
+    \psframe[dimen=outer](!\@sz neg \@yshift \@sz 0.4 mul sub )%
+                         (!\@sz \@yshift \@sz 0.4 mul add)
   \else\ifx\psk@oe@couplertype\pst@str@couplertype@crossswitch
     \psframe[dimen=outer](!\@sz neg \@yshift \@sz sub )%
                          (!\@sz \@yshift \@sz add)
     \edef\@csz{\psk@oe@couplersize\space 0.5 mul\space}
     \psline(! \@csz neg dup)(! \@csz dup)
     \psline(! \@csz neg \@csz)(! \@csz dup neg)
-  \fi\fi\fi
+  \fi\fi\fi\fi
+  \ifPst@oe@variable
+    \psline[style=VariableCoupler](!\@sz -0.5 mul \@sz neg \@yshift add)(!\@sz 0.5 mul \@sz \@yshift add)
+  \fi
 }%
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
