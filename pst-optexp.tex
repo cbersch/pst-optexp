@@ -27,7 +27,7 @@
 %
 %
 \def\fileversion{3.0alpha}
-\def\filedate{2011/04/30}
+\def\filedate{2011/05/27}
 \message{`pst-optexp' v\fileversion, \filedate\space (CB)}
 %
 \edef\PstAtCode{\the\catcode`\@} \catcode`\@=11\relax
@@ -2869,8 +2869,12 @@
   \else\ifx\psk@oe@couplertype\pst@str@couplertype@none
     \ifx\psk@oe@align\pst@str@top
       \psline[style=Fiber](\oenode{}{1})(\oenodeout{})
+      \psline[style=Fiber](! \pst@optexpdict /N@\oenodeout{} @GetCenter end \tx@UserCoor \psk@oe@couplersep\space sub)(\oenode{}{2})
     \else
       \psline[style=Fiber](\oenode{}{2})(\oenodeout{})
+      \ifx\psk@oe@aling\pst@str@bottom
+        \psline[style=Fiber](! \pst@optexpdict /N@\oenodein{} @GetCenter end \tx@UserCoor \psk@oe@couplersep\space sub)(\oenode{}{1}) 
+      \fi
     \fi
   \fi\fi\fi
 }%
@@ -2930,8 +2934,12 @@
   \else\ifx\psk@oe@couplertype\pst@str@couplertype@none
     \ifx\psk@oe@align\pst@str@top
       \psline[style=Fiber](\oenodein{})(\oenode{}{2})
+      \psline[style=Fiber](! \pst@optexpdict /N@\oenodein{} @GetCenter end \tx@UserCoor \psk@oe@couplersep\space sub)(\oenode{}{N})
     \else
       \psline[style=Fiber](\oenodein{})(\oenode{}{N})
+      \ifx\psk@oe@align\pst@str@bottom
+        \psline[style=Fiber](! \pst@optexpdict /N@\oenodein{} @GetCenter end \tx@UserCoor \psk@oe@couplersep\space sub)(\oenode{}{2})
+      \fi
     \fi
   \fi\fi\fi
 }%
