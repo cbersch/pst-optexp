@@ -29,30 +29,56 @@ footinclude=false,oneside]{pst-doc}
 \usepackage{ltxdockit}
 \colorlet{spot}{sectioncolor}
 \InputIfFileExists{ltxdockit.cfg}{}{}
-%\renewcommand*{\ltxsyntaxfont}{\ttfamily}
-\newenvironment*{fieldlist}
-  {\list{}{%
-     \setlength{\labelwidth}{\marglistwidth}%
-     \setlength{\labelsep}{\marglistsep}%
-     \setlength{\leftmargin}{0pt}%
-     \renewcommand*{\makelabel}[1]{\hss\spotcolor\marglistfont##1}}%
-   \def\choiceitem##1##2##3{%
-     \item[##1]%
-     \xLkeyword{##1}%
-     ##2 \ifx##3\relax\else (default: \texttt{##3})\fi\par\nobreak
-     \vspace{\itemsep}}%
-   \def\fielditem##1##2##3{\choiceitem{##1}{\prm{##2}}{##3}}
-   \def\styleitem##1##2{%
-     \item[##1]%
-     \xLstyle{##1}\xLkeyword{addto##1}\xLkeyword{new##1}%
-     \prm{psstyle} \ifx##2\relax\else (default: \texttt{##2})\fi\par\nobreak
-     \vspace{\itemsep}}%
-   \def\styleonlyitem##1##2{%
-     \item[##1]%
-     \xLstyle{##1}
-     \prm{psstyle} \ifx##2\relax\else (default: \texttt{##2})\fi\par\nobreak
-     \vspace{\itemsep}}}%
-  {\endlist}
+\makeatletter
+\def\ltd@optionlist{%
+  \let\optitem\poe@optitem
+  \let\styleitem\poe@styleitem
+  \let\valitem\poe@valitem
+  \let\choitem\poe@choitem
+  \let\boolitem\poe@boolitem
+  \let\intitem\poe@intitem
+  \let\numitem\poe@numitem}
+
+\newcommand*{\poe@optitem}[3][]{%
+  \xLkeyword{#2}%
+  \ifblank{#1}
+    {\ltd@option{#2}{#2}{#3}{}}
+    {\ltd@option{#2}{#2}{#3}{\ltd@textverb{#1}}}}%
+
+\newcommand*{\poe@styleitem}[2][]{%
+  \xLstyle{#2}%
+  \ifblank{#1}
+    {\ltd@option{#2}{#2}{\prm{psstyle}}{}}
+    {\ltd@option{#2}{#2}{\prm{psstyle}}{\ltd@textverb{#1}}}}%
+
+\newcommand*{\poe@valitem}[3][]{%
+  \xLkeyword{#2}%
+  \ifblank{#1}
+    {\ltd@option{#2}{#2}{\prm{#3}}{}}
+    {\ltd@option{#2}{#2}{\prm{#3}}{\ltd@textverb{#1}}}}%
+
+\newcommand*{\poe@choitem}[3][]{%
+  \xLkeyword{#2}%
+  \ifblank{#1}
+    {\ltd@option{#2}{#2}{\ltd@verblist{#3}}{}}
+    {\ltd@option{#2}{#2}{\ltd@verblist{#3}}{\ltd@textverb{#1}}}}%
+
+\newcommand*{\poe@boolitem}[2][]{%
+  \xLkeyword{#2}%
+  \ifblank{#1}
+    {\ltd@option{#2}{#2}{\ltd@verblist{true,false}}{}}
+    {\ltd@option{#2}{#2}{\ltd@verblist{true,false}}{\ltd@textverb{#1}}}}%
+
+\newcommand*{\poe@intitem}[2][]{%
+  \xLkeyword{#2}%
+  \ifblank{#1}
+    {\ltd@option{#2}{#2}{\prm{integer}}{}}
+    {\ltd@option{#2}{#2}{\prm{integer}}{\ltd@textverb{#1}}}}%
+\newcommand*{\poe@numitem}[2][]{%
+  \xLkeyword{#2}%
+  \ifblank{#1}
+    {\ltd@option{#2}{#2}{\prm{num}}{}}
+    {\ltd@option{#2}{#2}{\prm{num}}{\ltd@textverb{#1}}}}%
 %
 % New commands
 %
@@ -84,8 +110,8 @@ footinclude=false,oneside]{pst-doc}
 \def\Lfdipole#1{\nxLcs{#1}\xLfdipole{#1}}
 \def\xLfdipole#1{\index{#1@\nxLcs{#1}}\index{Fiber dipole object!#1@\nxLcs{#1}}}
 
-\def\Lfmultipole#1{\nxLcs{#1}\xLmultipole{#1}}
-\def\xLmultipole#1{\index{#1@\nxLcs{#1}}\index{Fiber multipole object!#1@\nxLcs{#1}}}
+\def\Lfmultipole#1{\nxLcs{#1}\xLfmultipole{#1}}
+\def\xLfmultipole#1{\index{#1@\nxLcs{#1}}\index{Fiber multipole object!#1@\nxLcs{#1}}}
 
 \newcommand{\dipoledesc}[1]{%
   \xLdipole{#1}\cmditem{#1}[Options](In)(Out){Label}%
@@ -98,27 +124,12 @@ footinclude=false,oneside]{pst-doc}
   \xLfdipole{#1}\cmditem{#1}[Options](In)(Out){Label}
 }
 
-%\newcommand{\fibermultipoledesc}[1]{%
-%  \Lfmultipole{#1}\OptArgs%
-%  \nodedescin%
-%  \nodedescout%
-%  \Largb{label}%
-%}
-
 \newcolumntype{T}{>{\ttfamily}l}
 \newcolumntype{B}{>{\bfseries}l}
 \newcommand{\refstringexplanation}[0]{%
   A \paramvalue{<ref string>} is any combination of \paramvalue{c}
   (center), \paramvalue{t} (top), \paramvalue{b} (bottom), \paramvalue{l}
   (left), \paramvalue{r} (right)}
-
-\makeatletter
-\renewenvironment{description}
-  {\list{}{\labelwidth\z@ \itemindent-0.5\leftmargin
-    \itemsep0pt \parsep0pt
-    \let\makelabel\descriptionlabel}}
-  {\endlist}
-\makeatother
 
 \psset{usefiberstyle=true}
 \addtopsstyle{Fiber}{linecolor=DOrange,linewidth=1.5\pslinewidth}
@@ -211,15 +222,15 @@ user-defined components are also provided.
 
 \section{Backward compatibility}
 
-\begin{fieldlist}
-\choiceitem{namingscheme}{old|new}{new}
+\begin{optionlist}
+\optitem[new]{namingscheme}{old, new}
 Version 3.0 introduced a lot of advanced features which made it too difficult to
 maintain full backward compatibility with version 2.x. However, using the
 \Loption{compat} package option allows you to compile old setups but without
 profiting from the new features. If you only need the old naming scheme, because
 you accessed internal nodes directly, then you must only set
 \nxLkeyword{namingscheme=old}.
-\end{fieldlist}
+\end{optionlist}
 
 
 \section{Concept and General Behavior}\label{sec:general}
@@ -261,26 +272,16 @@ fiber-optical or free-ray elements.
 
 \subsection{General Settings}
 
-\begin{description}
-\paramitem{angle}{<degree>}{0}
-\paramitem{compshift}{<num>}{0}
-\paramitem{optional}{<boolean>}{false}
-\styleitem{OptionalStyle}{<psstyle>}{}
-\paramitem{showoptdots}{<boolean>}{false}
-\end{description}
-
 Some generic parameters which can be used for all objects.
 
-\begin{fieldlist}
-\fielditem{angle}{num}{0}
-
+\begin{optionlist}
+\numitem[0]{angle}
 Rotate an object by \nxLkeyword{angle} degrees.
 
-\fielditem{optional}{boolean}{false}
-\styleonlyitem{OptionalStyle}{linestyle=dashed, dash=1.5pt 1pt}
-
+\boolitem[false]{optional}
+\styleitem{OptionalStyle}
 Can be used with every object and marks it as optional. The style of an
-optional element can be configured by changing the psstyle
+optional element can be configured by changing the style
 \nxLkeyword{OptionalStyle}.
 
 \begin{LTXexample}
@@ -289,12 +290,10 @@ optional element can be configured by changing the psstyle
 \end{pspicture}
 \end{LTXexample}
 
-\fielditem{showoptdots}{boolean}{false}
-
+\boolitem[false]{showoptdots}
 Draw some internal nodes which are used to place the object and the
 label. The black points are used for positioning, the red points mark
 the label references.
-\medskip
 
 \begin{LTXexample}
 \begin{pspicture}(3,2)
@@ -302,9 +301,7 @@ the label references.
           beam](0,1)(1.9,1)(1.9,0){mirror}
 \end{pspicture}
 \end{LTXexample}
-\end{fieldlist}
-
-
+\end{optionlist}
 
 \subsection{Using PSStyles}\label{sec:styles}
 
@@ -314,14 +311,12 @@ applied only to selected subparts of the objects. In general, these
 psstyles can be overwritten with the \Lcs{newpsstyle} macro and extended
 with the \Lcs{addtopsstyle} macro.
 
-\begin{fieldlist}
-\styleitem{OptComp}{}
+\begin{optionlist}
+\styleitem{OptComp}
 Affects only the appearence of the optical
 components. This was introduced, because using only the standard
 graphics parameters changes also the connections that are drawn within
 the component.
-
-\medskip
 
 \begin{LTXexample}
 \begin{pspicture}(3,4)
@@ -335,18 +330,15 @@ the component.
 \end{pspicture}
 \end{LTXexample}
 
-\styleitem{OptionalStyle}{style=OptComp, linestyle=dashed, dash=1.5pt 1pt}
-\end{fieldlist}
+\styleitem{OptionalStyle}
+\end{optionlist}
 
 \subsection{Positioning}\label{sec:positioning}
-\begin{fieldlist}
-\fielditem{position}{num}{}
-
-Equivalent to the \Lkeyword{npos} parameter of \Lcs{ncput} (can be any number
-from 0 to 1) and controls the relative position of object between the two
-reference points. It is only not available for the free-ray tripoles.
-
-\medskip
+\begin{optionlist}
+  \numitem{position} Equivalent to the \Lkeyword{npos} parameter of
+  \Lcs{ncput} (a number in the range $0-1$) and controls the relative position
+  of object between the two reference points. It is available for all components
+  but the free-ray tripoles.
 
 \begin{LTXexample}
 \begin{pspicture}(3,1.5) 
@@ -354,11 +346,9 @@ reference points. It is only not available for the free-ray tripoles.
 \end{pspicture}
 \end{LTXexample}
 
-\fielditem{abspos}{num}{}
+\numitem{abspos}
 The parameter \Lkeyword{abspos} allows absolute positioning between the
-two reference nodes. Its value is given in psunits.
-
-\medskip
+two reference nodes.
 
 \begin{LTXexample}
 \begin{pspicture}(3,1.5) 
@@ -366,7 +356,7 @@ two reference nodes. Its value is given in psunits.
 \end{pspicture}
 \end{LTXexample}
 
-\fielditem{compshift}{num}{0}
+\numitem[0]{compshift}
 
 \begin{LTXexample}
 \begin{pspicture}(3,2) 
@@ -383,34 +373,27 @@ two reference nodes. Its value is given in psunits.
   \mirror[beam, compshift=0.2, startvecabs, startvec=1 0, labelangle=45](0,1)(2,1)(2,0){mirror}
 \end{pspicture}
 \end{LTXexample}
-
-\end{fieldlist}
+\end{optionlist}
 
 
 \subsection{Labels}\label{sec:labels}
 
-\begin{fieldlist}
-\fielditem{labeloffset}{num}{0.8}
-
+\begin{optionlist}
+\numitem[0.8]{labeloffset}
 Specify the offset from the label reference node of the object which in most
 cases is the center.
 
-\fielditem{labelstyle}{macro}{\nxLcs{small}}
-
+\valitem[\nxLcs{small}]{labelstyle}{macros}
 Define the textstyle that is used to typeset the label. 
 
-\fielditem{labelalign}{<ref string>}{c}
-
+\valitem[c]{labelalign}{refstring}
 Has the same meaning as the refpoint of \Lcs{rput} and can take the same values.
 
-\fielditem{labelangle}{num}{0}
+\numitem[0]{labelangle}
+Set the label rotation angle around the object. \nxLkeyword{labelref} can be used to change the reference system.
 
-Set the label rotation angle around the
-object. \Lkeyword{labelref} can be used to change the reference system.
-
-\choiceitem{labelref}{relative|relgrav|global}{relgrav}
-
-Set the reference coordinate system for the \Lkeyword{labelangle} and the orientation of
+\choitem[relgrav]{labelref}{relative, relgrav, global}
+Set the reference coordinate system for the \nxLkeyword{labelangle} and the orientation of
 the label text. The detailed behaviour is best illustrated looking at
 the following three examples.
 
@@ -449,12 +432,11 @@ the following three examples.
 
 \medskip
 
-\choiceitem{label}{\prm{offset}[ \prm{angle}[ \prm{ref string}[ \prm{labelref}]]]}{}
-
+\optitem{label}{\prm{offset}[ \prm{angle}[ \prm{ref string}[ \prm{labelref}]]]}
 Allows simplified notation for changing more than one
 label-related parameter. It takes up to four space-separated arguments
 (\nxLkeyword{labeloffset}, \nxLkeyword{labelangle}, \nxLkeyword{labelalign}, and
-\nxLkeyword{labelref}). Unchanged arguments may be specified with a dot.
+\nxLkeyword{labelref}). Unchanged intermediate arguments may be specified with a dot.
 
 \medskip
 
@@ -467,8 +449,7 @@ label-related parameter. It takes up to four space-separated arguments
          (0.6,0.6)(0.6,1.6){relative}
 \end{pspicture}
 \end{LTXexample}
-
-\end{fieldlist}
+\end{optionlist}
 
 \subsection{Accessing Objects and Related Nodes}\label{sec:objnodes}
 
@@ -479,8 +460,8 @@ component. These are useful for related positioning and drawing.
 \subsubsection{Object Names}\label{sec:namingobj}
 All objects are numbered automatically in increasing order by their definition in the code. The objects as well as their special nodes can be accessed via this number.
 
-\begin{fieldlist}
-  \fielditem{compname}{string}{} This parameter can be used to assign a unique
+\begin{optionlist}
+  \valitem{compname}{string} This parameter can be used to assign a unique
   name instead of the automatic number to an object. It can be used only
   directly within a \nxLPack{pst-optexp} object and must be unique within one
   \nxLkeyword{pspicture} environment.
@@ -491,7 +472,7 @@ All objects are numbered automatically in increasing order by their definition i
 \optbox[compname=MyBox](A)(B){Box} % valid use of 'compname'
 \psset{compname=MyName}            % not valid, gives an error
 \end{lstlisting}
-\end{fieldlist}
+\end{optionlist}
 
 \subsubsection{Accessing Internal Nodes}\label{sec:internalnodes}
 
@@ -546,8 +527,8 @@ Some of the objects can provide a supplementary node for additional
 connections. A laser diode may be connected for example to a frequency synthesizer
 (use package \LPack{pst-circ}) or a detector to a computer.
 
-\begin{fieldlist}
-\fielditem{extnode}{ref string}{}
+\begin{optionlist}
+\valitem{extnode}{refstring}
 
 Controls the position of the additional node and
 takes a \paramvalue{<ref string>} as its argument. By default this
@@ -620,7 +601,7 @@ Sec.~\ref{sec:mirror}) which does not depend on the actual value of \Lkeyword{ex
     \Lkeyword{extnode} is not empty. Some allow different positions of the
     node and for some only a fixed node makes sense.}\label{tab:nodes}
 \end{table}
-\end{fieldlist}
+\end{optionlist}
 
 \newpage
 
@@ -636,12 +617,15 @@ automatic beam connections the \styleshape{Beam} style is used.
 
 \begin{ltxsyntax}
 \dipoledesc{lens}
+\begin{LTXexample}
+\begin{pspicture}(3,1.5)
+\lens[beam](0,1)(3,1){L}
+\end{pspicture}
+\end{LTXexample}
 \end{ltxsyntax}
 
 \begin{optionlist}
-\valitem[1]{lensheight}{num} Set the height of the lens.
-
-\medskip
+\numitem[1]{lensheight} Set the height of the lens.
 \begin{LTXexample}
 \begin{pspicture}(3,1.5)
 \lens[beam](0,1)(3,1){L1}
@@ -649,11 +633,11 @@ automatic beam connections the \styleshape{Beam} style is used.
 \end{pspicture}
 \end{LTXexample}
 
-\valitem[1]{lensradiusleft}{num} Set the left radius of the lens. A positive
+\numitem[1]{lensradiusleft} Set the left radius of the lens. A positive
 \prm{num} is for convex, a negative one for concave curvatures. Use zero for a plain
 surface.
 
-\valitem[1]{lensradiusright}{num} Same as \opt{lensradiusleft} but for the right surface.
+\numitem[1]{lensradiusright} Same as \opt{lensradiusleft} but for the right surface.
 
 \medskip
 \begin{LTXexample}
@@ -664,7 +648,7 @@ surface.
 \end{pspicture}
 \end{LTXexample}
 
-\valitem{lensradius}{num} A convenience option to specify both curvatures.
+\numitem{lensradius} A convenience option to specify both curvatures.
 
 \medskip
 \begin{LTXexample}
@@ -673,7 +657,7 @@ surface.
 \end{pspicture}
 \end{LTXexample}
 
-\valitem[0]{lenswidth}{num}
+\numitem[0]{lenswidth}
 
 Usually only the height and the two radii are used to construct the lens and the
 width is calculated from these parameters. If \opt{lenswidth} is greater than
@@ -706,26 +690,22 @@ A convenience option to specify all lens parameters with a single option.
 
 \begin{ltxsyntax}
 \dipoledesc{optplate}
-\end{ltxsyntax}
-
-\begin{optionlist}
-  \valitem[1]{plateheight}{num} The height of the plate.
-
-  \optitem[2\nxLcs{pslinewidth}]{platelinewidth}{\prm{num} or \prm{dimen}} The linewidth of the
-  plate. This could be defined also with the generic \opt{linewidth} option,
-  possibly inside the \opt{OptComp} style. But using \opt{platelinewidth} allows
-  to globally change the linewidth of all \nxLcs{optplate} objects.
-  
-  \medskip
 \begin{LTXexample}
 \begin{pspicture}(3,1.5)
   \optplate[beam](0,1)(3,1){filter}
 \end{pspicture}
 \end{LTXexample}
+\end{ltxsyntax}
 
-\valitem[0]{angle}{num} Rotate the plate around its center.
+\begin{optionlist}
+  \numitem[1]{plateheight} The height of the plate.
 
-\medskip
+  \optitem[2\nxLcs{pslinewidth}]{platelinewidth}{\prm{num} or \prm{dimen}} The linewidth of the
+  plate. This could be defined also with the generic \opt{linewidth} option,
+  possibly inside the \opt{OptComp} style. But using \opt{platelinewidth} allows
+  to globally change the linewidth of all \nxLcs{optplate} objects.
+
+\numitem[0]{angle} Rotate the plate around its center.
 \begin{LTXexample}
 \begin{pspicture}(3,1.5)
   \optplate[angle=10, beam](0,1.2)(3,1.2){glass plate}
@@ -737,43 +717,39 @@ A convenience option to specify all lens parameters with a single option.
 
 \begin{ltxsyntax}
 \dipoledesc{optretplate}
-\end{ltxsyntax}
-
-\begin{optionlist}
-\valitem[1]{plateheight}{num} The height of the plate.
-\valitem[0.1]{platewidth}{num} The width of the plate.
-
-\medskip
 \begin{LTXexample}
 \begin{pspicture}(3,1.5)
   \optretplate[beam](0,1)(3,1){$\nicefrac{\lambda}{2}$}
 \end{pspicture}
 \end{LTXexample}
+\end{ltxsyntax}
+
+\begin{optionlist}
+\numitem[1]{plateheight} The height of the plate.
+\numitem[0.1]{platewidth} The width of the plate.
 \end{optionlist}
 
 \subsection{Pinhole}
 
 \begin{ltxsyntax}
 \dipoledesc{pinhole}
-\end{ltxsyntax}
-
-\begin{optionlist}
-\valitem[1]{outerheight}{num}
-\valitem[0.1]{innerheight}{num}
-\optitem[2\nxLcs{pslinewidth}]{phlinewidth}{\prm{num} or \prm{dimen}}
-The linewidth of the pinhole. This could be defined also with the generic \opt{linewidth} option,
-possibly inside the \opt{OptComp} style. But using \opt{phlinewidth} allows
-to globally change the linewidth of all \nxLcs{pinhole} objects.
-
 \begin{LTXexample}
 \begin{pspicture}(3,1.5)
   \pinhole[beam](0,1)(3,1){PH}
 \end{pspicture}
 \end{LTXexample}
+\end{ltxsyntax}
 
-\valitem[0]{phwidth}{num}
+\begin{optionlist}
+\numitem[1]{outerheight}
+\numitem[0.1]{innerheight}
+\optitem[2\nxLcs{pslinewidth}]{phlinewidth}{\prm{num} or \prm{dimen}}
+The linewidth of the pinhole. This could be defined also with the generic \opt{linewidth} option,
+possibly inside the \opt{OptComp} style. But using \opt{phlinewidth} allows
+to globally change the linewidth of all \nxLcs{pinhole} objects.
 
-The pinhole is drawn in a more plastic style if the \nxLkeyword{phwidth} is not zero.
+\numitem[0]{phwidth} The pinhole is drawn in a more plastic style if the
+\nxLkeyword{phwidth} is not zero.
 
 \medskip
 \begin{LTXexample}
@@ -787,30 +763,34 @@ The pinhole is drawn in a more plastic style if the \nxLkeyword{phwidth} is not 
 
 \begin{ltxsyntax}
 \dipoledesc{crystal}
+\begin{LTXexample}
+\begin{pspicture}(3,1.5)
+\crystal[beam](0,1)(3,1){Crystal}
+\end{pspicture}
+\end{LTXexample}
 \end{ltxsyntax}
 
-\begin{description}
-\paramitem{crystalwidth}{<num>}{1.4}
-\paramitem{crystalheight}{<num>}{0.6}
-\paramitem{caxislength}{<num>}{0.6}
-\paramitem{caxisinv}{<boolean>}{false}
-\paramitem{voltage}{<boolean>}{false}
-\paramitem{lamp}{<boolean>}{false}
-\paramitem{lampscale}{<num>}{0.3}
-\paramitem{angle}{<degree>}{0}
-\paramitem{rotateref}{<ref string>}{c}
-\end{description}
+\begin{optionlist}
+\numitem[1.4]{crystalwidth}
+\numitem[0.6]{crystalheight}
+\numitem[0.6]{caxislength}
+\boolitem[false]{caxisinv}
+\styleitem{CrystalCaxis}
+\boolitem[false]{voltage}
+\boolitem[false]{lamp}
+\numitem[0.3]{lampscale}
+\numitem[0]{angle}
+\valitem[c]{rotateref}{refstring}
+\end{optionlist}
 
 \noindent For a discussion of the \Lkeyword{angle} and \Lkeyword{rotateref}
 parameters see Sec.~\ref{sec:box} about boxes.  \medskip
 
 \begin{LTXexample}
 \begin{pspicture}(3,2)
-  \begin{optexp}
-  \crystal[fillstyle=solid, fillcolor=yellow!90!black, 
-             label=1.2 -45, voltage, 
-             lamp, beam](0,1)(3,1){SBN:Ce}
-  \end{optexp}
+\crystal[fillstyle=solid, fillcolor=yellow!90!black, 
+           label=1.2 -45, voltage, 
+           lamp, beam](0,1)(3,1){SBN:Ce}
 \end{pspicture}
 \end{LTXexample}
 
@@ -820,20 +800,17 @@ parameters see Sec.~\ref{sec:box} about boxes.  \medskip
 
 \begin{ltxsyntax}
 \dipoledesc{optbox}
-\end{ltxsyntax}
-
-\begin{fieldlist}
-\fielditem{optboxheight}{num}{0.8}
-\fielditem{optboxwidth}{num}{1.4}
-
 \begin{LTXexample}
 \begin{pspicture}(3,2)
   \optbox[beam](0,0)(3,2){box}
 \end{pspicture}
 \end{LTXexample}
+\end{ltxsyntax}
 
-\fielditem{endbox}{boolean}{false}
-
+\begin{optionlist}
+\numitem[0.8]{optboxheight}
+\numitem[1.4]{optboxwidth}
+\boolitem[false]{endbox}
 \begin{LTXexample}
 \begin{pspicture}(3,2)
   \optbox[beam, endbox, label=0 . . relative]%
@@ -841,9 +818,8 @@ parameters see Sec.~\ref{sec:box} about boxes.  \medskip
 \end{pspicture}
 \end{LTXexample}
 
-\fielditem{angle}{degree}{0}
-\fielditem{rotateref}{ref string}{c}
-
+\numitem[0]{angle}
+\numitem[c]{rotateref}{refstring}
 The parameter \Lkeyword{angle} describes the tilt of the box
 relative to the reference line defined by the two reference nodes. The
 reference point for the rotation can be defined
@@ -855,14 +831,14 @@ also rotate, while the label is not affected.
 
 \medskip
 
-\begin{LTXexample}[width=3cm]
+\begin{LTXexample}
 \begin{pspicture}(3,2)
-  \optbox[angle=20, beam, rotateref=l, labeloffset=0.5](0,1)(3,1){box}
+  \optbox[angle=20, beam, rotateref=l, 
+            labeloffset=0.5](0,1)(3,1){box}
 \end{pspicture}
 \end{LTXexample}
 
-\fielditem{refractiveindex}{num}{\{\}}
-
+\numitem{refractiveindex}
 Together with the parameter \Lkeyword{refractiveindex} this
 can be exploited to sketch the refraction through a tilted homogeneous
 medium (e.g. a glass plate). Then, however, the reference nodes for the
@@ -872,7 +848,7 @@ operator.
 
 \medskip
 
-\begin{LTXexample}[width=3cm]
+\begin{LTXexample}
 \begin{pspicture}(3,1.5)
   \pnode(0,1){A}\pnode(3,1){B}
   \optbox[labeloffset=0.8, optboxwidth=0.5, optboxheight=1, angle=20, n=2.3, compname=Box](A)(B){glass plate}
@@ -880,83 +856,83 @@ operator.
   \drawbeam{Box}{(B|\oenodeout{Box})}
 \end{pspicture}
 \end{LTXexample}
-\end{fieldlist}
+\end{optionlist}
 
 \subsection{Detector}
 
 \begin{ltxsyntax}
 \dipoledesc{optdetector}
+\begin{LTXexample}
+\begin{pspicture}(3,1.2)
+  \optdetector[beam](0,0)(1.5,1){detector}
+\end{pspicture}
+\end{LTXexample}
 \end{ltxsyntax}
 
-\begin{fieldlist}
-\fielditem{detsize}{num}{0.8}
+\begin{optionlist}
+  \numitem[0.8]{detsize} For a \opt{round} detector this is the object
+  diameter, for the \opt{diode} detector its side length.
 
-\begin{LTXexample}[width=3cm]
-\begin{pspicture}(3,2)
-  \pnode(0,0){A}\pnode(1.5,1){B}
-  \optdetector[beam](A)(B){detector}
+\choitem[round]{dettype}{round, diode} This parameter selects between different
+types of detectors.
+\begin{LTXexample}
+\begin{pspicture}(3,1.5)
+  \optdetector[beam, dettype=diode](0,0)(1.5,1){detector}
 \end{pspicture}
 \end{LTXexample}
-
-\choiceitem{dettype}{round|diode}{round}
-
-\begin{LTXexample}[width=3cm]
-\begin{pspicture}(3,2)
-  \pnode(0,0){A}\pnode(1.5,1){B}
-  \optdetector[beam, dettype=diode](A)(B){detector}
-\end{pspicture}
-\end{LTXexample}
-\end{fieldlist}
+\end{optionlist}
 
 \subsection{Optical Diode}\label{sec:optdiode}
 
 
 \begin{ltxsyntax}
 \dipoledesc{optdiode}
-\end{ltxsyntax}
-
-\begin{fieldlist}
-\fielditem{optdiodesize}{num}{0.8}
-
-\begin{LTXexample}[varwidth]
+\begin{LTXexample}
 \begin{pspicture}(3,2)
    \optdiode[beam, beamInside=false](0,1)(3,1){Diode}
 \end{pspicture}
 \end{LTXexample}
-\end{fieldlist}
+\end{ltxsyntax}
+\begin{optionlist}
+\numitem[0.8]{optdiodesize}
+\end{optionlist}
 
 \subsection{Dove Prism}\label{sec:doveprism}
 
 \begin{ltxsyntax}
 \dipoledesc{doveprism}
-\end{ltxsyntax}
-
-\begin{description}
-  \paramitem{doveprismsize}{<num>}{0.6}
-\end{description}
-
-\medskip
-
-\begin{LTXexample}[width=3.5cm]
-\begin{pspicture}[showgrid=true](3,2)
+\begin{LTXexample}
+\begin{pspicture}(3,1.5)
   \doveprism[beam](0,1)(3,1){Dove}
 \end{pspicture}
 \end{LTXexample}
+\end{ltxsyntax}
+
+\begin{optionlist}
+  \numitem[0.6]{doveprismsize} The height of the prism, the total width is
+  three times the height and the angles at the input and output faces are
+  45\textdegree.
+\end{optionlist}
 \medskip
 
 \subsection{Polarization}
 
 \begin{ltxsyntax}
 \xLdipole{polarization}\cmditem{polarization}[Options](In)(Out)
+\begin{LTXexample}
+\begin{pspicture}(3,1)
+  \polarization[beam](0,0.5)(3,0.5)
+\end{pspicture}
+\end{LTXexample}
 \end{ltxsyntax}
-
 \begin{optionlist}
-\optitem[parallel]{poltype}{parallel, perp, misc, lcirc, rcirc}
-\valitem[0.6]{polsize}{num}
+\choitem[parallel]{poltype}{parallel, perp, misc, lcirc, rcirc}
+\numitem[0.6]{polsize}
 \optitem[0.7\nxLcs{pslinewidth}]{pollinewidth}{\prm{num} or \prm{dimen}}
 \begin{LTXexample}
 \begin{pspicture}(3,5)
   \psset{beam}
+  \begin{optexp}
   \polarization[poltype=parallel, 
                   abspos=0.5](0,4.5)(3,4.5)
   \polarization[poltype=perp, abspos=1](0,3.5)(3,3.5)
@@ -964,6 +940,7 @@ operator.
   \polarization[poltype=lcirc, abspos=2](0,1.5)(3,1.5)
   \polarization[poltype=rcirc, 
                   abspos=2.5](0,0.5)(3,0.5)
+  \end{optexp}
 \end{pspicture}
 \end{LTXexample}
 \end{optionlist}
@@ -972,10 +949,15 @@ operator.
 
 \begin{ltxsyntax}
 \tripoledesc{mirror}
+\begin{LTXexample}
+\begin{pspicture}(3,2)
+  \mirror[beam](0,0)(1.8,1.5)(0,2){M}
+\end{pspicture}
+\end{LTXexample}
 \end{ltxsyntax}
 
 \begin{optionlist}
-\valitem[1]{mirrorwidth}{num} 
+\numitem[1]{mirrorwidth}
 The width of the mirror.
 
 \optitem[2\nxLcs{pslinewidth}]{mirrorlinewidth}{\prm{num} or \prm{dimen}} The linewidth of the
@@ -983,63 +965,63 @@ mirror. This could be defined also with the generic \opt{linewidth} option,
 possibly inside the \opt{OptComp} style. But using \opt{mirrorlinewidth} allows
 to globally change the linewidth of all \nxLcs{mirror} objects.
 
-\valitem[0]{mirrorradius}{num} This parameter defines the curvature of the
-mirror. A value of \opt{0} is for a plain mirror, a negative radius for a
-concave mirror and a positive radius gives you a convex mirror.
+\numitem[0]{mirrorradius} This parameter defines the curvature of the mirror. A
+value of \opt{0} is for a plain mirror, a negative radius for a concave mirror
+and a positive radius gives you a convex mirror.
 
 \begin{LTXexample}[width=3.5cm]
 \begin{pspicture}(3,3)
   \psset{labeloffset=0.5}
   \mirror[mirrorradius=1](0,0)(1,2)(1.8,1){concave}
   \mirror[mirrorradius=-1](1,2)(1.8,1)(2.5,3){convex}
-  \drawbeam[connectplanes]{(0,0)}{1}{2}{(2.5,3)}
+  \drawbeam{(0,0)}{1}{2}{(2.5,3)}
 \end{pspicture}
 \end{LTXexample}
 
-\optitem[normal]{mirrortype}{normal, piezo, extended}
+\choitem[normal]{mirrortype}{normal, piezo, extended}
 
 The \nxLkeyword{mirrortype} selects between different types of mirrors. Note, when using \Lkeyword{extnode} with a
 piezo mirror, the default piece of wire is omitted.
 
 \begin{LTXexample}
   \begin{pspicture}(3,2)
-  \psset{beam}
-  \mirror[mirrortype=extended](0,0)(1.8,1.5)(0,2){ext}
+  \mirror[mirrortype=extended,
+            beam](0,0)(1.8,1.5)(0,2){ext}
 \end{pspicture}
 \end{LTXexample}
 \medskip
 \begin{LTXexample}
   \begin{pspicture}(3,2)
-  \psset{beam}
-  \mirror[mirrortype=piezo](0,0)(1.8,1.5)(0,2){piezo}
+  \mirror[mirrortype=piezo,
+            beam](0,0)(1.8,1.5)(0,2){piezo}
 \end{pspicture}
 \end{LTXexample}
 
-\valitem{ExtendedMirror}{psstyle} This style defines the appearance of the extended mirror.
+\styleitem{ExtendedMirror} This style defines the appearance of the extended mirror.
 \begin{LTXexample}
 \begin{pspicture}(3,2)
-  \psset{beam}
   \newpsstyle{ExtendedMirror}{fillstyle=solid, 
                                 fillcolor=gray!50,
                                 linestyle=none}
-  \mirror[mirrortype=extended](0,0)(1.8,1.5)(0,2){ext}
+  \mirror[mirrortype=extended,
+            beam](0,0)(1.8,1.5)(0,2){ext}
 \end{pspicture}
 \end{LTXexample}
 
-\valitem{PiezoMirror}{psstyle} This style defines the appearance of the piezo
+\styleitem{PiezoMirror} This style defines the appearance of the piezo
 mirror. This can also be used to change the size of piezo part, as shown in the
 examples.
 \begin{LTXexample}
 \begin{pspicture}(3,2)
-  \psset{beam}
   \addtopsstyle{PiezoMirror}{xunit=2}
-  \mirror[mirrortype=piezo](0,0)(1.8,1.5)(0,2){piezo}
+  \mirror[mirrortype=piezo,
+            beam](0,0)(1.8,1.5)(0,2){piezo}
 \end{pspicture}
 \end{LTXexample}
 
 \boolitem[false]{variable}
 
-\valitem{VariableMirror}{psstyle} With the \opt{variable} option a moveable
+\styleitem{VariableMirror} With the \opt{variable} option a moveable
 mirror is drawn which has two additional curved arrows on both sides. The style
 of the arrows can be changed with the \opt{VariableMirror} style.
 \begin{LTXexample}
@@ -1048,11 +1030,11 @@ of the arrows can be changed with the \opt{VariableMirror} style.
 \end{pspicture}
 \end{LTXexample}
 
-\valitem[0.1]{mirrordepth}{num} Define the depth of an extended mirror
+\numitem[0.1]{mirrordepth} Define the depth of an extended mirror
 \begin{LTXexample}
 \begin{pspicture}(3,2)
-  \psset{mirrortype=extended, mirrordepth=0.2}
-  \mirror[beam](0,0)(1.8,1.5)(0,2){}
+  \mirror[mirrortype=extended, mirrordepth=0.2,
+            beam](0,0)(1.8,1.5)(0,2){}
 \end{pspicture}
 \end{LTXexample}
 \end{optionlist}
@@ -1061,17 +1043,17 @@ of the arrows can be changed with the \opt{VariableMirror} style.
 
 \begin{ltxsyntax}
 \tripoledesc{beamsplitter}
-\end{ltxsyntax}
-
-\begin{optionlist}
-\valitem[0.8]{bssize}{num}
 \begin{LTXexample}
 \begin{pspicture}(3,2)
   \beamsplitter[beam](0,1)(2,1)(2,0){BS}
 \end{pspicture}
 \end{LTXexample}
+\end{ltxsyntax}
 
-\optitem[cube]{bsstyle}{cube, plate} This parameter selects between different
+\begin{optionlist}
+\numitem[0.8]{bssize}
+
+\choitem[cube]{bsstyle}{cube, plate} This parameter selects between different
 types of beamsplitters. Note that although the \opt{plate} beamsplitter looks
 like a mirror it has a different behavior for beam drawing.
 \begin{LTXexample}
@@ -1085,46 +1067,45 @@ like a mirror it has a different behavior for beam drawing.
 
 \begin{ltxsyntax}
 \tripoledesc{optgrid}
-\end{ltxsyntax}
-\begin{optionlist}
-\valitem[1]{optgridwidth}{num} The width of the grating.
 \begin{LTXexample}
 \begin{pspicture}(3,2)
   \optgrid[beam](0,2)(1.8,1.5)(0,0){grid}
 \end{pspicture}
 \end{LTXexample}
+\end{ltxsyntax}
+\begin{optionlist}
+\numitem[1]{optgridwidth} The width of the grating.
 
-\valitem[0.15]{optgridheight}{num} This is the total height of the grating.
+\numitem[0.15]{optgridheight} This is the total height of the grating.
 
-\valitem[0.075]{optgriddepth}{num} This is the modulation depth of the grating structure. The total height is unaffected by this value.
+\numitem[0.075]{optgriddepth} This is the modulation depth of the grating structure. The total height is unaffected by this value.
 \begin{LTXexample}
 \begin{pspicture}(3,2)
-  \optgrid[beam, 
-             optgriddepth=0.05](0,2)(1.8,1.5)(0,0){grid}
+  \optgrid[optgriddepth=0.05, 
+             beam](0,2)(1.8,1.5)(0,0){grid}
 \end{pspicture}
 \end{LTXexample}
 
 \intitem[10]{optgridcount} The number of grating grooves.
 \begin{LTXexample}
 \begin{pspicture}(3,2)
-  \optgrid[beam, 
-             optgridcount=3](0,2)(1.8,1.5)(0,0){grid}
+  \optgrid[optgridcount=3, 
+             beam](0,2)(1.8,1.5)(0,0){grid}
 \end{pspicture}
 \end{LTXexample}
 
-\optitem[blazed]{optgridtype}{blazed, binary} Select between a \opt{binary} and a \opt{blazed} grating.
+\choitem[blazed]{optgridtype}{blazed, binary} Select between a \opt{binary} and a \opt{blazed} grating.
 \begin{LTXexample}
 \begin{pspicture}(3,2)
-  \optgrid[beam, 
-             optgridtype=binary](0,2)(1.8,1.5)(0,0){grid}
+  \optgrid[optgridtype=binary, 
+             beam](0,2)(1.8,1.5)(0,0){grid}
 \end{pspicture}
 \end{LTXexample}
 
 \boolitem[false]{reverse} Reverse the slope of the grooves of the \opt{blazed} grating.
 \begin{LTXexample}
 \begin{pspicture}(3,2)
-  \optgrid[beam, 
-             reverse](0,2)(1.8,1.5)(0,0){grid}
+  \optgrid[reverse, beam](0,2)(1.8,1.5)(0,0){grid}
 \end{pspicture}
 \end{LTXexample}
 
@@ -1138,22 +1119,21 @@ to globally change the linewidth of all \nxLcs{optgrid} objects.
 
 \begin{ltxsyntax}
 \tripoledesc{optprism}
-\end{ltxsyntax}
-
-The prism is always placed symmetric between \prm{In} and \prm{Out} nodes. For asymmetric beam traces see \prettyref{sec:connecting}.
-
-\begin{optionlist}
-\valitem[1]{prismsize}{num} This is the height of the prism.
 \begin{LTXexample}
-\begin{pspicture}(3,3)
-  \optprism[beam](0,2.5)(2,2)(3,0){Prism}
+\begin{pspicture}(3,2)
+  \optprism[beam](0,1)(2,1)(3,0){Prism}
 \end{pspicture}
 \end{LTXexample}
+\end{ltxsyntax}
+The prism is always placed symmetric between \prm{In} and \prm{Out} nodes. For
+asymmetric beam traces see \prettyref{sec:connecting}.
 
-\valitem[60]{prismangle}{num} 
+\begin{optionlist}
+\numitem[1]{prismsize} This is the height of the prism.
+\numitem[60]{prismangle}
 \begin{LTXexample}
-\begin{pspicture}(3,3)
-  \optprism[beam, prismangle=30](0,2.5)(2,2)(3,0){Prism}
+\begin{pspicture}(3,2)
+  \optprism[prismangle=30, beam](0,1)(2,1)(3,0){Prism}
 \end{pspicture}
 \end{LTXexample}
 \end{optionlist}
@@ -1162,47 +1142,40 @@ The prism is always placed symmetric between \prm{In} and \prm{Out} nodes. For a
 
 \begin{ltxsyntax}
 \tripoledesc{raprism}
-\end{ltxsyntax}
-
-The right-angle prisms is constructed such that the incoming and outcoming beam
-are parallel and the \prm{Center} node is vertically centered in the
-prism.
-
-\begin{optionlist}
-\valitem[1.5]{raprismsize}{num} This is the length of the input plane.
 \begin{LTXexample}
 \begin{pspicture}(3,2)
   \psdot(1.8,1)
   \rightangleprism[beam](0,1.5)(1.8,1)(0,0.5){RA}
 \end{pspicture}
 \end{LTXexample}
-
-\medskip In the next example the \prm{Center} node is displaced vertically:
-
-\medskip
-
+\end{ltxsyntax}
+The right-angle prisms is constructed such that the incoming and outcoming beam
+are parallel and the \prm{Center} node is vertically centered in the
+prism.
 \begin{LTXexample}
 \begin{pspicture}(3,2)
   \psdot(1.8,1.2)
   \rightangleprism[beam](0,1.5)(1.8,1.2)(0,0.5){RA}
 \end{pspicture}
 \end{LTXexample}
+
+\begin{optionlist}
+\numitem[1.5]{raprismsize} This is the length of the input plane.
 \end{optionlist}
 
 \subsection{Penta Prism}\label{sec:ppprism}
 
 \begin{ltxsyntax}
 \tripoledesc{pentaprism}
-\end{ltxsyntax}
-
-\begin{optionlist}
-  \valitem[0.7]{pentaprismsize}{num} This is the length of the input and output plane.
 \begin{LTXexample}
 \begin{pspicture}(3,2)
   \pentaprism[beam](0,1)(2,1)(2,0){PP}
 \end{pspicture}
 \end{LTXexample}
+\end{ltxsyntax}
 
+\begin{optionlist}
+  \numitem[0.7]{pentaprismsize} This is the length of the input and output plane.
 \end{optionlist}
 
 \subsection{Custom Components}\label{sec:custom}
@@ -1250,7 +1223,6 @@ it as a new component. For details on how to define your own components see
 \end{LTXexample}
 \end{ltxsyntax}
 
-
 \begin{optionlist}
 \intitem[3]{fiberloops} 
 \begin{LTXexample}
@@ -1260,7 +1232,7 @@ it as a new component. For details on how to define your own components see
 \end{pspicture}
 \end{LTXexample}
 
-\valitem[0.4]{fiberloopradius}{num}
+\numitem[0.4]{fiberloopradius}
 \begin{LTXexample}
 \begin{pspicture}(3,1.5)
   \psset{labeloffset=0.3}
@@ -1268,7 +1240,7 @@ it as a new component. For details on how to define your own components see
 \end{pspicture}
 \end{LTXexample}
 
-\valitem[0.3]{fiberloopsep}{num}
+\numitem[0.3]{fiberloopsep}
 \begin{LTXexample}
 \begin{pspicture}(3,1.5)
   \psset{labeloffset=0.3}
@@ -1281,48 +1253,48 @@ it as a new component. For details on how to define your own components see
 
 \begin{ltxsyntax}
 \fiberdipoledesc{optamp}
-\end{ltxsyntax}
-
-\begin{optionlist}
-\valitem[0.8]{optampsize}{num} The length of all triangle sides.
 \begin{LTXexample}
 \begin{pspicture}(3,1.5)
   \optamp(0,1)(3,1){EDFA}
 \end{pspicture}
 \end{LTXexample}
+\end{ltxsyntax}
+
+\begin{optionlist}
+\numitem[0.8]{optampsize} The length of all triangle sides.
 \end{optionlist}
 
 \subsection{Mach-Zehnder Modulator}
 
 \begin{ltxsyntax}
 \fiberdipoledesc{optmzm}
-\end{ltxsyntax}
-
-\begin{optionlist}
-\valitem[0.8]{optmzmsize}{num} This is the height of the component, the width
-is \opt{1.6} times the height. Use the \opt{unit} parameter to change this
-relation.
 \begin{LTXexample}
 \begin{pspicture}(3,1.5)
   \optmzm(0,1)(3,1){MZM}
 \end{pspicture}
 \end{LTXexample}
+\end{ltxsyntax}
+
+\begin{optionlist}
+\numitem[0.8]{optmzmsize} This is the height of the component, the width
+is \opt{1.6} times the height. Use the \opt{unit} parameter to change this
+relation.
 \end{optionlist}
 
 \subsection{Filter}
 
 \begin{ltxsyntax}
 \fiberdipoledesc{optfilter}
-\end{ltxsyntax}
-
-\begin{optionlist}
-\valitem[0.8]{filtersize}{num}
-\optitem[bandpass]{filtertype}{bandpass, bandstop, lowpass, highpass}
 \begin{LTXexample}
 \begin{pspicture}(3,1.5)
   \optfilter(0,1)(3,1){bandpass}
 \end{pspicture}
 \end{LTXexample}
+\end{ltxsyntax}
+
+\begin{optionlist}
+\numitem[0.8]{filtersize}
+\choitem[bandpass]{filtertype}{bandpass, bandstop, lowpass, highpass}
 \begin{LTXexample}
 \begin{pspicture}(3,1.5)
   \optfilter[filtertype=bandstop](0,1)(3,1){bandstop}
@@ -1344,36 +1316,38 @@ relation.
 
 \begin{ltxsyntax}
 \fiberdipoledesc{polcontrol}
-\end{ltxsyntax}
-
-\begin{optionlist}
-\valitem[0.15]{polcontrolsize}{num} The radius of the polarization controller circles.
 \begin{LTXexample}
 \begin{pspicture}(3,1.5)
   \polcontrol(0,1)(3,1){PC}
 \end{pspicture}
 \end{LTXexample}
+\end{ltxsyntax}
+
+\begin{optionlist}
+\numitem[0.15]{polcontrolsize} The radius of the polarization controller circles.
 \end{optionlist}
 
 \subsection{Isolator}
 
 \begin{ltxsyntax}
 \fiberdipoledesc{optisolator}
-\end{ltxsyntax}
-
-\begin{optionlist}
-\valitem[0.6]{isolatorsize}{num} The height of the isolator. The width is \opt{1.6} times this value. Use the \opt{unit} parameter to change this relation
 \begin{LTXexample}
 \begin{pspicture}(3,1.5)
   \optisolator(0,1)(3,1){isolator}
 \end{pspicture}
 \end{LTXexample}
+\end{ltxsyntax}
 
-\valitem{IsolatorArrow}{psstyle} This changes the appearance of the isolator
+\begin{optionlist}
+  \numitem[0.6]{isolatorsize} The height of the isolator. The width is \opt{1.6}
+  times this value. Use the \opt{unit} parameter to change this relation.
+
+\styleitem{IsolatorArrow} This changes the appearance of the isolator
 arrow. This can be especially useful to adapt the length of the arrow.
 \begin{LTXexample}
 \begin{pspicture}(3,1.5)
-  \addtopsstyle{IsolatorArrow}{xunit=1.2}
+  \addtopsstyle{IsolatorArrow}{xunit=1.2, 
+                                 arrowinset=0.1}
   \optisolator(0,1)(3,1){isolator}
 \end{pspicture}
 \end{LTXexample}
@@ -1383,17 +1357,17 @@ arrow. This can be especially useful to adapt the length of the arrow.
 
 \begin{ltxsyntax}
 \fiberdipoledesc{optswitch}
-\end{ltxsyntax}
-
-\begin{optionlist}
-\valitem[0.8]{switchsize}{num}
 \begin{LTXexample}
 \begin{pspicture}(3,1.5)
   \optswitch(0,1)(3,1){Opened switch}
 \end{pspicture}
 \end{LTXexample}
+\end{ltxsyntax}
 
-\valitem[opened]{switchstyle}{opened, closed} Indicate the switch as \opt{opened} or \opt{closed}
+\begin{optionlist}
+\numitem[0.8]{switchsize}
+
+\choitem[opened]{switchstyle}{opened, closed} Indicate the switch as \opt{opened} or \opt{closed}
 \begin{LTXexample}
 \begin{pspicture}(3,1.5)
   \optswitch[switchstyle=closed](0,1)(3,1){Closed switch}
@@ -1405,17 +1379,16 @@ arrow. This can be especially useful to adapt the length of the arrow.
 
 \begin{ltxsyntax}
 \fiberdipoledesc{fiberdelayline}
-\end{ltxsyntax}
-
-\begin{optionlist}
-  \valitem[0.6]{fdlsize}{num}
 \begin{LTXexample}
 \begin{pspicture}](3,1.5)
   \fiberdelayline(0,1)(3,1){Delay line}
 \end{pspicture}
 \end{LTXexample}
+\end{ltxsyntax}
 
-\valitem{FdlArrow}{psstyle} This changes the appearance of the delay line arrow
+\begin{optionlist}
+\numitem[0.6]{fdlsize}
+\styleitem{FdlArrow} This changes the appearance of the delay line arrow
 and of the arrow type. This can be especially useful to adapt the length of the
 arrow which may not be appropriate depending on the \opt{fdlsize} or to reverse
 the arrow.
@@ -1432,40 +1405,31 @@ the arrow.
 
 \begin{ltxsyntax}
 \fiberdipoledesc{optfiberpolarizer}
-\end{ltxsyntax}
-
-\begin{optionlist}
-  \valitem[0.6]{fiberpolsize}{num}
 \begin{LTXexample}
 \begin{pspicture}(3,1.5)
   \optfiberpolarizer(0,1)(3,1){polarizer}
 \end{pspicture}
 \end{LTXexample}
+\end{ltxsyntax}
+
+\begin{optionlist}
+  \numitem[0.6]{fiberpolsize}
 \end{optionlist}
 
 \subsection{Fiber Collimator}
 
 \begin{ltxsyntax}
 \xLcs{fibercollimator}\cmditem{fibercollimator}(In)(A)(B)(Out){Label}%
-\end{ltxsyntax}
-\begin{optionlist}
-\valitem[0.3]{fibercolsize}{num} The length of every side.
-\end{optionlist}
-
-The \nxLcs{fibercollimator} can be used with two, three or four points. With two points, the collimator is placed like any other dipole component between \prm{In} and \prm{Out} node:
-
-\medskip
-
 \begin{LTXexample}
 \begin{pspicture}(3,1.5)
-  \psset{labeloffset=0.4}
-  \fibercollimator[beam](0.5,1)(2.5,1){FC}
+  \fibercollimator[beam](0,1)(3,1){FC}
 \end{pspicture}
 \end{LTXexample}
-
-\medskip
-
-For three nodes, the fiber is drawn as \Lcs{psbezier} curve for which the
+\end{ltxsyntax}
+\begin{optionlist}
+\numitem[0.3]{fibercolsize}
+\end{optionlist}
+The \nxLcs{fibercollimator} can be used with two, three or four points. With two points, the collimator is placed like any other dipole component between \prm{In} and \prm{Out} node. For three nodes, the fiber is drawn as \Lcs{psbezier} curve for which the
 central node \prm{A} is used twice. Positioning parameters can be used to
 shift the object between \prm{In} and \prm{A} nodes.
 
@@ -1486,75 +1450,136 @@ shift the object between \prm{In} and \prm{A} nodes.
 
 \begin{LTXexample}
 \begin{pspicture}(3,2)
-   \fibercollimator[position=0.2,
-                      beam](0.5,1)(2.5,1)(2.5,2)(0.5,2){FC}
+   \fibercollimator[beam](0,1)(2,1)(3,1)(3,2){FC}
 \end{pspicture}
 \end{LTXexample}
 
 \medskip
 
 \subsection{Coupler}\label{sec:coupler}
-\begin{optionlist}
-\valitem[0.2]{couplersize}{num}
-\valitem[0.1]{couplersep}{num}
-\optitem[elliptic]{couplertype}{none, elliptic, rectangular, crossswitch}
-\optitem[center]{align}{top, bottom, center}
-\end{optionlist}
 \subsubsection{\texorpdfstring{$2\times 2$}{2x2} Coupler}
-
-\medskip 
-
-\begin{LTXexample}[width=3.5cm]
-\begin{pspicture}[showgrid=true](3,2)
-  \optcoupler(0.5,2)(0,0.5)(3,1.5)(2.5,0){Coupler}
+\begin{ltxsyntax}
+\xLfmultipole{optcoupler}\cmditem{optcoupler}(LeftTop)(LeftBottom)(RightTop)(RightBottom){Label}%
+\begin{LTXexample}
+\begin{pspicture}(3,1.5)
+  \optcoupler(0,1.5)(0,0.5)(3,1.5)(3,0.5){Coupler}
+\end{pspicture}
+\end{LTXexample}
+\end{ltxsyntax}
+\begin{optionlist}
+\numitem[0.2]{couplersize}
+\numitem[0.1]{couplersep} The vertical distance between two fiber ports.
+\begin{LTXexample}
+\begin{pspicture}(3,1.5)
+  \optcoupler[couplersep=0]%
+               (0,1.5)(0,0.5)(3,1.5)(3,0.5){Coupler}
 \end{pspicture}
 \end{LTXexample}
 
-\bigskip
-
-\begin{LTXexample}[width=3.5cm]
-\begin{pspicture}[showgrid=true](3,2)
-  \optcoupler[align=top](0.5,2)(0,0.5)(3,1.5)(2.5,0){Coupler}
+\choitem[elliptic]{couplertype}{none, elliptic, rectangular, crossswitch}
+\begin{LTXexample}
+\begin{pspicture}(3,4.5)
+  \psset{labeloffset=0.5}
+  \optcoupler[couplertype=none]%
+                (0,4.5)(0,3.5)(3,4.5)(3,3.5){Coupler}
+  \optcoupler[couplertype=rectangular]%
+               (0,3)(0,2)(3,3)(3,2){Coupler}
+  \optcoupler[couplertype=crossswitch]%
+               (0,1.5)(0,0.5)(3,1.5)(3,0.5){Coupler}
 \end{pspicture}
 \end{LTXexample}
 
-\bigskip
-
-\begin{LTXexample}[width=3.5cm]
-\begin{pspicture}[showgrid=true](3,2)
-  \optcoupler[align=bottom, couplertype=none](0.5,2)(0,0.5)(3,1.5)(2.5,0){Coupler}
+\choitem[center]{align}{top, bottom, center}
+\begin{LTXexample}
+\begin{pspicture}(3,3)
+  \psset{labeloffset=0.4}
+  \optcoupler[align=top]%
+               (0,3)(0,2)(3,3)(3,2){Top}
+  \optcoupler[align=bottom]
+               (0,1.5)(0,0.5)(3,1.5)(3,0.5){Bottom}
 \end{pspicture}
 \end{LTXexample}
-
-\begin{LTXexample}[width=3.5cm]
-\begin{pspicture}[showgrid=true](3,2)
-  \optcoupler[align=bottom, couplertype=rectangular](0.5,2)(0,0.5)(3,1.5)(2.5,0){Coupler}
-\end{pspicture}
-\end{LTXexample}
-
-\medskip
+\end{optionlist}
 
 \subsubsection{WDM Coupler}
+\begin{ltxsyntax}
+\xLfmultipole{wdmcoupler}\cmditem{wdmcoupler}(LeftTop)(LeftBottom)(Right){Label}%
+\begin{LTXexample}
+\begin{pspicture}(3,1.5)
+  \wdmcoupler(0,1.5)(0,0.5)(3,1){WDM}
+\end{pspicture}
+\end{LTXexample}
+\end{ltxsyntax}
 
-\medskip
-
-\begin{LTXexample}[width=3.5cm]
-\begin{pspicture}[showgrid=true](3,2)
-  \wdmcoupler[labeloffset=0.5](0,1.5)(0,0.5)(3,1){WDM}
+\begin{optionlist}
+\numitem[0.2]{couplersize}
+\numitem[0.1]{couplersep} The vertical distance between the two input fiber ports.
+\begin{LTXexample}
+\begin{pspicture}(3,1.5)
+  \wdmcoupler[couplersep=0](0,1.5)(0,0.5)(3,1){WDM}
 \end{pspicture}
 \end{LTXexample}
 
-\medskip
+\choitem[elliptic]{couplertype}{none, elliptic, rectangular}
+\begin{LTXexample}
+\begin{pspicture}(3,3)
+  \psset{labeloffset=0.5}
+  \wdmcoupler[couplertype=none](0,3)(0,2)(3,2.5){WDM}
+  \wdmcoupler[couplertype=rectangular]%
+               (0,1.5)(0,0.5)(3,1){WDM}
+\end{pspicture}
+\end{LTXexample}
+
+\choitem[center]{align}{top, bottom, center}
+\begin{LTXexample}
+\begin{pspicture}(3,3)
+  \psset{labeloffset=0.4}
+  \wdmcoupler[align=top,
+                couplertype=none](0,3)(0,2)(3,3){Top}
+  \wdmcoupler[align=bottom]
+               (0,1.5)(0,0.5)(3,0.5){Bottom}
+\end{pspicture}
+\end{LTXexample}
+\end{optionlist}
 
 \subsubsection{WDM Splitter}
-\begin{LTXexample}[width=3.5cm]
-\begin{pspicture}[showgrid=true](3,2)
-  \newpsstyle{FiberOut2}{style=Fiber, arrows=->}
-  \wdmsplitter[align=top, labeloffset=0.5](0,1.5)(3,1.5)(3,0.5){}
+\begin{ltxsyntax}
+\xLfmultipole{wdmcoupler}\cmditem{wdmsplitter}(Left)(RightTop)(RightBottom){Label}%
+\begin{LTXexample}
+\begin{pspicture}(3,1.5)
+  \wdmsplitter(0,1)(3,1.5)(3,0.5){WDM}
+\end{pspicture}
+\end{LTXexample}
+\end{ltxsyntax}
+\begin{optionlist}
+\numitem[0.2]{couplersize}
+\numitem[0.1]{couplersep} The vertical distance between the two output fiber ports.
+\begin{LTXexample}
+\begin{pspicture}(3,1.5)
+  \wdmsplitter[couplersep=0](0,1)(3,1.5)(3,0.5){WDM}
 \end{pspicture}
 \end{LTXexample}
 
-\medskip
+\choitem[elliptic]{couplertype}{none, elliptic, rectangular}
+\begin{LTXexample}
+\begin{pspicture}(3,3)
+  \psset{labeloffset=0.5}
+  \wdmsplitter[couplertype=none](0,2.5)(3,3)(3,2){WDM}
+  \wdmsplitter[couplertype=rectangular]%
+                 (0,1)(3,1.5)(3,0.5){Coupler}
+\end{pspicture}
+\end{LTXexample}
+
+\choitem[center]{align}{top, bottom, center}
+\begin{LTXexample}
+\begin{pspicture}(3,3)
+  \psset{labeloffset=0.4}
+  \wdmsplitter[align=top,
+                 couplertype=none](0,3)(3,3)(3,2){Top}
+  \wdmsplitter[align=bottom](0,0.5)(3,1.5)(3,0.5){Bottom}
+\end{pspicture}
+\end{LTXexample}
+\end{optionlist}
 
 \subsection{Fiber Styles}\label{sec:fiberstyles}
 
@@ -1562,10 +1587,9 @@ The appearence of the fiber parts before and after each object can be changed
 with several styles (see \ref{sec:styles}). On the left side of the components
 are the input connections and on the right side the output connections.
 
-\begin{fieldlist}
+\begin{optionlist}
 
-\styleitem{Fiber}{}
-
+\styleitem{Fiber}
 This is the basic style from which every other fiber style inherits.
 
 \begin{LTXexample}
@@ -1575,8 +1599,7 @@ This is the basic style from which every other fiber style inherits.
 \end{pspicture}
 \end{LTXexample}
 
-\styleitem{FiberIn}{style=Fiber}
-
+\styleitem[style=Fiber]{FiberIn}
 Controls the fibres on the left side of the component. Inherits from \nxLstyle{Fiber}.
 
 \begin{LTXexample}
@@ -1586,9 +1609,8 @@ Controls the fibres on the left side of the component. Inherits from \nxLstyle{F
 \end{pspicture}
 \end{LTXexample}
 
-\styleitem{FiberIn1}{style=FiberIn}
-\styleitem{FiberIn2}{style=FiberIn}
-
+\styleitem[style=FiberIn]{FiberIn1}
+\styleitem[style=FiberIn]{FiberIn2}
 If the component has two input fibers, \nxLstyle{FiberIn1} sets the style of the
 upper one and \nxLstyle{FiberIn2} the style of the lower fiber. Otherwise these
 styles are ignored.
@@ -1601,11 +1623,10 @@ styles are ignored.
 \end{pspicture}
 \end{LTXexample}
 
-\styleitem{FiberOut}{style=Fiber}
-\styleitem{FiberOut1}{style=FiberOut}
-\styleitem{FiberOut2}{style=FiberOut}
-
-\end{fieldlist}
+\styleitem[style=Fiber]{FiberOut}
+\styleitem[style=FiberOut]{FiberOut1}
+\styleitem[style=FiberOut]{FiberOut2}
+\end{optionlist}
 
 \medskip
 
@@ -1769,15 +1790,12 @@ objects and connects the two nearest
 \end{pspicture}
 \end{LTXexample}
 
-\begin{fieldlist}
+\begin{optionlist}
 
-\choiceitem{startpos}{\prm{num} [\prm{num}]}{0}
-
+\optitem[0]{startpos}{\prm{num} [\prm{num}]}
 This is the start position of the beam at the first interface. Can be
 any code which evaluates in Postscript to one or two numbers. If is only
 one number then the $x$-coordinate is set to \texttt{0}.
-
-\medskip
 
 \begin{LTXexample}
 \begin{pspicture}(5,5)
@@ -1794,8 +1812,11 @@ one number then the $x$-coordinate is set to \texttt{0}.
 \end{pspicture}
 \end{LTXexample}
 
-\choiceitem{startvec}{\prm{num} [\prm{num}]}{1} This is the start vector of the beam.
-\medskip
+\optitem[1]{startvec}{\prm{X} [\prm{Y}]} This is the start vector (\prm{X},
+\prm{Y}) of the beam. \prm{X} and \prm{Y} can be anything which evaluates to a
+number in Postscript. If only one value is given, \prm{X} is set to \opt{0}. The
+\nxLkeyword{startvec} is relative to the connection between the first two
+components, use \Lkeyword{startvecabs} to change this. 
 
 \begin{LTXexample}
 \begin{pspicture}(5,5)
@@ -1814,32 +1835,32 @@ one number then the $x$-coordinate is set to \texttt{0}.
 
 \medskip
 
-\fielditem{startvecabs}{boolean}{false}
+\boolitem[false]{startvecabs}
 
-\fielditem{connectplanes}{boolean}{false}
+\boolitem[false]{connectplanes}
 
-\fielditem{n}{num}{1.5}
+\numitem[1.5]{n}
 
-\fielditem{beaminside}{boolean}{false}
+\boolitem[false]{beaminside}
 
-\fielditem{beaminsidelast}{boolean}{false}
+\boolitem[false]{beaminsidelast}
 
-\fielditem{beaminsidefirst}{boolean}{false}
-\end{fieldlist}
+\boolitem[false]{beaminsidefirst}
+\end{optionlist}
 
 \subsection{Drawing wide beams}\label{sec:drawwidebeam}
 
-\begin{fieldlist}
-\fielditem{beamwidth}{num}{0.1}
+\begin{optionlist}
+\numitem[0.1]{beamwidth}
 
-\fielditem{beamdiv}{num}{0}
-\end{fieldlist}
+\numitem[0]{beamdiv}
+\end{optionlist}
 
 \subsection{Drawing fibers}\label{sec:drawfiber}
 
-\begin{description}
-\paramitem{usefiberstyle}{<boolean>}{false}
-\end{description}
+\begin{optionlist}
+\boolitem{usefiberstyle}
+\end{optionlist}
 
 Fiber-optical objects are automatically connected to the reference
 nodes. The style of all fiber connections can be configured
@@ -1879,11 +1900,11 @@ which would be highlighted.
   \xLcs{custombeam}\cmditem{custombeam}[Options]{\nxLcs{draw*beam}}
 \end{ltxsyntax}
 
-\begin{fieldlist}
-\fielditem{startinside}{boolean}{false}
+\begin{optionlist}
+\boolitem[false]{startinside}
 
-\fielditem{stopinside}{boolean}{false}
-\end{fieldlist}
+\boolitem[false]{stopinside}
+\end{optionlist}
 % \begin{description}
 % \paramitem{conn}{<conn definition>}{-}
 % \item[\param{fiber}:] alias for \Lkeyword{conn=f-f}

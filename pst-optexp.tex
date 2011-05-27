@@ -506,12 +506,9 @@
 \define@key[psset]{optexp}{b@sicname}{\edef\psk@oe@b@sicname{\pst@str@basicname@prefix#1}}%
 %
 % List with all component names define until now. Is kept for a single pspicture environment
-\def\Pst@oe@complist{}%
+\gdef\pst@oe@complist{}%
 \g@addto@macro{\endpspicture}{%
-  \@for\x:={\Pst@oe@complist}\do{%
-    \pst@OptexpVerb{[ (\x) false GetInternalNodeNames counttomark { cvn tx@NodeDict exch undef } repeat pop }%
-  }%
-  \gdef\Pst@oe@complist{}\global\poe@cnt 0\relax
+  \gdef\pst@oe@complist{}\global\poe@cnt=0\relax
 }%
 %
 % Set the component name. If the parameter is empty, a generated name is used.
@@ -538,17 +535,15 @@
     \fi
     \psset{extnoden@me=#1}%
   \fi
-  \ifPst@oe@bglayer
-    % check if compname was already defined
-    \@expandtwoargs\in@{,\psk@oe@compname,}{,\Pst@oe@complist,}%
-    \ifin@
-      \PackageWarning{pst-optexp}%
-           {^^Jcompname '\psk@oe@compname' already used. Previously defined nodes will be overwritten!^^J}%
-    \else
-      % Use definition of \XKV@addtolist@x with an \xdef instead of \edef in order
-      % to keep the bookkeeping global
-      \xdef\Pst@oe@complist{\psk@oe@compname\ifx\Pst@oe@complist\@empty\else,\fi\Pst@oe@complist}%
-    \fi
+  % check if compname was already defined
+  \@expandtwoargs\in@{,\psk@oe@compname,}{,\pst@oe@complist,}%
+  \ifin@
+    \PackageWarning{pst-optexp}%
+         {^^Jcompname '\psk@oe@compname' already used. Previously defined nodes will be overwritten!^^J}%
+  \else
+    % Use definition of \XKV@addtolist@x with an \xdef instead of \edef in order
+    % to keep the bookkeeping global
+    \xdef\pst@oe@complist{\psk@oe@compname\ifx\pst@oe@complist\@empty\else,\fi\pst@oe@complist}%
   \fi
 }%
 %
@@ -946,25 +941,25 @@
 %
 \def\pst@optexp@check@compname#1{%
    % check if 'compname' is defined
-   \@expandtwoargs\in@{,#1,}{,\Pst@oe@complist,}%
+   \@expandtwoargs\in@{,#1,}{,\pst@oe@complist,}%
    \ifin@\else
       \PackageError{pst-optexp}{^^Jcompname '#1' undefined!^^J}
    \fi
 }%
 %
 %
-\def\optexp@nodeIn{\psk@oe@b@sicname 1}%
-\def\optexp@nodeOut{\psk@oe@b@sicname N}%
-\def\optexp@refnodeA{\psk@oe@b@sicname A}%
-\def\optexp@refnodeB{\psk@oe@b@sicname B}%
-\def\optexp@nodeLabel{\psk@oe@b@sicname Label}%
-\def\optexp@nodeLabelShifted{\psk@oe@b@sicname LabelShifted}%
-\def\optexp@node#1{\psk@oe@b@sicname #1}%
+%\def\optexp@nodeIn{\psk@oe@b@sicname 1}%
+%\def\optexp@nodeOut{\psk@oe@b@sicname N}%
+%\def\optexp@refnodeA{\psk@oe@b@sicname A}%
+%\def\optexp@refnodeB{\psk@oe@b@sicname B}%
+%\def\optexp@nodeLabel{\psk@oe@b@sicname Label}%
+%\def\optexp@nodeLabelShifted{\psk@oe@b@sicname LabelShifted}%
+%\def\optexp@node#1{\psk@oe@b@sicname #1}%
 %
 %
 %
 \def\getLastCompname@ii#1,#2,#3\@nil{#1}%
-\def\getLastCompname@i{\pst@str@basicname@prefix\expandafter\getLastCompname@ii \Pst@oe@complist,\relax,\@nil}%
+\def\getLastCompname@i{\pst@str@basicname@prefix\expandafter\getLastCompname@ii \pst@oe@complist,\relax,\@nil}%
 \def\oenode#1#2{%
   \ifx.#1.%
     \getLastCompname@i
@@ -982,6 +977,7 @@
 \def\oenodeout#1{\oenode{#1}{N}}%
 \def\oenoderefa#1{\oenode{#1}{A}}%
 \def\oenoderefb#1{\oenode{#1}{B}}%
+\def\oenodecenter#1{\oenode{#1}{Center}}%
 \def\oenodelabel#1{\oenode{#1}{Label}}%
 %
 \def\newOptexpComp{\@ifnextchar[{\newOptexpComp@i}{\newOptexpComp@i[]}}%
@@ -1238,7 +1234,7 @@
 \def\dipole@iimacro#1{%
   \@namedef{#1@ii}{%
     \ifPst@oe@bglayer
-      \pnode(0,0){\optexp@nodeLabel}%
+      \pnode(0,0){\oenodecenter{}}%
     \fi
     \@ifundefined{#1@iii}{%
       \ifPst@oe@bglayer
@@ -1257,7 +1253,7 @@
 \def\tripole@iimacro#1{%
   \@namedef{#1@ii}{%
     \ifPst@oe@bglayer
-      \pnode(0,0){\optexp@nodeLabel}%
+      \pnode(0,0){\oenodecenter{}}%
     \fi
     \@ifundefined{#1@iii}{%
       \ifPst@oe@bglayer
@@ -1443,7 +1439,7 @@
 %
 \def\put@RelLabel#1{%
    \nput[labelsep=0]{\psk@oe@labelangle}%
-        {\optexp@nodeLabelShifted}%
+        {\oenodelabel{}}%
         {\rput[\psk@oe@labelalign](0,0){\psk@oe@labelstyle #1}}%
 }%
 %
@@ -1453,8 +1449,8 @@
    \rput(\psk@oe@comp@Xshift,\psk@oe@comp@Yshift){%
       #1%
       \pst@defShiftedRotLabelNode(0,\psk@oe@labeloffset)%
-                           {\optexp@nodeLabel}%
-                           {\optexp@nodeLabelShifted}%
+                           {\oenodecenter{}}%
+                           {\oenodelabel{}}%
                            {\psk@oe@labelangle}%
    }%
 }%
@@ -1480,13 +1476,13 @@
       % global
       \nput[labelsep=\psk@oe@labeloffset]%
            {\psk@oe@labelangle}%
-           {\optexp@nodeLabel}%
+           {\oenodecenter{}}%
            {\rput[\psk@oe@labelalign](0,0){\psk@oe@labelstyle #1}}%
       %
    \else\ifx\psk@oe@labelref\pst@str@labelref@relgrav
       %
       % relgrav
-      \rput[\psk@oe@labelalign](\optexp@nodeLabelShifted){\psk@oe@labelstyle #1}%
+      \rput[\psk@oe@labelalign](\oenodelabel{}){\psk@oe@labelstyle #1}%
       %
    \else\ifx\psk@oe@labelref\pst@str@labelref@relative
       %
@@ -1569,7 +1565,7 @@
       \fi
       \pst@draw@component{#4}{%
         \ifPst@oe@bglayer
-          \pnode(0,0){\optexp@nodeLabel}%
+          \pnode(0,0){\oenodecenter{}}%
           \newOptexpComp{{ 0 0 } { 0 1 } trans {NewPlaneInt} 1 }%
         \fi
         \ifPst@oe@toplayer
@@ -1586,9 +1582,7 @@
    \begin@OptexpMultipole
       \pst@calcNodes{#1}{#2}{#3}
       \pst@draw@component{#5}{%
-         \pnode(0,0){\optexp@nodeLabel}% 
-%         \pnode(0,0){\optexp@nodeIn}% 
-%         \pnode(0,0){\optexp@nodeOut}% 
+         \pnode(0,0){\oenodecenter{}}% 
          \newOptexpComp{{ 0 0 } { 1 0 } refl {NewPlaneInt} 1 }%
          #4
       }%
@@ -1636,7 +1630,7 @@
     \pst@regNodes{\pst@tempA}{\pst@tempB}%
     \pst@adjustTempNodes
     \pst@draw@component{#1}{%
-       \pnode(0,0){\optexp@nodeLabel}%
+       \pnode(0,0){\oenodecenter{}}%
        \ifPst@oe@bglayer
          \fibercollimator@nodes
        \fi
@@ -1660,9 +1654,9 @@
             \drawfiber{\psk@oe@compname}{(\oenoderefb{})}
           \fi
         \else\ifx\@empty\pst@tempD
-          \psbezier[style=FiberOut](\pst@tempC)(\pst@tempB)(\pst@tempB)(\optexp@nodeOut)%
+          \psbezier[style=FiberOut](\pst@tempC)(\pst@tempB)(\pst@tempB)(\oenodeout{})%
         \else
-          \psbezier[style=FiberOut](\pst@tempD)(\pst@tempC)(\pst@tempB)(\optexp@nodeOut)%
+          \psbezier[style=FiberOut](\pst@tempD)(\pst@tempC)(\pst@tempB)(\oenodeout{})%
         \fi\fi
       \fi
     \fi
@@ -1782,6 +1776,7 @@
         ,fiberpolsize=0.6
         ,couplersize=0.2
         ,couplersep=0.05
+        ,align=center
         ,coupleroutshift=0
         ,couplertype=elliptic
         ,switchsize=0.8
@@ -1804,7 +1799,6 @@
 % The first parameter contains the label, the second one the drawing code
 \def\pst@draw@component#1#2{%
     %
-%    \message{^^J\psk@oe@compname^^J}
     \def\@@comp{%
        #2%
        \ifx\psk@oe@extnode\@empty\else
@@ -1857,8 +1851,8 @@
     % Show some special dots for debugging
     \ifPst@oe@debug@showoptdots
       \ifPst@oe@bglayer
-          \psdot[linecolor=red](\optexp@nodeLabel)
-          \psdot[linecolor=red](\optexp@nodeLabelShifted)
+          \psdot[linecolor=red](\oenodecenter{})
+          \psdot[linecolor=red](\oenodelabel{})
           \psdot[linecolor=black](\oenoderefa{})
           \psdot[linecolor=black](\oenoderefb{})
       \fi
@@ -2304,13 +2298,13 @@
     \psrotate(! \@wd \@wd \psk@oe@rotate@xref\space mul add
                 0 \@ht \psk@oe@rotate@yref\space mul add){\psk@oe@angle}{%
       \newOptexpComp{{ 0 0 } { 0 1 } trans {NewPlaneInt} { \@wd 2 mul 0 } { 0 1 } trans {NewPlaneInt} \psk@oe@n }%
-      \pnode(! \@wd 0){\optexp@nodeLabel}%
+      \pnode(! \@wd 0){\oenodecenter{}}%
     }%
   \else
     \psrotate(! \@wd \psk@oe@rotate@xref\space mul
                 \@ht \psk@oe@rotate@yref\space mul){\psk@oe@angle}{%
       \newOptexpComp{{ \@wd neg 0 } { 0 1 } trans {NewPlaneInt} { \@wd 0 } { 0 1 } trans {NewPlaneInt} \psk@oe@n }%
-      \pnode(0, 0){\optexp@nodeLabel}%   
+      \pnode(0, 0){\oenodecenter{}}%   
     }%
   \fi
 }%
@@ -2339,8 +2333,8 @@
 %            \ifx\psk@oe@optbox@n\@empty 0 \else
 %               \psk@oe@angle\space sin neg dup dup mul neg \psk@oe@optbox@n\space dup mul add sqrt div 2 @@x mul mul
 %            \fi
-%         ){\optexp@nodeOut}   
-%         \pnode(0,0){\optexp@nodeLabel}
+%         ){\oenodeout{}}   
+%         \pnode(0,0){\oenodecenter{}}
          \psframe[dimen=outer](! @@x neg @@y neg)(! @@x @@y)
       }%
    \fi
@@ -2374,15 +2368,15 @@
 \def\optdetector@nodes{%
   \newOptexpComp{{ 0 0} { 0 1 } refl {NewPlaneInt} 1 }%
   \ifx\psk@oe@dettype\pst@str@dettype@round
-    \pnode(! \psk@oe@detsize\space 0.2 mul 0){\optexp@nodeLabel}%
+    \pnode(! \psk@oe@detsize\space 0.2 mul 0){\oenodecenter{}}%
     \pst@Verb{/@@x0 \psk@oe@detsize\space 0.5 mul def}%
   \else\ifx\psk@oe@dettype@diode
-    \pnode(! \psk@oe@detsize\space 0.5 mul 0){\optexp@nodeLabel}
+    \pnode(! \psk@oe@detsize\space 0.5 mul 0){\oenodecenter{}}
     \pst@Verb{\psk@oe@detsize\space 0.5 mul dup dup /@@x0 ED /@@x ED /@@y ED}%
   \fi\fi
 }%
 \def\optdetector@comp{%
-   \pnode(\oenoderefb{}){\optexp@nodeIn}
+   \pnode(\oenoderefb{}){\oenodein{}}
    \ifx\psk@oe@dettype\pst@str@dettype@round
       \begin@ClosedObj
          % I could have use pswedge but then a correction of the component size
@@ -2433,8 +2427,6 @@
              (! \@sz -0.2 mul \@sz 0.2 mul)
              (! \@sz 0.2 mul 0)
    \psline(! \@sz 0.2 mul \getCLWH add \@sz 0.2 mul)(! \@sz 0.2 mul \getCLWH add \@sz -0.2 mul)
-%   \pnode(! \@sz -0.5 mul 0){\optexp@nodeIn}
-%   \pnode(! \@sz 0.5 mul 0){\optexp@nodeOut}
 \ignorespaces}%
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -2448,9 +2440,6 @@
              (! \@wd \@ht neg)%
              (! \@ht dup)%
              (! \@ht neg \@ht)%
-%   \pnode(!\@wd \@ht add -0.5 mul 0){\optexp@nodeIn}
-%   \pnode(! 0 \@ht neg){\optexp@node{2}}
-%   \pnode(!\@wd \@ht add 0.5 mul 0){\optexp@nodeOut}
 \ignorespaces}%
 \def\doveprism@nodes{%
   \newOptexpComp{ {\psk@oe@doveprismsize\space neg 0} {1 1} trans {NewPlaneInt}
@@ -2544,8 +2533,8 @@
       t 360 mul \@f@cnt mul sin \@f@r mul \@f@sep \@f@cnt 1 sub mul t 0.5 sub mul add
       1 t 360 mul \@f@cnt mul cos sub \@f@r mul
    }%
-   \pnode(! \@f@sep \@f@cnt 1 sub mul -0.5 mul 0){\optexp@nodeIn}
-   \pnode(! \@f@sep \@f@cnt 1 sub mul 0.5 mul 0){\optexp@nodeOut}
+   \pnode(! \@f@sep \@f@cnt 1 sub mul -0.5 mul 0){\oenodein{}}
+   \pnode(! \@f@sep \@f@cnt 1 sub mul 0.5 mul 0){\oenodeout{}}
 \ignorespaces}%
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -2557,8 +2546,8 @@
     /@@x \psk@oe@optmzmsize\space 0.8 mul def
     /@@y \psk@oe@optmzmsize\space 0.5 mul def
   }%
-  \pnode(! @@x neg 0){\optexp@nodeIn}
-  \pnode(! @@x 0){\optexp@nodeOut}
+  \pnode(! @@x neg 0){\oenodein{}}
+  \pnode(! @@x 0){\oenodeout{}}
 }%
 \def\optmzm@comp{%
   \def\@wd{\psk@oe@optmzmsize\space 0.8 mul\space}%
@@ -2584,8 +2573,8 @@
     /@@x \psk@oe@filtersize\space 0.5 mul def
     /@@y @@x def
   }%
-  \pnode(! @@x neg 0){\optexp@nodeIn}
-  \pnode(! @@x 0){\optexp@nodeOut}
+  \pnode(! @@x neg 0){\oenodein{}}
+  \pnode(! @@x 0){\oenodeout{}}
 }%
 \def\optfilter@comp{%
   \edef\@sz{\psk@oe@filtersize\space 0.5 mul\space}%
@@ -2654,8 +2643,8 @@
 \def\optamp@nodes{%
   \edef\@sz{\psk@oe@optampsize\space 0.5 mul\space}%
   \edef\@xl{0.75 sqrt \@sz mul\space}%
-  \pnode(!\@xl neg 0){\optexp@nodeIn}
-  \pnode(!\@xl 0){\optexp@nodeOut}  
+  \pnode(!\@xl neg 0){\oenodein{}}
+  \pnode(!\@xl 0){\oenodeout{}}  
 }%
 \def\optamp@comp{%
   \edef\@sz{\psk@oe@optampsize\space 0.5 mul\space}%
@@ -2681,8 +2670,8 @@
 %
 \def\optisolator@nodes{%
   \edef\@wd{\psk@oe@isolatorsize\space 0.8 mul\space}%
-  \pnode(! \@wd neg 0){\optexp@nodeIn}
-  \pnode(! \@wd 0){\optexp@nodeOut}
+  \pnode(! \@wd neg 0){\oenodein{}}
+  \pnode(! \@wd 0){\oenodeout{}}
 }%
 \def\optisolator@comp{%
   \edef\@ht{\psk@oe@isolatorsize\space 0.5 mul\space}%
@@ -2697,8 +2686,8 @@
 %
 \def\optfiberpolarizer@nodes{%
   \edef\@wd{\psk@oe@fiberpolsize\space 0.8 mul\space}%
-  \pnode(! \@wd neg 0){\optexp@nodeIn}
-  \pnode(! \@wd 0){\optexp@nodeOut}
+  \pnode(! \@wd neg 0){\oenodein{}}
+  \pnode(! \@wd 0){\oenodeout{}}
 }%
 \def\optfiberpolarizer@comp{%
   \edef\@ht{\psk@oe@fiberpolsize\space 2 div\space}%
@@ -2716,8 +2705,8 @@
     /@@x \psk@oe@switchsize\space 0.5 mul def
     /@@y @@x def
   }%
-  \pnode(! @@x neg 0){\optexp@nodeIn}%
-  \pnode(! @@x 0){\optexp@nodeOut}%
+  \pnode(! @@x neg 0){\oenodein{}}%
+  \pnode(! @@x 0){\oenodeout{}}%
 }%
 \def\optswitch@comp{%
   \edef\@sz{\psk@oe@switchsize\space 0.5 mul\space}%
@@ -2758,8 +2747,8 @@
     /@@x \psk@oe@fdlsize\space 0.8 mul def
     /@@y \psk@oe@fdlsize\space 0.5 mul def
   }%
-  \pnode(! @@x neg 0){\optexp@nodeIn}
-  \pnode(! @@x 0){\optexp@nodeOut}
+  \pnode(! @@x neg 0){\oenodein{}}
+  \pnode(! @@x 0){\oenodeout{}}
 }%
 \def\fiberdelayline@comp{%
   \def\@wd{\psk@oe@fdlsize\space 0.8 mul\space}%
@@ -2783,17 +2772,17 @@
     \def\@yshift{0\space}%
   \fi\fi
   \ifx\psk@oe@couplertype\pst@str@couplertype@none
-    \pnode(! \@sz -0.5 mul \@yshift \@sep add){\optexp@node{1}}
-    \pnode(! \@sz -0.5 mul \@yshift \@sep sub){\optexp@node{2}}
-    \pnode(! \@sz 0.5 mul \@yshift \@sep add){\optexp@node{3}}
-    \pnode(! \@sz 0.5 mul \@yshift \@sep sub){\optexp@node{N}}
+    \pnode(! \@sz -0.5 mul \@yshift \@sep add){\oenode{}{1}}
+    \pnode(! \@sz -0.5 mul \@yshift \@sep sub){\oenode{}{2}}
+    \pnode(! \@sz 0.5 mul \@yshift \@sep add){\oenode{}{3}}
+    \pnode(! \@sz 0.5 mul \@yshift \@sep sub){\oenode{}{N}}
   \else
-    \pnode(! \@sz neg \getCLW 0.3 mul add \@yshift \@sep add){\optexp@node{1}}
-    \pnode(! \@sz neg \getCLW 0.3 mul add \@yshift \@sep sub){\optexp@node{2}}
-    \pnode(! \@sz \getCLW 0.3 mul sub \@yshift \@sep add){\optexp@node{3}}
-    \pnode(! \@sz \getCLW 0.3 mul sub \@yshift \@sep sub){\optexp@node{N}}
+    \pnode(! \@sz neg \getCLW 0.3 mul add \@yshift \@sep add){\oenode{}{1}}
+    \pnode(! \@sz neg \getCLW 0.3 mul add \@yshift \@sep sub){\oenode{}{2}}
+    \pnode(! \@sz \getCLW 0.3 mul sub \@yshift \@sep add){\oenode{}{3}}
+    \pnode(! \@sz \getCLW 0.3 mul sub \@yshift \@sep sub){\oenode{}{N}}
   \fi
-  \pnode(! 0 \@yshift){\optexp@nodeLabel}
+  \pnode(! 0 \@yshift){\oenodecenter{}}
 }%
 \def\optcoupler@comp{%
   \edef\@sz{\psk@oe@couplersize\space}%
@@ -2806,8 +2795,8 @@
     \def\@yshift{0\space}%
   \fi\fi
   \ifx\psk@oe@couplertype\pst@str@couplertype@none
-    \psline[style=Fiber](\psk@oe@b@sicname 1)(\psk@oe@b@sicname 3)
-    \psline[style=Fiber](\psk@oe@b@sicname 2)(\psk@oe@b@sicname N)
+    \psline[style=Fiber](\oenode{}{1})(\oenode{}{3})
+    \psline[style=Fiber](\oenode{}{2})(\oenode{}{N})
   \else\ifx\psk@oe@couplertype\pst@str@couplertype@elliptic
     \psellipse[dimen=outer](!0 \@yshift)(! \@sz \@sz 0.4 mul)
   \else\ifx\psk@oe@couplertype\pst@str@couplertype@rectangular
@@ -2832,29 +2821,38 @@
 \def\wdmcoupler@nodes{%
   \edef\@sz{\psk@oe@couplersize\space}%
   \edef\@sep{\psk@oe@couplersep\space 0.5 mul\space}%
+  \ifx\psk@oe@couplertype\pst@str@couplertype@none
+    \ifx\psk@oe@align\pst@str@center
+      \edef\@sep{0 }%
+    \fi
+  \fi
   %
   \ifx\psk@oe@align\pst@str@top
-    \def\@yshift{\@sep neg\space}%
+    \def\@yshift{\@sep neg }%
   \else\ifx\psk@oe@align\pst@str@bottom
-    \def\@yshift{\@sep\space}%
+    \def\@yshift{\@sep }%
   \else
     \def\@yshift{0 }%
   \fi\fi
-  \ifx\psk@oe@couplertype\pst@str@couplertype@elliptic
-    \pnode(! \@sz neg \getCLW 0.3 mul add \@yshift \@sep add){\psk@oe@b@sicname 1}
-    \pnode(! \@sz neg \getCLW 0.3 mul add \@yshift \@sep sub){\psk@oe@b@sicname 2}
-    \pnode(!0 \@yshift){\optexp@nodeLabel}
-    \pnode(! \@sz \getCLW 0.3 mul sub 0){\psk@oe@b@sicname N}      
-  \else\ifx\psk@oe@couplertype\pst@str@couplertype@none
-    \pnode(0,0){\psk@oe@b@sicname 1}
-    \pnode(0,0){\psk@oe@b@sicname 2}
-    \pnode(0,0){\psk@oe@b@sicname N}
-    \pnode(0,0){\optexp@nodeLabel}
-  \fi\fi
+  \ifx\psk@oe@couplertype\pst@str@couplertype@none
+    \pnode(! \@sz -0.5 mul \@yshift \@sep add){\oenode{}{1}}
+    \pnode(! \@sz -0.5 mul \@yshift \@sep sub){\oenode{}{2}}
+    \pnode(! \@sz 0.5 mul 0){\oenode{}{N}}
+  \else
+    \pnode(! \@sz neg \getCLW 0.3 mul add \@yshift \@sep add){\oenode{}{1}}
+    \pnode(! \@sz neg \getCLW 0.3 mul add \@yshift \@sep sub){\oenode{}{2}}
+    \pnode(! \@sz \getCLW 0.3 mul sub 0){\oenode{}{N}}
+  \fi
+  \pnode(! 0 \@yshift){\oenodecenter{}}
 }%
 \def\wdmcoupler@comp{%
   \edef\@sz{\psk@oe@couplersize\space}%
   \edef\@sep{\psk@oe@couplersep\space 0.5 mul\space}%
+  \ifx\psk@oe@couplertype\pst@str@couplertype@none
+    \ifx\psk@oe@align\pst@str@center
+      \edef\@sep{0 }%
+    \fi
+  \fi
   %
   \ifx\psk@oe@align\pst@str@top
     \def\@yshift{\@sep neg\space}%
@@ -2865,7 +2863,16 @@
   \fi\fi
   \ifx\psk@oe@couplertype\pst@str@couplertype@elliptic
     \psellipse[dimen=outer](!0 \@yshift)(! \@sz \@sz 0.4 mul)
-  \fi
+  \else\ifx\psk@oe@couplertype\pst@str@couplertype@rectangular
+    \psframe[dimen=outer](!\@sz neg \@yshift \@sz 0.4 mul sub )%
+                         (!\@sz \@yshift \@sz 0.4 mul add)
+  \else\ifx\psk@oe@couplertype\pst@str@couplertype@none
+    \ifx\psk@oe@align\pst@str@top
+      \psline[style=Fiber](\oenode{}{1})(\oenodeout{})
+    \else
+      \psline[style=Fiber](\oenode{}{2})(\oenodeout{})
+    \fi
+  \fi\fi\fi
 }%
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -2875,38 +2882,58 @@
 \def\wdmsplitter@nodes{%
   \edef\@sz{\psk@oe@couplersize\space}%
   \edef\@sep{\psk@oe@couplersep\space 0.5 mul\space}%
+  \ifx\psk@oe@couplertype\pst@str@couplertype@none
+    \ifx\psk@oe@align\pst@str@center
+      \edef\@sep{0 }%
+    \fi
+  \fi
+  %
+  \ifx\psk@oe@align\pst@str@top
+    \def\@yshift{\@sep neg }%
+  \else\ifx\psk@oe@align\pst@str@bottom
+    \def\@yshift{\@sep }%
+  \else
+    \def\@yshift{0 }%
+  \fi\fi
+  \ifx\psk@oe@couplertype\pst@str@couplertype@none
+    \pnode(! \@sz -0.5 mul 0){\oenode{}{1}}
+    \pnode(! \@sz 0.5 mul \@yshift \@sep add){\oenode{}{2}}
+    \pnode(! \@sz 0.5 mul \@yshift \@sep sub){\oenode{}{N}}
+  \else
+    \pnode(! \@sz neg \getCLW 0.3 mul add 0){\oenode{}{1}}
+    \pnode(! \@sz \getCLW 0.3 mul sub \@yshift \@sep add){\oenode{}{2}}
+    \pnode(! \@sz \getCLW 0.3 mul sub \@yshift \@sep sub){\oenode{}{N}}
+  \fi
+  \pnode(! 0 \@yshift){\oenodecenter{}}
+}%
+\def\wdmsplitter@comp{%
+  \edef\@sz{\psk@oe@couplersize\space}%
+  \edef\@sep{\psk@oe@couplersep\space 0.5 mul\space}%
+  \ifx\psk@oe@couplertype\pst@str@couplertype@none
+    \ifx\psk@oe@align\pst@str@center
+      \edef\@sep{0 }%
+    \fi
+  \fi
   %
   \ifx\psk@oe@align\pst@str@top
     \def\@yshift{\@sep neg\space}%
   \else\ifx\psk@oe@align\pst@str@bottom
     \def\@yshift{\@sep\space}%
   \else
-    \def\@yshift{0\space}%
+    \def\@yshift{0 }%
   \fi\fi
   \ifx\psk@oe@couplertype\pst@str@couplertype@elliptic
-    \pnode(! \@sz neg \getCLW 0.3 mul add 0){\optexp@node{1}}
-    \pnode(! \@sz \getCLW 0.3 mul sub \@yshift \@sep add){\optexp@node{2}}
-    \pnode(! \@sz \getCLW 0.3 mul sub \@yshift \@sep sub){\optexp@node{N}}
-    \pnode(! 0 \@yshift){\optexp@nodeLabel}
+    \psellipse[dimen=outer](!0 \@yshift)(! \@sz \@sz 0.4 mul)
+  \else\ifx\psk@oe@couplertype\pst@str@couplertype@rectangular
+    \psframe[dimen=outer](!\@sz neg \@yshift \@sz 0.4 mul sub )%
+                         (!\@sz \@yshift \@sz 0.4 mul add)
   \else\ifx\psk@oe@couplertype\pst@str@couplertype@none
-    \pnode(0,0){\optexp@node{1}}
-    \pnode(0,0){\optexp@node{2}}
-    \pnode(0,0){\optexp@node{N}}
-    \pnode(0,0){\optexp@nodeLabel}
-  \fi\fi
-}%
-\def\wdmsplitter@comp{%
-  \edef\@sep{\psk@oe@couplersep\space 0.5 mul\space}%
-  \ifx\psk@oe@align\pst@str@top
-    \def\@yshift{\@sep neg\space}%
-  \else\ifx\psk@oe@align\pst@str@bottom
-    \def\@yshift{\@sep\space}%
-  \else
-    \def\@yshift{0\space}%
-  \fi\fi
-  \ifx\psk@oe@couplertype\pst@str@couplertype@elliptic
-    \psellipse[dimen=outer](! 0 \@yshift)(! \psk@oe@couplersize\space dup 0.4 mul)
-  \fi
+    \ifx\psk@oe@align\pst@str@top
+      \psline[style=Fiber](\oenodein{})(\oenode{}{2})
+    \else
+      \psline[style=Fiber](\oenodein{})(\oenode{}{N})
+    \fi
+  \fi\fi\fi
 }%
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -2915,9 +2942,9 @@
 %
 \def\fibercollimator@nodes{%
    \def\@sz{\psk@oe@fibercolsize\space 0.5 mul\space}%
-   \pnode(!\@sz neg 0){\optexp@nodeIn}
+   \pnode(!\@sz neg 0){\oenodein{}}
    \newOptexpComp{ {\@sz neg 0} {0 1} trans {NewPlaneInt} 1 }%
-   \pnode(!\@sz 0){\optexp@nodeOut}
+   \pnode(!\@sz 0){\oenodeout{}}
 }%
 \def\fibercollimator@comp{%
    \def\@sz{\psk@oe@fibercolsize\space 0.5 mul\space}%
