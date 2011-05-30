@@ -182,14 +182,12 @@ tx@OptexpDict begin
 % Initialize some global variables for positioning of external nodes
 % This is called at the beginning of _every_ component
 /InitOptexpComp {%
-    tx@Dict begin
-	/@@x 0 def
-	/@@y 0 def
-	/@@x0 0 def
-	/@@y0 0 def
-        /@xref 0 def
-        /@yref 0 def
-    end
+    /@@x 0 def
+    /@@y 0 def
+    /@@x0 0 def
+    /@@y0 0 def
+    /@xref 0 def
+    /@yref 0 def
 } bind def
 %
 % xa ya xb yb ExchCoor true|false
