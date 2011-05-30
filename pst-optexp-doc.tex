@@ -1544,64 +1544,79 @@ shift the object between \prm{In} and \prm{A} nodes.
 
 \section{Connecting Objects}\label{sec:connecting}
 
+The package provides several methods for automatic beam and fiber
+drawing which are two fundamentally different way of connecting.
+
+\subsection{Accessing Objects}
+
+The macro arguments, specified as Obj$_1$, Obj$_2$, \ldots Obj$_N$ in
+the following macro definitions, can be either objects or PSTricks
+nodes. To distinguish between named nodes (see \prettyref{sec:namedobj})
+and object names, the node content must be enclosed in parenthesis
+within the brackets. Components can either be assigned a name
+explicitely using the \Lkeyword{compname} parameter, or they get a
+unique number in ascending order by their definition in the code. If the
+argument is left empty, the last object is used.
+
+\begin{LTXexample}
+\begin{pspicture}(3,1.5)
+  \pnode(0,1){A}\pnode(1.5,1){B}
+  \optbox[endbox, labeloffset=0](A)(B){1}
+  % connect an object by its automatic number
+  \drawbeam{(A)}{1}
+\end{pspicture}
+\end{LTXexample}
+
+\medskip
+
+\begin{LTXexample}
+\begin{pspicture}(3,2)
+  \psset{endbox, labeloffset=0}
+  \optbox[compname=obj](0,1)(1.5,1){obj}
+  % connect an object by its compname
+  \drawbeam{(0,1)}{obj}
+\end{pspicture}
+\end{LTXexample}
+
+\medskip
+
+The objects which have an explicit \Lkeyword{compname} also increase the internal
+counter, so that removing the \nxLkeyword{compname} from an intermediate
+object does not affect the numbering of the following ones.
+
+\medskip
+
+\begin{LTXexample}
+\begin{pspicture}(3,2)
+  \psset{endbox, labeloffset=0}
+  \optbox[compname=obj](0,0.5)(1.5,0.5){obj}
+  \optbox(0,1.5)(1.5,1.5){2}
+  % named objects are also numbered
+  \drawbeam{(0,1)}{2}
+\end{pspicture}
+\end{LTXexample}
+
+\medskip
+
+\begin{LTXexample}
+\begin{pspicture}(3,2)
+  \psset{endbox, labeloffset=0}
+  \optbox(0,0.5)(1.5,0.5){1}
+  \optbox(0,1.5)(1.5,1.5){2}
+  % an empty argument refers to the last object
+  \drawbeam{(0,1)}{}
+\end{pspicture}
+\end{LTXexample}
+
 \subsection{Drawing beams}\label{sec:drawbeam}
+
 \begin{ltxsyntax}
   \xLcs{drawbeam}\cmditem{drawbeam}[Options]{Obj$_1$}{Obj$_2$}{\ldots}{Obj$_N$}
   \xLcs{drawwidebeam}\cmditem{drawwidebeam}[Options]{Obj$_1$}{Obj$_2$}{\ldots}{Obj$_N$}
 \end{ltxsyntax}
 The package provides two macros for connecting objects with beams. Most
-parameters are valid for both, those which are specifiy for wide beams are shown
-in the next section. 
-
-\subsubsection{Accessing objects}
-
-The objects (specified as Obj$_1$, Obj$_2$, \ldots Obj$_N$ in the macro
-definitions above) can be either components or PSTricks nodes. To distinguish
-between named nodes and components, the node content must be enclosed in
-parenthesis within the brackets. Components can be assigned a name explicitely
-using \Lkeyword{compname} parameter, or they get a number in ascending order by
-their definition in the code.
-
-\begin{LTXexample}[width=4cm]
-\begin{pspicture}(4,2)
-  \pnode(0,1){A}\pnode(2,1){B}
-  \optbox[endbox, labeloffset=0](A)(B){1}
-  % connect a node with an object by its internal number
-  \drawbeam{(A)}{1}
-\end{pspicture}
-\end{LTXexample}
-
-\bigskip
-
-\begin{LTXexample}[width=4cm]
-\begin{pspicture}(4,2)
-  \pnode(0,1){A}\pnode(2,1){B}
-  \optbox[endbox, labeloffset=0, compname=obj](A)(B){obj}
-  % connect a node with an object by its compname
-  \drawbeam{(0,1)}{obj}
-\end{pspicture}
-\end{LTXexample}
-
-\bigskip
-
-The components which have an explicite name also increase the internal
-counter, so that removing the \nxLkeyword{compname} from an intermediate
-component does not affect the numbering of the following ones.
-
-\medskip
-
-\begin{LTXexample}[width=4cm]
-\begin{pspicture}(4,3)
-  \pnode(0,1){A}\pnode(2,1){B}
-  \pnode(0,2){C}\pnode(2,2){D}
-  \optbox[endbox, labeloffset=0, compname=obj](A)(B){obj}
-  \optbox[endbox, labeloffset=0](C)(D){2}
-  % connect a node with an object by its compname
-  \drawbeam{(A)}{2}
-\end{pspicture}
-\end{LTXexample}
-
-\medskip
+parameters are valid for both, those which are specified for wide beams
+are demonstrated separately in the next section.
 
 \subsubsection{Internal component structure}
 
