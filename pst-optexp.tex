@@ -1375,6 +1375,7 @@
      Y@A X@A neg Y@B X@B neg ExchCoor def
      X@A Y@A end){\oenoderefa{}}%
   \pnode(! \@oedict{X@B Y@B}){\oenoderefb{}}%
+  \pst@OptexpVerb{/@xref \psk@oe@xref\space def /@yref \psk@oe@yref\space def}%
 }\ignorespaces}%
 %
 %
@@ -1896,7 +1897,9 @@
        \psset{style=PiezoMirror}
        \pst@OptexpVerb{\pst@number\psyunit @@y0 div \psk@oe@mirrorwidth\space 0.5 mul mul 2.5 div /@@y0 ED}%
      \egroup
-   \fi
+   \else\ifdim\psk@oe@mirrorradius pt=0pt
+     \pst@OptexpVerb{/@@x \psk@oe@mirrorwidth\space 0.5 mul def}%
+   \fi\fi
 }%
 \def\mirror@comp{%
   \edef\@ht{\psk@oe@mirrorwidth\space\pst@number\psyunit mul 0.5 mul }%
@@ -2001,6 +2004,7 @@
                       {\psk@oe@lensradiusright\space neg 0} trans {NewCurvedInt} 
                    \fi
                    \psk@oe@n}%
+  \pst@OptexpVerb{/@@y \psk@oe@lensheight\space 0.5 mul def}%
 }%
 \def\lens@comp{%
   \addbefore@par{linejoin=1}%
@@ -2110,6 +2114,10 @@
 %
 % PINHOLE
 %
+\def\pinhole@nodes{%
+  \dipole@nodes
+  \pst@OptexpVerb{/@@y \psk@oe@outerheight\space 0.5 mul def}%
+\ignorespaces}%
 \def\pinhole@comp{%
   \ifdim\psk@oe@phwidth pt=0pt
     \psline[linewidth=\psk@oe@phlinewidth]%
@@ -2247,6 +2255,11 @@
 %
 % OPTICAL GRID
 %
+\def\optgrid@nodes{%
+  \tripole@nodes
+  \pst@OptexpVerb{/@@y0 \psk@oe@optgridheight\space def
+                  /@@x \psk@oe@optgridwidth\space 0.5 mul def}%
+\ignorespaces}%
 \def\optgrid@comp{%
   \edef\@cnt{\psk@oe@optgridcount\space}%
   \edef\@wd{\psk@oe@optgridwidth\space 2 div }%
@@ -2323,10 +2336,14 @@
 %
 % OPTPLATE
 %
+\def\optplate@nodes{%
+  \dipole@nodes
+  \pst@OptexpVerb{/@@y \psk@oe@plateheight\space 0.5 mul def}%
+\ignorespaces}%
 \def\optplate@comp{%
    \psline[linewidth=\psk@oe@platelinewidth]%
-          (! \psk@oe@plateheight\space 2 div \psk@oe@angle\space 2 copy sin mul 3 1 roll cos mul neg)%
-          (! \psk@oe@plateheight\space 2 div \psk@oe@angle\space 2 copy sin mul neg 3 1 roll cos mul )%
+          (! \psk@oe@plateheight\space 0.5 mul \psk@oe@angle\space 2 copy sin mul 3 1 roll cos mul neg)%
+          (! \psk@oe@plateheight\space 0.5 mul \psk@oe@angle\space 2 copy sin mul neg 3 1 roll cos mul )%
 \ignorespaces}%
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -2378,6 +2395,10 @@
 \def\optretplate@nodes{%
    \newOptexpComp{ {\psk@oe@platewidth\space -0.5 mul 0} {0 1} trans {NewPlaneInt} 
                    {\psk@oe@platewidth\space 0.5 mul 0} {0 1} trans {NewPlaneInt} 1 }%
+   \pst@OptexpVerb{%
+     /@@y \psk@oe@plateheight\space 0.5 mul def
+     /@@x \psk@oe@platewidth\space 0.5 mul def
+   }%
 \ignorespaces}%
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -2387,6 +2408,7 @@
 \def\optdiode@nodes{%
    \newOptexpComp{ {\psk@oe@optdiodesize\space -0.5 mul 0} {0 1} trans {NewPlaneInt} 
                    {\psk@oe@optdiodesize\space 0.5 mul 0} {0 1} trans {NewPlaneInt} 1 }%
+   \pst@OptexpVerb{\psk@oe@optdiodesize\space 0.5 mul dup /@@y ED /@@x ED }%
 \ignorespaces}%
 \def\optdiode@comp{%
    \edef\@sz{\psk@oe@optdiodesize\space}%
@@ -2537,10 +2559,7 @@
 % OPTICAL FILTER
 %
 \def\optfilter@nodes{%
-  \pst@OptexpVerb{%
-    /@@x \psk@oe@filtersize\space 0.5 mul def
-    /@@y @@x def
-  }%
+  \pst@OptexpVerb{\psk@oe@filtersize\space 0.5 mul dup /@@y ED /@@x }%
   \pnode(! \@oedict{@@x neg 0}){\oenodein{}}
   \pnode(! \@oedict{@@x 0}){\oenodeout{}}
 }%
@@ -2637,9 +2656,12 @@
 % ISOLATOR
 %
 \def\optisolator@nodes{%
-  \edef\@wd{\psk@oe@isolatorsize\space 0.8 mul }%
-  \pnode(! \@wd neg 0){\oenodein{}}
-  \pnode(! \@wd 0){\oenodeout{}}
+  \pst@OptexpVerb{%
+    /@@y \psk@oe@isolatorsize\space 0.5 mul def
+    /@@x \psk@oe@isolatorsize\space 0.8 mul def
+  }%
+  \pnode(! \@oedict{@@x neg 0}){\oenodein{}}
+  \pnode(! \@oedict{@@x 0}){\oenodeout{}}
 }%
 \def\optisolator@comp{%
   \edef\@ht{\psk@oe@isolatorsize\space 0.5 mul }%
@@ -2653,9 +2675,12 @@
 % FIBER POLARIZER
 %
 \def\optfiberpolarizer@nodes{%
-  \edef\@wd{\psk@oe@fiberpolsize\space 0.8 mul }%
-  \pnode(! \@wd neg 0){\oenodein{}}
-  \pnode(! \@wd 0){\oenodeout{}}
+  \pst@OptexpVerb{%
+    /@@y \psk@oe@fiberpolsize\space 0.5 mul def
+    /@@x \psk@oe@fiberpolsize\space 0.8 mul def
+  }%
+  \pnode(! \@oedict{@@x neg 0}){\oenodein{}}
+  \pnode(! \@oedict{@@x 0}){\oenodeout{}}
 }%
 \def\optfiberpolarizer@comp{%
   \edef\@ht{\psk@oe@fiberpolsize\space 0.5 mul }%
@@ -2669,10 +2694,7 @@
 % SWITCH
 %
 \def\optswitch@nodes{%
-  \pst@OptexpVerb{%
-    /@@x \psk@oe@switchsize\space 0.5 mul def
-    /@@y @@x def
-  }%
+  \pst@OptexpVerb{\psk@oe@switchsize\space 0.5 mul dup /@@y ED /@@x ED }%
   \pnode(! \@oedict{@@x neg 0}){\oenodein{}}%
   \pnode(! \@oedict{@@x 0}){\oenodeout{}}%
 }%
