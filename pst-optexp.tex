@@ -115,6 +115,7 @@
 \def\pst@str@dettype@diode{diode}
 \def\pst@str@bsstyle@cube{cube}
 \def\pst@str@bsstyle@plate{plate}
+\def\pst@str@autonode{auto}
 %
 \def\pst@OptexpVerb#1{\pst@Verb{\pst@optexpdict #1 end }}%
 %
@@ -586,6 +587,12 @@
 \define@boolkey[psset]{optexp}[Pst@oe@]{fiberout@top}[true]{}
 \define@boolkey[psset]{optexp}[Pst@oe@]{fiberout@bottom}[true]{}
 \define@boolkey[psset]{optexp}[Pst@oe@]{relangle}[true]{}
+\define@choicekey+[psset]{optexp}{startnode}[\val\nr]{auto,1,2,3,4,N}%
+   {\edef\psk@oe@startnode{\val}}
+   {\PackageError{pst-optexp}{Unknown value '\val' for key startnode}}
+\define@choicekey+[psset]{optexp}{stopnode}[\val\nr]{auto,1,2,3,4,N}%
+   {\edef\psk@oe@stopnode{\val}}
+   {\PackageError{pst-optexp}{Unknown value '\val' for key stopnode}}
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \def\optexp@getnode#1#2\@nil{%
@@ -631,8 +638,16 @@
     \fi
     
     \ifPst@oe@bglayer
-      \pnode(! \optexp@comps exch \@oedict{NearestNode} \tx@UserCoor){@@A}
-      \pnode(! \optexp@comps \@oedict{NearestNode} \tx@UserCoor){@@B}
+      \ifx\psk@oe@startnode\pst@str@autonode
+        \pnode(! \optexp@comps exch \@oedict{NearestNode} \tx@UserCoor){@@A}
+      \else
+        \pnode(\oenode{}{\psk@oe@startnode}){@@A}
+      \fi
+      \ifx\psk@oe@stopnode\pst@str@autonode
+        \pnode(! \optexp@comps \@oedict{NearestNode} \tx@UserCoor){@@B}
+      \else
+        \pnode(\oenode{}{\psk@oe@stopnode}){@@B}
+      \fi
       \pst@getcoor{@@A}\pst@tempa
       \pst@getcoor{@@B}\pst@tempb
       \ifx\psk@angleA\relax
@@ -1213,16 +1228,16 @@
        \ifPst@oe@bglayer
          % connect the fibers
          \ifPst@oe@fiberin@top
-           \drawfiber@{FiberIn1}{(##1)}{\psk@oe@compname}
+           \drawfiber@{FiberIn1}[stopnode=1]{(##1)}{\psk@oe@compname}
          \fi
          \ifPst@oe@fiberin@bottom
-           \drawfiber@{FiberIn2}{(##2)}{\psk@oe@compname}
+           \drawfiber@{FiberIn2}[stopnode=2]{(##2)}{\psk@oe@compname}
          \fi
          \ifPst@oe@fiberout@top
-           \drawfiber@{FiberOut}{\psk@oe@compname}{(##3)}
+           \drawfiber@{FiberOut}[startnode=3]{\psk@oe@compname}{(##3)}
          \fi
          \ifPst@oe@fiberout@bottom
-           \drawfiber@{FiberOut2}{\psk@oe@compname}{(##4)}
+           \drawfiber@{FiberOut2}[startnode=N]{\psk@oe@compname}{(##4)}
          \fi
        \fi
      \end@OptexpObj
@@ -1286,13 +1301,13 @@
     \ifPst@oe@bglayer
       % connect the fibers
       \ifPst@oe@fiberin@
-        \drawfiber@{FiberIn}{(#1)}{\psk@oe@compname}
+        \drawfiber@{FiberIn}[stopnode=1]{(#1)}{\psk@oe@compname}
       \fi
       \ifPst@oe@fiberout@top
-        \drawfiber@{FiberOut1}{\psk@oe@compname}{(#2)}
+        \drawfiber@{FiberOut1}[startnode=2]{\psk@oe@compname}{(#2)}
       \fi
       \ifPst@oe@fiberout@bottom
-        \drawfiber@{FiberOut2}{\psk@oe@compname}{(#3)}
+        \drawfiber@{FiberOut2}[startnode=N]{\psk@oe@compname}{(#3)}
       \fi
     \fi
   \end@OptexpObj
@@ -1323,13 +1338,13 @@
     \ifPst@oe@bglayer 
       % connect the fibers
       \ifPst@oe@fiberout@
-        \drawfiber@{FiberOut}{\psk@oe@compname}{(#3)}
+        \drawfiber@{FiberOut}[startnode=N]{\psk@oe@compname}{(#3)}
       \fi
       \ifPst@oe@fiberin@top
-        \drawfiber@{FiberIn1}{(#1)}{\psk@oe@compname}
+        \drawfiber@{FiberIn1}[stopnode=1]{(#1)}{\psk@oe@compname}
       \fi
       \ifPst@oe@fiberin@bottom
-        \drawfiber@{FiberIn2}{(#2)}{\psk@oe@compname}
+        \drawfiber@{FiberIn2}[stopnode=2]{(#2)}{\psk@oe@compname}
       \fi
     \fi
   \end@OptexpObj
@@ -1675,7 +1690,6 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \psset[optexp]{%
 % general
-        relangle=false
         ,bglayer=true
         ,toplayer=true
         ,position=\@empty
@@ -1777,6 +1791,10 @@
         ,bsstyle=cube
         ,compshift=0
         ,n=1.5
+% fiber
+        ,relangle
+        ,startnode=auto
+        ,stopnode=auto
 }%
 \Pst@oe@insideobjtrue
 \psset[optexp]{compname=\@empty}
