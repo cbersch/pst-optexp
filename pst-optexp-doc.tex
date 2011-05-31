@@ -1616,83 +1616,51 @@ The package provides two macros for connecting objects with beams. Most
 parameters are valid for both, those which are specified for wide beams
 are demonstrated separately in the next section.
 
-\subsubsection{Internal component structure}
-
-In order to understand properly how the automatic beam drawing actually works,
-it is necessary to describe in more detail the internal component structure.
-
-Every component type consists internally of interfaces which are defined by a
-node on the optical axis, a plane vector or a curvature radius, and by its
-optical characteristic (reflective or transmittive). The interface nodes can be
-visualized for each component type with the \Lkeyword{showifcnodes}
-parameter. 
-
-\medskip
-
-\begin{LTXexample}[width=4cm]
-\begin{pspicture}(4,3)
-  \psset{showifcnodes}
-  \optbox(0,2.5)(4,2.5){}
-  \doveprism(0,1.5)(4,1.5){}
-  \lens(0,0.5)(4,0.5){}
-  \mirror(0,0.5)(3.5,0.5)(3.5,3){}
-\end{pspicture}
-\end{LTXexample}
-
-\bigskip
-
-\nxLcs{draw*beam} calculates the distance between the interface nodes of two
-objects and connects the two nearest
-
-\medskip
-
-\begin{LTXexample}[width=4cm]
-\begin{pspicture}(-2,-2)(2,2)
-  \psset{optboxwidth=0.6, optboxheight=0.5, labeloffset=0}
-  \multido{\i=0+60,\ii=1+1}{6}{%
-    \pnode(1.75;\i){A}
-    \optbox([Xnodesep=-1]A)([Xnodesep=1]A){\ii}
-  }
-  \optbox[compname=ref](-1,0)(1,0){ref}
-  \addtopsstyle{Beam}{arrows=->}
-  \multido{\i=1+1}{6}{\drawbeam{ref}{\i}}
-\end{pspicture}
-\end{LTXexample}
-
 \begin{optionlist}
+  \optitem[0]{startpos}{[\prm{X}] \prm{Y}} This is the start position
+  (\prm{X}, \prm{Y}) of the beam at the first interface. Can be any code
+  which evaluates in Postscript to one or two numbers. If is only one
+  number then the $x$-coordinate is set to \texttt{0}.
 
-\optitem[0]{startpos}{\prm{num} [\prm{num}]}
-This is the start position of the beam at the first interface. Can be
-any code which evaluates in Postscript to one or two numbers. If is only
-one number then the $x$-coordinate is set to \texttt{0}.
+\medskip
 
 \begin{LTXexample}
-\begin{pspicture}(5,5)
-  \pnode(1.5,0.5){A}\pnode(4.5,0.5){B}\pnode(3.5,4.5){C} 
+\begin{pspicture}(4,2.8)
+  \pnode(1.5,0.5){A}\pnode(3.5,0.5){B}
+  \pnode(3.5,2.5){C} 
   \optbox[endbox](B)(A){}
-  \mirror[mirrorradius=4](A)(B)(C){} 
-  \mirror[mirrortype=extended](B)(C)(B){} 
-  \drawbeam[linecolor=red, startpos=-0.2]{1}{2}{3}
-  \drawbeam[linecolor=blue, startpos=0]{1}{2}{3}
-  \drawbeam[linecolor=green, startpos=0.2]{1}{2}{3}
+  \psset{mirrortype=extended, mirrordepth=0.15}
+  \mirror[mirrorradius=2](A)(B)(C){} 
+  \mirror(B)(C)(B){} 
+  \drawbeam[linecolor=red, 
+              startpos=-0.2]{1}{2}{3}
+  \drawbeam[linecolor=blue]{1}{2}{3}
+  \drawbeam[linecolor=green,
+              startpos=0.2]{1}{2}{3}
 \end{pspicture}
 \end{LTXexample}
 
-\optitem[1]{startvec}{\prm{X} [\prm{Y}]} This is the start vector (\prm{X},
-\prm{Y}) of the beam. \prm{X} and \prm{Y} can be anything which evaluates to a
-number in Postscript. If only one value is given, \prm{X} is set to \opt{0}. The
-\nxLkeyword{startvec} is relative to the connection between the first two
-components, use \Lkeyword{startvecabs} to change this. 
+\optitem[1]{startvec}{\prm{X} [\prm{Y}]} 
+This is the start vector (\prm{X}, \prm{Y}) of the beam. \prm{X} and
+\prm{Y} can be anything which evaluates to a number in Postscript. If
+only one value is given, \prm{X} is set to \opt{0}. The
+\nxLkeyword{startvec} is relative to the connection between the first
+two components, use \Lkeyword{startvecabs} to change this.
 
+\medskip
 \begin{LTXexample}
-\begin{pspicture}(5,5)
-  \pnode(1.5,0.5){A}\pnode(4.5,0.5){B}\pnode(3.5,4.5){C} 
+\begin{pspicture}(4,3)
+  \pnode(1.5,0.5){A}\pnode(3.5,0.5){B}
+  \pnode(3.5,2.5){C} 
+  \psset{mirrortype=extended, mirrordepth=0.15}
   \optbox[endbox](B)(A){}
-  \mirror[mirrorradius=2](A)(B)(C){} 
-  \mirror[mirrortype=extended](B)(C)(B){} 
-  \drawbeam[linecolor=red, startvec=0.05]{1}{2}{3}
+  \mirror(A)(B)(C){} 
+  \mirror(B)(C)(B){} 
+  \drawbeam[linecolor=red, 
+              startvec=0.05]{1}{2}{3}
   \drawbeam[linecolor=blue]{1}{2}{3}
-  \drawbeam[linecolor=green, startvec=-0.05]{1}{2}{3}
+  \drawbeam[linecolor=green, 
+              startvec=-0.05]{1}{2}{3}
 \end{pspicture}
 \end{LTXexample}
 
@@ -1710,6 +1678,49 @@ components, use \Lkeyword{startvecabs} to change this.
 
 \boolitem[false]{beaminsidefirst}
 \end{optionlist}
+
+\subsubsection{Internal component structure}
+
+In order to understand properly how the automatic beam drawing actually works,
+it is necessary to describe in more detail the internal component structure.
+
+Every component type consists internally of interfaces which are defined by a
+node on the optical axis, a plane vector or a curvature radius, and by its
+optical characteristic (reflective or transmittive). The interface nodes can be
+visualized for each component type with the \Lkeyword{showifcnodes}
+parameter. 
+
+\medskip
+
+\begin{LTXexample}
+\begin{pspicture}(4,3)
+  \psset{showifcnodes}
+  \optbox(0,2.5)(4,2.5){}
+  \doveprism(0,1.5)(4,1.5){}
+  \lens(0,0.5)(4,0.5){}
+  \mirror(0,0.5)(3.5,0.5)(3.5,3){}
+\end{pspicture}
+\end{LTXexample}
+
+\bigskip
+
+\nxLcs{draw*beam} calculates the distance between the interface nodes of two
+objects and connects the two nearest
+
+\medskip
+
+\begin{LTXexample}
+\begin{pspicture}(-2,-2)(2,2)
+  \psset{optboxwidth=0.6, optboxheight=0.5, labeloffset=0}
+  \multido{\i=0+60,\ii=1+1}{6}{%
+    \pnode(1.75;\i){A}
+    \optbox([Xnodesep=-1]A)([Xnodesep=1]A){\ii}
+  }
+  \optbox[compname=ref](-1,0)(1,0){ref}
+  \addtopsstyle{Beam}{arrows=->}
+  \multido{\i=1+1}{6}{\drawbeam{ref}{\i}}
+\end{pspicture}
+\end{LTXexample}
 
 \subsection{Drawing wide beams}\label{sec:drawwidebeam}
 
@@ -1739,18 +1750,23 @@ which would be highlighted.
   \xLcs{drawfiber}\cmditem{drawfiber}[Options]{Obj$_1$}{Obj$_2$}
 \end{ltxsyntax}
 
-\begin{LTXexample}[width=4cm]
+\begin{optionlist}
+  \boolitem{relangle}
+  \choitem{startnode}{auto, 1, 2, 3, 4, N}
+  \choitem{stopnode}{auto, 1, 2, 3, 4, N}
+\end{optionlist}
+
+\begin{LTXexample}
 \begin{pspicture}[showgrid=true](2.8,3)
-\pnode(0.3,0){A}
-\pnode(2.3,0){B}
-\pnode(0.3,3){C}
-\pnode(2.3,3){D}
-\optcoupler[abspos=0.5, nofiber](A)(B)(C)(D){}
-\optbox[abspos=2, optboxwidth=0.5,optboxheight=0.5](C|A)(C){}
+\pnode(0.3,0){A}\pnode(2.3,0){B}
+\pnode(0.3,3){C}\pnode(2.3,3){D}
+\optcoupler[nofiber, abspos=0.5](A)(B)(C)(D){}
+\optbox[abspos=2, optboxwidth=0.5,
+          optboxheight=0.5](C|A)(C){}
 \optfiber[nofiber](D)(C){}
-\optamp[nofiber, abspos=2](D|A)(D){}
-\drawfiber[angleA=0, ArrowInside=->]{(A)}{1}
-\drawfiber[angleB=180, arrows=->]{1}{(B)}
+\optamp[abspos=2, nofiber](D|A)(D){}
+\drawfiber[angleA=-90, ArrowInside=->]{(A)}{1}
+\drawfiber[arrows=->, angleB=90]{1}{(B)}
 \drawfiber{1}{2}
 \drawfiber{2}{3}
 \drawfiber{3}{4}
