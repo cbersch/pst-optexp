@@ -1,6 +1,6 @@
 %
 % PostScript prologue for pst-optexp.tex.
-% version 1.0 2011-04-01 (cb)
+% version 1.0 2011-06-01 (cb)
 % For distribution, see pstricks.tex.
 %
 /tx@OptexpDict 60 dict def
@@ -1307,6 +1307,44 @@ tx@OptexpDict begin
     VecAdd % Xt1-(Yt1-Yp) Yt1+(Xt1-Xp) Xt1 Yt1 Xt2 Yt2 Xt2-(Yt2-Yp) Yt2+(Xt2-Xp)
     tx@EcldDict begin InterLines end
 } bind def
+% {NodeB} CompA -> shortest distance, planenum
+/NearestNodeTmp {
+    (N@) exch strcat exch /NodeB ED
+    /dist -1 def
+    1 {% name and counter on stack
+	2 copy % name cnt name cnt 
+	3 string cvs strcat dup % name cnt (namecnt) (namecnt)
+	tx@NodeDict exch known {%
+	    @GetCenter 2 copy
+	    NodeB @ABDist 
+	    % name cnt X Y dist
+	    dist 0 lt {% init /dist
+		/dist ED
+		ToVec /node ED
+	    } {
+		dup dist lt {
+		    /dist ED
+		    ToVec /node ED
+		} {
+		    pop pop pop
+		} ifelse
+	    } ifelse
+	    1 add % increment counter
+	} {% the last node
+	    pop pop (N) strcat
+	    @GetCenter 2 copy
+	    NodeB @ABDist
+	    dup dist lt {
+		/dist ED
+		ToVec /node ED
+	    } {
+		pop pop pop
+	    } ifelse
+	    exit
+	} ifelse
+    } loop
+    dist /node load
+} bind def
 %
 % CompA|NodeA CombB|NodeB -> Coordinates of nodeA or the node of CompA which is nearest to nodeB
 /NearestNode {
@@ -1314,47 +1352,21 @@ tx@OptexpDict begin
     dup xcheck not {% CompA
 	nametostring /CompA ED
 	/CompB load dup xcheck not {% CompB
-	    (N@) exch strcat (1) strcat @GetCenter ToVec
-	} if /CompB ED
-	(N@) CompA strcat
-	1 {% name and counter on stack
-	    2 copy dup % name cnt name cnt cnt
-	    3 string cvs 3 -1 roll exch strcat dup % name cnt cnt (namecnt) (namecnt)
-	    tx@NodeDict exch known {%
-		@GetCenter
-		CompB @ABDist
-		% cnt cnt dist
-		exch 1 eq {% init /dist
-		    /dist ED
-		    dup /planeNum ED
-		} {
-		    dup dist lt {
-			/dist ED
-			dup /planeNum ED
-		    } {
-			pop
-		    } ifelse
-		} ifelse
-		1 add % increment counter
-	    } {
-		pop pop pop dup (N) strcat
-		@GetCenter
-		CompB @ABDist
-		dup dist lt {
-		    /dist ED
-		    /planeNum (N) def
-		} {
-		    pop
-		} ifelse
-		exit
-	    } ifelse
-	} loop
-	planeNum 3 string cvs strcat @GetCenter
+	    /mindist -1 def
+	    [ exch false GetInternalNodeNames ] 
+	    { @GetCenter ToVec
+		CompA NearestNodeTmp 
+		exch dup mindist gt mindist 0 ge and { pop pop }{ /mindist ED /minnodeA ED } ifelse
+	    } forall
+	    minnodeA
+	} {
+	    CompA NearestNodeTmp exch pop exec
+	} ifelse
     } {% else, it is a node and we already have the appropriate coordinates on the stack
 	exec
     } ifelse
 } bind def
-
+%
 % Calculate start angle of pccurve from CompA to CompB
 % CompA|nodeA CompB|nodeB -> angleA
 /RelFiberAngle {%
@@ -1428,5 +1440,15 @@ tx@OptexpDict begin
 	counttomark 2 idiv t 2 idiv roll % [ C A D B
 	counttomark 2 idiv 1 add 1 [ 3 1 roll roll
     } ifelse
+} bind def
+% subname node|name  -> coordinates
+/getsubnode {
+  dup xcheck {
+      exch pop exec
+  } {
+      nametostring (N@) exch strcat
+      exch nametostring strcat
+      @GetCenter
+  } ifelse
 } bind def
 end % tx@OptexpDict

@@ -20,12 +20,12 @@ footinclude=false,oneside]{pst-doc}
 \newrefformat{sec}{Sec.~\ref{#1}}
 \lstset{%
   language=[LaTeX]TeX,
-  texcsstyle = [20]\color{DOrange!60!black},
+  texcsstyle = [20]\color{DOrange!80!black},
   moretexcs = [20]{lens, optbox, oenode, oenodein, oenodeext, oenodeout, oenoderefa, oenoderefb, optplate, optretplate, pinhole, crystal,optdetector, optdiode, doveprism, polarization, mirror, beamsplitter, optgrid, optprism, rightangleprism, pentaprism, optdipole, optripole, optfiber, optamp, optmzm, optfilter, polcontrol, optisolator, optswitch, fiberdelayline, optfiberpolarizer, fibercollimator, optcoupler, wdmcoupler, wdmsplitter, drawbeam, drawwidebeam, drawfiber, custombeam},
   explpreset={pos=l,width=-99pt,overhang=0pt,hsep=5mm, varwidth,vsep=\bigskipamount,rframe={}},
   escapechar=§
 }
-\colorlet{sectioncolor}{DOrange!80!black}
+\colorlet{sectioncolor}{DOrange!90!black}
 \usepackage{ltxdockit}
 \colorlet{spot}{sectioncolor}
 \InputIfFileExists{ltxdockit.cfg}{}{}
@@ -1180,7 +1180,6 @@ it as a new component. For details on how to define your own components see
 \end{pspicture}
 \end{LTXexample}
 \end{ltxsyntax}
-
 \begin{optionlist}
 \intitem[3]{fiberloops} 
 \begin{LTXexample}
@@ -1753,11 +1752,21 @@ which would be highlighted.
 \begin{optionlist}
   \boolitem{relangle}
   \choitem{startnode}{auto, 1, 2, 3, 4, N}
-  \choitem{stopnode}{auto, 1, 2, 3, 4, N}
+\begin{LTXexample}
+\begin{pspicture}(4,3)
+  \pnode(0,0.5){A}\pnode(2,0.5){B}
+  \pnode([offset=1]B){C}\pnode(A|C){D}
+  \optamp[nofiber](A)(B){EDFA}
+  \optbox(C)(D){PM}
+  \drawfiber[linecolor=black]{1}{2}
+\end{pspicture}
+\end{LTXexample}
+
+\choitem{stopnode}{auto, 1, 2, 3, 4, N}
 \end{optionlist}
 
 \begin{LTXexample}
-\begin{pspicture}[showgrid=true](2.8,3)
+\begin{pspicture}(2.8,3)
 \pnode(0.3,0){A}\pnode(2.3,0){B}
 \pnode(0.3,3){C}\pnode(2.3,3){D}
 \optcoupler[nofiber, abspos=0.5](A)(B)(C)(D){}
@@ -2076,14 +2085,14 @@ incorporate this in a new released version.
 \end{pspicture}
 \end{LTXexample}
 
-\begin{LTXexample}[pos=t, vsep=8mm, preset=\centering]
+\begin{LTXexample}[pos=t, vsep=5mm]
 \begin{pspicture}(0.9,0.9)(10.4,5.9)
   \psset{arrowscale=1.5, arrowinset=0}
   \pnode(2,5){PC1in}\pnode(4,5){PC1out}\pnode(6,5){PC2in}
   \pnode(8,5){PC2out}\pnode(2,2){CplSig}\pnode(5,2){CplIn}
   \pnode(2,1){CplOut}\pnode(10,4.5){Pump}\pnode(8,2){PumpSig}
-  \optisolator[compshift=0.8, addtoFiberIn={angleA=180}, 
-                 addtoFiberOut={angleB=180}, label=0.5 . l]%
+  \optisolator[compshift=0.8, addtoFiberIn={angleA=90}, 
+                 addtoFiberOut={angleB=-90}, label=0.5 . l]%
                  (CplSig)(PC1in){isolator}
   \polcontrol[addtoFiberIn={arrows=|-}](PC1in)(PC1out){}
   \optfiberpolarizer[labeloffset=0.6](PC1out)(PC2in){polarizer}
@@ -2091,8 +2100,8 @@ incorporate this in a new released version.
   \wdmsplitter[labeloffset=0.3, align=bottom, addtoFiberIn={arrows=|-}, 
                  addtoFiberOut1={arrows=->}, addtoFiberOut2={arrows=-|}]%
                  (CplIn)(CplOut)(CplSig){95/5}
-  \wdmcoupler[addtoFiberIn1={ArrowInside=->}, addtoFiberIn2={angleA=0}, 
-                addtoFiberOut={angleB=0,arrows=-|}, ncurv=0.9, 
+  \wdmcoupler[addtoFiberIn1={ArrowInside=->}, addtoFiberIn2={angleA=90}, 
+                addtoFiberOut={angleB=-90,arrows=-|}, ncurv=0.9, 
                 align=bottom, compshift=0.8](Pump)(PC2out)(PumpSig){Pump}
   \optbox[endbox, label=0 . . relative]([offset=-0.1]Pump)(Pump){980~nm}
   \optfiber[fiberloops=2, labeloffset=0.4](CplIn)(PumpSig){Er$^+$-doped}

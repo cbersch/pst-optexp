@@ -27,7 +27,7 @@
 %
 %
 \def\fileversion{3.0alpha}
-\def\filedate{2011/05/27}
+\def\filedate{2011/06/01}
 \message{`pst-optexp' v\fileversion, \filedate\space (CB)}
 %
 \edef\PstAtCode{\the\catcode`\@} \catcode`\@=11\relax
@@ -616,7 +616,7 @@
   \@ifnextchar[{\drawfiber@i}{\drawfiber@i[]}%
 }%
 \def\drawfiber@i[#1]#2#3{%
-  \addbefore@par{#1}%
+  \addafter@par{#1}%
   \begingroup
     \let\psk@angleA\relax
     \let\psk@angleB\relax
@@ -636,18 +636,24 @@
       \expandafter\optexp@getnode#3\@nil
       \edef\optexp@comps{\oe@temp\space \optexp@comps}
     \fi
-    
+    %       
     \ifPst@oe@bglayer
+      \ifx\psk@oe@startnode\pst@str@autonode\else
+        \pnode(! /\psk@oe@startnode\space \optexp@comps exch pop \@oedict{getsubnode} \tx@UserCoor){@@A}
+      \fi
+      \ifx\psk@oe@stopnode\pst@str@autonode\else
+        \pnode(! /\psk@oe@stopnode\space \optexp@comps pop \@oedict{getsubnode} \tx@UserCoor){@@B}
+      \fi
       \ifx\psk@oe@startnode\pst@str@autonode
-        \pnode(! \optexp@comps exch \@oedict{NearestNode} \tx@UserCoor){@@A}
-      \else
-        \pnode(\oenode{}{\psk@oe@startnode}){@@A}
-      \fi
-      \ifx\psk@oe@stopnode\pst@str@autonode
-        \pnode(! \optexp@comps \@oedict{NearestNode} \tx@UserCoor){@@B}
-      \else
-        \pnode(\oenode{}{\psk@oe@stopnode}){@@B}
-      \fi
+        \ifx\psk@oe@stopnode\pst@str@autonode
+          \pnode(! \optexp@comps exch \@oedict{NearestNode} \tx@UserCoor){@@A}
+          \pnode(! \optexp@comps \@oedict{NearestNode} \tx@UserCoor){@@B}
+        \else
+          \pnode(! \optexp@comps exch pop /N@@@B \@oedict{@GetCenter ToVec NearestNode} \tx@UserCoor){@@A}
+        \fi
+      \else\ifx\psk@oe@stopnode\pst@str@autonode
+        \pnode(! \optexp@comps pop /N@@@A \@oedict{@GetCenter ToVec NearestNode} \tx@UserCoor){@@B}
+      \fi\fi
       \pst@getcoor{@@A}\pst@tempa
       \pst@getcoor{@@B}\pst@tempb
       \ifx\psk@angleA\relax
@@ -2561,7 +2567,7 @@
 % OPTICAL FILTER
 %
 \def\optfilter@ref{%
-  \pst@OptexpVerb{\psk@oe@filtersize\space 0.5 mul dup /@@y ED /@@x }%
+  \pst@OptexpVerb{\psk@oe@filtersize\space 0.5 mul dup /@@y ED /@@x ED }%
 }%
 \def\optfilter@comp{%
   \edef\@sz{\psk@oe@filtersize\space 0.5 mul }%
