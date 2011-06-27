@@ -12,10 +12,6 @@ footinclude=false,oneside]{pst-doc}
 \let\datePstOptExp\filedate
 \usepackage{pst-circ}
 \usepackage{nicefrac}
-\usepackage{longtable}
-\usepackage{multicol}
-\usepackage{multirow}
-\usepackage{float}
 \usepackage{prettyref}
 \newrefformat{sec}{Sec.~\ref{#1}}
 \lstset{%
@@ -82,20 +78,10 @@ footinclude=false,oneside]{pst-doc}
 %
 % New commands
 %
-\newcommand*{\OptExpPackage}{\textsf{`pst-optexp'}}
 \newcommand*{\nodename}[1]{\emph{#1}}
 \newcommand*{\param}[1]{\normalfont\texttt{#1}}
 \newcommand*{\paramvalue}[1]{\texttt{#1}}
-\newcommand*{\defaultparam}[1]{\emph{default:} \paramvalue{#1}}
-\newcommand*{\paramitem}[3]{\item[\param{#1}:] \paramvalue{#2} (\defaultparam{#3})}
-\newcommand*{\styleitem}[2]{\item[\param{#1}:] \paramvalue{#2}}
 \newcommand*{\styleshape}[1]{\texttt{#1}}
-%\newcommand{\parampar}[1]{\marginpar{\Lkeyword{#1}}}
-\newcommand*{\stylepar}[1]{\paragraph{\Lstyle{#1}}\xLkeyword{addto#1}\xLkeyword{new#1}}
-
-\newcommand*{\nodedesc}[1]{\Largr{#1}}
-\newcommand*{\nodedescin}{\nodedesc{In}}%
-\newcommand*{\nodedescout}{\nodedesc{Out}}%
 
 \def\Lstyle#1{\texttt{#1}\xLstyle{#1}}
 \def\xLstyle#1{\index{#1@\texttt{#1}}\index{Style!#1@\texttt{#1}}}
@@ -124,8 +110,6 @@ footinclude=false,oneside]{pst-doc}
   \xLfdipole{#1}\cmditem{#1}[Options](In)(Out){Label}
 }
 
-\newcolumntype{T}{>{\ttfamily}l}
-\newcolumntype{B}{>{\bfseries}l}
 \newcommand{\refstringexplanation}[0]{%
   A \paramvalue{<ref string>} is any combination of \paramvalue{c}
   (center), \paramvalue{t} (top), \paramvalue{b} (bottom), \paramvalue{l}
@@ -2091,8 +2075,8 @@ incorporate this in a new released version.
   \pnode(2,5){PC1in}\pnode(4,5){PC1out}\pnode(6,5){PC2in}
   \pnode(8,5){PC2out}\pnode(2,2){CplSig}\pnode(5,2){CplIn}
   \pnode(2,1){CplOut}\pnode(10,4.5){Pump}\pnode(8,2){PumpSig}
-  \optisolator[compshift=0.8, addtoFiberIn={angleA=90}, 
-                 addtoFiberOut={angleB=-90}, label=0.5 . l]%
+  \optisolator[compshift=0.8, addtoFiberIn={angleA=180}, 
+                 addtoFiberOut={angleB=180}, label=0.5 . l]%
                  (CplSig)(PC1in){isolator}
   \polcontrol[addtoFiberIn={arrows=|-}](PC1in)(PC1out){}
   \optfiberpolarizer[labeloffset=0.6](PC1out)(PC2in){polarizer}
@@ -2100,8 +2084,8 @@ incorporate this in a new released version.
   \wdmsplitter[labeloffset=0.3, align=bottom, addtoFiberIn={arrows=|-}, 
                  addtoFiberOut1={arrows=->}, addtoFiberOut2={arrows=-|}]%
                  (CplIn)(CplOut)(CplSig){95/5}
-  \wdmcoupler[addtoFiberIn1={ArrowInside=->}, addtoFiberIn2={angleA=90}, 
-                addtoFiberOut={angleB=-90,arrows=-|}, ncurv=0.9, 
+  \wdmcoupler[addtoFiberIn1={ArrowInside=->}, addtoFiberIn2={angleA=0}, 
+                addtoFiberOut={angleB=0,arrows=-|}, ncurv=0.9, 
                 align=bottom, compshift=0.8](Pump)(PC2out)(PumpSig){Pump}
   \optbox[endbox, label=0 . . relative]([offset=-0.1]Pump)(Pump){980~nm}
   \optfiber[fiberloops=2, labeloffset=0.4](CplIn)(PumpSig){Er$^+$-doped}
