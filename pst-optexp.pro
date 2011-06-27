@@ -1,9 +1,9 @@
 %
 % PostScript prologue for pst-optexp.tex.
-% version 1.0 2011-06-01 (cb)
+% version 1.0 2011-06-27 (cb)
 % For distribution, see pstricks.tex.
 %
-/tx@OptexpDict 60 dict def
+/tx@OptexpDict 70 dict def
 tx@OptexpDict begin
 % concatenate two string
 % (str1) (str2) -> (str1str2)

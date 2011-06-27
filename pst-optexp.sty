@@ -10,17 +10,13 @@
 \DeclareOption{compat}{\gdef\pstoptexp@compat{}}
 \ProcessOptions\relax
 %
-%\IfFileExists{environ.sty}{%
-  \RequirePackage{environ}
-  \long\def\optexp@collect#1{%
+\RequirePackage{environ}
+  \long\def\poe@collect#1{%
     \psset{optexpenv, bglayer=true, toplayer=false}#1%
-    \gdef\pst@oe@complist{}\global\poe@cnt=0\relax
+    \gdef\poe@complist{}\global\poe@cnt=0\relax
     \psset{bglayer=false, toplayer=true}%
     #1}%
-  \newenvironment{optexp}{\Collect@Body\optexp@collect}{}
-%}{%
-%  \message{^^JPackage 'environ' not found, 'optexp' environment will not be available.^^J}%
-%}%
+\newenvironment{optexp}{\Collect@Body\poe@collect}{}
 %
 \input{pst-optexp.tex}
 \ProvidesFile{pst-optexp.tex}
