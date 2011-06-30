@@ -22,12 +22,12 @@
 %<stylefile>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<stylefile>\ProvidesPackage{pst-optexp}
 %<*stylefile>
-    [2011/06/29 package wrapper for pst-optexp.tex]
+    [2011/06/30 package wrapper for pst-optexp.tex]
 %</stylefile>
 %
 %<*driver>
-\documentclass[a4paper]{ltxdoc}
-\usepackage[DIV=9]{typearea}
+\documentclass[a4paper, DIV=9]{scrartcl}
+\usepackage{doc}
 \usepackage[latin1]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{lmodern}
@@ -43,6 +43,16 @@
 \usepackage{pst-circ}
 \usepackage{interfaces, needspace}
 \usepackage{hypdoc}
+\hypersetup{colorlinks=true, 
+   urlcolor=pdfurlcolor,    
+   filecolor=pdffilecolor,  
+   linkcolor=pdflinkcolor,
+   breaklinks,        
+   linktocpage=true}
+\definecolor{DOrange}{rgb}{1,.4,.2}
+\colorlet{pdflinkcolor}{DOrange}
+\colorlet{pdfurlcolor}{DOrange}
+\colorlet{pdffilecolor}{DOrange}
 \usepackage{listings}
 \usepackage{showexpl}
 \makeatletter
@@ -52,13 +62,11 @@
 \definecolor{colIdentifier}{rgb}{0,0,0}
 \definecolor{colComments}{rgb}{1,0,0}
 \definecolor{colString}{rgb}{0,0.5,0}
-%%\usepackage{index}
-%%\newindex{doc}{ddx}{dnd}{Index}
-\usepackage{makeidx}
+\usepackage[makeindex]{splitidx}
+\newindex[Documentation Index]{ddx}
 \usepackage{nicefrac}
 \usepackage{prettyref}
 \newrefformat{sec}{Sec.~\ref{#1}}
-\definecolor{DOrange}{rgb}{1,.4,.2}
 \lstset{%
     language=[LaTeX]TeX,
     float=hbp,%
@@ -159,35 +167,35 @@
 \newcommand*{\paramvalue}[1]{\texttt{#1}}
 \newcommand*{\styleshape}[1]{\texttt{#1}}
 
-\def\xLcs#1{\index{#1@\nxLcs{#1}}\index{Macro!#1@\nxLcs{#1}}}
+\def\xLcs#1{\sindex[ddx]{#1@\nxLcs{#1}}\sindex[ddx]{Macro!#1@\nxLcs{#1}}}
 \def\Lcs#1{\nxLcs{#1}\xLcs{#1}}
 \def\nxLcs#1{\texttt{\textbackslash#1}}
 
-\def\LPack#1{\texttt{#1}\index{#1@\texttt{#1}}\index{Package!#1@\texttt{#1}}}
+\def\LPack#1{\texttt{#1}\sindex[ddx]{#1@\texttt{#1}}\sindex[ddx]{Package!#1@\texttt{#1}}}
 \def\nxLPack#1{\texttt{#1}}
 
 \def\Lkeyword#1{\texttt{#1}\xLkeyword{#1}}
-\def\xLkeyword#1{\index{#1@\texttt{#1}}\index{Keyword!#1@\texttt{#1}}}
+\def\xLkeyword#1{\sindex[ddx]{#1@\texttt{#1}}\sindex[ddx]{Keyword!#1@\texttt{#1}}}
 \def\nxLkeyword#1{\texttt{#1}}
 
-\def\xLoption#1{\index{#1@\texttt{#1}}\index{Package option!#1@\texttt{#1}}}
+\def\xLoption#1{\sindex[ddx]{#1@\texttt{#1}}\sindex[ddx]{Package option!#1@\texttt{#1}}}
 \def\Loption#1{\texttt{#1}\xLoption{#1}}
 
 \def\Lstyle#1{\texttt{#1}\xLstyle{#1}}
-\def\xLstyle#1{\index{#1@\texttt{#1}}\index{Style!#1@\texttt{#1}}}
+\def\xLstyle#1{\sindex[ddx]{#1@\texttt{#1}}\sindex[ddx]{Style!#1@\texttt{#1}}}
 \def\nxLstyle#1{\texttt{#1}}
 
 \def\Ldipole#1{\nxLcs{#1}\xLdipole{#1}}
-\def\xLdipole#1{\index{#1@\nxLcs{#1}}\index{Dipole object!#1@\nxLcs{#1}}}
+\def\xLdipole#1{\sindex[ddx]{#1@\nxLcs{#1}}\sindex[ddx]{Dipole object!#1@\nxLcs{#1}}}
 
 \def\Ltripole#1{\nxLcs{#1}\xLtripole{#1}}
-\def\xLtripole#1{\index{#1@\nxLcs{#1}}\index{Tripole object!#1@\nxLcs{#1}}}
+\def\xLtripole#1{\sindex[ddx]{#1@\nxLcs{#1}}\sindex[ddx]{Tripole object!#1@\nxLcs{#1}}}
 
 \def\Lfdipole#1{\nxLcs{#1}\xLfdipole{#1}}
-\def\xLfdipole#1{\index{#1@\nxLcs{#1}}\index{Fiber dipole object!#1@\nxLcs{#1}}}
+\def\xLfdipole#1{\sindex[ddx]{#1@\nxLcs{#1}}\sindex[ddx]{Fiber dipole object!#1@\nxLcs{#1}}}
 
 \def\Lfmultipole#1{\nxLcs{#1}\xLfmultipole{#1}}
-\def\xLfmultipole#1{\index{#1@\nxLcs{#1}}\index{Fiber multipole object!#1@\nxLcs{#1}}}
+\def\xLfmultipole#1{\sindex[ddx]{#1@\nxLcs{#1}}\sindex[ddx]{Fiber multipole object!#1@\nxLcs{#1}}}
 
 \newcommand{\dipoledesc}[1]{%
   \xLdipole{#1}\cmditem{#1}[Options](In)(Out){Label}%
@@ -3020,7 +3028,7 @@
 % I thank all the people of the PSTricks mailinglist for the continuous help, especially Herbert Voﬂ.
 % 
 % 
-% \printindex
+% \printindex[ddx]
 % \StopEventually{}
 %
 % \section{Implementation}
