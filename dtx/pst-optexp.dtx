@@ -26,7 +26,7 @@
 %</stylefile>
 %
 %<*driver>
-\documentclass{ltxdoc}
+\documentclass[a4paper]{ltxdoc}
 \usepackage[DIV=9]{typearea}
 \usepackage[latin1]{inputenc}
 \usepackage[T1]{fontenc}
@@ -41,6 +41,8 @@
 \let\verPstOptExp\fileversion
 \let\datePstOptExp\filedate
 \usepackage{pst-circ}
+\usepackage{interfaces, needspace}
+\usepackage{hypdoc}
 \usepackage{listings}
 \usepackage{showexpl}
 \makeatletter
@@ -135,6 +137,19 @@
   \ifblank{#1}
     {\ltd@option{#2}{#2}{\prm{num}}{}}
     {\ltd@option{#2}{#2}{\prm{num}}{\ltd@textverb{#1}}}}%
+
+\let\plainllap\llap
+\newrobustcmd\macro@llap[1]{{\global\let\llap\plainllap
+ \setbox0=\hbox\bgroup \raisedhyperdef{macro}{\saved@macroname}{#1}\egroup
+ \ifdim\wd0>32mm
+    \hbox to\z@ \bgroup\hss \hbox to32mm{\unhcopy0\hss}\egroup
+    \edef\@tempa{\hskip\dimexpr\the\wd0-32mm}\global\everypar\expandafter{\the\expandafter\everypar
+                                                                           \@tempa \global\everypar{}}%
+ \else \llap{\unhbox0}\fi}}
+ \AtBeginEnvironment{macro}{\if@nobreak\else\Needspace{2\baselineskip}\fi
+    \MacrocodeTopsep\z@skip \MacroTopsep\z@skip \parsep\z@ \topsep\z@ \itemsep\z@ \partopsep\z@
+    \let\llap\macro@llap}
+ \AtEndEnvironment{macro}{\goodbreak \vskip.3\parskip}
 \makeatother
 
 \newcommand*{\nodename}[1]{\emph{#1}}
@@ -413,17 +428,23 @@
 % graphics parameters changes also the connections that are drawn within
 % the component.
 % 
-% \begin{LTXexample}
-% \begin{pspicture}(3,4)
-%   \psset{beam}
-%   % wrong, also beam width is changed
-%   \mirror[linewidth=3\pslinewidth]%
-%          (0,3)(2,3)(2,2){mirror}
-%   % correct result
-%   \mirror[addtoOptComp={linewidth=3\pslinewidth}]%
-%          (0,1)(2,1)(2,0){mirror}
-% \end{pspicture}
-% \end{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(3,4)
+  \psset{beam}
+  % wrong, also beam width is changed
+  \mirror[linewidth=3\pslinewidth]%
+         (0,3)(2,3)(2,2){mirror}
+  % correct result
+  \mirror[addtoOptComp={linewidth=3\pslinewidth}]%
+         (0,1)(2,1)(2,0){mirror}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % 
 % \styleitem{OptionalStyle}
 % \end{optionlist}
@@ -435,39 +456,63 @@
 %   of object between the two reference points. It is available for all components
 %   but the free-ray tripoles.
 % 
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(3,1.5) 
   \lens[beam, position=0.8](0,1)(3,1){L}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % 
 % \numitem{abspos}
 % The parameter \Lkeyword{abspos} allows absolute positioning between the
 % two reference nodes.
 % 
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(3,1.5) 
   \lens[beam, abspos=1](0,1)(3,1){L}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % 
 % \numitem[0]{compshift}
 % 
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(3,2) 
   \lens[compshift=0.1, n=1](0,1)(3,1){L}
   \addtopsstyle{Beam}{startvecabs, startvec=1 0}
   \drawbeam{(0,1)}{}{(3,1)}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % 
 % \bigskip
 % 
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(3,2) 
   \mirror[beam, compshift=0.2, startvecabs, startvec=1 0, labelangle=45](0,1)(2,1)(2,0){mirror}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % \end{optionlist}
 % 
 % 
@@ -494,36 +539,54 @@
 % 
 % \medskip
 % 
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(-2,-2)(2.5,2)
   \psset{endbox, optboxwidth=1, optboxheight=0.6}
   \multido{\i=0+45}{8}{%
     \optbox[label=0 . . relative](0,0)(1;\i){\i}
   }
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % 
 % \bigskip
 % 
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(-2,-2)(2.5,2)
   \psset{endbox, optboxwidth=1, optboxheight=0.6}
   \multido{\i=0+72}{5}{%
     \optbox[labelref=relgrav](0,0)(1;\i){\i}
   }
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % 
 % \bigskip
 % 
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(-2,-2)(2.5,2)
   \psset{endbox, optboxwidth=1, optboxheight=0.6}
   \multido{\i=0+72}{5}{%
     \optbox[labelref=global](0,0)(1;\i){\i}
   }
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % 
 % \medskip
 % 
@@ -535,7 +598,10 @@
 % 
 % \medskip
 % 
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(0,0)(4,3)
   \psset{endbox, beam}
   \optbox[label=0.7](1.5,2.5)(2.5,2.5){label}
@@ -543,7 +609,10 @@
   \optbox[label=0 . . relative]%
          (0.6,0.6)(0.6,1.6){relative}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % \end{optionlist}
 % 
 % \subsection{Accessing Objects and Special Nodes}\label{sec:objnodes}
@@ -565,9 +634,9 @@
 % 
 % \medskip
 % 
-% \begin{lstlisting}
-\optbox[compname=MyBox](A)(B){Box} % valid use of 'compname'
-\psset{compname=MyName}            % not valid, gives an error
+% \begin{lstlisting}[gobble=2]
+% \optbox[compname=MyBox](A)(B){Box} % valid use of 'compname'
+% \psset{compname=MyName}            % not valid, gives an error
 % \end{lstlisting}
 % \end{optionlist}
 % 
@@ -592,7 +661,10 @@
 % macro:
 % 
 % \medskip
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(3,2)
   \pnode(0,1){A}\pnode(3,1){B}\lens[showoptdots](A)(B){}
   \psdot[linecolor=red](\oenoderefa{})
@@ -600,13 +672,19 @@
   \psdot[linecolor=blue](\oenoderefb{})
   \psdot[linecolor=blue, dotstyle=x, dotsize=0.2](B)
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % \medskip
 % 
 % For tripole macros, new reference nodes are constructed which lay in the plane of refraction:
 % 
 % \medskip
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(3,4)
   \pnode(0,2){A}\pnode(2,0){B}\pnode(2,2){G}
   \mirror[showoptdots](A)(G)(B){}
@@ -615,7 +693,10 @@
   \psdot[linecolor=blue](\oenoderefb{})
   \psdot[linecolor=blue, dotstyle=x, dotsize=0.2](B)
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % \end{ltxsyntax}
 % 
 % \subsection{Nodes For External Usage}\label{sec:extnode}
@@ -643,7 +724,10 @@
 % 
 % \bigskip
 % 
-% \begin{LTXexample}[pos=t, vsep=8mm]
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[pos=t, vsep=8mm]
 \begin{pspicture}[showgrid=true](11,3) 
    \psset{beam, beamInside=false, labelangle=-90, labeloffset=0.3}
    \optbox[extnode=tl](0,2.5)(3,2.5){\texttt{tl}}\psdot(\oenodeext{})
@@ -656,7 +740,10 @@
    \optbox[extnode=r](8,1.5)(11,1.5){\texttt{r}}\psdot(\oenodeext{})
    \optbox[extnode=br](8,0.5)(11,0.5){\texttt{br}}\psdot(\oenodeext{})
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % \end{optionlist}
 % 
 % \newpage
@@ -673,21 +760,33 @@
 % 
 % \begin{ltxsyntax}
 % \dipoledesc{lens}
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(3,1.5)
 \lens[beam](0,1)(3,1){L}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % \end{ltxsyntax}
 % 
 % \begin{optionlist}
 % \numitem[1]{lensheight} Set the height of the lens.
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(3,1.5)
 \lens[beam](0,1)(3,1){L1}
 \lens[lensheight=0.5](2,1)(3,1){L2}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % 
 % \numitem[1]{lensradiusleft} Set the left radius of the lens. A positive
 % \prm{num} is for convex, a negative one for concave curvatures. Use zero for a plain
@@ -696,22 +795,34 @@
 % \numitem[1]{lensradiusright} Same as \opt{lensradiusleft} but for the right surface.
 % 
 % \medskip
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(3,1.5)
   \psset{lensradiusright=0}
   \lens[lensradiusleft=1, beam](0,1)(3,1){L1}
   \lens[lensradiusleft=-1](2,1)(3,1){L2}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % 
 % \numitem{lensradius} A convenience option to specify both curvatures.
 % 
 % \medskip
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(3,1.5)
   \lens[lensradius=-2, beam](0,1)(3,1){L1}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % 
 % \numitem[0]{lenswidth}
 % 
@@ -721,35 +832,53 @@
 % lenses and it can have ugly results if the lens width is choosen too small.
 % 
 % \medskip
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(3,2)
   \lens[lenswidth=0.5, beam](0,1)(2,1){thicklens}
   \lens[lenswidth=0.1, beam](2,1)(3,1){}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % 
 % \optitem{lens}{\prm{leftR} [\prm{rightR} [\prm{height} [\prm{width}]]]}
 % A convenience option to specify all lens parameters with a single option.
 % 
 % \medskip
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(3,1.5)
   \lens[lens=1](0,1)(1,1){L1}
   \lens[lens=-2 1, beam](0,1)(3,1){L2}
   \lens[lens=1 -0.5 0.7](2,1)(3,1){L3}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % \end{optionlist}
 % 
 % \subsection{Optical Plate}
 % 
 % \begin{ltxsyntax}
 % \dipoledesc{optplate}
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(3,1.5)
   \optplate[beam](0,1)(3,1){filter}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % \end{ltxsyntax}
 % \begin{optionlist}
 %   \numitem[1]{plateheight} The height of the plate.
@@ -760,22 +889,34 @@
 %   to globally change the linewidth of all \nxLcs{optplate} objects.
 % 
 % \numitem[0]{angle} Rotate the plate around its center.
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(3,1.5)
   \optplate[angle=10, beam](0,1.2)(3,1.2){glass plate}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % \end{optionlist}
 % 
 % \subsection{Retardation Plate}
 % 
 % \begin{ltxsyntax}
 % \dipoledesc{optretplate}
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(3,1.5)
   \optretplate[beam](0,1)(3,1){$\nicefrac{\lambda}{2}$}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % \end{ltxsyntax}
 % 
 % \begin{optionlist}
@@ -787,11 +928,17 @@
 % 
 % \begin{ltxsyntax}
 % \dipoledesc{pinhole}
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(3,1.5)
   \pinhole[beam](0,1)(3,1){PH}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % \end{ltxsyntax}
 % 
 % \begin{optionlist}
@@ -806,22 +953,34 @@
 % \nxLkeyword{phwidth} is not zero.
 % 
 % \medskip
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(3,1.5)
   \pinhole[beam, phwidth=-0.1](0,1)(3,1){PH}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % \end{optionlist}
 % 
 % \subsection{Crystal}\label{sec:crystal}
 % 
 % \begin{ltxsyntax}
 % \dipoledesc{crystal}
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(3,1.5)
 \crystal[beam](0,1)(3,1){Crystal}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % \end{ltxsyntax}
 % 
 % \begin{optionlist}
@@ -840,13 +999,19 @@
 % \noindent For a discussion of the \Lkeyword{angle} and \Lkeyword{rotateref}
 % parameters see Sec.~\ref{sec:box} about boxes.  \medskip
 % 
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(3,2)
 \crystal[fillstyle=solid, fillcolor=yellow!90!black, 
            label=1.2 -45, voltage, 
            lamp, beam](0,1)(3,1){SBN:Ce}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % 
 % \medskip
 % 
@@ -854,23 +1019,35 @@
 % 
 % \begin{ltxsyntax}
 % \dipoledesc{optbox}
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(3,2)
   \optbox[beam](0,0)(3,2){box}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % \end{ltxsyntax}
 % 
 % \begin{optionlist}
 % \numitem[0.8]{optboxheight}
 % \numitem[1.4]{optboxwidth}
 % \boolitem[false]{endbox}
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(3,2)
   \optbox[beam, endbox, label=0 . . relative]%
            (0,0)(1.5,1){box}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % 
 % \numitem[0]{angle}
 % \numitem[c]{rotateref}{refstring}
@@ -885,12 +1062,18 @@
 % 
 % \medskip
 % 
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(3,2)
   \optbox[angle=20, beam, rotateref=l, 
             labeloffset=0.5](0,1)(3,1){box}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % 
 % \numitem{refractiveindex}
 % Together with the parameter \Lkeyword{refractiveindex} this
@@ -903,25 +1086,37 @@
 % 
 % \medskip
 % 
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(3,1.5)
   \pnode(0,1){A}\pnode(3,1){B}
   \optbox[labeloffset=0.8, optboxwidth=0.5, optboxheight=1, angle=20, n=2.3, compname=Box](A)(B){glass plate}
   \drawbeam{(A|\oenodein{Box})}{Box}
   \drawbeam{Box}{(B|\oenodeout{Box})}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % \end{optionlist}
 % 
 % \subsection{Detector}
 % 
 % \begin{ltxsyntax}
 % \dipoledesc{optdetector}
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(3,1.2)
   \optdetector[beam](0,0)(1.5,1){detector}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % \end{ltxsyntax}
 % 
 % \begin{optionlist}
@@ -930,11 +1125,17 @@
 % 
 % \choitem[round]{dettype}{round, diode} This parameter selects between different
 % types of detectors.
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(3,1.5)
   \optdetector[beam, dettype=diode](0,0)(1.5,1){detector}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % \end{optionlist}
 % 
 % \subsection{Optical Diode}\label{sec:optdiode}
@@ -942,11 +1143,17 @@
 % 
 % \begin{ltxsyntax}
 % \dipoledesc{optdiode}
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(3,2)
    \optdiode[beam, beamInside=false](0,1)(3,1){Diode}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % \end{ltxsyntax}
 % \begin{optionlist}
 % \numitem[0.8]{optdiodesize}
@@ -956,11 +1163,17 @@
 % 
 % \begin{ltxsyntax}
 % \dipoledesc{doveprism}
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(3,1.5)
   \doveprism[beam](0,1)(3,1){Dove}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % \end{ltxsyntax}
 % 
 % \begin{optionlist}
@@ -974,17 +1187,26 @@
 % 
 % \begin{ltxsyntax}
 % \xLdipole{polarization}\cmditem{polarization}[Options](In)(Out)
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(3,1)
   \polarization[beam](0,0.5)(3,0.5)
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % \end{ltxsyntax}
 % \begin{optionlist}
 % \choitem[parallel]{poltype}{parallel, perp, misc, lcirc, rcirc}
 % \numitem[0.6]{polsize}
 % \optitem[0.7\nxLcs{pslinewidth}]{pollinewidth}{\prm{num} or \prm{dimen}}
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(3,5)
   \psset{beam}
   \begin{optexp}
@@ -997,18 +1219,27 @@
                   abspos=2.5](0,0.5)(3,0.5)
   \end{optexp}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % \end{optionlist}
 % 
 % \subsection{Mirror}\label{sec:mirror}
 % 
 % \begin{ltxsyntax}
 % \tripoledesc{mirror}
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(3,2)
   \mirror[beam](0,0)(1.8,1.5)(0,2){M}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % \end{ltxsyntax}
 % 
 % \begin{optionlist}
@@ -1024,36 +1255,57 @@
 % value of \opt{0} is for a plain mirror, a negative radius for a concave mirror
 % and a positive radius gives you a convex mirror.
 % 
-% \begin{LTXexample}[width=3.5cm]
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[width=3.5cm]
 \begin{pspicture}(3,3)
   \psset{labeloffset=0.5}
   \mirror[mirrorradius=1](0,0)(1,2)(1.8,1){concave}
   \mirror[mirrorradius=-1](1,2)(1.8,1)(2.5,3){convex}
   \drawbeam{(0,0)}{1}{2}{(2.5,3)}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % 
 % \choitem[normal]{mirrortype}{normal, piezo, extended}
 % 
 % The \nxLkeyword{mirrortype} selects between different types of mirrors. Note, when using \Lkeyword{extnode} with a
 % piezo mirror, the default piece of wire is omitted.
 % 
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(3,2)
   \mirror[mirrortype=extended,
             beam](0,0)(1.8,1.5)(0,2){ext}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % \medskip
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(3,2)
 \mirror[mirrortype=piezo,
           beam](0,0)(1.8,1.5)(0,2){piezo}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % 
 % \styleitem{ExtendedMirror} This style defines the appearance of the extended mirror.
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(3,2)
   \newpsstyle{ExtendedMirror}{fillstyle=solid, 
                                 fillcolor=gray!50,
@@ -1061,48 +1313,75 @@
   \mirror[mirrortype=extended,
             beam](0,0)(1.8,1.5)(0,2){ext}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % 
 % \styleitem{PiezoMirror} This style defines the appearance of the piezo
 % mirror. This can also be used to change the size of piezo part, as shown in the
 % examples.
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(3,2)
   \addtopsstyle{PiezoMirror}{xunit=2}
   \mirror[mirrortype=piezo,
             beam](0,0)(1.8,1.5)(0,2){piezo}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % 
 % \boolitem[false]{variable}
 % 
 % \styleitem{VariableMirror} With the \opt{variable} option a moveable
 % mirror is drawn which has two additional curved arrows on both sides. The style
 % of the arrows can be changed with the \opt{VariableMirror} style.
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(3,2)
   \mirror[beam, variable](0,0)(1.8,1.5)(0,2){var}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % 
 % \numitem[0.1]{mirrordepth} Define the depth of an extended mirror
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(3,2)
   \mirror[mirrortype=extended, mirrordepth=0.2,
             beam](0,0)(1.8,1.5)(0,2){}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % \end{optionlist}
 % 
 % \subsection{Beamsplitter}
 % 
 % \begin{ltxsyntax}
 % \tripoledesc{beamsplitter}
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(3,2)
   \beamsplitter[beam](0,1)(2,1)(2,0){BS}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % \end{ltxsyntax}
 % 
 % \begin{optionlist}
@@ -1111,22 +1390,34 @@
 % \choitem[cube]{bsstyle}{cube, plate} This parameter selects between different
 % types of beamsplitters. Note that although the \opt{plate} beamsplitter looks
 % like a mirror it has a different behavior for beam drawing.
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(3,2)
   \beamsplitter[bsstyle=plate, beam](0,1)(2,1)(2,0){BS}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % \end{optionlist}
 % 
 % \subsection{Optical Grid}
 % 
 % \begin{ltxsyntax}
 % \tripoledesc{optgrid}
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(3,2)
   \optgrid[beam](0,2)(1.8,1.5)(0,0){grid}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % \end{ltxsyntax}
 % \begin{optionlist}
 % \numitem[1]{optgridwidth} The width of the grating.
@@ -1134,35 +1425,59 @@
 % \numitem[0.15]{optgridheight} This is the total height of the grating.
 % 
 % \numitem[0.075]{optgriddepth} This is the modulation depth of the grating structure. The total height is unaffected by this value.
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(3,2)
   \optgrid[optgriddepth=0.05, 
              beam](0,2)(1.8,1.5)(0,0){grid}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % 
 % \intitem[10]{optgridcount} The number of grating grooves.
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(3,2)
   \optgrid[optgridcount=3, 
              beam](0,2)(1.8,1.5)(0,0){grid}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % 
 % \choitem[blazed]{optgridtype}{blazed, binary} Select between a \opt{binary} and a \opt{blazed} grating.
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(3,2)
   \optgrid[optgridtype=binary, 
              beam](0,2)(1.8,1.5)(0,0){grid}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % 
 % \boolitem[false]{reverse} Reverse the slope of the grooves of the \opt{blazed} grating.
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(3,2)
   \optgrid[reverse, beam](0,2)(1.8,1.5)(0,0){grid}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % 
 % \optitem[0.7\nxLcs{pslinewidth}]{optgridlinewidth}{\prm{num} or \prm{dimen}} The linewidth of the
 % grating. This could be defined also with the generic \opt{linewidth} option,
@@ -1174,11 +1489,17 @@
 % 
 % \begin{ltxsyntax}
 % \tripoledesc{optprism}
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(3,2)
   \optprism[beam](0,1)(2,1)(3,0){Prism}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % \end{ltxsyntax}
 % The prism is always placed symmetric between \prm{In} and \prm{Out} nodes. For
 % asymmetric beam traces see \prettyref{sec:connecting}.
@@ -1186,33 +1507,51 @@
 % \begin{optionlist}
 % \numitem[1]{prismsize} This is the height of the prism.
 % \numitem[60]{prismangle}
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(3,2)
   \optprism[prismangle=30, beam](0,1)(2,1)(3,0){Prism}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % \end{optionlist}
 % 
 % \subsection{Right-Angle Prism}\label{sec:raprism}
 % 
 % \begin{ltxsyntax}
 % \tripoledesc{raprism}
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(3,2)
   \psdot(1.8,1)
   \rightangleprism[beam](0,1.5)(1.8,1)(0,0.5){RA}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % \end{ltxsyntax}
 % The right-angle prisms is constructed such that the incoming and outcoming beam
 % are parallel and the \prm{Center} node is vertically centered in the
 % prism.
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(3,2)
   \psdot(1.8,1.2)
   \rightangleprism[beam](0,1.5)(1.8,1.2)(0,0.5){RA}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % 
 % \begin{optionlist}
 % \numitem[1.5]{raprismsize} This is the length of the input plane.
@@ -1222,11 +1561,17 @@
 % 
 % \begin{ltxsyntax}
 % \tripoledesc{pentaprism}
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(3,2)
   \pentaprism[beam](0,1)(2,1)(2,0){PP}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % \end{ltxsyntax}
 % 
 % \begin{optionlist}
@@ -1241,7 +1586,10 @@
 % 
 % \begin{ltxsyntax}
 %   \dipoledesc{optdipole}
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(3,3)
   \optdipole[labeloffset=1, beam](0,2)(3,1){%
     \rput(0,0){%
@@ -1249,10 +1597,16 @@
     }
   }{label}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % 
 % \tripoledesc{opttripole}
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(3,3)
   \pnode(0,0){A}
   \pnode(1.5,2){G}
@@ -1261,7 +1615,10 @@
     \rput[b](0,0){text}
   }{label}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % \end{ltxsyntax}
 % 
 % \section{Fiber-Optical Objects}
@@ -1270,48 +1627,78 @@
 % 
 % \begin{ltxsyntax}
 % \fiberdipoledesc{optfiber}
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(3,1.5)
   \psset{labeloffset=0.3}
   \optfiber(0,0.5)(3,0.5){SSMF}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % \end{ltxsyntax}
 % \begin{optionlist}
 % \intitem[3]{fiberloops} 
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(3,1.5)
   \psset{labeloffset=0.3}
   \optfiber[fiberloops=2](0,0.5)(3,0.5){SSMF}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % 
 % \numitem[0.4]{fiberloopradius}
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(3,1.5)
   \psset{labeloffset=0.3}
   \optfiber[fiberloopradius=0.2](0,0.5)(3,0.5){SSMF}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % 
 % \numitem[0.3]{fiberloopsep}
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(3,1.5)
   \psset{labeloffset=0.3}
   \optfiber[fiberloopsep=0.6](0,0.5)(3,0.5){SSMF}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % \end{optionlist}
 % 
 % \subsection{Amplifier}
 % 
 % \begin{ltxsyntax}
 % \fiberdipoledesc{optamp}
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(3,1.5)
   \optamp(0,1)(3,1){EDFA}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % \end{ltxsyntax}
 % 
 % \begin{optionlist}
@@ -1322,11 +1709,17 @@
 % 
 % \begin{ltxsyntax}
 % \fiberdipoledesc{optmzm}
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(3,1.5)
   \optmzm(0,1)(3,1){MZM}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % \end{ltxsyntax}
 % 
 % \begin{optionlist}
@@ -1339,42 +1732,72 @@
 % 
 % \begin{ltxsyntax}
 % \fiberdipoledesc{optfilter}
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(3,1.5)
   \optfilter(0,1)(3,1){bandpass}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % \end{ltxsyntax}
 % 
 % \begin{optionlist}
 % \numitem[0.8]{filtersize}
 % \choitem[bandpass]{filtertype}{bandpass, bandstop, lowpass, highpass}
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(3,1.5)
   \optfilter[filtertype=bandstop](0,1)(3,1){bandstop}
 \end{pspicture}
-% \end{LTXexample}
-% \begin{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(3,1.5)
   \optfilter[filtertype=lowpass](0,1)(3,1){lowpass}
 \end{pspicture}
-% \end{LTXexample}
-% \begin{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(3,1.5)
   \optfilter[filtertype=highpass](0,1)(3,1){highpass}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % \end{optionlist}
 % 
 % \subsection{Polarization Controller}
 % 
 % \begin{ltxsyntax}
 % \fiberdipoledesc{polcontrol}
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(3,1.5)
   \polcontrol(0,1)(3,1){PC}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % \end{ltxsyntax}
 % 
 % \begin{optionlist}
@@ -1385,11 +1808,17 @@
 % 
 % \begin{ltxsyntax}
 % \fiberdipoledesc{optisolator}
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(3,1.5)
   \optisolator(0,1)(3,1){isolator}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % \end{ltxsyntax}
 % 
 % \begin{optionlist}
@@ -1398,46 +1827,70 @@
 % 
 % \styleitem{IsolatorArrow} This changes the appearance of the isolator
 % arrow. This can be especially useful to adapt the length of the arrow.
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(3,1.5)
   \addtopsstyle{IsolatorArrow}{xunit=1.2, 
                                  arrowinset=0.1}
   \optisolator(0,1)(3,1){isolator}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % \end{optionlist}
 % 
 % \subsection{Optical Switch}
 % 
 % \begin{ltxsyntax}
 % \fiberdipoledesc{optswitch}
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(3,1.5)
   \optswitch(0,1)(3,1){Opened switch}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % \end{ltxsyntax}
 % 
 % \begin{optionlist}
 % \numitem[0.8]{switchsize}
 % 
 % \choitem[opened]{switchstyle}{opened, closed} Indicate the switch as \opt{opened} or \opt{closed}
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(3,1.5)
   \optswitch[switchstyle=closed](0,1)(3,1){Closed switch}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % \end{optionlist}
 % 
 % \subsection{Fiber Delay Line}
 % 
 % \begin{ltxsyntax}
 % \fiberdipoledesc{fiberdelayline}
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}](3,1.5)
   \fiberdelayline(0,1)(3,1){Delay line}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % \end{ltxsyntax}
 % 
 % \begin{optionlist}
@@ -1446,12 +1899,18 @@
 % and of the arrow type. This can be especially useful to adapt the length of the
 % arrow which may not be appropriate depending on the \opt{fdlsize} or to reverse
 % the arrow.
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}](3,1.5)
   \addtopsstyle{FdlArrow}{xunit=-1}
   \fiberdelayline(0,1)(3,1){Delay line}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % \end{optionlist}
 % 
 % 
@@ -1459,11 +1918,17 @@
 % 
 % \begin{ltxsyntax}
 % \fiberdipoledesc{optfiberpolarizer}
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(3,1.5)
   \optfiberpolarizer(0,1)(3,1){polarizer}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % \end{ltxsyntax}
 % 
 % \begin{optionlist}
@@ -1474,11 +1939,17 @@
 % 
 % \begin{ltxsyntax}
 % \xLcs{fibercollimator}\cmditem{fibercollimator}(In)(A)(B)(Out){Label}%
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(3,1.5)
   \fibercollimator[beam](0,1)(3,1){FC}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % \end{ltxsyntax}
 % \begin{optionlist}
 % \numitem[0.3]{fibercolsize}
@@ -1489,11 +1960,17 @@
 % 
 % \medskip
 % 
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(3,2)
    \fibercollimator[beam](0,1)(2,1)(3,2){FC}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % 
 % \medskip
 % 
@@ -1502,11 +1979,17 @@
 % 
 % \medskip
 % 
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(3,2)
    \fibercollimator[beam](0,1)(2,1)(3,1)(3,2){FC}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % 
 % \medskip
 % 
@@ -1514,24 +1997,39 @@
 % \subsubsection{\texorpdfstring{\mathversion{bold}$2\times 2$}{2x2} Coupler}
 % \begin{ltxsyntax}
 % \xLfmultipole{optcoupler}\cmditem{optcoupler}(LeftTop)(LeftBottom)(RightTop)(RightBottom){Label}%
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(3,1.5)
   \optcoupler(0,1.5)(0,0.5)(3,1.5)(3,0.5){Coupler}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % \end{ltxsyntax}
 % \begin{optionlist}
 % \numitem[0.2]{couplersize}
 % \numitem[0.1]{couplersep} The vertical distance between two fiber ports.
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(3,1.5)
   \optcoupler[couplersep=0]%
                (0,1.5)(0,0.5)(3,1.5)(3,0.5){Coupler}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % 
 % \choitem[elliptic]{couplertype}{none, elliptic, rectangular, crossswitch}
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(3,4.5)
   \psset{labeloffset=0.5}
   \optcoupler[couplertype=none]%
@@ -1541,10 +2039,16 @@
   \optcoupler[couplertype=crossswitch]%
                (0,1.5)(0,0.5)(3,1.5)(3,0.5){Coupler}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % 
 % \choitem[center]{align}{top, bottom, center}
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(3,3)
   \psset{labeloffset=0.4}
   \optcoupler[align=top]%
@@ -1552,40 +2056,64 @@
   \optcoupler[align=bottom]
                (0,1.5)(0,0.5)(3,1.5)(3,0.5){Bottom}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % \end{optionlist}
 % 
 % \subsubsection{WDM Coupler}
 % \begin{ltxsyntax}
 % \xLfmultipole{wdmcoupler}\cmditem{wdmcoupler}(LeftTop)(LeftBottom)(Right){Label}%
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(3,1.5)
   \wdmcoupler(0,1.5)(0,0.5)(3,1){WDM}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % \end{ltxsyntax}
 % 
 % \begin{optionlist}
 % \numitem[0.2]{couplersize}
 % \numitem[0.1]{couplersep} The vertical distance between the two input fiber ports.
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(3,1.5)
   \wdmcoupler[couplersep=0](0,1.5)(0,0.5)(3,1){WDM}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % 
 % \choitem[elliptic]{couplertype}{none, elliptic, rectangular}
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(3,3)
   \psset{labeloffset=0.5}
   \wdmcoupler[couplertype=none](0,3)(0,2)(3,2.5){WDM}
   \wdmcoupler[couplertype=rectangular]%
                (0,1.5)(0,0.5)(3,1){WDM}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % 
 % \choitem[center]{align}{top, bottom, center}
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(3,3)
   \psset{labeloffset=0.4}
   \wdmcoupler[align=top,
@@ -1593,46 +2121,73 @@
   \wdmcoupler[align=bottom]
                (0,1.5)(0,0.5)(3,0.5){Bottom}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % \end{optionlist}
 % 
 % \subsubsection{WDM Splitter}
 % \begin{ltxsyntax}
 % \xLfmultipole{wdmcoupler}\cmditem{wdmsplitter}(Left)(RightTop)(RightBottom){Label}%
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(3,1.5)
   \wdmsplitter(0,1)(3,1.5)(3,0.5){WDM}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % \end{ltxsyntax}
 % \begin{optionlist}
 % \numitem[0.2]{couplersize}
 % \numitem[0.1]{couplersep} The vertical distance between the two output fiber ports.
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(3,1.5)
   \wdmsplitter[couplersep=0](0,1)(3,1.5)(3,0.5){WDM}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % 
 % \choitem[elliptic]{couplertype}{none, elliptic, rectangular}
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(3,3)
   \psset{labeloffset=0.5}
   \wdmsplitter[couplertype=none](0,2.5)(3,3)(3,2){WDM}
   \wdmsplitter[couplertype=rectangular]%
                  (0,1)(3,1.5)(3,0.5){Coupler}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % 
 % \choitem[center]{align}{top, bottom, center}
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(3,3)
   \psset{labeloffset=0.4}
   \wdmsplitter[align=top,
                  couplertype=none](0,3)(3,3)(3,2){Top}
   \wdmsplitter[align=bottom](0,0.5)(3,1.5)(3,0.5){Bottom}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % \end{optionlist}
 % 
 % 
@@ -1652,25 +2207,37 @@
 % unique number in ascending order by their definition in the code. If the
 % argument is left empty, the last object is used.
 % 
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(3,1.5)
   \pnode(0,1){A}\pnode(1.5,1){B}
   \optbox[endbox, labeloffset=0](A)(B){1}
   % connect an object by its automatic number
   \drawbeam{(A)}{1}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % 
 % \medskip
 % 
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(3,2)
   \psset{endbox, labeloffset=0}
   \optbox[compname=obj](0,1)(1.5,1){obj}
   % connect an object by its compname
   \drawbeam{(0,1)}{obj}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % 
 % \medskip
 % 
@@ -1680,7 +2247,10 @@
 % 
 % \medskip
 % 
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(3,2)
   \psset{endbox, labeloffset=0}
   \optbox[compname=obj](0,0.5)(1.5,0.5){obj}
@@ -1688,11 +2258,17 @@
   % named objects are also numbered
   \drawbeam{(0,1)}{2}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % 
 % \medskip
 % 
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(3,2)
   \psset{endbox, labeloffset=0}
   \optbox(0,0.5)(1.5,0.5){1}
@@ -1700,7 +2276,10 @@
   % an empty argument refers to the last object
   \drawbeam{(0,1)}{}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % 
 % \subsection{Drawing beams}\label{sec:drawbeam}
 % 
@@ -1720,7 +2299,10 @@
 % 
 % \medskip
 % 
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(4,2.8)
   \pnode(1.5,0.5){A}\pnode(3.5,0.5){B}
   \pnode(3.5,2.5){C} 
@@ -1734,7 +2316,10 @@
   \drawbeam[linecolor=green,
               startpos=0.2]{1}{2}{3}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % 
 % \optitem[1]{startvec}{\prm{X} [\prm{Y}]} 
 % This is the start vector (\prm{X}, \prm{Y}) of the beam. \prm{X} and
@@ -1744,7 +2329,10 @@
 % two components, use \Lkeyword{startvecabs} to change this.
 % 
 % \medskip
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(4,3)
   \pnode(1.5,0.5){A}\pnode(3.5,0.5){B}
   \pnode(3.5,2.5){C} 
@@ -1758,7 +2346,10 @@
   \drawbeam[linecolor=green, 
               startvec=-0.05]{1}{2}{3}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % 
 % \medskip
 % 
@@ -1788,7 +2379,10 @@
 % 
 % \medskip
 % 
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(4,3)
   \psset{showifcnodes}
   \optbox(0,2.5)(4,2.5){}
@@ -1796,7 +2390,10 @@
   \lens(0,0.5)(4,0.5){}
   \mirror(0,0.5)(3.5,0.5)(3.5,3){}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % 
 % \bigskip
 % 
@@ -1805,7 +2402,10 @@
 % 
 % \medskip
 % 
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(-2,-2)(2,2)
   \psset{optboxwidth=0.6, optboxheight=0.5, labeloffset=0}
   \multido{\i=0+60,\ii=1+1}{6}{%
@@ -1816,7 +2416,10 @@
   \addtopsstyle{Beam}{arrows=->}
   \multido{\i=1+1}{6}{\drawbeam{ref}{\i}}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % 
 % \subsection{Drawing wide beams}\label{sec:drawwidebeam}
 % 
@@ -1849,7 +2452,10 @@
 % \begin{optionlist}
 %   \boolitem{relangle}
 %   \choitem{startnode}{auto, 1, 2, 3, 4, N}
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(4,3)
   \pnode(0,0.5){A}\pnode(2,0.5){B}
   \pnode([offset=1]B){C}\pnode(A|C){D}
@@ -1857,12 +2463,18 @@
   \optbox(C)(D){PM}
   \drawfiber[linecolor=black]{1}{2}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % 
 % \choitem{stopnode}{auto, 1, 2, 3, 4, N}
 % \end{optionlist}
 % 
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(2.8,3)
 \pnode(0.3,0){A}\pnode(2.3,0){B}
 \pnode(0.3,3){C}\pnode(2.3,3){D}
@@ -1878,7 +2490,10 @@
 \drawfiber{3}{4}
 \drawfiber{4}{1}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % 
 % \subsubsection{Fiber Styles}\label{sec:fiberstyles}
 % 
@@ -1891,22 +2506,34 @@
 % \styleitem{Fiber}
 % This is the basic style from which every other fiber style inherits.
 % 
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(3,1.5)
   \addtopsstyle{Fiber}{linecolor=blue}
   \optamp(0,1)(3,1){}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % 
 % \styleitem[style=Fiber]{FiberIn}
 % Controls the fibres on the left side of the component. Inherits from \nxLstyle{Fiber}.
 % 
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(3,1.5)
   \addtopsstyle{FiberIn}{linecolor=blue}
   \optamp(0,1)(3,1){}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % 
 % \styleitem[style=FiberIn]{FiberIn1}
 % \styleitem[style=FiberIn]{FiberIn2}
@@ -1914,13 +2541,19 @@
 % upper one and \nxLstyle{FiberIn2} the style of the lower fiber. Otherwise these
 % styles are ignored.
 % 
-% \begin{LTXexample}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
 \begin{pspicture}(3,1.5)
   \addtopsstyle{FiberIn1}{linecolor=blue}
   \addtopsstyle{FiberIn2}{linecolor=green}
   \optcoupler(0,1.5)(0,0)(3,1.5)(3,0){}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % 
 % \styleitem[style=Fiber]{FiberOut}
 % \styleitem[style=FiberOut]{FiberOut1}
@@ -1935,7 +2568,7 @@
 % 
 % \medskip
 % 
-% \begin{lstlisting}
+% \begin{lstlisting}[gobble=2]
 % \psset{addtoFiberIn={arrows=->, arrowscale=1.3}}
 % \end{lstlisting}
 % 
@@ -1945,8 +2578,8 @@
 % 
 % \medskip
 % 
-% \begin{lstlisting}
-\addtopsstyle{FiberIn}{arrows=->, arrowscale=1.3}
+% \begin{lstlisting}[gobble=2]
+% \addtopsstyle{FiberIn}{arrows=->, arrowscale=1.3}
 % \end{lstlisting}
 % 
 % \medskip
@@ -1962,12 +2595,18 @@
 % 
 % \medskip
 % 
-% \begin{LTXexample}[width=3.5cm]
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[width=3.5cm]
 \begin{pspicture}[showgrid=true](3,2)
    \newpsobject{mywdmsplitter}{wdmsplitter}{addtoFiberOut1={arrows=->, arrowscale=1.3, linecolor=blue}, labelangle=180, align=bottom}
    \mywdmsplitter(0,0.5)(3,1.5)(3,0.5){blue band}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % 
 % \medskip
 % 
@@ -1975,12 +2614,18 @@
 % 
 % \medskip
 % 
-% \begin{LTXexample}[width=3.5cm]
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[width=3.5cm]
 \begin{pspicture}[showgrid=true](3,2)
    \newpsobject{mycoupler}{optcoupler}{addtoFiberIn2={angleA=90}, align=top}
    \mycoupler(0.5,1.5)(0.5,0.5)(2.5,1.5)(2.5,0.5){}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % 
 % \medskip
 % 
@@ -2009,22 +2654,34 @@
 % 
 % \medskip
 % 
-% \begin{LTXexample}[width=3.5cm]
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[width=3.5cm]
 \newpsobject{sbn}{crystal}{voltage, lamp, labelangle=45, labeloffset=1.2, fillstyle=solid, fillcolor=yellow!90!black}
 \begin{pspicture}[showgrid=true](3,2) 
    \sbn(0,1)(3,1){SBN:Ce}
    \psline[style=Beam](0,1)(3,1)
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % 
 % \medskip
 % 
-% \begin{LTXexample}[width=3.5cm]
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[width=3.5cm]
 \newpsobject{pumpcoupler}{wdmcoupler}{align=top, labelangle=180, labeloffset=0.5,addtoFiberIn2={ArrowInside=->, arrowscale=2}}
 \begin{pspicture}[showgrid=true](3,2) 
    \pumpcoupler(0,1)(0,0)(3,1){Pumpcoupler}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % 
 % \medskip
 % 
@@ -2033,7 +2690,10 @@
 % 
 % \medskip
 % 
-% \begin{LTXexample}[width=5.5cm]
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[width=5.5cm]
 \newpsobject{MOLensIn}{lens}{lens=0.5 0.5 0.5}
 \newpsobject{MOLensOut}{lens}{lens=1.5 1.5 1.5}
 \begin{pspicture}[showgrid=true](5,2) 
@@ -2048,7 +2708,10 @@
      \drawwidebeam[beamdiv=1]{1}{2}
    }
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % \medskip
 % 
 % \subsection{Defining New Objects}\label{sec:newobj}
@@ -2072,11 +2735,11 @@
 % drawing macro.
 % 
 % The syntax of the macros is
-% \begin{lstlisting}
-\newOptexpDipole[fixed options]{name}{default options}
-\newOptexpDipoleNolabel[fixed options]{name}{default options}
-\newOptexpTripole[fixed options]{name}{default options}
-\newOptexpFiberDipole[fixed options]{name}{default options}
+% \begin{lstlisting}[gobble=2]
+% \newOptexpDipole[fixed options]{name}{default options}
+% \newOptexpDipoleNolabel[fixed options]{name}{default options}
+% \newOptexpTripole[fixed options]{name}{default options}
+% \newOptexpFiberDipole[fixed options]{name}{default options}
 % \end{lstlisting}
 % The \texttt{default options} are simply a list of PSTricks parameters
 % which are taken as defaults for the new component. The optional argument
@@ -2088,7 +2751,10 @@
 % 
 % \medskip
 % 
-% \begin{LTXexample}[width=4.5cm]
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[width=4.5cm]
 \newOptexpTripole{mygrid}{subgriddiv=5, griddots=0, subgridwidth=\pslinewidth, gridwidth=2\pslinewidth}
 \makeatletter
 \def\mygrid@iii{% put here all PSTricks drawing code
@@ -2100,7 +2766,10 @@
    \mygrid[gridcolor=red,labeloffset=1.5](A)(G)(B){myGrid}
    \psline[style=Beam](A)(G)(B)
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % \medskip
 % 
 % The default position of the label reference point is (0,0). If you want
@@ -2113,7 +2782,10 @@
 % \newpage
 % 
 % \section{Examples}
-% \begin{LTXexample}[pos=t,vsep=8mm]
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[pos=t,vsep=8mm]
 \begin{pspicture}(10,2)
 \psset{optboxwidth=1}\addtopsstyle{Beam}{linewidth=2\pslinewidth}
 \pnode(1,1){Start}\pnode(9,1){CCD}\optbox[endbox, labeloffset=0](CCD)(Start){Laser}
@@ -2125,11 +2797,17 @@
 \optplate[abspos=6.5,labelangle=180](Start)(CCD){PF}
 \polarization[abspos=6.7](Start)(CCD)\lens[abspos=7](Start)(CCD){$L_3$}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % 
 % \vspace{\fill}
 % 
-% \begin{LTXexample}[pos=t,vsep=8mm]
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[pos=t,vsep=8mm]
 \begin{pspicture}(-4,-1)(3,3)
 \addtopsstyle{Beam}{linewidth=2\pslinewidth, linecolor=red!90!black}
 \psset{labeloffset=0.5}
@@ -2142,9 +2820,15 @@
   (LaserOut)(Grat){$\nicefrac{\lambda}{4}$}
 \rput[l](-3,2){Littman setup}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % 
-% \begin{LTXexample}[pos=t, vsep=8mm]
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[pos=t, vsep=8mm]
 \begin{pspicture}(8.5,1.6)
     \addtopsstyle{Beam}{linecolor=green!90!black}
     \pnode(1.6,1){Laser}\pnode(7.6,1){Diode}
@@ -2159,9 +2843,15 @@
     \psarc[arcsep=1pt]{<->}(\oenodein{PC}){2}{170}{180}
     \uput{2.1}[175](\oenodein{PC}){\small $\varphi$}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % 
-% \begin{LTXexample}[pos=t, vsep=8mm]
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[pos=t, vsep=8mm]
 \begin{pspicture}(6.4,3.2)
   \addtopsstyle{Fiber}{linecolor=red}
   \pnode(2.3,2.3){Lin}\pnode([Xnodesep=0.5]Lin){Lout}
@@ -2180,9 +2870,15 @@
   \wire(PSin)(\oenodeext{L})
   \wire(PSout)(\oenodeext{EAM})
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % 
-% \begin{LTXexample}[pos=t, vsep=5mm]
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[pos=t, vsep=5mm]
 \begin{pspicture}(0.9,0.9)(10.4,5.9)
   \psset{arrowscale=1.5, arrowinset=0}
   \pnode(2,5){PC1in}\pnode(4,5){PC1out}\pnode(6,5){PC2in}
@@ -2203,9 +2899,15 @@
   \optbox[endbox, label=0 . . relative]([offset=-0.1]Pump)(Pump){980~nm}
   \optfiber[fiberloops=2, labeloffset=0.4](CplIn)(PumpSig){Er$^+$-doped}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % 
-% \begin{LTXexample}[pos=t, vsep=8mm]
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[pos=t, vsep=8mm]
 \makeatletter
 \def\LCLV@nodes{%
   \newOptexpComp{ {-0.12 0} {0 1} trans {NewPlaneInt}
@@ -2228,9 +2930,11 @@
 \optbox[labeloffset=0, endbox](BS1)([Xnodesep=-1]BS1){Nd:YAG}
 \drawbeam{LCLV}{BS}
 \end{pspicture}
-% \end{LTXexample}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % 
-%%\begin{LTXexample}[pos=t,vsep=8mm]
 % \begin{pspicture}(0,-0.4)(9,6)
 %   \addtopsstyle{Beam}{linewidth=2\pslinewidth}
 %   \pnode(1.5,5){Laser}\pnode(4,5){PBS}\pnode(6.5,5){PBS2}
@@ -2263,10 +2967,8 @@
 %   \beamsplitter(M4f3)(BS4f)(CCD){BS}\optbox[endbox,labeloffset=0, optboxwidth=1](BS4f)(CCD){CCD}
 %   \lens[abspos=0.7](BS4f)(BSFwd){L}\lens[abspos=0.7](BSBwd)(M4f1){L}
 % \end{pspicture}
-%%\end{LTXexample}
 % 
 % \psset{unit=0.8cm,labelstyle=\footnotesize}
-%%\begin{LTXexample}[pos=t]
 % \begin{pspicture}(0.5,4)(13.2,10.5)
 %   \addtopsstyle{Fiber}{linecolor=red!90!black}\psset{usefiberstyle, optboxwidth=1}
 %   \pnode(2,10){LD}\pnode([Xnodesep=5.5]LD){CPLin1}
@@ -2281,7 +2983,6 @@
 %   \optcoupler[couplertype=none](CPLin1)(CPLin2)(CPLout1)(CPLout2){}
 %   \optamp(CPLout1)([Xnodesep=1.5]CPLout1){EDFA}
 %   \optfilter([Xnodesep=1.5]CPLout1)([Xnodesep=3]CPLout1){BPF}
-% %  \optbox[endbox, labeloffset=0, conn=f-f]([Xnodesep=3]CPLout1)([Xnodesep=3.1]CPLout1){RX}
 %   \pnode([Xnodesep=2]CPLout2){LoopRU}\pnode([offset=-3.5]LoopRU){LoopRL}
 %   \pnode([Xnodesep=-5]CPLin2){LoopLU}\pnode([offset=-3.5]LoopLU){LoopLL}
 %   \optamp(CPLout2)(LoopRU){EDFA}
@@ -2299,7 +3000,6 @@
 %   \optswitch([Xnodesep=1.5]LoopLU)([Xnodesep=3.5]LoopLU){SW}
 %   \polcontrol([Xnodesep=3.5]LoopLU)(CPLin2){}
 % \end{pspicture}
-%%\end{LTXexample}
 % 
 % \section{Requirements}
 % 
@@ -2365,6 +3065,7 @@
 % IFs for the boolean keys.
 %    \begin{macrocode}
 \newif\ifpoe@compat\poe@compatfalse
+\newif\ifpoe@connjoin
 \newif\ifpoe@bglayer
 \newif\ifpoe@toplayer
 \newif\ifpoe@optexpenv
@@ -3412,7 +4113,6 @@
 %    \end{macrocode}
 % The old connection code for backward compatibility to version 2.x. As this is obsolete and was broken by design, there is no need to comment on this.
 %    \begin{macrocode}
-\newif\ifpoe@connjoin
 \def\optexp@nodeA{\poe@key@b@sicname 1}%
 \def\optexp@nodeB{\poe@key@b@sicname N}%
 \def\POS@basicname@postfix{Intern}%
