@@ -28,6 +28,7 @@
 %<*driver>
 \documentclass[a4paper, DIV=9]{scrartcl}
 \usepackage{doc}
+\setcounter{IndexColumns}{2}
 \usepackage[latin1]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{lmodern}
@@ -42,13 +43,15 @@
 \let\datePstOptExp\filedate
 \usepackage{pst-circ}
 \usepackage{interfaces, needspace}
-\usepackage{hypdoc}
-\hypersetup{colorlinks=true, 
+\usepackage[makeindex]{splitidx}
+\newindex[Code Index]{idx}
+\newindex[Documentation Index]{ddx}
+\usepackage[colorlinks=true, 
    urlcolor=pdfurlcolor,    
    filecolor=pdffilecolor,  
    linkcolor=pdflinkcolor,
    breaklinks,        
-   linktocpage=true}
+   linktocpage=true]{hyperref}
 \definecolor{DOrange}{rgb}{1,.4,.2}
 \colorlet{pdflinkcolor}{DOrange}
 \colorlet{pdfurlcolor}{DOrange}
@@ -62,8 +65,6 @@
 \definecolor{colIdentifier}{rgb}{0,0,0}
 \definecolor{colComments}{rgb}{1,0,0}
 \definecolor{colString}{rgb}{0,0.5,0}
-\usepackage[makeindex]{splitidx}
-\newindex[Documentation Index]{ddx}
 \usepackage{nicefrac}
 \usepackage{prettyref}
 \newrefformat{sec}{Sec.~\ref{#1}}
@@ -160,6 +161,11 @@
     \MacrocodeTopsep\z@skip \MacroTopsep\z@skip \parsep\z@ \topsep\z@ \itemsep\z@ \partopsep\z@
     \let\llap\macro@llap}
  \AtEndEnvironment{macro}{\goodbreak \vskip.3\parskip}
+
+\newcommand\use@index@vals{\index@vals\global\let\index@vals\relax}
+\def\handle@index#1{%
+    \gdef\index@vals{#1}%
+    \def\FancyVerbFormatLine##1{\FV@ObeyTabs{##1}\use@index@vals}}
 \makeatother
 
 \newcommand*{\nodename}[1]{\emph{#1}}
@@ -221,7 +227,7 @@
 \begin{document}
   \DocInput{pst-optexp.dtx}
   \PrintChanges
-  \PrintIndex
+  \printindex[idx]
 \end{document}
 %</driver>
 % \fi
@@ -3028,7 +3034,43 @@
 % I thank all the people of the PSTricks mailinglist for the continuous help, especially Herbert Voﬂ.
 % 
 % 
+% \makeatletter
+% \bgroup
+% \newcommand*{\index@preamble}{}
+% \let\index@preamble=\relax
+% \renewcommand{\setindexpreamble}[1]{\def\index@preamble{#1}}
+% \renewcommand*{\idx@heading}{%
+%   \twocolumn[\idx@@heading{\indexname}]%
+%   \@mkboth{\indexname}{\indexname}%
+% }
+% \renewenvironment{theindex}{%
+%   \if@twocolumn
+%     \@restonecolfalse
+%   \else
+%     \@restonecoltrue
+%   \fi
+%   \columnseprule \z@
+%   \columnsep 35\p@
+%   \idx@heading%
+%   \index@preamble\par\nobreak
+%   \thispagestyle{\indexpagestyle}\parindent\z@
+%   \setlength{\parskip}{\z@ \@plus .3\p@}%
+%   \setlength{\parfillskip}{\z@ \@plus 1fil}%
+%   \let\item\@idxitem
+% }{%
+%   \if@restonecol\onecolumn\else\clearpage\fi
+% }
+% \renewcommand*\@idxitem{\par\hangindent 40\p@}
+% \renewcommand*\subitem{\@idxitem \hspace*{20\p@}}
+% \renewcommand*\subsubitem{\@idxitem \hspace*{30\p@}}
+% \renewcommand*\indexspace{%
+%   \par \vskip 10\p@ \@plus5\p@ \@minus3\p@\relax
+% }
+% \renewcommand*\indexname{Index}
 % \printindex[ddx]
+% \egroup
+% \makeatother
+%
 % \StopEventually{}
 %
 % \section{Implementation}
@@ -3663,7 +3705,7 @@
 % \begin{macro}{\poe@getcoor}
 %    \begin{macrocode}
 \def\poe@getnode#1#2\@nil{%
-  \ifx(#1\relax
+  \ifx(#1\relax%)
     \poe@getcoor#1#2
     \edef\oe@temp{{\pst@coor}}%
   \else
@@ -3686,7 +3728,8 @@
 \def\drawfiber{\drawfiber@{Fiber}}%
 \def\drawfiber@#1{%
   \def\pst@par{style=#1}%
-  \@ifnextchar[{\drawfiber@i}{\drawfiber@i[]}%
+  \@ifnextchar[%]
+    {\drawfiber@i}{\drawfiber@i[]}%
 }%
 \def\drawfiber@i[#1]#2#3{%
   \addafter@par{#1}%
@@ -4040,7 +4083,7 @@
   \edef\oe@temp{#1}%
   \ifx\oe@temp\@empty
     \poe@getcomp{(\getLastCompname@i)}%
-  \else\ifx(#1\relax
+  \else\ifx(#1\relax%)
     \poe@getplanenode#1#2%
   \else\ifnum9<1#1
     \poe@getcomp{(\poe@str@basicname@prefix\poe@str@basicname@default#1#2)}%
@@ -4365,7 +4408,10 @@
 %
 % \begin{macro}{\newOptexpComp}
 %    \begin{macrocode}
-\def\newOptexpComp{\@ifnextchar[{\newOptexpComp@i}{\newOptexpComp@i[]}}%
+\def\newOptexpComp{%
+  \@ifnextchar[%]
+    {\newOptexpComp@i}{\newOptexpComp@i[]}%
+}%
 \def\newOptexpComp@i[#1]#2{%
     \pst@OptexpVerb{#1 [ #2 (\poe@key@b@sicname) {\tx@ScreenCoor} false NewOptexpComp}%
 }%
@@ -4374,7 +4420,10 @@
 % 
 % \begin{macro}{\newOptexpCompAmb}
 %    \begin{macrocode}
-\def\newOptexpCompAmb{\@ifnextchar[{\newOptexpCompAmb@i}{\newOptexpCompAmb@i[]}}%
+\def\newOptexpCompAmb{%
+  \@ifnextchar[%]
+    {\newOptexpCompAmb@i}{\newOptexpCompAmb@i[]}%
+}%
 \def\newOptexpCompAmb@i[#1]#2{%
     \pst@OptexpVerb{#1 [ #2 (\poe@key@b@sicname) {\tx@ScreenCoor} true NewOptexpComp}%
 }%
@@ -4468,11 +4517,26 @@
 % \begin{macro}{\newOptexpFiberDipole}
 % \begin{macro}{\newOptexpFiberQuadrupole}
 %    \begin{macrocode}
-\def\newOptexpDipole{\@ifnextchar[{\poe@newdipole}{\poe@newdipole[]}}
-\def\newOptexpDipoleNolabel{\@ifnextchar[{\poe@newdipolenolabel}{\poe@newdipolenolabel[]}}
-\def\newOptexpTripole{\@ifnextchar[{\poe@newtripole}{\poe@newtripole[]}}
-\def\newOptexpFiberDipole{\@ifnextchar[{\poe@newfiberdipole}{\poe@newfiberdipole[]}}
-\def\newOptexpFiberQuadrupole{\@ifnextchar[{\poe@newfiberquadrupole}{\poe@newfiberquadrupole[]}}
+\def\newOptexpDipole{%
+  \@ifnextchar[%]
+    {\poe@newdipole}{\poe@newdipole[]}%
+}%
+\def\newOptexpDipoleNolabel{%
+  \@ifnextchar[%]
+    {\poe@newdipolenolabel}{\poe@newdipolenolabel[]}%
+}%
+\def\newOptexpTripole{%
+  \@ifnextchar[%]
+    {\poe@newtripole}{\poe@newtripole[]}%
+}%
+\def\newOptexpFiberDipole{%
+  \@ifnextchar[%]
+    {\poe@newfiberdipole}{\poe@newfiberdipole[]}%
+}%
+\def\newOptexpFiberQuadrupole{%
+  \@ifnextchar[%]
+    {\poe@newfiberquadrupole}{\poe@newfiberquadrupole[]}%
+}%
 %    \end{macrocode}
 % \end{macro}
 % \end{macro}
@@ -5026,11 +5090,13 @@
    \def\pst@tempB{#2}%
    \def\pst@tempC{}%
    \def\pst@tempD{}%
-   \@ifnextchar({\fibercollimator@ii}{\fibercollimator@iv}%
+   \@ifnextchar(%)
+     {\fibercollimator@ii}{\fibercollimator@iv}%
 }%
 \def\fibercollimator@ii(#1){%
    \def\pst@tempC{#1}%
-   \@ifnextchar({\fibercollimator@iii}{\fibercollimator@iv}%
+   \@ifnextchar(%)
+     {\fibercollimator@iii}{\fibercollimator@iv}%
 }%
 \def\fibercollimator@iii(#1)#2{%
    \def\pst@tempD{#1}%
