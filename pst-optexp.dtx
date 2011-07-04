@@ -4099,7 +4099,7 @@
   \poe@getcomp{%
     {\pst@coor} {0 1} (\poe@str@basicname@default N@\the\poe@nodecnt) 
     {\tx@UserCoor} NewTempNodeComp 
-    (\poe@str@basicname@default N@\the\poe@nodecnt
+    (\poe@str@basicname@default N@\the\poe@nodecnt)
   }%
 }%
 %    \end{macrocode}
@@ -4166,6 +4166,7 @@
 %    \end{macrocode}
 % The old connection code for backward compatibility to version 2.x. As this is obsolete and was broken by design, there is no need to comment on this.
 %    \begin{macrocode}
+\def\defShiftedNode(#1)(#2)#3{\nodexn{(#1) + (#2)}{#3}}%
 \def\optexp@nodeA{\poe@key@b@sicname 1}%
 \def\optexp@nodeB{\poe@key@b@sicname N}%
 \def\POS@basicname@postfix{Intern}%
@@ -4272,7 +4273,7 @@
     \poe@getcoor#1%
     \def\poe@connIn{pst@coor}%
   \else
-    \poecheckcompname{#1}%
+    \poe@checkcompname{#1}%
     \edef\poe@key@b@sicnameA{#1\POS@basicname@postfix}%
   \fi
   \let\poe@key@b@sicname\poe@key@b@sicnameB
