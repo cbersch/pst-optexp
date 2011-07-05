@@ -1,7 +1,7 @@
 %%% test.tex --- 
 
 %% Author: cbersch
-%% Version: $Id: test.tex,v 0.0 2011/06/24 16:26:31 Exp$
+%% Version: $Id: test.tex,v 0.0 2011/07/05 13:22:44 Exp$
 
 
 \documentclass{scrartcl}
@@ -14,19 +14,33 @@
 %%\revision$Header: /home/cbersch/Desktop/test.tex,v 0.0 2009/10/26 14:28:23 cbersch Exp$
 
 \begin{document}
-\begin{pspicture}(2.8,3)
+\begin{pspicture}[showgrid=true](2.8,3)
 \pnode(0.3,0){A}\pnode(2.3,0){B}
 \pnode(0.3,3){C}\pnode(2.3,3){D}
 \optcoupler[nofiber, abspos=0.5, compname=Cpl](A)(B)(C)(D){}
 \optbox[abspos=2, optboxwidth=0.5, compname=Phasebias,
           optboxheight=0.5](C|A)(C){}
-%\optfiber[nofiber, compname=Hnlf](D)(C){}
-%\optamp[abspos=2, nofiber, compname=Amp](D|A)(D){}
-%\drawfiber[angleA=-90, ArrowInside=->]{(A)}{Cpl}
-%\drawfiber[arrows=->, angleB=90]{Cpl}{(B)}
+\optfiber[nofiber, compname=Hnlf](D)(C){}
+\optamp[abspos=2, nofiber, compname=Amp](D|A)(D){}
+\drawfiber[angleA=0, ArrowInside=->]{(A)}{Cpl}
+\drawfiber[arrows=->, angleB=180]{Cpl}{(B)}
 \drawfiber{Cpl}{Phasebias}
-%\drawfiber{2}{3}
-%\drawfiber{3}{4}
-%\drawfiber{4}{1}
+\drawfiber{Phasebias}{Hnlf}
+\drawfiber{Amp}{Hnlf}
+\drawfiber{Cpl}{Amp}
+\end{pspicture}
+
+\begin{pspicture}[showgrid=true](2.8,3)
+\pnode(0,0){A}\pnode(2,0){B}
+\pnode(0.3,3){C}\pnode(1.7,3){D}
+\optcoupler[fiberout=none,
+            addtoFiberIn1={angleA=0, ArrowInside=->},
+            addtoFiberIn2={angleA=180, arrows=<-},
+            abspos=0.5, compname=Cpl](A)(B)(C)(D){}
+\optfiber[nofiber, compname=Hnlf, abspos=1](C)(C|A){}
+\optamp[nofiber, abspos=2, compname=Amp](D|B)(D){}
+\drawfiber{Cpl}{Hnlf}
+\drawfiber[startnode=1, stopnode=N, ncurv=1.2]{Hnlf}{Amp}
+\drawfiber{Cpl}{Amp}
 \end{pspicture}
 \end{document}

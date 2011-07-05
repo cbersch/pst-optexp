@@ -22,7 +22,7 @@
 %<stylefile>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<stylefile>\ProvidesPackage{pst-optexp}
 %<*stylefile>
-    [2011/07/04 package wrapper for pst-optexp.tex]
+    [2011/07/05 package wrapper for pst-optexp.tex]
 %</stylefile>
 %
 %<*driver>
@@ -2443,23 +2443,25 @@
 % 
 % \subsection{Drawing fibers}\label{sec:drawfiber}
 % 
-% \begin{optionlist}
-% \boolitem{usefiberstyle}
-% \end{optionlist}
-% 
 % Fiber-optical objects are automatically connected to the reference
 % nodes. The style of all fiber connections can be configured
 % independently (see Sec.~\ref{sec:fiberstyles}).
+%
+% This works quiet well if the components are aligned serially, but ceases to
+% give good result for more complicated situations. In that case single or all
+% fiber can be omitted and drawn separately with the \nxLcs{drawfiber} macro.
+% \begin{ltxsyntax}
+%   \xLcs{drawfiber}\cmditem{drawfiber}[Options]{Obj$_1$}{Obj$_2$}
+% \end{ltxsyntax}
 % 
+% \begin{optionlist}
+% \boolitem{usefiberstyle}
 % For some components it might me nice to highlight some
 % internals. If \Lkeyword{usefiberstyle} is enabled, for examples the
 % passing parts of the optical filter are drawn with the \styleshape{Fiber}
 % style. In the documentation this parameter is enabled to show the parts
 % which would be highlighted.
-% 
-% \begin{ltxsyntax}
-%   \xLcs{drawfiber}\cmditem{drawfiber}[Options]{Obj$_1$}{Obj$_2$}
-% \end{ltxsyntax}
+% \end{optionlist}
 % 
 % \begin{optionlist}
 %   \boolitem{relangle}
@@ -2487,20 +2489,18 @@
 %<*ignore>
 % \fi
 \begin{LTXexample}
-\begin{pspicture}(2.8,3)
-\pnode(0.3,0){A}\pnode(2.3,0){B}
-\pnode(0.3,3){C}\pnode(2.3,3){D}
-\optcoupler[nofiber, abspos=0.5](A)(B)(C)(D){}
-\optbox[abspos=2, optboxwidth=0.5,
-          optboxheight=0.5](C|A)(C){}
-\optfiber[nofiber](D)(C){}
-\optamp[abspos=2, nofiber](D|A)(D){}
-\drawfiber[angleA=-90, ArrowInside=->]{(A)}{1}
-\drawfiber[arrows=->, angleB=90]{1}{(B)}
-\drawfiber{1}{2}
-\drawfiber{2}{3}
-\drawfiber{3}{4}
-\drawfiber{4}{1}
+\begin{pspicture}(2.1,3)
+\pnode(0,0){A}\pnode(2,0){B}
+\pnode(0.3,3){C}\pnode(1.7,3){D}
+\optcoupler[fiberout=none,
+            addtoFiberIn1={angleA=0, ArrowInside=->},
+            addtoFiberIn2={angleA=180, arrows=<-},
+            abspos=0.5, compname=Cpl](A)(B)(C)(D){}
+\optfiber[nofiber, compname=Hnlf, abspos=1](C)(C|A){}
+\optamp[nofiber, abspos=2, compname=Amp](D|B)(D){}
+\drawfiber{Cpl}{Hnlf}
+\drawfiber[startnode=1, stopnode=N, ncurv=1.2]{Hnlf}{Amp}
+\drawfiber{Cpl}{Amp}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -8259,26 +8259,39 @@ tx@OptexpDict begin
 % \end{macro}
 % 
 % \begin{macro}{RelFiberAngle}
-% Calculate start angle of pccurve from CompA to CompB
+% Calculate start angle of \cs{pccurve} from CompA to CompB
 %
-% CompA/nodeA CompB/nodeB -> angleA
+% $@@X_A$ $@@Y_A$ $@@X_B$ $@@Y_B$ A B \textrightarrow{} angleA
 %    \begin{macrocode}
-/RelFiberAngle {%
+/RelFiberAngle {
     dup xcheck not { nametostring } if /CompB ED
     dup xcheck not { nametostring } if /CompA ED
-    @ABVect % vector from NodeA to NodeB
-    /CompA load xcheck {% nodeA
-	/CompB load xcheck {% nodeB
-	    exch atan
-	} {% compB
-	    (N@) CompB strcat dup (A) strcat exch (B) strcat
+    /CompA load xcheck {
+	/CompB load xcheck {
+%    \end{macrocode}
+%  both parameters are nodes, so the angle is that of the direct connection line.
+%    \begin{macrocode}
+	    @ABVect exch atan
+	} {
+%    \end{macrocode}
+% B is a component, and A is a node: the angle at node A is calculated through the reference nodes of component B
+%    \begin{macrocode}
+            4 2 roll pop pop
+	    (N@) CompB strcat dup dup (Center) strcat @GetCenter 6 -2 roll @ABVect 4 2 roll
+            (A) strcat exch (B) strcat
 	    @GetCenter 3 -1 roll @GetCenter @ABVect 2 copy exch atan
-	    5 1 roll SProd 0 lt { 180 add } if
+            5 1 roll SProd 0 lt { 180 add } if
 	} ifelse
-    } {% CompA
-	(N@) CompA strcat dup (A) strcat exch (B) strcat
+    } {
+%    \end{macrocode}
+% A is a component, B is insignificant
+%    \begin{macrocode}
+        pop pop
+	(N@) CompA strcat dup dup (Center) strcat @GetCenter 
+        6 -2 roll @ABVect 4 2 roll
+        (A) strcat exch (B) strcat
 	@GetCenter 3 -1 roll @GetCenter @ABVect 2 copy exch atan
-	5 1 roll SProd 0 lt { 180 add } if
+	5 1 roll SProd 0 gt { 180 add } if
     } ifelse
 } bind def
 %    \end{macrocode}
