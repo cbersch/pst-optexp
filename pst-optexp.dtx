@@ -98,6 +98,7 @@
 \colorlet{spot}{sectioncolor}
 \InputIfFileExists{ltxdockit.cfg}{}{}
 \makeatletter
+
 \def\ltd@optionlist{%
   \let\optitem\poe@optitem
   \let\styleitem\poe@styleitem
@@ -220,6 +221,7 @@
 \EnableCrossrefs         
 \CodelineIndex
 \RecordChanges
+\OnlyDescription
 \begin{document}
   \DocInput{pst-optexp.dtx}
   \PrintChanges
@@ -1633,7 +1635,7 @@
 % \fi
 % \end{ltxsyntax}
 % 
-% \section{Fiber-Optical Objects}
+% \section{Fiber-Optical Components}\ref{sec:fibercomp}
 % 
 % \subsection{Fiber}
 % 
@@ -2449,7 +2451,54 @@
 %
 % This works quiet well if the components are aligned serially, but ceases to
 % give good result for more complicated situations. In that case single or all
-% fiber can be omitted and drawn separately with the \nxLcs{drawfiber} macro.
+% fiber can be omitted and drawn separately.
+%
+% \subsubsection{Automatic fiber connections}
+%
+% All fiber-optical components described in \prettyref{sec:fibercomp} are
+% connected automatically to their reference nodes with a \Lcs{pccurve}. The
+% styles of all fiber connections can be configured independently by the
+% following styles:
+%
+% \begin{optionlist}
+% \styleitem{Fiber} The parent style which affects all fiber connections.
+%
+% \styleitem{FiberIn} The style for all incoming fiber connections, inherits
+% from \prm{Fiber}.
+%   
+% \styleitem{FiberIn1}
+% The style for the upper incoming fiber connection,
+% inherits from \prm{FiberIn} and used only by \Lcs{wdmcoupler} and
+% \Lcs{optcoupler}.
+%
+% \styleitem{FiberIn2} 
+% The style for the lower incoming fiber connection,
+% inherits from \prm{FiberIn} and used only by \Lcs{wdmcoupler} and
+% \Lcs{optcoupler}.
+%
+% \styleitem{FiberOut} The style for all outgoing fiber connections, inherits
+% from \prm{Fiber}.
+%   
+% \styleitem{FiberOut1} The style for the upper outgoing fiber connection,
+% inherits from \prm{FiberOut} and used only by \Lcs{wdmsplitter} and
+% \Lcs{optcoupler}.
+%
+% \styleitem{FiberOut2} The style for the lower outgoing fiber connection,
+% inherits from \prm{FiberOut} and used only by \Lcs{wdmcoupler} and
+% \Lcs{optcoupler}.
+% \end{optionlist}
+%
+% Note, that all these style should be changed with \Lcs{addtopsstyle} as to not
+% destroy the inheriting scheme.
+%
+% \begin{optionlist}
+%   \optitem{new\prm{style}}{} \optitem{addto\prm{style}}{} For every style two
+%   appropriate keys \opt{new}\prm{style} and \opt{addto}\prm{style} are
+%   provided which can be used to change the styles for only one object. This
+%   can be used to define own components with respectively changed fiber
+%   connections or to avoid grouping.
+% \end{optionlist}
+% 
 % \begin{ltxsyntax}
 %   \xLcs{drawfiber}\cmditem{drawfiber}[Options]{Obj$_1$}{Obj$_2$}
 % \end{ltxsyntax}
