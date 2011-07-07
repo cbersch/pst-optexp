@@ -31,8 +31,10 @@
 \setcounter{IndexColumns}{2}
 \usepackage[latin1]{inputenc}
 \usepackage[T1]{fontenc}
-\usepackage{lmodern}
-\usepackage{bera}
+\usepackage{libertine}
+%%\usepackage{lmodern}
+\usepackage{amsfonts}
+%%\usepackage{bera}
 \usepackage[english]{babel}
 \usepackage[dvipsnames,x11names,svgnames]{xcolor}
 \usepackage{ragged2e}
@@ -165,6 +167,11 @@
     \def\FancyVerbFormatLine##1{\FV@ObeyTabs{##1}\use@index@vals}}
 \makeatother
 
+\newcommand*{\PSstring}[1]{{\normalfont\ttfamily(#1)}}
+\newcommand*{\PSname}[1]{{\normalfont\ttfamily/#1}}
+\newcommand*{\PSproc}[1]{{\normalfont\ttfamily\textbraceleft #1\textbraceright}}
+\newcommand*{\PSvar}[1]{{\normalfont\ttfamily #1}}
+
 \newcommand*{\nodename}[1]{\emph{#1}}
 \newcommand*{\param}[1]{\normalfont\texttt{#1}}
 \newcommand*{\paramvalue}[1]{\texttt{#1}}
@@ -221,7 +228,6 @@
 \EnableCrossrefs         
 \CodelineIndex
 \RecordChanges
-\OnlyDescription
 \begin{document}
   \DocInput{pst-optexp.dtx}
   \PrintChanges
@@ -7378,7 +7384,7 @@ tx@OptexpDict begin
 % \end{macro}
 % 
 % \begin{macro}{GetNextPlane}
-% (CompName) \{outToPlane\} -> PlaneNumber
+% \PSstring{comp} \PSproc{outToPlane} $\longmapsto$ \PSvar{PlaneNumber}
 %    \begin{macrocode}
 /GetNextPlane {
     2 copy (C) 3 -1 roll % (CompName) {outToPlane} {outToPlane} (C) (CompName)
@@ -8310,7 +8316,7 @@ tx@OptexpDict begin
 % \begin{macro}{RelFiberAngle}
 % Calculate start angle of \cs{pccurve} from CompA to CompB
 %
-% $@@X_B$ $@@Y_B$ $@@X_A$ $@@Y_A$ A B \textrightarrow{} angleA
+% $@@X_B$ $@@Y_B$ $@@X_A$ $@@Y_A$ A B $\quad\longmapsto\quad$ angleA
 %    \begin{macrocode}
 /RelFiberAngle {
     dup xcheck not { nametostring } if /CompB ED
