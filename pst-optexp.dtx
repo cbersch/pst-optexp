@@ -31,15 +31,16 @@
 \setcounter{IndexColumns}{2}
 \usepackage[latin1]{inputenc}
 \usepackage[T1]{fontenc}
-\usepackage{libertine}
-%%\usepackage{lmodern}
+\usepackage{lmodern}
 \usepackage{amsfonts}
-%%\usepackage{bera}
+\usepackage{bera}
 \usepackage[english]{babel}
 \usepackage[dvipsnames,x11names,svgnames]{xcolor}
 \usepackage{ragged2e}
 \usepackage{amsmath}
 \usepackage{pst-func}
+\usepackage{pst-tree}
+\newcommand{\poeTR}[1]{\TR{\ttfamily\color{DOrange}#1}}
 \usepackage{pst-optexp}
 \let\verPstOptExp\fileversion
 \let\datePstOptExp\filedate
@@ -88,7 +89,7 @@
     captionpos=b,
     xleftmargin=1em,
     texcsstyle = [20]\color{DOrange!80!black},
-    moretexcs = [20]{lens, optbox, oenode, oenodein, oenodeext, oenodeout, oenoderefa, oenoderefb, optplate, optretplate, pinhole, crystal,optdetector, optdiode, doveprism, polarization, mirror, beamsplitter, optgrid, optprism, rightangleprism, pentaprism, optdipole, optripole, optfiber, optamp, optmzm, optfilter, polcontrol, optisolator, optswitch, fiberdelayline, optfiberpolarizer, fibercollimator, optcoupler, wdmcoupler, wdmsplitter, drawbeam, drawwidebeam, drawfiber, custombeam},
+    moretexcs = [20]{lens, optbox, oenode, oenodein, oenodeext, oenodeout, oenoderefa, oenoderefb, optplate, optretplate, pinhole, crystal,optdetector, optdiode, doveprism, polarization, mirror, beamsplitter, optgrid, optprism, rightangleprism, pentaprism, optdipole, optripole, optfiber, optamp, optmzm, optfilter, polcontrol, optisolator, optswitch, fiberdelayline, optfiberpolarizer, fibercollimator, optcoupler, wdmcoupler, wdmsplitter, drawbeam, drawwidebeam, drawfiber, custombeam, frontlayer, backlayer},
     explpreset={pos=l,width=-99pt,overhang=0pt,hsep=5mm, varwidth,vsep=\bigskipamount,rframe={}},
     escapechar=§
 }
@@ -2466,33 +2467,19 @@
 % styles of all fiber connections can be configured independently by the
 % following styles:
 %
-% \begin{optionlist}
-% \styleitem{Fiber} The parent style which affects all fiber connections.
-%
-% \styleitem{FiberIn} The style for all incoming fiber connections, inherits
-% from \prm{Fiber}.
-%   
-% \styleitem{FiberIn1}
-% The style for the upper incoming fiber connection,
-% inherits from \prm{FiberIn} and used only by \Lcs{wdmcoupler} and
-% \Lcs{optcoupler}.
-%
-% \styleitem{FiberIn2} 
-% The style for the lower incoming fiber connection,
-% inherits from \prm{FiberIn} and used only by \Lcs{wdmcoupler} and
-% \Lcs{optcoupler}.
-%
-% \styleitem{FiberOut} The style for all outgoing fiber connections, inherits
-% from \prm{Fiber}.
-%   
-% \styleitem{FiberOut1} The style for the upper outgoing fiber connection,
-% inherits from \prm{FiberOut} and used only by \Lcs{wdmsplitter} and
-% \Lcs{optcoupler}.
-%
-% \styleitem{FiberOut2} The style for the lower outgoing fiber connection,
-% inherits from \prm{FiberOut} and used only by \Lcs{wdmcoupler} and
-% \Lcs{optcoupler}.
-% \end{optionlist}
+% \noindent\begin{pspicture}(0,4.2)(\linewidth,10.5)
+% \rput[lt](0,10){\pstree[treesep=0.4, nodesep=5pt, arrows=<-, arrowinset=0, arrowscale=1.5]{\poeTR{Fiber}}{%
+%   \pstree{\poeTR{FiberIn}}{\poeTR{FiberIn1} \poeTR{FiberIn2}}
+%   \pstree{\poeTR{FiberOut}}{\poeTR{FiberOut1} \poeTR{FiberOut2}}}
+% \rput[l](-1,0|T-0){\parbox{6cm}{The parent style which affects all fiber connections.}}
+% \rput[l](-1,0|T-0-0){\parbox{6cm}{The style for all incoming/outgoing fiber connections.}}
+% \rput[t](! \psGetNodeCenter{T-0-0-0} \psGetNodeCenter{T-0-0-1}
+%         T-0-0-0.x T-0-0-1.x add 2 div T-0-0-0.y 0.4 sub){%
+%           \parbox{3.8cm}{\RaggedRight Upper(1) or lower(2) incoming fiber.}}
+% \rput[t](! \psGetNodeCenter{T-0-1-0} \psGetNodeCenter{T-0-1-1}
+%         T-0-1-0.x T-0-1-1.x add 2 div T-0-1-0.y 0.4 sub){%
+%           \parbox{3.8cm}{\RaggedRight Upper(1) or lower(2) outgoing fiber.}}}
+% \end{pspicture}
 %
 % Note, that all these style should be changed with \Lcs{addtopsstyle} as to not
 % destroy the inheriting scheme.
