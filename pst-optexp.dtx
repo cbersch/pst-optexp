@@ -8313,7 +8313,6 @@ tx@OptexpDict begin
 % $@@X_B$ $@@Y_B$ $@@X_A$ $@@Y_A$ A B \textrightarrow{} angleA
 %    \begin{macrocode}
 /RelFiberAngle {
-    stack
     dup xcheck not { nametostring } if /CompB ED
     dup xcheck not { nametostring } if /CompA ED
     /CompA load xcheck {
@@ -8326,14 +8325,14 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % B is a component, and A is a node: the angle at node A is calculated through the reference nodes of component B
 %    \begin{macrocode}
-            4 copy @ABVect 6 2 roll pop pop % XB-XA YB-YA XB YB
-	    (N@) CompB strcat dup dup (Center) strcat @GetCenter 6 -2 roll @ABVect % B-A name name CenterB-B CenterB-B
-            4 2 roll % B-A CenterB-B name name
+            4 copy @ABVect 6 2 roll pop pop % C-N C
+	    (N@) CompB strcat dup dup (Center) strcat @GetCenter 6 -2 roll 4 2 roll @ABVect% C-N name name C-Center
+            4 2 roll % C-N C-Center name name
             (A) strcat exch (B) strcat
-	    @GetCenter 3 -1 roll @GetCenter @ABVect 2 copy exch atan % B-A CenterB-B refB-refA angle
-            7 3 roll 2 copy % refB-refA angle B-A CenterB-B CenterB-B
-            9 -2 roll %  angle B-A CenterB-B CenterB-B refB-refA
-            SProd 0 lt 5 1 roll SProd 0 lt and not { 180 add } if
+	    @GetCenter 3 -1 roll @GetCenter @ABVect 2 copy exch atan % C-N CenterB-B refB-refA angle
+            7 3 roll 2 copy % refB-refA angle C-N C-Center C-Center
+            9 -2 roll %  angle C-N C-Center C-Center refB-refA
+            SProd 0 gt 5 1 roll SProd 0 gt xor { 180 add } if
 	} ifelse
     } {
 %    \end{macrocode}
