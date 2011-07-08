@@ -89,7 +89,7 @@
     captionpos=b,
     xleftmargin=1em,
     texcsstyle = [20]\color{DOrange!80!black},
-    moretexcs = [20]{lens, optbox, oenode, oenodein, oenodeext, oenodeout, oenoderefa, oenoderefb, optplate, optretplate, pinhole, crystal,optdetector, optdiode, doveprism, polarization, mirror, beamsplitter, optgrid, optprism, rightangleprism, pentaprism, optdipole, optripole, optfiber, optamp, optmzm, optfilter, polcontrol, optisolator, optswitch, fiberdelayline, optfiberpolarizer, fibercollimator, optcoupler, wdmcoupler, wdmsplitter, drawbeam, drawwidebeam, drawfiber, custombeam, frontlayer, backlayer},
+    moretexcs = [20]{lens, optbox, oenode, oenodein, oenodeext, oenodeout, optplate, optretplate, pinhole, crystal,optdetector, optdiode, doveprism, polarization, mirror, beamsplitter, optgrid, optprism, rightangleprism, pentaprism, optdipole, optripole, optfiber, optamp, optmzm, optfilter, polcontrol, optisolator, optswitch, fiberdelayline, optfiberpolarizer, fibercollimator, optcoupler, wdmcoupler, wdmsplitter, drawbeam, drawwidebeam, drawfiber, custombeam, frontlayer, backlayer},
     explpreset={pos=l,width=-99pt,overhang=0pt,hsep=5mm, varwidth,vsep=\bigskipamount,rframe={}},
     escapechar=§
 }
@@ -676,50 +676,6 @@
 % target object (for naming see \ref{sec:namingobj}) and as second argument the
 % name of the requested special node. For most special nodes an appropriate macro is provided.
 % 
-% \cmditem{oenoderefa}{Obj}
-% \cmditem{oenoderefb}{Obj}
-% 
-% These commands refer to the reference nodes which are used to position \prm{Obj}. For the
-% dipole components they are identical with the nodes passed to the component
-% macro:
-% 
-% \medskip
-% \iffalse
-%<*ignore>
-% \fi
-\begin{LTXexample}
-\begin{pspicture}(3,2)
-  \pnode(0,1){A}\pnode(3,1){B}\lens[showoptdots](A)(B){}
-  \psdot[linecolor=red](\oenoderefa{})
-  \psdot[linecolor=red, dotstyle=x, dotsize=0.2](A)
-  \psdot[linecolor=blue](\oenoderefb{})
-  \psdot[linecolor=blue, dotstyle=x, dotsize=0.2](B)
-\end{pspicture}
-\end{LTXexample}
-% \iffalse
-%</ignore>
-% \fi
-% \medskip
-% 
-% For tripole macros, new reference nodes are constructed which lay in the plane of refraction:
-% 
-% \medskip
-% \iffalse
-%<*ignore>
-% \fi
-\begin{LTXexample}
-\begin{pspicture}(3,4)
-  \pnode(0,2){A}\pnode(2,0){B}\pnode(2,2){G}
-  \mirror[showoptdots](A)(G)(B){}
-  \psdot[linecolor=red](\oenoderefa{})
-  \psdot[linecolor=red, dotstyle=x, dotsize=0.2](A)
-  \psdot[linecolor=blue](\oenoderefb{})
-  \psdot[linecolor=blue, dotstyle=x, dotsize=0.2](B)
-\end{pspicture}
-\end{LTXexample}
-% \iffalse
-%</ignore>
-% \fi
 % \end{ltxsyntax}
 % 
 % \subsection{Nodes For External Usage}\label{sec:extnode}
@@ -4222,21 +4178,21 @@
 \def\poe@drawInternalConnections{%
   \ifpoe@beam
     \ifpoe@endbox
-      \drawbeam[connectplanes]{(\oenoderefa{})}{\poe@key@compname}
+      \drawbeam[connectplanes]{(\oenode@refa{})}{\poe@key@compname}
     \else
-      \drawbeam[connectplanes]{(\oenoderefa{})}{\poe@key@compname}{(\oenoderefb{})}
+      \drawbeam[connectplanes]{(\oenode@refa{})}{\poe@key@compname}{(\oenode@refb{})}
     \fi
   \else
     \ifpoe@endbox
       \ifpoe@fiberin@
-        \drawfiber@{FiberIn}{(\oenoderefa{})}{\poe@key@compname}
+        \drawfiber@{FiberIn}{(\oenode@refa{})}{\poe@key@compname}
       \fi
     \else
       \ifpoe@fiberin@
-        \drawfiber@{FiberIn}{(\oenoderefa{})}{\poe@key@compname}
+        \drawfiber@{FiberIn}{(\oenode@refa{})}{\poe@key@compname}
       \fi
       \ifpoe@fiberout@
-        \drawfiber@{FiberOut}{\poe@key@compname}{(\oenoderefb{})}
+        \drawfiber@{FiberOut}{\poe@key@compname}{(\oenode@refb{})}
       \fi
     \fi
   \fi
@@ -4308,17 +4264,17 @@
 \def\pst@optexp@conntable{,o-o,i-i,f-f}%
 \def\psoe@cs@out@{}%
 \def\psoe@cs@in@{}%
-\def\psoe@cs@in@o{\psline[style=Beam](\oenoderefa{})(\optexp@nodeA)}%
-\def\psoe@cs@out@o{\psline[style=Beam](\optexp@nodeB)(\oenoderefb{})}%
+\def\psoe@cs@in@o{\psline[style=Beam](\oenode@refa{})(\optexp@nodeA)}%
+\def\psoe@cs@out@o{\psline[style=Beam](\optexp@nodeB)(\oenode@refb{})}%
 \def\psoe@cs@in@f{%
-  \pccurve[angleA=!\poe@dict{/N@\oenoderefb{} /N@\oenoderefa{} FiberAngleA}, 
-           angleB=!\poe@dict{/N@\oenoderefb{} /N@\oenoderefa{} FiberAngleB}, 
-           style=FiberIn](\oenoderefa{})(\optexp@nodeA)%
+  \pccurve[angleA=!\poe@dict{/N@\oenode@refb{} /N@\oenode@refa{} FiberAngleA}, 
+           angleB=!\poe@dict{/N@\oenode@refb{} /N@\oenode@refa{} FiberAngleB}, 
+           style=FiberIn](\oenode@refa{})(\optexp@nodeA)%
 }%
 \def\psoe@cs@out@f{%
-   \pccurve[angleA=!\poe@dict{/N@\oenoderefb{} /N@\oenoderefa{} FiberAngleA}, 
-            angleB=!\poe@dict{/N@\oenoderefb{} /N@\oenoderefa{} FiberAngleB}, 
-            style=FiberOut](\optexp@nodeB)(\oenoderefb{})%
+   \pccurve[angleA=!\poe@dict{/N@\oenode@refb{} /N@\oenode@refa{} FiberAngleA}, 
+            angleB=!\poe@dict{/N@\oenode@refb{} /N@\oenode@refa{} FiberAngleB}, 
+            style=FiberOut](\optexp@nodeB)(\oenode@refb{})%
 }%
 \def\psoe@cs@in@i{%
   \def\pst@par{style=Beam}
@@ -4327,7 +4283,7 @@
       [%]
       \pst@optexpdict
         (\poe@key@b@sicname) false GetInternalBeamNodes 
-        (N@\oenoderefa{}) @GetCenter 
+        (N@\oenode@refa{}) @GetCenter 
       end
     }%
   \psline@ii
@@ -4338,7 +4294,7 @@
     \addto@pscode{%
       [%]
       \pst@optexpdict
-        (N@\oenoderefb{}) @GetCenter
+        (N@\oenode@refb{}) @GetCenter
         (\poe@key@b@sicname) false GetInternalBeamNodes 
       end
     }%
@@ -4496,21 +4452,20 @@
 % \begin{macro}{\oenodeext}
 % \begin{macro}{\oenodein}
 % \begin{macro}{\oenodeout}
-% \begin{macro}{\oenoderefa}
-% \begin{macro}{\oenoderefb}
 % \begin{macro}{\oenodecenter}
 % \begin{macro}{\oenodelabel}
 %    \begin{macrocode}
 \def\oenodeext#1{\oenode{#1}{\poe@str@extnode@postfix}}%
 \def\oenodein#1{\oenode{#1}{1}}%
 \def\oenodeout#1{\oenode{#1}{N}}%
-\def\oenoderefa#1{\oenode{#1}{A}}%
-\def\oenoderefb#1{\oenode{#1}{B}}%
 \def\oenodecenter#1{\oenode{#1}{Center}}%
 \def\oenodelabel#1{\oenode{#1}{Label}}%
+\def\oenode@refa#1{\oenode{#1}{A}}%
+\def\oenode@refb#1{\oenode{#1}{B}}%
+\def\oenode@rotref#1{\oenode{#1}{Rotref}}%
+\def\oenode@rotrefa#1{\oenode{#1}{RotrefA}}%
+\def\oenode@rotrefb#1{\oenode{#1}{RotrefB}}%
 %    \end{macrocode}
-% \end{macro}
-% \end{macro}
 % \end{macro}
 % \end{macro}
 % \end{macro}
@@ -4754,9 +4709,9 @@
               \pst@getcoor{##3}\pst@tempB%
               \pst@OptexpVerb{%
                  tx@NodeDict begin
-                     {\pst@tempA } false chirality 0 le { /N@\oenoderefb{}\space }{ /N@\oenoderefa{}\space } ifelse
+                     {\pst@tempA } false chirality 0 le { /N@\oenode@refb{}\space }{ /N@\oenode@refa{}\space } ifelse
                      10 {InitPnode } NewNode
-                     {\pst@tempB } false chirality 0 le { /N@\oenoderefa{}\space }{ /N@\oenoderefb{}\space } ifelse
+                     {\pst@tempB } false chirality 0 le { /N@\oenode@refa{}\space }{ /N@\oenode@refb{}\space } ifelse
                      10 {InitPnode } NewNode
                  end
               }%
@@ -4782,18 +4737,18 @@
       \begin@OptexpObj
         \ifpoe@backlayer
           \ifx\poe@key@align\poe@str@top
-            \pnode(##1){\oenoderefa{}}
-            \pnode(##3){\oenoderefb{}}
+            \pnode(##1){\oenode@refa{}}
+            \pnode(##3){\oenode@refb{}}
           \else\ifx\poe@key@align\poe@str@bottom
-            \pnode(##2){\oenoderefa{}}
-            \pnode(##4){\oenoderefb{}}
+            \pnode(##2){\oenode@refa{}}
+            \pnode(##4){\oenode@refb{}}
           \else
             \pst@getcoor{##1}\pst@tempA%
             \pst@getcoor{##2}\pst@tempB%
-            \pnode(!\pst@tempA \pst@tempB \pst@optexpdict mwNode end \tx@UserCoor){\oenoderefa{}}
+            \pnode(!\pst@tempA \pst@tempB \pst@optexpdict mwNode end \tx@UserCoor){\oenode@refa{}}
             \pst@getcoor{##3}\pst@tempA%
             \pst@getcoor{##4}\pst@tempB%
-            \pnode(!\pst@tempA \pst@tempB \pst@optexpdict mwNode end \tx@UserCoor){\oenoderefb{}}
+            \pnode(!\pst@tempA \pst@tempB \pst@optexpdict mwNode end \tx@UserCoor){\oenode@refb{}}
          \fi\fi
        \fi
        \poe@drawcomponent[#2]{##5}{\@nameuse{#2@ii}}
@@ -4864,17 +4819,17 @@
   \addbefore@par{fiber}%
   \begin@OptexpObj
     \ifpoe@backlayer
-      \pnode(#1){\oenoderefa{}}
+      \pnode(#1){\oenode@refa{}}
       \ifx\poe@key@align\poe@str@top
-         \pnode(#2){\oenoderefb{}}
+         \pnode(#2){\oenode@refb{}}
       \else\ifx\poe@key@align\poe@str@bottom
-         \pnode(#3){\oenoderefb{}}
+         \pnode(#3){\oenode@refb{}}
       \else
          \pst@getcoor{#2}\pst@tempA%
          \pst@getcoor{#3}\pst@tempB%
          \pnode(!\pst@tempA\pst@number\psyunit div exch \pst@number\psxunit div exch
                  \pst@tempB\pst@number\psyunit div exch \pst@number\psxunit div exch 
-                 \pst@optexpdict mwNode end \poe@key@coupleroutshift\space add){\oenoderefb{}}
+                 \pst@optexpdict mwNode end \poe@key@coupleroutshift\space add){\oenode@refb{}}
       \fi\fi
     \fi
     \poe@drawcomponent[wdmsplitter]{#4}\wdmsplitter@ii
@@ -4902,17 +4857,17 @@
   \addbefore@par{fiber}%
   \begin@OptexpObj
     \ifpoe@backlayer
-      \pnode(#3){\oenoderefb{}}
+      \pnode(#3){\oenode@refb{}}
       \ifx\poe@key@align\poe@str@top
-         \pnode(#1){\oenoderefa{}}
+         \pnode(#1){\oenode@refa{}}
       \else\ifx\poe@key@align\poe@str@bottom
-         \pnode(#2){\oenoderefa{}}
+         \pnode(#2){\oenode@refa{}}
       \else
          \pst@getcoor{#1}\pst@tempA%
          \pst@getcoor{#2}\pst@tempB%
          \pnode(!\pst@tempA\pst@number\psyunit div exch \pst@number\psxunit div exch
                  \pst@tempB\pst@number\psyunit div exch \pst@number\psxunit div exch 
-                 \pst@optexpdict mwNode end){\oenoderefa{}}
+                 \pst@optexpdict mwNode end){\oenode@refa{}}
       \fi\fi
     \fi
     \poe@drawcomponent[wdmcoupler]{#4}\wdmcoupler@ii
@@ -4961,8 +4916,8 @@
      calcNodes
      /ExchCoorSwitch 
      Y@A X@A neg Y@B X@B neg ExchCoor def
-     X@A Y@A end){\oenoderefa{}}%
-  \pnode(! \poe@dict{X@B Y@B}){\oenoderefb{}}%
+     X@A Y@A end){\oenode@refa{}}%
+  \pnode(! \poe@dict{X@B Y@B}){\oenode@refb{}}%
   \pst@OptexpVerb{/@xref \poe@key@xref\space def /@yref \poe@key@yref\space def}%
 }\ignorespaces}%
 %    \end{macrocode}
@@ -4974,8 +4929,8 @@
 % macros the given points are assigned to the temporary nodes.
 %    \begin{macrocode}
 \def\poe@regNodes#1#2{%
-    \pnode(#1){\oenoderefa{}}
-    \pnode(#2){\oenoderefb{}}
+    \pnode(#1){\oenode@refa{}}
+    \pnode(#2){\oenode@refb{}}
 \ignorespaces}%
 %    \end{macrocode}
 % \end{macro}
@@ -4984,7 +4939,7 @@
 %    \begin{macrocode}
 \def\poe@adjustTempNodes{%
     \pst@OptexpVerb{%
-      (N@\oenoderefa{}) @GetCenter (N@\oenoderefb{}) @GetCenter
+      (N@\oenode@refa{}) @GetCenter (N@\oenode@refb{}) @GetCenter
       currentdict /chirality known not {%
         /chirality 1 def 
       } if
@@ -5034,7 +4989,7 @@
   \@ifundefined{#1@ref}{}{\@nameuse{#1@ref}}%
    \rput(\poe@key@comp@Xshift,\poe@key@comp@Yshift){%
      \pnode(! \poe@dict{@@x0 @@x \poe@key@rotate@xref\space mul add
-                        @@y0 @@y \poe@key@rotate@yref\space mul add}){\oenode{}{Rotref}}%
+                        @@y0 @@y \poe@key@rotate@yref\space mul add}){\oenode@rotref{}}%
      \ifdim\poe@key@angle pt=0pt
         #2%
         \poe@pnode@shiftedrot(0,\poe@key@labeloffset)%
@@ -5042,14 +4997,14 @@
                              {\oenodelabel{}}%
                              {\poe@key@labelangle}%
      \else
-        \psrotate(\oenode{}{Rotref}){\poe@key@angle}{%
+        \psrotate(\oenode@rotref{}){\poe@key@angle}{%
           #2%
           \poe@pnode@shiftedrot(0,\poe@key@labeloffset)%
                                {\oenodecenter{}}%
                                {\oenodelabel{}}%
                                {\poe@key@labelangle}%
         }%
-     \fi
+     \fi%
    }%
 }%
 %    \end{macrocode}
@@ -5099,12 +5054,12 @@
               { /yA ED /xA ED /yB ED /xB ED} ifelse
           } ifelse
       } if >%
-      \ncline[linestyle=none,fillstyle=none,npos=]{\oenoderefa{}}{\oenoderefb{}}%
+      \ncline[linestyle=none,fillstyle=none,npos=]{\oenode@refa{}}{\oenode@refb{}}%
       \ifx\poe@key@position\@empty
          \ifx\poe@key@abspos\@empty
             \ncput[nrot=:U,npos=]{\poe@putlabelrelative{#1}}%
          \else
-            \nlput[nrot=:U](\oenoderefa{})(\oenoderefb{}){\poe@key@abspos}{\poe@putlabelrelative{#1}}%
+            \nlput[nrot=:U](\oenode@refa{})(\oenode@refb{}){\poe@key@abspos}{\poe@putlabelrelative{#1}}%
          \fi
       \else
          \ncput[nrot=:U,npos=\poe@key@position]{\poe@putlabelrelative{#1}}
@@ -5188,9 +5143,9 @@
       \pst@getcoor{#3}\pst@tempB%
       \pst@OptexpVerb{%
          tx@NodeDict begin
-            {\pst@tempA } false chirality 0 le { /N@\oenoderefb{}\space }{ /N@\oenoderefa{}\space } ifelse
+            {\pst@tempA } false chirality 0 le { /N@\oenode@refb{}\space }{ /N@\oenode@refa{}\space } ifelse
              10 {InitPnode } NewNode
-             {\pst@tempB } false chirality 0 le { /N@\oenoderefa{}\space }{ /N@\oenoderefb{}\space } ifelse
+             {\pst@tempB } false chirality 0 le { /N@\oenode@refa{}\space }{ /N@\oenode@refb{}\space } ifelse
              10 {InitPnode } NewNode
          end
       }%
@@ -5242,7 +5197,7 @@
         \@nameuse{\poe@connIn}
       \else
         \ifpoe@beam
-          \drawbeam{(\oenoderefa{})}{\poe@key@compname}
+          \drawbeam{(\oenode@refa{})}{\poe@key@compname}
         \fi
       \fi
       \ifpoe@fiberout@
@@ -5250,7 +5205,7 @@
           \ifpoe@compat
             \@nameuse{\poe@connOut}
           \else
-            \drawfiber{\poe@key@compname}{(\oenoderefb{})}
+            \drawfiber{\poe@key@compname}{(\oenode@refb{})}
           \fi
         \else\ifx\@empty\pst@tempD
           \psbezier[style=FiberOut](\pst@tempC)(\pst@tempB)(\pst@tempB)(\oenodeout{})%
@@ -5457,7 +5412,7 @@
     \fi
     \psset{position=1}%
   \fi%
-  \ncline[linestyle=none,fillstyle=none,npos=]{\oenoderefa{}}{\oenoderefb{}}%
+  \ncline[linestyle=none,fillstyle=none,npos=]{\oenode@refa{}}{\oenode@refb{}}%
 %    \end{macrocode}
 % Positioning of the component
 %    \begin{macrocode}
@@ -5479,7 +5434,7 @@
       \ifx\poe@key@abspos\@empty
         \ncput[nrot=:U,npos=]{\poe@putcomp{#1}{\@@comp}}%
       \else
-        \nlput[nrot=:U](\oenoderefa{})(\oenoderefb{}){\poe@key@abspos}{\poe@putcomp{#1}{\@@comp}}%
+        \nlput[nrot=:U](\oenode@refa{})(\oenode@refb{}){\poe@key@abspos}{\poe@putcomp{#1}{\@@comp}}%
       \fi
     \else
       \ncput[nrot=:U,npos=\poe@key@position]{\poe@putcomp{#1}{\@@comp}}%
@@ -5489,15 +5444,14 @@
     \poe@putlabel{#2}%
   \fi
   \ifpoe@backlayer
-    \nodexn{(! \poe@dict{%
-               (N@\oenode{}{Rotref}) @GetCenter 2 copy
-               (N@\oenoderefa{}) @GetCenter 4 2 roll @ABVect \poe@key@angle\space matrix rotate dtransform  VecAdd
-             \tx@UserCoor}) + (\poe@key@comp@Xshift,\poe@key@comp@Yshift)}{\oenode{}{RotrefA}}%
-    \nodexn{(! \poe@dict{%
-               (N@\oenode{}{Rotref}) @GetCenter 2 copy
-               (N@\oenoderefb{}) @GetCenter 4 2 roll @ABVect \poe@key@angle\space matrix rotate dtransform VecAdd
-             \tx@UserCoor}) + (\poe@key@comp@Xshift,\poe@key@comp@Yshift)}{\oenode{}{RotrefB}}%
-%%}
+    \pnode(! \poe@dict{%
+               (N@\oenode@rotref{}) @GetCenter 2 copy
+               (N@\oenode@refa{}) @GetCenter \poe@key@comp@Xshift\space\poe@key@comp@Yshift\space\tx@ScreenCoor VecAdd 4 2 roll @ABVect \poe@key@angle\space matrix rotate dtransform VecAdd
+             \tx@UserCoor}){\oenode@rotrefa{}}%
+    \pnode(! \poe@dict{%
+               (N@\oenode@rotref{}) @GetCenter 2 copy
+               (N@\oenode@refb{}) @GetCenter \poe@key@comp@Xshift\space\poe@key@comp@Yshift\space\tx@ScreenCoor VecAdd 4 2 roll @ABVect \poe@key@angle\space matrix rotate dtransform VecAdd
+             \tx@UserCoor}){\oenode@rotrefb{}}%
   \fi
 %    \end{macrocode}
 % Show some special dots for debugging
@@ -5506,8 +5460,8 @@
     \ifpoe@backlayer
       \psdot[linecolor=green](\oenodecenter{})
       \psdot[linecolor=red](\oenodelabel{})
-      \psdot[linecolor=black](\oenoderefa{})
-      \psdot[linecolor=black](\oenoderefb{})
+      \psdot[linecolor=black](\oenode@refa{})
+      \psdot[linecolor=black](\oenode@refb{})
     \fi
   \fi
   \ifpoe@debug@showifcnodes
@@ -6100,7 +6054,7 @@
 % \begin{macro}{\optdetector@comp}
 %    \begin{macrocode}
 \def\optdetector@comp{%
-   \pnode(\oenoderefb{}){\oenodein{}}
+   \pnode(\oenode@refb{}){\oenodein{}}
    \ifx\poe@key@dettype\poe@str@dettype@round
       \begin@ClosedObj
 %    \end{macrocode}
@@ -8383,7 +8337,6 @@ tx@OptexpDict begin
 % $@@X_B$ $@@Y_B$ $@@X_A$ $@@Y_A$ A B $\quad\longmapsto\quad$ angleA
 %    \begin{macrocode}
 /RelFiberAngle {
-    stack (0-----------------) ==
     dup xcheck not { nametostring } if /CompB ED
     dup xcheck not { nametostring } if /CompA ED
     /CompA load xcheck {
