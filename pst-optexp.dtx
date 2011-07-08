@@ -54,7 +54,7 @@
    linkcolor=pdflinkcolor,
    breaklinks,        
    linktocpage=true]{hyperref}
-\definecolor{DOrange}{rgb}{1,.4,.2}
+\definecolor{DOrange}{rgb}{0.9,.36,.18}
 \colorlet{pdflinkcolor}{DOrange}
 \colorlet{pdfurlcolor}{DOrange}
 \colorlet{pdffilecolor}{DOrange}
@@ -88,12 +88,25 @@
     breakautoindent=true, 
     captionpos=b,
     xleftmargin=1em,
+    rulecolor=\color{black!20},
     texcsstyle = [20]\color{DOrange!80!black},
     moretexcs = [20]{lens, optbox, oenode, oenodein, oenodeext, oenodeout, optplate, optretplate, pinhole, crystal,optdetector, optdiode, doveprism, polarization, mirror, beamsplitter, optgrid, optprism, rightangleprism, pentaprism, optdipole, optripole, optfiber, optamp, optmzm, optfilter, polcontrol, optisolator, optswitch, fiberdelayline, optfiberpolarizer, fibercollimator, optcoupler, wdmcoupler, wdmsplitter, drawbeam, drawwidebeam, drawfiber, custombeam, frontlayer, backlayer},
     explpreset={pos=l,width=-99pt,overhang=0pt,hsep=5mm, varwidth,vsep=\bigskipamount,rframe={}},
     escapechar=§
 }
-\colorlet{sectioncolor}{DOrange!90!black}
+\colorlet{sectioncolor}{DOrange}
+\addtokomafont{sectioning}{\color{sectioncolor}} % Farbe der Ueberschriften
+\usepackage[automark,nouppercase]{scrpage2}
+\pagestyle{scrheadings} 
+\clearscrheadings
+\clearscrplain
+\ohead{\pagemark}
+\ihead{\headmark}
+\ofoot[\pagemark]{} 
+\automark[subsection]{section}
+\setheadsepline{.4pt}[\color{DOrange}]
+\setheadwidth[0pt]{text}
+\setfootwidth[0pt]{text}
 \usepackage{etoolbox}
 \undef{\cs}
 \undef{\cmd}
@@ -519,15 +532,7 @@
   \drawbeam{(0,1)}{}{(3,1)}
 \end{pspicture}
 \end{LTXexample}
-% \iffalse
-%</ignore>
-% \fi
-% 
-% \bigskip
-% 
-% \iffalse
-%<*ignore>
-% \fi
+
 \begin{LTXexample}
 \begin{pspicture}(3,2) 
   \mirror[beam, compshift=0.2, startvecabs, startvec=1 0, labelangle=45](0,1)(2,1)(2,0){mirror}
@@ -560,8 +565,6 @@
 % the label text. The detailed behaviour is best illustrated looking at
 % the following three examples.
 % 
-% \medskip
-% 
 % \iffalse
 %<*ignore>
 % \fi
@@ -573,15 +576,7 @@
   }
 \end{pspicture}
 \end{LTXexample}
-% \iffalse
-%</ignore>
-% \fi
-% 
-% \bigskip
-% 
-% \iffalse
-%<*ignore>
-% \fi
+
 \begin{LTXexample}
 \begin{pspicture}(-2,-2)(2.5,2)
   \psset{endbox, optboxwidth=1, optboxheight=0.6}
@@ -590,15 +585,7 @@
   }
 \end{pspicture}
 \end{LTXexample}
-% \iffalse
-%</ignore>
-% \fi
-% 
-% \bigskip
-% 
-% \iffalse
-%<*ignore>
-% \fi
+
 \begin{LTXexample}
 \begin{pspicture}(-2,-2)(2.5,2)
   \psset{endbox, optboxwidth=1, optboxheight=0.6}
@@ -611,15 +598,11 @@
 %</ignore>
 % \fi
 % 
-% \medskip
-% 
 % \optitem{label}{\prm{offset}[ \prm{angle}[ \prm{ref string}[ \prm{labelref}]]]}
 % Allows simplified notation for changing more than one
 % label-related parameter. It takes up to four space-separated arguments
 % (\nxLkeyword{labeloffset}, \nxLkeyword{labelangle}, \nxLkeyword{labelalign}, and
 % \nxLkeyword{labelref}). Unchanged intermediate arguments may be specified with a dot.
-% 
-% \medskip
 % 
 % \iffalse
 %<*ignore>
@@ -654,8 +637,6 @@
 %   name instead of the automatic number to an object. It can be used only
 %   directly within a \nxLPack{pst-optexp} object and must be unique within one
 %   \nxLkeyword{pspicture} environment.
-% 
-% \medskip
 % 
 % \begin{lstlisting}[gobble=2]
 % \optbox[compname=MyBox](A)(B){Box} % valid use of 'compname'
@@ -700,8 +681,6 @@
 % node. Some allow any possible \paramvalue{<ref string>} for \Lkeyword{extnode}, others have
 % only one reasonable possibility (e.g. piezo mirror, see
 % Sec.~\ref{sec:mirror}) which does not depend on the actual value of \Lkeyword{extnode}.
-% 
-% \bigskip
 % 
 % \iffalse
 %<*ignore>
@@ -766,14 +745,11 @@
 % \iffalse
 %</ignore>
 % \fi
-% 
 % \numitem[1]{lensradiusleft} Set the left radius of the lens. A positive
 % \prm{num} is for convex, a negative one for concave curvatures. Use zero for a plain
 % surface.
 % 
 % \numitem[1]{lensradiusright} Same as \opt{lensradiusleft} but for the right surface.
-% 
-% \medskip
 % \iffalse
 %<*ignore>
 % \fi
@@ -787,10 +763,7 @@
 % \iffalse
 %</ignore>
 % \fi
-% 
 % \numitem{lensradius} A convenience option to specify both curvatures.
-% 
-% \medskip
 % \iffalse
 %<*ignore>
 % \fi
@@ -802,15 +775,11 @@
 % \iffalse
 %</ignore>
 % \fi
-% 
 % \numitem[0]{lenswidth}
-% 
 % Usually only the height and the two radii are used to construct the lens and the
 % width is calculated from these parameters. If \opt{lenswidth} is greater than
 % zero, this width is used instead. This is only useful if you want to draw thick
 % lenses and it can have ugly results if the lens width is choosen too small.
-% 
-% \medskip
 % \iffalse
 %<*ignore>
 % \fi
@@ -823,11 +792,8 @@
 % \iffalse
 %</ignore>
 % \fi
-% 
-% \optitem{lens}{\prm{leftR} [\prm{rightR} [\prm{height} [\prm{width}]]]}
+% \optitem{lens}{\prm{radiusleft} [\prm{radiusright} [\prm{height} [\prm{width}]]]}
 % A convenience option to specify all lens parameters with a single option.
-% 
-% \medskip
 % \iffalse
 %<*ignore>
 % \fi
@@ -931,7 +897,6 @@
 % \numitem[0]{phwidth} The pinhole is drawn in a more plastic style if the
 % \nxLkeyword{phwidth} is not zero.
 % 
-% \medskip
 % \iffalse
 %<*ignore>
 % \fi
@@ -1038,8 +1003,6 @@
 % and \paramvalue{r} (compare with \Lkeyword{extnode} in
 % Sec.~\ref{sec:extnode}). Note, that all connection-related nodes are
 % also rotate, while the label is not affected.
-% 
-% \medskip
 % 
 % \iffalse
 %<*ignore>
@@ -1160,7 +1123,6 @@
 %   three times the height and the angles at the input and output faces are
 %   45\textdegree.
 % \end{optionlist}
-% \medskip
 % 
 % \subsection{Polarization}
 % 
@@ -1263,13 +1225,7 @@
             beam](0,0)(1.8,1.5)(0,2){ext}
 \end{pspicture}
 \end{LTXexample}
-% \iffalse
-%</ignore>
-% \fi
-% \medskip
-% \iffalse
-%<*ignore>
-% \fi
+
 \begin{LTXexample}
 \begin{pspicture}(3,2)
 \mirror[mirrortype=piezo,
@@ -1937,8 +1893,6 @@
 % central node \prm{A} is used twice. Positioning parameters can be used to
 % shift the object between \prm{In} and \prm{A} nodes.
 % 
-% \medskip
-% 
 % \iffalse
 %<*ignore>
 % \fi
@@ -1950,13 +1904,10 @@
 % \iffalse
 %</ignore>
 % \fi
-% 
 % \medskip
-% 
+%
 % For four nodes, the fiber is drawn as \Lcs{psbezier} curve with the specified nodes. Positioning parameters can be used to
 % shift the object between \prm{In} and \prm{A} nodes.
-% 
-% \medskip
 % 
 % \iffalse
 %<*ignore>
@@ -1969,8 +1920,6 @@
 % \iffalse
 %</ignore>
 % \fi
-% 
-% \medskip
 % 
 % \subsection{Coupler}\label{sec:coupler}
 % \subsubsection{\texorpdfstring{\mathversion{bold}$2\times 2$}{2x2} Coupler}
@@ -2197,15 +2146,7 @@
   \drawbeam{(A)}{1}
 \end{pspicture}
 \end{LTXexample}
-% \iffalse
-%</ignore>
-% \fi
-% 
-% \medskip
-% 
-% \iffalse
-%<*ignore>
-% \fi
+
 \begin{LTXexample}
 \begin{pspicture}(3,2)
   \psset{endbox, labeloffset=0}
@@ -2224,8 +2165,6 @@
 % counter, so that removing the \nxLkeyword{compname} from an intermediate
 % object does not affect the numbering of the following ones.
 % 
-% \medskip
-% 
 % \iffalse
 %<*ignore>
 % \fi
@@ -2238,15 +2177,7 @@
   \drawbeam{(0,1)}{2}
 \end{pspicture}
 \end{LTXexample}
-% \iffalse
-%</ignore>
-% \fi
-% 
-% \medskip
-% 
-% \iffalse
-%<*ignore>
-% \fi
+
 \begin{LTXexample}
 \begin{pspicture}(3,2)
   \psset{endbox, labeloffset=0}
@@ -2307,7 +2238,6 @@
 % \nxLkeyword{startvec} is relative to the connection between the first
 % two components, use \Lkeyword{startvecabs} to change this.
 % 
-% \medskip
 % \iffalse
 %<*ignore>
 % \fi
@@ -2329,8 +2259,6 @@
 % \iffalse
 %</ignore>
 % \fi
-% 
-% \medskip
 % 
 % \boolitem[false]{startvecabs}
 % 
@@ -2356,8 +2284,6 @@
 % visualized for each component type with the \Lkeyword{showifcnodes}
 % parameter. 
 % 
-% \medskip
-% 
 % \iffalse
 %<*ignore>
 % \fi
@@ -2374,12 +2300,10 @@
 %</ignore>
 % \fi
 % 
-% \bigskip
+% \medskip
 % 
 % \nxLcs{draw*beam} calculates the distance between the interface nodes of two
 % objects and connects the two nearest
-% 
-% \medskip
 % 
 % \iffalse
 %<*ignore>
@@ -2479,7 +2403,7 @@
 %</ignore>
 % \fi
 %
-% \paragraph{Fiber angles}
+% \minisec{Fiber angles}
 %
 % The angles of the fiber connections are calculated automatically from the orientation of the component.
 %
@@ -2632,23 +2556,15 @@
 % \styleitem[style=FiberOut]{FiberOut2}
 % \end{optionlist}
 % 
-% \medskip
-% 
 % In addition to the psstyles there exist
 % corresponding \Lkeyword{newFiber\ldots} and \Lkeyword{addtoFiber\ldots}
 % parameter keys for each of them.
-% 
-% \medskip
 % 
 % \begin{lstlisting}[gobble=2]
 % \psset{addtoFiberIn={arrows=->, arrowscale=1.3}}
 % \end{lstlisting}
 % 
-% \medskip
-% 
 % \noindent is equivalent to 
-% 
-% \medskip
 % 
 % \begin{lstlisting}[gobble=2]
 % \addtopsstyle{FiberIn}{arrows=->, arrowscale=1.3}
@@ -2664,8 +2580,6 @@
 % expressed as parameter keys. Consider for example a WDM splitter which
 % only couples out a certain spectral range of the input and you want to
 % mark the output with an arrow:
-% 
-% \medskip
 % 
 % \iffalse
 %<*ignore>
@@ -2684,8 +2598,6 @@
 % 
 % Or if you need a coupler with a particular input angle you can do it be extending the appropriate fiber style:
 % 
-% \medskip
-% 
 % \iffalse
 %<*ignore>
 % \fi
@@ -2698,8 +2610,6 @@
 % \iffalse
 %</ignore>
 % \fi
-% 
-% \medskip
 % 
 % \subsection{Custom beams}\label{sec:custombeam}
 % \begin{ltxsyntax}
@@ -2724,8 +2634,6 @@
 % following examples defines a new object \nxLcs{sbn} for the special crystal
 % used in Sec.~\ref{sec:crystal}.
 % 
-% \medskip
-% 
 % \iffalse
 %<*ignore>
 % \fi
@@ -2736,15 +2644,7 @@
    \psline[style=Beam](0,1)(3,1)
 \end{pspicture}
 \end{LTXexample}
-% \iffalse
-%</ignore>
-% \fi
-% 
-% \medskip
-% 
-% \iffalse
-%<*ignore>
-% \fi
+
 \begin{LTXexample}[width=3.5cm]
 \newpsobject{pumpcoupler}{wdmcoupler}{align=top, labelangle=180, labeloffset=0.5,addtoFiberIn2={ArrowInside=->, arrowscale=2}}
 \begin{pspicture}[showgrid=true](3,2) 
@@ -2759,8 +2659,6 @@
 % 
 % Or if you need more than one type of lenses several times in your setup
 % it is very cumbersome to specify all parameters every time.
-% 
-% \medskip
 % 
 % \iffalse
 %<*ignore>
@@ -2784,7 +2682,6 @@
 % \iffalse
 %</ignore>
 % \fi
-% \medskip
 % 
 % \subsection{Defining New Objects}\label{sec:newobj}
 % 
@@ -2820,8 +2717,6 @@
 % This is illustrate a bit more in the next code snippet, which also shows
 % how the coordinate system is handled within the \nxLcs{mycomponent@iii}
 % macro.
-% 
-% \medskip
 % 
 % \iffalse
 %<*ignore>
