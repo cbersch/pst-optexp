@@ -109,7 +109,8 @@
   \let\choitem\poe@choitem
   \let\boolitem\poe@boolitem
   \let\intitem\poe@intitem
-  \let\numitem\poe@numitem}
+  \let\numitem\poe@numitem
+  \let\poeitem\ltd@item}
 
 \newcommand*{\poe@optitem}[3][]{%
   \xLkeyword{#2}%
@@ -229,6 +230,7 @@
 \EnableCrossrefs         
 \CodelineIndex
 \RecordChanges
+\OnlyDescription
 \begin{document}
   \DocInput{pst-optexp.dtx}
   \PrintChanges
@@ -1642,7 +1644,7 @@
 % \fi
 % \end{ltxsyntax}
 % 
-% \section{Fiber-Optical Components}\ref{sec:fibercomp}
+% \section{Fiber-Optical Components}\label{sec:fibercomp}
 % 
 % \subsection{Fiber}
 % 
@@ -2463,16 +2465,17 @@
 % \subsubsection{Automatic fiber connections}
 %
 % All fiber-optical components described in \prettyref{sec:fibercomp} are
-% connected automatically to their reference nodes with a \Lcs{pccurve}. The
-% styles of all fiber connections can be configured independently by the
-% following styles:
+% connected automatically to their reference nodes with \Lcs{pccurve}. The
+% styles of the fiber connections can be configured independently by the
+% styles shown in \prettyref{fig:style-inheritance}.
 %
-% \noindent\begin{pspicture}(0,4.2)(\linewidth,10.5)
-% \rput[lt](0,10){\pstree[treesep=0.4, nodesep=5pt, arrows=<-, arrowinset=0, arrowscale=1.5]{\poeTR{Fiber}}{%
+% \begin{figure}\centering
+% \begin{pspicture}(10,4.4)
+% \rput[lt](0,4.4){\pstree[levelsep=1.5cm, treesep=0.4, nodesep=5pt, arrows=<-, arrowinset=0, arrowscale=1.5]{\poeTR{Fiber}}{%
 %   \pstree{\poeTR{FiberIn}}{\poeTR{FiberIn1} \poeTR{FiberIn2}}
 %   \pstree{\poeTR{FiberOut}}{\poeTR{FiberOut1} \poeTR{FiberOut2}}}
-% \rput[l](-1,0|T-0){\parbox{6cm}{The parent style which affects all fiber connections.}}
-% \rput[l](-1,0|T-0-0){\parbox{6cm}{The style for all incoming/outgoing fiber connections.}}
+% \rput[l](-1,0|T-0){parent style}
+% \rput[l](-1,0|T-0-0){\parbox{\widthof{outgoing fibers}}{\RaggedRight incoming and outgoing fibers}}
 % \rput[t](! \psGetNodeCenter{T-0-0-0} \psGetNodeCenter{T-0-0-1}
 %         T-0-0-0.x T-0-0-1.x add 2 div T-0-0-0.y 0.4 sub){%
 %           \parbox{3.8cm}{\RaggedRight Upper(1) or lower(2) incoming fiber.}}
@@ -2480,18 +2483,77 @@
 %         T-0-1-0.x T-0-1-1.x add 2 div T-0-1-0.y 0.4 sub){%
 %           \parbox{3.8cm}{\RaggedRight Upper(1) or lower(2) outgoing fiber.}}}
 % \end{pspicture}
-%
-% Note, that all these style should be changed with \Lcs{addtopsstyle} as to not
-% destroy the inheriting scheme.
+% \caption{Inheritance diagram for the psstyles used for the automatic fiber
+%   connections. These style should be changed with \protect\Lcs{addtopsstyle} as not to
+%   destroy the inheritance.}\label{fig:style-inheritance}
+% \xLstyle{Fiber}\xLstyle{FiberIn}\xLstyle{FiberIn1}\xLstyle{FiberIn2}
+% \xLstyle{FiberOut}\xLstyle{FiberOut1}\xLstyle{FiberOut2}
+% \end{figure}
 %
 % \begin{optionlist}
-%   \optitem{new\prm{style}}{} \optitem{addto\prm{style}}{} For every style two
+% \item[\smash{\begin{tabular}[t]{@{}r}\opt{new}\prm{style}\\\opt{addto}\prm{style}\end{tabular}}]
+%   \xLkeyword{newFiber}\xLkeyword{addtoFiber}
+%   \xLkeyword{newFiberIn}\xLkeyword{addtoFiberIn}
+%   \xLkeyword{newFiberIn1}\xLkeyword{addtoFiberIn1}
+%   \xLkeyword{newFiberIn2}\xLkeyword{addtoFiberIn2}
+%   \xLkeyword{newFiberOut}\xLkeyword{addtoFiberOut}
+%   \xLkeyword{newFiberOut1}\xLkeyword{addtoFiberOut1}
+%   \xLkeyword{newFiberOut2}\xLkeyword{addtoFiberOut2} For every style two
 %   appropriate keys \opt{new}\prm{style} and \opt{addto}\prm{style} are
 %   provided which can be used to change the styles for only one object. This
 %   can be used to define own components with respectively changed fiber
 %   connections or to avoid grouping.
+%
+%   \boolitem{fiber} Some components can be used either for free-ray or
+%   fiber-optical setups (\Lcs{optbox}, \Lcs{optdetector}). The \opt{fiber}
+%   parameter enables automatic fiber connections for them.
+%
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(3,2)
+  \addtopsstyle{FiberIn}{ArrowInside=->, 
+                           arrowscale=1.5,
+                           arrowinset=0}
+  \optbox[fiber](0,1)(3,1){}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
+% \paragraph{Fiber angles}
+%
+% The angles of the fiber connections are calculated automatically from the orientation of the component.
+%
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(3,2)
+  \optbox[angle=20, fiber](0,1)(3,1){}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(3,2)
+  \optbox[compshift=0.5, fiber](0,1)(3,1){}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % \end{optionlist}
 % 
+% \subsubsection{Manual fiber connections}
+%
 % \begin{ltxsyntax}
 %   \xLcs{drawfiber}\cmditem{drawfiber}[Options]{Obj$_1$}{Obj$_2$}
 % \end{ltxsyntax}
@@ -4970,20 +5032,24 @@
 %    \begin{macrocode}
 \def\poe@putcomp#1#2{%
   \@ifundefined{#1@ref}{}{\@nameuse{#1@ref}}%
-  \ifdim\poe@key@angle pt=0pt
-    \poe@putcomp@i{#2}
-  \else
-    \psrotate(! \poe@dict{@@x0 @@x \poe@key@rotate@xref\space mul add
-                         @@y0 @@y \poe@key@rotate@yref\space mul add}){\poe@key@angle}{\poe@putcomp@i{#2}}%
-  \fi
-}%
-\def\poe@putcomp@i#1{%
    \rput(\poe@key@comp@Xshift,\poe@key@comp@Yshift){%
-      #1%
-      \poe@pnode@shiftedrot(0,\poe@key@labeloffset)%
-                           {\oenodecenter{}}%
-                           {\oenodelabel{}}%
-                           {\poe@key@labelangle}%
+     \pnode(! \poe@dict{@@x0 @@x \poe@key@rotate@xref\space mul add
+                        @@y0 @@y \poe@key@rotate@yref\space mul add}){\oenode{}{Rotref}}%
+     \ifdim\poe@key@angle pt=0pt
+        #2%
+        \poe@pnode@shiftedrot(0,\poe@key@labeloffset)%
+                             {\oenodecenter{}}%
+                             {\oenodelabel{}}%
+                             {\poe@key@labelangle}%
+     \else
+        \psrotate(\oenode{}{Rotref}){\poe@key@angle}{%
+          #2%
+          \poe@pnode@shiftedrot(0,\poe@key@labeloffset)%
+                               {\oenodecenter{}}%
+                               {\oenodelabel{}}%
+                               {\poe@key@labelangle}%
+        }%
+     \fi
    }%
 }%
 %    \end{macrocode}
@@ -5421,6 +5487,17 @@
   \endgroup
   \ifpoe@frontlayer
     \poe@putlabel{#2}%
+  \fi
+  \ifpoe@backlayer
+    \nodexn{(! \poe@dict{%
+               (N@\oenode{}{Rotref}) @GetCenter 2 copy
+               (N@\oenoderefa{}) @GetCenter 4 2 roll @ABVect \poe@key@angle\space matrix rotate dtransform  VecAdd
+             \tx@UserCoor}) + (\poe@key@comp@Xshift,\poe@key@comp@Yshift)}{\oenode{}{RotrefA}}%
+    \nodexn{(! \poe@dict{%
+               (N@\oenode{}{Rotref}) @GetCenter 2 copy
+               (N@\oenoderefb{}) @GetCenter 4 2 roll @ABVect \poe@key@angle\space matrix rotate dtransform VecAdd
+             \tx@UserCoor}) + (\poe@key@comp@Xshift,\poe@key@comp@Yshift)}{\oenode{}{RotrefB}}%
+%%}
   \fi
 %    \end{macrocode}
 % Show some special dots for debugging
@@ -8306,6 +8383,7 @@ tx@OptexpDict begin
 % $@@X_B$ $@@Y_B$ $@@X_A$ $@@Y_A$ A B $\quad\longmapsto\quad$ angleA
 %    \begin{macrocode}
 /RelFiberAngle {
+    stack (0-----------------) ==
     dup xcheck not { nametostring } if /CompB ED
     dup xcheck not { nametostring } if /CompA ED
     /CompA load xcheck {
@@ -8334,7 +8412,7 @@ tx@OptexpDict begin
         4 2 roll pop pop
 	(N@) CompA strcat dup dup (Center) strcat @GetCenter 
         6 -2 roll @ABVect 4 2 roll
-        (A) strcat exch (B) strcat
+        (RotrefA) strcat exch (RotrefB) strcat
 	@GetCenter 3 -1 roll @GetCenter @ABVect 2 copy exch atan
 	5 1 roll SProd 0 gt { 180 add } if
     } ifelse
