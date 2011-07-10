@@ -1,7 +1,7 @@
 %%% drawfiber.tex --- 
 
 %% Author: cbersch
-%% Version: $Id: Drawfiber.tex,v 0.0 2011/07/08 15:01:19 Exp$
+%% Version: $Id: Drawfiber.tex,v 0.0 2011/07/08 20:11:57 Exp$
 
 
 \documentclass{scrartcl}
@@ -11,17 +11,34 @@
 \usepackage{lmodern}
 \usepackage{textcomp}
 \usepackage{pst-optexp}
-
+\usepackage{showexpl}
+\lstset{language=[LaTeX]TeX, escapechar=§}
 \addtopsstyle{Fiber}{linecolor=red}
 \begin{document}
 
-\begin{pspicture}[showgrid=true](5,5)
-  \optbox[fiberin, angle=45, rotateref=bl](0,2)(5,2){}
-  \psline(\oenode{}{RotrefA})(\oenode{}{RotrefB})
-  \psset{linecolor=orange!90!black}%
-  \optbox[fiberin, rotateref=bl, compshift=0.5, angle=45](0,2)(5,2){}%
-  \psline(\oenode{}{RotrefA})(\oenode{}{RotrefB})%
+\begin{LTXexample}
+\begin{pspicture}[showgrid=true](5,8)
+  \psset{fiberin}
+  \optbox[angle=20, rotateref=bl](0,1)(5,1){}
+  §\psdot(\oenodeRefA{})\uput[90](\oenodeRefA{}){RefA}%
+  \psdot(\oenodeRefB{})\uput[90](\oenodeRefB{}){RefB}%
+  \psdot(\oenodeRotref{})\uput[-90](\oenodeRotref{}){Rotref}%
+  \psdot(\oenodeTrefA{})\uput[-90](\oenodeTrefA{}){TrefA}%
+  \psdot(\oenodeTrefB{})\uput[90](\oenodeTrefB{}){TrefB}§
+  \psline[linecolor=black!30, linestyle=dashed](\oenodeTrefA{})(\oenodeTrefB{})
+  \psset{linecolor=orange}%
+  \optbox[angle=45](0,5)(5,5){}%
+  \psline[linecolor=orange!30, linestyle=dashed](\oenodeTrefA{})(\oenodeTrefB{})
+  §\psdot(\oenodeRefA{})\psdot(\oenodeRefB{})%
+  \psdot(\oenodeRefA{})\uput[90](\oenodeRefA{}){RefA}%
+  \psdot(\oenodeRefB{})\uput[90](\oenodeRefB{}){RefB}%
+  \psdot(\oenodeRotref{})\uput[-90](\oenodeRotref{}){Rotref}%
+  \psdot(\oenodeTrefA{})\uput[-90](\oenodeTrefA{}){TrefA}%
+  \psdot(\oenodeTrefB{})\uput[90](\oenodeTrefB{}){TrefB}§
 \end{pspicture}
+\end{LTXexample}
+\end{document}
+
 \hspace{2cm}
 \begin{pspicture}[showgrid=true](5,5)
   \psset{unit=1.2}\psrotate(0,0){-45}{\optbox[fiberin, angle=45, rotateref=bl](0,2)(5,2){}
