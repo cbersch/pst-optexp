@@ -1,7 +1,7 @@
 %%% test.tex --- 
 
 %% Author: cbersch
-%% Version: $Id: test.tex,v 0.0 2011/07/05 13:22:44 Exp$
+%% Version: $Id: test.tex,v 0.0 2011/07/11 11:21:08 Exp$
 
 
 \documentclass{scrartcl}
@@ -14,6 +14,23 @@
 %%\revision$Header: /home/cbersch/Desktop/test.tex,v 0.0 2009/10/26 14:28:23 cbersch Exp$
 
 \begin{document}
+\begin{pspicture}(-4,-1)(3,3)
+\psset{labeloffset=0.5}
+\pnode(-2,0){LaserOut}\pnode(0,0){Grat}
+\pnode(4;45){Out}\pnode(2.5;67.5){Mvar}
+\newpsstyle{Beam}{linewidth=2\pslinewidth, linecolor=red!90!black}
+\begin{optexp}
+  \optbox[optboxwidth=2,labeloffset=0, endbox](Grat)(LaserOut){diode laser}
+  \mirror[variable](Grid)(Mvar)(Grid){M$_\mathrm{var}$}
+  \optretplate[position=0.3,labeloffset=0.8]%
+    (LaserOut)(Grat){$\frac{\lambda}{4}$}
+  \optgrid(LaserOut)(Grat)(Out){grating}
+  \drawbeam[arrows=->]{1}{3}{4}{(Out)}
+  \drawbeam{2}{4}
+\end{optexp}
+\rput[l](-3,2){Littman setup}
+\end{pspicture}
+\end{document}
 \begin{pspicture}[showgrid=true](2.8,3)
 \pnode(0.3,0){A}\pnode(2.3,0){B}
 \pnode(0.3,3){C}\pnode(2.3,3){D}
