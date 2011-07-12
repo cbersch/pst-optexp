@@ -62,6 +62,30 @@
 \usepackage{showexpl}
 \makeatletter
 \renewcommand*\SX@Info{}%
+\lstnewenvironment{myLTXexample}[1][]
+{%
+  \@temptokena{#1}%
+  \begingroup
+    \advance\c@ltxexample\@ne \advance\c@lstlisting\@ne 
+    \expandafter\lstset\expandafter{\SX@explpreset,#1}%
+    \edef\x{\endgroup
+      \def\noexpand\SX@codefile{\SX@codefile}%
+      \def\noexpand\SX@graphicname{\SX@graphicname}%
+      \def\noexpand\SX@graphicparam{\SX@graphicparam}}%
+  \x
+  \xdef\SX@@explpreset{\the\@temptokena,codefile=\SX@codefile,
+    graphic={[\SX@graphicparam]{\SX@graphicname}}}%
+  \setbox\@tempboxa=\hbox\bgroup%
+  \lst@BeginWriteFile{\SX@codefile}%
+}
+{%
+  \lst@EndWriteFile\egroup
+%%  \begingroup
+%%    \let\ORIGlabel\label
+%%    \renewcommand\label[1]{\ifx\SX@IDENT#1\relax\else\normalmarginpar\marginnote{Expl.~\theltxexample}\fi}%
+    \SX@put@code@result
+%%  \endgroup
+}
 \makeatother
 \definecolor{colKeys}{rgb}{0,0,1}
 \definecolor{colIdentifier}{rgb}{0,0,0}
@@ -90,7 +114,7 @@
     xleftmargin=1em,
     rulecolor=\color{black!20},
     texcsstyle = [20]\color{DOrange!80!black},
-    moretexcs = [20]{lens, optbox, oenode, oenodein, oenodeext, oenodeout, optplate, optretplate, pinhole, crystal,optdetector, optdiode, doveprism, polarization, mirror, beamsplitter, optgrid, optprism, rightangleprism, pentaprism, optdipole, optripole, optfiber, optamp, optmzm, optfilter, polcontrol, optisolator, optswitch, fiberdelayline, optfiberpolarizer, fibercollimator, optcoupler, wdmcoupler, wdmsplitter, drawbeam, drawwidebeam, drawfiber, custombeam, frontlayer, backlayer, newOptexpDipole, newOptexpDipoleNolabel, newOptexpTripole, newOptexpFiberDipole},
+    moretexcs = [20]{lens, optbox, oenode, oenodeIn, oenodeExt, oenodeOut, oenodeRefA, oenodeRefB, oenodeTrefA, oenodeTrefB, optplate, optretplate, pinhole, crystal,optdetector, optdiode, doveprism, polarization, mirror, beamsplitter, optgrid, optprism, rightangleprism, pentaprism, optdipole, optripole, optfiber, optamp, optmzm, optfilter, polcontrol, optisolator, optswitch, fiberdelayline, optfiberpolarizer, fibercollimator, optcoupler, wdmcoupler, wdmsplitter, drawbeam, drawwidebeam, drawfiber, custombeam, frontlayer, backlayer, newOptexpDipole, newOptexpDipoleNolabel, newOptexpTripole, newOptexpFiberDipole},
     explpreset={pos=l,width=-99pt,overhang=0pt,hsep=5mm, varwidth,vsep=\bigskipamount,rframe={}},
     escapechar=§
 }
@@ -111,6 +135,7 @@
 \undef{\cs}
 \undef{\cmd}
 \usepackage{ltxdockit}
+\usepackage{marginnote}
 \colorlet{spot}{sectioncolor}
 \InputIfFileExists{ltxdockit.cfg}{}{}
 \makeatletter
@@ -427,11 +452,11 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}
+\begin{myLTXexample}[label=mylabel]
 \begin{pspicture}(3,1.5)
 \lens[optional, beam](0,1)(3,1){L}
 \end{pspicture}
-\end{LTXexample}
+\end{myLTXexample}
 % \iffalse
 %</ignore>
 % \fi
@@ -455,7 +480,7 @@
 % controlled via psstyles. These are collections of parameters which are
 % applied only to selected subparts of the objects. In general, these
 % psstyles can be overwritten with the \Lcs{newpsstyle} macro and extended
-% with the \Lcs{addtopsstyle} macro.
+% with the \Lcs{addtopsstyle} macro. \ref{mylabel}
 % 
 % \begin{optionlist}
 % \styleitem{OptComp}
@@ -484,7 +509,7 @@
 % 
 % \styleitem{OptionalStyle}
 % \end{optionlist}
-% 
+% \end{document}
 % \subsection{Positioning}\label{sec:positioning}
 % \begin{optionlist}
 %   \numitem{position} Equivalent to the \Lkeyword{npos} parameter of
@@ -1558,6 +1583,14 @@
 % 
 % \section{Fiber-Optical Components}\label{sec:fibercomp}
 % 
+% \begin{optionlist}
+%   \boolitem{usefiberstyle} For some components it might me nice to highlight
+%   some internals. If \Lkeyword{usefiberstyle} is enabled, for examples the
+%   passing parts of the optical filter are drawn with the \styleshape{Fiber}
+%   style. In the documentation this parameter is enabled to show the parts
+%   which would be highlighted.
+% \end{optionlist}
+%
 % \subsection{Fiber}
 % 
 % \begin{ltxsyntax}
@@ -1819,7 +1852,7 @@
 %<*ignore>
 % \fi
 \begin{LTXexample}
-\begin{pspicture}](3,1.5)
+\begin{pspicture}(3,1.5)
   \fiberdelayline(0,1)(3,1){Delay line}
 \end{pspicture}
 \end{LTXexample}
@@ -1838,7 +1871,7 @@
 %<*ignore>
 % \fi
 \begin{LTXexample}
-\begin{pspicture}](3,1.5)
+\begin{pspicture}(3,1.5)
   \addtopsstyle{FdlArrow}{xunit=-1}
   \fiberdelayline(0,1)(3,1){Delay line}
 \end{pspicture}
@@ -2124,7 +2157,7 @@
 % The package provides several methods for automatic beam and fiber
 % drawing which are two fundamentally different way of connecting.
 % 
-% \subsection{Accessing Objects}
+% \subsection{Accessing Objects}\label{sec:namedob}
 % 
 % The macro arguments, specified as Obj$_1$, Obj$_2$, \ldots Obj$_N$ in
 % the following macro definitions, can be either objects or PSTricks
@@ -2342,7 +2375,7 @@
 % give good result for more complicated situations. In that case single or all
 % fiber can be omitted and drawn separately.
 %
-% \subsubsection{Automatic fiber connections}
+% \subsubsection{Automatic fiber connections}\label{sec:drawfiber-auto}
 %
 % All fiber-optical components described in \prettyref{sec:fibercomp} are
 % connected automatically to their reference nodes with \Lcs{pccurve}. The
@@ -2351,21 +2384,30 @@
 %
 % \begin{figure}\centering
 % \begin{pspicture}(10,4.4)
-% \rput[lt](0,4.4){\pstree[levelsep=1.5cm, treesep=0.4, nodesep=5pt, arrows=<-, arrowinset=0, arrowscale=1.5]{\poeTR{Fiber}}{%
-%   \pstree{\poeTR{FiberIn}}{\poeTR{FiberIn1} \poeTR{FiberIn2}}
-%   \pstree{\poeTR{FiberOut}}{\poeTR{FiberOut1} \poeTR{FiberOut2}}}
-% \rput[l](-1,0|T-0){parent style}
-% \rput[l](-1,0|T-0-0){\parbox{\widthof{outgoing fibers}}{\RaggedRight incoming and outgoing fibers}}
-% \rput[t](! \psGetNodeCenter{T-0-0-0} \psGetNodeCenter{T-0-0-1}
-%         T-0-0-0.x T-0-0-1.x add 2 div T-0-0-0.y 0.4 sub){%
-%           \parbox{3.8cm}{\RaggedRight Upper(1) or lower(2) incoming fiber.}}
-% \rput[t](! \psGetNodeCenter{T-0-1-0} \psGetNodeCenter{T-0-1-1}
-%         T-0-1-0.x T-0-1-1.x add 2 div T-0-1-0.y 0.4 sub){%
-%           \parbox{3.8cm}{\RaggedRight Upper(1) or lower(2) outgoing fiber.}}}
+% \rput[lt](0,4.4){%
+%   \pstree[levelsep=1.5cm, treesep=0.4, 
+%           nodesep=5pt, arrows=<-, 
+%           arrowinset=0, arrowscale=1.5]{\poeTR{Fiber}}{%
+%     \pstree{\poeTR{FiberIn}}{%
+%       \poeTR{FiberIn1} \poeTR{FiberIn2}%
+%     }%
+%     \pstree{\poeTR{FiberOut}}{%
+%       \poeTR{FiberOut1} \poeTR{FiberOut2}%
+%     }%
+%   }%
+%   \rput[l](-1,0|T-0){parent style}
+%   \rput[l](-1,0|T-0-0){\parbox{\widthof{outgoing fibers}}{\RaggedRight incoming and outgoing fibers}}
+%   \rput[t](! \psGetNodeCenter{T-0-0-0} \psGetNodeCenter{T-0-0-1}
+%      T-0-0-0.x T-0-0-1.x add 2 div T-0-0-0.y 0.4 sub){%
+%      \parbox{3.8cm}{\RaggedRight Upper(1) or lower(2) incoming fiber.}}
+%   \rput[t](! \psGetNodeCenter{T-0-1-0} \psGetNodeCenter{T-0-1-1}
+%      T-0-1-0.x T-0-1-1.x add 2 div T-0-1-0.y 0.4 sub){%
+%      \parbox{3.8cm}{\RaggedRight Upper(1) or lower(2) outgoing fiber.}}%
+% }%
 % \end{pspicture}
 % \caption{Inheritance diagram for the psstyles used for the automatic fiber
-%   connections. These style should be changed with \protect\Lcs{addtopsstyle} as not to
-%   destroy the inheritance.}\label{fig:style-inheritance}
+%   connections. These styles should be changed with \protect\Lcs{addtopsstyle} to preserve
+%   the inheritance.}\label{fig:style-inheritance}
 % \xLstyle{Fiber}\xLstyle{FiberIn}\xLstyle{FiberIn1}\xLstyle{FiberIn2}
 % \xLstyle{FiberOut}\xLstyle{FiberOut1}\xLstyle{FiberOut2}
 % \end{figure}
@@ -2383,11 +2425,24 @@
 %   provided which can be used to change the styles for only one object. This
 %   can be used to define own components with respectively changed fiber
 %   connections or to avoid grouping.
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(3,2)
+   \newpsobject{tapcoupler}{wdmsplitter}{%
+     align=bottom, addtoFiberOut1={arrows=->, arrowscale=1.2, arrowinset=0}
+   }
+   \tapcoupler(0,0.5)(3,1.5)(3,0.5){99/1}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 %
 %   \boolitem{fiber} Some components can be used either for free-ray or
 %   fiber-optical setups (\Lcs{optbox}, \Lcs{optdetector}). The \opt{fiber}
 %   parameter enables automatic fiber connections for them.
-%
 % \iffalse
 %<*ignore>
 % \fi
@@ -2403,9 +2458,91 @@
 %</ignore>
 % \fi
 %
+%   \boolitem{nofiber} Do not draw any automatic fiber connection. Is equivalent
+%   to \opt{fiberin=none} and \opt{fiberout=none}.
+%
+%   \choitem[all]{fiberin}{none, top, bottom, all} Choose which input fiber
+%   connections to draw automatically. The values \opt{top} and \opt{bottom}
+%   affect only \Lcs{optcoupler} and \Lcs{wdmcoupler}.
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(3,2)
+  \optcoupler[fiberin=top](0,2)(0,0)(3,2)(3,0){}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
+%   \choitem[all]{fiberout}{none, top, bottom, all} Choose which output fiber
+%   connections to draw automatically. The values \opt{top} and \opt{bottom}
+%   affect only \Lcs{optcoupler} and \Lcs{wdmsplitter}.
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(3,2)
+  \wdmsplitter[fiberout=bottom](0,1)(3,2)(3,0){}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+% \end{optionlist}
+%
 % \minisec{Fiber angles}
 %
-% The angles of the fiber connections are calculated automatically from the orientation of the component.
+% The angles of the fiber connections are calculated automatically from the
+% orientation of the component. The automatic connections are a special case of
+% \Lcs{drawfiber} from a node to a component, see
+% \prettyref{sec:drawfiber-manual} for detail.
+% 
+% \subsubsection{Manual fiber connections}\label{sec:drawfiber-manual}
+%
+% \begin{ltxsyntax}
+%   \xLcs{drawfiber}\cmditem{drawfiber}[Options]{Obj$_1$}{Obj$_2$}
+% \end{ltxsyntax}
+% 
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[pos=t, linerange={1,2,9-11}]
+\begin{pspicture}(-1,0)(7,2.4)
+  \optbox[fiber, angle=20, rotateref=bl](0,1)(6,1){}
+  \psdot(\oenodeRefA{})\uput[180](\oenodeRefA{}){RefA}%
+  \psdot(\oenodeRefB{})\uput[0](\oenodeRefB{}){RefB}%
+  \psdot(\oenodeRotref{})\uput[-90](\oenodeRotref{}){Rotref}%
+  \psdot(\oenodeTrefA{})\uput[180](\oenodeTrefA{}){TrefA}%
+  \psdot(\oenodeTrefB{})\uput[0](\oenodeTrefB{}){TrefB}%
+  \uput{0.5}[180](\oenodeTrefB{}){\textcolor{black!30}{reference line}}%
+  \psline[linecolor=black!30, 
+            linestyle=dashed](\oenodeTrefA{})(\oenodeTrefB{})
+  \end{pspicture}
+\end{LTXexample}\unskip\llap{Example}
+% \iffalse
+%</ignore>
+% \fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[pos=t, explpreset={linerange={1,2,9-11}}]
+\begin{pspicture}[showgrid=true](-1,-0.1)(7,3.2)
+  \optbox[fiber, angle=-30, rotateref=t, compshift=0.5](0,1)(6,1){}
+  \psdot(\oenodeRefA{})\uput[180](\oenodeRefA{}){RefA}%
+  \psdot(\oenodeRefB{})\uput[0](\oenodeRefB{}){RefB}%
+  \psdot(\oenodeRotref{})\uput[60](\oenodeRotref{}){Rotref}%
+  \psdot(\oenodeTrefA{})\uput[180](\oenodeTrefA{}){TrefA}%
+  \psdot(\oenodeTrefB{})\uput[0](\oenodeTrefB{}){TrefB}%
+  \uput{0.5}[180](\oenodeTrefB{}){\textcolor{black!30}{reference line}}%
+  \psline[linecolor=black!30, 
+            linestyle=dashed](\oenodeTrefA{})(\oenodeTrefB{})
+  \end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 %
 % \iffalse
 %<*ignore>
@@ -2430,22 +2567,6 @@
 % \iffalse
 %</ignore>
 % \fi
-% \end{optionlist}
-% 
-% \subsubsection{Manual fiber connections}
-%
-% \begin{ltxsyntax}
-%   \xLcs{drawfiber}\cmditem{drawfiber}[Options]{Obj$_1$}{Obj$_2$}
-% \end{ltxsyntax}
-% 
-% \begin{optionlist}
-% \boolitem{usefiberstyle}
-% For some components it might me nice to highlight some
-% internals. If \Lkeyword{usefiberstyle} is enabled, for examples the
-% passing parts of the optical filter are drawn with the \styleshape{Fiber}
-% style. In the documentation this parameter is enabled to show the parts
-% which would be highlighted.
-% \end{optionlist}
 % 
 % \begin{optionlist}
 %   \boolitem{relangle}
@@ -2485,126 +2606,6 @@
 \drawfiber{Cpl}{Hnlf}
 \drawfiber[startnode=1, stopnode=N, ncurv=1.2]{Hnlf}{Amp}
 \drawfiber{Cpl}{Amp}
-\end{pspicture}
-\end{LTXexample}
-% \iffalse
-%</ignore>
-% \fi
-% 
-% \subsubsection{Fiber Styles}\label{sec:fiberstyles}
-% 
-% The appearence of the fiber parts before and after each object can be changed
-% with several styles (see \ref{sec:styles}). On the left side of the components
-% are the input connections and on the right side the output connections.
-% 
-% \begin{optionlist}
-% 
-% \styleitem{Fiber}
-% This is the basic style from which every other fiber style inherits.
-% 
-% \iffalse
-%<*ignore>
-% \fi
-\begin{LTXexample}
-\begin{pspicture}(3,1.5)
-  \addtopsstyle{Fiber}{linecolor=blue}
-  \optamp(0,1)(3,1){}
-\end{pspicture}
-\end{LTXexample}
-% \iffalse
-%</ignore>
-% \fi
-% 
-% \styleitem[style=Fiber]{FiberIn}
-% Controls the fibres on the left side of the component. Inherits from \nxLstyle{Fiber}.
-% 
-% \iffalse
-%<*ignore>
-% \fi
-\begin{LTXexample}
-\begin{pspicture}(3,1.5)
-  \addtopsstyle{FiberIn}{linecolor=blue}
-  \optamp(0,1)(3,1){}
-\end{pspicture}
-\end{LTXexample}
-% \iffalse
-%</ignore>
-% \fi
-% 
-% \styleitem[style=FiberIn]{FiberIn1}
-% \styleitem[style=FiberIn]{FiberIn2}
-% If the component has two input fibers, \nxLstyle{FiberIn1} sets the style of the
-% upper one and \nxLstyle{FiberIn2} the style of the lower fiber. Otherwise these
-% styles are ignored.
-% 
-% \iffalse
-%<*ignore>
-% \fi
-\begin{LTXexample}
-\begin{pspicture}(3,1.5)
-  \addtopsstyle{FiberIn1}{linecolor=blue}
-  \addtopsstyle{FiberIn2}{linecolor=green}
-  \optcoupler(0,1.5)(0,0)(3,1.5)(3,0){}
-\end{pspicture}
-\end{LTXexample}
-% \iffalse
-%</ignore>
-% \fi
-% 
-% \styleitem[style=Fiber]{FiberOut}
-% \styleitem[style=FiberOut]{FiberOut1}
-% \styleitem[style=FiberOut]{FiberOut2}
-% \end{optionlist}
-% 
-% In addition to the psstyles there exist
-% corresponding \Lkeyword{newFiber\ldots} and \Lkeyword{addtoFiber\ldots}
-% parameter keys for each of them.
-% 
-% \begin{lstlisting}[gobble=2]
-% \psset{addtoFiberIn={arrows=->, arrowscale=1.3}}
-% \end{lstlisting}
-% 
-% \noindent is equivalent to 
-% 
-% \begin{lstlisting}[gobble=2]
-% \addtopsstyle{FiberIn}{arrows=->, arrowscale=1.3}
-% \end{lstlisting}
-% 
-% \medskip
-% 
-% \noindent Accordingly \Lkeyword{newFiberIn} corresponds to \Lcs{newpsstyle\{FiberIn\}\{\ldots\}}.
-% 
-% At first glance these keys make no sense. The reason why I
-% introduced them was to be able to define special couplers with
-% \Lcs{newpsobject}. This is only possible if all modifications can be
-% expressed as parameter keys. Consider for example a WDM splitter which
-% only couples out a certain spectral range of the input and you want to
-% mark the output with an arrow:
-% 
-% \iffalse
-%<*ignore>
-% \fi
-\begin{LTXexample}[width=3.5cm]
-\begin{pspicture}[showgrid=true](3,2)
-   \newpsobject{mywdmsplitter}{wdmsplitter}{addtoFiberOut1={arrows=->, arrowscale=1.3, linecolor=blue}, labelangle=180, align=bottom}
-   \mywdmsplitter(0,0.5)(3,1.5)(3,0.5){blue band}
-\end{pspicture}
-\end{LTXexample}
-% \iffalse
-%</ignore>
-% \fi
-% 
-% \medskip
-% 
-% Or if you need a coupler with a particular input angle you can do it be extending the appropriate fiber style:
-% 
-% \iffalse
-%<*ignore>
-% \fi
-\begin{LTXexample}[width=3.5cm]
-\begin{pspicture}[showgrid=true](3,2)
-   \newpsobject{mycoupler}{optcoupler}{addtoFiberIn2={angleA=90}, align=top}
-   \mycoupler(0.5,1.5)(0.5,0.5)(2.5,1.5)(2.5,0.5){}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -3252,6 +3253,7 @@
     \edef\poe@str@extnode@postfix{Ext}
   \fi
 }%
+\psset[optexp]{namingscheme=new}%
 %    \end{macrocode}
 % Positioning
 %    \begin{macrocode}
@@ -3259,12 +3261,19 @@
 \define@key[psset]{optexp}{abspos}{\edef\poe@key@abspos{#1}}
 \define@key[psset]{optexp}{compshift}{\pst@checknum{#1}\poe@key@compshift}
 \define@key[psset]{optexp}{angle}{\pst@checknum{#1}\poe@key@angle}
+\psset[optexp]{%
+  position=\@empty,
+  abspos=\@empty,
+  compshift=0,
+  angle=0
+}%
 %    \end{macrocode}
 % Layering
 %    \begin{macrocode}
 \define@boolkey[psset]{optexp}[poe@]{backlayer}[true]{}
 \define@boolkey[psset]{optexp}[poe@]{frontlayer}[true]{}
 \define@boolkey[psset]{optexp}[poe@]{optexpenv}[true]{}
+\psset[optexp]{backlayer, frontlayer, optexpenv=false}%
 %    \end{macrocode}
 % Label
 %    \begin{macrocode}
@@ -3310,6 +3319,14 @@
 % for internal use only! Set the reference angle for the labelangle parameter.
 %    \begin{macrocode}
 \define@key[psset]{optexp}{ref@angle}{\pst@checknum{#1}\poe@key@labelrefangle}%
+\psset[optexp]{%
+  labeloffset=0.8,
+  labelangle=0,
+  labelstyle=\small,
+  labelalign=c,
+  labelref=relgrav,
+  ref@angle=0
+}%
 \define@key[psset]{optexp}{lensheight}{\pst@checknum{#1}\poe@key@lensheight}
 \define@key[psset]{optexp}{lenswidth}{%
   \pst@checknum{#1}\poe@key@lenswidth
@@ -3349,6 +3366,12 @@
   \fi
   \psset{lensradiusleft=#1}%
 }%
+\psset[optexp]{%
+  lenswidth=0,
+  lensheight=1,
+  lensradiusleft=1,
+  lensradiusright=1
+}%
 %    \end{macrocode}
 % Pinhole
 %    \begin{macrocode}
@@ -3356,6 +3379,12 @@
 \define@key[psset]{optexp}{outerheight}{\pst@checknum{#1}\poe@key@outerheight}
 \define@key[psset]{optexp}{phlinewidth}{\edef\poe@key@phlinewidth{#1}}
 \define@key[psset]{optexp}{phwidth}{\edef\poe@key@phwidth{#1}}
+\psset[optexp]{%
+  phlinewidth=2\pslinewidth,
+  phwidth=0,
+  outerheight=1,
+  innerheight=0.1
+}%
 %    \end{macrocode}
 % Crystal
 %    \begin{macrocode}
@@ -3366,21 +3395,36 @@
 \define@boolkey[psset]{optexp}[poe@]{caxisinv}[true]{}
 \define@boolkey[psset]{optexp}[poe@]{lamp}[true]{}
 \define@key[psset]{optexp}{lampscale}{\pst@checknum{#1}\poe@key@lampscale}
+\psset[optexp]{%
+  crystalwidth=1.4,
+  crystalheight=0.6,
+  caxislength=0.6,
+  lampscale=0.3
+}%
 %    \end{macrocode}
 % Box
 %    \begin{macrocode}
 \define@key[psset]{optexp}{optboxwidth}{\pst@checknum{#1}\poe@key@optboxwidth}
 \define@key[psset]{optexp}{optboxheight}{\pst@checknum{#1}\poe@key@optboxheight}
 \define@boolkey[psset]{optexp}[poe@]{endbox}[true]{}
+\psset[optexp]{%
+  optboxwidth=1.4,
+  optboxheight=0.8
+}%
 %    \end{macrocode}
 % Plate
 %    \begin{macrocode}
 \define@key[psset]{optexp}{platelinewidth}{\edef\poe@key@platelinewidth{#1}}
 \define@key[psset]{optexp}{plateheight}{\pst@checknum{#1}\poe@key@plateheight}
+\psset[optexp]{%
+  plateheight=1,
+  platelinewidth=2\pslinewidth
+}%
 %    \end{macrocode}
 % Optical Retardation Plate
 %    \begin{macrocode}
 \define@key[psset]{optexp}{platewidth}{\pst@checknum{#1}\poe@key@platewidth}
+\psset[optexp]{platewidth=0.1}%
 %    \end{macrocode}
 % Detector
 %    \begin{macrocode}
@@ -3388,6 +3432,10 @@
 \define@choicekey*+[psset]{optexp}{dettype}[\val\nr]{round,diode}%
    {\edef\poe@key@dettype{\val}}
    {\PackageError{pst-optexp}{Unknown value '\val' for key dettype}}
+\psset[optexp]{%
+  detsize=0.8,
+  dettype=round
+}%
 %    \end{macrocode}
 % Polarization
 %    \begin{macrocode}
@@ -3396,19 +3444,30 @@
 \define@choicekey+[psset]{optexp}{poltype}[\val\nr]{parallel,misc,perp,rcirc,lcirc}%
    {\edef\poe@key@poltype{#1}}
    {\PackageError{pst-optexp}{Unknown value '\val' for key poltype}}
+\psset[optexp]{%
+  poltype=parallel,
+  polsize=0.6,
+  pollinewidth=0.7\pslinewidth
+}%
 %    \end{macrocode}
 % Optical Diode
 %    \begin{macrocode}
 \define@key[psset]{optexp}{optdiodesize}{\pst@checknum{#1}\poe@key@optdiodesize}
+\psset[optexp]{optdiodesize=0.8}%
 %    \end{macrocode}
 % Dove Prism
 %    \begin{macrocode}
 \define@key[psset]{optexp}{doveprismsize}{\pst@checknum{#1}\poe@key@doveprismsize}
+\psset[optexp]{doveprismsize=0.6}%
 %    \end{macrocode}
 % Beamsplitter
 %    \begin{macrocode}
 \define@key[psset]{optexp}{bssize}{\pst@checknum{#1}\poe@key@bssize}
 \define@key[psset]{optexp}{bsstyle}{\edef\poe@key@bsstyle{#1}}
+\psset[optexp]{%
+  bssize=0.8,
+  bsstyle=cube
+}%
 %    \end{macrocode}
 % Mirror
 %    \begin{macrocode}
@@ -3418,6 +3477,14 @@
 \define@key[psset]{optexp}{mirrordepth}{\pst@checknum{#1}\poe@key@mirrordepth}
 \define@key[psset]{optexp}{mirrorradius}{\pst@checknum{#1}\poe@key@mirrorradius}
 \define@boolkey[psset]{optexp}[poe@]{variable}[true]{}
+\psset[optexp]{%
+  mirrorwidth=1,
+  mirrordepth=0.1,
+  mirrorradius=0,
+  mirrortype=plain,
+  mirrorlinewidth=2\pslinewidth,
+  variable=false
+}%
 %    \end{macrocode}
 % Grid
 %    \begin{macrocode}
@@ -3428,29 +3495,54 @@
 \define@key[psset]{optexp}{optgriddepth}{\pst@checknum{#1}\poe@key@optgriddepth}
 \define@key[psset]{optexp}{optgridlinewidth}{\edef\poe@key@optgridlinewidth{#1}}
 \define@boolkey[psset]{optexp}[poe@]{reverse}[true]{}
+\psset[optexp]{%
+  optgridcount=10,
+  optgridwidth=1,
+  optgridheight=0.15,
+  optgriddepth=0.075,
+  optgridtype=blazed,
+  optgridlinewidth=0.7\pslinewidth,
+  reverse=false
+}%
 \define@key[psset]{optexp}{refractiveindex}{\pst@checknum{#1}\poe@key@n}
 \define@key[psset]{optexp}{n}{\pst@checknum{#1}\poe@key@n}
 \define@key[psset]{optexp}{nmul}{\edef\poe@key@nmul{#1}}
 \define@key[psset]{optexp}{nadd}{\edef\poe@key@nadd{#1}}
+\psset[optexp]{%
+  n=1.5,
+  nmul=1,
+  nadd=0
+}%
 %    \end{macrocode}
 % Penta Prism
 %    \begin{macrocode}
 \define@key[psset]{optexp}{pentaprismsize}{\pst@checknum{#1}\poe@key@pentaprismsize}
+\psset[optexp]{pentaprismsize=0.7}
 %    \end{macrocode}
 % Right-Angle Prism
 %    \begin{macrocode}
 \define@key[psset]{optexp}{raprismsize}{\pst@checknum{#1}\poe@key@raprismsize}
+\psset[optexp]{raprismsize=1.5}
 %    \end{macrocode}
 % Prism
 %    \begin{macrocode}
 \define@key[psset]{optexp}{prismsize}{\pst@checknum{#1}\poe@key@prismsize}
 \define@key[psset]{optexp}{prismangle}{\pst@checknum{#1}\poe@key@prismangle}
+\psset[optexp]{%
+  prismsize=1,
+  prismangle=60
+}%
 %    \end{macrocode}
 % Fiber
 %    \begin{macrocode}
 \define@key[psset]{optexp}{fiberloops}{\pst@checknum{#1}\poe@key@fiberloops}
 \define@key[psset]{optexp}{fiberloopradius}{\pst@checknum{#1}\poe@key@fiberloopradius}
 \define@key[psset]{optexp}{fiberloopsep}{\pst@checknum{#1}\poe@key@fiberloopsep}
+\psset[optexp]{%
+  fiberloops=3,
+  fiberloopradius=0.4,
+  fiberloopsep=0.3
+}%
 %    \end{macrocode}
 % Filter
 %    \begin{macrocode}
@@ -3458,41 +3550,56 @@
 \define@choicekey+[psset]{optexp}{filtertype}[\val\nr]{bandstop,bandpass,lowpass,highpass}%
    {\edef\poe@key@filtertype{#1}}%
    {\PackageError{pst-optexp}{Unknown value '\val' for key filtertype}}
+\psset[optexp]{%
+  filtersize=0.8,
+  filtertype=bandpass
+}%
 %    \end{macrocode}
 % Polarization controller
 %    \begin{macrocode}
 \define@key[psset]{optexp}{polcontrolsize}{\pst@checknum{#1}\poe@key@polcontrolsize}
+\psset[optexp]{polcontrolsize=0.15}%
 %    \end{macrocode}
 % Optical amplifier
 %    \begin{macrocode}
 \define@key[psset]{optexp}{optampsize}{\pst@checknum{#1}\poe@key@optampsize}
+\psset[optexp]{optampsize=0.8}
 %    \end{macrocode}
 % Mach-Zehnder modulator
 %    \begin{macrocode}
 \define@key[psset]{optexp}{optmzmsize}{\pst@checknum{#1}\poe@key@optmzmsize}
+\psset[optexp]{optmzmsize=0.8}
 %    \end{macrocode}
 % Isolator
 %    \begin{macrocode}
 \define@key[psset]{optexp}{isolatorsize}{\pst@checknum{#1}\poe@key@isolatorsize}
+\psset[optexp]{isolatorsize=0.6}%
 %    \end{macrocode}
 % Fiber polarizer
 %    \begin{macrocode}
 \define@key[psset]{optexp}{fiberpolsize}{\pst@checknum{#1}\poe@key@fiberpolsize}
+\psset[optexp]{fiberpolsize=0.6}%
 %    \end{macrocode}
 % Optical switch
 %    \begin{macrocode}
 \define@key[psset]{optexp}{switchsize}{\pst@checknum{#1}\poe@key@switchsize}
 \define@choicekey+[psset]{optexp}{switchstyle}[\val\nr]{opened,closed}%
-   {\edef\poe@key@switchstyle{#1}}%
-   {\PackageError{pst-optexp}{Unknown value '\val' for key switchstyle}}
+  {\edef\poe@key@switchstyle{#1}}%
+  {\PackageError{pst-optexp}{Unknown value '\val' for key switchstyle}}
+\psset[optexp]{%
+  switchsize=0.8,
+  switchstyle=opened
+}%
 %    \end{macrocode}
 % Fiber delay line
 %    \begin{macrocode}
 \define@key[psset]{optexp}{fdlsize}{\pst@checknum{#1}\poe@key@fdlsize}
+\psset[optexp]{fdlsize=0.6}%
 %    \end{macrocode}
 % Fiber collimator 
 %    \begin{macrocode}
 \define@key[psset]{optexp}{fibercolsize}{\pst@checknum{#1}\poe@key@fibercolsize}
+\psset[optexp]{fibercolsize=0.3}%
 %    \end{macrocode}
 % Coupler
 %    \begin{macrocode}
@@ -3503,6 +3610,13 @@
    {\edef\poe@key@couplertype{#1}}%
    {\PackageError{pst-optexp}{Unknown value '\val' for key couplertype}}
 \define@key[psset]{optexp}{align}{\edef\poe@key@align{#1}}
+\psset[optexp]{%
+  couplersize=0.2,
+  couplersep=0.05,
+  align=center,
+  coupleroutshift=0,
+  couplertype=elliptic
+}%
 %    \end{macrocode}
 % External node
 %    \begin{macrocode}
@@ -3516,6 +3630,7 @@
       \pst@expandafter\psset@@extnode{#1}\@empty,,\@nil
    \fi
 }%
+\psset[optexp]{extnode=\@empty}%
 \def\poe@key@xref{0}%
 \def\poe@key@yref{0}%
 \def\psset@@extnode#1#2,#3,#4\@nil{%
@@ -3556,6 +3671,7 @@
 \def\getref@optexp@rotate@b{\def\poe@key@rotate@yref{-1}}%
 \def\getref@optexp@rotate@l{\def\poe@key@rotate@xref{-1}}%
 \def\getref@optexp@rotate@r{\def\poe@key@rotate@xref{1}}%
+\psset[optexp]{rotateref=c}%
 %    \end{macrocode}
 %    \begin{macrocode}
 \define@key[psset]{optexp}{b@sicname}{\edef\poe@key@b@sicname{\poe@str@basicname@prefix#1}}%
@@ -3606,6 +3722,9 @@
     \xdef\poe@complist{\poe@key@compname\ifx\poe@complist\@empty\else,\fi\poe@complist}%
   \fi
 }%
+\poe@insideobjtrue
+\psset[optexp]{compname=\@empty}
+\poe@insideobjfalse
 %    \end{macrocode}
 % Connect a component directly with its reference nodes using \cs{drawbeam}
 %    \begin{macrocode}
@@ -3655,6 +3774,10 @@
 \define@choicekey+[psset]{optexp}{stopnode}[\val\nr]{auto,1,2,3,4,N}%
    {\edef\poe@key@stopnode{\val}}
    {\PackageError{pst-optexp}{Unknown value '\val' for key stopnode}}
+\psset[optexp]{%
+  startnode=auto,
+  stopnode=auto
+}%
 %    \end{macrocode}
 %
 % \begin{macro}{\poe@getnode}
@@ -5134,160 +5257,6 @@
 % Define all fiber quadrupoles
 %    \begin{macrocode}
 \newOptexpFiberQuadrupole{optcoupler}{}
-%    \end{macrocode}
-% 
-% The default parameter settings
-%    \begin{macrocode}
-\psset[optexp]{%
-%    \end{macrocode}
-% general parameters
-%    \begin{macrocode}
-        ,backlayer=true
-        ,frontlayer=true
-        ,position=\@empty
-        ,abspos=\@empty
-        ,angle=0
-        ,rotateref=c
-%    \end{macrocode}
-% lens parameters
-%    \begin{macrocode}
-        ,lenswidth=0
-        ,lensheight=1
-        ,lensradius=\@empty
-        ,lensradiusleft=1
-        ,lensradiusright=1
-%    \end{macrocode}
-% pinhole parameters
-%    \begin{macrocode}
-        ,phlinewidth=2\pslinewidth
-        ,phwidth=0
-        ,outerheight=1
-        ,innerheight=0.1
-%    \end{macrocode}
-% beamsplitter parameters
-%    \begin{macrocode}
-        ,bssize=0.8
-        ,bsstyle=cube
-%    \end{macrocode}
-% crystal parameters
-%    \begin{macrocode}
-        ,crystalwidth=1.4
-        ,crystalheight=0.6
-        ,caxislength=0.6
-        ,lampscale=0.3
-%    \end{macrocode}
-% mirror parameters
-%    \begin{macrocode}
-        ,mirrorwidth=1
-        ,mirrordepth=0.1
-        ,mirrorradius=0
-%    \end{macrocode}
-% can't use the \cs{poe@str@mirrortype@plain} macro as \cs{define@choicekey}
-% does not expand the list containing the alternatives
-%    \begin{macrocode}
-        ,mirrortype=plain
-        ,mirrorlinewidth=2\pslinewidth
-        ,variable=false
-%    \end{macrocode}
-% optgrid parameters
-%    \begin{macrocode}
-        ,optgridcount=10
-        ,optgridwidth=1
-        ,optgridheight=0.15
-        ,optgriddepth=0.075
-        ,optgridtype=blazed
-        ,optgridlinewidth=0.7\pslinewidth
-        ,reverse=false
-%    \end{macrocode}
-% optbox parameters
-%    \begin{macrocode}
-        ,optboxwidth=1.4
-        ,optboxheight=0.8
-%    \end{macrocode}
-% optplate parameters
-%    \begin{macrocode}
-        ,plateheight=1
-        ,platelinewidth=2\pslinewidth
-%    \end{macrocode}
-% optretplate parameters
-%    \begin{macrocode}
-        ,platewidth=0.1
-%    \end{macrocode}
-% optdetector parameters
-%    \begin{macrocode}
-        ,detsize=0.8
-        ,dettype=round
-%    \end{macrocode}
-% polarization parameters
-%    \begin{macrocode}
-        ,poltype=parallel
-        ,polsize=0.6
-        ,pollinewidth=0.7\pslinewidth
-%    \end{macrocode}
-% optdiode parameters
-%    \begin{macrocode}
-        ,optdiodesize=0.8
-%    \end{macrocode}
-% penta prism parameters
-%    \begin{macrocode}
-        ,pentaprismsize=0.7
-%    \end{macrocode}
-% right-angle prism parameters
-%    \begin{macrocode}
-        ,raprismsize=1.5
-%    \end{macrocode}
-% optprism parameters
-%    \begin{macrocode}
-        ,prismsize=1
-        ,prismangle=60
-%    \end{macrocode}
-% dove prism parameters
-%    \begin{macrocode}
-        ,doveprismsize=0.6
-%    \end{macrocode}
-% label parameters
-%    \begin{macrocode}
-        ,labeloffset=0.8
-        ,labelangle=0
-        ,labelstyle=\small
-        ,labelalign=c
-        ,labelref=relgrav
-        ,ref@angle=0
-%    \end{macrocode}
-% fiber optics parameters
-%    \begin{macrocode}
-        ,extnode=\@empty
-        ,fiberloops=3
-        ,fiberloopradius=0.4
-        ,fiberloopsep=0.3
-        ,optmzmsize=0.8
-        ,optampsize=0.8
-        ,filtersize=0.8
-        ,filtertype=bandpass
-        ,polcontrolsize=0.15
-        ,isolatorsize=0.6
-        ,fiberpolsize=0.6
-        ,couplersize=0.2
-        ,couplersep=0.05
-        ,align=center
-        ,coupleroutshift=0
-        ,couplertype=elliptic
-        ,switchsize=0.8
-        ,switchstyle=opened
-        ,fdlsize=0.6
-        ,fibercolsize=0.3
-        ,usefiberstyle=false
-        ,bsstyle=cube
-        ,compshift=0
-        ,n=1.5
-        ,relangle=false
-        ,startnode=auto
-        ,stopnode=auto
-}%
-\poe@insideobjtrue
-\psset[optexp]{compname=\@empty}
-\poe@insideobjfalse
-%    \end{macrocode}
 %
 % \begin{macro}{\poe@drawcomponent}
 % This macro is called by every unit
