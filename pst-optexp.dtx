@@ -93,7 +93,7 @@
     texcsstyle = [20]\color{DOrange!80!black},
     moretexcs = [20]{lens, optbox, oenode, oenodeIn, oenodeExt, oenodeOut, oenodeRefA, oenodeRefB, oenodeTrefA, oenodeTrefB, optplate, optretplate, pinhole, crystal,optdetector, optdiode, doveprism, polarization, mirror, beamsplitter, optgrid, optprism, rightangleprism, pentaprism, optdipole, optripole, optfiber, optamp, optmzm, optfilter, polcontrol, optisolator, optswitch, fiberdelayline, optfiberpolarizer, fibercollimator, optcoupler, wdmcoupler, wdmsplitter, drawbeam, drawwidebeam, drawfiber, custombeam, frontlayer, backlayer, newOptexpDipole, newOptexpDipoleNolabel, newOptexpTripole, newOptexpFiberDipole},
     explpreset={pos=l,width=-99pt,overhang=0pt,hsep=5mm, varwidth,vsep=\bigskipamount,rframe={}},
-    escapechar=§
+    escapechar=ï¿½
 }
 \colorlet{sectioncolor}{DOrange}
 \addtokomafont{sectioning}{\color{sectioncolor}} % Farbe der Ueberschriften
@@ -377,39 +377,37 @@
 % \fi
 %
 % \ifGERMAN
-%   \section{Kurzeinstieg}
+%   \section{Kurzeinstieg}\label{sec:quick}
+% \fi
+% \ifENGLISH
+%   \section{Quickstart}\label{sec:quick}
+%   Line~\ref{expl:quick-nodefirst}--\ref{expl:quick-nodelast}
 % \fi
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}[pos=t, vsep=5mm]
-\begin{pspicture}[showgrid=true](0.9,0.9)(10.4,5.9)
+\begin{LTXexample}[escapeinside={(*}{*)}, pos=t, vsep=5mm, numbers=left, numberstyle=\footnotesize]
+\begin{pspicture}(0.4,0.1)(9,3.4)
+  \pnode(2,3){Laser}(*\label{expl:quick-nodefirst}*)
+  \pnode(2,1){PwMeter}
+  \pnode(6,3){CplTop}
+  \pnode(6,1){CplBot}(*\label{expl:quick-nodelast}*)
   \psset{arrowscale=1.5, arrowinset=0}
-  \pnode(0,
-  \pnode(2,5){PC1in}\pnode(4,5){PC1out}\pnode(6,5){PC2in}
-  \pnode(8,5){PC2out}\pnode(2,2){CplSig}\pnode(5,2){CplIn}
-  \pnode(2,1){CplOut}\pnode(10,4.5){Pump}\pnode(8,2){PumpSig}
-  \optisolator[compshift=0.8, addtoFiberIn={angleA=180}, 
-                 addtoFiberOut={angleB=180}, label=0.5 . l]%
-                 (CplSig)(PC1in){isolator}
-  \polcontrol[addtoFiberIn={arrows=|-}](PC1in)(PC1out){}
-  \optfiberpolarizer[labeloffset=0.6](PC1out)(PC2in){polarizer}
-  \polcontrol[addtoFiberOut={arrows=-|}](PC2in)(PC2out){}
-  \wdmsplitter[labeloffset=0.3, align=bottom, addtoFiberIn={arrows=|-}, 
-                 addtoFiberOut1={arrows=->}, addtoFiberOut2={arrows=-|}]%
-                 (CplIn)(CplOut)(CplSig){95/5}
-  \wdmcoupler[addtoFiberIn1={ArrowInside=->}, addtoFiberIn2={angleA=0}, 
-                addtoFiberOut={angleB=0,arrows=-|}, ncurv=0.9, 
-                align=bottom, compshift=0.8](Pump)(PC2out)(PumpSig){Pump}
-  \optbox[endbox, label=0 . . relative]([offset=-0.1]Pump)(Pump){980~nm}
-  \optfiber[fiberloops=2, labeloffset=0.4](CplIn)(PumpSig){Er$^+$-doped}
+  \optbox[endbox, optboxheight=1, optboxwidth=1.6, labeloffset=0]([Xnodesep=0.1]Laser)(Laser){%
+    \begin{tabular}{@{}c@{}}Nd:YAG\\cw laser\end{tabular}}
+  \optcoupler[addtoFiberIn1={ArrowInside=->},
+              addtoFiberIn2={ArrowInside=-<},
+              labeloffset=0.4]%
+              (Laser)(PwMeter)(CplTop)(CplBot){WDM}
+  \optfiber[addtoFiberOut={ncurv=1, angleB=0},
+            addtoFiberIn={ncurv=1, angleA=0}, 
+            compshift=-1,
+            label=0.2 . l](CplBot)(CplTop){Fiber}
+  \optdetector[labelangle=180, dettype=diode]([Xnodesep=0.1]PwMeter)(PwMeter){power meter}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
 %</ignore>
-% \fi
-% \ifENGLISH
-%   \section{Quickstart}
 % \fi
 %
 % \section{Backward compatibility}
@@ -3015,7 +3013,7 @@
 % 
 % \section{Acknowledgements}
 % 
-% I thank all the people of the PSTricks mailinglist for the continuous help, especially Herbert Voß.
+% I thank all the people of the PSTricks mailinglist for the continuous help, especially Herbert Voï¿½.
 % 
 % 
 % \makeatletter
@@ -6669,7 +6667,7 @@ tx@OptexpDict begin
     /Y@B YG cy c@tmp div sub def
 %    \end{macrocode}
 % chirality:
-% test the order of the input points as a input angle $> 90°$
+% test the order of the input points as a input angle $> 90ï¿½$
 % doesn't really make sense.
 % So if chir $<= 0$ exchange the calculated coordinates of 
 % A and B and otherwise leave it as is
