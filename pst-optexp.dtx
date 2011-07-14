@@ -92,8 +92,7 @@
     rulecolor=\color{black!20},
     texcsstyle = [20]\color{DOrange!80!black},
     moretexcs = [20]{lens, optbox, oenode, oenodeIn, oenodeExt, oenodeOut, oenodeRefA, oenodeRefB, oenodeTrefA, oenodeTrefB, optplate, optretplate, pinhole, crystal,optdetector, optdiode, doveprism, polarization, mirror, beamsplitter, optgrid, optprism, rightangleprism, pentaprism, optdipole, optripole, optfiber, optamp, optmzm, optfilter, polcontrol, optisolator, optswitch, fiberdelayline, optfiberpolarizer, fibercollimator, optcoupler, wdmcoupler, wdmsplitter, drawbeam, drawwidebeam, drawfiber, custombeam, frontlayer, backlayer, newOptexpDipole, newOptexpDipoleNolabel, newOptexpTripole, newOptexpFiberDipole},
-    explpreset={pos=l,width=-99pt,overhang=0pt,hsep=5mm, varwidth,vsep=\bigskipamount,rframe={}},
-    escapechar=ï¿½
+    explpreset={escapeinside={*}{*}, pos=l,width=-99pt,overhang=0pt,hsep=5mm, varwidth,vsep=\bigskipamount,rframe={}},
 }
 \colorlet{sectioncolor}{DOrange}
 \addtokomafont{sectioning}{\color{sectioncolor}} % Farbe der Ueberschriften
@@ -386,12 +385,15 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}[escapeinside={(*}{*)}, pos=t, vsep=5mm, numbers=left, numberstyle=\footnotesize]
+\begingroup
+\catcode`\*=13
+\def*{}%
+\begin{LTXexample}[pos=t, vsep=5mm, numbers=left, numberstyle=\footnotesize]
 \begin{pspicture}(0.4,0.1)(9,3.4)
-  \pnode(2,3){Laser}(*\label{expl:quick-nodefirst}*)
+  \pnode(2,3){Laser}*\label{expl:quick-nodefirst}*
   \pnode(2,1){PwMeter}
   \pnode(6,3){CplTop}
-  \pnode(6,1){CplBot}(*\label{expl:quick-nodelast}*)
+  \pnode(6,1){CplBot}*\label{expl:quick-nodelast}*
   \psset{arrowscale=1.5, arrowinset=0}
   \optbox[endbox, optboxheight=1, optboxwidth=1.6, labeloffset=0]([Xnodesep=0.1]Laser)(Laser){%
     \begin{tabular}{@{}c@{}}Nd:YAG\\cw laser\end{tabular}}
@@ -406,10 +408,48 @@
   \optdetector[labelangle=180, dettype=diode]([Xnodesep=0.1]PwMeter)(PwMeter){power meter}
 \end{pspicture}
 \end{LTXexample}
+\endgroup
 % \iffalse
 %</ignore>
 % \fi
 %
+% \iffalse
+%<*ignore>
+% \fi
+\begingroup
+\catcode`\§=13
+\def§{}%
+\begin{LTXexample}[pos=t, vsep=5mm, numbers=left, numberstyle=\footnotesize]
+\begin{pspicture}[showgrid=true](1,1.2)(6.2,5)
+  \pnode(1,4){SigIn}
+  \pnode(3,4){BS}
+  \pnode(3,5){LO}
+  \pnode(5,4){Det1}
+  \pnode(3,2){Det2}
+  \begin{optexp}
+  \optplane(LO)(1,0){LO}
+  \beamsplitter[compname=BS](SigIn)(BS)(Det2){}
+  \lens[abspos=0.5, compname=L2, n=2.1](Det2)(BS){}
+  \lens[abspos=0.5, compname=L1, n=2.1](Det1)(BS){}
+  \optdetector[compname=Det1, extnode=c](BS)(Det1){PD1}
+  \optdetector[compname=Det2, extnode=c](BS)(Det2){PD2}
+  \addtopsstyle{Beam}{beamwidth=0.2, fillstyle=solid, fillcolor=green, opacity=0.2}
+  \drawwidebeam{(SigIn)}{BS}{L2}{Det2}
+  \drawwidebeam[beaminsidefirst]{BS}{L1}{Det1}
+  \newpsstyle{Beam}{linecolor=red, linestyle=dashed, linewidth=1.5\pslinewidth}
+  \drawbeam{LO}{BS}{L1}{Det1}
+  \drawbeam[beaminsidefirst]{BS}{L2}{Det2}
+\end{optexp}
+\cnodeput([Xnodesep=0.5, offset=-0.5]\oenodeExt{Det1}|\oenodeExt{Det2}){M}{\rule{3mm}{1pt}}
+  \nccurve[angleA=90, arrows=<-]{M}{\oenodeExt{Det1}}
+  \nccurve[angleA=180, angleB=-90, arrows=<-]{M}{\oenodeExt{Det2}}
+\end{pspicture}
+\end{LTXexample}
+\endgroup
+% \iffalse
+%</ignore>
+% \fi
+% 
 % \section{Backward compatibility}
 % 
 % \begin{optionlist}
@@ -422,7 +462,6 @@
 % \nxLkeyword{namingscheme=old}.
 % \end{optionlist}
 % 
-% \end{document}
 % \section{Concept and General Behavior}\label{sec:general}
 % 
 % This section introduces into the basic concepts of the package design and
@@ -756,16 +795,21 @@
 % 
 % \newpage
 % 
-% \section{Free-Ray Objects}
-% 
-% The general appearance of all objects can be customized using the
-% standard PSTricks parameter like \Lkeyword{linewidth}
-% or \Lkeyword{fillstyle}. Some components allow changing a special part
-% (e.g. for a piezo mirror) for which they use certain psstyles. For the
-% automatic beam connections the \styleshape{Beam} style is used.
-% 
-% \subsection{Lens}\label{sec:lens}
-% 
+% \ifGERMAN
+%   \section{Freistrahl-Komponenten}
+% \fi
+% \ifENGLISH
+%   \section{Free-Ray Objects}
+% \fi
+%
+% \ifGERMAN
+%   \subsection{Linse}
+% \fi
+% \ifENGLISH
+%   \subsection{Lens}
+% \fi
+% \label{sec:lens}
+%
 % \begin{ltxsyntax}
 % \dipoledesc{lens}
 % \iffalse
@@ -782,7 +826,9 @@
 % \end{ltxsyntax}
 % 
 % \begin{optionlist}
-% \numitem[1]{lensheight} Set the height of the lens.
+% \numitem[1]{lensheight} 
+% \ifGERMAN Setzt die Höhe der Linse.\fi
+% \ifENGLISH Set the height of the lens.\fi
 % \iffalse
 %<*ignore>
 % \fi
@@ -795,25 +841,45 @@
 % \iffalse
 %</ignore>
 % \fi
-% \numitem[1]{lensradiusleft} Set the left radius of the lens. A positive
-% \prm{num} is for convex, a negative one for concave curvatures. Use zero for a plain
-% surface.
+% \numitem[1]{lensradiusleft} 
+% \ifGERMAN
+% Setzt den Radius der linken Linsengrenzfläche. Ein positiver Wert \prm{num}
+% ist für eine konvexe, ein negativer für eine konkave Krümmung. Null ergibt
+% eine ebene Fläche.
+% \fi
+% \ifENGLISH
+% Set the left radius of the lens. A positive \prm{num} is for convex, a
+% negative one for concave curvatures. Use zero for a plain surface.
+% \fi
 % 
-% \numitem[1]{lensradiusright} Same as \opt{lensradiusleft} but for the right surface.
+% \numitem[1]{lensradiusright} 
+% \ifGERMAN
+% Dasgleiche wie \opt{lensradiusleft}, nur für die rechte Grenzfläche.
+% \fi
+% \ifENGLISH
+% Same as \opt{lensradiusleft} but for the right surface.
+% \fi
 % \iffalse
 %<*ignore>
 % \fi
 \begin{LTXexample}
 \begin{pspicture}(3,1.5)
-  \psset{lensradiusright=0}
-  \lens[lensradiusleft=1, beam](0,1)(3,1){L1}
-  \lens[lensradiusleft=-1](2,1)(3,1){L2}
+  \psset{lensradiusright=0, beam}
+  \lens[lensradiusleft=1](0,1)(1.5,1){$R > 0$}
+  \lens[lensradiusleft=-1](1.5,1)(3,1){$R < 0$}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
 %</ignore>
 % \fi
-% \numitem{lensradius} A convenience option to specify both curvatures.
+% 
+% \numitem{lensradius} 
+% \ifGERMAN
+%   Setzt beide Krümmungen auf denselben Wert.
+% \fi
+% \ifENGLISH
+%   Set both curvatures to the same value.
+% \fi
 % \iffalse
 %<*ignore>
 % \fi
@@ -825,11 +891,23 @@
 % \iffalse
 %</ignore>
 % \fi
+%
 % \numitem[0]{lenswidth}
-% Usually only the height and the two radii are used to construct the lens and the
-% width is calculated from these parameters. If \opt{lenswidth} is greater than
-% zero, this width is used instead. This is only useful if you want to draw thick
-% lenses and it can have ugly results if the lens width is choosen too small.
+% \ifGERMAN
+% \"Ublicherweise wird nur die H\"ohe und die beiden Radien f\"ur die
+% Konstuktion der Linse verwendet. Die Mittenbreite wird automatisch
+% ermittelt. Wenn \opt{lenswidth} auf einen Wert gr\"o\ss{}er Null gesetzt wird,
+% wird diese Breite verwendet. Das ist nur sinnvoll, wenn dicke Linsen
+% gezeichnet werden sollen, da es andernfalls für zu kleine Werte zu unschönen
+% Ergebnissen führt.
+% \fi
+% \ifENGLISH
+% Usually only the height and the two radii are used to construct the lens and
+% the width is calculated from these parameters. If \opt{lenswidth} is greater
+% than zero, this width is used instead. This is only useful if you want to draw
+% thick lenses and it can have ugly results if the lens width is choosen too
+% small.
+% \fi
 % \iffalse
 %<*ignore>
 % \fi
@@ -843,7 +921,13 @@
 %</ignore>
 % \fi
 % \optitem{lens}{\prm{radiusleft} [\prm{radiusright} [\prm{height} [\prm{width}]]]}
+% \ifGERMAN
+% Eine Option zum gleichzeitigen Setzen mehrerer Linsenparameter. Es müssen
+% nicht alle Werte gesetzt werden, die übrigen bleiben unverändert.
+% \fi
+% \ifENGLISH
 % A convenience option to specify all lens parameters with a single option.
+% \fi
 % \iffalse
 %<*ignore>
 % \fi
@@ -859,7 +943,12 @@
 % \fi
 % \end{optionlist}
 % 
-% \subsection{Optical Plate}
+% \ifGERMAN
+%   \subsection{Optisches Pl\"attchen}
+% \fi
+% \ifENGLISH
+%   \subsection{Optical Plate}
+% \fi
 % 
 % \begin{ltxsyntax}
 % \dipoledesc{optplate}
