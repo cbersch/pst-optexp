@@ -109,7 +109,8 @@
 \undef{\cs}
 \undef{\cmd}
 \usepackage{ltxdockit}
-\usepackage{marginnote}
+\usepackage{csquotes}
+\MakeAutoQuote{«}{»}
 \colorlet{spot}{sectioncolor}
 \InputIfFileExists{ltxdockit.cfg}{}{}
 \makeatletter
@@ -277,6 +278,19 @@
 % \iflanguage{ngerman}{\GERMANtrue}{%
 %   \iflanguage{german}{\GERMANtrue}{\GERMANfalse}}
 % \iflanguage{english}{\ENGLISHtrue}{\ENGLISHfalse}
+%
+% \newcommand*{\sizeexplanation}[1][1.6]{% 
+%   \ifGERMAN 
+%     Die Höhe der Komponente, die Breite ist \opt{#1} mal die Höhe. Mit
+%     dem \opt{xunit} oder \opt{yunit} Parameter kann dieses Verhältnis
+%     geändert werden.
+%   \fi
+%   \ifENGLISH
+%     The height of the delay line, the width is \opt{#1} times the
+%     height. Use the \opt{xunit} or \opt{yunit} parameter to change this
+%     relation.
+%   \fi
+% }%
 %
 % \makeatletter
 % \renewcommand\maketitle{%
@@ -1266,10 +1280,15 @@
 %   45\textdegree.
 % \end{optionlist}
 % 
-% \subsection{Polarization}
-% 
+% \ifGERMAN
+%   \subsection{Polarisation}
+% \fi
+% \ifENGLISH
+%   \subsection{Polarization}
+% \fi
+%
 % \begin{ltxsyntax}
-% \xLdipole{polarization}\cmditem{polarization}[Options](In)(Out)
+% \dipoledesc{polarization}
 % \iffalse
 %<*ignore>
 % \fi
@@ -1308,7 +1327,13 @@
 % \fi
 % \end{optionlist}
 % 
-% \subsection{Mirror}\label{sec:mirror}
+% \ifGERMAN
+%   \subsection{Spiegel}
+% \fi
+% \ifENGLISH
+%   \subsection{Mirror}
+% \fi
+% \label{sec:mirror}
 % 
 % \begin{ltxsyntax}
 % \tripoledesc{mirror}
@@ -1327,16 +1352,36 @@
 % 
 % \begin{optionlist}
 % \numitem[1]{mirrorwidth}
-% The width of the mirror.
+% \ifGERMAN 
+%   Die Breite des Spiegels.
+%  \fi
+% \ifENGLISH 
+%   The width of the mirror.
+% \fi
 % 
-% \optitem[2\nxLcs{pslinewidth}]{mirrorlinewidth}{\prm{num} or \prm{dimen}} The linewidth of the
-% mirror. This could be defined also with the generic \opt{linewidth} option,
-% possibly inside the \opt{OptComp} style. But using \opt{mirrorlinewidth} allows
-% to globally change the linewidth of all \nxLcs{mirror} objects.
-% 
-% \numitem[0]{mirrorradius} This parameter defines the curvature of the mirror. A
-% value of \opt{0} is for a plain mirror, a negative radius for a concave mirror
-% and a positive radius gives you a convex mirror.
+% \optitem[2\nxLcs{pslinewidth}]{mirrorlinewidth}{\prm{num} or \prm{dimen}} 
+% \ifGERMAN
+% Die Linienbreite des Spiegels. Diese könnte ebenfalls über den
+% \opt{linewidth} Parameter gesetzt werden. Mit diesem Parameter kann
+% aber die Linienbreite aller Spiegel global eingestellt werden.
+% \fi
+% \ifENGLISH
+% The linewidth of the grating. This could be defined also with the
+% generic \opt{linewidth} option. But this parameter allows setting
+% globally the linewidth of all mirrors.
+% \fi
+%
+% \numitem[0]{mirrorradius} 
+% \ifGERMAN
+% Diese Parameter setzt die Krümmung des Spiegels. Null ergibt einen
+% ebenen, ein negativer Radius einen konkaven und ein positiver Radius
+% einen konvexen Spiegel.
+% \fi
+% \ifENGLISH
+% This parameter defines the curvature of the mirror. A value of \opt{0}
+% is for a plain mirror, a negative radius for a concave mirror and a
+% positive radius gives you a convex mirror.
+% \fi
 % 
 % \iffalse
 %<*ignore>
@@ -1354,9 +1399,16 @@
 % \fi
 % 
 % \choitem[normal]{mirrortype}{normal, piezo, extended}
-% 
-% The \nxLkeyword{mirrortype} selects between different types of mirrors. Note, when using \Lkeyword{extnode} with a
-% piezo mirror, the default piece of wire is omitted.
+% \ifGERMAN
+%   Diese Parameter wählt die Spiegelart aus. Beachte, dass der
+%   Anschlussdraht für den Piezospiegel nicht gezeichnet wird, wenn
+%   \Lkeyword{extnode} verwendet wird.
+% \fi
+% \ifENGLISH
+% The \nxLkeyword{mirrortype} selects between different types of
+% mirrors. Note, when using \Lkeyword{extnode} with a piezo mirror, the
+% default piece of wire is omitted.
+% \fi
 % 
 % \iffalse
 %<*ignore>
@@ -1378,7 +1430,9 @@
 %</ignore>
 % \fi
 % 
-% \styleitem{ExtendedMirror} This style defines the appearance of the extended mirror.
+% \styleitem{ExtendedMirror} 
+% \ifGERMAN Der Stil für den «extended» Spiegel.\fi
+% \ifENGLISH The style for the extended mirror.\fi
 % \iffalse
 %<*ignore>
 % \fi
@@ -1395,9 +1449,15 @@
 %</ignore>
 % \fi
 % 
-% \styleitem{PiezoMirror} This style defines the appearance of the piezo
-% mirror. This can also be used to change the size of piezo part, as shown in the
-% examples.
+% \styleitem{PiezoMirror} 
+% \ifGERMAN 
+% Der Stil für den «piezo» Spiegel. Dieser kann auch dazu verwendet
+% werden, die Größe des Piezos zu verändern, wie die Beispiele zeigen.
+% \fi
+% \ifENGLISH
+% This style defines the appearance of the piezo mirror. This can also
+% be used to change the size of piezo part, as shown in the examples.
+% \fi
 % \iffalse
 %<*ignore>
 % \fi
@@ -1444,8 +1504,12 @@
 % \fi
 % \end{optionlist}
 % 
-% \subsection{Beamsplitter}
-% 
+% \ifGERMAN
+%   \subsection{Strahlteiler}
+% \fi
+% \ifENGLISH
+%   \subsection{Beamsplitter}
+% \fi
 % \begin{ltxsyntax}
 % \tripoledesc{beamsplitter}
 % \iffalse
@@ -1463,10 +1527,27 @@
 % 
 % \begin{optionlist}
 % \numitem[0.8]{bssize}
-% 
-% \choitem[cube]{bsstyle}{cube, plate} This parameter selects between different
-% types of beamsplitters. Note that although the \opt{plate} beamsplitter looks
-% like a mirror it has a different behavior for beam drawing.
+% \ifGERMAN
+%   Die Größe des Strahlteilers.
+% \fi
+% \ifENGLISH
+%   The beamplitter size.
+% \fi
+%  
+% \choitem[cube]{bsstyle}{cube, plate} 
+% \ifGERMAN
+% Wähle zwischen zwei Strahlteilertypen: einem Strahlteilerwürfel
+% (\opt{cube}) und einem halbdurchlässigen Spiegel
+% (\opt{plate}). Beachte, dass trotz des gleichen Aussehens der
+% halbdurchlässige Spiegel eine anderes Verhalten beim Strahlzeichnen
+% als der gewöhnliche Spiegel hat.
+% \fi
+% \ifENGLISH
+% Selects between two types of beamsplitters: the beamsplitter cube
+% (\opt{cube}) and the semitransparent mirror (\opt{plate}).  Note, that
+% despite the same look, the \opt{plate} beamsplitter behaves
+% differently for beam drawing.
+% \fi
 % \iffalse
 %<*ignore>
 % \fi
@@ -1480,7 +1561,12 @@
 % \fi
 % \end{optionlist}
 % 
-% \subsection{Optical Grating}
+% \ifGERMAN
+%   \subsection{Optisches Gitter}
+% \fi
+% \ifENGLISH
+%   \subsection{Optical Grating}
+% \fi
 % 
 % \begin{ltxsyntax}
 % \tripoledesc{optgrating}
@@ -1497,11 +1583,25 @@
 % \fi
 % \end{ltxsyntax}
 % \begin{optionlist}
-% \numitem[1]{gratingwidth} The width of the grating.
+% \numitem[1]{gratingwidth} 
+% \ifGERMAN Die Breite des Gitters.\fi
+% \ifENGLISH The width of the grating.\fi
 % 
-% \numitem[0.15]{gratingheight} This is the total height of the grating.
+% \numitem[0.15]{gratingheight} 
+% \ifGERMAN Die Gesamthöhe des Gitters.\fi
+% \ifENGLISH The total height of the grating.\fi
 % 
-% \numitem[0.075]{gratingdepth} This is the modulation depth of the grating structure. The total height is unaffected by this value.
+% \numitem[0.075]{gratingdepth}
+% \ifGERMAN 
+% Die absolute Modulationstiefe der Gitterstruktur. Die Gesamthöhe wird
+% an diesen Wert angepasst falls sie kleiner als die Modulationtiefe ist, 
+% andernfalls wird sie nicht beinflusst.
+% \fi
+% \ifENGLISH
+% The modulation depth of the grating structure. The total height is
+% adapted to this value if it is smaller than the modulation
+% depth. Otherwise the total height is not affected.
+% \fi
 % \iffalse
 %<*ignore>
 % \fi
@@ -1515,7 +1615,9 @@
 %</ignore>
 % \fi
 % 
-% \intitem[10]{gratingcount} The number of grating grooves.
+% \intitem[10]{gratingcount} 
+% \ifGERMAN Die Anzahl der Gitterlinien.\fi
+% \ifENGLISH The number of grating grooves.\fi
 % \iffalse
 %<*ignore>
 % \fi
@@ -1529,7 +1631,13 @@
 %</ignore>
 % \fi
 % 
-% \choitem[blazed]{gratingtype}{blazed, binary} Select between a \opt{binary} and a \opt{blazed} grating.
+% \choitem[blazed]{gratingtype}{blazed, binary} 
+% \ifGERMAN 
+%   Wähle zwischen einem binären Gitter (\opt{binary}) und einem Blazegitter (\opt{blazed}).
+% \fi
+% \ifENGLISH
+%   Select between a \opt{binary} and a \opt{blazed} grating.
+% \fi
 % \iffalse
 %<*ignore>
 % \fi
@@ -1543,7 +1651,13 @@
 %</ignore>
 % \fi
 % 
-% \boolitem[false]{reverse} Reverse the slope of the grooves of the \opt{blazed} grating.
+% \boolitem[false]{reverse} 
+% \ifGERMAN
+%   Invertiere die Steigung des Blazegitters.
+% \fi
+% \ifENGLISH
+%   Reverse the slope of the grooves of the \opt{blazed} grating.
+% \fi
 % \iffalse
 %<*ignore>
 % \fi
@@ -1556,13 +1670,26 @@
 %</ignore>
 % \fi
 % 
-% \optitem[0.7\nxLcs{pslinewidth}]{gratinglinewidth}{\prm{num} or \prm{dimen}} The linewidth of the
-% grating. This could be defined also with the generic \opt{linewidth} option,
-% possibly inside the \opt{OptComp} style. But using \opt{gratinglinewidth} allows
-% to globally change the linewidth of all \nxLcs{optgrating} objects.
+% \optitem[0.7\nxLcs{pslinewidth}]{gratinglinewidth}{\prm{num} or \prm{dimen}} 
+% \ifGERMAN
+% Die Linienbreite des Gitters. Diese könnte ebenfalls über den
+% \opt{linewidth} Parameter gesetzt werden. Mit diesem Parameter kann
+% aber die Linienbreite aller Gitter global eingestellt werden.
+% \fi
+% \ifENGLISH
+% The linewidth of the grating. This could be defined also with the
+% generic \opt{linewidth} option. But this parameter allows setting
+% globally the linewidth of all gratings.
+% \fi
 % \end{optionlist}
 % 
-% \subsection{Prism}\label{sec:prism}
+% \ifGERMAN
+%   \subsection{Prisma}
+% \fi
+% \ifENGLISH
+%   \subsection{Prism}
+% \fi
+% \label{sec:prism}
 % 
 % \begin{ltxsyntax}
 % \tripoledesc{optprism}
@@ -1578,12 +1705,23 @@
 %</ignore>
 % \fi
 % \end{ltxsyntax}
-% The prism is always placed symmetric between \prm{In} and \prm{Out} nodes. For
-% asymmetric beam traces see \prettyref{sec:connecting}.
-% 
+% \ifGERMAN
+% Das Prisma wird immer symmetrisch bezüglich der \prm{In} und \prm{Out}
+% Knoten ausgerichtet. Für asymmetrischen Strahlengang siehe
+% \prettyref{sec:connecting}.
+% \fi
+% \ifENGLISH
+% The prism is always placed symmetric between \prm{In} and \prm{Out}
+% nodes. For asymmetric beam traces see \prettyref{sec:connecting}.
+% \fi
+%
 % \begin{optionlist}
-% \numitem[1]{prismsize} This is the height of the prism.
+% \numitem[1]{prismsize} 
+% \ifGERMAN Die Höhe des Prismas.\fi
+% \ifENGLISH The height of the prism.\fi
 % \numitem[60]{prismangle}
+% \ifGERMAN Der obere Winkel des Prismas.\fi
+% \ifENGLISH The upper angle of the prism.\fi
 % \iffalse
 %<*ignore>
 % \fi
@@ -1597,7 +1735,13 @@
 % \fi
 % \end{optionlist}
 % 
-% \subsection{Right-Angle Prism}\label{sec:raprism}
+% \ifGERMAN
+%   \subsection{Umkehrprisma}
+% \fi
+% \ifENGLISH
+%   \subsection{Right-Angle Prism}
+% \fi
+% \label{sec:raprism}
 % 
 % \begin{ltxsyntax}
 % \tripoledesc{raprism}
@@ -1614,9 +1758,16 @@
 %</ignore>
 % \fi
 % \end{ltxsyntax}
-% The right-angle prisms is constructed such that the incoming and outcoming beam
-% are parallel and the \prm{Center} node is vertically centered in the
-% prism.
+% \ifGERMAN
+% Das Umkehrprisma wird so ausgerichtet, dass der einfallende und der
+% reflektierte Strahl parallel sind und der \prm{Center} Knoten vertikal
+% zentriert in dem Prisma liegt.
+% \fi
+% \ifENGLISH
+% The right-angle prisms is align such that the incoming and reflected
+% beam are parallel and the \prm{Center} node is vertically centered in
+% the prism.
+% \fi
 % \iffalse
 %<*ignore>
 % \fi
@@ -1631,10 +1782,18 @@
 % \fi
 % 
 % \begin{optionlist}
-% \numitem[1.5]{raprismsize} This is the length of the input plane.
+% \numitem[1.5]{raprismsize}
+% \ifGERMAN Die Länge der Eingangsfläche.\fi
+% \ifENGLISH The length of the input plane.\fi
 % \end{optionlist}
 % 
-% \subsection{Penta Prism}\label{sec:ppprism}
+% \ifGERMAN
+%   \subsection{Pentaprisma}
+% \fi
+% \ifENGLISH
+%   \subsection{Penta Prism}
+% \fi
+% \label{sec:ppprism}
 % 
 % \begin{ltxsyntax}
 % \tripoledesc{pentaprism}
@@ -1652,14 +1811,29 @@
 % \end{ltxsyntax}
 % 
 % \begin{optionlist}
-%   \numitem[0.7]{pentaprismsize} This is the length of the input and output plane.
+%   \numitem[0.7]{pentaprismsize} 
+%   \ifGERMAN Die Länge der Eingangs- und Ausgangsfläche.\fi
+%   \ifENGLISH The length of the input and output plane.\fi
 % \end{optionlist}
 % 
-% \subsection{Custom Components}\label{sec:custom}
-% \nxLPack{pst-optexp} provides two commands which can use anything as optical
-% components. If you want to use a custom component more often, you should define
-% it as a new component. For details on how to define your own components see
-% \prettyref{sec:newobj}.
+% \ifGERMAN
+%   \subsection{Benutzerdefinierte Komponenten}
+% \fi
+% \ifENGLISH
+%   \subsection{Custom Components}
+% \fi
+% \label{sec:custom}
+%
+% \ifGERMAN
+% Das \LPack{pst-optexp} Paket stellt zwei Makros zur Verfügung um
+% eigene Komponenten zu zeichnen. Diese können z.B. aus Bildern oder
+% eigenen Zeichnungen bestehen.
+% \fi
+% \ifENGLISH
+% The \nxLPack{pst-optexp} package provides two commands which can use
+% anything as optical components. This includes e.g. external images or
+% your own drawings.
+% \fi
 % 
 % \begin{ltxsyntax}
 %   \dipoledesc{optdipole}
@@ -1697,8 +1871,18 @@
 %</ignore>
 % \fi
 % \end{ltxsyntax}
+%
+% If you want to use a custom component more often, you should define
+% it as a new component. For details on how to define your own components see
+% \prettyref{sec:newobj}.
 % 
-% \section{Fiber-Optical Components}\label{sec:fibercomp}
+% \ifGERMAN
+%   \section{Faseroptische Komponenten}
+% \fi
+% \ifENGLISH
+%   \section{Fiber-Optical Components}
+% \fi
+% \label{sec:fibercomp}
 % 
 % \begin{optionlist}
 %   \boolitem{usefiberstyle} For some components it might me nice to highlight
@@ -1708,7 +1892,12 @@
 %   which would be highlighted.
 % \end{optionlist}
 %
-% \subsection{Fiber}
+% \ifGERMAN
+%   \subsection{Optische Faser}
+% \fi
+% \ifENGLISH
+%   \subsection{Optical Fiber}
+% \fi
 % 
 % \begin{ltxsyntax}
 % \fiberdipoledesc{optfiber}
@@ -1727,12 +1916,13 @@
 % \end{ltxsyntax}
 % \begin{optionlist}
 % \intitem[3]{fiberloops} 
+% \ifGERMAN Anzahl der Faserschleifen.\fi
+% \ifENGLISH Number of the fiber loops.\fi
 % \iffalse
 %<*ignore>
 % \fi
 \begin{LTXexample}
-\begin{pspicture}(3,1.5)
-  \psset{labeloffset=0.3}
+\begin{pspicture}[showgrid=true](3,1.5)
   \optfiber[fiberloops=2](0,0.5)(3,0.5){SSMF}
 \end{pspicture}
 \end{LTXexample}
@@ -1741,12 +1931,13 @@
 % \fi
 % 
 % \numitem[0.4]{fiberloopradius}
+% \ifGERMAN Radius der Faserschleifen.\fi
+% \ifENGLISH Radius of the fiber loops.\fi
 % \iffalse
 %<*ignore>
 % \fi
 \begin{LTXexample}
 \begin{pspicture}(3,1.5)
-  \psset{labeloffset=0.3}
   \optfiber[fiberloopradius=0.2](0,0.5)(3,0.5){SSMF}
 \end{pspicture}
 \end{LTXexample}
@@ -1755,6 +1946,8 @@
 % \fi
 % 
 % \numitem[0.3]{fiberloopsep}
+% \ifGERMAN Abstand zwischen zwei aufeinanderfolgenden Faserschleifen.\fi
+% \ifENGLISH Separation between two successive fiber loops.\fi
 % \iffalse
 %<*ignore>
 % \fi
@@ -1769,8 +1962,12 @@
 % \fi
 % \end{optionlist}
 % 
-% \subsection{Amplifier}
-% 
+% \ifGERMAN
+%   \subsection{Optischer Verstärker}
+% \fi
+% \ifENGLISH
+%   \subsection{Optical Amplifier}
+% \fi
 % \begin{ltxsyntax}
 % \fiberdipoledesc{optamp}
 % \iffalse
@@ -1787,7 +1984,7 @@
 % \end{ltxsyntax}
 % 
 % \begin{optionlist}
-% \numitem[0.8]{optampsize} The length of all triangle sides.
+% \numitem[0.8]{optampsize} \sizeexplanation
 % \end{optionlist}
 % 
 % \subsection{Mach-Zehnder Modulator}
@@ -1808,13 +2005,15 @@
 % \end{ltxsyntax}
 % 
 % \begin{optionlist}
-% \numitem[0.8]{optmzmsize} This is the height of the component, the width
-% is \opt{1.6} times the height. Use the \opt{unit} parameter to change this
-% relation.
+% \numitem[0.8]{optmzmsize} \sizeexplanation
 % \end{optionlist}
 % 
-% \subsection{Filter}
-% 
+% \ifGERMAN
+%   \subsection{Optischer Filter}
+% \fi
+% \ifENGLISH
+%   \subsection{Optical Filter}
+% \fi
 % \begin{ltxsyntax}
 % \fiberdipoledesc{optfilter}
 % \iffalse
@@ -1832,7 +2031,12 @@
 % 
 % \begin{optionlist}
 % \numitem[0.8]{filtersize}
+% \ifGERMAN Die Größe des Filters.\fi
+% \ifENGLISH The size of the filter.\fi
+%
 % \choitem[bandpass]{filtertype}{bandpass, bandstop, lowpass, highpass}
+% \ifGERMAN Wähle zwischen unterschiedlichen Filtertypen.\fi
+% \ifENGLISH Select between different filter types.\fi
 % \iffalse
 %<*ignore>
 % \fi
@@ -1868,7 +2072,12 @@
 % \fi
 % \end{optionlist}
 % 
-% \subsection{Polarization Controller}
+% \ifGERMAN
+%   \subsection{Polarisationssteller}
+% \fi
+% \ifENGLISH
+%   \subsection{Polarization Controller}
+% \fi
 % 
 % \begin{ltxsyntax}
 % \fiberdipoledesc{polcontrol}
@@ -1886,7 +2095,9 @@
 % \end{ltxsyntax}
 % 
 % \begin{optionlist}
-% \numitem[0.15]{polcontrolsize} The radius of the polarization controller circles.
+% \numitem[0.15]{polcontrolsize} 
+% \ifGERMAN Der Radius der Polarisationssteller-Kreise.\fi
+% \ifENGLISH The radius of the polarization controller circles.\fi
 % \end{optionlist}
 % 
 % \subsection{Isolator}
@@ -1907,11 +2118,17 @@
 % \end{ltxsyntax}
 % 
 % \begin{optionlist}
-%   \numitem[0.6]{isolatorsize} The height of the isolator. The width is \opt{1.6}
-%   times this value. Use the \opt{unit} parameter to change this relation.
-% 
-% \styleitem{IsolatorArrow} This changes the appearance of the isolator
-% arrow. This can be especially useful to adapt the length of the arrow.
+%   \numitem[0.6]{isolatorsize} \sizeexplanation
+%
+% \styleitem{IsolatorArrow} 
+% \ifGERMAN 
+% Der Stil für den Isolatorpfeil. Das kann insbesonders nützlich sein um
+% die Länge des Pfeils zu verändern. 
+% \fi
+% \ifENGLISH 
+% The style of the isolator arrow. This can be especially useful to
+% adapt the length of the arrow.
+% \fi
 % \iffalse
 %<*ignore>
 % \fi
@@ -1927,7 +2144,12 @@
 % \fi
 % \end{optionlist}
 % 
-% \subsection{Optical Switch}
+% \ifGERMAN
+%   \subsection{Schalter}
+% \fi
+% \ifENGLISH
+%   \subsection{Switch}
+% \fi
 % 
 % \begin{ltxsyntax}
 % \fiberdipoledesc{optswitch}
@@ -1946,8 +2168,12 @@
 % 
 % \begin{optionlist}
 % \numitem[0.8]{switchsize}
-% 
-% \choitem[opened]{switchstyle}{opened, closed} Indicate the switch as \opt{opened} or \opt{closed}
+% \ifGERMAN Die Größe des Schalters.\fi
+% \ifENGLISH The size of the switch.\fi
+%
+% \choitem[opened]{switchstyle}{opened, closed} 
+% \ifGERMAN Der Zustand des Schalters kann geschlossen (\opt{closed}) oder geöffnet (\opt{opened}) sein. \fi
+% \ifENGLISH Indicate the switch as \opt{opened} or \opt{closed}.\fi
 % \iffalse
 %<*ignore>
 % \fi
@@ -1961,7 +2187,12 @@
 % \fi
 % \end{optionlist}
 % 
-% \subsection{Fiber Delay Line}
+% \ifGERMAN
+%   \subsection{Faserverzögerungstrecke}
+% \fi
+% \ifENGLISH
+%   \subsection{Fiber Delay Line}
+% \fi
 % 
 % \begin{ltxsyntax}
 % \fiberdipoledesc{fiberdelayline}
@@ -1979,11 +2210,19 @@
 % \end{ltxsyntax}
 % 
 % \begin{optionlist}
-% \numitem[0.6]{fdlsize}
-% \styleitem{FdlArrow} This changes the appearance of the delay line arrow
-% and of the arrow type. This can be especially useful to adapt the length of the
-% arrow which may not be appropriate depending on the \opt{fdlsize} or to reverse
-% the arrow.
+% \numitem[0.6]{fdlsize} \sizeexplanation
+%
+% \styleitem{FdlArrow} 
+% \ifGERMAN 
+% Der Stil für den Pfeil. Das kann insbesonders nützlich sein um die
+% Länge des Pfeils zu verändern, die bei geänderter Größe nicht mehr
+% passend sein kann, oder um den Pfeil zu spiegeln.
+% \fi
+% \ifENGLISH 
+% The style of the arrow. This can be especially useful to
+% adapt the length of the arrow which may not be appropriate depending
+% on the \opt{fdlsize}, or to reverse the arrow.
+% \fi
 % \iffalse
 %<*ignore>
 % \fi
@@ -1998,8 +2237,12 @@
 % \fi
 % \end{optionlist}
 % 
-% 
-% \subsection{Fiber Polarizer}
+% \ifGERMAN
+%   \subsection{Polarisator}
+% \fi
+% \ifENGLISH
+%   \subsection{Polarizer}
+% \fi
 % 
 % \begin{ltxsyntax}
 % \fiberdipoledesc{optfiberpolarizer}
@@ -2017,10 +2260,15 @@
 % \end{ltxsyntax}
 % 
 % \begin{optionlist}
-%   \numitem[0.6]{fiberpolsize}
+%   \numitem[0.6]{fiberpolsize} \sizeexplanation
 % \end{optionlist}
 % 
-% \subsection{Fiber Collimator}
+% \ifGERMAN
+%   \subsection{Faserkollimator}
+% \fi
+% \ifENGLISH
+%   \subsection{Fiber Collimator}
+% \fi
 % 
 % \begin{ltxsyntax}
 % \xLcs{fibercollimator}\cmditem{fibercollimator}(In)(A)(B)(Out){Label}%
@@ -2037,12 +2285,25 @@
 % \fi
 % \end{ltxsyntax}
 % \begin{optionlist}
-% \numitem[0.3]{fibercolsize}
+% \numitem[0.3]{fibercolsize} \sizeexplanation
 % \end{optionlist}
-% The \nxLcs{fibercollimator} can be used with two, three or four points. With two points, the collimator is placed like any other dipole component between \prm{In} and \prm{Out} node. For three nodes, the fiber is drawn as \Lcs{psbezier} curve for which the
-% central node \prm{A} is used twice. Positioning parameters can be used to
-% shift the object between \prm{In} and \prm{A} nodes.
-% 
+% \ifGERMAN
+% Der Fasekollimator kann mit zwei, drei oder vier Punkten verwendet
+% werden. Bei zwei Punkten wird der Kollimator wie jeder andere Zweipol
+% zwischen \prm{In} und \prm{Out} Knoten platziert. Bei drei Punkten
+% wird eine \Lcs{psbezier} Kurve gezeichnet, wobei der mittlere Punkt
+% doppelt verwendet wird. Die Positionierungsparameter (see
+% \prettyref{sec:positioning}) können verwendet werden um den Kollimator
+% zwischen dem \prm{In} und \prm{A} Knoten auszurichten.
+% \fi
+% \ifENGLISH
+% The \nxLcs{fibercollimator} can be used with two, three or four
+% points. With two points, the collimator is placed like any other
+% dipole component between \prm{In} and \prm{Out} node. For three nodes,
+% the fiber is drawn as \Lcs{psbezier} curve for which the central node
+% \prm{A} is used twice. Positioning parameters can be used to shift the
+% object between \prm{In} and \prm{A} nodes.
+% \fi
 % \iffalse
 %<*ignore>
 % \fi
@@ -2056,9 +2317,17 @@
 % \fi
 % \medskip
 %
-% For four nodes, the fiber is drawn as \Lcs{psbezier} curve with the specified nodes. Positioning parameters can be used to
-% shift the object between \prm{In} and \prm{A} nodes.
-% 
+% \ifGERMAN
+% Bei vier Konten wird eine \Lcs{psbezier} Kurve mit allen vier Knoten
+% gezeichnet. Die Positionierungsparameter (see
+% \prettyref{sec:positioning}) können verwendet werden um den Kollimator
+% zwischen dem \prm{In} und \prm{A} Knoten auszurichten.
+% \fi
+% \ifENGLISH
+% For four nodes, the fiber is drawn as \Lcs{psbezier} curve with the
+% specified nodes. Positioning parameters can be used to shift the
+% object between \prm{In} and \prm{A} nodes.
+% \fi
 % \iffalse
 %<*ignore>
 % \fi
@@ -2071,8 +2340,20 @@
 %</ignore>
 % \fi
 % 
-% \subsection{Coupler}\label{sec:coupler}
-% \subsubsection{\texorpdfstring{\mathversion{bold}$2\times 2$}{2x2} Coupler}
+% \ifGERMAN
+%   \subsection{Koppler}
+% \fi
+% \ifENGLISH
+%   \subsection{Coupler}
+% \fi
+% \label{sec:coupler}
+%
+% \ifGERMAN
+%   \subsubsection{\texorpdfstring{\mathversion{bold}$2\times 2$}{2x2}-Koppler}
+% \fi
+% \ifENGLISH
+%   \subsubsection{\texorpdfstring{\mathversion{bold}$2\times 2$}{2x2} Coupler}
+% \fi
 % \begin{ltxsyntax}
 % \xLfmultipole{optcoupler}\cmditem{optcoupler}(LeftTop)(LeftBottom)(RightTop)(RightBottom){Label}%
 % \iffalse
@@ -2088,8 +2369,10 @@
 % \fi
 % \end{ltxsyntax}
 % \begin{optionlist}
-% \numitem[0.2]{couplersize}
-% \numitem[0.1]{couplersep} The vertical distance between two fiber ports.
+% \numitem[0.2]{couplersize} \sizeexplanation{2.5}
+% \numitem[0.1]{couplersep} 
+% \ifGERMAN Der vertikale Abstand zwischen zwei Faserports.\fi
+% \ifENGLISH The vertical distance between two fiber ports.\fi
 % \iffalse
 %<*ignore>
 % \fi
@@ -2104,6 +2387,8 @@
 % \fi
 % 
 % \choitem[elliptic]{couplertype}{none, elliptic, rectangular, crossswitch}
+% \ifGERMAN Wähle zwischen unterschiedlichen Kopplertypen.\fi
+% \ifENGLISH Select between different coupler types.\fi
 % \iffalse
 %<*ignore>
 % \fi
@@ -2123,6 +2408,8 @@
 % \fi
 % 
 % \choitem[center]{align}{top, bottom, center}
+% \ifGERMAN Die Ausrichtung des Kopplers bezüglich der Referenzknoten.\fi
+% \ifENGLISH The alignment of the coupler with respect to the reference nodes.\fi
 % \iffalse
 %<*ignore>
 % \fi
@@ -2140,7 +2427,12 @@
 % \fi
 % \end{optionlist}
 % 
-% \subsubsection{WDM Coupler}
+% \ifGERMAN
+%   \subsubsection{WDM-Koppler}
+% \fi
+% \ifENGLISH
+%   \subsubsection{WDM Coupler}
+% \fi
 % \begin{ltxsyntax}
 % \xLfmultipole{wdmcoupler}\cmditem{wdmcoupler}(LeftTop)(LeftBottom)(Right){Label}%
 % \iffalse
@@ -4763,7 +5055,6 @@
 % 2) Provide a rather easy-to-use interface for the user to allow new user-defined elements
 %
 % \begin{macro}{\newOptexpDipole}
-% \begin{macro}{\newOptexpDipoleNolabel}
 % \begin{macro}{\newOptexpTripole}
 % \begin{macro}{\newOptexpFiberDipole}
 % \begin{macro}{\newOptexpFiberQuadrupole}
@@ -4771,10 +5062,6 @@
 \def\newOptexpDipole{%
   \@ifnextchar[%]
     {\poe@newdipole}{\poe@newdipole[]}%
-}%
-\def\newOptexpDipoleNolabel{%
-  \@ifnextchar[%]
-    {\poe@newdipolenolabel}{\poe@newdipolenolabel[]}%
 }%
 \def\newOptexpTripole{%
   \@ifnextchar[%]
@@ -4793,14 +5080,16 @@
 % \end{macro}
 % \end{macro}
 % \end{macro}
-% \end{macro}
 % 
 % \begin{macro}{\poe@newdipole}
 %    \begin{macrocode}
 \def\poe@newdipole[#1]#2#3{%
   \@ifundefined{#2@i}{%
     \@namedef{#2}{\pst@object{#2}}%
-    \expandafter\def\csname #2@i\endcsname(##1)(##2)##3{%
+    \expandafter\def\csname #2@i\endcsname(##1)(##2){%
+      \@ifnextchar\bgroup{\@nameuse{#2@i@}(##1)(##2)}{\@nameuse{#2@i@}(##1)(##2){}}%
+    }%
+    \expandafter\def\csname #2@i@\endcsname(##1)(##2)##3{%
       \addbefore@par{#3}%
       \addafter@par{#1}%
       \begin@OptexpObj
@@ -4826,7 +5115,10 @@
 \def\poe@newfiberdipole[#1]#2#3{%
   \@ifundefined{#2@i}{%
     \@namedef{#2}{\pst@object{#2}}%
-    \expandafter\def\csname #2@i\endcsname(##1)(##2)##3{%
+    \expandafter\def\csname #2@i\endcsname(##1)(##2){%
+      \@ifnextchar\bgroup{\@nameuse{#2@i@}(##1)(##2)}{\@nameuse{#2@i@}(##1)(##2){}}%
+    }%
+    \expandafter\def\csname #2@i@\endcsname(##1)(##2)##3{%
       \addbefore@par{fiber, #3}%
       \addafter@par{#1}%
       \begin@OptexpObj
@@ -4847,63 +5139,39 @@
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}{\poe@newdipolenolabel}
-% Equivalent to \cs{poe@newdipole}, only that objects without labels are created.
-%    \begin{macrocode}
-\def\poe@newdipolenolabel[#1]#2#3{%
-  \@ifundefined{#2@i}{%
-    \@namedef{#2}{\pst@object{#2}}%
-    \expandafter\def\csname #2@i\endcsname(##1)(##2){%
-      \addbefore@par{#3}%
-      \addafter@par{#1}%
-      \begin@OptexpObj
-        \ifpoe@backlayer     
-          \poe@regNodes{##1}{##2}
-          \poe@adjustTempNodes
-        \fi
-        \poe@drawcomponent[#2]{}{\@nameuse{#2@ii}}
-        \ifpoe@backlayer
-          \poe@drawInternalConnections
-        \fi
-      \end@OptexpObj
-    }%
-    \dipole@iimacro{#2}%
-   }{%
-     \@pstrickserr{OptExp dipole object `#2' already defined}\@eha}%
-\ignorespaces}%
-%    \end{macrocode}
-% \end{macro}
-% 
 % \begin{macro}{\poe@newtripole}
 % Equivalent to \cs{poe@newdipole} for tripole objects.
 %    \begin{macrocode}
 \def\poe@newtripole[#1]#2#3{%
-   \@ifundefined{#2@i}{%
-      \@namedef{#2}{\pst@object{#2}}%
-      \expandafter\def\csname #2@i\endcsname(##1)(##2)(##3)##4{%
-         \addbefore@par{#3}%
-         \addafter@par{ref@angle=180,#1}%
-         \begin@OptexpMultipole
-            \poe@calcNodes{##1}{##2}{##3}%
-            \poe@drawcomponent[#2]{##4}{\@nameuse{#2@ii}}
-            \ifpoe@backlayer
-              \pst@getcoor{##1}\pst@tempA%
-              \pst@getcoor{##3}\pst@tempB%
-              \pst@OptexpVerb{%
-                 tx@NodeDict begin
-                     {\pst@tempA } false chirality 0 le { /N@\oenodeRefB{}\space }{ /N@\oenodeRefA{}\space } ifelse
-                     10 {InitPnode } NewNode
-                     {\pst@tempB } false chirality 0 le { /N@\oenodeRefA{}\space }{ /N@\oenodeRefB{}\space } ifelse
-                     10 {InitPnode } NewNode
-                 end
-              }%
-              \poe@drawInternalConnections
-            \fi
-         \end@OptexpMultipole
-      }%
-      \tripole@iimacro{#2}%
-   }{%
-     \@pstrickserr{OptExp tripole object `#2' already defined}\@eha}%
+  \@ifundefined{#2@i}{%
+    \@namedef{#2}{\pst@object{#2}}%
+    \expandafter\def\csname #2@i\endcsname(##1)(##2)(##3){%
+      \@ifnextchar\bgroup{\@nameuse{#2@i@}(##1)(##2)(##3)}{\@nameuse{#2@i@}(##1)(##2)(##3){}}%
+    }%
+    \expandafter\def\csname #2@i@\endcsname(##1)(##2)(##3)##4{%
+      \addbefore@par{#3}%
+      \addafter@par{ref@angle=180,#1}%
+      \begin@OptexpMultipole
+        \poe@calcNodes{##1}{##2}{##3}%
+        \poe@drawcomponent[#2]{##4}{\@nameuse{#2@ii}}
+        \ifpoe@backlayer
+          \pst@getcoor{##1}\pst@tempA%
+          \pst@getcoor{##3}\pst@tempB%
+          \pst@OptexpVerb{%
+            tx@NodeDict begin
+            {\pst@tempA } false chirality 0 le { /N@\oenodeRefB{}\space }{ /N@\oenodeRefA{}\space } ifelse
+            10 {InitPnode } NewNode
+            {\pst@tempB } false chirality 0 le { /N@\oenodeRefA{}\space }{ /N@\oenodeRefB{}\space } ifelse
+            10 {InitPnode } NewNode
+            end
+          }%
+          \poe@drawInternalConnections
+        \fi
+      \end@OptexpMultipole
+    }%
+    \tripole@iimacro{#2}%
+  }{%
+    \@pstrickserr{OptExp tripole object `#2' already defined}\@eha}%
 \ignorespaces}%
 %    \end{macrocode}
 % \end{macro}
@@ -4913,7 +5181,10 @@
 \def\poe@newfiberquadrupole[#1]#2#3{%
   \@ifundefined{#2@i}{%
     \@namedef{#2}{\pst@object{#2}}%
-    \expandafter\def\csname #2@i\endcsname(##1)(##2)(##3)(##4)##5{%
+    \expandafter\def\csname #2@i\endcsname(##1)(##2)(##3)(##4){%
+      \@ifnextchar\bgroup{\@nameuse{#2@i@}(##1)(##2)(##3)(##4)}{\@nameuse{#2@i@}(##1)(##2)(##3)(##4){}}%
+    }%
+    \expandafter\def\csname #2@i@\endcsname(##1)(##2)(##3)(##4)##5{%
       \addbefore@par{fiber, #3}%
       \addafter@par{#1}%
       \begin@OptexpObj
@@ -4997,7 +5268,10 @@
 % \begin{macro}{\wdmsplitter}
 %    \begin{macrocode}
 \def\wdmsplitter{\pst@object{wdmsplitter}}%
-\def\wdmsplitter@i(#1)(#2)(#3)#4{%
+\def\wdmsplitter@i(#1)(#2)(#3){%
+  \@ifnextchar\bgroup{\wdmsplitter@i@(#1)(#2)(#3)}{\wdmsplitter@i@(#1)(#2)(#3){}}%
+}%
+\def\wdmsplitter@i@(#1)(#2)(#3)#4{%
   \addbefore@par{fiber}%
   \begin@OptexpObj
     \ifpoe@backlayer
@@ -5035,7 +5309,10 @@
 % \begin{macro}{\wdmcoupler}
 %    \begin{macrocode}
 \def\wdmcoupler{\pst@object{wdmcoupler}}%
-\def\wdmcoupler@i(#1)(#2)(#3)#4{%
+\def\wdmcoupler@i(#1)(#2)(#3){%
+  \@ifnextchar\bgroup{\wdmcoupler@i@(#1)(#2)(#3)}{\wdmcoupler@i@(#1)(#2)(#3){}}%
+}%
+\def\wdmcoupler@i@(#1)(#2)(#3)#4{%
   \addbefore@par{fiber}%
   \begin@OptexpObj
     \ifpoe@backlayer
@@ -5260,7 +5537,7 @@
 \newOptexpDipole{lens}{}%
 \newOptexpDipole{pinhole}{}%
 \newOptexpDipole{crystal}{}%
-\newOptexpDipoleNolabel{polarization}{}%
+\newOptexpDipole{polarization}{}%
 \newOptexpDipole{optbox}{}%
 \newOptexpDipole{optplate}{}%
 \newOptexpDipole{optretplate}{}%
@@ -5274,6 +5551,10 @@
 \newOptexpTripole{mirror}{}%
 \newOptexpTripole[ref@angle=-135]{beamsplitter}{}%
 \newOptexpTripole{optgrating}{}%
+\def\optgrid{%
+  \PackageWarning{pst-optexp}{\protect\optgrid\space is deprecated, use \protect\optgrating\space instead.}%
+  \optgrating%
+}%
 \newOptexpTripole[ref@angle=-135]{pentaprism}{}%
 \newOptexpTripole[ref@angle=-135]{rightangleprism}{}%
 \newOptexpTripole[ref@angle=-135]{optprism}{}%
