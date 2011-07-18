@@ -633,8 +633,14 @@
 % \end{optionlist}
 % 
 % 
-% \subsection{Labels}\label{sec:labels}
-% 
+% \ifGERMAN
+%   \subsection{Beschriftungen}
+% \fi
+% \ifENGLISH
+%   \subsection{Labels}
+% \fi
+% \label{sec:labels}
+%
 % \begin{optionlist}
 % \numitem[0.8]{labeloffset}
 % Specify the offset from the label reference node of the object which in most
@@ -5663,7 +5669,7 @@
     /@ht \poe@key@lensheight\space\pst@number\psyunit mul 2 div def
     /@rL \poe@key@lensradiusleft\space\pst@number\psxunit mul def
     /@rR \poe@key@lensradiusright\space\pst@number\psxunit mul def
-    /@th 0 def	
+    /@th 0 def
   }%
 %    \end{macrocode}
 % distinguish between all the different lens-combination possibilities
@@ -6735,20 +6741,20 @@ tx@OptexpDict begin
 % are parallel or antiparallel.
 %    \begin{macrocode}
     c 0 eq {
-	ax bx mul ay by mul add 0 gt {
+      ax bx mul ay by mul add 0 gt {
 %    \end{macrocode}
 % If $\text{dotprod} > 0$ then a and b are parallel.
 %    \begin{macrocode}
-	    /cx ax def
-	    /cy ay def
-	}{
+        /cx ax def
+        /cy ay def
+      }{
 %    \end{macrocode}
 % else a and b are antiparallel
 %    \begin{macrocode}
-          /cx ay def
-          /cy ax neg def
-	} ifelse
-        /c@tmp a def
+        /cx ay def
+        /cy ax neg def
+      } ifelse
+      /c@tmp a def
     } if
     /X@A XG cx c@tmp div add def
     /Y@A YG cy c@tmp div add def
@@ -6763,11 +6769,11 @@ tx@OptexpDict begin
 %    \begin{macrocode}
     /chirality ax by mul ay bx mul sub def
     chirality 0 le {
-	Y@A X@A 
-        /X@A X@B def
-        /Y@A Y@B def
-        /X@B exch def
-        /Y@B exch def
+      Y@A X@A 
+      /X@A X@B def
+      /Y@A Y@B def
+      /X@B exch def
+      /Y@B exch def
     }if
 } bind def
 %    \end{macrocode}
@@ -6900,27 +6906,26 @@ tx@OptexpDict begin
 %    \begin{macrocode}
 /GetInternalNodeNames {
     /reverse exch def
-    (N@) exch strcat 1 
-    {
+    (N@) exch strcat 1 {
 %    \end{macrocode}
 % counter and name on stack
 % \begin{macrocode}
-	2 copy dup 3 string cvs 3 -1 roll exch strcat dup
-	tx@NodeDict exch known {%
-	    reverse {
-		4 1 roll pop
-	    } {
-		exch 2 add 1 roll
-	    } ifelse
-	} {
-	    reverse {
-		pop pop pop (N) strcat
-	    } {
-		pop pop exch (N) strcat exch 1 roll
-	    } ifelse
-	    exit
-	} ifelse
-	1 add
+      2 copy dup 3 string cvs 3 -1 roll exch strcat dup
+      tx@NodeDict exch known {%
+        reverse {
+          4 1 roll pop
+        } {
+          exch 2 add 1 roll
+        } ifelse
+      } {
+        reverse {
+          pop pop pop (N) strcat
+        } {
+          pop pop exch (N) strcat exch 1 roll
+        } ifelse
+        exit
+      } ifelse
+      1 add
     } loop
 } bind def
 %    \end{macrocode}
@@ -6957,16 +6962,16 @@ tx@OptexpDict begin
 /ExchCoor {
     exch 4 -1 roll 2 copy 
     gt {
-	pop pop pop pop false
+      pop pop pop pop false
     } {
 %    \end{macrocode}
 % xB > xA
 %    \begin{macrocode}
-	eq 3 1 roll gt and
+        eq 3 1 roll gt and
 %    \end{macrocode}
 % $xA == xB$ and $yA < yB$
 %    \begin{macrocode}
-        { false	} { true } ifelse
+        { false } { true } ifelse
     } ifelse
 } bind def
 %    \end{macrocode}
@@ -6981,19 +6986,19 @@ tx@OptexpDict begin
   /sc ED
   dup cvn
   6 dict dup 3 1 roll def begin
-      /ambiguous false def	
+      /ambiguous false def
       /name ED
       {0 0} exch 3 -1 roll exec
       gsave
-	  translate
-	  /CompMtrx CM def
+          translate
+          /CompMtrx CM def
       grestore
       /N 1 def
       /n 1 def
       5 dict dup dup /P@1 ED /P@N ED
       begin
-	  /mode trans def
-	  {} NewPlaneInt
+          /mode trans def
+          {} NewPlaneInt
       end
       /adjustRel true def
   end
@@ -7051,12 +7056,12 @@ tx@OptexpDict begin
   /scl ED
   /next ED
   dup (P@) exch strcat cvn
-  5 dict dup 			
-  3 1 roll def 			
-  begin 			
-    3 -1 roll			
-    /mode ED                    
-    4 -1 roll dup 5 -1 roll     
+  5 dict dup
+  3 1 roll def
+  begin
+    3 -1 roll
+    /mode ED
+    4 -1 roll dup 5 -1 roll
     {scl} next
   end
 %    \end{macrocode}
@@ -7123,12 +7128,12 @@ tx@OptexpDict begin
       name (N) 3 -1 roll {sc} NewCompInt
   }{
       ambiguous {
-	  name (C) 3 -1 roll {sc} NewCompInt
-	  /N N 1 sub def
+        name (C) 3 -1 roll {sc} NewCompInt
+        /N N 1 sub def
       } if
       N -1 1 { %
-	  dup N eq { pop (N) }{3 string cvs} ifelse
-	  exch name 3 1 roll {sc} NewCompInt
+        dup N eq { pop (N) }{3 string cvs} ifelse
+        exch name 3 1 roll {sc} NewCompInt
       } for
   } ifelse
   end
@@ -7142,14 +7147,14 @@ tx@OptexpDict begin
 %    \begin{macrocode}
 /GetPlaneVec {
     cvn load begin
-	PlaneName cvn load begin
-	    currentdict /RX known {
-		RX RY CompMtrx dtransform CM idtransform
-		neg exch
-	    } {
-		DX DY CompMtrx dtransform CM idtransform
-	    } ifelse
-	end
+        PlaneName cvn load begin
+            currentdict /RX known {
+              RX RY CompMtrx dtransform CM idtransform
+              neg exch
+            } {
+              DX DY CompMtrx dtransform CM idtransform
+            } ifelse
+        end
     end
 } bind def
 %    \end{macrocode}
@@ -7162,24 +7167,24 @@ tx@OptexpDict begin
 %    \begin{macrocode}
 /GetPlaneCenter {
     dup type /stringtype eq not {
-	dup xcheck not {
+      dup xcheck not {
 %    \end{macrocode}
 % ambiguous
 %    \begin{macrocode}
-	    0 get (C) exch
-	} {
-	    exec pop pop pop
-	} ifelse
+        0 get (C) exch
+      } {
+        exec pop pop pop
+      } ifelse
     } if
     cvn load begin
-        PlaneName cvn load begin
-	    currentdict /RX known {
-                X RX sub Y RY sub
-	    } {
-	        X Y
-	    } ifelse
-	    CompMtrx transform CM itransform
-	end
+      PlaneName cvn load begin
+        currentdict /RX known {
+          X RX sub Y RY sub
+        } {
+          X Y
+        } ifelse
+        CompMtrx transform CM itransform
+      end
     end
 } bind def
 %    \end{macrocode}
@@ -7200,9 +7205,9 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % invec != (0,0)
 %    \begin{macrocode}
-	exch atan matrix rotate dtransform
+      exch atan matrix rotate dtransform
     } {
-	4 2 roll pop pop
+      4 2 roll pop pop
     } ifelse
     ToVec
 } bind def
@@ -7219,11 +7224,11 @@ tx@OptexpDict begin
     3 1 roll GetPlaneCenter 4 2 roll % SPx SPy X1 Y1 neq00 P2
     GetPlaneCenter 5 2 roll % SPx SPy X2 Y2 X1 Y1 neq00
     {% SP != (0,0)    SPx SPy X2 Y2 X1 Y1
-	2 copy 8 2 roll % X1 Y1 SPx SPy X2 Y2 X1 Y1
-	@ABVect	exch atan matrix rotate dtransform
-	VecAdd
+      2 copy 8 2 roll % X1 Y1 SPx SPy X2 Y2 X1 Y1
+      @ABVect exch atan matrix rotate dtransform
+      VecAdd
     } {
-	6 2 roll pop pop pop pop
+      6 2 roll pop pop pop pop
     } ifelse
     ToVec
 } bind def
@@ -7234,18 +7239,18 @@ tx@OptexpDict begin
 % X Y CompName -> PlaneNumber
 %    \begin{macrocode}
 /GetNearestPlane {
-    3 copy 1 exch GetPlaneCenter @ABDist /dist ED /nearestPlane 1 def % X Y CompName
-    dup cvn load /N get 2 1 3 -1 roll {
+  3 copy 1 exch GetPlaneCenter @ABDist /dist ED /nearestPlane 1 def % X Y CompName
+  dup cvn load /N get 2 1 3 -1 roll {
 %    \end{macrocode}
 % iterate through plane 2 to plane N of CompName 
 %    \begin{macrocode}
-	4 copy exch GetPlaneCenter @ABDist dup dist lt {
-	    /dist ED /nearestPlane ED
-	} {
-	    pop pop
-	} ifelse
-    } for
-    pop pop pop nearestPlane
+    4 copy exch GetPlaneCenter @ABDist dup dist lt {
+      /dist ED /nearestPlane ED
+    } {
+      pop pop
+    } ifelse
+  } for
+  pop pop pop nearestPlane
 } bind def
 %    \end{macrocode}
 % \end{macro}
@@ -7258,129 +7263,129 @@ tx@OptexpDict begin
 % drawn.
 %    \begin{macrocode}
 /PushAmbCompPlanesOnStack {
-    currentdict /outToPlane undef
-    PN PlaneNum eq not {
+  currentdict /outToPlane undef
+  PN PlaneNum eq not {
 %    \end{macrocode}
 % not the last plane, there should be another one on the stack
 %    \begin{macrocode}
-	exch dup 3 1 roll % plane ambcomp plane
-	dup xcheck not {
+    exch dup 3 1 roll % plane ambcomp plane
+    dup xcheck not {
 %    \end{macrocode}
 % the next component is also an ambcomp, use its center point as reference.
 %    \begin{macrocode}
-	    0 get (C) exch
-	} {
+      0 get (C) exch
+    } {
 %    \end{macrocode}
 % otherwise use the plane node
 %    \begin{macrocode}
-	    exec pop pop pop
-	} ifelse
-	[ 3 1 roll ] cvx /outToPlane ED
+      exec pop pop pop
+    } ifelse
+    [ 3 1 roll ] cvx /outToPlane ED
 %    \end{macrocode}
 % outToPlane is \{(PN) (compName)\}
 %    \begin{macrocode}
-    } if
+  } if
 %    \end{macrocode}
 % the old plane number, without counting the additional planes of the current ambcomp
 %    \begin{macrocode}
-    /PlaneNumTmp PlaneNum def
-    aload pop /draw ED /name ED
-    name cvn load /N get /N ED
-    currentdict /Curr known {
-	/CurrTmp /Curr load def
-	/CurrVecTmp /CurrVec load def
-    } {
-	/CurrTmp /CurrLow load def
-	/CurrVecTmp /CurrVecLow load def
-    } ifelse
+  /PlaneNumTmp PlaneNum def
+  aload pop /draw ED /name ED
+  name cvn load /N get /N ED
+  currentdict /Curr known {
+    /CurrTmp /Curr load def
+    /CurrVecTmp /CurrVec load def
+  } {
+    /CurrTmp /CurrLow load def
+    /CurrVecTmp /CurrVecLow load def
+  } ifelse
 %    \end{macrocode}
 % CurrTmp is the current point of the beam on the previous plane, CurrVecTmp its outgoing vector.
 %    \begin{macrocode}
-    1 N eq {
+  1 N eq {
 %    \end{macrocode}
 % only a single interface
 %    \begin{macrocode}
-	[ (C) name 1 
-	PN 1 eq PN PlaneNum eq or {
+    [ (C) name 1 
+    PN 1 eq PN PlaneNum eq or {
 %    \end{macrocode}
 % its the first or last comp
 %    \begin{macrocode}
-	    trans
-	} {
+      trans
+    } {
 %    \end{macrocode}
 % somewhere in the middle, check the mode (trans or refl)
 %    \begin{macrocode}
-	    CurrVecTmp (C) name GetPlaneVec NormalVec outToPlane GetPlaneCenter (C) name GetPlaneCenter @ABVect SProd
-	    0 lt { trans } { refl } ifelse % mode
-	} ifelse
-	true ] cvx
-    } {
+      CurrVecTmp (C) name GetPlaneVec NormalVec outToPlane GetPlaneCenter (C) name GetPlaneCenter @ABVect SProd
+      0 lt { trans } { refl } ifelse % mode
+    } ifelse
+    true ] cvx
+  } {
 %    \end{macrocode}
 % three interfaces
 %    \begin{macrocode}
-	PN 1 eq {
+    PN 1 eq {
 %    \end{macrocode}
 % first component
 %    \begin{macrocode}
-	    [ (C) name
-	      nforce 0 eq { name cvn load /n get } { nforce } ifelse
-	      trans draw ] cvx
+      [ (C) name
+      nforce 0 eq { name cvn load /n get } { nforce } ifelse
+      trans draw ] cvx
 %    \end{macrocode}
 % now check which is the outgoing plane
 %    \begin{macrocode}
-	      name /outToPlane load GetNextPlane
-	      [ exch name 1 trans draw ] cvx exch
-	      /PlaneNumTmp PlaneNumTmp 1 add def
-	} {
-	    CurrTmp name GetNearestPlane /nextPlane ED
+      name /outToPlane load GetNextPlane
+      [ exch name 1 trans draw ] cvx exch
+      /PlaneNumTmp PlaneNumTmp 1 add def
+    } {
+      CurrTmp name GetNearestPlane /nextPlane ED
 %    \end{macrocode}
 % check if mode is trans or refl
 %    \begin{macrocode}
-	    CurrVecTmp nextPlane name GetPlaneVec NormalVec
-	    (C) name GetPlaneCenter nextPlane name GetPlaneCenter @ABVect 2 copy 6 2 roll SProd 
-	    0 lt { trans }{ refl } ifelse
-	    3 1 roll ToVec /CurrVecTmp ED
-	    [ nextPlane name
-	    connectplanes {
-		1
-	    }{
-		nforce 0 eq { name cvn load /n get } { nforce } ifelse
-	    } ifelse
+      CurrVecTmp nextPlane name GetPlaneVec NormalVec
+      (C) name GetPlaneCenter nextPlane name GetPlaneCenter @ABVect 2 copy 6 2 roll SProd 
+      0 lt { trans }{ refl } ifelse
+      3 1 roll ToVec /CurrVecTmp ED
+      [ nextPlane name
+      connectplanes {
+        1
+      }{
+        nforce 0 eq { name cvn load /n get } { nforce } ifelse
+      } ifelse
 %    \end{macrocode}
 % always draw to first interface
 %    \begin{macrocode}
-	    5 -1 roll true ] cvx
-	    PN PlaneNum eq {
+      5 -1 roll true ] cvx
+      PN PlaneNum eq {
 %    \end{macrocode}
 % its the last comp, just put the center plane on the stack
 %    \begin{macrocode}
-		[ (C) name
-		  nforce 0 eq { name cvn load /n get } { nforce } ifelse
-		  trans draw ] cvx exch
-		  /PlaneNumTmp PlaneNumTmp 1 add def
-	    } {
+        [ (C) name
+        nforce 0 eq { name cvn load /n get } { nforce } ifelse
+        trans draw ] cvx exch
+        /PlaneNumTmp PlaneNumTmp 1 add def
+      } {
 %    \end{macrocode}
 % check the mode
 %    \begin{macrocode}
-		[ (C) name
-		connectplanes {
-		    1
-		} {
-		    nforce 0 eq { name cvn load /n get } { nforce } ifelse
-		} ifelse
-		CurrVecTmp (C) name GetPlaneVec NormalVec outToPlane GetPlaneCenter (C) name GetPlaneCenter @ABVect SProd
-		0 lt { trans } { refl } ifelse % mode
-		draw ] cvx exch
+        [ (C) name
+        connectplanes {
+          1
+        } {
+          nforce 0 eq { name cvn load /n get } { nforce } ifelse
+        } ifelse
+        CurrVecTmp (C) name GetPlaneVec NormalVec outToPlane GetPlaneCenter (C) name GetPlaneCenter @ABVect SProd
+        0 lt { trans } { refl } ifelse % mode
+        draw ] cvx exch
 %    \end{macrocode}
 % now check which is the outgoing plane
 %    \begin{macrocode}
-		name /outToPlane load GetNextPlane
-		[ exch name 1 trans draw ] cvx 3 1 roll
-		/PlaneNumTmp PlaneNumTmp 2 add def
-	    } ifelse
-	} ifelse
+        name /outToPlane load GetNextPlane
+        [ exch name 1 trans draw ] cvx 3 1 roll
+        /PlaneNumTmp PlaneNumTmp 2 add def
+      } ifelse
     } ifelse
-    /PlaneNum PlaneNumTmp def
+  } ifelse
+  /PlaneNum PlaneNumTmp def
 } bind def
 %    \end{macrocode}
 % \end{macro}
@@ -7389,20 +7394,20 @@ tx@OptexpDict begin
 % \PSstring{comp} \PSproc{outToPlane} $\longmapsto$ \PSvar{PlaneNumber}
 %    \begin{macrocode}
 /GetNextPlane {
-    2 copy (C) 3 -1 roll % (CompName) {outToPlane} {outToPlane} (C) (CompName)
-    GetPlaneCenter 3 -1 roll exec GetPlaneCenter 4 2 roll 4 copy @ABVect /VecY ED /VecX ED @ABDist /centerDist ED
-    /sprod 1 def % (CompName) {outToPlane}
-    exch dup 3 1 roll cvn load /N get 1 1 3 -1 roll {% (CompName) {outToPlane} n
+  2 copy (C) 3 -1 roll % (CompName) {outToPlane} {outToPlane} (C) (CompName)
+  GetPlaneCenter 3 -1 roll exec GetPlaneCenter 4 2 roll 4 copy @ABVect /VecY ED /VecX ED @ABDist /centerDist ED
+  /sprod 1 def % (CompName) {outToPlane}
+  exch dup 3 1 roll cvn load /N get 1 1 3 -1 roll {% (CompName) {outToPlane} n
 %    \end{macrocode}
 % iterate through all planes of CompName
 %    \begin{macrocode}
-	3 copy 3 -1 roll 2 copy% (CompName) {outToPlane} n {outToPlane} n (CompName) n (CompName)
-	GetPlaneVec VecX VecY 4 2 roll NormalVec VecX VecY SProd dup sprod lt 
-	5 2 roll % sprod bool {outToPlane} n (CompName)
-	GetPlaneCenter 3 -1 roll exec GetPlaneCenter @ABDist centerDist lt and
-	{ /sprod ED /nextPlane ED } { pop pop } ifelse
-    } for
-    pop pop nextPlane
+    3 copy 3 -1 roll 2 copy% (CompName) {outToPlane} n {outToPlane} n (CompName) n (CompName)
+    GetPlaneVec VecX VecY 4 2 roll NormalVec VecX VecY SProd dup sprod lt 
+    5 2 roll % sprod bool {outToPlane} n (CompName)
+    GetPlaneCenter 3 -1 roll exec GetPlaneCenter @ABDist centerDist lt and
+    { /sprod ED /nextPlane ED } { pop pop } ifelse
+  } for
+  pop pop nextPlane
 } bind def
 %    \end{macrocode}
 % \end{macro}
@@ -7412,121 +7417,121 @@ tx@OptexpDict begin
 % -> Yn Xn drawToN? ... Y1 X1 drawTo1? Y0 X0
 %    \begin{macrocode}
 /TraceBeam {
-    /InVec ED /StartPoint ED
-    /oldbeaminsidelast currentdict /beaminsidelast known { beaminsidelast } { false } ifelse def
+  /InVec ED /StartPoint ED
+  /oldbeaminsidelast currentdict /beaminsidelast known { beaminsidelast } { false } ifelse def
 %    \end{macrocode}
 % preset options
 %    \begin{macrocode}
-    /nmul 1 def
-    /nadd 0 def
-    /nforce 0 def
+  /nmul 1 def
+  /nadd 0 def
+  /nforce 0 def
 %    \end{macrocode}
 % execute options
 %    \begin{macrocode}
-    exec
-    /startInside startInside beaminsidefirst or def
-    /stopInside stopInside beaminsidelast or def
-    counttomark /N ED
-    PrearrangePlanes
-    PushAllPlanesOnStack
-    startvecabs not {
-	2 copy /InVec load TransformInVec
-    } {
-	/InVec load
-    } ifelse
-    /CurrVec ED
-    custombeam currentdict /lastBeamPoint known and {
-	/lastBeamPoint load /Curr ED
-    }{
-	2 copy /StartPoint load  TransformStartPos /Curr ED
-    } ifelse
-    counttomark /PlaneNum ED 
+  exec
+  /startInside startInside beaminsidefirst or def
+  /stopInside stopInside beaminsidelast or def
+  counttomark /N ED
+  PrearrangePlanes
+  PushAllPlanesOnStack
+  startvecabs not {
+    2 copy /InVec load TransformInVec
+  } {
+    /InVec load
+  } ifelse
+  /CurrVec ED
+  custombeam currentdict /lastBeamPoint known and {
+    /lastBeamPoint load /Curr ED
+  }{
+    2 copy /StartPoint load  TransformStartPos /Curr ED
+  } ifelse
+  counttomark /PlaneNum ED 
 %    \end{macrocode}
 % Init the refractive index
 %    \begin{macrocode}
-    /n1 1 def
-    /PN 1 def
-    { 
+  /n1 1 def
+  /PN 1 def
+  { 
 %    \end{macrocode}
 % iterate over all planes
 %    \begin{macrocode}
-	dup xcheck not {
+    dup xcheck not {
 %    \end{macrocode}
 % array, not executable
 %    \begin{macrocode}
-	    PushAmbCompPlanesOnStack
-	} if
-	exec
-	/draw ED
-	/Mode ED
-	3 1 roll % n PlaneNumber CompName
-	cvn load begin % comp dict
-	    PlaneName cvn load begin % plane dict
-		X Y
-		CompMtrx transform CM itransform % n1 X Y
-		2 copy ToVec 4 1 roll
-		currentdict /RX known { RX RY } { DX DY	} ifelse
-		CompMtrx dtransform CM idtransform  
-		Mode 6 -1 roll
-		Curr CurrVec
-		currentdict /RX known 
-	    end
-	end
+      PushAmbCompPlanesOnStack
+    } if
+    exec
+    /draw ED
+    /Mode ED
+    3 1 roll % n PlaneNumber CompName
+    cvn load begin % comp dict
+      PlaneName cvn load begin % plane dict
+        X Y
+        CompMtrx transform CM itransform % n1 X Y
+        2 copy ToVec 4 1 roll
+        currentdict /RX known { RX RY } { DX DY	} ifelse
+        CompMtrx dtransform CM idtransform  
+        Mode 6 -1 roll
+        Curr CurrVec
+        currentdict /RX known 
+      end
+    end
 %% {Xp Yp} Xp Yp dXp dYp trans/refl n2 X0 Y0 X_in Y_in curved?
-	12 -1 roll /CurrCenter ED
-	connectplanes {
-	    PN 2 eq {
+    12 -1 roll /CurrCenter ED
+    connectplanes {
+      PN 2 eq {
 %    \end{macrocode}
 % initialize relAngle, the angle between plane connection and input vector
 %    \begin{macrocode}
-		CurrCenter CurrCenterTmp @ABVect NormalizeVec CurrVec VecAngle /relAngle ED
-	    } if
-	    PN 3 ge {
-		ModeTmp trans eq {
+        CurrCenter CurrCenterTmp @ABVect NormalizeVec CurrVec VecAngle /relAngle ED
+      } if
+      PN 3 ge {
+        ModeTmp trans eq {
 %    \end{macrocode}
 % previous plane was transmittive, recalculate the input vector
 %    \begin{macrocode}
-		    CurrCenter CurrCenterTmp @ABVect NormalizeVec
-		    relAngle matrix rotate dtransform
-		    5 -2 roll pop pop 3 -1 roll
-		} {
+          CurrCenter CurrCenterTmp @ABVect NormalizeVec
+          relAngle matrix rotate dtransform
+          5 -2 roll pop pop 3 -1 roll
+        } {
 %    \end{macrocode}
 % else, the previous plane was reflective, recalculate relAngle
 %    \begin{macrocode}
-		    CurrCenter CurrCenterTmp @ABVect NormalizeVec CurrVec VecAngle /relAngle ED
-		} ifelse
-	    } if
-	} if
-	{ CurvedInterface }{ PlainInterface } ifelse
-	PN 1 eq {
-	    pop pop
-	    /draw beaminsidefirst oldbeaminsidelast xor def
-	} {
-	    ToVec /CurrVec ED
-	} ifelse
-	2 copy
-	ToVec /Curr ED 
-	draw
-	counttomark 3 roll
-        /CurrCenterTmp /CurrCenter load def
-	/lastBeamPoint /Curr load def
-	/lastVec /CurrVec load def
-	/ModeTmp Mode def
-	PN PlaneNum eq {
-	    exit
-	} {
-	    CurrVec 0 eq exch 0 eq and {
+          CurrCenter CurrCenterTmp @ABVect NormalizeVec CurrVec VecAngle /relAngle ED
+        } ifelse
+      } if
+    } if
+    { CurvedInterface }{ PlainInterface } ifelse
+    PN 1 eq {
+      pop pop
+      /draw beaminsidefirst oldbeaminsidelast xor def
+    } {
+      ToVec /CurrVec ED
+    } ifelse
+    2 copy
+    ToVec /Curr ED 
+    draw
+    counttomark 3 roll
+    /CurrCenterTmp /CurrCenter load def
+    /lastBeamPoint /Curr load def
+    /lastVec /CurrVec load def
+    /ModeTmp Mode def
+    PN PlaneNum eq {
+      exit
+    } {
+      CurrVec 0 eq exch 0 eq and {
 %    \end{macrocode}
 % last refraction was total internal reflection, exit!
 %    \begin{macrocode}
-		PlaneNum PN sub {pop} repeat
-		exit
-	    } if
-	    /PN PN 1 add def
-	} ifelse
-    } loop
-    currentdict /CurrVec undef
-    currentdict /Curr undef
+        PlaneNum PN sub {pop} repeat
+        exit
+      } if
+      /PN PN 1 add def
+    } ifelse
+  } loop
+  currentdict /CurrVec undef
+  currentdict /Curr undef
 } bind def
 %    \end{macrocode}
 % \end{macro}
@@ -7535,26 +7540,26 @@ tx@OptexpDict begin
 % [ CompN ... Comp1 \{options\} \{start point\} \{input vector\}
 %    \begin{macrocode}
 /Drawbeam {
-    counttomark 3 eq {
+  counttomark 3 eq {
 %    \end{macrocode}
 % first ray misses the next interface
 %    \begin{macrocode}
-	pop pop pop
-    }{
-	pop 5 copy 3 -1 roll pop ArrowA pop pop pop pop % go to Startpoint
-	counttomark 3 idiv -1 2 {
-	    pop {
-		lineto
-	    }{
-		moveto
-	    }ifelse
-	} for
-	{CP 4 2 roll ArrowB lineto pop pop } {moveto} ifelse
+    pop pop pop
+  }{
+    pop 5 copy 3 -1 roll pop ArrowA pop pop pop pop % go to Startpoint
+    counttomark 3 idiv -1 2 {
+      pop {
+        lineto
+      }{
+        moveto
+      } ifelse
+    } for
+    {CP 4 2 roll ArrowB lineto pop pop } {moveto} ifelse
 %    \end{macrocode}
 % remove [
 %    \begin{macrocode}
-	pop
-    } ifelse
+    pop
+  } ifelse
 } bind def
 %    \end{macrocode}
 % \end{macro}
@@ -7576,32 +7581,32 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % correct rotation of input vectors
 %    \begin{macrocode}
-    5 -1 roll dup 6 1 roll 3 1 roll % {opt} {sup} {inup} {opt} {slow} {inlow}
-    counttomark 6 sub /numComp ED
-    numComp 7 add 6 roll numComp 1 add copy % {opt} {sup} {inup} {opt} {slow} {inlow} [ CompN .. Comp1 [ CompN .. Comp1
-    numComp 1 add 2 mul 6 add numComp 1 add roll % [ CompN .. Comp1 {opt} {sup} {inup} {opt} {slow} {inlow} [ CompN .. Comp1
-    numComp 1 add 3 add -3 roll % [ CompN .. Comp1 {opt} {sup} {inup} [ CompN .. Comp1 {opt} {slow} {inlow}
-    currentdict /lastBeamPointLow known {
-	/lastBeamPointLow load /lastBeamPoint ED
-    } if
-    TraceBeam
-    /lastBeamPoint load /lastBeamPointLow ED
-    /lastVec load /lastVecLow ED
-    currentdict /lastBeamPoint undef
-    currentdict /lastBeamPointUp known {
-	/lastBeamPointUp load /lastBeamPoint ED
-    } if
-    counttomark 1 add dup numComp 4 add add exch roll
-    TraceBeam
-    /lastBeamPoint load /lastBeamPointUp ED
-    /lastVec load /lastVecUp ED
-    lastBeamPointUp lastBeamPointLow @ABVect lastVecUp lastVecLow 3 -1 roll add 3 1 roll add exch
-    4 -1 roll mul 3 1 roll mul sub 0 gt {
+  5 -1 roll dup 6 1 roll 3 1 roll % {opt} {sup} {inup} {opt} {slow} {inlow}
+  counttomark 6 sub /numComp ED
+  numComp 7 add 6 roll numComp 1 add copy % {opt} {sup} {inup} {opt} {slow} {inlow} [ CompN .. Comp1 [ CompN .. Comp1
+  numComp 1 add 2 mul 6 add numComp 1 add roll % [ CompN .. Comp1 {opt} {sup} {inup} {opt} {slow} {inlow} [ CompN .. Comp1
+  numComp 1 add 3 add -3 roll % [ CompN .. Comp1 {opt} {sup} {inup} [ CompN .. Comp1 {opt} {slow} {inlow}
+  currentdict /lastBeamPointLow known {
+    /lastBeamPointLow load /lastBeamPoint ED
+  } if
+  TraceBeam
+  /lastBeamPoint load /lastBeamPointLow ED
+  /lastVec load /lastVecLow ED
+  currentdict /lastBeamPoint undef
+  currentdict /lastBeamPointUp known {
+    /lastBeamPointUp load /lastBeamPoint ED
+  } if
+  counttomark 1 add dup numComp 4 add add exch roll
+  TraceBeam
+  /lastBeamPoint load /lastBeamPointUp ED
+  /lastVec load /lastVecUp ED
+  lastBeamPointUp lastBeamPointLow @ABVect lastVecUp lastVecLow 3 -1 roll add 3 1 roll add exch
+  4 -1 roll mul 3 1 roll mul sub 0 gt {
 %    \end{macrocode}
 % swap upper and lower beam points for next beam
 %    \begin{macrocode}
-	/lastBeamPointUp load /lastBeamPointLow load /lastBeamPointUp ED /lastBeamPointLow ED
-    } if
+    /lastBeamPointUp load /lastBeamPointLow load /lastBeamPointUp ED /lastBeamPointLow ED
+  } if
 } bind def
 %    \end{macrocode}
 % \end{macro}
@@ -7613,218 +7618,218 @@ tx@OptexpDict begin
 % [ CompN ... Comp1 \{options\} \{start point up\} \{input vector up\} \{start point low\} \{input vector low\} 
 %    \begin{macrocode}
 /FillWideBeam {
-    /InvecLow ED /StartLow ED /InvecUp ED /StartUp ED 
+  /InvecLow ED /StartLow ED /InvecUp ED /StartUp ED 
 %    \end{macrocode}
 % preset options
 %    \begin{macrocode}
-    currentdict /fillBeam known not { /fillBeam {gsave fill grestore} def } if
-    /DrawnSegm 0 def
-    /nmul 1 def
-    /nadd 0 def
-    /nforce 0 def
+  currentdict /fillBeam known not { /fillBeam {gsave fill grestore} def } if
+  /DrawnSegm 0 def
+  /nmul 1 def
+  /nadd 0 def
+  /nforce 0 def
 %    \end{macrocode}
 % execute user options
 %    \begin{macrocode}
-    exec
-    /startInside startInside beaminsidefirst or def
-    /stopInside stopInside beaminsidelast or def
-    PrearrangePlanes
-    PushAllPlanesOnStack
-    startvecabs not {
-	2 copy /InvecLow load TransformInVec /CurrVecLow ED
-	2 copy /InvecUp load TransformInVec /CurrVecUp ED
-    } {
-	/InvecLow load /CurrVecLow ED
-	/InvecUp load /CurrVecUp ED
-    } ifelse
-    custombeam currentdict /lastBeamPointLow known currentdict /lastBeamPointUp known and and {
-	/lastBeamPointLow load /CurrLow ED
-	/lastBeamPointUp load /CurrUp ED
-    } {
-	2 copy /StartLow load TransformStartPos /CurrLow ED
-	2 copy /StartUp load TransformStartPos /CurrUp ED
-    } ifelse
-    counttomark /PlaneNum ED /n1 1 def
-    /CurrR false def
-    /PN 1 def
-    {
-	dup xcheck not {
+  exec
+  /startInside startInside beaminsidefirst or def
+  /stopInside stopInside beaminsidelast or def
+  PrearrangePlanes
+  PushAllPlanesOnStack
+  startvecabs not {
+    2 copy /InvecLow load TransformInVec /CurrVecLow ED
+    2 copy /InvecUp load TransformInVec /CurrVecUp ED
+  } {
+    /InvecLow load /CurrVecLow ED
+    /InvecUp load /CurrVecUp ED
+  } ifelse
+  custombeam currentdict /lastBeamPointLow known currentdict /lastBeamPointUp known and and {
+    /lastBeamPointLow load /CurrLow ED
+    /lastBeamPointUp load /CurrUp ED
+  } {
+    2 copy /StartLow load TransformStartPos /CurrLow ED
+    2 copy /StartUp load TransformStartPos /CurrUp ED
+  } ifelse
+  counttomark /PlaneNum ED /n1 1 def
+  /CurrR false def
+  /PN 1 def
+  {
+    dup xcheck not {
 %    \end{macrocode}
 % array, not executable
 %    \begin{macrocode}
-	    PushAmbCompPlanesOnStack
-	} if
-	exec
-	/draw ED
-	/Mode ED
-	3 1 roll cvn load begin % comp dict
-	    PlaneName cvn load begin % plane dict
-		X Y CompMtrx transform CM itransform
-		2 copy ToVec 4 1 roll
-		currentdict /RX known {
-		    RX RY 
-		} {
-		    DX DY
-		} ifelse
-		CompMtrx dtransform CM idtransform 4 copy
-		Mode 10 -1 roll % {X Y} X Y DX DY X Y DX DY mode n1
-		6 copy
-		currentdict /RX known
-	    end
-	end
-	/curved ED
-	/oldn1 n1 def % {X Y} X Y DX DY X Y DX DY mode n1 X Y DX DY mode n1
-	17 -1 roll /CurrPCenter ED
+      PushAmbCompPlanesOnStack
+    } if
+    exec
+    /draw ED
+    /Mode ED
+    3 1 roll cvn load begin % comp dict
+      PlaneName cvn load begin % plane dict
+        X Y CompMtrx transform CM itransform
+        2 copy ToVec 4 1 roll
+        currentdict /RX known {
+          RX RY 
+        } {
+          DX DY
+        } ifelse
+        CompMtrx dtransform CM idtransform 4 copy
+        Mode 10 -1 roll % {X Y} X Y DX DY X Y DX DY mode n1
+        6 copy
+        currentdict /RX known
+      end
+    end
+    /curved ED
+    /oldn1 n1 def % {X Y} X Y DX DY X Y DX DY mode n1 X Y DX DY mode n1
+    17 -1 roll /CurrPCenter ED
 %    \end{macrocode}
 % new upper vector and intersection point
 %    \begin{macrocode}
-	CurrUp CurrVecUp
-	connectplanes {
-	    PN 2 eq {
+    CurrUp CurrVecUp
+    connectplanes {
+      PN 2 eq {
 %    \end{macrocode}
 % initialize relAngle, the angle between plane connection and input vector
 %    \begin{macrocode}
-		CurrPCenter CurrPCenterTmp @ABVect NormalizeVec CurrVecUp VecAngle /relAngleUp ED
-	    } if
-	    PN 3 ge {
-		ModeTmp trans eq {
+        CurrPCenter CurrPCenterTmp @ABVect NormalizeVec CurrVecUp VecAngle /relAngleUp ED
+      } if
+      PN 3 ge {
+        ModeTmp trans eq {
 %    \end{macrocode}
 % previous plane was transmittive, recalculate the input vector
 %    \begin{macrocode}
-		    CurrPCenter CurrPCenterTmp @ABVect NormalizeVec %(connvec) == 2 copy == == (done)==
-		    relAngleUp matrix rotate dtransform %(connvec transformed) == 2 copy == == (done)==
-		    4 2 roll pop pop
-		} {
+          CurrPCenter CurrPCenterTmp @ABVect NormalizeVec %(connvec) == 2 copy == == (done)==
+          relAngleUp matrix rotate dtransform %(connvec transformed) == 2 copy == == (done)==
+          4 2 roll pop pop
+        } {
 %    \end{macrocode}
 % else, the previous plane was reflective, recalculate relAngle
 %    \begin{macrocode}
-		    CurrPCenter CurrPCenterTmp @ABVect NormalizeVec CurrVecUp VecAngle /relAngleUp ED
-		} ifelse
-	    } if
-	} if
-	2 copy ToVec /OldVecUp ED
-	curved { CurvedInterface } { PlainInterface } ifelse
-	/CurrUp load /OldUp ED
-	ToVec /CurrVecUp ED
-	ToVec /CurrUp ED
-	/n1 oldn1 def
+          CurrPCenter CurrPCenterTmp @ABVect NormalizeVec CurrVecUp VecAngle /relAngleUp ED
+        } ifelse
+      } if
+    } if
+    2 copy ToVec /OldVecUp ED
+    curved { CurvedInterface } { PlainInterface } ifelse
+    /CurrUp load /OldUp ED
+    ToVec /CurrVecUp ED
+    ToVec /CurrUp ED
+    /n1 oldn1 def
 %    \end{macrocode}
 % new lower vector and intersection point
 %    \begin{macrocode}
-	CurrLow CurrVecLow
-	connectplanes {
-	    PN 2 eq {
+    CurrLow CurrVecLow
+    connectplanes {
+      PN 2 eq {
 %    \end{macrocode}
 % initialize relAngle, the angle between plane connection and input vector
 %    \begin{macrocode}
-		CurrPCenter CurrPCenterTmp @ABVect NormalizeVec CurrVecLow VecAngle /relAngleLow ED
-	    } if
-	    PN 3 ge {
-		ModeTmp trans eq {
+        CurrPCenter CurrPCenterTmp @ABVect NormalizeVec CurrVecLow VecAngle /relAngleLow ED
+      } if
+      PN 3 ge {
+        ModeTmp trans eq {
 %    \end{macrocode}
 % previous plane was transmittive, recalculate the input vector
 %    \begin{macrocode}
-		    CurrPCenter CurrPCenterTmp @ABVect NormalizeVec
-		    relAngleLow matrix rotate dtransform
-		    4 2 roll pop pop
-		} {
+          CurrPCenter CurrPCenterTmp @ABVect NormalizeVec
+          relAngleLow matrix rotate dtransform
+          4 2 roll pop pop
+        } {
 %    \end{macrocode}
 % else, the previous plane was reflective, recalculate relAngle
 %    \begin{macrocode}
-		    CurrPCenter CurrPCenterTmp @ABVect NormalizeVec CurrVecLow VecAngle /relAngleLow ED
-		} ifelse
-	    } if
-	} if
-	2 copy ToVec /OldVecLow ED
-	curved { CurvedInterface } { PlainInterface } ifelse
-	/CurrLow load /OldLow ED
-	ToVec /CurrVecLow ED
-	ToVec /CurrLow ED
+          CurrPCenter CurrPCenterTmp @ABVect NormalizeVec CurrVecLow VecAngle /relAngleLow ED
+        } ifelse
+      } if
+    } if
+    2 copy ToVec /OldVecLow ED
+    curved { CurvedInterface } { PlainInterface } ifelse
+    /CurrLow load /OldLow ED
+    ToVec /CurrVecLow ED
+    ToVec /CurrLow ED
 %    \end{macrocode}
 % lower done
 %    \begin{macrocode}
-	/OldR CurrR def
-	curved {
-	    tx@Dict begin Pyth end /CurrR ED
-	} {
-	    pop pop /CurrR false def
-	} ifelse
+    /OldR CurrR def
+    curved {
+      tx@Dict begin Pyth end /CurrR ED
+    } {
+      pop pop /CurrR false def
+    } ifelse
 %    \end{macrocode}
 % radius done, X Y still on stack
 %    \begin{macrocode}
-	OldR type /realtype eq {
-	    /CurrCenter load /OldCenter ED
-	} if
-	curved {
-	    ToVec /CurrCenter ED
-	} {
-	    pop pop
-	    /CurrCenter false def
-	} ifelse
+    OldR type /realtype eq {
+      /CurrCenter load /OldCenter ED
+    } if
+    curved {
+      ToVec /CurrCenter ED
+    } {
+      pop pop
+      /CurrCenter false def
+    } ifelse
 %    \end{macrocode}
 % center done
 %    \begin{macrocode}
-        PN 1 gt {
-	    draw {
-		/DrawnSegm dup load 1 add def
-		OldUp moveto CurrUp lineto
-		curved {
-		    CurrCenter CurrUp CurrLow TangentCrosspoint
-		    CurrLow CurrR arct
-		} {
-		    CurrLow lineto
-		} ifelse
-		OldLow lineto
-		OldR type /booleantype eq not {
+    PN 1 gt {
+      draw {
+        /DrawnSegm dup load 1 add def
+        OldUp moveto CurrUp lineto
+        curved {
+          CurrCenter CurrUp CurrLow TangentCrosspoint
+          CurrLow CurrR arct
+        } {
+          CurrLow lineto
+        } ifelse
+        OldLow lineto
+        OldR type /booleantype eq not {
 %    \end{macrocode}
 % previous interface was also curved
 %    \begin{macrocode}
-		    OldCenter OldLow OldUp TangentCrosspoint
-		    OldUp OldR arct
-		} {
-		    OldUp lineto
-		} ifelse
-	    } if
-	    Mode refl eq draw and
-	    draw not DrawnSegm 0 gt and or {
-		fillBeam newpath
-		/DrawnSegm 0 def
-	    } if
-	} {
+          OldCenter OldLow OldUp TangentCrosspoint
+          OldUp OldR arct
+        } {
+          OldUp lineto
+        } ifelse
+      } if
+      Mode refl eq draw and
+      draw not DrawnSegm 0 gt and or {
+        fillBeam newpath
+        /DrawnSegm 0 def
+      } if
+    } {
 %    \end{macrocode}
 % PN == 1
 %    \begin{macrocode}
-	    /CurrVecUp /OldVecUp load def
-	    /CurrVecLow /OldVecLow load def
-	} ifelse
-	PN PlaneNum eq {
-	    DrawnSegm 0 gt { fillBeam newpath } if
-	    exit
-	} {
-	    CurrVecUp 0 eq exch 0 eq and CurrVecLow 0 eq exch 0 eq and or {
+      /CurrVecUp /OldVecUp load def
+      /CurrVecLow /OldVecLow load def
+    } ifelse
+    PN PlaneNum eq {
+      DrawnSegm 0 gt { fillBeam newpath } if
+      exit
+    } {
+      CurrVecUp 0 eq exch 0 eq and CurrVecLow 0 eq exch 0 eq and or {
 %    \end{macrocode}
 % last refraction was total internal reflection, exit!
 %    \begin{macrocode}
-		PlaneNum PN sub {pop} repeat
-		DrawnSegm 0 gt { fillBeam newpath } if	
-		exit
-	    } if
-	    /PN PN 1 add def
-	} ifelse
-	/CurrPCenterTmp /CurrPCenter load def
-	/ModeTmp Mode def
-    } loop
-    CurrUp CurrLow @ABVect CurrVecUp CurrVecLow 3 -1 roll add 3 1 roll add exch
-    4 -1 roll mul 3 1 roll mul sub 0 gt {
+        PlaneNum PN sub {pop} repeat
+        DrawnSegm 0 gt { fillBeam newpath } if	
+        exit
+      } if
+      /PN PN 1 add def
+    } ifelse
+    /CurrPCenterTmp /CurrPCenter load def
+    /ModeTmp Mode def
+  } loop
+  CurrUp CurrLow @ABVect CurrVecUp CurrVecLow 3 -1 roll add 3 1 roll add exch
+  4 -1 roll mul 3 1 roll mul sub 0 gt {
 %    \end{macrocode}
 % swap upper and lower beam points for next beam
 %    \begin{macrocode}
-	/lastBeamPointUp /CurrLow load def
-	/lastBeamPointLow /CurrUp load def
-    } {
-	/lastBeamPointLow /CurrLow load def
-	/lastBeamPointUp /CurrUp load def
-    } ifelse
+    /lastBeamPointUp /CurrLow load def
+    /lastBeamPointLow /CurrUp load def
+  } {
+    /lastBeamPointLow /CurrLow load def
+    /lastBeamPointUp /CurrUp load def
+  } ifelse
 } bind def
 %    \end{macrocode}
 % \end{macro}
@@ -7843,53 +7848,53 @@ tx@OptexpDict begin
 % [ CompN .. Comp1 PrearrangePlanes -> [ desc/asc CompN .. desc/asc Comp1 
 %    \begin{macrocode}
 /PrearrangePlanes {
-    counttomark /N ED
-    /CompA ED dup /CompB ED
-    CompA isAmb {
+  counttomark /N ED
+  /CompA ED dup /CompB ED
+  CompA isAmb {
 %    \end{macrocode}
 % first component is ambiguous
 %    \begin{macrocode}
-	amb dup CompA
-    } {
-	CompB isAmb {
+    amb dup CompA
+  } {
+    CompB isAmb {
 %    \end{macrocode}
 % only second component is ambiguous
 %    \begin{macrocode}
-	    1 CompA GetPlaneCenter (C) CompB GetPlaneCenter @ABDist
-	    (N) CompA GetPlaneCenter (C) CompB GetPlaneCenter @ABDist
-	} {
+      1 CompA GetPlaneCenter (C) CompB GetPlaneCenter @ABDist
+      (N) CompA GetPlaneCenter (C) CompB GetPlaneCenter @ABDist
+    } {
 %    \end{macrocode}
 % none is ambiguous
 %    \begin{macrocode}
-	    1 CompA GetPlaneCenter 1 CompB GetPlaneCenter (N) CompB GetPlaneCenter true OrderNodes exch pop
-	    (N) CompA GetPlaneCenter 1 CompB GetPlaneCenter (N) CompB GetPlaneCenter true OrderNodes exch pop % dist1 distN
-	} ifelse
-	le { desc } { asc } ifelse dup CompA
+      1 CompA GetPlaneCenter 1 CompB GetPlaneCenter (N) CompB GetPlaneCenter true OrderNodes exch pop
+      (N) CompA GetPlaneCenter 1 CompB GetPlaneCenter (N) CompB GetPlaneCenter true OrderNodes exch pop % dist1 distN
     } ifelse
-    counttomark 2 roll
-    2 1 N {
-	/i ED exch /CompB ED %
-	CompB isAmb not {
-	    dup desc eq { 1 } { dup amb eq { (C) }{ (N) } ifelse } ifelse CompA GetPlaneCenter
-	    1 CompB GetPlaneCenter
-	    (N) CompB GetPlaneCenter false OrderNodes dup dup
+    le { desc } { asc } ifelse dup CompA
+  } ifelse
+  counttomark 2 roll
+  2 1 N {
+    /i ED exch /CompB ED %
+    CompB isAmb not {
+      dup desc eq { 1 } { dup amb eq { (C) }{ (N) } ifelse } ifelse CompA GetPlaneCenter
+      1 CompB GetPlaneCenter
+      (N) CompB GetPlaneCenter false OrderNodes dup dup
 %    \end{macrocode}
 % check if we have a NodeIfc
 %    \begin{macrocode}
-	    4 -1 roll CompA exch 5 -1 roll CompB exch
-	    i 2 eq {
+      4 -1 roll CompA exch 5 -1 roll CompB exch
+      i 2 eq {
 %    \end{macrocode}
 % check also the first plane
 %    \begin{macrocode}
-		4 copy 4 2 roll AdjustRelRot
-	    } if
-	    AdjustRelRot
-	} {
-	    pop amb dup
-	} ifelse
-        CompB /CompA CompB def
-	counttomark 2 roll
-    } for pop
+        4 copy 4 2 roll AdjustRelRot
+      } if
+      AdjustRelRot
+    } {
+      pop amb dup
+    } ifelse
+    CompB /CompA CompB def
+    counttomark 2 roll
+  } for pop
 } bind def
 %    \end{macrocode}
 % \end{macro}
@@ -7898,21 +7903,21 @@ tx@OptexpDict begin
 % CompA desc/asc CompB desc/asc
 %    \begin{macrocode}
 /AdjustRelRot {
-    exch dup cvn load /adjustRel known {
-	dup dup 4 2 roll isAmb { exch pop (C)}{ desc eq {(N)}{1} ifelse } ifelse exch GetPlaneCenter 5 3 roll
-	exch dup 3 1 roll isAmb { pop (C)}{ desc eq {1}{(N)} ifelse } ifelse exch GetPlaneCenter
-	@ABVect exch atan exch
-	cvn load begin
-	    adjustRel {
-		matrix rotate CompMtrx matrix concatmatrix /CompMtrx ED
-		/adjustRel false def
-	    } {
-		pop
-	    } ifelse
-	end
-    } {
-	pop pop pop pop
-    } ifelse
+  exch dup cvn load /adjustRel known {
+    dup dup 4 2 roll isAmb { exch pop (C)}{ desc eq {(N)}{1} ifelse } ifelse exch GetPlaneCenter 5 3 roll
+    exch dup 3 1 roll isAmb { pop (C)}{ desc eq {1}{(N)} ifelse } ifelse exch GetPlaneCenter
+    @ABVect exch atan exch
+    cvn load begin
+      adjustRel {
+        matrix rotate CompMtrx matrix concatmatrix /CompMtrx ED
+        /adjustRel false def
+      } {
+        pop
+      } ifelse
+    end
+  } {
+    pop pop pop pop
+  } ifelse
 } bind def
 %    \end{macrocode}
 % \end{macro}
@@ -7923,90 +7928,90 @@ tx@OptexpDict begin
 % but draw determines if the connection to this interface is drawn
 %    \begin{macrocode}
 /PushAllPlanesOnStack {
-    counttomark 2 div cvi /numComp ED
-    1 1 numComp {
+  counttomark 2 div cvi /numComp ED
+  1 1 numComp {
 %    \end{macrocode}
 % iterate over all components
 %    \begin{macrocode}
-	/last false def
-	/first false def
-	dup 1 eq {
-	    /first true def pop beaminsidefirst
-	} {
-	    numComp eq {
-		beaminsidelast
-		/last true def
-	    } {
-		beamInside
-	    } ifelse
-	} ifelse /drawInside ED
-	load dup /ambiguous get {% (amb) ==
-	    /name get drawInside [ 3 1 roll ]
-	    counttomark 1 roll pop
-	} {
-	    begin % comp dict
-		desc eq {
-		    N N -1 1 1
-		} {
-		    1 1 1 N N
-		} ifelse % start start inc stop stop
-		first startInside not and {
+    /last false def
+    /first false def
+    dup 1 eq {
+      /first true def pop beaminsidefirst
+    } {
+      numComp eq {
+        beaminsidelast
+        /last true def
+      } {
+        beamInside
+      } ifelse
+    } ifelse /drawInside ED
+    load dup /ambiguous get {% (amb) ==
+      /name get drawInside [ 3 1 roll ]
+      counttomark 1 roll pop
+    } {
+      begin % comp dict
+        desc eq {
+          N N -1 1 1
+        } {
+          1 1 1 N N
+        } ifelse % start start inc stop stop
+        first startInside not and {
 %    \end{macrocode}
 % first comp and we do not start inside
 %    \begin{macrocode}
-		    5 -2 roll % inc stop stop start start
-		    pop pop % inc stop stop
-		    2 copy 5 2 roll
-		} if
-		5 1 roll % stop start start inc stop
-		{
+          5 -2 roll % inc stop stop start start
+          pop pop % inc stop stop
+          2 copy 5 2 roll
+        } if
+        5 1 roll % stop start start inc stop
+        {
 %    \end{macrocode}
 % iterate over all planes
 %    \begin{macrocode}
-		    3 1 roll 2 copy 5 -1 roll % stop start stop start i
-		    dup 3 1 roll % stop start stop i start i
-		    eq first not and {
+          3 1 roll 2 copy 5 -1 roll % stop start stop start i
+          dup 3 1 roll % stop start stop i start i
+          eq first not and {
 %    \end{macrocode}
 % always draw the line to the first plane of a component
 %    \begin{macrocode}
-			true
-		    } {
+            true
+          } {
 %    \end{macrocode}
 % the other beams depend on some options
 %    \begin{macrocode}
-			drawInside
-		    } ifelse % on stack: stop i draw?
-		    exch dup 4 -1 roll eq connectplanes or {% draw i i stop
+            drawInside
+          } ifelse % on stack: stop i draw?
+          exch dup 4 -1 roll eq connectplanes or {% draw i i stop
 %    \end{macrocode}
 % after the last component plane we have always air
 %    \begin{macrocode}
-			1 
-		    }{
+            1 
+          }{
 %    \end{macrocode}
 % otherwise the respective refractive index of the component
 %    \begin{macrocode}
-			nforce 0 eq { n } {nforce} ifelse
-		    }ifelse % draw i refrIndex
-		    exch dup N eq {
-			pop (N)
-		    } {
-			3 string cvs
-		    } ifelse exch
-		    3 1 roll name % refrIndex draw (i) name
-		    4 1 roll % name refrIndex draw (i)
-		    dup PlaneName load /mode get % name refrIndex draw i mode
-		    3 1 roll 5 1 roll % i name refrIndex mode draw
-		    [ 6 1 roll ] cvx counttomark 1 roll
-		    last {
-			custombeam stopInside not and
-			custombeam not beaminsidelast not and or {
-			    exit
-			} if
-		    } if
-		} for pop pop
-	    end
-	} ifelse
-    } for
+            nforce 0 eq { n } {nforce} ifelse
+          } ifelse % draw i refrIndex
+          exch dup N eq {
+            pop (N)
+          } {
+            3 string cvs
+          } ifelse exch
+          3 1 roll name % refrIndex draw (i) name
+          4 1 roll % name refrIndex draw (i)
+          dup PlaneName load /mode get % name refrIndex draw i mode
+          3 1 roll 5 1 roll % i name refrIndex mode draw
+          [ 6 1 roll ] cvx counttomark 1 roll
+          last {
+            custombeam stopInside not and
+            custombeam not beaminsidelast not and or {
+              exit
+            } if
+          } if
+        } for pop pop
+      end
+    } ifelse
+  } for
 } bind def
 %    \end{macrocode}
 % \end{macro}
@@ -8017,12 +8022,12 @@ tx@OptexpDict begin
 % PlaneNum -> (P@PlaneNum)
 %    \begin{macrocode}
 /PlaneName {
-    dup N eq {
-	pop (N)
-    } {
-	3 string cvs
-    } ifelse
-    (P@) exch strcat
+  dup N eq {
+    pop (N)
+  } {
+    3 string cvs
+  } ifelse
+  (P@) exch strcat
 } bind def
 %    \end{macrocode}
 % \end{macro}
@@ -8050,10 +8055,10 @@ tx@OptexpDict begin
 % X\_in Y\_in X\_plane Y\_plane NormalVec -> X\_norm Y\_norm
 %    \begin{macrocode}
 /NormalVec {
-    neg exch 2 copy 6 2 roll SProd 0 gt {
-	-1 mul exch -1 mul exch
-    } if
-    NormalizeVec
+  neg exch 2 copy 6 2 roll SProd 0 gt {
+    -1 mul exch -1 mul exch
+  } if
+  NormalizeVec
 } bind def
 %    \end{macrocode}
 % \end{macro}
@@ -8103,26 +8108,32 @@ tx@OptexpDict begin
 % X Y NormalizeVec X' Y' (with $X^2 + Y^2 = 1$)
 %    \begin{macrocode}
 /NormalizeVec {
-    2 copy
-    tx@Dict begin
-	Pyth
-    end
-    dup 3 1 roll div 3 1 roll div exch
+  2 copy
+  tx@Dict begin
+    Pyth
+  end
+  dup 3 1 roll div 3 1 roll div exch
 } bind def
 %    \end{macrocode}
 % \end{macro}
 % 
 % \begin{macro}{@ABVect}
+% Shorthand definition for \PSvar{ABVect} procedure of the \nxLpackage{pst-eucl} package.
 %    \begin{macrocode}
 /@ABVect { tx@EcldDict begin ABVect end } bind def
 %    \end{macrocode}
 % \end{macro}
 %
+% Shorthand definition for \PSvar{ABDist} procedure of the \nxLpackage{pst-eucl} package.
 % \begin{macro}{@ABDist}
 %    \begin{macrocode}
 /@ABDist { tx@EcldDict begin ABDist end } bind def
 %    \end{macrocode}
 % \end{macro}
+%
+% \begin{macro}{@InterLines}
+%    \begin{macrocode}
+/@InterLines { [ 0 0 11 3 roll tx@EcldDict begin InterLines end counttomark 4 eq { 5 2 roll pop pop pop } { 3 -1 roll pop } ifelse } bind def
 % 
 % \begin{macro}{@GetCenter}
 %    \begin{macrocode}
@@ -8136,22 +8147,22 @@ tx@OptexpDict begin
 % X\_in Y\_in X\_norm Y\_norm n1 n2 RefractVec -> X\_out Y\_out
 %    \begin{macrocode}
 /RefractVec {
-    div /n ED 4 2 roll NormalizeVec /Yin ED /Xin ED /Ynorm ED /Xnorm ED
-    n 1 eq {
-	Xin Yin
-    }{
-	/costheta1 Xnorm Ynorm Xin neg Yin neg SProd def
-	1 n dup mul 1 costheta1 dup mul sub mul sub
-	dup 0 lt {
+  div /n ED 4 2 roll NormalizeVec /Yin ED /Xin ED /Ynorm ED /Xnorm ED
+  n 1 eq {
+    Xin Yin
+  }{
+    /costheta1 Xnorm Ynorm Xin neg Yin neg SProd def
+    1 n dup mul 1 costheta1 dup mul sub mul sub
+    dup 0 lt {
 %    \end{macrocode}
 % would be total internal reflection, stop
 %    \begin{macrocode}
-	    pop 0 0
-	} {
-	    sqrt /costheta2 ED
-	    n Xin mul n Yin mul n costheta1 mul costheta2 sub dup Xnorm mul exch Ynorm mul VecAdd
-	} ifelse
+      pop 0 0
+    } {
+      sqrt /costheta2 ED
+      n Xin mul n Yin mul n costheta1 mul costheta2 sub dup Xnorm mul exch Ynorm mul VecAdd
     } ifelse
+  } ifelse
 } bind def
 %    \end{macrocode}
 % \end{macro}
@@ -8160,9 +8171,9 @@ tx@OptexpDict begin
 % X\_in Y\_in X\_norm Y\_norm ReflectVec -> X\_out Y\_out
 %    \begin{macrocode}
 /ReflectVec {
-    /Ynorm ED /Xnorm ED NormalizeVec /Yin ED /Xin ED
-    /costheta1 Xnorm Ynorm Xin neg Yin neg SProd def
-    Xin Yin 2 costheta1 mul dup Xnorm mul exch Ynorm mul VecAdd
+  /Ynorm ED /Xnorm ED NormalizeVec /Yin ED /Xin ED
+  /costheta1 Xnorm Ynorm Xin neg Yin neg SProd def
+  Xin Yin 2 costheta1 mul dup Xnorm mul exch Ynorm mul VecAdd
 } bind def
 %    \end{macrocode}
 % \end{macro}
@@ -8171,46 +8182,46 @@ tx@OptexpDict begin
 % X\_p Y\_p X\_r Y\_r trans/refl n2 X0 Y0 X\_in Y\_in CurvedInterface -> X' Y' X\_out Y\_out
 %    \begin{macrocode}
 /CurvedInterface {
-    /Yin ED /Xin ED /Y0 ED /X0 ED /n2 ED /mode ED
-    2 copy /Yr ED /Xr ED 
-    tx@Dict begin Pyth end /radius ED /Yp ED /Xp ED
-    /X0n X0 Xp sub def /Y0n Y0 Yp sub def
-    n2 1 gt { /n2 n2 nmul mul nadd add def } if
-    tx@EcldDict begin
-	X0n Y0n 2 copy 2 copy Xin 3 -1 roll add Yin 3 -1 roll add
-	2 copy 6 2 roll EqDr radius InterLineCircle
-    end
-    4 copy
-    0 eq 3 {exch 0 eq and} repeat {
+  /Yin ED /Xin ED /Y0 ED /X0 ED /n2 ED /mode ED
+  2 copy /Yr ED /Xr ED 
+  tx@Dict begin Pyth end /radius ED /Yp ED /Xp ED
+  /X0n X0 Xp sub def /Y0n Y0 Yp sub def
+  n2 1 gt { /n2 n2 nmul mul nadd add def } if
+  tx@EcldDict begin
+    X0n Y0n 2 copy 2 copy Xin 3 -1 roll add Yin 3 -1 roll add
+    2 copy 6 2 roll EqDr radius InterLineCircle
+  end
+  4 copy
+  0 eq 3 {exch 0 eq and} repeat {
 %    \end{macrocode}
 % all coordinates are zero, missed circle, stop
 %    \begin{macrocode}
-	PlaneNum PN sub 4 add {pop} repeat
-	exit
-    } if
-    4 copy
+    PlaneNum PN sub 4 add {pop} repeat
+    exit
+  } if
+  4 copy
 %    \end{macrocode}
 % which of the two intersection points to take? 
 %    \begin{macrocode}
-    Xr neg Yr neg 2 copy
-    8 -2 roll @ABDist %dist from first point
-    5 1 roll @ABDist % dist1 dist2
-    gt {
+  Xr neg Yr neg 2 copy
+  8 -2 roll @ABDist %dist from first point
+  5 1 roll @ABDist % dist1 dist2
+  gt {
 %    \end{macrocode}
 % take second point
 %    \begin{macrocode}
-	4 2 roll
-    } if pop pop
-    Xp Yp VecAdd
-    2 copy Xp Yp 4 2 roll @ABVect exch neg Xin Yin 4 2 roll NormalVec Xin Yin 4 2 roll
+    4 2 roll
+  } if pop pop
+  Xp Yp VecAdd
+  2 copy Xp Yp 4 2 roll @ABVect exch neg Xin Yin 4 2 roll NormalVec Xin Yin 4 2 roll
 %    \end{macrocode}
 % on stack: crossing point, in vector, and normal vector
 %    \begin{macrocode}
-    mode trans eq {
-	n1 n2 RefractVec
-    } {
-	ReflectVec
-    } ifelse /n1 n2 def
+  mode trans eq {
+    n1 n2 RefractVec
+  } {
+    ReflectVec
+  } ifelse /n1 n2 def
 } bind def
 %    \end{macrocode}
 % \end{macro}
@@ -8219,17 +8230,15 @@ tx@OptexpDict begin
 % Xp Yp dXp dYp trans/refl n2 X0 Y0 X\_in Y\_in PlainInterface -> X' Y' X\_out Y\_out
 %    \begin{macrocode}
 /PlainInterface {%
-    /Yin ED /Xin ED /Y0 ED /X0 ED /n2 ED /mode ED /dYp ED /dXp ED /Yp ED /Xp ED
-    n2 1 gt { /n2 n2 nmul mul nadd add def } if
-    tx@EcldDict begin
-	Xp Yp Xp dXp add Yp dYp add X0 Y0 X0 Xin add Y0 Yin add InterLines Xin Yin
-	Xin Yin dXp dYp NormalVec
-    end
-    mode trans eq {
-	n1 n2 RefractVec
-    } {
-	ReflectVec
-    } ifelse /n1 n2 def
+  /Yin ED /Xin ED /Y0 ED /X0 ED /n2 ED /mode ED /dYp ED /dXp ED /Yp ED /Xp ED
+  n2 1 gt { /n2 n2 nmul mul nadd add def } if
+  Xp Yp Xp dXp add Yp dYp add X0 Y0 X0 Xin add Y0 Yin add @InterLines Xin Yin
+  Xin Yin dXp dYp NormalVec
+  mode trans eq {%
+    n1 n2 RefractVec
+  } {%
+    ReflectVec
+  } ifelse /n1 n2 def
 } bind def
 %    \end{macrocode}
 % \end{macro}
@@ -8243,7 +8252,7 @@ tx@OptexpDict begin
     6 2 roll @ABVect neg exch% Xt1 Yt1 Xt2 Yt2 Xt1 Yt1 Xt2 Yt2 -(Yt2-Yp) (Xt2-Xp) -(Yt1-Yp) (Xt1-Xp)
     8 -2 roll VecAdd 10 2 roll % Xt1-(Yt1-Yp) Yt1+(Xt1-Xp) Xt1 Yt1 Xt2 Yt2 Xt2 Yt2 -(Yt2-Yp) (Xt2-Xp)
     VecAdd % Xt1-(Yt1-Yp) Yt1+(Xt1-Xp) Xt1 Yt1 Xt2 Yt2 Xt2-(Yt2-Yp) Yt2+(Xt2-Xp)
-    tx@EcldDict begin InterLines end
+    @InterLines
 } bind def
 %    \end{macrocode}
 % \end{macro}
@@ -8252,40 +8261,40 @@ tx@OptexpDict begin
 % {NodeB} CompA -> shortest distance, planenum
 %    \begin{macrocode}
 /NearestNodeTmp {
-    (N@) exch strcat exch /NodeB ED
-    /dist -1 def
-    1 {% name and counter on stack
-	2 copy % name cnt name cnt 
-	3 string cvs strcat dup % name cnt (namecnt) (namecnt)
-	tx@NodeDict exch known {%
-	    @GetCenter 2 copy
-	    NodeB @ABDist % name cnt X Y dist
-	    dist 0 lt {% init /dist
-		/dist ED
-		ToVec /node ED
-	    } {
-		dup dist lt {
-		    /dist ED
-		    ToVec /node ED
-		} {
-		    pop pop pop
-		} ifelse
-	    } ifelse
-	    1 add % increment counter
-	} {% the last node
-	    pop pop (N) strcat
-	    @GetCenter 2 copy
-	    NodeB @ABDist
-	    dup dist lt {
-		/dist ED
-		ToVec /node ED
-	    } {
-		pop pop pop
-	    } ifelse
-	    exit
-	} ifelse
-    } loop
-    dist /node load
+  (N@) exch strcat exch /NodeB ED
+  /dist -1 def
+  1 {% name and counter on stack
+    2 copy % name cnt name cnt 
+    3 string cvs strcat dup % name cnt (namecnt) (namecnt)
+    tx@NodeDict exch known {%
+      @GetCenter 2 copy
+      NodeB @ABDist % name cnt X Y dist
+      dist 0 lt {% init /dist
+        /dist ED
+        ToVec /node ED
+      } {
+        dup dist lt {
+          /dist ED
+          ToVec /node ED
+        } {
+          pop pop pop
+        } ifelse
+      } ifelse
+      1 add % increment counter
+    } {% the last node
+      pop pop (N) strcat
+      @GetCenter 2 copy
+      NodeB @ABDist
+      dup dist lt {
+        /dist ED
+        ToVec /node ED
+      } {
+        pop pop pop
+      } ifelse
+      exit
+    } ifelse
+  } loop
+  dist /node load
 } bind def
 %    \end{macrocode}
 % \end{macro}
@@ -8294,23 +8303,23 @@ tx@OptexpDict begin
 % CompA/NodeA CombB/NodeB -> Coordinates of nodeA or the node of CompA which is nearest to nodeB
 %    \begin{macrocode}
 /NearestNode {
-    dup xcheck not { nametostring } if /CompB ED
-    dup xcheck not {% CompA
-	nametostring /CompA ED
-	/CompB load dup xcheck not {% CompB
-	    /mindist -1 def
-	    [ exch false GetInternalNodeNames ] 
-	    { @GetCenter ToVec
-		CompA NearestNodeTmp 
-		exch dup mindist gt mindist 0 ge and { pop pop }{ /mindist ED /minnodeA ED } ifelse
-	    } forall
-	    minnodeA
-	} {
-	    CompA NearestNodeTmp exch pop exec
-	} ifelse
-    } {% else, it is a node and we already have the appropriate coordinates on the stack
-	exec
+  dup xcheck not { nametostring } if /CompB ED
+  dup xcheck not {% CompA
+    nametostring /CompA ED
+    /CompB load dup xcheck not {% CompB
+      /mindist -1 def
+      [ exch false GetInternalNodeNames ] 
+      { @GetCenter ToVec
+        CompA NearestNodeTmp 
+        exch dup mindist gt mindist 0 ge and { pop pop }{ /mindist ED /minnodeA ED } ifelse
+      } forall
+      minnodeA
+    } {
+      CompA NearestNodeTmp exch pop exec
     } ifelse
+  } {% else, it is a node and we already have the appropriate coordinates on the stack
+    exec
+  } ifelse
 } bind def
 %    \end{macrocode}
 % \end{macro}
@@ -8321,38 +8330,38 @@ tx@OptexpDict begin
 % $@@X_B$ $@@Y_B$ $@@X_A$ $@@Y_A$ A B $\quad\longmapsto\quad$ angleA
 %    \begin{macrocode}
 /RelFiberAngle {
-    dup xcheck not { nametostring } if /CompB ED
-    dup xcheck not { nametostring } if /CompA ED
-    /CompA load xcheck {
-	/CompB load xcheck {
+  dup xcheck not { nametostring } if /CompB ED
+  dup xcheck not { nametostring } if /CompA ED
+  /CompA load xcheck {
+    /CompB load xcheck {
 %    \end{macrocode}
 %  both parameters are nodes, so the angle is that of the direct connection line.
 %    \begin{macrocode}
-	    @ABVect exch atan
-	} {
+      @ABVect exch atan
+    } {
 %    \end{macrocode}
 % B is a component, and A is a node: the angle at node A is calculated through the reference nodes of component B
 %    \begin{macrocode}
-            4 copy @ABVect 6 2 roll pop pop % C-N C
-	    (N@) CompB strcat dup dup (Center) strcat @GetCenter 6 -2 roll 4 2 roll @ABVect% C-N name name C-Center
-            4 2 roll % C-N C-Center name name
-            (A) strcat exch (B) strcat
-	    @GetCenter 3 -1 roll @GetCenter @ABVect 2 copy exch atan % C-N CenterB-B refB-refA angle
-            7 3 roll 2 copy % refB-refA angle C-N C-Center C-Center
-            9 -2 roll %  angle C-N C-Center C-Center refB-refA
-            SProd 0 gt 5 1 roll SProd 0 gt xor { 180 add } if
-	} ifelse
-    } {
+      4 copy @ABVect 6 2 roll pop pop % C-N C
+      (N@) CompB strcat dup dup (Center) strcat @GetCenter 6 -2 roll 4 2 roll @ABVect% C-N name name C-Center
+      4 2 roll % C-N C-Center name name
+      (A) strcat exch (B) strcat
+      @GetCenter 3 -1 roll @GetCenter @ABVect 2 copy exch atan % C-N CenterB-B refB-refA angle
+      7 3 roll 2 copy % refB-refA angle C-N C-Center C-Center
+      9 -2 roll %  angle C-N C-Center C-Center refB-refA
+      SProd 0 gt 5 1 roll SProd 0 gt xor { 180 add } if
+    } ifelse
+  } {
 %    \end{macrocode}
 % A is a component, B is insignificant
 %    \begin{macrocode}
-        4 2 roll pop pop
-	(N@) CompA strcat dup dup (Center) strcat @GetCenter 
-        6 -2 roll @ABVect 4 2 roll
-        (TrefA) strcat exch (TrefB) strcat
-	@GetCenter 3 -1 roll @GetCenter @ABVect 2 copy exch atan
-	5 1 roll SProd 0 gt { 180 add } if
-    } ifelse
+    4 2 roll pop pop
+    (N@) CompA strcat dup dup (Center) strcat @GetCenter 
+    6 -2 roll @ABVect 4 2 roll
+    (TrefA) strcat exch (TrefB) strcat
+    @GetCenter 3 -1 roll @GetCenter @ABVect 2 copy exch atan
+    5 1 roll SProd 0 gt { 180 add } if
+  } ifelse
 } bind def
 %    \end{macrocode}
 % \end{macro}
@@ -8382,11 +8391,11 @@ tx@OptexpDict begin
 % [ A [ B -> [ B A
 %    \begin{macrocode}
 /rearrangeSingleBeamPoints {
-    counttomark dup 2 add -1 roll pop % [ A B cnt
-    dup counttomark 2 sub eq not { % [ A B cnt cnt!=counttomark % not the first beam
-	4 1 roll pop pop pop 3 sub % [ A B cnt-3
-    } if
-    counttomark 1 sub exch roll
+  counttomark dup 2 add -1 roll pop % [ A B cnt
+  dup counttomark 2 sub eq not { % [ A B cnt cnt!=counttomark % not the first beam
+    4 1 roll pop pop pop 3 sub % [ A B cnt-3
+  } if
+  counttomark 1 sub exch roll
 } bind def
 %    \end{macrocode}
 % \end{macro}
@@ -8397,30 +8406,30 @@ tx@OptexpDict begin
 %[ A [ B [ C [ D -> [ C A [ D B
 %    \begin{macrocode}
 /rearrangeWideBeamPoints {
-    counttomark 1 add -1 roll pop % [ A [ B [ C D
-    counttomark /t ED t 1 add -1 roll pop % [ A [ B C D
-    counttomark t eq { % B is empty, first beam
-	counttomark 1 add 1 [ 3 1 roll roll % [ C [ D
-    } {
-	counttomark 1 add -1 roll pop % [ A B C D
-	counttomark t sub /@rest ED
+  counttomark 1 add -1 roll pop % [ A [ B [ C D
+  counttomark /t ED t 1 add -1 roll pop % [ A [ B C D
+  counttomark t eq { % B is empty, first beam
+    counttomark 1 add 1 [ 3 1 roll roll % [ C [ D
+  } {
+    counttomark 1 add -1 roll pop % [ A B C D
+    counttomark t sub /@rest ED
 %    \end{macrocode}
 % check if first point of C/D is the same as last point of A/B
 % due to symmetry, need to check only D and B
 %    \begin{macrocode}
-	t @rest 2 idiv add -3 roll 6 copy pop 3 -1 roll pop
-	3 -1 roll sub abs 1e-5 lt 3 1 roll sub abs 1e-5 lt and { % same points
-	    t @rest 2 idiv add 3 roll	
-	    pop pop pop t 2 idiv -3 roll pop pop pop
-	    /t t 6 sub def
-	} {
-	    t @rest 2 idiv add 3 roll
-	} ifelse
-	t t 2 idiv roll % [ A B D C
-	counttomark t 2 idiv roll % [ C A B D
-	counttomark 2 idiv t 2 idiv roll % [ C A D B
-	counttomark 2 idiv 1 add 1 [ 3 1 roll roll
+    t @rest 2 idiv add -3 roll 6 copy pop 3 -1 roll pop
+    3 -1 roll sub abs 1e-5 lt 3 1 roll sub abs 1e-5 lt and { % same points
+      t @rest 2 idiv add 3 roll	
+      pop pop pop t 2 idiv -3 roll pop pop pop
+      /t t 6 sub def
+    } {
+      t @rest 2 idiv add 3 roll
     } ifelse
+    t t 2 idiv roll % [ A B D C
+    counttomark t 2 idiv roll % [ C A B D
+    counttomark 2 idiv t 2 idiv roll % [ C A D B
+    counttomark 2 idiv 1 add 1 [ 3 1 roll roll
+  } ifelse
 } bind def
 %    \end{macrocode}
 % \end{macro}
