@@ -43,8 +43,6 @@
 \usepackage{pst-tree}
 \newcommand{\poeTR}[1]{\TR{\ttfamily\color{DOrange}#1}}
 \usepackage{pst-optexp}
-\let\verPstOptExp\fileversion
-\let\datePstOptExp\filedate
 \usepackage{pst-circ}
 \usepackage[makeindex]{splitidx}
 \newindex[Code Index]{idx}
@@ -91,7 +89,7 @@
     xleftmargin=1em,
     rulecolor=\color{black!20},
     texcsstyle = [20]\color{DOrange!80!black},
-    moretexcs = [20]{lens, optbox, oenode, oenodeIn, oenodeExt, oenodeOut, oenodeRefA, oenodeRefB, oenodeTrefA, oenodeTrefB, optplate, optretplate, pinhole, crystal,optdetector, optdiode, doveprism, polarization, mirror, beamsplitter, optgrid, optprism, rightangleprism, pentaprism, optdipole, optripole, optfiber, optamp, optmzm, optfilter, polcontrol, optisolator, optswitch, fiberdelayline, optfiberpolarizer, fibercollimator, optcoupler, wdmcoupler, wdmsplitter, drawbeam, drawwidebeam, drawfiber, custombeam, frontlayer, backlayer, newOptexpDipole, newOptexpDipoleNolabel, newOptexpTripole, newOptexpFiberDipole},
+    moretexcs = [20]{lens, optbox, oenode, oenodeIn, oenodeExt, oenodeOut, oenodeRefA, oenodeRefB, oenodeTrefA, oenodeTrefB, optplate, optretplate, pinhole, crystal,optdetector, optdiode, doveprism, polarization, mirror, beamsplitter, optgrating, optprism, rightangleprism, pentaprism, optdipole, optripole, optfiber, optamp, optmzm, optfilter, polcontrol, optisolator, optswitch, fiberdelayline, optfiberpolarizer, fibercollimator, optcoupler, wdmcoupler, wdmsplitter, drawbeam, drawwidebeam, drawfiber, custombeam, frontlayer, backlayer, newOptexpDipole, newOptexpDipoleNolabel, newOptexpTripole, newOptexpFiberDipole},
     explpreset={escapeinside={*}{*}, pos=l,width=-99pt,overhang=0pt,hsep=5mm, varwidth,vsep=\bigskipamount,rframe={}},
 }
 \colorlet{sectioncolor}{DOrange}
@@ -239,7 +237,7 @@
 \EnableCrossrefs         
 \CodelineIndex
 \RecordChanges
-\OnlyDescription
+%%\OnlyDescription
 \begin{document}
   \DocInput{pst-optexp.dtx}
   \begin{otherlanguage}{english}
@@ -269,11 +267,16 @@
 %   Right brace   \}     Tilde         \~}
 %
 %
-% \changes{v1.0}{2004/11/05}{Initial version}
+% \changes{v1.0}{2007/07/18}{first CTAN version}
+% \changes{v1.1}{2007/09/06}{Considerably enhanced labeling of the components.   Added new parameter labelref which specifies the reference coordinate   system for the label positioning and the rotation of the label. Default is   labelref=relgrav, the label point is rotated together with the   component, but the label text itself is not rotated.}
+% \changes{v1.1}{2007/09/06}{Parameter labelrelative is now obsolete, and
+%   replaced by labelref=relative. It will be removed in future versions.}
 %
 % \GetFileInfo{pst-optexp.dtx}
 %
-% \DoNotIndex{\newcommand,\newenvironment}
+% \DoNotIndex{\@}
+% \DoNotIndex{\newcommand,\newenvironment,\def,\edef,\let,\if,\ifx,\else,\fi,\@ifnextchar}
+% \DoNotIndex{\@wd,\@sz,\@ht}
 % 
 % \newif\ifGERMAN  \GERMANfalse
 % \newif\ifENGLISH \ENGLISHfalse
@@ -302,13 +305,13 @@
 % \makeatother
 % 
 % \ifGERMAN
-%   \title{\texttt{pst-optexp}\\ Ein PSTricks-Paket zum Zeichnen optischer Versuchsaufbauten\\ \small v.\verPstOptExp}
+%   \title{\texttt{pst-optexp}\\ Ein PSTricks-Paket zum Zeichnen optischer Versuchsaufbauten\\ \small v.\fileversion}
 % \fi
 % \ifENGLISH
-%   \title{\texttt{pst-optexp}\\ A PSTricks package to draw optical experimental setups\\ \small v.\verPstOptExp}
+%   \title{\texttt{pst-optexp}\\ A PSTricks package to draw optical experimental setups\\ \small v.\fileversion}
 % \fi
 % \author{Christoph Bersch}
-% \date{\datePstOptExp}
+% \date{\filedate}
 % \def\bgImage{\psset{unit=1.3}
 % \begin{pspicture}[showgrid=false](-0.2,0.1)(8.2,5.3)
 %   \pnode(0,3){M1}
@@ -1483,16 +1486,16 @@
 % \fi
 % \end{optionlist}
 % 
-% \subsection{Optical Grid}
+% \subsection{Optical Grating}
 % 
 % \begin{ltxsyntax}
-% \tripoledesc{optgrid}
+% \tripoledesc{optgrating}
 % \iffalse
 %<*ignore>
 % \fi
 \begin{LTXexample}
 \begin{pspicture}(3,2)
-  \optgrid[beam](0,2)(1.8,1.5)(0,0){grid}
+  \optgrating[beam](0,2)(1.8,1.5)(0,0){grating}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -1500,46 +1503,46 @@
 % \fi
 % \end{ltxsyntax}
 % \begin{optionlist}
-% \numitem[1]{optgridwidth} The width of the grating.
+% \numitem[1]{gratingwidth} The width of the grating.
 % 
-% \numitem[0.15]{optgridheight} This is the total height of the grating.
+% \numitem[0.15]{gratingheight} This is the total height of the grating.
 % 
-% \numitem[0.075]{optgriddepth} This is the modulation depth of the grating structure. The total height is unaffected by this value.
+% \numitem[0.075]{gratingdepth} This is the modulation depth of the grating structure. The total height is unaffected by this value.
 % \iffalse
 %<*ignore>
 % \fi
 \begin{LTXexample}
 \begin{pspicture}(3,2)
-  \optgrid[optgriddepth=0.05, 
-             beam](0,2)(1.8,1.5)(0,0){grid}
+  \optgrating[gratingdepth=0.05, 
+               beam](0,2)(1.8,1.5)(0,0){grating}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
 %</ignore>
 % \fi
 % 
-% \intitem[10]{optgridcount} The number of grating grooves.
+% \intitem[10]{gratingcount} The number of grating grooves.
 % \iffalse
 %<*ignore>
 % \fi
 \begin{LTXexample}
 \begin{pspicture}(3,2)
-  \optgrid[optgridcount=3, 
-             beam](0,2)(1.8,1.5)(0,0){grid}
+  \optgrating[gratingcount=3, 
+               beam](0,2)(1.8,1.5)(0,0){grating}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
 %</ignore>
 % \fi
 % 
-% \choitem[blazed]{optgridtype}{blazed, binary} Select between a \opt{binary} and a \opt{blazed} grating.
+% \choitem[blazed]{gratingtype}{blazed, binary} Select between a \opt{binary} and a \opt{blazed} grating.
 % \iffalse
 %<*ignore>
 % \fi
 \begin{LTXexample}
 \begin{pspicture}(3,2)
-  \optgrid[optgridtype=binary, 
-             beam](0,2)(1.8,1.5)(0,0){grid}
+  \optgrating[gratingtype=binary, 
+               beam](0,2)(1.8,1.5)(0,0){grating}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -1552,17 +1555,17 @@
 % \fi
 \begin{LTXexample}
 \begin{pspicture}(3,2)
-  \optgrid[reverse, beam](0,2)(1.8,1.5)(0,0){grid}
+  \optgrating[reverse, beam](0,2)(1.8,1.5)(0,0){grating}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
 %</ignore>
 % \fi
 % 
-% \optitem[0.7\nxLcs{pslinewidth}]{optgridlinewidth}{\prm{num} or \prm{dimen}} The linewidth of the
+% \optitem[0.7\nxLcs{pslinewidth}]{gratinglinewidth}{\prm{num} or \prm{dimen}} The linewidth of the
 % grating. This could be defined also with the generic \opt{linewidth} option,
-% possibly inside the \opt{OptComp} style. But using \opt{optgridlinewidth} allows
-% to globally change the linewidth of all \nxLcs{optgrid} objects.
+% possibly inside the \opt{OptComp} style. But using \opt{gratinglinewidth} allows
+% to globally change the linewidth of all \nxLcs{optgrating} objects.
 % \end{optionlist}
 % 
 % \subsection{Prism}\label{sec:prism}
@@ -2904,10 +2907,10 @@
 \newpsstyle{Beam}{linewidth=2\pslinewidth, linecolor=red!90!black}
 \begin{optexp}
   \optbox[optboxwidth=2, labeloffset=0, endbox](Grat)(LOut){diode laser}
-  \mirror[variable](Grid)(Mvar)(Grid){M$_\mathrm{var}$}
+  \mirror[variable](Grat)(Mvar)(Grat){M$_\mathrm{var}$}
   \optretplate[position=0.3, labeloffset=0.8]%
     (LOut)(Grat){$\nicefrac{\lambda}{4}$}
-  \optgrid(LOut)(Grat)(Out){grating}
+  \optgrating(LOut)(Grat)(Out){grating}
   \drawbeam[arrows=->]{1}{3}{4}{(Out)}
   \drawbeam{2}{4}
 \end{optexp}
@@ -3245,8 +3248,8 @@
 \def\poe@str@mirrortype@piezo{piezo}
 \def\poe@str@mirrortype@plain{plain}
 \def\poe@str@mirrortype@extended{extended}
-\def\poe@str@optgridtype@blazed{blazed}
-\def\poe@str@optgridtype@binary{binary}
+\def\poe@str@gratingtype@blazed{blazed}
+\def\poe@str@gratingtype@binary{binary}
 \def\poe@str@labelref@relative{relative}
 \def\poe@str@labelref@relgrav{relgrav}
 \def\poe@str@labelref@global{global}
@@ -3606,22 +3609,48 @@
   variable=false
 }%
 %    \end{macrocode}
-% Grid
+% Grating \changes{v3.0}{}{Renamed options \opt{optgrid*} to \opt{grating*}. The
+%   old options are still valid, but give a warning. This was a terminological
+%   error from the beginning.}
 %    \begin{macrocode}
-\define@key[psset]{optexp}{optgridcount}{\pst@checknum{#1}\poe@key@optgridcount}
-\define@key[psset]{optexp}{optgridwidth}{\pst@checknum{#1}\poe@key@optgridwidth}
-\define@key[psset]{optexp}{optgridheight}{\pst@checknum{#1}\poe@key@optgridheight}
-\define@choicekey*[psset]{optexp}{optgridtype}[\val\nr]{binary,blazed}{\edef\poe@key@optgridtype{#1}}%
-\define@key[psset]{optexp}{optgriddepth}{\pst@checknum{#1}\poe@key@optgriddepth}
-\define@key[psset]{optexp}{optgridlinewidth}{\edef\poe@key@optgridlinewidth{#1}}
+\define@key[psset]{optexp}{optgridcount}{%
+  \pst@checknum{#1}\poe@key@gratingcount
+  \PackageWarning{pst-optexp}{Parameter optgridcount is deprecated, use gratingcount instead.}%
+}%
+\define@key[psset]{optexp}{optgridwidth}{%
+  \pst@checknum{#1}\poe@key@gratingwidth
+  \PackageWarning{pst-optexp}{Parameter optgridwidth is deprecated, use gratingwidth instead.}%
+}%
+\define@key[psset]{optexp}{optgridheight}{%
+  \pst@checknum{#1}\poe@key@gratingheight
+  \PackageWarning{pst-optexp}{Parameter optgridheight is deprecated, use gratingheight instead.}%
+}%
+\define@choicekey*[psset]{optexp}{optgridtype}[\val\nr]{binary,blazed}{%
+  \edef\poe@key@gratingtype{#1}%
+  \PackageWarning{pst-optexp}{Parameter optgridtype is deprecated, use gratingtype instead.}%
+}%
+\define@key[psset]{optexp}{optgriddepth}{%
+  \pst@checknum{#1}\poe@key@gratingdepth
+  \PackageWarning{pst-optexp}{Parameter optgriddepth is deprecated, use gratingdepth instead.}%
+}%
+\define@key[psset]{optexp}{optgridlinewidth}{%
+  \edef\poe@key@gratinglinewidth{#1}%
+  \PackageWarning{pst-optexp}{Parameter optgridlinewidth is deprecated, use gratinglinewidth instead.}%
+}%
+\define@key[psset]{optexp}{gratingcount}{\pst@checknum{#1}\poe@key@gratingcount}
+\define@key[psset]{optexp}{gratingwidth}{\pst@checknum{#1}\poe@key@gratingwidth}
+\define@key[psset]{optexp}{gratingheight}{\pst@checknum{#1}\poe@key@gratingheight}
+\define@choicekey*[psset]{optexp}{gratingtype}[\val\nr]{binary,blazed}{\edef\poe@key@gratingtype{#1}}%
+\define@key[psset]{optexp}{gratingdepth}{\pst@checknum{#1}\poe@key@gratingdepth}
+\define@key[psset]{optexp}{gratinglinewidth}{\edef\poe@key@gratinglinewidth{#1}}
 \define@boolkey[psset]{optexp}[poe@]{reverse}[true]{}
 \psset[optexp]{%
-  optgridcount=10,
-  optgridwidth=1,
-  optgridheight=0.15,
-  optgriddepth=0.075,
-  optgridtype=blazed,
-  optgridlinewidth=0.7\pslinewidth,
+  gratingcount=10,
+  gratingwidth=1,
+  gratingheight=0.15,
+  gratingdepth=0.075,
+  gratingtype=blazed,
+  gratinglinewidth=0.7\pslinewidth,
   reverse=false
 }%
 \define@key[psset]{optexp}{refractiveindex}{\pst@checknum{#1}\poe@key@n}
@@ -5234,7 +5263,7 @@
 %    \begin{macrocode}
 \newOptexpTripole{mirror}{}%
 \newOptexpTripole[ref@angle=-135]{beamsplitter}{}%
-\newOptexpTripole{optgrid}{}%
+\newOptexpTripole{optgrating}{}%
 \newOptexpTripole[ref@angle=-135]{pentaprism}{}%
 \newOptexpTripole[ref@angle=-135]{rightangleprism}{}%
 \newOptexpTripole[ref@angle=-135]{optprism}{}%
@@ -5928,39 +5957,39 @@
 %
 %
 %
-% \begin{macro}{\optgrid@ref}
+% \begin{macro}{\optgrating@ref}
 %    \begin{macrocode}
-\def\optgrid@ref{%
-  \pst@OptexpVerb{/@@y0 \poe@key@optgridheight\space def
-                  /@@x \poe@key@optgridwidth\space 0.5 mul def}%
+\def\optgrating@ref{%
+  \pst@OptexpVerb{/@@y0 \poe@key@gratingheight\space def
+                  /@@x \poe@key@gratingwidth\space 0.5 mul def}%
 }%
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\optgrid@comp}
+% \begin{macro}{\optgrating@comp}
 %    \begin{macrocode}
-\def\optgrid@comp{%
-  \edef\@cnt{\poe@key@optgridcount\space}%
-  \edef\@wd{\poe@key@optgridwidth\space 2 div }%
-  \edef\@ht{\poe@key@optgridheight\space}%
-  \edef\@dp{\poe@key@optgriddepth\space}%
-  \edef\@step{\poe@key@optgridwidth\space\@cnt div }%
-  \ifx\poe@key@optgridtype\poe@str@optgridtype@blazed
-    \pscustom[linewidth=\poe@key@optgridlinewidth, linejoin=1]{%
+\def\optgrating@comp{%
+  \edef\@cnt{\poe@key@gratingcount\space}%
+  \edef\@wd{\poe@key@gratingwidth\space 2 div }%
+  \edef\@ht{\poe@key@gratingheight\space}%
+  \edef\@dp{\poe@key@gratingdepth\space}%
+  \edef\@step{\poe@key@gratingwidth\space\@cnt div }%
+  \ifx\poe@key@gratingtype\poe@str@gratingtype@blazed
+    \pscustom[linewidth=\poe@key@gratinglinewidth, linejoin=1]{%
       \psline[liftpen=1](! \@wd \@dp)(! \@wd \@ht)%
                         (! \@wd neg \@ht)(! \@wd neg \@dp)
-      \multido{\i=0+1}{\poe@key@optgridcount}{%
+      \multido{\i=0+1}{\poe@key@gratingcount}{%
         \psline[liftpen=1](! \@wd neg \i\space \@step mul add \@dp)%
                           (! \@wd neg \i\space \ifpoe@reverse\else 1 add \fi \@step mul add 0)%
                           (! \@wd neg \i\space 1 add \@step mul add \@dp)%
       }%
       \closepath
     }%
-  \else\ifx\poe@key@optgridtype\poe@str@optgridtype@binary
-    \pscustom[linewidth=\poe@key@optgridlinewidth]{%
+  \else\ifx\poe@key@gratingtype\poe@str@gratingtype@binary
+    \pscustom[linewidth=\poe@key@gratinglinewidth]{%
       \psline[liftpen=1](! \@wd \@dp)(! \@wd \@ht)%
                         (! \@wd neg \@ht)(! \@wd neg \@dp)
-      \multido{\i=0+1}{\poe@key@optgridcount}{%
+      \multido{\i=0+1}{\poe@key@gratingcount}{%
         \psline[liftpen=1](! \@wd neg \i\space \@step mul add \@dp)%
                           (! \@wd neg \i\space \@step mul add 0)%
                           (! \@wd neg \i\space 0.5 add \@step mul add 0)%
@@ -8118,13 +8147,13 @@ tx@OptexpDict begin
 % \end{macro}
 % 
 % \begin{macro}{@ABVect}
-% Shorthand definition for \PSvar{ABVect} procedure of the \nxLpackage{pst-eucl} package.
+% Shorthand definition for \PSvar{ABVect} procedure of the \nxLPack{pst-eucl} package.
 %    \begin{macrocode}
 /@ABVect { tx@EcldDict begin ABVect end } bind def
 %    \end{macrocode}
 % \end{macro}
 %
-% Shorthand definition for \PSvar{ABDist} procedure of the \nxLpackage{pst-eucl} package.
+% Shorthand definition for \PSvar{ABDist} procedure of the \nxLPack{pst-eucl} package.
 % \begin{macro}{@ABDist}
 %    \begin{macrocode}
 /@ABDist { tx@EcldDict begin ABDist end } bind def

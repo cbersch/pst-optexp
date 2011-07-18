@@ -102,12 +102,11 @@ ctan : dist arch-tds
 
 clean :
 	$(RM) $(addprefix $(PACKAGE), \
-	      .dvi .log .aux .bbl .blg .idx .ind .ilg .gls .glg .glo) \
-	      $(addprefix $(basename $(EXAMPLE)), .ps .dvi .log .aux) \
-	      $(EXAMPLE) $(PDF_CONTAINER:.pdf=.ps) $(PDF_CONTAINER) \
-              CHANGES.pdf
+	      .dvi .log .aux .bbl .blg .out .tmp .toc .idx .ind .ilg .gls .glg .glo -idx.idx -idx.ilg -idx.ind -doc.idx -doc.ilg -doc.ind) \
+		$(addprefix $(PACKAGE)-DE, \
+	      .dvi .log .aux .bbl .blg .out .tmp .toc .idx .ind .ilg .gls .glg .glo -idx.idx -idx.ilg -idx.ind -doc.idx -doc.ilg -doc.ind)
 
 veryclean : clean
-	$(RM) $(PACKAGE).pdf pst-pdf-DE.pdf $(EXAMPLE:.tex=.pdf) CHANGES  
+	$(RM) $(PACKAGE).pdf $(PACKAGE)-DE.pdf $(PACKAGE).ps $(PACKAGE)-DE.ps  
 
 # EOF
