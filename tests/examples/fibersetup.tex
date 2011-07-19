@@ -1,0 +1,31 @@
+\documentclass{scrartcl}
+\usepackage[latin1]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[ngerman]{babel}
+\usepackage{lmodern}
+\usepackage{textcomp}
+\usepackage{amsmath}
+\usepackage{pst-optexp}
+\begin{document}
+\begin{pspicture}[showgrid=true](9.3,2.3)
+  \pnode(1,1){Laser}\pnode(5,1){A}\pnode(8.5,1){PD}
+  \psset{optboxwidth=1}
+  \optbox[labeloffset=0, endbox](A)(Laser){TL}
+  \polcontrol[nofiber, abspos=1](Laser)(A)
+  \optbox[labeloffset=0, abspos=2.5, compname=PM, extnode=t](Laser)(A){PM}
+  \pnode([offset=-0.5]A){B}
+  \wdmsplitter[fiberin=none,abspos=3.5, align=top](Laser)(A)(B)
+  \pnode([Xnodesep=1]B){C}
+  \optfiber[fiberloops=2, fiberloopradius=0.15, labeloffset=0.3](B)(C){$\Delta T$}
+  \wdmcoupler[fiberout=none, align=top, abspos=1.5](A)(C)(PD)
+  \optfiber[fiberin=none, abspos=2.5](A)(PD)
+  \optdetector[dettype=diode](A)(PD)
+  \drawfiber{1}{2}
+  \drawfiber{2}{PM}
+  \drawfiber{PM}{4}
+  \drawfiber{6}{7}
+  \pnode([Xnodesep=-1.5,offset=0.5]\oenodeExt{PM}){SigIn}
+  \nccurve[angleB=90, ncurv=0.8, arrows=->]{SigIn}{\oenodeExt{PM}}
+  \rput(SigIn){\psplot{0}{1.2}{ Euler x 0.2 sub 0.05 div dup mul neg exp Euler x 1 sub 0.05 div dup mul neg exp add 0.3 mul 0.1 add}}
+\end{pspicture}
+\end{document}
