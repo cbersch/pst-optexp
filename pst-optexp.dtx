@@ -94,6 +94,8 @@
 }
 \colorlet{sectioncolor}{DOrange}
 \addtokomafont{sectioning}{\color{sectioncolor}}
+\addtokomafont{subsection}{\Large}
+\addtokomafont{subsubsection}{\Large}
 \usepackage[automark,nouppercase]{scrpage2}
 \pagestyle{scrheadings} 
 \clearscrheadings
@@ -112,9 +114,15 @@
 \usepackage{csquotes}
 \MakeAutoQuote{«}{»}
 \colorlet{spot}{sectioncolor}
-\InputIfFileExists{ltxdockit.cfg}{}{}
-\makeatletter
+\renewcommand*{\verbatimfont}{\ttfamily}
+\renewcommand*{\displayverbfont}{\ttfamily}
+\renewcommand*{\marglistfont}{\spotcolor\sffamily\small}
+\renewcommand*{\margnotefont}{\sffamily\small}
+\renewcommand*{\optionlistfont}{\spotcolor\sffamily\displayverbfont}
+\renewcommand*{\ltxsyntaxfont}{\ttfamily}
+\renewcommand*{\ltxsyntaxlabelfont}{\spotcolor\displayverbfont}
 
+\makeatletter
 \def\ltd@optionlist{%
   \let\optitem\poe@optitem
   \let\styleitem\poe@styleitem
