@@ -22,7 +22,7 @@
 %<stylefile>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<stylefile>\ProvidesPackage{pst-optexp}
 %<*stylefile>
-    [2011/07/06 package wrapper for pst-optexp.tex]
+    [2011/07/19 package wrapper for pst-optexp.tex]
 %</stylefile>
 %
 %<*driver>
@@ -356,7 +356,7 @@
 %   \backlayer{%
 %     \psline[style=Beam,ArrowInside=->, linewidth=2\pslinewidth, arrowinset=0](In)(\oenodeIn{3})(\oenodeOut{4})
 %   }
-%   \drawbeam[startvec=0.005,startpos=0.1, addtoBeam={arrows=<-, linewidth=2\pslinewidth, arrowinset=0}]{([Xnodesep=-0.2]Out)}{8}{7}
+%   \drawbeam[startvec=0.005,startpos=0.1, arrows=<-, linewidth=2\pslinewidth, arrowinset=0]{([Xnodesep=-0.2]Out)}{8}{7}
 % \end{optexp}
 % \rput(4,4.5){%
 %   \psframe[fillstyle=solid,fillcolor=gray!70](-0.1, -0.6)(0.1, 0.7)
@@ -386,13 +386,43 @@
 %   user-defined components are also provided.
 % \fi
 %
-% \section{\ifGERMAN Kurzeinstieg\fi\ifENGLISH Quickstart\fi}
+% \ifGERMAN
+%   \section{Erste Schritte}
+% \fi
+% \ifENGLISH
+%   \section{Getting Started}
+% \fi
 % \label{sec:quick}
 % \ifGERMAN
 % In diesem einführenden Abschnitt soll anhand von ein paar Beispielen der
 % typische Entwicklungsprozess sowie einige der besonderen Stärken des
 % \LPack{pst-optexp} Paketes demonstriert werden.
 % \fi
+% \iffalse
+%<*ignore>
+% \fi
+\begingroup
+\catcode`\*=13
+\def*{}%
+\begin{LTXexample}[pos=t, vsep=5mm, numbers=left, numberstyle=\footnotesize]
+\begin{pspicture}[showgrid=true](7.7,2.4)
+  \pnode(1,1){Laser}\pnode(6.5,1){Osa}\pnode([offset=1]Osa){Pd}
+  \psset{optboxwidth=1, usefiberstyle}
+  \optbox[endbox, labeloffset=0](Osa)(Laser){Laser}
+  \polcontrol[nofiber, abspos=1](Laser)(Osa)
+  \optmzm[nofiber, abspos=2.5](Laser)(Osa){MZM}
+  \wdmsplitter[fiberin=none, align=bottom, abspos=4](Laser)(Pd)(Osa)
+  \optdetector[dettype=diode]([Xnodesep=-0.1]Pd)(Pd){}
+  \optbox[endbox, labeloffset=0](Laser)(Osa){OSA}
+  \drawfiber{1}{3}
+  \drawfiber{3}{4}
+\end{pspicture}
+\end{LTXexample}
+\endgroup
+% \iffalse
+%</ignore>
+% \fi
+% 
 % \iffalse
 %<*ignore>
 % \fi
