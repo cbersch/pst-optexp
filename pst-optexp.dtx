@@ -29,7 +29,7 @@
 \documentclass[toc=flat, a4paper, DIV=9]{scrartcl} 
 \usepackage{doc}
 \setcounter{IndexColumns}{2} 
-\usepackage[latin1]{inputenc}
+\usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc} 
 \usepackage{lmodern} 
 \usepackage{amsfonts}
@@ -37,9 +37,12 @@
 \providecommand*\mainlang{}
 \usepackage[english,\mainlang]{babel}
 \usepackage[dvipsnames,x11names,svgnames]{xcolor} 
+\usepackage{amsmath} 
 \usepackage{ragged2e}
 \usepackage{paralist}
-\usepackage{amsmath} 
+\usepackage{nicefrac}
+\usepackage{prettyref} 
+\newrefformat{sec}{Sec.~\ref{#1}} 
 \usepackage{pst-func} 
 \usepackage{pst-tree}
 \newcommand{\poeTR}[1]{\TR{\ttfamily\color{DOrange}#1}}
@@ -59,7 +62,7 @@
 \colorlet{pdflinkcolor}{DOrange}
 \colorlet{pdfurlcolor}{DOrange}
 \colorlet{pdffilecolor}{DOrange}
-\usepackage{listings} 
+%%\usepackage{listings} 
 \usepackage{showexpl}
 \makeatletter \renewcommand*\SX@Info{}\makeatother 
 \definecolor{colKeys}{rgb}{0,0,0}
@@ -94,10 +97,10 @@
     custombeam, frontlayer, backlayer, newOptexpDipole,
     newOptexpTripole, newOptexpFiberDipole},
   explpreset={  identifierstyle=\color{colIdentifier}, %
-  keywordstyle=\color{colKeys}, %
-  stringstyle=\color{colString}, %
-  commentstyle=\color{colComments}, %
-escapeinside={*}{*},
+    keywordstyle=\color{colKeys}, %
+    stringstyle=\color{colString}, %
+    commentstyle=\color{colComments}, %
+    escapeinside={*}{*}, 
     pos=l,width=-99pt,overhang=0pt,hsep=5mm,
     varwidth,vsep=\bigskipamount,rframe={}}, }
 \colorlet{sectioncolor}{DOrange}
@@ -108,7 +111,7 @@ escapeinside={*}{*},
 \ofoot[\pagemark]{} \automark[subsection]{section}
 \setheadsepline{.4pt}[\color{DOrange}] \setheadwidth[0pt]{text}
 \setfootwidth[0pt]{text} \usepackage{etoolbox} \undef{\cs} \undef{\cmd}
-\usepackage{ltxdockit} \usepackage{csquotes} \MakeAutoQuote{«}{»}
+\usepackage{ltxdockit} \usepackage{csquotes} \MakeAutoQuote{Â«}{Â»}
 \colorlet{spot}{sectioncolor} \renewcommand*{\verbatimfont}{\ttfamily}
 \renewcommand*{\displayverbfont}{\ttfamily}
 \renewcommand*{\marglistfont}{\spotcolor\sffamily\small}
@@ -117,6 +120,36 @@ escapeinside={*}{*},
 \renewcommand*{\ltxsyntaxfont}{\ttfamily}
 \renewcommand*{\ltxsyntaxlabelfont}{\spotcolor\displayverbfont}
 
+\makeatletter
+%% and idea from GL to provide links to the pst-optexp commands: 
+%% <https://groups.google.com/groups/search?as_umsgid=4d89ee49%240%2418590%24426a74cc%40news.free.fr>
+\providerobustcmd*\ifrefundefined [1]{%
+  \begingroup%
+    \csname @safe@activestrue\endcsname%
+    \expandafter\endgroup\csname @\ifcsname r@#1\endcsname second\else first\fi oftwo\endcsname
+}% \ifrefundefined
+\def\lsthk@OutputBox@H@@k{%
+    \begingroup%
+      \let\lst@UM\@empty%
+      \edef\@tempc{cmd:\detokenize\expandafter{\the\lst@token }}%\edef
+      \ifrefundefined{\@tempc}%
+    \endgroup%
+    \sethyperlistings%
+}% \lsthk@OutputBox@fcltxH@@k
+\def\sethyperlistings {\global\let \hyperlistingsreference =\@tempc
+     \endgroup \aftergroup \dohyperlistings }% after \hbox
+\def\dohyperlistings {\def\lst@alloverstyle ##1{\hyperlistings ##1}}
+\def\hyperlistings{%
+    \setbox\@tempboxa\hbox%
+    \bgroup%
+      \rlap{\hypersetup {linkcolor=.}\relax\fboxrule\z@%
+      \hyperref[\hyperlistingsreference]{\boxframe{\wd\@tempboxa}{\ht\@tempboxa}{\dp\@tempboxa}}}%
+      \unhbox\@tempboxa%
+    \egroup%
+}% \hyperlistings
+\let\lsthk@OutputBox\lsthk@OutputBox@H@@k
+\makeatother
+\DeclareRobustCommand\lsb{{\normalfont\ttfamily[}}
 \makeatletter
 \def\ltd@optionlist{%
   \let\optitem\poe@optitem
@@ -221,7 +254,7 @@ escapeinside={*}{*},
 \def\xLfmultipole#1{\sindex[doc]{#1@\nxLcs{#1}}\sindex[doc]{Fiber multipoles!#1@\nxLcs{#1}}}
 
 \newcommand{\dipoledesc}[1]{%
-  \xLdipole{#1}\cmditem{#1}[Options](In)(Out)%
+  \xLdipole{#1}\label{cmd:#1}\cmditem{#1}[Options](In)(Out)%
   \xLdipole{#1}\cmditem{#1}[Options](In)(Out){Label}%
 }
 \newcommand{\tripoledesc}[1]{%
@@ -280,9 +313,9 @@ escapeinside={*}{*},
 %
 % \newcommand*{\sizeexplanation}[1][1.6]{% 
 %   \ifGERMAN 
-%     Die Höhe der Komponente, die Breite ist \opt{#1} mal die Höhe. Mit
-%     dem \opt{xunit} oder \opt{yunit} Parameter kann dieses Verhältnis
-%     geändert werden.
+%     Die HÃ¶he der Komponente, die Breite ist \opt{#1} mal die HÃ¶he. Mit
+%     dem \opt{xunit} oder \opt{yunit} Parameter kann dieses VerhÃ¤ltnis
+%     geÃ¤ndert werden.
 %   \fi
 %   \ifENGLISH
 %     The height of the delay line, the width is \opt{#1} times the
@@ -372,7 +405,7 @@ escapeinside={*}{*},
 % \clearpage
 % 
 % \ifGERMAN
-%   \section{Einführung}
+%   \section{EinfÃ¼hrung}
 %   Das Paket \LPack{pst-optexp} ist eine Sammlung optischer Komponenten zum Zeichnen optischer Versuchsaufbauten.
 % \fi
 % \ifENGLISH
@@ -394,7 +427,7 @@ escapeinside={*}{*},
 %
 % \ifGERMAN
 %   \subsection{Anforderungen}
-% \LPack{pst-optexp} Version 3.0 benötigt aktuelle Versionen der Pakete \LPack{pst-node}, \LPack{pstricks-add}, \LPack{multido},
+% \LPack{pst-optexp} Version 3.0 benÃ¶tigt aktuelle Versionen der Pakete \LPack{pst-node}, \LPack{pstricks-add}, \LPack{multido},
 % \LPack{pst-eucl} und \LPack{environ}. 
 %
 % Alle PSTricks-Pakete machen regen Gebrauch von Postscript, so dass der
@@ -418,7 +451,7 @@ escapeinside={*}{*},
 %   \subsection{Verbreitung und Installation}
 %   Dieses Paket ist auf CTAN
 %   (\url{http://mirror.ctan.org/graphics/pstricks/contrib/pst-optexp})
-%   erhältlich und in \TeX Live and MiK\TeX{} enthalten.
+%   erhÃ¤ltlich und in \TeX Live and MiK\TeX{} enthalten.
 % 
 %   Das \LPack{pst-optexp} Paket umfasst die zwei Hauptdateien
 %   \texttt{pst-optexp.ins} und \texttt{pst-optexp.dtx}. Durch Aufrufen
@@ -432,11 +465,11 @@ escapeinside={*}{*},
 %   lokalen \TeX-Baums ist.
 % 
 %   Vergessen Sie nicht \texttt{texhash} aufzurufen um den Baum zu
-%   aktualisieren. MiK\TeX{}-Benutzer müssen die Dateinamen-Datenbank
+%   aktualisieren. MiK\TeX{}-Benutzer mÃ¼ssen die Dateinamen-Datenbank
 %   (FNDB) aktualisieren.
 % 
 %   Detailliertere Information finden Sie in der Dokumentation Ihrer
-%   \LaTeX-Distribution über die Installation in den lokalen
+%   \LaTeX-Distribution Ã¼ber die Installation in den lokalen
 %   \TeX{}-Baum.
 % \fi
 % \ifENGLISH
@@ -468,16 +501,16 @@ escapeinside={*}{*},
 % \fi
 % \label{sec:quick}
 % \ifGERMAN
-% In diesem einführenden Abschnitt soll anhand von ein paar Beispielen der
-% typische Entwicklungsprozess sowie einige der besonderen Stärken des
+% In diesem einfÃ¼hrenden Abschnitt soll anhand von ein paar Beispielen der
+% typische Entwicklungsprozess sowie einige der besonderen StÃ¤rken des
 % \LPack{pst-optexp} Paketes demonstriert werden.
 % \fi
 % \iffalse
 %<*ignore>
 % \fi
-\begingroup
-\catcode`\*=13
-\def*{}%
+%%\begingroup
+%%\catcode`\*=13
+%%\def*{}%
 \begin{LTXexample}[pos=t, vsep=5mm, numbers=left, numberstyle=\footnotesize]
 \begin{pspicture}[showgrid=true](7.7,2.4)
   \pnode(1,1){Laser}\pnode(6.5,1){Osa}\pnode([offset=1]Osa){Pd}
@@ -492,7 +525,7 @@ escapeinside={*}{*},
   \drawfiber{3}{4}
 \end{pspicture}
 \end{LTXexample}
-\endgroup
+%%\endgroup
 % \iffalse
 %</ignore>
 % \fi
@@ -532,8 +565,8 @@ escapeinside={*}{*},
 %<*ignore>
 % \fi
 \begingroup
-\catcode`\§=13
-\def§{}%
+\catcode`\*=13
+\def*{}%
 \begin{LTXexample}[pos=t, vsep=5mm, numbers=left, numberstyle=\footnotesize]
 \begin{pspicture}[showgrid=true](1,1.2)(6.2,5)
   \pnode(1,4){SigIn}
@@ -945,7 +978,7 @@ escapeinside={*}{*},
 % \end{ltxsyntax}
 % \begin{optionlist}
 % \numitem[1]{lensheight} 
-% \ifGERMAN Setzt die Höhe der Linse.\fi
+% \ifGERMAN Setzt die HÃ¶he der Linse.\fi
 % \ifENGLISH Set the height of the lens.\fi
 % \iffalse
 %<*ignore>
@@ -961,9 +994,9 @@ escapeinside={*}{*},
 % \fi
 % \numitem[1]{lensradiusleft} 
 % \ifGERMAN
-% Setzt den Radius der linken Linsengrenzfläche. Ein positiver Wert \prm{num}
-% ist für eine konvexe, ein negativer für eine konkave Krümmung. Null ergibt
-% eine ebene Fläche.
+% Setzt den Radius der linken LinsengrenzflÃ¤che. Ein positiver Wert \prm{num}
+% ist fÃ¼r eine konvexe, ein negativer fÃ¼r eine konkave KrÃ¼mmung. Null ergibt
+% eine ebene FlÃ¤che.
 % \fi
 % \ifENGLISH
 % Set the left radius of the lens. A positive \prm{num} is for convex, a
@@ -972,7 +1005,7 @@ escapeinside={*}{*},
 % 
 % \numitem[1]{lensradiusright} 
 % \ifGERMAN
-% Dasgleiche wie \opt{lensradiusleft}, nur für die rechte Grenzfläche.
+% Dasgleiche wie \opt{lensradiusleft}, nur fÃ¼r die rechte GrenzflÃ¤che.
 % \fi
 % \ifENGLISH
 % Same as \opt{lensradiusleft} but for the right surface.
@@ -993,7 +1026,7 @@ escapeinside={*}{*},
 % 
 % \numitem{lensradius} 
 % \ifGERMAN
-%   Setzt beide Krümmungen auf denselben Wert.
+%   Setzt beide KrÃ¼mmungen auf denselben Wert.
 % \fi
 % \ifENGLISH
 %   Set both curvatures to the same value.
@@ -1012,12 +1045,12 @@ escapeinside={*}{*},
 %
 % \numitem[0]{lenswidth}
 % \ifGERMAN
-% Üblicherweise werden nur die Höhe und die beiden Radien für die
+% Ãœblicherweise werden nur die HÃ¶he und die beiden Radien fÃ¼r die
 % Konstuktion der Linse verwendet. Die Mittenbreite wird automatisch
-% ermittelt. Wenn \opt{lenswidth} auf einen Wert größer Null gesetzt wird,
+% ermittelt. Wenn \opt{lenswidth} auf einen Wert grÃ¶ÃŸer Null gesetzt wird,
 % wird diese Breite verwendet. Das ist nur sinnvoll, wenn dicke Linsen
-% gezeichnet werden sollen, da es andernfalls für zu kleine Werte zu unschönen
-% Ergebnissen führt.
+% gezeichnet werden sollen, da es andernfalls fÃ¼r zu kleine Werte zu unschÃ¶nen
+% Ergebnissen fÃ¼hrt.
 % \fi
 % \ifENGLISH
 % Usually only the height and the two radii are used to construct the lens and
@@ -1040,8 +1073,8 @@ escapeinside={*}{*},
 % \fi
 % \optitem{lens}{\prm{radiusleft} [\prm{radiusright} [\prm{height} [\prm{width}]]]}
 % \ifGERMAN
-% Eine Option zum gleichzeitigen Setzen mehrerer Linsenparameter. Es müssen
-% nicht alle Werte gesetzt werden, die übrigen bleiben unverändert.
+% Eine Option zum gleichzeitigen Setzen mehrerer Linsenparameter. Es mÃ¼ssen
+% nicht alle Werte gesetzt werden, die Ã¼brigen bleiben unverÃ¤ndert.
 % \fi
 % \ifENGLISH
 % A convenience option to specify all lens parameters with a single option.
@@ -1105,7 +1138,7 @@ escapeinside={*}{*},
 % \end{optionlist}
 % 
 % \ifGERMAN
-%   \subsection{Verzögerungsplättchen}
+%   \subsection{VerzÃ¶gerungsplÃ¤ttchen}
 % \fi
 % \ifENGLISH
 %   \subsection{Retardation plate}
@@ -1466,7 +1499,7 @@ escapeinside={*}{*},
 % 
 % \optitem[2\nxLcs{pslinewidth}]{mirrorlinewidth}{\prm{num} or \prm{dimen}} 
 % \ifGERMAN
-% Die Linienbreite des Spiegels. Diese könnte ebenfalls über den
+% Die Linienbreite des Spiegels. Diese kÃ¶nnte ebenfalls Ã¼ber den
 % \opt{linewidth} Parameter gesetzt werden. Mit diesem Parameter kann
 % aber die Linienbreite aller Spiegel global eingestellt werden.
 % \fi
@@ -1478,7 +1511,7 @@ escapeinside={*}{*},
 %
 % \numitem[0]{mirrorradius} 
 % \ifGERMAN
-% Diese Parameter setzt die Krümmung des Spiegels. Null ergibt einen
+% Diese Parameter setzt die KrÃ¼mmung des Spiegels. Null ergibt einen
 % ebenen, ein negativer Radius einen konkaven und ein positiver Radius
 % einen konvexen Spiegel.
 % \fi
@@ -1505,8 +1538,8 @@ escapeinside={*}{*},
 % 
 % \choitem[normal]{mirrortype}{normal, piezo, extended}
 % \ifGERMAN
-%   Diese Parameter wählt die Spiegelart aus. Beachte, dass der
-%   Anschlussdraht für den Piezospiegel nicht gezeichnet wird, wenn
+%   Diese Parameter wÃ¤hlt die Spiegelart aus. Beachte, dass der
+%   Anschlussdraht fÃ¼r den Piezospiegel nicht gezeichnet wird, wenn
 %   \Lkeyword{extnode} verwendet wird.
 % \fi
 % \ifENGLISH
@@ -1536,7 +1569,7 @@ escapeinside={*}{*},
 % \fi
 % 
 % \styleitem{ExtendedMirror} 
-% \ifGERMAN Der Stil für den «extended» Spiegel.\fi
+% \ifGERMAN Der Stil fÃ¼r den Â«extendedÂ» Spiegel.\fi
 % \ifENGLISH The style for the extended mirror.\fi
 % \iffalse
 %<*ignore>
@@ -1556,8 +1589,8 @@ escapeinside={*}{*},
 % 
 % \styleitem{PiezoMirror} 
 % \ifGERMAN 
-% Der Stil für den «piezo» Spiegel. Dieser kann auch dazu verwendet
-% werden, die Größe des Piezos zu verändern, wie die Beispiele zeigen.
+% Der Stil fÃ¼r den Â«piezoÂ» Spiegel. Dieser kann auch dazu verwendet
+% werden, die GrÃ¶ÃŸe des Piezos zu verÃ¤ndern, wie die Beispiele zeigen.
 % \fi
 % \ifENGLISH
 % This style defines the appearance of the piezo mirror. This can also
@@ -1633,7 +1666,7 @@ escapeinside={*}{*},
 % \begin{optionlist}
 % \numitem[0.8]{bssize}
 % \ifGERMAN
-%   Die Größe des Strahlteilers.
+%   Die GrÃ¶ÃŸe des Strahlteilers.
 % \fi
 % \ifENGLISH
 %   The beamplitter size.
@@ -1641,11 +1674,11 @@ escapeinside={*}{*},
 %  
 % \choitem[cube]{bsstyle}{cube, plate} 
 % \ifGERMAN
-% Wähle zwischen zwei Strahlteilertypen: einem Strahlteilerwürfel
-% (\opt{cube}) und einem halbdurchlässigen Spiegel
+% WÃ¤hle zwischen zwei Strahlteilertypen: einem StrahlteilerwÃ¼rfel
+% (\opt{cube}) und einem halbdurchlÃ¤ssigen Spiegel
 % (\opt{plate}). Beachte, dass trotz des gleichen Aussehens der
-% halbdurchlässige Spiegel eine anderes Verhalten beim Strahlzeichnen
-% als der gewöhnliche Spiegel hat.
+% halbdurchlÃ¤ssige Spiegel eine anderes Verhalten beim Strahlzeichnen
+% als der gewÃ¶hnliche Spiegel hat.
 % \fi
 % \ifENGLISH
 % Selects between two types of beamsplitters: the beamsplitter cube
@@ -1693,12 +1726,12 @@ escapeinside={*}{*},
 % \ifENGLISH The width of the grating.\fi
 % 
 % \numitem[0.15]{gratingheight} 
-% \ifGERMAN Die Gesamthöhe des Gitters.\fi
+% \ifGERMAN Die GesamthÃ¶he des Gitters.\fi
 % \ifENGLISH The total height of the grating.\fi
 % 
 % \numitem[0.075]{gratingdepth}
 % \ifGERMAN 
-% Die absolute Modulationstiefe der Gitterstruktur. Die Gesamthöhe wird
+% Die absolute Modulationstiefe der Gitterstruktur. Die GesamthÃ¶he wird
 % an diesen Wert angepasst falls sie kleiner als die Modulationtiefe ist, 
 % andernfalls wird sie nicht beinflusst.
 % \fi
@@ -1738,7 +1771,7 @@ escapeinside={*}{*},
 % 
 % \choitem[blazed]{gratingtype}{blazed, binary} 
 % \ifGERMAN 
-%   Wähle zwischen einem binären Gitter (\opt{binary}) und einem Blazegitter (\opt{blazed}).
+%   WÃ¤hle zwischen einem binÃ¤ren Gitter (\opt{binary}) und einem Blazegitter (\opt{blazed}).
 % \fi
 % \ifENGLISH
 %   Select between a \opt{binary} and a \opt{blazed} grating.
@@ -1777,7 +1810,7 @@ escapeinside={*}{*},
 % 
 % \optitem[0.7\nxLcs{pslinewidth}]{gratinglinewidth}{\prm{num} or \prm{dimen}} 
 % \ifGERMAN
-% Die Linienbreite des Gitters. Diese könnte ebenfalls über den
+% Die Linienbreite des Gitters. Diese kÃ¶nnte ebenfalls Ã¼ber den
 % \opt{linewidth} Parameter gesetzt werden. Mit diesem Parameter kann
 % aber die Linienbreite aller Gitter global eingestellt werden.
 % \fi
@@ -1811,8 +1844,8 @@ escapeinside={*}{*},
 % \fi
 % \end{ltxsyntax}
 % \ifGERMAN
-% Das Prisma wird immer symmetrisch bezüglich der \prm{In} und \prm{Out}
-% Knoten ausgerichtet. Für asymmetrischen Strahlengang siehe
+% Das Prisma wird immer symmetrisch bezÃ¼glich der \prm{In} und \prm{Out}
+% Knoten ausgerichtet. FÃ¼r asymmetrischen Strahlengang siehe
 % \prettyref{sec:connecting}.
 % \fi
 % \ifENGLISH
@@ -1822,7 +1855,7 @@ escapeinside={*}{*},
 %
 % \begin{optionlist}
 % \numitem[1]{prismsize} 
-% \ifGERMAN Die Höhe des Prismas.\fi
+% \ifGERMAN Die HÃ¶he des Prismas.\fi
 % \ifENGLISH The height of the prism.\fi
 % \numitem[60]{prismangle}
 % \ifGERMAN Der obere Winkel des Prismas.\fi
@@ -1888,7 +1921,7 @@ escapeinside={*}{*},
 % 
 % \begin{optionlist}
 % \numitem[1.5]{raprismsize}
-% \ifGERMAN Die Länge der Eingangsfläche.\fi
+% \ifGERMAN Die LÃ¤nge der EingangsflÃ¤che.\fi
 % \ifENGLISH The length of the input plane.\fi
 % \end{optionlist}
 % 
@@ -1917,7 +1950,7 @@ escapeinside={*}{*},
 % 
 % \begin{optionlist}
 %   \numitem[0.7]{pentaprismsize} 
-%   \ifGERMAN Die Länge der Eingangs- und Ausgangsfläche.\fi
+%   \ifGERMAN Die LÃ¤nge der Eingangs- und AusgangsflÃ¤che.\fi
 %   \ifENGLISH The length of the input and output plane.\fi
 % \end{optionlist}
 % 
@@ -1930,8 +1963,8 @@ escapeinside={*}{*},
 % \label{sec:custom}
 %
 % \ifGERMAN
-% Das \LPack{pst-optexp} Paket stellt zwei Makros zur Verfügung um
-% eigene Komponenten zu zeichnen. Diese können z.B. aus Bildern oder
+% Das \LPack{pst-optexp} Paket stellt zwei Makros zur VerfÃ¼gung um
+% eigene Komponenten zu zeichnen. Diese kÃ¶nnen z.B. aus Bildern oder
 % eigenen Zeichnungen bestehen.
 % \fi
 % \ifENGLISH
@@ -2068,7 +2101,7 @@ escapeinside={*}{*},
 % \end{optionlist}
 % 
 % \ifGERMAN
-%   \subsection{Optischer Verstärker}
+%   \subsection{Optischer VerstÃ¤rker}
 % \fi
 % \ifENGLISH
 %   \subsection{Optical Amplifier}
@@ -2136,11 +2169,11 @@ escapeinside={*}{*},
 % 
 % \begin{optionlist}
 % \numitem[0.8]{filtersize}
-% \ifGERMAN Die Größe des Filters.\fi
+% \ifGERMAN Die GrÃ¶ÃŸe des Filters.\fi
 % \ifENGLISH The size of the filter.\fi
 %
 % \choitem[bandpass]{filtertype}{bandpass, bandstop, lowpass, highpass}
-% \ifGERMAN Wähle zwischen unterschiedlichen Filtertypen.\fi
+% \ifGERMAN WÃ¤hle zwischen unterschiedlichen Filtertypen.\fi
 % \ifENGLISH Select between different filter types.\fi
 % \iffalse
 %<*ignore>
@@ -2227,8 +2260,8 @@ escapeinside={*}{*},
 %
 % \styleitem{IsolatorArrow} 
 % \ifGERMAN 
-% Der Stil für den Isolatorpfeil. Das kann insbesonders nützlich sein um
-% die Länge des Pfeils zu verändern. 
+% Der Stil fÃ¼r den Isolatorpfeil. Das kann insbesonders nÃ¼tzlich sein um
+% die LÃ¤nge des Pfeils zu verÃ¤ndern. 
 % \fi
 % \ifENGLISH 
 % The style of the isolator arrow. This can be especially useful to
@@ -2273,11 +2306,11 @@ escapeinside={*}{*},
 % 
 % \begin{optionlist}
 % \numitem[0.8]{switchsize}
-% \ifGERMAN Die Größe des Schalters.\fi
+% \ifGERMAN Die GrÃ¶ÃŸe des Schalters.\fi
 % \ifENGLISH The size of the switch.\fi
 %
 % \choitem[opened]{switchstyle}{opened, closed} 
-% \ifGERMAN Der Zustand des Schalters kann geschlossen (\opt{closed}) oder geöffnet (\opt{opened}) sein. \fi
+% \ifGERMAN Der Zustand des Schalters kann geschlossen (\opt{closed}) oder geÃ¶ffnet (\opt{opened}) sein. \fi
 % \ifENGLISH Indicate the switch as \opt{opened} or \opt{closed}.\fi
 % \iffalse
 %<*ignore>
@@ -2293,7 +2326,7 @@ escapeinside={*}{*},
 % \end{optionlist}
 % 
 % \ifGERMAN
-%   \subsection{Faserverzögerungstrecke}
+%   \subsection{FaserverzÃ¶gerungstrecke}
 % \fi
 % \ifENGLISH
 %   \subsection{Fiber Delay Line}
@@ -2319,8 +2352,8 @@ escapeinside={*}{*},
 %
 % \styleitem{FdlArrow} 
 % \ifGERMAN 
-% Der Stil für den Pfeil. Das kann insbesonders nützlich sein um die
-% Länge des Pfeils zu verändern, die bei geänderter Größe nicht mehr
+% Der Stil fÃ¼r den Pfeil. Das kann insbesonders nÃ¼tzlich sein um die
+% LÃ¤nge des Pfeils zu verÃ¤ndern, die bei geÃ¤nderter GrÃ¶ÃŸe nicht mehr
 % passend sein kann, oder um den Pfeil zu spiegeln.
 % \fi
 % \ifENGLISH 
@@ -2398,7 +2431,7 @@ escapeinside={*}{*},
 % zwischen \prm{In} und \prm{Out} Knoten platziert. Bei drei Punkten
 % wird eine \Lcs{psbezier} Kurve gezeichnet, wobei der mittlere Punkt
 % doppelt verwendet wird. Die Positionierungsparameter (see
-% \prettyref{sec:positioning}) können verwendet werden um den Kollimator
+% \prettyref{sec:positioning}) kÃ¶nnen verwendet werden um den Kollimator
 % zwischen dem \prm{In} und \prm{A} Knoten auszurichten.
 % \fi
 % \ifENGLISH
@@ -2425,7 +2458,7 @@ escapeinside={*}{*},
 % \ifGERMAN
 % Bei vier Konten wird eine \Lcs{psbezier} Kurve mit allen vier Knoten
 % gezeichnet. Die Positionierungsparameter (see
-% \prettyref{sec:positioning}) können verwendet werden um den Kollimator
+% \prettyref{sec:positioning}) kÃ¶nnen verwendet werden um den Kollimator
 % zwischen dem \prm{In} und \prm{A} Knoten auszurichten.
 % \fi
 % \ifENGLISH
@@ -2492,7 +2525,7 @@ escapeinside={*}{*},
 % \fi
 % 
 % \choitem[elliptic]{couplertype}{none, elliptic, rectangular, crossswitch}
-% \ifGERMAN Wähle zwischen unterschiedlichen Kopplertypen.\fi
+% \ifGERMAN WÃ¤hle zwischen unterschiedlichen Kopplertypen.\fi
 % \ifENGLISH Select between different coupler types.\fi
 % \iffalse
 %<*ignore>
@@ -2513,7 +2546,7 @@ escapeinside={*}{*},
 % \fi
 % 
 % \choitem[center]{align}{top, bottom, center}
-% \ifGERMAN Die Ausrichtung des Kopplers bezüglich der Referenzknoten.\fi
+% \ifGERMAN Die Ausrichtung des Kopplers bezÃ¼glich der Referenzknoten.\fi
 % \ifENGLISH The alignment of the coupler with respect to the reference nodes.\fi
 % \iffalse
 %<*ignore>
@@ -7171,7 +7204,7 @@ tx@OptexpDict begin
     /Y@B YG cy c@tmp div sub def
 %    \end{macrocode}
 % chirality:
-% test the order of the input points as a input angle $> 90ï¿½$
+% test the order of the input points as a input angle $> 90Â°$
 % doesn't really make sense.
 % So if chir $<= 0$ exchange the calculated coordinates of 
 % A and B and otherwise leave it as is
@@ -7416,7 +7449,6 @@ tx@OptexpDict begin
 % \end{macro}
 % 
 % \begin{macro}{NewNodeComp}
-% [ \{ x y \} \{ dx dy / rx ry\} type \{New..Int\} refrIndex CompName \{scaling proc\} amb
 %    \begin{macrocode}
 /NewNodeComp {
     [ 5 1 roll trans {NewPlaneInt} 1 5 3 roll false NewOptexpComp
@@ -7425,7 +7457,6 @@ tx@OptexpDict begin
 % \end{macro}
 % 
 % \begin{macro}{NewCurvedInt}
-% \{ x y \} \{ rx ry \} \{scaling proc\}
 %    \begin{macrocode}
 /NewCurvedInt {
     2 copy 5 3 roll exec 3 -1 roll exec VecAdd 5 -1 roll exec /Y ED /X ED
@@ -7435,7 +7466,6 @@ tx@OptexpDict begin
 % \end{macro}
 % 
 % \begin{macro}{NewPlaneInt}
-% \{ x y \} \{ dx dy \} \{scaling proc\}
 %    \begin{macrocode}
 /NewPlaneInt {
     dup 3 -1 roll exec 3 -1 roll exec /DY ED /DX ED
@@ -7572,7 +7602,7 @@ tx@OptexpDict begin
 % \begin{macro}{GetPlaneCenter}
 % PlaneNumber CompName -> NodeCenter
 % or
-% \{Plane\} -> NodeCenter
+% \PSproc{Plane} -> NodeCenter
 %    \begin{macrocode}
 /GetPlaneCenter {
     dup type /stringtype eq not {
@@ -7602,7 +7632,7 @@ tx@OptexpDict begin
 % \begin{macro}{TransformInVec}
 % InVec is relative to the connection between first and second components
 % transform to absolute coordinates
-% Plane2 Plane1 \{InVec\} -> \{InVec'\}
+% Plane2 Plane1 \PSproc{InVec} -> \PSproc{InVec'}
 %    \begin{macrocode}
 /TransformInVec {
     3 1 roll
@@ -7626,7 +7656,7 @@ tx@OptexpDict begin
 % \begin{macro}{TransformStartPos}
 % Startpos is relative to the connection between first and second components
 % transform to absolute coordinates and shift by first plane center
-% Plane2 Plane1 \{StartPos\} -> \{StartPos'+Plane1Center\}
+% Plane2 Plane1 \PSproc{StartPos} -> \PSproc{StartPos'+Plane1Center}
 %    \begin{macrocode}
 /TransformStartPos {
     exec 2 copy 6 2 roll 0 eq exch 0 eq and not  % SPx SPy P2 P1 neq00
@@ -7822,7 +7852,7 @@ tx@OptexpDict begin
 % \end{macro}
 % 
 % \begin{macro}{TraceBeam}
-% [ CompN ... Comp1 \{options\} \{start point\} \{input vector\}
+% [ CompN ... Comp1 \PSproc{options} \PSproc{start point} \PSproc{input vector}
 % -> Yn Xn drawToN? ... Y1 X1 drawTo1? Y0 X0
 %    \begin{macrocode}
 /TraceBeam {
@@ -7946,7 +7976,7 @@ tx@OptexpDict begin
 % \end{macro}
 % 
 % \begin{macro}{Drawbeam}
-% [ CompN ... Comp1 \{options\} \{start point\} \{input vector\}
+% [ CompN ... Comp1 \PSproc{options} \PSproc{start point} \PSproc{input vector}
 %    \begin{macrocode}
 /Drawbeam {
   counttomark 3 eq {
@@ -7984,7 +8014,7 @@ tx@OptexpDict begin
 % \begin{macro}{TraceWideBeam}
 % Stroke an extendend beam. Only rearranges the input parameters and calls Drawbeam twice, for the upper
 % and lower beam.
-% [ CompN ... Comp1 \{options\} \{start point up\} \{input vector up\} \{start point low\} \{input vector low\}
+% [ CompN ... Comp1 \PSproc{options} \PSproc{start point up} \PSproc{input vector up} \PSproc{start point low} \PSproc{input vector low}
 %    \begin{macrocode}
 /TraceWideBeam {
 %    \end{macrocode}
@@ -8024,7 +8054,7 @@ tx@OptexpDict begin
 % Fill a wide beam. This must have an own procedure, because all segments
 % of the beam must be filled separately.
 % 
-% [ CompN ... Comp1 \{options\} \{start point up\} \{input vector up\} \{start point low\} \{input vector low\} 
+% [ CompN ... Comp1 \PSproc{options} \PSproc{start point up} \PSproc{input vector up} \PSproc{start point low} \PSproc{input vector low} 
 %    \begin{macrocode}
 /FillWideBeam {
   /InvecLow ED /StartLow ED /InvecUp ED /StartUp ED 
@@ -8332,7 +8362,7 @@ tx@OptexpDict begin
 % \end{macro}
 % 
 % \begin{macro}{PushAllPlanesOnStack}
-% [ desc/asc CompN .. desc/asc Comp1 PushAllPlanesOnStack -> \{ PlaneNumber CompName n mode draw \}
+% [ desc/asc CompN .. desc/asc Comp1 PushAllPlanesOnStack -> \PSproc{PlaneNumber CompName n mode draw}
 % n is the refractive index after the respective interface,
 % but draw determines if the connection to this interface is drawn
 %    \begin{macrocode}
@@ -8505,7 +8535,7 @@ tx@OptexpDict begin
 % \end{macro}
 % 
 % \begin{macro}{ToVec}
-% X Y -> \{X Y\}
+% X Y -> \PSproc{X Y}
 %    \begin{macrocode}
 /ToVec {
     [ 3 1 roll ] cvx
