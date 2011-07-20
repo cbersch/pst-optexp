@@ -127,38 +127,23 @@
     \csname @safe@activestrue\endcsname%
     \expandafter\endgroup\csname @\ifcsname r@#1\endcsname second\else first\fi oftwo\endcsname
 }% \ifrefundefined
+\def\poe@labelprefix{cmd:}%
 \def\lsthk@OutputBox@H@@k{%
     \begingroup%
       \let\lst@UM\@empty%
-      \edef\@tempc{cmd:\detokenize\expandafter{\the\lst@token }}%\edef
+      \edef\@tempc{\poe@labelprefix\detokenize\expandafter{\the\lst@token }}%\edef
       \ifrefundefined{\@tempc}%
     \endgroup%
     \sethyperlistings%
 }% \lsthk@OutputBox@H@@k
-\def\lsthk@OutputBox@H@@k@code{%
-    \begingroup%
-      \let\lst@UM\@empty%
-      \edef\@tempc{cod:\detokenize\expandafter{\the\lst@token }}%\edef
-      \ifrefundefined{\@tempc}%
-    \endgroup%
-    \sethyperlistings%
-}% \lsthk@OutputBox@H@@k@code
-\def\lsthk@OutputBox@H@@k@pscode{%
-    \begingroup%
-      \let\lst@UM\@empty%
-      \edef\@tempc{ps:\detokenize\expandafter{\the\lst@token }}%\edef
-      \ifrefundefined{\@tempc}%
-    \endgroup%
-    \sethyperlistings%
-}% \lsthk@OutputBox@H@@k@pscode
 \def\sethyperlistings {\global\let \hyperlistingsreference =\@tempc
      \endgroup \aftergroup \dohyperlistings }% after \hbox
 \def\dohyperlistings {\def\lst@alloverstyle ##1{\hyperlistings ##1}}
 \def\hyperlistings{%
     \setbox\@tempboxa\hbox%
     \bgroup%
-      \rlap{\hypersetup {linkcolor=red}\relax\fboxrule\z@%
-      \hyperref[\hyperlistingsreference]{\boxframe{\wd\@tempboxa}{\ht\@tempboxa}{\dp\@tempboxa}}}%
+      \rlap{\hypersetup {linkcolor=.}\relax\fboxrule\z@\fboxsep=0.8pt%
+      \hyperref[\hyperlistingsreference]{\hskip-0.8pt\colorbox{DOrange!10}{\boxframe{\wd\@tempboxa}{\ht\@tempboxa}{\dp\@tempboxa}}}}%
       \unhbox\@tempboxa%
     \egroup%
 }% \hyperlistings
@@ -3589,7 +3574,7 @@
 % \printindex[doc]
 %
 % \section{Implementation}
-% \makeatletter \let\lsthk@OutputBox\lsthk@OutputBox@H@@k@code\makeatother
+% \makeatletter\def\poe@labelprefix{cod:}\makeatother
 %<*stylefile>
 %    \begin{macrocode}
 \RequirePackage{pstricks}
@@ -7129,7 +7114,7 @@
 %</stylefile> 
 %
 % \subsection{The Postscript Header file}
-% \makeatletter \let\lsthk@OutputBox\lsthk@OutputBox@H@@k@pscode\makeatother
+% \makeatletter\def\poe@labelprefix{ps:}\makeatother
 %<*prolog>
 %    \begin{macrocode}
 /tx@OptexpDict 70 dict def

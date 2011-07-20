@@ -29,7 +29,7 @@ dist : doc doc-DE
 	@ echo
 	@ echo $(ARCHNAME).tar.gz
 
-$(PACKAGE)-DE.dvi: $(PACKAGE).dtx $(PACKAGE).sty $(PACKAGE).tex $(PACKAGE).pro
+$(PACKAGE)-DE.dvi: $(PACKAGE).dtx $(PACKAGE).sty $(PACKAGE).ist $(PACKAGE).pro
 	cp $< $(basename $@).dtx
 	$(LATEX) '\newcommand*{\mainlang}{ngerman}\input{$(basename $@).dtx}'
 	$(LATEX) '\newcommand*{\mainlang}{ngerman}\input{$(basename $@).dtx}'
@@ -49,7 +49,7 @@ $(PACKAGE)-DE.dvi: $(PACKAGE).dtx $(PACKAGE).sty $(PACKAGE).tex $(PACKAGE).pro
 	$(LATEX) '\newcommand*{\mainlang}{ngerman}\input{$(basename $@).dtx}'
 	$(RM) $(basename $@).dtx
 
-$(PACKAGE).dvi: $(PACKAGE).dtx $(PACKAGE).sty $(PACKAGE).tex $(PACKAGE).pro
+$(PACKAGE).dvi: $(PACKAGE).dtx $(PACKAGE).sty $(PACKAGE).ist $(PACKAGE).pro
 	$(LATEX) '\newcommand*{\mainlang}{english}\input{$(basename $@).dtx}'
 	$(LATEX) '\newcommand*{\mainlang}{english}\input{$(basename $@).dtx}'
 	splitindex -m "" $(basename $@).idx
