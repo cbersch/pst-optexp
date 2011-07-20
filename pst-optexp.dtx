@@ -27,8 +27,6 @@
 %
 %<*driver>
 \documentclass[toc=flat, a4paper, DIV=9]{scrartcl} 
-\usepackage{doc}
-\setcounter{IndexColumns}{2} 
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc} 
 \usepackage{lmodern} 
@@ -62,6 +60,7 @@
 \colorlet{pdflinkcolor}{DOrange}
 \colorlet{pdfurlcolor}{DOrange}
 \colorlet{pdffilecolor}{DOrange}
+\colorlet{codelinkcolor}{DOrange!80}
 %%\usepackage{listings} 
 \usepackage{showexpl}
 \makeatletter \renewcommand*\SX@Info{}\makeatother 
@@ -135,14 +134,30 @@
       \ifrefundefined{\@tempc}%
     \endgroup%
     \sethyperlistings%
-}% \lsthk@OutputBox@fcltxH@@k
+}% \lsthk@OutputBox@H@@k
+\def\lsthk@OutputBox@H@@k@code{%
+    \begingroup%
+      \let\lst@UM\@empty%
+      \edef\@tempc{cod:\detokenize\expandafter{\the\lst@token }}%\edef
+      \ifrefundefined{\@tempc}%
+    \endgroup%
+    \sethyperlistings%
+}% \lsthk@OutputBox@H@@k@code
+\def\lsthk@OutputBox@H@@k@pscode{%
+    \begingroup%
+      \let\lst@UM\@empty%
+      \edef\@tempc{ps:\detokenize\expandafter{\the\lst@token }}%\edef
+      \ifrefundefined{\@tempc}%
+    \endgroup%
+    \sethyperlistings%
+}% \lsthk@OutputBox@H@@k@pscode
 \def\sethyperlistings {\global\let \hyperlistingsreference =\@tempc
      \endgroup \aftergroup \dohyperlistings }% after \hbox
 \def\dohyperlistings {\def\lst@alloverstyle ##1{\hyperlistings ##1}}
 \def\hyperlistings{%
     \setbox\@tempboxa\hbox%
     \bgroup%
-      \rlap{\hypersetup {linkcolor=.}\relax\fboxrule\z@%
+      \rlap{\hypersetup {linkcolor=red}\relax\fboxrule\z@%
       \hyperref[\hyperlistingsreference]{\boxframe{\wd\@tempboxa}{\ht\@tempboxa}{\dp\@tempboxa}}}%
       \unhbox\@tempboxa%
     \egroup%
@@ -202,15 +217,56 @@
     {\ltd@option{#2}{#2}{\prm{num}}{}}
     {\ltd@option{#2}{#2}{\prm{num}}{\ltd@textverb{#1}}}}%
 
-\let\plainllap\llap
-\newrobustcmd\macro@llap[1]{{\global\let\llap\plainllap
- \setbox0=\hbox\bgroup \macro@font\saved@macroname\egroup
- \ifdim\wd0>30mm
-    \hbox to\z@ \bgroup\hss \hbox to30mm{\unhcopy0\hss}\egroup
-    \edef\@tempa{\hskip\dimexpr\the\wd0-30mm}\global\everypar\expandafter{\the\expandafter\everypar
-                                                                           \@tempa \global\everypar{}}%
- \else \llap{\unhbox0}\fi}}
- \AtBeginEnvironment{macro}{\let\llap\macro@llap}
+\def\poe@csitem{%
+  \@ifstar
+    {\boolfalse{@tempswa}\poe@csitem@i}
+    {\booltrue{@tempswa}\poe@csitem@i}}
+\def\poe@csitem@i#1{%
+  \ifbool{@tempswa}
+    {\poe@item@ii{\textbackslash#1\hspace\marglistsep}{cod:}{#1}}
+    {\poe@item@ii{\textbackslash#1\hspace\marglistsep}{}{}}}
+
+\def\poe@psitem{%
+  \@ifstar
+    {\boolfalse{@tempswa}\poe@psitem@i}
+    {\booltrue{@tempswa}\poe@psitem@i}}
+\def\poe@psitem@i#1{%
+  \ifbool{@tempswa}
+    {\poe@item@ii{/#1\hspace\marglistsep}{ps:}{#1}}
+    {\poe@item@ii{/#1\hspace\marglistsep}{}{}}}
+
+\def\poe@item@ii#1#2#3{%
+  \ltd@itemsave
+  \ifhmode
+    \itemsep\z@
+  \else
+    \ltd@itembreak
+  \fi
+  \item[#1]%
+  \ltd@itemrest
+  \ifblank{#3}{}{\label{#2#3}\index{#3=\nxLcs{#3}}}\leavevmode}
+\newenvironment*{macro}
+  {\list{}{%
+     \setlength{\labelwidth}{\marglistwidth}%
+     \setlength{\labelsep}{0pt}%
+     \setlength{\leftmargin}{0pt}%
+     \renewcommand*{\makelabel}[1]{%
+       \hss\ltxsyntaxfont\ltxsyntaxlabelfont##1}}%
+   \let\csitem\poe@csitem
+   \let\psitem\poe@psitem}
+  {\endlist}
+\lstnewenvironment{macrocode}[1][]
+  {\lstset{firstnumber=last, language=[latex]tex, numbers=left, breaklines, numberstyle=\tiny\color{gray},basicstyle=\ttfamily\footnotesize,#1}}
+  {}
+%% \let\plainllap\llap
+%% \newrobustcmd\macro@llap[1]{{\global\let\llap\plainllap
+%%  \setbox0=\hbox\bgroup \macro@font\saved@macroname\egroup
+%%  \ifdim\wd0>30mm
+%%     \hbox to\z@ \bgroup\hss \hbox to30mm{\unhcopy0\hss}\egroup
+%%     \edef\@tempa{\hskip\dimexpr\the\wd0-30mm}\global\everypar\expandafter{\the\expandafter\everypar
+%%                                                                            \@tempa \global\everypar{}}%
+%%  \else \llap{\unhbox0}\fi}}
+%%  \AtBeginEnvironment{macro}{\let\llap\macro@llap} 
 \makeatother
 
 \newcommand*{\PSstring}[1]{{\normalfont\ttfamily(#1)}}
@@ -223,35 +279,35 @@
 \newcommand*{\paramvalue}[1]{\texttt{#1}}
 \newcommand*{\styleshape}[1]{\texttt{#1}}
 
-\def\xLcs#1{\sindex[doc]{#1@\nxLcs{#1}}\sindex[doc]{Macro!#1@\nxLcs{#1}}}
+\def\xLcs#1{\sindex[doc]{#1=\nxLcs{#1}}\sindex[doc]{Macro!#1=\nxLcs{#1}}}
 \def\Lcs#1{\nxLcs{#1}\xLcs{#1}}
 \def\nxLcs#1{\texttt{\textbackslash#1}}
 
-\def\LPack#1{\texttt{#1}\sindex[doc]{#1@\texttt{#1}}\sindex[doc]{Package!#1@\texttt{#1}}}
+\def\LPack#1{\texttt{#1}\sindex[doc]{#1=\texttt{#1}}\sindex[doc]{Package!#1=\texttt{#1}}}
 \def\nxLPack#1{\texttt{#1}}
 
 \def\Lkeyword#1{\texttt{#1}\xLkeyword{#1}}
-\def\xLkeyword#1{\sindex[doc]{#1@\texttt{#1}}\sindex[doc]{Keyword!#1@\texttt{#1}}}
+\def\xLkeyword#1{\sindex[doc]{#1=\texttt{#1}}\sindex[doc]{Keyword!#1=\texttt{#1}}}
 \def\nxLkeyword#1{\texttt{#1}}
 
-\def\xLoption#1{\sindex[doc]{#1@\texttt{#1}}\sindex[doc]{Package option!#1@\texttt{#1}}}
+\def\xLoption#1{\sindex[doc]{#1=\texttt{#1}}\sindex[doc]{Package option!#1=\texttt{#1}}}
 \def\Loption#1{\texttt{#1}\xLoption{#1}}
 
 \def\Lstyle#1{\texttt{#1}\xLstyle{#1}}
-\def\xLstyle#1{\sindex[doc]{#1@\texttt{#1}}\sindex[doc]{Style!#1@\texttt{#1}}}
+\def\xLstyle#1{\sindex[doc]{#1=\texttt{#1}}\sindex[doc]{Style!#1=\texttt{#1}}}
 \def\nxLstyle#1{\texttt{#1}}
 
 \def\Ldipole#1{\nxLcs{#1}\xLdipole{#1}}
-\def\xLdipole#1{\sindex[doc]{#1@\nxLcs{#1}}\sindex[doc]{Dipoles!#1@\nxLcs{#1}}}
+\def\xLdipole#1{\sindex[doc]{#1=\nxLcs{#1}}\sindex[doc]{Dipoles!#1=\nxLcs{#1}}}
 
 \def\Ltripole#1{\nxLcs{#1}\xLtripole{#1}}
-\def\xLtripole#1{\sindex[doc]{#1@\nxLcs{#1}}\sindex[doc]{Tripoles!#1@\nxLcs{#1}}}
+\def\xLtripole#1{\sindex[doc]{#1=\nxLcs{#1}}\sindex[doc]{Tripoles!#1=\nxLcs{#1}}}
 
 \def\Lfdipole#1{\nxLcs{#1}\xLfdipole{#1}}
-\def\xLfdipole#1{\sindex[doc]{#1@\nxLcs{#1}}\sindex[doc]{Fiber dipoles!#1@\nxLcs{#1}}}
+\def\xLfdipole#1{\sindex[doc]{#1=\nxLcs{#1}}\sindex[doc]{Fiber dipoles!#1=\nxLcs{#1}}}
 
 \def\Lfmultipole#1{\nxLcs{#1}\xLfmultipole{#1}}
-\def\xLfmultipole#1{\sindex[doc]{#1@\nxLcs{#1}}\sindex[doc]{Fiber multipoles!#1@\nxLcs{#1}}}
+\def\xLfmultipole#1{\sindex[doc]{#1=\nxLcs{#1}}\sindex[doc]{Fiber multipoles!#1=\nxLcs{#1}}}
 
 \newcommand{\dipoledesc}[1]{%
   \xLdipole{#1}\label{cmd:#1}\cmditem{#1}[Options](In)(Out)%
@@ -272,38 +328,18 @@
 
 \addtopsstyle{Fiber}{linecolor=DOrange,linewidth=1.5\pslinewidth}
 \addtopsstyle{Beam}{linewidth=1.5\pslinewidth}
-\DisableCrossrefs         
+%% \DisableCrossrefs         
+\def\MakePercentIgnore{\catcode`\%9\relax}
+\def\MakePercentComment{\catcode`\%14\relax}
+\def\DocInput#1{\MakePercentIgnore\input{#1}\MakePercentComment}
 \begin{document}
   \DocInput{pst-optexp.dtx}
+  \begin{otherlanguage}{english}
+    \printindex[idx]
+  \end{otherlanguage}
 \end{document}
 %</driver>
 % \fi
-%
-% \CheckSum{0}
-%
-% \CharacterTable
-%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
-%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
-%   Digits        \0\1\2\3\4\5\6\7\8\9
-%   Exclamation   \!     Double quote  \"     Hash (number) \#
-%   Dollar        \$     Percent       \%     Ampersand     \&
-%   Acute accent  \'     Left paren    \(     Right paren   \)
-%   Asterisk      \*     Plus          \+     Comma         \,
-%   Minus         \-     Point         \.     Solidus       \/
-%   Colon         \:     Semicolon     \;     Less than     \<
-%   Equals        \=     Greater than  \>     Question mark \?
-%   Commercial at \@     Left bracket  \[     Backslash     \\
-%   Right bracket \]     Circumflex    \^     Underscore    \_
-%   Grave accent  \`     Left brace    \{     Vertical bar  \|
-%   Right brace   \}     Tilde         \~}
-%
-%
-%
-% \GetFileInfo{pst-optexp.dtx}
-%
-% \DoNotIndex{\@}
-% \DoNotIndex{\newcommand,\newenvironment,\def,\edef,\let,\if,\ifx,\else,\fi,\@ifnextchar}
-% \DoNotIndex{\@wd,\@sz,\@ht}
 % 
 % \newif\ifGERMAN  \GERMANfalse
 % \newif\ifENGLISH \ENGLISHfalse
@@ -3550,46 +3586,10 @@
 %
 % \end{changelog}
 % 
-% \makeatletter
-% \bgroup
-% \newcommand*{\index@preamble}{}
-% \let\index@preamble=\relax
-% \renewcommand{\setindexpreamble}[1]{\def\index@preamble{#1}}
-% \renewcommand*{\idx@heading}{%
-%   \twocolumn[\idx@@heading{\indexname}]%
-%   \@mkboth{\indexname}{\indexname}%
-% }
-% \renewenvironment{theindex}{%
-%   \if@twocolumn
-%     \@restonecolfalse
-%   \else
-%     \@restonecoltrue
-%   \fi
-%   \columnseprule \z@
-%   \columnsep 35\p@
-%   \idx@heading%
-%   \index@preamble\par\nobreak
-%   \thispagestyle{\indexpagestyle}\parindent\z@
-%   \setlength{\parskip}{\z@ \@plus .3\p@}%
-%   \setlength{\parfillskip}{\z@ \@plus 1fil}%
-%   \let\item\@idxitem
-% }{%
-%   \if@restonecol\onecolumn\else\clearpage\fi
-% }
-% \renewcommand*\@idxitem{\par\hangindent 40\p@}
-% \renewcommand*\subitem{\@idxitem \hspace*{20\p@}}
-% \renewcommand*\subsubitem{\@idxitem \hspace*{30\p@}}
-% \renewcommand*\indexspace{%
-%   \par \vskip 10\p@ \@plus5\p@ \@minus3\p@\relax
-% }
-% \renewcommand*\indexname{Index}
 % \printindex[doc]
-% \egroup
-% \makeatother
-%
-% \StopEventually{}
 %
 % \section{Implementation}
+% \makeatletter \let\lsthk@OutputBox\lsthk@OutputBox@H@@k@code\makeatother
 %<*stylefile>
 %    \begin{macrocode}
 \RequirePackage{pstricks}
@@ -4356,8 +4356,9 @@
 }%
 %    \end{macrocode}
 %
-% \begin{macro}{\poe@getnode}
-% \begin{macro}{\poe@getcoor}
+% \begin{macro}
+% \csitem{poe@getnode}asdf
+% \csitem{poe@getcoor}asf
 %    \begin{macrocode}
 \def\poe@getnode#1#2\@nil{%
   \ifx(#1\relax%)
@@ -4376,9 +4377,9 @@
 }%
 %    \end{macrocode}
 % \end{macro}
-% \end{macro}
 % 
-% \begin{macro}{\drawfiber}
+% \begin{macro}
+% \csitem{drawfiber}~
 %    \begin{macrocode}
 \def\drawfiber{\drawfiber@{Fiber}}%
 \def\drawfiber@#1{%
@@ -4445,13 +4446,13 @@
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}{\backlayer}
-% \begin{macro}{\frontlayer}
+% \begin{macro}
+% \csitem{backlayer}
+% \csitem{frontlayer}~
 %    \begin{macrocode}
 \def\backlayer#1{\ifpoe@backlayer #1\fi\ignorespaces}
 \def\frontlayer#1{\ifpoe@frontlayer #1\fi\ignorespaces}
 %    \end{macrocode}
-% \end{macro}
 % \end{macro}
 %    
 %    \begin{macrocode}
@@ -4475,7 +4476,8 @@
 \define@boolkey[psset]{optexp}[poe@]{startvecabs}[true]{}%
 %    \end{macrocode}
 %
-% \begin{macro}{\custombeam}
+% \begin{macro}
+% \csitem{custombeam}
 % This is analogous to \cs{pscustom}. Inside \cs{custombeam}, sequential uses of \cs{draw*beam} can use the ending
 % points of previous calls and the lines are combined to a single one.
 %    \begin{macrocode}
@@ -4530,7 +4532,8 @@
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}{\begin@BeamObj}
+% \begin{macro}
+% \csitem{begin@BeamObj}~
 %    \begin{macrocode}
 \def\begin@BeamObj{%
   \addbefore@par{n=0}%
@@ -4550,7 +4553,8 @@
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}{\begin@WideBeamObj}
+% \begin{macro}
+%   \csitem{begin@WideBeamObj}~
 %    \begin{macrocode}
 \def\begin@WideBeamObj{%
   \addafter@par{style=Beam}%
@@ -4562,7 +4566,8 @@
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}{\begin@SingleBeamObj}
+% \begin{macro}
+%   \csitem{begin@SingleBeamObj}~
 %    \begin{macrocode}
 \def\begin@SingleBeamObj{%
   \addbefore@par{style=Beam}%
@@ -4570,10 +4575,11 @@
   \let\pst@linetype\pst@arrowtype
   \pst@addarrowdef%
   \let\poe@strokebeam\poe@strokesinglebeam
-}
+}%
 %    \end{macrocode}
 % \end{macro}
-% 
+% \printindex[idx]
+% \end{document}
 % \begin{macro}{\drawbeam}
 %    \begin{macrocode}
 \def\drawbeam{\pst@object{drawbeam}}%
@@ -5048,11 +5054,8 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\oenodeExt}
-% \begin{macro}{\oenodeIn}
-% \begin{macro}{\oenodeOut}
-% \begin{macro}{\oenodeCenter}
-% \begin{macro}{\oenodeLabel}
+% \begin{macro}{oenodeExt}
+% \myitem{oenodeIn}
 %    \begin{macrocode}
 \def\oenodeExt#1{\oenode{#1}{\poe@str@extnode@postfix}}%
 \def\oenodeIn#1{\oenode{#1}{1}}%
@@ -5065,10 +5068,6 @@
 \def\oenodeTrefA#1{\oenode{#1}{TrefA}}%
 \def\oenodeTrefB#1{\oenode{#1}{TrefB}}%
 %    \end{macrocode}
-% \end{macro}
-% \end{macro}
-% \end{macro}
-% \end{macro}
 % \end{macro}
 %
 % \begin{macro}{\newOptexpComp}
@@ -7130,7 +7129,7 @@
 %</stylefile> 
 %
 % \subsection{The Postscript Header file}
-%
+% \makeatletter \let\lsthk@OutputBox\lsthk@OutputBox@H@@k@pscode\makeatother
 %<*prolog>
 %    \begin{macrocode}
 /tx@OptexpDict 70 dict def
@@ -7204,7 +7203,7 @@ tx@OptexpDict begin
     /Y@B YG cy c@tmp div sub def
 %    \end{macrocode}
 % chirality:
-% test the order of the input points as a input angle $> 90°$
+% test the order of the input points as a input angle $> 90$°
 % doesn't really make sense.
 % So if chir $<= 0$ exchange the calculated coordinates of 
 % A and B and otherwise leave it as is
@@ -8891,5 +8890,4 @@ tx@OptexpDict begin
 end % tx@OptexpDict
 %    \end{macrocode}
 %</prolog> 
-% \Finale
 \endinput

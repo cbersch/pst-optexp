@@ -35,16 +35,16 @@ $(PACKAGE)-DE.dvi: $(PACKAGE).dtx $(PACKAGE).sty $(PACKAGE).tex $(PACKAGE).pro
 	$(LATEX) '\newcommand*{\mainlang}{ngerman}\input{$(basename $@).dtx}'
 	splitindex -m "" $(basename $@).idx
 	touch $(basename $@)-idx.idx
-	makeindex -s gind.ist -t $(basename $@)-idx.ilg -o $(basename $@)-idx.ind \
+	makeindex -s pst-optexp.ist -t $(basename $@)-idx.ilg -o $(basename $@)-idx.ind \
 		$(basename $@)-idx.idx
-	makeindex -s pst-doc.ist -t $(basename $@)-doc.ilg -o $(basename $@)-doc.ind \
+	makeindex -s pst-optexp.ist -t $(basename $@)-doc.ilg -o $(basename $@)-doc.ind \
 		$(basename $@)-doc.idx
 	$(LATEX) '\newcommand*{\mainlang}{ngerman}\input{$(basename $@).dtx}'
 	splitindex -m "" $(basename $@).idx
 	touch $(basename $@)-idx.idx
-	makeindex -s gind.ist -t $(basename $@)-idx.ilg -o $(basename $@)-idx.ind \
+	makeindex -s pst-optexp.ist -t $(basename $@)-idx.ilg -o $(basename $@)-idx.ind \
 		$(basename $@)-idx.idx
-	makeindex -s pst-doc.ist -t $(basename $@)-doc.ilg -o $(basename $@)-doc.ind \
+	makeindex -s pst-optexp.ist -t $(basename $@)-doc.ilg -o $(basename $@)-doc.ind \
 		$(basename $@)-doc.idx
 	$(LATEX) '\newcommand*{\mainlang}{ngerman}\input{$(basename $@).dtx}'
 	$(RM) $(basename $@).dtx
@@ -54,16 +54,16 @@ $(PACKAGE).dvi: $(PACKAGE).dtx $(PACKAGE).sty $(PACKAGE).tex $(PACKAGE).pro
 	$(LATEX) '\newcommand*{\mainlang}{english}\input{$(basename $@).dtx}'
 	splitindex -m "" $(basename $@).idx
 	touch $(basename $@)-idx.idx
-	makeindex -s gind.ist -t $(basename $@)-idx.ilg -o $(basename $@)-idx.ind \
+	makeindex -s pst-optexp.ist -t $(basename $@)-idx.ilg -o $(basename $@)-idx.ind \
 		$(basename $@)-idx.idx
-	makeindex -s pst-doc.ist -t $(basename $@)-doc.ilg -o $(basename $@)-doc.ind \
+	makeindex -s pst-optexp.ist -t $(basename $@)-doc.ilg -o $(basename $@)-doc.ind \
 		$(basename $@)-doc.idx
 	$(LATEX) '\newcommand*{\mainlang}{english}\input{$(basename $@).dtx}'
 	splitindex -m "" $(basename $@).idx
 	touch $(basename $@)-idx.idx
-	makeindex -s gind.ist -t $(basename $@)-idx.ilg -o $(basename $@)-idx.ind \
+	makeindex -s pst-optexp.ist -t $(basename $@)-idx.ilg -o $(basename $@)-idx.ind \
 		$(basename $@)-idx.idx
-	makeindex -s pst-doc.ist -t $(basename $@)-doc.ilg -o $(basename $@)-doc.ind \
+	makeindex -s pst-optexp.ist -t $(basename $@)-doc.ilg -o $(basename $@)-doc.ind \
 		$(basename $@)-doc.idx
 	$(LATEX) '\newcommand*{\mainlang}{english}\input{$(basename $@).dtx}'
 
