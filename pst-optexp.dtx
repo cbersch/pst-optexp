@@ -66,7 +66,7 @@
 \makeatletter \renewcommand*\SX@Info{}\makeatother 
 \definecolor{colKeys}{rgb}{0,0,0}
 \definecolor{colIdentifier}{rgb}{0,0,0}
-\colorlet{colComments}{DOrange!70!black}
+\colorlet{colComments}{DOrange!70!white}
 \definecolor{colString}{rgb}{0,0.5,0} 
 \usepackage{nicefrac}
 \usepackage{prettyref} 
@@ -83,6 +83,10 @@
   showstringspaces=false, %
   breaklines=true, %
   breakautoindent=true, captionpos=b, xleftmargin=1em,
+  identifierstyle=\color{colIdentifier}, %
+  keywordstyle=\color{colKeys}, %
+  stringstyle=\color{colString}, %
+  commentstyle=\color{colComments}, %
   rulecolor=\color{black!20}, 
   texcsstyle = [20]\color{DOrange},
   moretexcs = [20]{lens, optbox, oenode, oenodeIn, oenodeExt, oenodeOut,
@@ -95,10 +99,7 @@
     wdmcoupler, wdmsplitter, drawbeam, drawwidebeam, drawfiber,
     custombeam, frontlayer, backlayer, newOptexpDipole,
     newOptexpTripole, newOptexpFiberDipole},
-  explpreset={  identifierstyle=\color{colIdentifier}, %
-    keywordstyle=\color{colKeys}, %
-    stringstyle=\color{colString}, %
-    commentstyle=\color{colComments}, %
+  explpreset={%
     escapeinside={*}{*}, 
     pos=l,width=-99pt,overhang=0pt,hsep=5mm,
     varwidth,vsep=\bigskipamount,rframe={}}, }
@@ -238,13 +239,14 @@
      \setlength{\labelsep}{0pt}%
      \setlength{\leftmargin}{0pt}%
      \setlength{\itemsep}{0pt}%
+     \setlength{\parskip}{0pt}%
      \renewcommand*{\makelabel}[1]{%
        \hss\ltxsyntaxfont\ltxsyntaxlabelfont##1}}%
    \let\csitem\poe@csitem
    \let\psitem\poe@psitem}
   {\endlist}
 \lstnewenvironment{macrocode}[1][]
-  {\lstset{firstnumber=last, language=[latex]tex, numbers=left, breaklines, numberstyle=\tiny\color{gray},basicstyle=\ttfamily\footnotesize,#1}}
+  {\lstset{firstnumber=last, linerange=1-\%\ \ \ \ , includerangemarker=false, numbers=left, breaklines, numberstyle=\tiny\color{gray},basicstyle=\ttfamily\footnotesize,#1}}
   {}
 %% \let\plainllap\llap
 %% \newrobustcmd\macro@llap[1]{{\global\let\llap\plainllap
@@ -3579,7 +3581,7 @@
 % \section{Implementation}
 % \makeatletter\def\poe@labelprefix{cod:}\makeatother
 % \lstset{%
-%   texcsstyle = [21]\color{DOrange!50!white},
+%   texcsstyle = [21]\color{DOrange!70!white},
 %   moretexcs = [21]{poe@getnode,poe@getcoor,drawfiber,backlayer,frontlayer,custombeam,begin@BeamObj,begin@WideBeamObj,begin@SingleBeamObj,drawbeam,drawwidebeam,end@BeamObj,drawbeam@ii,poe@strokesinglebeam,drawwidebeam@ii,poe@strokewidebeam,poe@getcomps,poe@getplanenode,poe@getcomp,poe@drawInternalConnections,poe@checkcompname,poe@getlastcompname,oenode,oenodeExt,oenodeIn,oenodeOut,oenodeCenter,oenodeLabel,oenodeRotref,oenodeRefA,oenodeRefB,oenodeTrefA,oenodeTrefB,newOptexpComp,newOptexpCompAmb,optplane,begin@OptexpObj,begin@OptexpMultipole,end@OptexpObj,end@OptexpDipole,end@OptexpMultipole,addafter@par,newOptexpDipole,newOptexpTripole,newOptexpFiberDipole,newOptexpFiberQuadrupole,poe@newdipole,poe@newfiberdipole,poe@newtripole,poe@newfiberquadrupole,dipole@iimacro,fiberdipole@iimacro,tripole@iimacro,wdmsplitter,wdmcoupler,poe@calcNodes,poe@regNodes,poe@adjustTempNodes,poe@pnode@shiftedrot,poe@putlabelrelative,poe@putcomp,poe@putlabel,optdipole,opttripole,fibercollimator,poe@drawcomponent,oeifcnodes,tripole@nodes,dipole@nodes,fiberdipole@nodes,mirror@ref,mirror@nodes,mirror@comp,lens@ref,lens@nodes,lens@comp,pinhole@ref,pinhole@comp,beamsplitter@nodes,beamsplitter@comp,crystal@ref,crystal@comp,crystal@lamp,polarization@comp,optgrating@ref,optgrating@comp,optbox@ref,optbox@comp,optplate@ref,optplate@comp,optdetector@ref,optdetector@nodes,optdetector@comp,optretplate@ref,optretplate@comp,optdiode@ref,optdiode@comp,doveprism@nodes,doveprism@comp,pentaprism@nodes,pentaprism@comp,optprism@nodes,optprism@comp,rightangleprism@nodes,rightangleprism@comp,optfiber@iii,optmzm@ref,optmzm@comp,optfilter@ref,optfilter@comp,optamp@nodes,optamp@comp,polcontrol@comp,optisolator@ref,optisolator@comp,optfiberpolarizer@ref,optfiberpolarizer@comp,optswitch@ref,optswitch@comp,fiberdelayline@ref,fiberdelayline@comp,optcoupler@nodes,optcoupler@comp,wdmcoupler@nodes,wdmcoupler@comp,wdmsplitter@nodes,wdmsplitter@comp,fibercollimator@nodes,fibercollimator@comp}
 % }%
 %<*stylefile>
@@ -7222,10 +7224,9 @@
 %
 % \subsection{The Postscript Header file}
 % \makeatletter\def\poe@labelprefix{ps:}\makeatother
-% \lstset{language=Postscript}
-% \lstset{%
-%   keywordstyle = [21]\color{DOrange!50!white},
-%   morekeywords = [21]{strcat,nametostring,calcNodes,segLen,leftConvex,leftConcave,rightConvex,rightConcave,mwNode,FiberAngleB,FiberAngleA,ExtNode,GetInternalNodeNames,GetInternalBeamNodes,InitOptexpComp,ExchCoor,NewTempNodeComp,NewNodeComp,NewCurvedInt,NewPlaneInt,NewCompInt,@NewNode,NewOptexpComp,GetPlaneVec,GetPlaneCenter,TransformInVec,TransformStartPos,GetNearestPlane,PushAmbCompPlanesOnStack,GetNextPlane,TraceBeam,Drawbeam,sign,TraceWideBeam,FillWideBeam,isAmp,PrearrangePlanes,AdjustRelRot,PushAllPlanesOnStack,PlaneName,OrderNodes,NormalVec,SProd,VecAngle,VecAdd,ToVec,NormalizeVec,@ABVect,@ABDist,@InterLines,@GetCenter,RefractVec,ReflectVec,CurvedInterface,PlainInterface,TangentCrosspoint,NearestNodeTmp,NearestNode,RelFiberAngle,restoreBeamPoints,rearrangeSingleBeamPoints,rearrangeWideBeamPoints,getsubnode}
+% \lstset{language=Postscript,
+%   keywordstyle = [22]\color{DOrange!70!white},
+%   morekeywords = [22]{strcat,nametostring,calcNodes,segLen,leftConvex,leftConcave,rightConvex,rightConcave,mwNode,FiberAngleB,FiberAngleA,ExtNode,GetInternalNodeNames,GetInternalBeamNodes,InitOptexpComp,ExchCoor,NewTempNodeComp,NewNodeComp,NewCurvedInt,NewPlaneInt,NewCompInt,@NewNode,NewOptexpComp,GetPlaneVec,GetPlaneCenter,TransformInVec,TransformStartPos,GetNearestPlane,PushAmbCompPlanesOnStack,GetNextPlane,TraceBeam,Drawbeam,sign,TraceWideBeam,FillWideBeam,isAmp,PrearrangePlanes,AdjustRelRot,PushAllPlanesOnStack,PlaneName,OrderNodes,NormalVec,SProd,VecAngle,VecAdd,ToVec,NormalizeVec,@ABVect,@ABDist,@InterLines,@GetCenter,RefractVec,ReflectVec,CurvedInterface,PlainInterface,TangentCrosspoint,NearestNodeTmp,NearestNode,RelFiberAngle,restoreBeamPoints,rearrangeSingleBeamPoints,rearrangeWideBeamPoints,getsubnode}
 % }%
 % 
 %<*prolog>
