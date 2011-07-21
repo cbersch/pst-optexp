@@ -27,6 +27,8 @@
 %
 %<*driver>
 \documentclass[toc=flat, a4paper, DIV=9]{scrartcl} 
+\usepackage{doc}
+\setcounter{IndexColumns}{2} 
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc} 
 \usepackage{lmodern} 
@@ -60,19 +62,18 @@
 \colorlet{pdflinkcolor}{DOrange}
 \colorlet{pdfurlcolor}{DOrange}
 \colorlet{pdffilecolor}{DOrange}
-\colorlet{codelinkcolor}{DOrange!80}
-%%\usepackage{listings} 
 \usepackage{showexpl}
 \makeatletter \renewcommand*\SX@Info{}\makeatother 
 \definecolor{colKeys}{rgb}{0,0,0}
 \definecolor{colIdentifier}{rgb}{0,0,0}
-\colorlet{colComments}{DOrange!70!white}
+\colorlet{colComments}{DOrange!70!black}
 \definecolor{colString}{rgb}{0,0.5,0} 
-\usepackage{nicefrac}
-\usepackage{prettyref} 
-\newrefformat{sec}{Sec.~\ref{#1}} 
 \lstset{%
   language=[LaTeX]TeX, 
+  identifierstyle=\color{colIdentifier}, %
+  keywordstyle=\color{colKeys}, %
+  stringstyle=\color{colString}, %
+  commentstyle=\color{colComments}, %
   float=hbp,%
   basicstyle=\ttfamily\small, %
   columns=flexible, %
@@ -83,10 +84,6 @@
   showstringspaces=false, %
   breaklines=true, %
   breakautoindent=true, captionpos=b, xleftmargin=1em,
-  identifierstyle=\color{colIdentifier}, %
-  keywordstyle=\color{colKeys}, %
-  stringstyle=\color{colString}, %
-  commentstyle=\color{colComments}, %
   rulecolor=\color{black!20}, 
   texcsstyle = [20]\color{DOrange},
   moretexcs = [20]{lens, optbox, oenode, oenodeIn, oenodeExt, oenodeOut,
@@ -128,11 +125,10 @@
     \csname @safe@activestrue\endcsname%
     \expandafter\endgroup\csname @\ifcsname r@#1\endcsname second\else first\fi oftwo\endcsname
 }% \ifrefundefined
-\def\poe@labelprefix{cmd:}%
 \def\lsthk@OutputBox@H@@k{%
     \begingroup%
       \let\lst@UM\@empty%
-      \edef\@tempc{\poe@labelprefix\detokenize\expandafter{\the\lst@token }}%\edef
+      \edef\@tempc{cmd:\detokenize\expandafter{\the\lst@token }}%\edef
       \ifrefundefined{\@tempc}%
     \endgroup%
     \sethyperlistings%
@@ -143,8 +139,6 @@
 \def\hyperlistings{%
     \setbox\@tempboxa\hbox%
     \bgroup%
-%%      \rlap{\hypersetup {linkcolor=.}\relax\fboxrule\z@\fboxsep=0.8pt%
-%%      \hyperref[\hyperlistingsreference]{\hskip-0.8pt\colorbox{DOrange!10}{\boxframe{\wd\@tempboxa}{\ht\@tempboxa}{\dp\@tempboxa}}}}%
       \rlap{\hypersetup {linkcolor=.}\relax\fboxrule\z@%
       \hyperref[\hyperlistingsreference]{\boxframe{\wd\@tempboxa}{\ht\@tempboxa}{\dp\@tempboxa}}}%
       \unhbox\@tempboxa%
@@ -205,58 +199,15 @@
     {\ltd@option{#2}{#2}{\prm{num}}{}}
     {\ltd@option{#2}{#2}{\prm{num}}{\ltd@textverb{#1}}}}%
 
-\def\poe@csitem{%
-  \@ifstar
-    {\boolfalse{@tempswa}\poe@csitem@i}
-    {\booltrue{@tempswa}\poe@csitem@i}}
-\def\poe@csitem@i#1{%
-  \ifbool{@tempswa}
-    {\poe@item@ii{\textbackslash#1\hspace\marglistsep}{cod:}{#1}}
-    {\poe@item@ii{\textbackslash#1\hspace\marglistsep}{}{}}}
-
-\def\poe@psitem{%
-  \@ifstar
-    {\boolfalse{@tempswa}\poe@psitem@i}
-    {\booltrue{@tempswa}\poe@psitem@i}}
-\def\poe@psitem@i#1{%
-  \ifbool{@tempswa}
-    {\poe@item@ii{/#1\hspace\marglistsep}{ps:}{#1}}
-    {\poe@item@ii{/#1\hspace\marglistsep}{}{}}}
-
-\def\poe@item@ii#1#2#3{%
-  \ltd@itemsave
-  \ifhmode
-    \itemsep\z@
-  \else
-    \ltd@itembreak
-  \fi
-  \item[#1]%
-  \ltd@itemrest
-  \ifblank{#3}{}{\label{#2#3}\index{#3=\nxLcs{#3}}}\leavevmode}
-\newenvironment*{macro}
-  {\list{}{%
-     \setlength{\labelwidth}{\marglistwidth}%
-     \setlength{\labelsep}{0pt}%
-     \setlength{\leftmargin}{0pt}%
-     \setlength{\itemsep}{0pt}%
-     \setlength{\parskip}{0pt}%
-     \renewcommand*{\makelabel}[1]{%
-       \hss\ltxsyntaxfont\ltxsyntaxlabelfont##1}}%
-   \let\csitem\poe@csitem
-   \let\psitem\poe@psitem}
-  {\endlist}
-\lstnewenvironment{macrocode}[1][]
-  {\lstset{firstnumber=last, linerange=1-\%\ \ \ \ , includerangemarker=false, numbers=left, breaklines, numberstyle=\tiny\color{gray},basicstyle=\ttfamily\footnotesize,#1}}
-  {}
-%% \let\plainllap\llap
-%% \newrobustcmd\macro@llap[1]{{\global\let\llap\plainllap
-%%  \setbox0=\hbox\bgroup \macro@font\saved@macroname\egroup
-%%  \ifdim\wd0>30mm
-%%     \hbox to\z@ \bgroup\hss \hbox to30mm{\unhcopy0\hss}\egroup
-%%     \edef\@tempa{\hskip\dimexpr\the\wd0-30mm}\global\everypar\expandafter{\the\expandafter\everypar
-%%                                                                            \@tempa \global\everypar{}}%
-%%  \else \llap{\unhbox0}\fi}}
-%%  \AtBeginEnvironment{macro}{\let\llap\macro@llap} 
+\let\plainllap\llap
+\newrobustcmd\macro@llap[1]{{\global\let\llap\plainllap
+ \setbox0=\hbox\bgroup \macro@font\saved@macroname\egroup
+ \ifdim\wd0>30mm
+    \hbox to\z@ \bgroup\hss \hbox to30mm{\unhcopy0\hss}\egroup
+    \edef\@tempa{\hskip\dimexpr\the\wd0-30mm}\global\everypar\expandafter{\the\expandafter\everypar
+                                                                           \@tempa \global\everypar{}}%
+ \else \llap{\unhbox0}\fi}}
+ \AtBeginEnvironment{macro}{\let\llap\macro@llap}
 \makeatother
 
 \newcommand*{\PSstring}[1]{{\normalfont\ttfamily(#1)}}
@@ -318,10 +269,8 @@
 
 \addtopsstyle{Fiber}{linecolor=DOrange,linewidth=1.5\pslinewidth}
 \addtopsstyle{Beam}{linewidth=1.5\pslinewidth}
-%% \DisableCrossrefs         
-\def\MakePercentIgnore{\catcode`\%9\relax}
-\def\MakePercentComment{\catcode`\%14\relax}
-\def\DocInput#1{\MakePercentIgnore\input{#1}\MakePercentComment}
+\EnableCrossrefs
+\CodelineIndex
 \begin{document}
   \DocInput{pst-optexp.dtx}
   \begin{otherlanguage}{english}
@@ -330,6 +279,32 @@
 \end{document}
 %</driver>
 % \fi
+%
+% \CheckSum{0}
+%
+% \CharacterTable
+%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%   Digits        \0\1\2\3\4\5\6\7\8\9
+%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%   Dollar        \$     Percent       \%     Ampersand     \&
+%   Acute accent  \'     Left paren    \(     Right paren   \)
+%   Asterisk      \*     Plus          \+     Comma         \,
+%   Minus         \-     Point         \.     Solidus       \/
+%   Colon         \:     Semicolon     \;     Less than     \<
+%   Equals        \=     Greater than  \>     Question mark \?
+%   Commercial at \@     Left bracket  \[     Backslash     \\
+%   Right bracket \]     Circumflex    \^     Underscore    \_
+%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%   Right brace   \}     Tilde         \~}
+%
+%
+%
+% \GetFileInfo{pst-optexp.dtx}
+%
+% \DoNotIndex{\@}
+% \DoNotIndex{\newcommand,\newenvironment,\def,\edef,\let,\if,\ifx,\else,\fi,\@ifnextchar}
+% \DoNotIndex{\@wd,\@sz,\@ht}
 % 
 % \newif\ifGERMAN  \GERMANfalse
 % \newif\ifENGLISH \ENGLISHfalse
@@ -3576,14 +3551,46 @@
 %
 % \end{changelog}
 % 
+% \makeatletter
+% \bgroup
+% \newcommand*{\index@preamble}{}
+% \let\index@preamble=\relax
+% \renewcommand{\setindexpreamble}[1]{\def\index@preamble{#1}}
+% \renewcommand*{\idx@heading}{%
+%   \twocolumn[\idx@@heading{\indexname}]%
+%   \@mkboth{\indexname}{\indexname}%
+% }
+% \renewenvironment{theindex}{%
+%   \if@twocolumn
+%     \@restonecolfalse
+%   \else
+%     \@restonecoltrue
+%   \fi
+%   \columnseprule \z@
+%   \columnsep 35\p@
+%   \idx@heading%
+%   \index@preamble\par\nobreak
+%   \thispagestyle{\indexpagestyle}\parindent\z@
+%   \setlength{\parskip}{\z@ \@plus .3\p@}%
+%   \setlength{\parfillskip}{\z@ \@plus 1fil}%
+%   \let\item\@idxitem
+% }{%
+%   \if@restonecol\onecolumn\else\clearpage\fi
+% }
+% \renewcommand*\@idxitem{\par\hangindent 40\p@}
+% \renewcommand*\subitem{\@idxitem \hspace*{20\p@}}
+% \renewcommand*\subsubitem{\@idxitem \hspace*{30\p@}}
+% \renewcommand*\indexspace{%
+%   \par \vskip 10\p@ \@plus5\p@ \@minus3\p@\relax
+% }
+% \renewcommand*\indexname{Index}
 % \printindex[doc]
+% \egroup
+% \makeatother
+%
+% \StopEventually{}
 %
 % \section{Implementation}
-% \makeatletter\def\poe@labelprefix{cod:}\makeatother
-% \lstset{%
-%   texcsstyle = [21]\color{DOrange!70!white},
-%   moretexcs = [21]{poe@getnode,poe@getcoor,drawfiber,backlayer,frontlayer,custombeam,begin@BeamObj,begin@WideBeamObj,begin@SingleBeamObj,drawbeam,drawwidebeam,end@BeamObj,drawbeam@ii,poe@strokesinglebeam,drawwidebeam@ii,poe@strokewidebeam,poe@getcomps,poe@getplanenode,poe@getcomp,poe@drawInternalConnections,poe@checkcompname,poe@getlastcompname,oenode,oenodeExt,oenodeIn,oenodeOut,oenodeCenter,oenodeLabel,oenodeRotref,oenodeRefA,oenodeRefB,oenodeTrefA,oenodeTrefB,newOptexpComp,newOptexpCompAmb,optplane,begin@OptexpObj,begin@OptexpMultipole,end@OptexpObj,end@OptexpDipole,end@OptexpMultipole,addafter@par,newOptexpDipole,newOptexpTripole,newOptexpFiberDipole,newOptexpFiberQuadrupole,poe@newdipole,poe@newfiberdipole,poe@newtripole,poe@newfiberquadrupole,dipole@iimacro,fiberdipole@iimacro,tripole@iimacro,wdmsplitter,wdmcoupler,poe@calcNodes,poe@regNodes,poe@adjustTempNodes,poe@pnode@shiftedrot,poe@putlabelrelative,poe@putcomp,poe@putlabel,optdipole,opttripole,fibercollimator,poe@drawcomponent,oeifcnodes,tripole@nodes,dipole@nodes,fiberdipole@nodes,mirror@ref,mirror@nodes,mirror@comp,lens@ref,lens@nodes,lens@comp,pinhole@ref,pinhole@comp,beamsplitter@nodes,beamsplitter@comp,crystal@ref,crystal@comp,crystal@lamp,polarization@comp,optgrating@ref,optgrating@comp,optbox@ref,optbox@comp,optplate@ref,optplate@comp,optdetector@ref,optdetector@nodes,optdetector@comp,optretplate@ref,optretplate@comp,optdiode@ref,optdiode@comp,doveprism@nodes,doveprism@comp,pentaprism@nodes,pentaprism@comp,optprism@nodes,optprism@comp,rightangleprism@nodes,rightangleprism@comp,optfiber@iii,optmzm@ref,optmzm@comp,optfilter@ref,optfilter@comp,optamp@nodes,optamp@comp,polcontrol@comp,optisolator@ref,optisolator@comp,optfiberpolarizer@ref,optfiberpolarizer@comp,optswitch@ref,optswitch@comp,fiberdelayline@ref,fiberdelayline@comp,optcoupler@nodes,optcoupler@comp,wdmcoupler@nodes,wdmcoupler@comp,wdmsplitter@nodes,wdmsplitter@comp,fibercollimator@nodes,fibercollimator@comp}
-% }%
 %<*stylefile>
 %    \begin{macrocode}
 \RequirePackage{pstricks}
@@ -4350,9 +4357,8 @@
 }%
 %    \end{macrocode}
 %
-% \begin{macro}
-% \csitem{poe@getnode}
-% \csitem{poe@getcoor}~
+% \begin{macro}{\poe@getnode}
+% \begin{macro}{\poe@getcoor}
 %    \begin{macrocode}
 \def\poe@getnode#1#2\@nil{%
   \ifx(#1\relax%)
@@ -4371,9 +4377,9 @@
 }%
 %    \end{macrocode}
 % \end{macro}
+% \end{macro}
 % 
-% \begin{macro}
-% \csitem{drawfiber}~
+% \begin{macro}{\drawfiber}
 %    \begin{macrocode}
 \def\drawfiber{\drawfiber@{Fiber}}%
 \def\drawfiber@#1{%
@@ -4440,13 +4446,13 @@
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-% \csitem{backlayer}
-% \csitem{frontlayer}~
+% \begin{macro}{\backlayer}
+% \begin{macro}{\frontlayer}
 %    \begin{macrocode}
 \def\backlayer#1{\ifpoe@backlayer #1\fi\ignorespaces}
 \def\frontlayer#1{\ifpoe@frontlayer #1\fi\ignorespaces}
 %    \end{macrocode}
+% \end{macro}
 % \end{macro}
 %    
 %    \begin{macrocode}
@@ -4470,8 +4476,7 @@
 \define@boolkey[psset]{optexp}[poe@]{startvecabs}[true]{}%
 %    \end{macrocode}
 %
-% \begin{macro}
-% \csitem{custombeam}
+% \begin{macro}{\custombeam}
 % This is analogous to \cs{pscustom}. Inside \cs{custombeam}, sequential uses of \cs{draw*beam} can use the ending
 % points of previous calls and the lines are combined to a single one.
 %    \begin{macrocode}
@@ -4526,8 +4531,7 @@
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-% \csitem{begin@BeamObj}~
+% \begin{macro}{\begin@BeamObj}
 %    \begin{macrocode}
 \def\begin@BeamObj{%
   \addbefore@par{n=0}%
@@ -4547,8 +4551,7 @@
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \csitem{begin@WideBeamObj}~
+% \begin{macro}{\begin@WideBeamObj}
 %    \begin{macrocode}
 \def\begin@WideBeamObj{%
   \addafter@par{style=Beam}%
@@ -4560,8 +4563,7 @@
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \csitem{begin@SingleBeamObj}~
+% \begin{macro}{\begin@SingleBeamObj}
 %    \begin{macrocode}
 \def\begin@SingleBeamObj{%
   \addbefore@par{style=Beam}%
@@ -4569,12 +4571,11 @@
   \let\pst@linetype\pst@arrowtype
   \pst@addarrowdef%
   \let\poe@strokebeam\poe@strokesinglebeam
-}%
+}
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%  \csitem{drawbeam}~
+% \begin{macro}{\drawbeam}
 %    \begin{macrocode}
 \def\drawbeam{\pst@object{drawbeam}}%
 \def\drawbeam@i{%
@@ -4584,8 +4585,7 @@
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \csitem{drawwidebeam}~
+% \begin{macro}{\drawwidebeam}
 %    \begin{macrocode}
 \def\drawwidebeam{\pst@object{drawwidebeam}}%
 \def\drawwidebeam@i{%
@@ -4595,8 +4595,7 @@
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \csitem{end@BeamObj}~
+% \begin{macro}{\end@BeamObj}
 %    \begin{macrocode}
 \def\end@BeamObj{%
   \addto@pscode{ end}%
@@ -4611,8 +4610,7 @@
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \csitem{drawbeam@ii}~
+% \begin{macro}{\drawbeam@ii}
 %    \begin{macrocode}
 \def\drawbeam@ii{%
   \ifx\pslinestyle\@none\else
@@ -4637,8 +4635,7 @@
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \csitem{poe@strokesinglebeam}~
+% \begin{macro}{\poe@strokesinglebeam}
 %    \begin{macrocode}
 \def\poe@strokesinglebeam{%
   \addto@pscode{%
@@ -4655,8 +4652,7 @@
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \csitem{drawwidebeam@ii}~
+% \begin{macro}{\drawwidebeam@ii}
 %    \begin{macrocode}
 \def\drawwidebeam@ii{%
   \def\pst@fill##1{ gsave ##1 grestore }%
@@ -4719,8 +4715,7 @@
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \csitem{poe@strokewidebeam}~
+% \begin{macro}{\poe@strokewidebeam}
 %    \begin{macrocode}
 \def\poe@strokewidebeam{%
   \poe@strokesinglebeam
@@ -4729,8 +4724,7 @@
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \csitem{poe@getcomps}~
+% \begin{macro}{\poe@getcomps}
 %    \begin{macrocode}
 \def\poe@getcomps#1#2{%
   \def\poe@aftercomps{\addto@pscode{#1 \poe@comps }#2}%
@@ -4757,8 +4751,7 @@
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \csitem{poe@getplanenode}~
+% \begin{macro}{\poe@getplanenode}
 %    \begin{macrocode}
 \def\poe@getplanenode(#1){%
   \pst@@getcoor{#1}%
@@ -4772,8 +4765,7 @@
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \csitem{poe@getcomp}~
+% \begin{macro}{\poe@getcomp}
 %    \begin{macrocode}
 \def\poe@getcomp#1{%
    \edef\poe@comps{#1 \poe@comps}%
@@ -4781,8 +4773,7 @@
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \csitem{poe@drawInternalConnections}~
+% \begin{macro}{\poe@drawInternalConnections}
 %    \begin{macrocode}
 \def\poe@drawInternalConnections{%
   \ifpoe@beam
@@ -5022,8 +5013,7 @@
 \fi
 %    \end{macrocode}
 %
-% \begin{macro}
-%   \csitem{poe@checkcompname}~
+% \begin{macro}{\poe@checkcompname}
 %    \begin{macrocode}
 \def\poe@checkcompname#1{%
   \@expandtwoargs\in@{,#1,}{,\poe@complist,}%
@@ -5034,8 +5024,7 @@
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \csitem{poe@getlastcompname}~
+% \begin{macro}{\poe@getlastcompname}
 %    \begin{macrocode}
 \def\poe@getlastcompname{%
   \poe@str@basicname@prefix\expandafter\poe@getlastcompname@i \poe@complist,\relax,\@nil}%
@@ -5043,8 +5032,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}
-%   \csitem{oenode}~
+% \begin{macro}{\oenode}
 %    \begin{macrocode}
 \def\oenode#1#2{%
   \ifx.#1.%
@@ -5061,17 +5049,11 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}
-%   \csitem{oenodeExt}
-%   \csitem{oenodeIn}
-%   \csitem{oenodeOut}
-%   \csitem{oenodeCenter}
-%   \csitem{oenodeLabel}
-%   \csitem{oenodeRotref}
-%   \csitem{oenodeRefA}
-%   \csitem{oenodeRefB}
-%   \csitem{oenodeTrefA}
-%   \csitem{oenodeTrefB}~
+% \begin{macro}{\oenodeExt}
+% \begin{macro}{\oenodeIn}
+% \begin{macro}{\oenodeOut}
+% \begin{macro}{\oenodeCenter}
+% \begin{macro}{\oenodeLabel}
 %    \begin{macrocode}
 \def\oenodeExt#1{\oenode{#1}{\poe@str@extnode@postfix}}%
 \def\oenodeIn#1{\oenode{#1}{1}}%
@@ -5085,9 +5067,12 @@
 \def\oenodeTrefB#1{\oenode{#1}{TrefB}}%
 %    \end{macrocode}
 % \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
 %
-% \begin{macro}
-%   \csitem{newOptexpComp}~
+% \begin{macro}{\newOptexpComp}
 %    \begin{macrocode}
 \def\newOptexpComp{%
   \@ifnextchar[%]
@@ -5099,8 +5084,7 @@
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \csitem{newOptexpCompAmb}~
+% \begin{macro}{\newOptexpCompAmb}
 %    \begin{macrocode}
 \def\newOptexpCompAmb{%
   \@ifnextchar[%]
@@ -5112,8 +5096,7 @@
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \csitem{optplane}~
+% \begin{macro}{\optplane}
 %    \begin{macrocode}
 \def\optplane(#1)(#2)#3{%
   \pst@getcoor{#1}\pst@tempOrig%
@@ -5126,12 +5109,11 @@
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \csitem{begin@OptexpObj}
-%   \csitem{begin@OptexpMultipole}
-%   \csitem{end@OptexpObj}
-%   \csitem{end@OptexpDipole}
-%   \csitem{end@OptexpMultipole}~
+% \begin{macro}{\begin@OptexpObj}
+% \begin{macro}{\begin@OptexpMultipole}
+% \begin{macro}{\end@OptexpObj}
+% \begin{macro}{\end@OptexpDipole}
+% \begin{macro}{\end@OptexpMultipole}
 %    \begin{macrocode}
 \def\begin@OptexpObj{%
   \global\advance\poe@cnt by 1
@@ -5164,9 +5146,12 @@
 \let\end@OptexpMultipole\end@OptexpObj
 %    \end{macrocode}
 % \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
 % 
-% \begin{macro}
-%   \csitem{addafter@par}~
+% \begin{macro}{\addafter@par}
 % Command analog to \cs{addbefore@par} which is defined in pstricks.tex
 % \cs{addafter@par} inserts new options at the end of the current token register.
 % This can be useful to preset options that are not allowed to be changed by the
@@ -5195,11 +5180,10 @@
 %
 % 2) Provide a rather easy-to-use interface for the user to allow new user-defined elements
 %
-% \begin{macro}
-%   \csitem{newOptexpDipole}
-%   \csitem{newOptexpTripole}
-%   \csitem{newOptexpFiberDipole}
-%   \csitem{newOptexpFiberQuadrupole}~
+% \begin{macro}{\newOptexpDipole}
+% \begin{macro}{\newOptexpTripole}
+% \begin{macro}{\newOptexpFiberDipole}
+% \begin{macro}{\newOptexpFiberQuadrupole}
 %    \begin{macrocode}
 \def\newOptexpDipole{%
   \@ifnextchar[%]
@@ -5219,9 +5203,11 @@
 }%
 %    \end{macrocode}
 % \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
 % 
-% \begin{macro}
-%   \csitem{poe@newdipole}~
+% \begin{macro}{\poe@newdipole}
 %    \begin{macrocode}
 \def\poe@newdipole[#1]#2#3{%
   \@ifundefined{#2@i}{%
@@ -5250,8 +5236,7 @@
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \csitem{poe@newfiberdipole}~
+% \begin{macro}{\poe@newfiberdipole}
 %    \begin{macrocode}
 \def\poe@newfiberdipole[#1]#2#3{%
   \@ifundefined{#2@i}{%
@@ -5280,8 +5265,7 @@
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \csitem{poe@newtripole}~
+% \begin{macro}{\poe@newtripole}
 % Equivalent to \cs{poe@newdipole} for tripole objects.
 %    \begin{macrocode}
 \def\poe@newtripole[#1]#2#3{%
@@ -5318,8 +5302,7 @@
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \csitem{poe@newfiberquadrupole}~
+% \begin{macro}{\poe@newfiberquadrupole}
 %    \begin{macrocode}
 \def\poe@newfiberquadrupole[#1]#2#3{%
   \@ifundefined{#2@i}{%
@@ -5371,10 +5354,9 @@
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \csitem{dipole@iimacro}
-%   \csitem{fiberdipole@iimacro}
-%   \csitem{tripole@iimacro}~
+% \begin{macro}{\dipole@iimacro}
+% \begin{macro}{\fiberdipole@iimacro}
+% \begin{macro}{\tripole@iimacro}
 %    \begin{macrocode}
 \def\dipole@iimacro#1{%
   \dipole@iimacro@{#1}{\dipole@nodes}%
@@ -5406,9 +5388,10 @@
 \ignorespaces}%
 %    \end{macrocode}
 % \end{macro}
+% \end{macro}
+% \end{macro}
 % 
-% \begin{macro}
-%   \csitem{wdmsplitter}~
+% \begin{macro}{\wdmsplitter}
 %    \begin{macrocode}
 \def\wdmsplitter{\pst@object{wdmsplitter}}%
 \def\wdmsplitter@i(#1)(#2)(#3){%
@@ -5449,8 +5432,7 @@
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \csitem{wdmcoupler}~
+% \begin{macro}{\wdmcoupler}
 %    \begin{macrocode}
 \def\wdmcoupler{\pst@object{wdmcoupler}}%
 \def\wdmcoupler@i(#1)(#2)(#3){%
@@ -5491,8 +5473,7 @@
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \csitem{poe@calcNodes}
+% \begin{macro}{\poe@calcNodes}
 %   Some of the components need three points to be positioned. 
 %   These are:
 %
@@ -5527,8 +5508,7 @@
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \csitem{poe@regNodes}
+% \begin{macro}{\poe@regNodes}
 % If a macro needs only two points, they are equivalent to 
 % 'tempNode@A' and 'tempNode@B'. But for easier implementation of other 
 % macros the given points are assigned to the temporary nodes.
@@ -5540,8 +5520,7 @@
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \csitem{poe@adjustTempNodes}~
+% \begin{macro}{\poe@adjustTempNodes}
 %    \begin{macrocode}
 \def\poe@adjustTempNodes{%
     \pst@OptexpVerb{%
@@ -5557,8 +5536,7 @@
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \csitem{poe@pnode@shiftedrot}
+% \begin{macro}{\poe@pnode@shiftedrot}
 % Define a new node \#3 shifted by (\#1) relative to existing node \#2.
 % Aditionally rotate the new node by \#4 degree around existing node as origin.
 %    \begin{macrocode}
@@ -5577,8 +5555,7 @@
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \csitem{poe@putlabelrelative}
+% \begin{macro}{\poe@putlabelrelative}
 % Used to put the label for labelref=relative
 %    \begin{macrocode}
 \def\poe@putlabelrelative#1{%
@@ -5589,8 +5566,7 @@
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \csitem{poe@putcomp}
+% \begin{macro}{\poe@putcomp}
 % Place the component in argument \#1 and define a new node \cs{poe@nodeLabelShifted}
 % for positioning of the label
 %    \begin{macrocode}
@@ -5619,8 +5595,7 @@
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \csitem{poe@putlabel}
+% \begin{macro}{\poe@putlabel}
 % Positioning of the label depending on the reference coordinates.
 % Needs possibly a previously defined node \cs{poe@nodeLabelShifted} which
 % marks exactly the position of the label relative to the component.
@@ -5711,8 +5686,7 @@
 \newOptexpTripole[ref@angle=-135]{optprism}{}%
 %    \end{macrocode}
 %
-% \begin{macro}
-%   \csitem{optdipole}~
+% \begin{macro}{\optdipole}
 %    \begin{macrocode}
 \def\optdipole{\pst@object{optdipole}}
 \def\optdipole@i(#1)(#2)#3#4{%
@@ -5738,8 +5712,7 @@
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \csitem{opttripole}~
+% \begin{macro}{\opttripole}
 %    \begin{macrocode}
 \def\opttripole{\pst@object{opttripole}}
 \def\opttripole@i(#1)(#2)(#3)#4#5{%
@@ -5771,8 +5744,7 @@
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \csitem{fibercollimator}~
+% \begin{macro}{\fibercollimator}
 %    \begin{macrocode}
 \def\fibercollimator{\pst@object{fibercollimator}}
 \def\fibercollimator@i(#1)(#2){%
@@ -5853,8 +5825,7 @@
 \newOptexpFiberQuadrupole{optcoupler}{}
 %    \end{macrocode}
 %
-% \begin{macro}
-%   \csitem{poe@drawcomponent}
+% \begin{macro}{\poe@drawcomponent}
 % This macro is called by every unit
 % The first parameter contains the label, the second one the drawing code
 %    \begin{macrocode}
@@ -5938,8 +5909,7 @@
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \csitem{oeifcnodes}~
+% \begin{macro}{\oeifcnodes}
 %    \begin{macrocode}
 \def\oeifcnodes{\pst@object{oeifcnodes}}
 \def\oeifcnodes@i#1{%
@@ -5957,8 +5927,7 @@
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \csitem{tripole@nodes}~
+% \begin{macro}{\tripole@nodes}
 %    \begin{macrocode}
 \def\tripole@nodes{%
   \newOptexpComp{ {0 0} {1 0} refl {NewPlaneInt} 1}%
@@ -5966,8 +5935,7 @@
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \csitem{dipole@nodes}~
+% \begin{macro}{\dipole@nodes}
 %    \begin{macrocode}
 \def\dipole@nodes{%
   \newOptexpComp{%
@@ -5980,8 +5948,7 @@
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \csitem{fiberdipole@nodes}~
+% \begin{macro}{fiberdipole@nodes}
 %    \begin{macrocode}
 \def\fiberdipole@nodes{%
   \pnode(! \poe@dict{@@x0 @@x sub 0}){\oenodeIn{}}
@@ -5991,8 +5958,7 @@
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \csitem{mirror@ref}~
+% \begin{macro}{\mirror@ref}
 %    \begin{macrocode}
 \def\mirror@ref{%
   \ifx\poe@key@mirrortype\poe@str@mirrortype@piezo
@@ -6008,8 +5974,7 @@
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \csitem{mirror@nodes}~
+% \begin{macro}{\mirror@nodes}
 %    \begin{macrocode}
 \def\mirror@nodes{%
    \newOptexpComp{{ 0 0 } 
@@ -6023,8 +5988,7 @@
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \csitem{mirror@comp}~
+% \begin{macro}{\mirror@comp}
 %    \begin{macrocode}
 \def\mirror@comp{%
   \edef\@ht{\poe@key@mirrorwidth\space\pst@number\psyunit mul 0.5 mul }%
@@ -6102,8 +6066,7 @@
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \csitem{lens@ref}~
+% \begin{macro}{\lens@ref}
 %    \begin{macrocode}
 \def\lens@ref{%
   \pst@OptexpVerb{/@@y \poe@key@lensheight\space 0.5 mul def}%
@@ -6111,8 +6074,7 @@
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \csitem{lens@nodes}~
+% \begin{macro}{\lens@nodes}
 %    \begin{macrocode}
 \def\lens@nodes{%
   \edef\@lens@th{0}% 
@@ -6139,8 +6101,7 @@
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \csitem{lens@comp}~
+% \begin{macro}{\lens@comp}
 %    \begin{macrocode}
 \def\lens@comp{%
   \addbefore@par{linejoin=1}%
@@ -6257,8 +6218,7 @@
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \csitem{pinhole@ref}~
+% \begin{macro}{\pinhole@ref}
 %    \begin{macrocode}
 \def\pinhole@ref{%
   \pst@OptexpVerb{/@@y \poe@key@outerheight\space 0.5 mul def}%
@@ -6266,8 +6226,7 @@
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \csitem{pinhole@comp}~
+% \begin{macro}{\pinhole@comp}
 %    \begin{macrocode}
 \def\pinhole@comp{%
   \ifdim\poe@key@phwidth pt=0pt
@@ -6291,8 +6250,7 @@
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \csitem{beamsplitter@nodes}~
+% \begin{macro}{\beamsplitter@nodes}
 %    \begin{macrocode}
 \def\beamsplitter@nodes{%
   \edef\@bs@wd{\poe@key@bssize\space 2.0 div }%
@@ -6316,8 +6274,7 @@
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \csitem{beamsplitter@comp}~
+% \begin{macro}{\beamsplitter@comp}
 %    \begin{macrocode}
 \def\beamsplitter@comp{%
   \edef\@bs@wd{\poe@key@bssize\space 2.0 div }%
@@ -6331,8 +6288,7 @@
 %
 %
 %
-% \begin{macro}
-%   \csitem{crystal@ref}~
+% \begin{macro}{\crystal@ref}
 %    \begin{macrocode}
 \def\crystal@ref{%
   \let\poe@key@optboxwidth\poe@key@crystalwidth
@@ -6342,8 +6298,7 @@
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \csitem{crystal@comp}~
+% \begin{macro}{\crystal@comp}
 %    \begin{macrocode}
 \def\crystal@comp{%
   \edef\@wd{\poe@key@crystalwidth\space 0.5 mul }
@@ -6372,8 +6327,7 @@
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \csitem{crystal@lamp}~
+% \begin{macro}{\crystal@lamp}
 %    \begin{macrocode}
 \def\crystal@lamp{%
   \psset{linewidth=0.6\pslinewidth}
@@ -6394,8 +6348,7 @@
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \csitem{polarization@comp}~
+% \begin{macro}{\polarization@comp}
 %    \begin{macrocode}
 \def\polarization@comp{%
   \edef\@pol@size{\poe@key@polsize\space 0.5 mul }%
@@ -6421,8 +6374,7 @@
 %
 %
 %
-% \begin{macro}
-%   \csitem{optgrating@ref}~
+% \begin{macro}{\optgrating@ref}
 %    \begin{macrocode}
 \def\optgrating@ref{%
   \pst@OptexpVerb{/@@y0 \poe@key@gratingheight\space def
@@ -6431,8 +6383,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}
-%   \csitem{optgrating@comp}~
+% \begin{macro}{\optgrating@comp}
 %    \begin{macrocode}
 \def\optgrating@comp{%
   \edef\@cnt{\poe@key@gratingcount\space}%
@@ -6468,8 +6419,7 @@
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \csitem{optbox@ref}~
+% \begin{macro}{\optbox@ref}
 %    \begin{macrocode}
 \def\optbox@ref{%
   \pst@OptexpVerb{%
@@ -6483,8 +6433,7 @@
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \csitem{optbox@comp}~
+% \begin{macro}{\optbox@comp}
 %    \begin{macrocode}
 \def\optbox@comp{%
   \edef\@wd{\poe@key@optboxwidth\space 0.5 mul }
@@ -6498,8 +6447,7 @@
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \csitem{optplate@ref}~
+% \begin{macro}{\optplate@ref}
 %    \begin{macrocode}
 \def\optplate@ref{%
   \pst@OptexpVerb{/@@y \poe@key@plateheight\space 0.5 mul def }%
@@ -6507,8 +6455,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}
-%   \csitem{optplate@comp}~
+% \begin{macro}{\optplate@comp}
 %    \begin{macrocode}
 \def\optplate@comp{%
    \psline[linewidth=\poe@key@platelinewidth](! \poe@dict{0 @@y neg})(! \poe@dict{0 @@y})
@@ -6516,8 +6463,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}
-%   \csitem{optdetector@ref}~
+% \begin{macro}{\optdetector@ref}
 %    \begin{macrocode}
 \def\optdetector@ref{%
   \pst@OptexpVerb{/@@x0 \poe@key@detsize\space 0.5 mul def}%
@@ -6528,8 +6474,7 @@
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \csitem{optdetector@nodes}~
+% \begin{macro}{\optdetector@nodes}
 %    \begin{macrocode}
 \def\optdetector@nodes{%
   \newOptexpComp{{ 0 0} { 0 1 } refl {NewPlaneInt} 1 }%
@@ -6542,8 +6487,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}
-%   \csitem{optdetector@comp}~
+% \begin{macro}{\optdetector@comp}
 %    \begin{macrocode}
 \def\optdetector@comp{%
    \pnode(\oenodeRefB{}){\oenodeIn{}}
@@ -6571,8 +6515,7 @@
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \csitem{optretplate@ref}~
+% \begin{macro}{\optretplate@ref}
 %    \begin{macrocode}
 \def\optretplate@ref{%
    \pst@OptexpVerb{%
@@ -6583,8 +6526,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}
-%   \csitem{optretplate@comp}~
+% \begin{macro}{\optretplate@comp}
 %    \begin{macrocode}
 \def\optretplate@comp{%
    \edef\@ht{\poe@key@plateheight\space 0.5 mul }%
@@ -6595,8 +6537,7 @@
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \csitem{optdiode@ref}~
+% \begin{macro}{\optdiode@ref}
 %    \begin{macrocode}
 \def\optdiode@ref{%
    \pst@OptexpVerb{\poe@key@optdiodesize\space 0.5 mul dup /@@y ED /@@x ED }%
@@ -6604,8 +6545,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}
-%   \csitem{optdiode@comp}~
+% \begin{macro}{\optdiode@comp}
 %    \begin{macrocode}
 \def\optdiode@comp{%
    \edef\@sz{\poe@key@optdiodesize\space}%
@@ -6618,8 +6558,7 @@
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \csitem{doveprism@nodes}~
+% \begin{macro}{\doveprism@nodes}
 %    \begin{macrocode}
 \def\doveprism@nodes{%
   \newOptexpComp{ {\poe@key@doveprismsize\space neg 0} {1 1} trans {NewPlaneInt}
@@ -6629,8 +6568,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}
-%   \csitem{doveprism@comp}~
+% \begin{macro}{\doveprism@comp}
 %    \begin{macrocode}
 \def\doveprism@comp{%
    \edef\@ht{\poe@key@doveprismsize\space 0.5 mul }%
@@ -6643,8 +6581,7 @@
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \csitem{pentaprism@nodes}~
+% \begin{macro}{\pentaprism@nodes}
 %    \begin{macrocode}
 \def\pentaprism@nodes{%
   \edef\@pp@size{\poe@key@pentaprismsize\space}%
@@ -6658,8 +6595,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}
-%   \csitem{pentaprism@comp}~
+% \begin{macro}{\pentaprism@comp}
 %    \begin{macrocode}
 \def\pentaprism@comp{%
    \edef\@pp@size{\poe@key@pentaprismsize\space}%
@@ -6675,8 +6611,7 @@
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \csitem{optprism@nodes}~~
+% \begin{macro}{\optprism@nodes}
 %    \begin{macrocode}
 \def\optprism@nodes{%
    \edef\@sz{\poe@key@prismsize\space}%
@@ -6688,8 +6623,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}
-%   \csitem{optprism@comp}~
+% \begin{macro}{\optprism@comp}
 %    \begin{macrocode}
 \def\optprism@comp{%
    \edef\@sz{\poe@key@prismsize\space}%
@@ -6702,8 +6636,7 @@
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \csitem{rightangleprism@nodes}~
+% \begin{macro}{\rightangleprism@nodes}
 %    \begin{macrocode}
 \def\rightangleprism@nodes{%
   \edef\@sz{\poe@key@raprismsize\space 0.5 mul }%
@@ -6716,8 +6649,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}
-%   \csitem{rightangleprism@comp}~
+% \begin{macro}{\rightangleprism@comp}
 %    \begin{macrocode}
 \def\rightangleprism@comp{%
   \edef\@sz{\poe@key@raprismsize\space 0.5 mul }%
@@ -6731,8 +6663,7 @@
 % 
 % \subsubsection{Fiber Optics}
 %
-% \begin{macro}
-%   \csitem{optfiber@iii}~
+% \begin{macro}{\optfiber@iii}
 %    \begin{macrocode}
 \def\optfiber@iii{%
    \edef\@f@cnt{\poe@key@fiberloops\space}%
@@ -6748,8 +6679,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}
-%   \csitem{optmzm@ref}~
+% \begin{macro}{\optmzm@ref}
 %    \begin{macrocode}
 \def\optmzm@ref{%
   \pst@OptexpVerb{\poe@key@optmzmsize\space dup 0.8 mul /@@x ED 0.5 mul /@@y ED }%
@@ -6757,8 +6687,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}
-%   \csitem{optmzm@comp}~
+% \begin{macro}{\optmzm@comp}
 %    \begin{macrocode}
 \def\optmzm@comp{%
   \def\@wd{\poe@key@optmzmsize\space 0.8 mul }%
@@ -6777,8 +6706,7 @@
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \csitem{optfilter@ref}~
+% \begin{macro}{\optfilter@ref}
 %    \begin{macrocode}
 \def\optfilter@ref{%
   \pst@OptexpVerb{\poe@key@filtersize\space 0.5 mul dup /@@y ED /@@x ED }%
@@ -6786,8 +6714,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}
-%   \csitem{optfilter@comp}~
+% \begin{macro}{\optfilter@comp}
 %    \begin{macrocode}
 \def\optfilter@comp{%
   \edef\@sz{\poe@key@filtersize\space 0.5 mul }%
@@ -6851,8 +6778,7 @@
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \csitem{optamp@nodes}~
+% \begin{macro}{\optamp@nodes}
 %    \begin{macrocode}
 \def\optamp@nodes{%
   \edef\@sz{\poe@key@optampsize\space 0.5 mul }%
@@ -6863,8 +6789,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}
-%   \csitem{optamp@comp}~
+% \begin{macro}{\optamp@comp}
 %    \begin{macrocode}
 \def\optamp@comp{%
   \edef\@sz{\poe@key@optampsize\space 0.5 mul }%
@@ -6874,8 +6799,7 @@
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \csitem{polcontrol@comp}~
+% \begin{macro}{\polcontrol@comp}
 %    \begin{macrocode}
 \def\polcontrol@comp{%
    \edef\@sz{\poe@key@polcontrolsize\space}%
@@ -6887,8 +6811,7 @@
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \csitem{optisolator@ref}~
+% \begin{macro}{\optisolator@ref}
 %    \begin{macrocode}
 \def\optisolator@ref{%
   \pst@OptexpVerb{\poe@key@isolatorsize\space dup 0.8 mul /@@x ED 0.5 mul /@@y ED }%
@@ -6896,8 +6819,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}
-%   \csitem{optisolator@comp}~
+% \begin{macro}{\optisolator@comp}
 %    \begin{macrocode}
 \def\optisolator@comp{%
   \edef\@ht{\poe@key@isolatorsize\space 0.5 mul }%
@@ -6908,8 +6830,7 @@
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \csitem{optfiberpolarizer@ref}~
+% \begin{macro}{\optfiberpolarizer@ref}
 %    \begin{macrocode}
 \def\optfiberpolarizer@ref{%
   \pst@OptexpVerb{\poe@key@fiberpolsize\space dup 0.8 mul /@@x ED 0.5 mul /@@y ED }%
@@ -6917,8 +6838,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}
-%   \csitem{optfiberpolarizer@comp}~
+% \begin{macro}{\optfiberpolarizer@comp}
 %    \begin{macrocode}
 \def\optfiberpolarizer@comp{%
   \edef\@ht{\poe@key@fiberpolsize\space 0.5 mul }%
@@ -6929,8 +6849,7 @@
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \csitem{optswitch@ref}~
+% \begin{macro}{\optswitch@ref}
 %    \begin{macrocode}
 \def\optswitch@ref{%
   \pst@OptexpVerb{\poe@key@switchsize\space 0.5 mul dup /@@y ED /@@x ED }%
@@ -6938,8 +6857,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}
-%   \csitem{optswitch@comp}~
+% \begin{macro}{\optswitch@comp}
 %    \begin{macrocode}
 \def\optswitch@comp{%
   \edef\@sz{\poe@key@switchsize\space 0.5 mul }%
@@ -6973,8 +6891,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}
-%   \csitem{fiberdelayline@ref}~
+% \begin{macro}{\fiberdelayline@ref}
 %    \begin{macrocode}
 \def\fiberdelayline@ref{%
   \pst@OptexpVerb{\poe@key@fdlsize\space dup 0.8 mul /@@x ED 0.5 mul /@@y ED }%
@@ -6982,8 +6899,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}
-%   \csitem{fiberdelayline@comp}~
+% \begin{macro}{\fiberdelayline@comp}
 %    \begin{macrocode}
 \def\fiberdelayline@comp{%
   \def\@wd{\poe@key@fdlsize\space 0.8 mul }%
@@ -6994,8 +6910,7 @@
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \csitem{optcoupler@nodes}~
+% \begin{macro}{\optcoupler@nodes}
 %    \begin{macrocode}
 \def\optcoupler@nodes{%
   \edef\@sz{\poe@key@couplersize\space}%
@@ -7023,8 +6938,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}
-%   \csitem{optcoupler@comp}~
+% \begin{macro}{\optcoupler@comp}
 %    \begin{macrocode}
 \def\optcoupler@comp{%
   \edef\@sz{\poe@key@couplersize\space}%
@@ -7058,8 +6972,7 @@
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \csitem{wdmcoupler@nodes}~
+% \begin{macro}{\wdmcoupler@nodes}
 %    \begin{macrocode}
 \def\wdmcoupler@nodes{%
   \edef\@sz{\poe@key@couplersize\space}%
@@ -7090,8 +7003,7 @@
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \csitem{wdmcoupler@comp}~
+% \begin{macro}{\wdmcoupler@comp}
 %    \begin{macrocode}
 \def\wdmcoupler@comp{%
   \edef\@sz{\poe@key@couplersize\space}%
@@ -7128,8 +7040,7 @@
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \csitem{wdmsplitter@nodes}~
+% \begin{macro}{\wdmsplitter@nodes}
 %    \begin{macrocode}
 \def\wdmsplitter@nodes{%
   \edef\@sz{\poe@key@couplersize\space}%
@@ -7160,8 +7071,7 @@
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \csitem{wdmsplitter@comp}~
+% \begin{macro}{\wdmsplitter@comp}
 %    \begin{macrocode}
 \def\wdmsplitter@comp{%
   \edef\@sz{\poe@key@couplersize\space}%
@@ -7198,8 +7108,7 @@
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \csitem{fibercollimator@nodes}~
+% \begin{macro}{\fibercollimator@nodes}
 %    \begin{macrocode}
 \def\fibercollimator@nodes{%
    \def\@sz{\poe@key@fibercolsize\space 0.5 mul }%
@@ -7210,8 +7119,7 @@
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \csitem{fibercollimator@comp}~
+% \begin{macro}{\fibercollimator@comp}
 %    \begin{macrocode}
 \def\fibercollimator@comp{%
    \def\@sz{\poe@key@fibercolsize\space 0.5 mul }%
@@ -7223,19 +7131,13 @@
 %</stylefile> 
 %
 % \subsection{The Postscript Header file}
-% \makeatletter\def\poe@labelprefix{ps:}\makeatother
-% \lstset{language=Postscript,
-%   keywordstyle = [22]\color{DOrange!70!white},
-%   morekeywords = [22]{strcat,nametostring,calcNodes,segLen,leftConvex,leftConcave,rightConvex,rightConcave,mwNode,FiberAngleB,FiberAngleA,ExtNode,GetInternalNodeNames,GetInternalBeamNodes,InitOptexpComp,ExchCoor,NewTempNodeComp,NewNodeComp,NewCurvedInt,NewPlaneInt,NewCompInt,@NewNode,NewOptexpComp,GetPlaneVec,GetPlaneCenter,TransformInVec,TransformStartPos,GetNearestPlane,PushAmbCompPlanesOnStack,GetNextPlane,TraceBeam,Drawbeam,sign,TraceWideBeam,FillWideBeam,isAmp,PrearrangePlanes,AdjustRelRot,PushAllPlanesOnStack,PlaneName,OrderNodes,NormalVec,SProd,VecAngle,VecAdd,ToVec,NormalizeVec,@ABVect,@ABDist,@InterLines,@GetCenter,RefractVec,ReflectVec,CurvedInterface,PlainInterface,TangentCrosspoint,NearestNodeTmp,NearestNode,RelFiberAngle,restoreBeamPoints,rearrangeSingleBeamPoints,rearrangeWideBeamPoints,getsubnode}
-% }%
-% 
+%
 %<*prolog>
 %    \begin{macrocode}
 /tx@OptexpDict 70 dict def
 tx@OptexpDict begin
 %    \end{macrocode}
-% \begin{macro}
-%   \psitem{strcat}~
+% \begin{macro}{strcat}
 %    \begin{macrocode}
 % Concatenate two strings.
 /strcat {
@@ -7247,8 +7149,7 @@ tx@OptexpDict begin
 } bind def
 %    \end{macrocode}
 % \end{macro}
-% \begin{macro}
-%   \psitem{nametostring}
+% \begin{macro}{nametostring}
 %    Convert a literal name to string.
 %    \begin{macrocode}
 /nametostring {
@@ -7257,8 +7158,7 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \psitem{calcNodes}
+% \begin{macro}{calcNodes}
 % XB YB  XA YA XG YG are on the stack.
 %    \begin{macrocode}
 /calcNodes {
@@ -7305,7 +7205,7 @@ tx@OptexpDict begin
     /Y@B YG cy c@tmp div sub def
 %    \end{macrocode}
 % chirality:
-% test the order of the input points as a input angle $> 90$°
+% test the order of the input points as a input angle $> 90°$
 % doesn't really make sense.
 % So if chir $<= 0$ exchange the calculated coordinates of 
 % A and B and otherwise leave it as is
@@ -7322,8 +7222,7 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}
-%   \psitem{segLen}
+% \begin{macro}{segLen}
 % Calculate the height a1 of a pole cap. The circle radius and the height are on the stack.
 %    \begin{macrocode}
 /segLen {
@@ -7332,8 +7231,7 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}
-%   \psitem{leftConvex}
+% \begin{macro}{leftConvex}
 % Calculate some parameters for the left plane of a convex lens.
 % Defines /a1 as the pole height and /ArcL which are used later in the code.
 %
@@ -7353,8 +7251,7 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \psitem{leftConcave}
+% \begin{macro}{leftConcave}
 % Analogous to /leftConvex.
 % height R1 -> y |R1| alpha\textunderscore bottom alpha\textunderscore top R1
 %    \begin{macrocode}
@@ -7372,8 +7269,7 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \psitem{rightConvex}
+% \begin{macro}{rightConvex}
 % Analogous to /leftConvex, /a2 and /ArcR are defined
 % height R2 -> y |R2| alpha\textunderscore bottom alpha\textunderscore top R2
 %    \begin{macrocode}
@@ -7390,8 +7286,7 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \psitem{rightConcave}
+% \begin{macro}{rightConcave}
 % Analogous to /rightConvex
 % height R2 -> y |R2| alpha\textunderscore bottom alpha\textunderscore top R2
 %    \begin{macrocode}
@@ -7409,8 +7304,7 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \psitem{mwNode}
+% \begin{macro}{mwNode}
 % Calculate the center between two nodes 
 % x1 y1 x2 y2 -> (x1+x2)/2 (y1+y2)/2
 %    \begin{macrocode}
@@ -7420,8 +7314,7 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \psitem{FiberAngleB}
+% \begin{macro}{FiberAngleB}
 % Calculate angle of a line from nodeA to nodeB. nodeA and nodeB must be given as literal names
 % nodeB nodeA -> angle
 %    \begin{macrocode}
@@ -7431,8 +7324,7 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \psitem{FiberAngleA}
+% \begin{macro}{FiberAngleA}
 % Calculate angle of line from nodeB to nodeA
 % nodeB nodeA -> angle
 %    \begin{macrocode}
@@ -7442,8 +7334,7 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \psitem{ExtNode}~
+% \begin{macro}{ExtNode}
 %    \begin{macrocode}
 /ExtNode {%
     @@x0 @xref @@x mul add 
@@ -7452,8 +7343,7 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \psitem{GetInternalNodeNames}
+% \begin{macro}{GetInternalNodeNames}
 % Push all internal node names of (basicnodename) on the stack.
 % (basicnodename) reverse GetInternalNodeNames
 %    \begin{macrocode}
@@ -7484,8 +7374,7 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \psitem{GetInternalBeamNodes}
+% \begin{macro}{GetInternalBeamNodes}
 % (basicnodename) reverse -> x\_n y\_n \ldots x\_1 y\_1 (if reverse = false)
 %    \begin{macrocode}
 /GetInternalBeamNodes {
@@ -7495,8 +7384,7 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \psitem{InitOptexpComp}
+% \begin{macro}{InitOptexpComp}
 % Initialize some global variables for positioning of external nodes
 % This is called at the beginning of every component
 %    \begin{macrocode}
@@ -7511,8 +7399,7 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \psitem{ExchCoor}
+% \begin{macro}{ExchCoor}
 % xa ya xb yb ExchCoor true/false
 %    \begin{macrocode}
 /ExchCoor {
@@ -7535,8 +7422,7 @@ tx@OptexpDict begin
 %
 % Added for version 3.0
 %
-% \begin{macro}
-%   \psitem{NewTempNodeComp}
+% \begin{macro}{NewTempNodeComp}
 % \{x y\} \{dx dy\} Name \{scaling procedure\}
 %    \begin{macrocode}
 /NewTempNodeComp {
@@ -7563,8 +7449,7 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \psitem{NewNodeComp}~
+% \begin{macro}{NewNodeComp}
 %    \begin{macrocode}
 /NewNodeComp {
     [ 5 1 roll trans {NewPlaneInt} 1 5 3 roll false NewOptexpComp
@@ -7572,8 +7457,7 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \psitem{NewCurvedInt}~
+% \begin{macro}{NewCurvedInt}
 %    \begin{macrocode}
 /NewCurvedInt {
     2 copy 5 3 roll exec 3 -1 roll exec VecAdd 5 -1 roll exec /Y ED /X ED
@@ -7582,8 +7466,7 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \psitem{NewPlaneInt}~
+% \begin{macro}{NewPlaneInt}
 %    \begin{macrocode}
 /NewPlaneInt {
     dup 3 -1 roll exec 3 -1 roll exec /DY ED /DX ED
@@ -7592,8 +7475,7 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \psitem{NewCompInt}
+% \begin{macro}{NewCompInt}
 % Must be called within NewOptexpComp
 % The plane has several attributes:
 % \{x y\} are the coordinates of the node on the respective plane that is used
@@ -7637,8 +7519,7 @@ tx@OptexpDict begin
 /desc 0 def /asc 1 def /amb 2 def
 %    \end{macrocode}
 % 
-% \begin{macro}
-%   \psitem{@NewNode}~
+% \begin{macro}{@NewNode}
 % \{ x y \} NodeName
 %    \begin{macrocode}
 /@NewNode {
@@ -7656,8 +7537,7 @@ tx@OptexpDict begin
 % /N             -> number of planes
 % /P@1 ... /P@N  -> planes used for the 'ray tracing'
 %
-% \begin{macro}
-%   \psitem{NewOptexpComp}~
+% \begin{macro}{NewOptexpComp}
 % [ \{ x y \} \{ dx dy / rx ry\} type \{New..Int\} refrIndex CompName \{scaling proc\} amb
 %    \begin{macrocode}
 /NewOptexpComp {
@@ -7702,8 +7582,7 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \psitem{GetPlaneVec}~
+% \begin{macro}{GetPlaneVec}
 % PlaneNumber CompName -> PlaneVec
 %    \begin{macrocode}
 /GetPlaneVec {
@@ -7721,8 +7600,7 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \psitem{GetPlaneCenter}~
+% \begin{macro}{GetPlaneCenter}
 % PlaneNumber CompName -> NodeCenter
 % or
 % \PSproc{Plane} -> NodeCenter
@@ -7752,8 +7630,7 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \psitem{TransformInVec}~
+% \begin{macro}{TransformInVec}
 % InVec is relative to the connection between first and second components
 % transform to absolute coordinates
 % Plane2 Plane1 \PSproc{InVec} -> \PSproc{InVec'}
@@ -7777,8 +7654,7 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \psitem{TransformStartPos}
+% \begin{macro}{TransformStartPos}
 % Startpos is relative to the connection between first and second components
 % transform to absolute coordinates and shift by first plane center
 % Plane2 Plane1 \PSproc{StartPos} -> \PSproc{StartPos'+Plane1Center}
@@ -7799,8 +7675,7 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \psitem{GetNearestPlane}
+% \begin{macro}{GetNearestPlane}
 % X Y CompName -> PlaneNumber
 %    \begin{macrocode}
 /GetNearestPlane {
@@ -7820,8 +7695,7 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \psitem{PushAmbCompPlanesOnStack}
+% \begin{macro}{PushAmbCompPlanesOnStack}
 % Components which do not have an unambiguous behaviour (beamslitter, can
 % transmit and reflect) like lenses (transmission only) or mirrors (reflection
 % only), must be evaluated to see which mode should be used.  Argument is
@@ -7956,8 +7830,7 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \psitem{GetNextPlane}
+% \begin{macro}{GetNextPlane}
 % \PSstring{comp} \PSproc{outToPlane} $\longmapsto$ \PSvar{PlaneNumber}
 %    \begin{macrocode}
 /GetNextPlane {
@@ -7979,8 +7852,7 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \psitem{TraceBeam}
+% \begin{macro}{TraceBeam}
 % [ CompN ... Comp1 \PSproc{options} \PSproc{start point} \PSproc{input vector}
 % -> Yn Xn drawToN? ... Y1 X1 drawTo1? Y0 X0
 %    \begin{macrocode}
@@ -8104,8 +7976,7 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \psitem{Drawbeam}
+% \begin{macro}{Drawbeam}
 % [ CompN ... Comp1 \PSproc{options} \PSproc{start point} \PSproc{input vector}
 %    \begin{macrocode}
 /Drawbeam {
@@ -8133,8 +8004,7 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \psitem{sign}~
+% \begin{macro}{sign}
 %    \begin{macrocode}
 /sign {
     0 ge { 1 } { -1 } ifelse
@@ -8142,8 +8012,7 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \psitem{TraceWideBeam}
+% \begin{macro}{TraceWideBeam}
 % Stroke an extendend beam. Only rearranges the input parameters and calls Drawbeam twice, for the upper
 % and lower beam.
 % [ CompN ... Comp1 \PSproc{options} \PSproc{start point up} \PSproc{input vector up} \PSproc{start point low} \PSproc{input vector low}
@@ -8182,8 +8051,7 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \psitem{FillWideBeam}
+% \begin{macro}{FillWideBeam}
 % Fill a wide beam. This must have an own procedure, because all segments
 % of the beam must be filled separately.
 % 
@@ -8406,8 +8274,7 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \psitem{isAmp}
+% \begin{macro}{isAmp}
 % Check if 'compname' is ambiguous (i.e. a beamsplitter)
 % (compname) -> bool
 %    \begin{macrocode}
@@ -8417,8 +8284,7 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}
-%   \psitem{PrearrangePlanes}
+% \begin{macro}{PrearrangePlanes}
 % [ CompN .. Comp1 PrearrangePlanes -> [ desc/asc CompN .. desc/asc Comp1 
 %    \begin{macrocode}
 /PrearrangePlanes {
@@ -8473,8 +8339,7 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \psitem{AdjustRelRot}
+% \begin{macro}{AdjustRelRot}
 % CompA desc/asc CompB desc/asc
 %    \begin{macrocode}
 /AdjustRelRot {
@@ -8497,8 +8362,7 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \psitem{PushAllPlanesOnStack}
+% \begin{macro}{PushAllPlanesOnStack}
 % [ desc/asc CompN .. desc/asc Comp1 PushAllPlanesOnStack -> \PSproc{PlaneNumber CompName n mode draw}
 % n is the refractive index after the respective interface,
 % but draw determines if the connection to this interface is drawn
@@ -8592,8 +8456,7 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \psitem{PlaneName}
+% \begin{macro}{PlaneName}
 % Construct the plane name from PlaneNum. This must be called within a dict of a
 % optexpcomp, because the last node ends with (N) instead of the number.
 % PlaneNum -> (P@PlaneNum)
@@ -8609,8 +8472,7 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \psitem{OrderNodes}
+% \begin{macro}{OrderNodes}
 % A B1 BN dist? OrderNodes -> desc/asc distance?
 %    \begin{macrocode}
 /OrderNodes {
@@ -8628,8 +8490,7 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}
-%   \psitem{NormalVec}
+% \begin{macro}{NormalVec}
 % Construct a normal plane vector such that $n \times(-in) > 0$
 % X\_in Y\_in X\_plane Y\_plane NormalVec -> X\_norm Y\_norm
 %    \begin{macrocode}
@@ -8642,8 +8503,7 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \psitem{SProd}
+% \begin{macro}{SProd}
 % Scalar product
 % ax ay bx by SProd -> val
 %    \begin{macrocode}
@@ -8653,8 +8513,7 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \psitem{VecAngle}
+% \begin{macro}{VecAngle}
 % Angle between two vectors
 % $\cos(\alpha) = \frac{ab}{|a||b|}$
 %
@@ -8667,8 +8526,7 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}
-%   \psitem{VecAdd}
+% \begin{macro}{VecAdd}
 % ax ay bx by VecAdd ax+bx ay+by
 %    \begin{macrocode}
 /VecAdd {
@@ -8677,8 +8535,7 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \psitem{ToVec}
+% \begin{macro}{ToVec}
 % X Y -> \PSproc{X Y}
 %    \begin{macrocode}
 /ToVec {
@@ -8687,8 +8544,7 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \psitem{NormalizeVec}
+% \begin{macro}{NormalizeVec}
 % X Y NormalizeVec X' Y' (with $X^2 + Y^2 = 1$)
 %    \begin{macrocode}
 /NormalizeVec {
@@ -8701,8 +8557,7 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \psitem{@ABVect}
+% \begin{macro}{@ABVect}
 % Shorthand definition for \PSvar{ABVect} procedure of the \nxLPack{pst-eucl} package.
 %    \begin{macrocode}
 /@ABVect { tx@EcldDict begin ABVect end } bind def
@@ -8710,27 +8565,23 @@ tx@OptexpDict begin
 % \end{macro}
 %
 % Shorthand definition for \PSvar{ABDist} procedure of the \nxLPack{pst-eucl} package.
-% \begin{macro}
-%   \psitem{@ABDist}~
+% \begin{macro}{@ABDist}
 %    \begin{macrocode}
 /@ABDist { tx@EcldDict begin ABDist end } bind def
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}
-%   \psitem{@InterLines}~
+% \begin{macro}{@InterLines}
 %    \begin{macrocode}
 /@InterLines { [ 0 0 11 3 roll tx@EcldDict begin InterLines end counttomark 4 eq { 5 2 roll pop pop pop } { 3 -1 roll pop } ifelse } bind def
 % 
-% \begin{macro}
-%   \psitem{@GetCenter}~
+% \begin{macro}{@GetCenter}
 %    \begin{macrocode}
 /@GetCenter { dup type /stringtype eq { cvn } if tx@NodeDict begin load GetCenter end } bind def
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}
-%   \psitem{RefractVec}
+% \begin{macro}{RefractVec}
 % see \url{http://en.wikipedia.org/wiki/Snell%27s_law#Vector_form}
 %
 % X\_in Y\_in X\_norm Y\_norm n1 n2 RefractVec -> X\_out Y\_out
@@ -8756,8 +8607,7 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \psitem{ReflectVec}
+% \begin{macro}{ReflectVec}
 % X\_in Y\_in X\_norm Y\_norm ReflectVec -> X\_out Y\_out
 %    \begin{macrocode}
 /ReflectVec {
@@ -8768,8 +8618,7 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \psitem{CurvedInterface}
+% \begin{macro}{CurvedInterface}
 % X\_p Y\_p X\_r Y\_r trans/refl n2 X0 Y0 X\_in Y\_in CurvedInterface -> X' Y' X\_out Y\_out
 %    \begin{macrocode}
 /CurvedInterface {
@@ -8817,8 +8666,7 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \psitem{PlainInterface}
+% \begin{macro}{PlainInterface}
 % Xp Yp dXp dYp trans/refl n2 X0 Y0 X\_in Y\_in PlainInterface -> X' Y' X\_out Y\_out
 %    \begin{macrocode}
 /PlainInterface {%
@@ -8835,8 +8683,7 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \psitem{TangentCrosspoint}
+% \begin{macro}{TangentCrosspoint}
 % Xp Yp Xt1 Yt1 Xt2 Yt2
 %    \begin{macrocode}
 /TangentCrosspoint {
@@ -8850,8 +8697,7 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \psitem{NearestNodeTmp}
+% \begin{macro}{NearestNodeTmp}
 % {NodeB} CompA -> shortest distance, planenum
 %    \begin{macrocode}
 /NearestNodeTmp {
@@ -8893,8 +8739,7 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \psitem{NearestNode}
+% \begin{macro}{NearestNode}
 % CompA/NodeA CombB/NodeB -> Coordinates of nodeA or the node of CompA which is nearest to nodeB
 %    \begin{macrocode}
 /NearestNode {
@@ -8919,8 +8764,7 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \psitem{RelFiberAngle}
+% \begin{macro}{RelFiberAngle}
 % Calculate start angle of \cs{pccurve} from CompA to CompB
 %
 % $@@X_B$ $@@Y_B$ $@@X_A$ $@@Y_A$ A B $\quad\longmapsto\quad$ angleA
@@ -8962,8 +8806,7 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \psitem{restoreBeamPoints}~
+% \begin{macro}{restoreBeamPoints}
 %    \begin{macrocode}
 /restoreBeamPoints {
     tx@OptexpDict dup /TmpLastBeamPointLow known { 
@@ -8982,8 +8825,7 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}
-%   \psitem{rearrangeSingleBeamPoints}
+% \begin{macro}{rearrangeSingleBeamPoints}
 % rearrange points of single beam
 %
 % [ A [ B -> [ B A
@@ -8998,8 +8840,7 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \psitem{rearrangeWideBeamPoints}
+% \begin{macro}{rearrangeWideBeamPoints}
 % rearrange points of wide beam
 %
 %[ A [ B [ C [ D -> [ C A [ D B
@@ -9033,8 +8874,7 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}
-%   \psitem{getsubnode}
+% \begin{macro}{getsubnode}
 % subname node/name  -> coordinates
 %    \begin{macrocode}
 /getsubnode {
@@ -9052,5 +8892,5 @@ tx@OptexpDict begin
 end % tx@OptexpDict
 %    \end{macrocode}
 %</prolog> 
-% \printindex[idx]
+% \Finale
 \endinput
