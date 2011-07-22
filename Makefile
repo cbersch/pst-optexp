@@ -9,9 +9,6 @@ LATEX = latex
 ARCHNAME = $(PACKAGE)-$(shell date +"%y%m%d")
 ARCHNAME_TDS = $(PACKAGE).tds
 
-#ADDINPUTS = penguin.eps elephant.ps knuth.png psf-demo.eps \
-  insect1.eps insect15.eps
-
 ARCHFILES = $(PACKAGE).dtx $(PACKAGE).ins Makefile \
             README Changes \
             $(PACKAGE).pdf $(PACKAGE)-DE.pdf
@@ -34,14 +31,12 @@ $(PACKAGE)-DE.dvi: $(PACKAGE).dtx $(PACKAGE).sty $(PACKAGE).ist $(PACKAGE).pro
 	$(LATEX) '\newcommand*{\mainlang}{ngerman}\input{$(basename $@).dtx}'
 	$(LATEX) '\newcommand*{\mainlang}{ngerman}\input{$(basename $@).dtx}'
 	splitindex -m "" $(basename $@).idx
-	touch $(basename $@)-idx.idx
 	makeindex -s gind.ist -t $(basename $@)-idx.ilg -o $(basename $@)-idx.ind \
 		$(basename $@)-idx.idx
 	makeindex -s pst-optexp.ist -t $(basename $@)-doc.ilg -o $(basename $@)-doc.ind \
 		$(basename $@)-doc.idx
 	$(LATEX) '\newcommand*{\mainlang}{ngerman}\input{$(basename $@).dtx}'
 	splitindex -m "" $(basename $@).idx
-	touch $(basename $@)-idx.idx
 	makeindex -s gind.ist -t $(basename $@)-idx.ilg -o $(basename $@)-idx.ind \
 		$(basename $@)-idx.idx
 	makeindex -s pst-optexp.ist -t $(basename $@)-doc.ilg -o $(basename $@)-doc.ind \
@@ -53,14 +48,12 @@ $(PACKAGE).dvi: $(PACKAGE).dtx $(PACKAGE).sty $(PACKAGE).ist $(PACKAGE).pro
 	$(LATEX) '\newcommand*{\mainlang}{english}\input{$(basename $@).dtx}'
 	$(LATEX) '\newcommand*{\mainlang}{english}\input{$(basename $@).dtx}'
 	splitindex -m "" $(basename $@).idx
-	touch $(basename $@)-idx.idx
 	makeindex -s gind.ist -t $(basename $@)-idx.ilg -o $(basename $@)-idx.ind \
 		$(basename $@)-idx.idx
 	makeindex -s pst-optexp.ist -t $(basename $@)-doc.ilg -o $(basename $@)-doc.ind \
 		$(basename $@)-doc.idx
 	$(LATEX) '\newcommand*{\mainlang}{english}\input{$(basename $@).dtx}'
 	splitindex -m "" $(basename $@).idx
-	touch $(basename $@)-idx.idx
 	makeindex -s gind.ist -t $(basename $@)-idx.ilg -o $(basename $@)-idx.ind \
 		$(basename $@)-idx.idx
 	makeindex -s pst-optexp.ist -t $(basename $@)-doc.ilg -o $(basename $@)-doc.ind \
@@ -72,7 +65,7 @@ $(PACKAGE).dvi: $(PACKAGE).dtx $(PACKAGE).sty $(PACKAGE).ist $(PACKAGE).pro
 %.pdf: %.ps
 	$(PS2PDF) $< $@
 
-$(PACKAGE).sty $(PACKAGE).pro $(PACKAGE).tex: $(PACKAGE).ins $(PACKAGE).dtx
+$(PACKAGE).sty $(PACKAGE).pro $(PACKAGE).tex $(PACKAGE).ist: $(PACKAGE).ins $(PACKAGE).dtx
 	tex $<
 
 arch : Changes
@@ -102,11 +95,11 @@ ctan : dist arch-tds
 
 clean :
 	$(RM) $(addprefix $(PACKAGE), \
-	      .dvi .log .aux .bbl .blg .out .tmp .toc .idx .ind .ilg .gls .glg .glo -idx.idx -idx.ilg -idx.ind -doc.idx -doc.ilg -doc.ind) \
+	      .dvi .ps .log .aux .bbl .blg .out .tmp .toc .idx .ind .ilg .gls .glg .glo -idx.idx -idx.ilg -idx.ind -doc.idx -doc.ilg -doc.ind .hd) \
 		$(addprefix $(PACKAGE)-DE, \
-	      .dvi .log .aux .bbl .blg .out .tmp .toc .idx .ind .ilg .gls .glg .glo -idx.idx -idx.ilg -idx.ind -doc.idx -doc.ilg -doc.ind)
+	      .dvi .ps .log .aux .bbl .blg .out .tmp .toc .idx .ind .ilg .gls .glg .glo -idx.idx -idx.ilg -idx.ind -doc.idx -doc.ilg -doc.ind .hd)
 
 veryclean : clean
-	$(RM) $(PACKAGE).pdf $(PACKAGE)-DE.pdf $(PACKAGE).ps $(PACKAGE)-DE.ps  
+	$(RM) $(PACKAGE).pdf $(PACKAGE)-DE.pdf $(PACKAGE).sty $(PACKAGE).pro $(PACKAGE).ist
 
 # EOF
