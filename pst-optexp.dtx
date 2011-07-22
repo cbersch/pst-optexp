@@ -51,12 +51,19 @@
 \usepackage[makeindex]{splitidx} 
 \newindex[Code Index]{idx}
 \newindex[Documentation Index]{doc}
-\usepackage[colorlinks=true,
+\usepackage{etoolbox}
+\usepackage{hypdoc}
+\makeatletter
+\patchcmd{\PageIndex}{\let\special@index\HD@page@wrindex}{}{}{}
+%% \patchcmd{\CodelineIndex}{\let\special@index\HD@codeline@wrindex}{}{}{}
+\makeatother
+\hypersetup{colorlinks=true,
             urlcolor=pdfurlcolor, 
             filecolor=pdffilecolor, 
             linkcolor=pdflinkcolor,
             breaklinks, 
-            linktocpage=true]{hyperref}
+            linktocpage=true,
+            hyperindex}
 \usepackage{breakurl}
 \definecolor{DOrange}{rgb}{0.9,.36,.18}
 \colorlet{pdflinkcolor}{DOrange}
@@ -107,7 +114,7 @@
 \clearscrheadings \clearscrplain \ohead{\pagemark} \ihead{\headmark}
 \ofoot[\pagemark]{} \automark[subsection]{section}
 \setheadsepline{.4pt}[\color{DOrange}] \setheadwidth[0pt]{text}
-\setfootwidth[0pt]{text} \usepackage{etoolbox} \undef{\cs} \undef{\cmd}
+\setfootwidth[0pt]{text} \undef{\cs} \undef{\cmd}
 \usepackage{ltxdockit} \usepackage{csquotes} \MakeAutoQuote{«}{»}
 \colorlet{spot}{sectioncolor} \renewcommand*{\verbatimfont}{\ttfamily}
 \renewcommand*{\displayverbfont}{\ttfamily}
@@ -304,7 +311,10 @@
 %
 % \DoNotIndex{\@}
 % \DoNotIndex{\newcommand,\newenvironment,\def,\edef,\let,\if,\ifx,\else,\fi,\@ifnextchar}
-% \DoNotIndex{\@wd,\@sz,\@ht}
+% \DoNotIndex{\space,\relax,\nr,\ignorespaces,\ifdim,\ifcat,\@nil,\@none,\@empty}
+% \DoNotIndex{\psset}
+% \DoNotIndex{\@wd,\@sz,\@ht,\@yshift,\@step,\@xl,\@sep,\@r,\@dp,\@altan}
+% \DoNotIndex{\@f@cnt,\@f@r,\@f@sep,\@hshift,\@bs@wd,\@c@caxisL,\@cnt}
 % 
 % \newif\ifGERMAN  \GERMANfalse
 % \newif\ifENGLISH \ENGLISHfalse
@@ -505,6 +515,30 @@
 % In diesem einführenden Abschnitt soll anhand von ein paar Beispielen der
 % typische Entwicklungsprozess sowie einige der besonderen Stärken des
 % \LPack{pst-optexp} Paketes demonstriert werden.
+% \fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[hsep=10mm, numbers=left, numberstyle=\footnotesize]
+\begin{pspicture}[showgrid=true](3.2,5)
+  \pnode(0,3){In}\pnode(1,3){BS}\pnode(3,3){M1}
+  \pnode(1,5){M2}\pnode(1,1){PD}
+  \psset{mirrortype=extended, mirrordepth=0.2, bsstyle=plate, dettype=diode}
+\begin{optexp}
+  \beamsplitter(In)(BS)(PD)
+  \mirror(BS)(M1)(BS)
+  \mirror[variable](BS)(M2)(BS)
+  \lens(BS)(PD)
+  \optdetector(BS)(PD)
+  \addtopsstyle{Beam}{fillstyle=solid, fillcolor=green!20!white, beamwidth=0.2}
+  \drawwidebeam{(In)}{1}{2}{1}{3}{1}{4}{5}
+  \drawbeam[linecolor=red, startvec=1 0.02]{(In)}{1}{2}{1}{3}{1}{4}{5}
+  \drawbeam[linecolor=blue, startvec=1 -0.02]{(In)}{1}{2}{1}{3}{1}{4}{5}
+\end{optexp}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
 % \fi
 % \iffalse
 %<*ignore>
@@ -3591,6 +3625,7 @@
 % \StopEventually{}
 %
 % \section{Implementation}
+%
 %<*stylefile>
 %    \begin{macrocode}
 \RequirePackage{pstricks}
@@ -7131,7 +7166,29 @@
 %</stylefile> 
 %
 % \subsection{The Postscript Header file}
-%
+% \makeatletter
+%% Copied this definition from doc.sty and changed it not to add a
+%% backslash to the Postscript procedure name in the index.
+% \def\SpecialIndex@#1#2{%
+%    \@SpecialIndexHelper@#1\@nil
+%    \def\@tempb{ }%
+%    \ifcat \@tempb\@gtempa
+%       \special@index{\quotechar\space\actualchar
+%                      \string\verb\quotechar*\verbatimchar
+%                      \quotechar\bslash\quotechar\space\verbatimchar#2}%
+%    \else
+%      \def\@tempb##1##2\relax{\ifx\relax##2\relax
+%           \def\@tempc{\special@index{\quotechar##1\actualchar
+%                       \string\verb\quotechar*\verbatimchar
+%                       \quotechar\bslash\quotechar##1\verbatimchar#2}}%
+%         \else
+%           \def\@tempc{\special@index{##1##2\actualchar
+%                        \string\verb\quotechar*\verbatimchar##1##2\verbatimchar#2}}%
+%         \fi}%
+%      \expandafter\@tempb\@gtempa\relax
+%      \@tempc
+%    \fi}
+% \makeatother
 %<*prolog>
 %    \begin{macrocode}
 /tx@OptexpDict 70 dict def
