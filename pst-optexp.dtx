@@ -53,17 +53,12 @@
 \newindex[Documentation Index]{doc}
 \usepackage{etoolbox}
 \usepackage{hypdoc}
-\makeatletter
-\patchcmd{\PageIndex}{\let\special@index\HD@page@wrindex}{}{}{}
-%% \patchcmd{\CodelineIndex}{\let\special@index\HD@codeline@wrindex}{}{}{}
-\makeatother
 \hypersetup{colorlinks=true,
             urlcolor=pdfurlcolor, 
             filecolor=pdffilecolor, 
             linkcolor=pdflinkcolor,
             breaklinks, 
-            linktocpage=true,
-            hyperindex}
+            linktocpage=true}
 \usepackage{breakurl}
 \definecolor{DOrange}{rgb}{0.9,.36,.18}
 \colorlet{pdflinkcolor}{DOrange}
@@ -226,36 +221,36 @@
 \newcommand*{\param}[1]{\normalfont\texttt{#1}}
 \newcommand*{\paramvalue}[1]{\texttt{#1}}
 \newcommand*{\styleshape}[1]{\texttt{#1}}
-
-\def\xLcs#1{\sindex[doc]{#1=\nxLcs{#1}}\sindex[doc]{Macro!#1=\nxLcs{#1}}}
+\newcommand{\docindex}[1]{\sindex[doc]{#1|hyperpage}}
+\def\xLcs#1{\docindex{#1=\nxLcs{#1}}\docindex{Macro!#1=\nxLcs{#1}}}
 \def\Lcs#1{\nxLcs{#1}\xLcs{#1}}
 \def\nxLcs#1{\texttt{\textbackslash#1}}
 
-\def\LPack#1{\texttt{#1}\sindex[doc]{#1=\texttt{#1}}\sindex[doc]{Package!#1=\texttt{#1}}}
+\def\LPack#1{\texttt{#1}\docindex{#1=\texttt{#1}}\docindex{Package!#1=\texttt{#1}}}
 \def\nxLPack#1{\texttt{#1}}
 
 \def\Lkeyword#1{\texttt{#1}\xLkeyword{#1}}
-\def\xLkeyword#1{\sindex[doc]{#1=\texttt{#1}}\sindex[doc]{Keyword!#1=\texttt{#1}}}
+\def\xLkeyword#1{\docindex{#1=\texttt{#1}}\docindex{Keyword!#1=\texttt{#1}}}
 \def\nxLkeyword#1{\texttt{#1}}
 
-\def\xLoption#1{\sindex[doc]{#1=\texttt{#1}}\sindex[doc]{Package option!#1=\texttt{#1}}}
+\def\xLoption#1{\docindex{#1=\texttt{#1}}\docindex{Package option!#1=\texttt{#1}}}
 \def\Loption#1{\texttt{#1}\xLoption{#1}}
 
 \def\Lstyle#1{\texttt{#1}\xLstyle{#1}}
-\def\xLstyle#1{\sindex[doc]{#1=\texttt{#1}}\sindex[doc]{Style!#1=\texttt{#1}}}
+\def\xLstyle#1{\docindex{#1=\texttt{#1}}\docindex{Style!#1=\texttt{#1}}}
 \def\nxLstyle#1{\texttt{#1}}
 
 \def\Ldipole#1{\nxLcs{#1}\xLdipole{#1}}
-\def\xLdipole#1{\sindex[doc]{#1=\nxLcs{#1}}\sindex[doc]{Dipoles!#1=\nxLcs{#1}}}
+\def\xLdipole#1{\docindex{#1=\nxLcs{#1}}\docindex{Dipoles!#1=\nxLcs{#1}}}
 
 \def\Ltripole#1{\nxLcs{#1}\xLtripole{#1}}
-\def\xLtripole#1{\sindex[doc]{#1=\nxLcs{#1}}\sindex[doc]{Tripoles!#1=\nxLcs{#1}}}
+\def\xLtripole#1{\docindex{#1=\nxLcs{#1}}\docindex{Tripoles!#1=\nxLcs{#1}}}
 
 \def\Lfdipole#1{\nxLcs{#1}\xLfdipole{#1}}
-\def\xLfdipole#1{\sindex[doc]{#1=\nxLcs{#1}}\sindex[doc]{Fiber dipoles!#1=\nxLcs{#1}}}
+\def\xLfdipole#1{\docindex{#1=\nxLcs{#1}}\docindex{Fiber dipoles!#1=\nxLcs{#1}}}
 
 \def\Lfmultipole#1{\nxLcs{#1}\xLfmultipole{#1}}
-\def\xLfmultipole#1{\sindex[doc]{#1=\nxLcs{#1}}\sindex[doc]{Fiber multipoles!#1=\nxLcs{#1}}}
+\def\xLfmultipole#1{\docindex{#1=\nxLcs{#1}}\docindex{Fiber multipoles!#1=\nxLcs{#1}}}
 
 \newcommand{\dipoledesc}[1]{%
   \xLdipole{#1}\label{cmd:#1}\cmditem{#1}[Options](In)(Out)%
@@ -644,7 +639,7 @@
 % you accessed internal nodes directly, then you must only set
 % \nxLkeyword{namingscheme=old}.
 % \end{optionlist}
-% \end{document}
+% 
 % \section{Concept and general behavior}\label{sec:general}
 % 
 % This section introduces into the basic concepts of the package design and
