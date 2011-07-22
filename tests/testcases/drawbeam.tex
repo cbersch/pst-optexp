@@ -37,7 +37,7 @@
 \begin{document}
 \section{This document should resume all settings and properties of the \textbackslash drawbeam macro}
 \subsection{Line properties, and direction}
-\subsubsection{startvec}
+\subsubsection{beamangle}
 
 \begin{LTXexample}[width=6cm]
 \begin{pspicture}[showgrid=true](6,4)
@@ -47,8 +47,8 @@
   \optbox[endbox](B)(A){}
   \mirror[mirrorradius=2](A)(B)(C){} 
   \mirror[mirrorwidth=2](B)(C)(B){} 
-  \multido{\r=-0.05+0.05}{3}{%
-    \drawbeam[startvec=1 \r]{1}{2}{3}
+  \multido{\i=-3+3}{3}{%
+    \drawbeam[beamangle=\i]{1}{2}{3}
   }
 \end{pspicture}
 \end{LTXexample}
@@ -65,13 +65,12 @@
   \mirror[mirrorradius=2](A)(B)(C){} 
   \mirror[mirrorwidth=2](B)(C)(B){} 
   \multido{\r=-0.2+0.2}{3}{%
-    \drawbeam[startpos=0 \r, 
-              startvec=1 0]{1}{2}{3}}
+    \drawbeam[startpos=0 \r]{1}{2}{3}}
 \end{pspicture}
 \end{LTXexample}
 \bigskip
 
-\subsubsection{startpos and startvec}
+\subsubsection{startpos and beamangle}
 
 \begin{LTXexample}[width=6cm]
 \begin{pspicture}[showgrid=true](6,4)
@@ -82,7 +81,7 @@
   \mirror(B)(C)(B){} 
   \multido{\r=-0.1+0.1}{3}{%
     \drawbeam[startpos=0 -2 \r\space mul,
-              startvec=1 \r\space 0.5 mul]%
+              beamangle=\r\space 30 mul]%
               {1}{2}{3}}
 \end{pspicture}
 \end{LTXexample}
@@ -102,11 +101,11 @@
                     strokeopacity=0.2, 
                     arrowinset=0, 
                     arrowscale=2}
-  \drawbeam[startvec=1 0.04]{1}{2}{3}
+  \drawbeam[beamangle=2.3]{1}{2}{3}
   \newpsstyle{Beam}{linecolor=red, 
                     linewidth=4\pslinewidth,
                     linejoin=2}
-  \drawbeam[startvec=1 -0.04]{1}{2}{3}
+  \drawbeam[beamangle=-2.3]{1}{2}{3}
 \end{pspicture}
 \end{LTXexample}
 \bigskip
@@ -170,7 +169,7 @@
   \optplate[position=0](B)(C){}
   \addtopsstyle{Beam}{linejoin=2}
   \drawbeam{1}{BS}{3}
-  \rput(\oenodelabel{BS}){\pnode(2;10){D}}
+  \rput(\oenodeLabel{BS}){\pnode(2;10){D}}
   \drawbeam[linecolor=red, linestyle=dashed]{1}{BS}{(D)}
 \end{pspicture}
 \end{LTXexample}
@@ -186,7 +185,7 @@
   \addtopsstyle{Beam}{linejoin=2}
   \drawbeam[connectplanes]{1}{BS}{3}
   \addtopsstyle{Beam}{linecolor=red, linestyle=dashed}
-  \rput(\oenodelabel{BS}){\pnode(2;10){D}}
+  \rput(\oenodeLabel{BS}){\pnode(2;10){D}}
   \drawbeam[connectplanes]{1}{BS}{(D)}
 \end{pspicture}
 \end{LTXexample}
@@ -202,7 +201,7 @@
   \addtopsstyle{Beam}{linejoin=2}
   \drawbeam{1}{BS}{3}
   \addtopsstyle{Beam}{linecolor=red, linestyle=dashed}
-  \rput(\oenodelabel{BS}){\pnode(2;10){D}}
+  \rput(\oenodeLabel{BS}){\pnode(2;10){D}}
   \drawbeam{1}{BS}{(D)}
 \end{pspicture}
 \end{LTXexample}
@@ -218,7 +217,7 @@
   \addtopsstyle{Beam}{linejoin=2}
   \drawbeam[connectplanes]{1}{BS}{3}
   \addtopsstyle{Beam}{linecolor=red, linestyle=dashed}
-  \rput(\oenodelabel{BS}){\pnode(2;10){D}}
+  \rput(\oenodeLabel{BS}){\pnode(2;10){D}}
   \drawbeam[connectplanes]{1}{BS}{(D)}
 \end{pspicture}
 \end{LTXexample}
@@ -235,9 +234,9 @@
    \MOLensIn[abspos=4.5](A)(B){}
    \custombeam{%
      \drawbeam[startpos=0 0.1]{(A)}{1}
-     \drawbeam[startvec=1 1]{1}{2}
-     \drawbeam[startvec=1 0, stopInside=false]{2}{3}
-     \drawbeam[startvec=1 -1, startInside]{3}{4}
+     \drawbeam[beamangle=45]{1}{2}
+     \drawbeam[beamangle=0, stopInside=false]{2}{3}
+     \drawbeam[beamangle=-45, startInside]{3}{4}
    }
 \end{pspicture}
 \end{LTXexample}
@@ -257,9 +256,9 @@
   \pnode(4.5,1){B}
   \doveprism(A)(B){}
   \addtopsstyle{Beam}{connectplanes}
-  \drawbeam[linecolor=red, startpos=0 -0.1, startvec=1 -0.04]{(A)}{1}{(B)}
+  \drawbeam[linecolor=red, startpos=0 -0.1, beamangle=-2.3]{(A)}{1}{(B)}
   \drawbeam[linecolor=black]{(A)}{1}{(B)}
-  \drawbeam[startpos=0 0.1, startvec=1 0.04]{(A)}{1}{(B)}
+  \drawbeam[startpos=0 0.1, beamangle=2.3]{(A)}{1}{(B)}
 \end{pspicture}
 
 \begin{pspicture}(5,2)
@@ -346,11 +345,11 @@
   \pnode([Xnodesep=-1]TopCplOut){TopCpl}
   \pnode([Xnodesep=-1]BottomCplOut){BottomCpl}
   \wdmsplitter[compname=TopCpl, nofiber](TopCpl)(TopCplOut)(TopCplOut){50/50}
-  \drawfiber[angleA=0, angleB=165]{}{(\oenodeext{Box1})}
-  \drawfiber[angleA=0, angleB=175]{}{(\oenodeext{Box2})}
+  \drawfiber[angleA=0, angleB=165]{}{(\oenodeExt{Box1})}
+  \drawfiber[angleA=0, angleB=175]{}{(\oenodeExt{Box2})}
   \wdmsplitter[compname=BottomCpl, nofiber](BottomCpl)(BottomCplOut)(BottomCplOut){50/50}
-  \drawfiber[angleA=0, angleB=185]{}{(\oenodeext{Box3})}
-  \drawfiber[angleA=0, angleB=195]{}{(\oenodeext{Box4})}
+  \drawfiber[angleA=0, angleB=185]{}{(\oenodeExt{Box3})}
+  \drawfiber[angleA=0, angleB=195]{}{(\oenodeExt{Box4})}
   \pnode([Xnodesep=-2]TopCpl){Laser1}
   \pnode([Xnodesep=-2]BottomCpl){Laser2}
   \optbox[endbox, label=0](TopCpl)(Laser1){Laser1}
