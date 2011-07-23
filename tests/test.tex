@@ -1,9 +1,3 @@
-%%% test.tex --- 
-
-%% Author: cbersch
-%% Version: $Id: test.tex,v 0.0 2011/07/18 21:59:24 Exp$
-
-
 \documentclass{scrartcl}
 \usepackage[latin1]{inputenc}
 \usepackage[T1]{fontenc}
@@ -11,51 +5,26 @@
 \usepackage{lmodern}
 \usepackage{pst-optexp}
 
-%%\revision$Header: /home/cbersch/Desktop/test.tex,v 0.0 2009/10/26 14:28:23 cbersch Exp$
-
 \begin{document}
-\begin{pspicture}[showgrid=true](-4,-1)(3,3)
-\psset{labeloffset=0.5}
-\pnode(-2,0){LaserOut}\pnode(0,0){Grat}
-\pnode(4;45){Out}\pnode(2.5;67.5){Mvar}
-\newpsstyle{Beam}{linewidth=2\pslinewidth, linecolor=red!90!black}
-\begin{optexp}
-  \optbox[optboxwidth=2,labeloffset=0, endbox](Grat)(LaserOut){diode laser}
-  \mirror[variable](Grid)(Mvar)(Grid){M$_\mathrm{var}$}
-  \optretplate[position=0.3,labeloffset=0.8](LaserOut)(Grat){$\frac{\lambda}{4}$}
-  \optgrid(LaserOut)(Grat)(Out){grating}
-  \drawbeam[arrows=->]{1}{3}{4}{(Out)}
-  \drawbeam{2}{4}
-\end{optexp}
-\rput[l](-3,2){Littman setup}
-\end{pspicture}
-\begin{pspicture}[showgrid=true](2.8,3)
-\pnode(0.3,0){A}\pnode(2.3,0){B}
-\pnode(0.3,3){C}\pnode(2.3,3){D}
-\optcoupler[nofiber, abspos=0.5, compname=Cpl](A)(B)(C)(D){}
-\optbox[abspos=2, optboxwidth=0.5, compname=Phasebias,
-          optboxheight=0.5](C|A)(C)
-\optfiber[nofiber, compname=Hnlf](D)(C)
-\optamp[abspos=2, nofiber, compname=Amp](D|A)(D)
-\drawfiber[angleA=0, ArrowInside=->]{(A)}{Cpl}
-\drawfiber[arrows=->, angleB=180]{Cpl}{(B)}
-\drawfiber{Cpl}{Phasebias}
-\drawfiber{Phasebias}{Hnlf}
-\drawfiber{Amp}{Hnlf}
-\drawfiber{Cpl}{Amp}
-\end{pspicture}
-
-\begin{pspicture}[showgrid=true](2.8,3)
-\pnode(0,0){A}\pnode(2,0){B}
-\pnode(0.3,3){C}\pnode(1.7,3){D}
-\optcoupler[fiberout=none,
-            addtoFiberIn1={angleA=0, ArrowInside=->},
-            addtoFiberIn2={angleA=180, arrows=<-},
-            abspos=0.5, compname=Cpl](A)(B)(C)(D)
-\optfiber[nofiber, compname=Hnlf, abspos=1](C)(C|A)
-\optamp[nofiber, abspos=2, compname=Amp](D|B)(D)
-\drawfiber{Cpl}{Hnlf}
-\drawfiber[startnode=1, stopnode=N, ncurv=1.2]{Hnlf}{Amp}
-\drawfiber{Cpl}{Amp}
+\newpsobject{MOLensIn}{lens}{lens=0.5 0.5 0.5}
+\newpsobject{MOLensOut}{lens}{lens=2 2 2}
+\begin{pspicture}[showgrid=true](5,2) 
+   \pnode(0,1){A}\pnode(5,1){B}
+   \psset{n=1}
+%   \begin{optexp}
+   \MOLensIn[abspos=0.5](A)(B){}
+%   \optplate[abspos=1](A)(B)
+   \MOLensOut[abspos=1](A)(B){}
+   \MOLensOut[abspos=4](A)(B){}
+   \MOLensIn[abspos=4.5](A)(B){}
+   \addtopsstyle{Beam}{fillstyle=solid, fillcolor=red, opacity=0.3}
+%   \custombeam{%
+%     \drawwidebeam[beamwidth=0.2, stopInside]{(A)}{1}
+     \drawwidebeam[beamdiv=45]{1}{2}
+%     \drawwidebeam[stopInside]{2}{3}
+%     \drawwidebeam[beamdiv=-45]{3}{4}
+%     \drawwidebeam{4}{(B)}
+%   }%
+% \end{optexp}
 \end{pspicture}
 \end{document}

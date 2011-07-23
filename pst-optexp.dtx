@@ -8319,8 +8319,13 @@ tx@OptexpDict begin
         /DrawnSegm dup load 1 add def
         OldUp moveto CurrUp lineto
         curved {
-          CurrCenter CurrUp CurrLow TangentCrosspoint
-          CurrLow CurrR arct
+          CurrCenter CurrUp CurrLow 
+          4 copy 3 -1 roll eq 3 1 roll eq and {
+            6 {pop} repeat
+          } {
+            TangentCrosspoint
+            CurrLow CurrR arct
+          } ifelse
         } {
           CurrLow lineto
         } ifelse
@@ -8329,8 +8334,13 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % previous interface was also curved
 %    \begin{macrocode}
-          OldCenter OldLow OldUp TangentCrosspoint
-          OldUp OldR arct
+          OldCenter OldLow OldUp
+          4 copy 3 -1 roll eq 3 1 roll eq and {
+            6 {pop} repeat
+          } {
+            TangentCrosspoint
+            OldUp OldR arct
+          } ifelse
         } {
           OldUp lineto
         } ifelse
