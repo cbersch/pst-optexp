@@ -989,7 +989,7 @@
 % \fi
 \begin{LTXexample}[pos=t, vsep=8mm]
 \begin{pspicture}[showgrid=true](11,3) 
-   \psset{beam, beamInside=false, labelangle=-90, labeloffset=0.3}
+   \psset{beam, beaminside=false, labelangle=-90, labeloffset=0.3}
    \optbox[extnode=tl](0,2.5)(3,2.5){\texttt{tl}}\psdot(\oenodeExt{})
    \optbox[extnode=l](0,1.5)(3,1.5){\texttt{l}}\psdot(\oenodeExt{})
    \optbox[extnode=bl](0,0.5)(3,0.5){\texttt{bl}}\psdot(\oenodeExt{})
@@ -1445,7 +1445,7 @@
 % \fi
 \begin{LTXexample}
 \begin{pspicture}(3,2)
-   \optdiode[beam, beamInside=false](0,1)(3,1){Diode}
+   \optdiode[beam, beaminside=false](0,1)(3,1){Diode}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -3707,12 +3707,12 @@
 \newif\ifPOE@fiberout@top
 \newif\ifPOE@fiberout@bottom
 \newif\ifPOE@beam
-\newif\ifPOE@startInside
-\newif\ifPOE@stopInside
+\newif\ifPOE@startinside
+\newif\ifPOE@stopinside
 \newif\ifPOE@beaminsidefirst
 \newif\ifPOE@beaminsidelast
 \newif\ifPOE@beamangleabs
-\newif\ifPOE@beamInside
+\newif\ifPOE@beaminside
 \newif\ifPOE@connectplanes
 \newif\ifPOE@custombeam\POE@custombeamfalse
 \newif\ifPOE@insideobj\POE@insideobjfalse
@@ -4524,13 +4524,13 @@
 \define@key[psset]{optexp}{startpos}{\edef\POE@key@startpos{#1}}%
 \define@key[psset]{optexp}{beamdiv}{\edef\POE@key@beamdiv{#1}}%
 \define@key[psset]{optexp}{beamwidth}{\edef\POE@key@beamwidth{#1}}%
-\define@boolkey[psset]{optexp}[poe@]{startInside}[true]{}%
-\define@boolkey[psset]{optexp}[poe@]{stopInside}[true]{}%
-\define@boolkey[psset]{optexp}[poe@]{beaminsidefirst}[true]{}%
-\define@boolkey[psset]{optexp}[poe@]{beaminsidelast}[true]{}%
-\define@boolkey[psset]{optexp}[poe@]{beamInside}[true]{}%
-\define@boolkey[psset]{optexp}[poe@]{connectplanes}[true]{}%
-\define@boolkey[psset]{optexp}[poe@]{beamangleabs}[true]{}%
+\define@boolkey[psset]{optexp}[POE@]{startinside}[true]{}%
+\define@boolkey[psset]{optexp}[POE@]{stopinside}[true]{}%
+\define@boolkey[psset]{optexp}[POE@]{beaminsidefirst}[true]{}%
+\define@boolkey[psset]{optexp}[POE@]{beaminsidelast}[true]{}%
+\define@boolkey[psset]{optexp}[POE@]{beaminside}[true]{}%
+\define@boolkey[psset]{optexp}[POE@]{connectplanes}[true]{}%
+\define@boolkey[psset]{optexp}[POE@]{beamangleabs}[true]{}%
 %    \end{macrocode}
 %
 % \begin{macro}{\custombeam}
@@ -4595,14 +4595,14 @@
   \begin@SpecialObj%
   \addto@pscode{%
      \pst@optexpdict 
-     /beaminsidefirst \ifPOE@beaminsidefirst true \else false \fi def
-     /beaminsidelast \ifPOE@beaminsidelast true \else false \fi def
-     /beamInside \ifPOE@beamInside true \else false \fi def
+     /beaminsidefirst \ifPOE@beaminsidefirst true \else false \fi dup == def
+     /beaminsidelast \ifPOE@beaminsidelast true \else false \fi dup == def
+     /beaminside \ifPOE@beaminside true \else false \fi dup == def
      /custombeam \ifPOE@custombeam true \else false \fi def
-     /startInside \ifPOE@startInside true \else false \fi def
-     /stopInside \ifPOE@stopInside true \else false \fi def
+     /startinside \ifPOE@startinside true \else false \fi def
+     /stopinside \ifPOE@stopinside true \else false \fi def
      /connectplanes \ifPOE@connectplanes true \else false \fi def
-     /beamangleabs \ifPOE@beamangleabs true \else false \fi def
+     /beamangleabs \ifPOE@beamangleabs true \else false \fi dup == def
   }%
 }%
 %    \end{macrocode}
@@ -4865,9 +4865,11 @@
 % Set default settings for the new connection code
 %    \begin{macrocode}
 \psset[optexp]{%
-        startInside=false
-        ,stopInside=false
-        ,beamInside=true
+        startinside=false
+        ,stopinside=false
+        ,beaminside=true
+        ,beaminsidefirst=false
+        ,beaminsidelast=false
         ,beamangle=0
         ,startpos=\@empty
         ,beamangleabs=false
@@ -7973,11 +7975,13 @@ tx@OptexpDict begin
 % execute options
 %    \begin{macrocode}
   exec
-  /startInside startInside beaminsidefirst or def
-  /stopInside stopInside beaminsidelast or def
+  /startinside startinside beaminsidefirst or def
+  /stopinside stopinside beaminsidelast or def
   counttomark /N ED
   PrearrangePlanes
+  (prearranged planes) == stack (-------------------) ==
   PushAllPlanesOnStack
+  (all planes pushed on stack) == counttomark /t ED t copy t{==}repeat (-------------------) ==
   beamangleabs not {
     2 copy /InVec load TransformInVec
   } {
@@ -8176,8 +8180,8 @@ tx@OptexpDict begin
 % execute user options
 %    \begin{macrocode}
   exec
-  /startInside startInside beaminsidefirst or def
-  /stopInside stopInside beaminsidelast or def
+  /startinside startinside beaminsidefirst or def
+  /stopinside stopinside beaminsidelast or def
   PrearrangePlanes
   PushAllPlanesOnStack
   beamangleabs not {
@@ -8497,11 +8501,11 @@ tx@OptexpDict begin
         beaminsidelast
         /last true def
       } {
-        beamInside
+        beaminside
       } ifelse
-    } ifelse /drawInside ED
+    } ifelse dup == /drawinside ED
     load dup /ambiguous get {% (amb) ==
-      /name get drawInside [ 3 1 roll ]
+      /name get drawinside [ 3 1 roll ]
       counttomark 1 roll pop
     } {
       begin % comp dict
@@ -8510,7 +8514,7 @@ tx@OptexpDict begin
         } {
           1 1 1 N N
         } ifelse % start start inc stop stop
-        first startInside not and {
+        first startinside not and {
 %    \end{macrocode}
 % first comp and we do not start inside
 %    \begin{macrocode}
@@ -8534,7 +8538,7 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % the other beams depend on some options
 %    \begin{macrocode}
-            drawInside
+            drawinside
           } ifelse % on stack: stop i draw?
           exch dup 4 -1 roll eq connectplanes or {% draw i i stop
 %    \end{macrocode}
@@ -8558,7 +8562,7 @@ tx@OptexpDict begin
           3 1 roll 5 1 roll % i name refrIndex mode draw
           [ 6 1 roll ] cvx counttomark 1 roll
           last {
-            custombeam stopInside not and
+            custombeam stopinside not and
             custombeam not beaminsidelast not and or {
               exit
             } if
