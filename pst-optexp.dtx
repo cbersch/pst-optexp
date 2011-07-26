@@ -529,7 +529,7 @@
 %<*ignore>
 % \fi
 \begin{LTXexample}[pos=t, vsep=5mm, numbers=left, numberstyle=\footnotesize]
-\begin{pspicture}(5,1.8)
+\begin{pspicture}[showgrid=true](5,1.8)
   \pnode(0,1){In}\pnode(3.5,1){Out}
   \newpsstyle{Beam}{linecolor=green, fillstyle=solid, fillcolor=green, opacity=0.2}
   \lens[lensradius=-0.7, lenswidth=0.1, abspos=1](In)(Out){concave}
@@ -4595,14 +4595,14 @@
   \begin@SpecialObj%
   \addto@pscode{%
      \pst@optexpdict 
-     /beaminsidefirst \ifPOE@beaminsidefirst true \else false \fi dup == def
-     /beaminsidelast \ifPOE@beaminsidelast true \else false \fi dup == def
-     /beaminside \ifPOE@beaminside true \else false \fi dup == def
+     /beaminsidefirst \ifPOE@beaminsidefirst true \else false \fi def
+     /beaminsidelast \ifPOE@beaminsidelast true \else false \fi def
+     /beaminside \ifPOE@beaminside true \else false \fi def
      /custombeam \ifPOE@custombeam true \else false \fi def
      /startinside \ifPOE@startinside true \else false \fi def
      /stopinside \ifPOE@stopinside true \else false \fi def
      /connectplanes \ifPOE@connectplanes true \else false \fi def
-     /beamangleabs \ifPOE@beamangleabs true \else false \fi dup == def
+     /beamangleabs \ifPOE@beamangleabs true \else false \fi def
   }%
 }%
 %    \end{macrocode}
@@ -7979,9 +7979,7 @@ tx@OptexpDict begin
   /stopinside stopinside beaminsidelast or def
   counttomark /N ED
   PrearrangePlanes
-  (prearranged planes) == stack (-------------------) ==
   PushAllPlanesOnStack
-  (all planes pushed on stack) == counttomark /t ED t copy t{==}repeat (-------------------) ==
   beamangleabs not {
     2 copy /InVec load TransformInVec
   } {
@@ -8009,47 +8007,31 @@ tx@OptexpDict begin
 %    \begin{macrocode}
       PushAmbCompPlanesOnStack
     } if
+    %% {PlaneNumber CompName n mode draw}
     exec
     /draw ED
     /Mode ED
     3 1 roll % n PlaneNumber CompName
     cvn load begin % comp dict
-      PlaneName cvn load begin % plane dict
+      PlaneName cvn load begin % plane dict, n on stack
         X Y
         CompMtrx transform CM itransform % n1 X Y
-        2 copy ToVec 4 1 roll
+        2 copy ToVec 4 1 roll % {X Y} n1 X Y
         currentdict /RX known { RX RY } { DX DY	} ifelse
-        CompMtrx dtransform CM idtransform  
-        Mode 6 -1 roll
-        Curr CurrVec
+        CompMtrx dtransform CM idtransform  % {X Y} n1 X Y DX DY
+        Mode 6 -1 roll % {X Y} X Y DX DY mode n1
+        Curr CurrVec % {X Y} X Y DX DY mode n1 X0 Y0 X_in Y_in
         currentdict /RX known 
       end
     end
 %% {Xp Yp} Xp Yp dXp dYp trans/refl n2 X0 Y0 X_in Y_in curved?
     12 -1 roll /CurrCenter ED
-    connectplanes {
-      PN 2 eq {
-%    \end{macrocode}
-% initialize relAngle, the angle between plane connection and input vector
-%    \begin{macrocode}
-        CurrCenter CurrCenterTmp @ABVect NormalizeVec CurrVec VecAngle /relAngle ED
-      } if
-      PN 3 ge {
-        ModeTmp trans eq {
-%    \end{macrocode}
-% previous plane was transmittive, recalculate the input vector
-%    \begin{macrocode}
-          CurrCenter CurrCenterTmp @ABVect NormalizeVec
-          relAngle matrix rotate dtransform
-          5 -2 roll pop pop 3 -1 roll
-        } {
-%    \end{macrocode}
-% else, the previous plane was reflective, recalculate relAngle
-%    \begin{macrocode}
-          CurrCenter CurrCenterTmp @ABVect NormalizeVec CurrVec VecAngle /relAngle ED
-        } ifelse
-      } if
+    5 1 roll % curved? X0 Y0 X_in Y_in
+    connectplanes PN 2 gt and {
+      CurrVec CurrCenter CurrCenterTmp ModeTmp currentdict /relAngle known { relAngle } { 0 } ifelse connectPlanes
+      /relAngle ED
     } if
+    5 -1 roll
     { CurvedInterface }{ PlainInterface } ifelse
     PN 1 eq {
       pop pop
@@ -8222,7 +8204,7 @@ tx@OptexpDict begin
         } ifelse
         CompMtrx dtransform CM idtransform 4 copy
         Mode 10 -1 roll % {X Y} X Y DX DY X Y DX DY mode n1
-        6 copy
+        6 copy 
         currentdict /RX known
       end
     end
@@ -8233,28 +8215,9 @@ tx@OptexpDict begin
 % new upper vector and intersection point
 %    \begin{macrocode}
     CurrUp CurrVecUp
-    connectplanes {
-      PN 2 eq {
-%    \end{macrocode}
-% initialize relAngle, the angle between plane connection and input vector
-%    \begin{macrocode}
-        CurrPCenter CurrPCenterTmp @ABVect NormalizeVec CurrVecUp VecAngle /relAngleUp ED
-      } if
-      PN 3 ge {
-        ModeTmp trans eq {
-%    \end{macrocode}
-% previous plane was transmittive, recalculate the input vector
-%    \begin{macrocode}
-          CurrPCenter CurrPCenterTmp @ABVect NormalizeVec %(connvec) == 2 copy == == (done)==
-          relAngleUp matrix rotate dtransform %(connvec transformed) == 2 copy == == (done)==
-          4 2 roll pop pop
-        } {
-%    \end{macrocode}
-% else, the previous plane was reflective, recalculate relAngle
-%    \begin{macrocode}
-          CurrPCenter CurrPCenterTmp @ABVect NormalizeVec CurrVecUp VecAngle /relAngleUp ED
-        } ifelse
-      } if
+    connectplanes PN 2 gt and {
+      CurrVecUp CurrPCenter CurrPCenterTmp ModeTmp currentdict /relAngleUp known { relAngleUp } { 0 } ifelse connectPlanes
+      /relAngleUp ED
     } if
     2 copy ToVec /OldVecUp ED
     curved { CurvedInterface } { PlainInterface } ifelse
@@ -8266,28 +8229,9 @@ tx@OptexpDict begin
 % new lower vector and intersection point
 %    \begin{macrocode}
     CurrLow CurrVecLow
-    connectplanes {
-      PN 2 eq {
-%    \end{macrocode}
-% initialize relAngle, the angle between plane connection and input vector
-%    \begin{macrocode}
-        CurrPCenter CurrPCenterTmp @ABVect NormalizeVec CurrVecLow VecAngle /relAngleLow ED
-      } if
-      PN 3 ge {
-        ModeTmp trans eq {
-%    \end{macrocode}
-% previous plane was transmittive, recalculate the input vector
-%    \begin{macrocode}
-          CurrPCenter CurrPCenterTmp @ABVect NormalizeVec
-          relAngleLow matrix rotate dtransform
-          4 2 roll pop pop
-        } {
-%    \end{macrocode}
-% else, the previous plane was reflective, recalculate relAngle
-%    \begin{macrocode}
-          CurrPCenter CurrPCenterTmp @ABVect NormalizeVec CurrVecLow VecAngle /relAngleLow ED
-        } ifelse
-      } if
+    connectplanes PN 2 gt and {
+      CurrVecLow CurrPCenter CurrPCenterTmp ModeTmp currentdict /relAngleLow known { relAngleLow } { 0 } ifelse connectPlanes
+      /relAngleLow ED
     } if
     2 copy ToVec /OldVecLow ED
     curved { CurvedInterface } { PlainInterface } ifelse
@@ -8503,8 +8447,8 @@ tx@OptexpDict begin
       } {
         beaminside
       } ifelse
-    } ifelse dup == /drawinside ED
-    load dup /ambiguous get {% (amb) ==
+    } ifelse /drawinside ED
+    load dup /ambiguous get {
       /name get drawinside [ 3 1 roll ]
       counttomark 1 roll pop
     } {
@@ -9016,6 +8960,41 @@ tx@OptexpDict begin
 } bind def
 %    \end{macrocode}
 % \end{macro}
+%
+% \begin{macro}{connectPlanes}
+% Vec Center CenterTemp mode relangle
+%    \begin{macrocode}
+/connectPlanes {
+  /relAngleTmp ED
+  PN 2 eq {
+%    \end{macrocode}
+% initialize relAngle, the angle between plane connection and input vector
+%    \begin{macrocode}
+    7 copy pop
+    @ABVect NormalizeVec VecAngle /relAngleTmp ED
+  } if
+  PN 3 ge {
+    (PN >= 3) == stack (-----------------------) ==
+    trans eq {
+%    \end{macrocode}
+% previous plane was transmittive, recalculate the input vector
+%    \begin{macrocode}
+      @ABVect NormalizeVec 4 2 roll pop pop % remove Vec from stack
+      relAngleTmp matrix rotate dtransform
+      4 2 roll pop pop
+    } {
+%    \end{macrocode}
+% else, the previous plane was reflective, recalculate relAngle
+%    \begin{macrocode}
+      @ABVect NormalizeVec VecAngle /relAngleTmp ED
+    } ifelse
+    (done) ==
+  } if
+  relAngleTmp
+} bind def
+%    \end{macrocode}
+% \end{macro}
+%
 %    \begin{macrocode}
 end % tx@OptexpDict
 %    \end{macrocode}
