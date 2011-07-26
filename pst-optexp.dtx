@@ -8027,7 +8027,7 @@ tx@OptexpDict begin
 %% {Xp Yp} Xp Yp dXp dYp trans/refl n2 X0 Y0 X_in Y_in curved?
     12 -1 roll /CurrCenter ED
     5 1 roll % curved? X0 Y0 X_in Y_in
-    connectplanes PN 2 gt and {
+    connectplanes PN 2 ge and {
       CurrVec CurrCenter CurrCenterTmp ModeTmp currentdict /relAngle known { relAngle } { 0 } ifelse connectPlanes
       /relAngle ED
     } if
@@ -8215,7 +8215,7 @@ tx@OptexpDict begin
 % new upper vector and intersection point
 %    \begin{macrocode}
     CurrUp CurrVecUp
-    connectplanes PN 2 gt and {
+    connectplanes PN 2 ge and {
       CurrVecUp CurrPCenter CurrPCenterTmp ModeTmp currentdict /relAngleUp known { relAngleUp } { 0 } ifelse connectPlanes
       /relAngleUp ED
     } if
@@ -8229,7 +8229,7 @@ tx@OptexpDict begin
 % new lower vector and intersection point
 %    \begin{macrocode}
     CurrLow CurrVecLow
-    connectplanes PN 2 gt and {
+    connectplanes PN 2 ge and {
       CurrVecLow CurrPCenter CurrPCenterTmp ModeTmp currentdict /relAngleLow known { relAngleLow } { 0 } ifelse connectPlanes
       /relAngleLow ED
     } if
@@ -8962,7 +8962,7 @@ tx@OptexpDict begin
 % \end{macro}
 %
 % \begin{macro}{connectPlanes}
-% Vec Center CenterTemp mode relangle
+% Vec Vec Center CenterTemp mode relangle
 %    \begin{macrocode}
 /connectPlanes {
   /relAngleTmp ED
@@ -8970,11 +8970,9 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % initialize relAngle, the angle between plane connection and input vector
 %    \begin{macrocode}
-    7 copy pop
-    @ABVect NormalizeVec VecAngle /relAngleTmp ED
+    pop @ABVect NormalizeVec 4 2 roll VecAngle /relAngleTmp ED
   } if
   PN 3 ge {
-    (PN >= 3) == stack (-----------------------) ==
     trans eq {
 %    \end{macrocode}
 % previous plane was transmittive, recalculate the input vector
@@ -8986,9 +8984,8 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % else, the previous plane was reflective, recalculate relAngle
 %    \begin{macrocode}
-      @ABVect NormalizeVec VecAngle /relAngleTmp ED
+      @ABVect NormalizeVec 4 2 roll VecAngle /relAngleTmp ED
     } ifelse
-    (done) ==
   } if
   relAngleTmp
 } bind def
