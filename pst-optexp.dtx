@@ -22,7 +22,7 @@
 %<stylefile>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<stylefile>\ProvidesPackage{pst-optexp}
 %<*stylefile>
-    [2011/07/21 v3.0alpha Optical experimental setups with PSTricks]
+    [2011/07/27 v3.0alpha Optical experimental setups with PSTricks]
 %</stylefile>
 %
 %<*driver>
@@ -6647,7 +6647,7 @@
 \def\doveprism@nodes{%
   \newOptexpComp{ {\POE@key@doveprismsize\space neg 0} {1 1} trans {NewPlaneInt}
                   {0 \POE@key@doveprismsize\space -0.5 mul} {1 0} refl {NewPlaneInt}
-                  {\POE@key@doveprismsize\space 0} {-1 1} trans {NewPlaneInt} \POE@key@n }%
+                  {\POE@key@doveprismsize\space 0} {-1 1} trans {NewPlaneInt} \POE@key@n true }%
 \ignorespaces}%
 %    \end{macrocode}
 % \end{macro}
@@ -6702,7 +6702,7 @@
    \edef\@altan{\POE@key@prismangle\space 0.5 mul tan }%
    \edef\@hshift{\@sz 0.6 mul \@altan mul \pst@optexpdict OEangle end 0.5 mul tan div }%
    \newOptexpComp{ {\@sz -0.6 mul \@altan mul \@hshift neg} {90 \POE@key@prismangle\space 0.5 mul sub dup cos exch sin} trans {NewPlaneInt}
-                   {\@sz 0.6 mul \@altan mul \@hshift neg} {90 \POE@key@prismangle\space 0.5 mul add dup cos exch sin} trans {NewPlaneInt} \POE@key@n }%
+                   {\@sz 0.6 mul \@altan mul \@hshift neg} {90 \POE@key@prismangle\space 0.5 mul add dup cos exch sin} trans {NewPlaneInt} \POE@key@n true }%
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -7537,6 +7537,7 @@ tx@OptexpDict begin
   6 dict dup 3 1 roll def begin
       /ambiguous false def
       /name ED
+      /correct false def
       {0 0} exch 3 -1 roll exec
       gsave
           translate
@@ -7644,7 +7645,7 @@ tx@OptexpDict begin
 % /P@1 ... /P@N  -> planes used for the 'ray tracing'
 %
 % \begin{macro}{NewOptexpComp}
-% [ \{ x y \} \{ dx dy / rx ry\} type \{New..Int\} refrIndex CompName \{scaling proc\} amb
+% [ \{ x y \} \{ dx dy / rx ry\} type \{New..Int\} refrIndex correct? CompName \{scaling proc\} amb
 %    \begin{macrocode}
 /NewOptexpComp {
   3 1 roll /sc ED 
@@ -7653,6 +7654,7 @@ tx@OptexpDict begin
   10 dict dup 3 1 roll def begin
   /name ED
   /ambiguous ED
+  dup type /booleantype eq not { false } if /correct ED
   tx@Dict begin
 %    \end{macrocode}
 % set scaling for all planes
@@ -7914,11 +7916,7 @@ tx@OptexpDict begin
 % check the mode
 %    \begin{macrocode}
         [ (C) name
-        connectplanes {
-          1
-        } {
-          nforce 0 eq { name cvn load /n get } { nforce } ifelse
-        } ifelse
+        nforce 0 eq { name cvn load /n get } { nforce } ifelse
         CurrVecTmp (C) name GetPlaneVec NormalVec outToPlane GetPlaneCenter (C) name GetPlaneCenter @ABVect SProd
         0 lt { trans } { refl } ifelse % mode
         draw ] cvx exch
@@ -7975,8 +7973,12 @@ tx@OptexpDict begin
 % execute options
 %    \begin{macrocode}
   exec
+  connectplanes {
+    /nforce 1 def
+  } if
   /startinside startinside beaminsidefirst or def
   /stopinside stopinside beaminsidelast or def
+  /PrevCorrect false def
   counttomark /N ED
   PrearrangePlanes
   PushAllPlanesOnStack
@@ -8022,13 +8024,15 @@ tx@OptexpDict begin
         Mode 6 -1 roll % {X Y} X Y DX DY mode n1
         Curr CurrVec % {X Y} X Y DX DY mode n1 X0 Y0 X_in Y_in
         currentdict /RX known 
+        correct
       end
     end
-%% {Xp Yp} Xp Yp dXp dYp trans/refl n2 X0 Y0 X_in Y_in curved?
+%% {Xp Yp} Xp Yp dXp dYp trans/refl n2 X0 Y0 X_in Y_in curved? correct?
+    /correct ED
     12 -1 roll /CurrCenter ED
     5 1 roll % curved? X0 Y0 X_in Y_in
-    connectplanes PN 2 ge and {
-      CurrVec CurrCenter CurrCenterTmp ModeTmp currentdict /relAngle known { relAngle } { 0 } ifelse connectPlanes
+    connectplanes PrevCorrect and PN 2 ge and {
+      CurrVec CurrCenter CurrCenterTmp PrevMode currentdict /relAngle known { relAngle } { 0 } ifelse connectPlanes
       /relAngle ED
     } if
     5 -1 roll
@@ -8046,7 +8050,8 @@ tx@OptexpDict begin
     /CurrCenterTmp /CurrCenter load def
     /lastBeamPoint /Curr load def
     /lastVec /CurrVec load def
-    /ModeTmp Mode def
+    /PrevMode Mode def
+    /PrevCorrect correct def
     PN PlaneNum eq {
       exit
     } {
@@ -8162,6 +8167,9 @@ tx@OptexpDict begin
 % execute user options
 %    \begin{macrocode}
   exec
+  connectplanes {
+    /nforce 1 def
+  } if
   /startinside startinside beaminsidefirst or def
   /stopinside stopinside beaminsidelast or def
   PrearrangePlanes
@@ -8206,8 +8214,10 @@ tx@OptexpDict begin
         Mode 10 -1 roll % {X Y} X Y DX DY X Y DX DY mode n1
         6 copy 
         currentdict /RX known
+        correct
       end
     end
+    /correct ED
     /curved ED
     /oldn1 n1 def % {X Y} X Y DX DY X Y DX DY mode n1 X Y DX DY mode n1
     17 -1 roll /CurrPCenter ED
@@ -8215,8 +8225,8 @@ tx@OptexpDict begin
 % new upper vector and intersection point
 %    \begin{macrocode}
     CurrUp CurrVecUp
-    connectplanes PN 2 ge and {
-      CurrVecUp CurrPCenter CurrPCenterTmp ModeTmp currentdict /relAngleUp known { relAngleUp } { 0 } ifelse connectPlanes
+    connectplanes PrevCorrect PN 2 ge and and {
+      CurrVecUp CurrPCenter CurrPCenterTmp PrevMode currentdict /relAngleUp known { relAngleUp } { 0 } ifelse connectPlanes
       /relAngleUp ED
     } if
     2 copy ToVec /OldVecUp ED
@@ -8229,8 +8239,8 @@ tx@OptexpDict begin
 % new lower vector and intersection point
 %    \begin{macrocode}
     CurrLow CurrVecLow
-    connectplanes PN 2 ge and {
-      CurrVecLow CurrPCenter CurrPCenterTmp ModeTmp currentdict /relAngleLow known { relAngleLow } { 0 } ifelse connectPlanes
+    connectplanes PrevCorrect PN 2 ge and and {
+      CurrVecLow CurrPCenter CurrPCenterTmp PrevMode currentdict /relAngleLow known { relAngleLow } { 0 } ifelse connectPlanes
       /relAngleLow ED
     } if
     2 copy ToVec /OldVecLow ED
@@ -8320,7 +8330,8 @@ tx@OptexpDict begin
       /PN PN 1 add def
     } ifelse
     /CurrPCenterTmp /CurrPCenter load def
-    /ModeTmp Mode def
+    /PrevMode Mode def
+    /PrevCorrect correct def
   } loop
   CurrUp CurrLow @ABVect CurrVecUp CurrVecLow 3 -1 roll add 3 1 roll add exch
   4 -1 roll mul 3 1 roll mul sub 0 gt {
@@ -8484,7 +8495,7 @@ tx@OptexpDict begin
 %    \begin{macrocode}
             drawinside
           } ifelse % on stack: stop i draw?
-          exch dup 4 -1 roll eq connectplanes or {% draw i i stop
+          exch dup 4 -1 roll eq {% draw i i stop
 %    \end{macrocode}
 % after the last component plane we have always air
 %    \begin{macrocode}
