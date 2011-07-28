@@ -7,27 +7,37 @@
 
 \begin{document}
 \newpsobject{MOLensIn}{lens}{lens=0.5 0.5 0.5}
-\newpsobject{MOLensOut}{lens}{lens=2 2 2}
+\newpsobject{MOLensOut}{lens}{lens=4 4 2}
 \begin{pspicture}[showgrid=true](5,2) 
    \pnode(0,1){A}\pnode(5,1){B}
    \psset{n=1}
-%   \begin{optexp}
+   \begin{optexp}
    \MOLensIn[abspos=0.5](A)(B){}
-%   \optplate[abspos=1](A)(B)
    \MOLensOut[abspos=1](A)(B){}
    \MOLensOut[abspos=4](A)(B){}
    \MOLensIn[abspos=4.5](A)(B){}
    \addtopsstyle{Beam}{fillstyle=solid, fillcolor=red, opacity=0.3}
-%   \drawwidebeam[beaminsidefirst, startinside, beamwidth=0.1, beamdiv=5]{1}{2}
-   \psset{beaminsidefirst, beaminside, beamangleabs}
-   \drawbeam[beaminsidefirst]{1}{2}
-%   \custombeam{%
-%     \drawwidebeam[beamwidth=0.2, beaminsidelast, beaminsidefirst, beamInside]{(A)}{1}
-%     \drawwidebeam[beamdiv=45]{1}{2}
-%     \drawwidebeam[stopInside]{2}{3}
-%     \drawwidebeam[beamdiv=-45]{3}{4}
-%     \drawwidebeam{4}{(B)}
-%   }%
-% \end{optexp}
+  \custombeam{%
+    \drawwidebeam[beamwidth=0.2]{(A)}{1}
+    \drawwidebeam[beamdiv=45]{1}{2}
+    \drawwidebeam[stopinside]{2}{3}
+    \drawwidebeam[beamdiv=-45]{3}{4}
+    \drawwidebeam{4}{(B)}
+  }%
+ \end{optexp}
+\end{pspicture}
+
+\begin{pspicture}[showgrid=true](10,5)
+\lens[lens=6 6 4, n=2](0,2)(4,2)
+\optplate[plateheight=4](3,2)(10,2)
+\multido{\r=-0.25+0.25}{3}{%
+  \drawbeam[beamangle=0, startpos=\r]{(0,2)}{1}{2}
+}%
+\multido{\r=-0.25+0.25}{3}{%
+  \drawbeam[linecolor=red, beamangle=5, startpos=\r]{(0,2)}{1}{2}
+}%
+\multido{\r=-0.25+0.25}{3}{%
+  \drawbeam[linecolor=blue, beamangle=10, startpos=\r]{(0,2)}{1}{2}
+}%
 \end{pspicture}
 \end{document}
