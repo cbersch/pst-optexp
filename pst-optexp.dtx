@@ -35,22 +35,19 @@
 \usepackage{amsfonts}
 \usepackage{bera} 
 \providecommand*\mainlang{}
-\usepackage[english,\mainlang]{babel}
+\usepackage[english,ngerman,\mainlang]{babel}
+\usepackage{prettyref}
 \usepackage[dvipsnames,x11names,svgnames]{xcolor} 
 \usepackage{amsmath} 
 \usepackage{ragged2e}
 \usepackage{paralist}
 \usepackage{nicefrac}
-\usepackage{prettyref} 
-\newrefformat{sec}{Sec.~\ref{#1}} 
 \usepackage{pst-func} 
 \usepackage{pst-tree}
 \newcommand{\poeTR}[1]{\TR{\ttfamily\color{DOrange}#1}}
 \usepackage{pst-optexp} 
 \usepackage{pst-circ}
 \usepackage[makeindex]{splitidx} 
-\newindex[Code Index]{idx}
-\newindex[Documentation Index]{doc}
 \usepackage{etoolbox}
 \usepackage{hypdoc}
 \hypersetup{colorlinks=true,
@@ -234,46 +231,52 @@
 \newcommand*{\paramvalue}[1]{\texttt{#1}}
 \newcommand*{\styleshape}[1]{\texttt{#1}}
 \newcommand{\docindex}[1]{\sindex[doc]{#1|hyperpage}}
-\def\xLcs#1{\docindex{#1=\nxLcs{#1}}\docindex{Macro!#1=\nxLcs{#1}}}
+\def\xLcs#1{\docindex{#1=\nxLcs{#1}}\docindex{\POEindexMacro!#1=\nxLcs{#1}}}
 \def\Lcs#1{\nxLcs{#1}\xLcs{#1}}
 \def\nxLcs#1{\texttt{\textbackslash#1}}
 
-\def\LPack#1{\texttt{#1}\docindex{#1=\texttt{#1}}\docindex{Package!#1=\texttt{#1}}}
+\def\LPack#1{\texttt{#1}\docindex{#1=\texttt{#1}}\docindex{\POEindexPackage!#1=\texttt{#1}}}
 \def\nxLPack#1{\texttt{#1}}
 
 \def\Lkeyword#1{\texttt{#1}\xLkeyword{#1}}
-\def\xLkeyword#1{\docindex{#1=\texttt{#1}}\docindex{Keyword!#1=\texttt{#1}}}
+\def\xLkeyword#1{\docindex{#1=\texttt{#1}}\docindex{\POEindexKeyword!#1=\texttt{#1}}}
 \def\nxLkeyword#1{\texttt{#1}}
 
-\def\xLoption#1{\docindex{#1=\texttt{#1}}\docindex{Package option!#1=\texttt{#1}}}
+\def\xLoption#1{\docindex{#1=\texttt{#1}}\docindex{\POEindexOption!#1=\texttt{#1}}}
 \def\Loption#1{\texttt{#1}\xLoption{#1}}
+\def\nxLoption#1{\texttt{#1}}
 
 \def\Lstyle#1{\texttt{#1}\xLstyle{#1}}
-\def\xLstyle#1{\docindex{#1=\texttt{#1}}\docindex{Style!#1=\texttt{#1}}}
+\def\xLstyle#1{\docindex{#1=\texttt{#1}}\docindex{\POEindexStyle!#1=\texttt{#1}}}
 \def\nxLstyle#1{\texttt{#1}}
 
 \def\Ldipole#1{\nxLcs{#1}\xLdipole{#1}}
-\def\xLdipole#1{\docindex{#1=\nxLcs{#1}}\docindex{Dipoles!#1=\nxLcs{#1}}}
+\def\xLdipole#1{\docindex{#1=\nxLcs{#1}}\docindex{\POEindexDipoles!#1=\nxLcs{#1}}}
 
 \def\Ltripole#1{\nxLcs{#1}\xLtripole{#1}}
-\def\xLtripole#1{\docindex{#1=\nxLcs{#1}}\docindex{Tripoles!#1=\nxLcs{#1}}}
+\def\xLtripole#1{\docindex{#1=\nxLcs{#1}}\docindex{\POEindexTripoles!#1=\nxLcs{#1}}}
 
 \def\Lfdipole#1{\nxLcs{#1}\xLfdipole{#1}}
-\def\xLfdipole#1{\docindex{#1=\nxLcs{#1}}\docindex{Fiber dipoles!#1=\nxLcs{#1}}}
+\def\xLfdipole#1{\docindex{#1=\nxLcs{#1}}\docindex{\POEindexFiberDipoles!#1=\nxLcs{#1}}}
 
 \def\Lfmultipole#1{\nxLcs{#1}\xLfmultipole{#1}}
-\def\xLfmultipole#1{\docindex{#1=\nxLcs{#1}}\docindex{Fiber multipoles!#1=\nxLcs{#1}}}
+\def\xLfmultipole#1{\docindex{#1=\nxLcs{#1}}\docindex{\POEindexFiberMultipoles!#1=\nxLcs{#1}}}
 
 \newcommand{\dipoledesc}[1]{%
-  \xLdipole{#1}\label{cmd:#1}\cmditem{#1}[Options](In)(Out)%
+  \xLdipole{#1}\label{cmd:#1}%
+  \cmditem{#1}[Options](In)(Out)%
   \xLdipole{#1}\cmditem{#1}[Options](In)(Out){Label}%
 }
 \newcommand{\tripoledesc}[1]{%
-  \xLtripole{#1}\cmditem{#1}[Options](In)(Center)(Out){Label}
+  \xLtripole{#1}\label{cmd:#1}%
+  \cmditem{#1}[Options](In)(Center)(Out)%
+  \cmditem{#1}[Options](In)(Center)(Out){Label}%
 }
 
 \newcommand{\fiberdipoledesc}[1]{%
-  \xLfdipole{#1}\cmditem{#1}[Options](In)(Out){Label}
+  \xLfdipole{#1}\label{cmd:#1}%
+  \cmditem{#1}[Options](In)(Out)%
+  \cmditem{#1}[Options](In)(Out){Label}%
 }
 
 \newcommand{\refstringexplanation}[0]{%
@@ -285,6 +288,7 @@
 \addtopsstyle{Beam}{linewidth=1.5\pslinewidth}
 \EnableCrossrefs
 \CodelineIndex
+\OnlyDescription
 \begin{document}
   \DocInput{pst-optexp.dtx}
   \begin{otherlanguage}{english}
@@ -312,8 +316,6 @@
 %   Grave accent  \`     Left brace    \{     Vertical bar  \|
 %   Right brace   \}     Tilde         \~}
 %
-%
-%
 % \GetFileInfo{pst-optexp.dtx}
 %
 % \DoNotIndex{\@,\g@addto@macro,\newif,\gdef,\xdef,\newcounter,\or,\ifcase}
@@ -331,14 +333,45 @@
 %   \iflanguage{german}{\GERMANtrue}{\GERMANfalse}}
 % \iflanguage{english}{\ENGLISHtrue}{\ENGLISHfalse}
 %
-% \newcommand*{\sizeexplanation}[1][1.6]{% 
+% \ifGERMAN
+%   \newrefformat{sec}{Kap.\,\ref{#1}}
+%   \newrefformat{l}{Zeile\,\ref{#1}}
+%   \newindex[Quelltextindex]{idx}
+%   \newindex[Dokumentationsindex]{doc}
+%   \newcommand{\POEindexPackage}{Paket}
+%   \newcommand{\POEindexMacro}{Makro}
+%   \newcommand{\POEindexKeyword}{Schlüsselwort}
+%   \newcommand{\POEindexOption}{Option}
+%   \newcommand{\POEindexStyle}{Stil}
+%   \newcommand{\POEindexDipoles}{Zweipol}
+%   \newcommand{\POEindexTripoles}{Dreipol}
+%   \newcommand{\POEindexFiberDipoles}{Faserzweipol}
+%   \newcommand{\POEindexFiberMultipoles}{Fasermultipol}
+% \fi
+% \ifENGLISH
+%   \newrefformat{sec}{sec.~\ref{#1}} 
+%   \newrefformat{l}{line.~\ref{#1}}
+%   \newindex[Code index]{idx}
+%   \newindex[Documentation index]{doc}
+%   \newcommand{\POEindexPackage}{Package}
+%   \newcommand{\POEindexMacro}{Macro}
+%   \newcommand{\POEindexKeyword}{Keyword}
+%   \newcommand{\POEindexOption}{Option} 
+%   \newcommand{\POEindexStyle}{Style}
+%   \newcommand{\POEindexDipoles}{Dipoles}
+%   \newcommand{\POEindexTripoles}{Tripoles}
+%   \newcommand{\POEindexFiberDipoles}{Fiber dipoles}
+%   \newcommand{\POEindexFiberMultipoles}{Fiber multipoles}
+% \fi
+%
+% \newcommand*{\sizeexplanation}[2][1.6]{% 
 %   \ifGERMAN 
-%     Die Höhe der Komponente, die Breite ist \opt{#1} mal die Höhe. Mit
+%     Die Höhe #2, die Breite ist \opt{#1} mal die Höhe. Mit
 %     dem \opt{xunit} oder \opt{yunit} Parameter kann dieses Verhältnis
 %     geändert werden.
 %   \fi
 %   \ifENGLISH
-%     The height of the delay line, the width is \opt{#1} times the
+%     The height of the #2, the width is \opt{#1} times the
 %     height. Use the \opt{xunit} or \opt{yunit} parameter to change this
 %     relation.
 %   \fi
@@ -513,6 +546,8 @@
 %   system.
 % \fi
 %
+% \newpage
+% 
 % \ifGERMAN
 %   \section{Erste Schritte}
 % \fi
@@ -531,79 +566,114 @@
 %%\begingroup
 %%\catcode`\*=13
 %%\def*{}%
-\begin{LTXexample}[pos=t, vsep=5mm, numbers=left, numberstyle=\footnotesize]
+\psset{unit=1.5}
+\begin{LTXexample}[pos=t, vsep=10mm, numbers=left, numberstyle=\footnotesize]
 \begin{pspicture}[showgrid=true](0,-0.3)(5,2.3)
-  \pnode(0,1){In}\pnode(3.5,1){Out}*\label{expl1:nodes}*
-  \lens[lensradius=-0.7, lenswidth=0.1, abspos=1](In)(Out){concave}*\label{expl1:l1}*
-  \lens[lensradius=2.3, lensheight=1.3, abspos=2.6](In)(Out){convex}*\label{expl1:l2}*
-  \optbox[endbox, labeloffset=0](In)(Out){CCD}*\label{expl1:box}*
-  \newpsstyle{Beam}{linecolor=green, fillstyle=solid, fillcolor=green, opacity=0.2}*\label{expl1:style}*
-  \drawwidebeam[beamwidth=0.2]{(In)}{1}{2}{3}*\label{expl1:beam}*
+  \pnode(0,1){In}\pnode(3.5,1){Out}*\label{l:ex1-nodes}*
+  \lens[lensradius=-0.7, lenswidth=0.1, abspos=1](In)(Out){concave}*\label{l:ex1-l1}*
+  \lens[lensradius=2.3, lensheight=1.3, abspos=2.6](In)(Out){convex}*\label{l:ex1-l2}*
+  \optbox[endbox, labeloffset=0](In)(Out){CCD}*\label{l:ex1-box}*
+  \newpsstyle{Beam}{linecolor=green, fillstyle=solid, fillcolor=green, opacity=0.2}*\label{l:ex1-style}*
+  \drawwidebeam[beamwidth=0.2]{(In)}{1}{2}{3}*\label{l:ex1-beam}*
 \end{pspicture}
 \end{LTXexample}
 % \endgroup
 % \iffalse
 %</ignore>
 % \fi 
-% \ifGERMAN Im diesem ersten Beispiel wird das automatische
-% Raytracing durch unterschiedliche Linsen gezeigt. In
-% Zeile~\ref{expl1:nodes} werden die beiden Referenzknoten definiert,
+% \ifGERMAN 
+% Im diesem ersten Beispiel wird das automatische
+% Raytracing durch unterschiedliche Linsen gezeigt. 
+%
+% In \prettyref{l:ex1-nodes} werden die beiden Referenzknoten definiert,
 % anhand derer die Komponenten positioniert werden. Die beiden Linsen
-% (Zeilen~\ref{expl1:l1}--\ref{expl2:l2}) werden absolut positioniert,
+% (\prettyref{l:ex1-l1}--\ref{l:ex1-l2}) werden absolut positioniert,
 % der Parameter \opt{abspos} gibt den Abstand vom ersten Referenzknoten
 % \prm{In} an. Ein negative Linsenradius \opt{lensradius} ergibt eine
-% konkave Linse (Zeile~\ref{expl1:l1}), ein positiver Linsenradius eine
-% konvexe Linse (Zeile~\ref{expl1:l2}). Die dritte Komponente ist eine
-% Box (Zeile~\ref{expl:box}), deren eine Seite mit der Option
+% konkave Linse (\prettyref{l:ex1-l1}), ein positiver Linsenradius eine
+% konvexe Linse (\prettyref{l:ex1-l2}). Die dritte Komponente ist eine
+% Box (\prettyref{l:ex1-box}), deren eine Seite mit der Option
 % \opt{endbox} auf den Referenzknoten \prm{Out} gelegt wird. Die
 % Beschriftung wird mittig in die Box gesetzt
 % (\opt{labeloffset=0}). Zuletzt wird ein grüner Lichtstrahl gezeichnet
-% (Zeile~\ref{expl1:beam}), dessen Füllung etwas transparent ist
-% (Zeile~\ref{expl1:style}). Die Anfangsbreite des Strahls wird mit dem
-% Parameter \opt{beamwidth} vorgegeben, der weitere Verlauf wird nur
-% durch die optischen Eigenschaften der Komponenten bestimmt.
+% (\prettyref{l:ex1-beam}), dessen Füllung etwas transparent ist
+% (\prettyref{l:ex1-style}). Die Anfangsbreite des Strahls wird mit dem
+% Parameter \opt{beamwidth} vorgegeben, der weitere Strahlverlauf wird nur
+% durch die optischen Eigenschaften der Linsen bestimmt.
 % \fi
 % 
+%%\begingroup
+%%\catcode`\*=13
+%%\def*{}%
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}[hsep=10mm, numbers=left, numberstyle=\footnotesize]
+\begin{LTXexample}[hsep=8mm, numbers=left, numberstyle=\footnotesize]
 \begin{pspicture}[showgrid=true](3.2,5)
-  \pnode(0,3){In}\pnode(1,3){BS}\pnode(3,3){M1}
-  \pnode(1,5){M2}\pnode(1,1){PD}
-  \psset{mirrortype=extended, mirrordepth=0.2, bsstyle=plate, dettype=diode}
-\begin{optexp}
-  \beamsplitter(In)(BS)(PD)
-  \mirror(BS)(M1)(BS)
-  \mirror[variable](BS)(M2)(BS)
-  \lens(BS)(PD)
-  \optdetector(BS)(PD)
-  \addtopsstyle{Beam}{fillstyle=solid, fillcolor=green!20!white, beamwidth=0.2}
-  \drawwidebeam{(In)}{1}{2}{1}{3}{1}{4}{5}
-\end{optexp}
+  \pnode(0,3){In}\pnode(1,3){BS}\pnode(3,3){M1}*\label{l:ex2-nodes1}*
+  \pnode(1,5){M2}\pnode(1,1){PD}*\label{l:ex2-nodes2}*
+  \psset{mirrortype=extended, mirrordepth=0.2, bsstyle=plate, dettype=diode}*\label{l:ex2-set}*
+  \begin{optexp}*\label{l:ex2-begin}*
+    \beamsplitter[compname=BS](In)(BS)(PD)*\label{l:ex2-bs}*
+    \mirror[compname=M1](BS)(M1)(BS)*\label{l:ex2-m1}*
+    \mirror[compname=M2, variable](BS)(M2)(BS)*\label{l:ex2-m2}*
+    \lens[compname=L](BS)(PD)*\label{l:ex2-l}*
+    \optdetector[compname=Det](BS)(PD)*\label{l:ex2-det}*
+    \addtopsstyle{Beam}{fillstyle=solid, fillcolor=green!20!white, beamwidth=0.2}*\label{l:ex2-style}*
+    \drawwidebeam{(In)}{BS}{M1}{BS}{M2}{BS}{L}{Det}*\label{l:ex2-beam}*
+  \end{optexp}
 \end{pspicture}
 \end{LTXexample}
+% \endgroup
 % \iffalse
 %</ignore>
 % \fi
+%
+% \ifGERMAN
+%
+% In dem zweiten Beispiel werden neben Linsen auch reflektierende
+% Elemente (Spiegel) sowie Elemente eingesetzt, die sowohl
+% transmittieren als auch reflektieren (Strahlteiler).
+%
+% Wir beginnen wieder indem wir die Referenzknoten definieren
+% (\prettyref{l:ex2-nodes1}--\ref{l:ex2-nodes2}). Nun werden ein paar
+% Einstellungen gesetzt (\prettyref{l:ex2-set}): das Aussehen der
+% Spiegel, des Strahlteilers und des Detektors. Nun werden der Reihe
+% nach alle Komponenten platziert, die reflektierenden benötigen drei
+% Referenzknoten, den Eingangsknoten, den Knoten an dem die
+% reflektierende Grenzfläche ist und den Ausgangsknoten. Nun wird noch
+% das Aussehen des Lichtstrahls definiert (\prettyref{l:ex2-style}) und
+% der Strahl gezeichnet (\prettyref{l:ex2-beam}). 
+%
+% Diese Mal haben wir den Komponenten Namen gegeben (\opt{compname}) die
+% beim Raytracing anstatt der automatisch vergebenen Nummern verwendet
+% werden können. Dies erleichtert die Nachverfolgung des Strahlenganges.
+% 
+% Alle Komponenten und Strahlen wurden zusätzlich in eine
+% \opt{optexp}-Umgebung gekapselt. Innerhalb dieser werden alle
+% Lichtstrahlen hinter die Komponenten gelegt, sodass diese nicht
+% verdeckt werden.
+%
+% \fi
+%
 % \iffalse
 %<*ignore>
 % \fi
 %%\begingroup
 %%\catcode`\*=13
 %%\def*{}%
-\begin{LTXexample}[pos=t, vsep=5mm, numbers=left, numberstyle=\footnotesize]
-\begin{pspicture}[showgrid=true](7.7,2.4)
-  \pnode(1,1){Laser}\pnode(6.5,1){Osa}\pnode([offset=1]Osa){Pd}
-  \psset{optboxwidth=1, usefiberstyle}
-  \optbox[endbox, labeloffset=0](Osa)(Laser){Laser}
-  \polcontrol[nofiber, abspos=1](Laser)(Osa)
-  \optmzm[nofiber, abspos=2.5](Laser)(Osa){MZM}
-  \wdmsplitter[fiberin=none, align=bottom, abspos=4](Laser)(Pd)(Osa)
-  \optdetector[dettype=diode]([Xnodesep=-0.1]Pd)(Pd){}
-  \optbox[endbox, labeloffset=0](Laser)(Osa){OSA}
-  \drawfiber{1}{3}
-  \drawfiber{3}{4}
+\begin{LTXexample}[pos=t, vsep=10mm, numbers=left, numberstyle=\footnotesize]
+\begin{pspicture}[showgrid=true](-0.2,-0.3)(7.7,2.4)
+  \pnode(1,1){Laser}\pnode(3,1){PcOut}*\label{l:ex3-nodes1}*
+  \pnode(4.5,1){MzmOut}\pnode(6.5,1){Osa}
+  \pnode([offset=1]Osa){Pd}*\label{l:ex3-nodes2}*
+  \psset{optboxwidth=1.2, usefiberstyle}*\label{l:ex3-set}*
+  \optbox[endbox, labeloffset=0](Osa)(Laser){Laser}*\label{l:ex3-laser}*
+  \polcontrol(Laser)(PcOut){PC}*\label{l:ex3-pc}*
+  \optmzm(PcOut)(MzmOut){MZM}*\label{l:ex3-mzm}*
+  \wdmsplitter[align=bottom](MzmOut)(Pd)(Osa){99/1}*\label{l:ex3-cpl}*
+  \optdetector[dettype=diode]([Xnodesep=-0.1]Pd)(Pd)*\label{l:ex3-det}*
+  \optbox[endbox, labeloffset=0](Laser)(Osa){OSA}*\label{l:ex3-osa}*
 \end{pspicture}
 \end{LTXexample}
 %%\endgroup
@@ -611,82 +681,68 @@
 %</ignore>
 % \fi
 % 
-% \iffalse
-%<*ignore>
-% \fi
-\begingroup
-\catcode`\*=13
-\def*{}%
-\begin{LTXexample}[pos=t, vsep=5mm, numbers=left, numberstyle=\footnotesize]
-\begin{pspicture}(0.4,0.1)(9,3.4)
-  \pnode(2,3){Laser}*\label{expl:quick-nodefirst}*
-  \pnode(2,1){PwMeter}
-  \pnode(6,3){CplTop}
-  \pnode(6,1){CplBot}*\label{expl:quick-nodelast}*
-  \psset{arrowscale=1.5, arrowinset=0}
-  \optbox[endbox, optboxheight=1, optboxwidth=1.6, labeloffset=0]([Xnodesep=0.1]Laser)(Laser){%
-    \begin{tabular}{@{}c@{}}Nd:YAG\\cw laser\end{tabular}}
-  \optcoupler[addtoFiberIn1={ArrowInside=->},
-              addtoFiberIn2={ArrowInside=-<},
-              labeloffset=0.4]%
-              (Laser)(PwMeter)(CplTop)(CplBot){WDM}
-  \optfiber[addtoFiberOut={ncurv=1, angleB=0},
-            addtoFiberIn={ncurv=1, angleA=0}, 
-            compshift=-1,
-            label=0.2 . l](CplBot)(CplTop){Fiber}
-  \optdetector[labelangle=180, dettype=diode]([Xnodesep=0.1]PwMeter)(PwMeter){power meter}
-\end{pspicture}
-\end{LTXexample}
-\endgroup
-% \iffalse
-%</ignore>
-% \fi
+% \ifGERMAN
+% Das dritte Beispiel zeigt eine einfache Skizze mit faseroptischen Komponenten.
 %
-% \iffalse
-%<*ignore>
-% \fi
-\begin{LTXexample}[pos=t, vsep=5mm, numbers=left, numberstyle=\footnotesize]
-\begin{pspicture}[showgrid=true](1,1.2)(6.2,5)
-  \pnode(1,4){SigIn}
-  \pnode(3,4){BS}
-  \pnode(3,5){LO}
-  \pnode(5,4){Det1}
-  \pnode(3,2){Det2}
-  \begin{optexp}
-  \optplane(LO)(1,0){LO}
-  \beamsplitter[compname=BS](SigIn)(BS)(Det2)
-  \lens[abspos=0.5, compname=L2, n=2.1](Det2)(BS)
-  \lens[abspos=0.5, compname=L1, n=2.1](Det1)(BS)
-  \optdetector[compname=Det1, extnode=c](BS)(Det1){PD1}
-  \optdetector[compname=Det2, extnode=c](BS)(Det2){PD2}
-  \addtopsstyle{Beam}{beamwidth=0.2, fillstyle=solid, fillcolor=green, opacity=0.2}
-  \drawwidebeam{(SigIn)}{BS}{L2}{Det2}
-  \drawwidebeam[beaminsidefirst]{BS}{L1}{Det1}
-  \newpsstyle{Beam}{linecolor=red, linestyle=dashed, linewidth=1.5\pslinewidth}
-  \drawbeam{LO}{BS}{L1}{Det1}
-  \drawbeam[beaminsidefirst]{BS}{L2}{Det2}
-\end{optexp}
-  \cnodeput([Xnodesep=0.5, offset=-0.5]\oenodeExt{Det1}|\oenodeExt{Det2}){M}{\rule{3mm}{1pt}}
-  \nccurve[angleA=90, arrows=<-]{M}{\oenodeExt{Det1}}
-  \nccurve[angleA=180, angleB=-90, arrows=<-]{M}{\oenodeExt{Det2}}
-\end{pspicture}
-\end{LTXexample}
-% \iffalse
-%</ignore>
-% \fi
-% \end{document}
-% \section{Backward compatibility}
+% Bezüglich der Positionierung verhalten diese sich identisch zu den
+% vorher gezeigten Freistrahl-Komponenten, aber die Verbindung mit
+% «Fasern» wird anders gehandhabt. Üblicherweise werden die Komponenten
+% direkt mit den verwendeten Referenzknoten verbunden. 
+%
+% Die Referenzknoten werden in
+% \prettyref{l:ex3-nodes1}--\ref{l:ex3-nodes2} definiert, anschließend
+% allgemeine Einstellungen festgelegt (\prettyref{l:ex3-set}).
+%
+% \fi 
 % 
+% \ifGERMAN
+%   \section{Abwärtskompatibilität}
+% \fi
+% \ifENGLISH
+%   \section{Backward compatibility}
+%   \fi 
+%   \ifGERMAN Version 3.0 hat erhebliche fortgeschrittenere
+%   Funktionalität hinzugefügt, die es zu schwierig machte zur
+%   Vorgängerversion 2.1 vollständig abwärtskompatibel zu
+%   bleiben. Insbesondere war die Funktionsweise des \Lcs{drawbeam}
+%   Makros grundlegend falsch konzipiert, so dass ein Wechsel zur neuen
+%   Funktionalität so schnell wie möglich erfolgen musste.
+%
 % \begin{optionlist}
-% \optitem[new]{namingscheme}{old, new}
-% Version 3.0 introduced a lot of advanced features which made it too difficult to
-% maintain full backward compatibility with version 2.x. However, using the
-% \Loption{compat} package option allows you to compile old setups but without
-% profiting from the new features. If you only need the old naming scheme, because
-% you accessed internal nodes directly, then you must only set
-% \nxLkeyword{namingscheme=old}.
+% \item[\smash{\Loption{compat}\hspace{10pt}}] Mit dieser Paketoption können alte
+%   Dokumente kompiliert werden, ohne jedoch von vielen Neuerungen
+%   profitieren zu können.
+%
+%   \optitem[new]{namingscheme}{old, new} In Version 2.x musste
+%   spezielle Komponentenknoten über ihren expliziten Namen angesprochen
+%   werden. Wenn Sie nur das alte Namensschema benötigen, da Sie direkt
+%   auf die Knoten zugegriffen haben, so genügt es
+%   \nxLkeyword{namingscheme=old} zu verwenden, die Paketoption
+%   \nxLoption{compat} wird dann nicht benötigt. Seit Version 3.0 werden
+%   Makros für den Zugriff auf die Komponentenknoten bereitgestellt, so
+%   dass das eigentlichen Namensschema unerheblich ist.
 % \end{optionlist}
-% 
+% \fi
+% \ifENGLISH
+% Version 3.0 introduced a lot of advanced features which made it too
+% difficult to maintain full backward compatibility with version
+% 2.x. Especially the \Lcs{drawbeam} macro was broken by design, so that
+% it was best to drop the old flaw as early as possible.
+%
+% \begin{optionlist}
+% \item[\smash{\Loption{compat}}] However, using this package option
+%   allows you to compile old setups but without profiting from the new
+%   features.
+%
+%   \optitem[new]{namingscheme}{old, new} In version 2.x special
+%   component nodes had to be accessed by their explicit name. If you
+%   only need the old naming scheme, because you accessed internal nodes
+%   directly, then you can only set \nxLkeyword{namingscheme=old} and do
+%   not need to use the \nxLoption{compat} option. Since version 3.0
+%   explicit macros are provided to access all special component nodes,
+%   so that the actual naming scheme does not matter.
+% \end{optionlist}
+% \fi
 % \section{Concept and general behavior}\label{sec:general}
 % 
 % This section introduces into the basic concepts of the package design and
@@ -1688,10 +1744,22 @@
 % \fi
 % 
 % \boolitem[false]{variable}
-% 
-% \styleitem{VariableMirror} With the \opt{variable} option a moveable
-% mirror is drawn which has two additional curved arrows on both sides. The style
-% of the arrows can be changed with the \opt{VariableMirror} style.
+% \ifGERMAN
+% Zeichnet einen verstellbaren Spiegel, der mit zwei zusätzlichen,
+% gekrümmten Pfeilen an beiden Seiten angedeutet wird.
+% \fi
+% \ifENGLISH
+% Draw an adjustable mirror which has two additional curved arrows on
+% both sides.
+% \fi
+%
+% \styleitem{VariableMirror} 
+% \ifGERMAN
+%   Der Stil der Pfeiles des verstellbaren Spiegels.
+% \fi
+% \ifENGLISH
+% The style of the arrows of the variable mirror.
+% \fi
 % \iffalse
 %<*ignore>
 % \fi
@@ -1704,7 +1772,13 @@
 %</ignore>
 % \fi
 % 
-% \numitem[0.1]{mirrordepth} Define the depth of an extended mirror
+% \numitem[0.1]{mirrordepth} 
+% \ifGERMAN
+%   Die Tiefe eines breiten Spiegels.
+% \fi
+% \ifENGLISH
+%   The depth of an extended mirror.
+% \fi
 % \iffalse
 %<*ignore>
 % \fi
@@ -2137,7 +2211,8 @@
 %<*ignore>
 % \fi
 \begin{LTXexample}
-\begin{pspicture}[showgrid=true](3,1.5)
+\begin{pspicture}(3,1.5)
+  \psset{labeloffset=0.3}
   \optfiber[fiberloops=2](0,0.5)(3,0.5){SSMF}
 \end{pspicture}
 \end{LTXexample}
@@ -2153,6 +2228,7 @@
 % \fi
 \begin{LTXexample}
 \begin{pspicture}(3,1.5)
+  \psset{labeloffset=0.3}
   \optfiber[fiberloopradius=0.2](0,0.5)(3,0.5){SSMF}
 \end{pspicture}
 \end{LTXexample}
@@ -2199,7 +2275,7 @@
 % \end{ltxsyntax}
 % 
 % \begin{optionlist}
-% \numitem[0.8]{optampsize} \sizeexplanation
+% \numitem[0.8]{optampsize} \sizeexplanation{\ifGERMAN des Verstärkers\fi\ifENGLISH amplifier\fi}
 % \end{optionlist}
 % 
 % \subsection{Mach-Zehnder Modulator}
@@ -2220,7 +2296,7 @@
 % \end{ltxsyntax}
 % 
 % \begin{optionlist}
-% \numitem[0.8]{optmzmsize} \sizeexplanation
+% \numitem[0.8]{optmzmsize} \sizeexplanation{\ifGERMAN des Modulators\fi\ifENGLISH modulator\fi}
 % \end{optionlist}
 % 
 % \ifGERMAN
@@ -2333,11 +2409,11 @@
 % \end{ltxsyntax}
 % 
 % \begin{optionlist}
-%   \numitem[0.6]{isolatorsize} \sizeexplanation
+%   \numitem[0.6]{isolatorsize} \sizeexplanation{\ifGERMAN des Isolators\fi\ifENGLISH isolator\fi}
 %
 % \styleitem{IsolatorArrow} 
 % \ifGERMAN 
-% Der Stil für den Isolatorpfeil. Das kann insbesonders nützlich sein um
+% Der Stil für den Isolatorpfeil. Das kann insbesondere nützlich sein um
 % die Länge des Pfeils zu verändern. 
 % \fi
 % \ifENGLISH 
@@ -2373,7 +2449,7 @@
 % \fi
 \begin{LTXexample}
 \begin{pspicture}(3,1.5)
-  \optswitch(0,1)(3,1){Opened switch}
+  \optswitch(0,1)(3,1){opened switch}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -2394,7 +2470,7 @@
 % \fi
 \begin{LTXexample}
 \begin{pspicture}(3,1.5)
-  \optswitch[switchstyle=closed](0,1)(3,1){Closed switch}
+  \optswitch[switchstyle=closed](0,1)(3,1){closed switch}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -2416,7 +2492,7 @@
 % \fi
 \begin{LTXexample}
 \begin{pspicture}(3,1.5)
-  \fiberdelayline(0,1)(3,1){Delay line}
+  \fiberdelayline(0,1)(3,1){delay line}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -2425,7 +2501,7 @@
 % \end{ltxsyntax}
 % 
 % \begin{optionlist}
-% \numitem[0.6]{fdlsize} \sizeexplanation
+% \numitem[0.6]{fdlsize} \sizeexplanation{\ifGERMAN der Verzögerungsstrecke\fi\ifENGLISH delay line\fi}
 %
 % \styleitem{FdlArrow} 
 % \ifGERMAN 
@@ -2475,7 +2551,7 @@
 % \end{ltxsyntax}
 % 
 % \begin{optionlist}
-%   \numitem[0.6]{fiberpolsize} \sizeexplanation
+%   \numitem[0.6]{fiberpolsize} \sizeexplanation{\ifGERMAN des Polarisators\fi\ifENGLISH polarizer\fi}
 % \end{optionlist}
 % 
 % \ifGERMAN
@@ -2500,7 +2576,7 @@
 % \fi
 % \end{ltxsyntax}
 % \begin{optionlist}
-% \numitem[0.3]{fibercolsize} \sizeexplanation
+% \numitem[0.3]{fibercolsize} \sizeexplanation{\ifGERMAN des Kollimators\fi\ifENGLISH collimator\fi}
 % \end{optionlist}
 % \ifGERMAN
 % Der Fasekollimator kann mit zwei, drei oder vier Punkten verwendet
@@ -2570,7 +2646,9 @@
 %   \subsubsection{\texorpdfstring{\mathversion{bold}$2\times 2$}{2x2} Coupler}
 % \fi
 % \begin{ltxsyntax}
-% \xLfmultipole{optcoupler}\cmditem{optcoupler}(LeftTop)(LeftBottom)(RightTop)(RightBottom){Label}%
+% \xLfmultipole{optcoupler}\label{cmd:optcoupler}%
+% \cmditem{optcoupler}(LeftTop)(LeftBottom)(RightTop)(RightBottom)%
+% \cmditem{optcoupler}(LeftTop)(LeftBottom)(RightTop)(RightBottom){Label}%
 % \iffalse
 %<*ignore>
 % \fi
@@ -2584,7 +2662,7 @@
 % \fi
 % \end{ltxsyntax}
 % \begin{optionlist}
-% \numitem[0.2]{couplersize} \sizeexplanation{2.5}
+% \numitem[0.2]{couplersize} \sizeexplanation{2.5}{\ifGERMAN des Kopplers\fi\ifENGLISH coupler\fi}
 % \numitem[0.1]{couplersep} 
 % \ifGERMAN Der vertikale Abstand zwischen zwei Faserports.\fi
 % \ifENGLISH The vertical distance between two fiber ports.\fi
@@ -2611,11 +2689,11 @@
 \begin{pspicture}(3,4.5)
   \psset{labeloffset=0.5}
   \optcoupler[couplertype=none]%
-                (0,4.5)(0,3.5)(3,4.5)(3,3.5){Coupler}
+                (0,4.5)(0,3.5)(3,4.5)(3,3.5)
   \optcoupler[couplertype=rectangular]%
-               (0,3)(0,2)(3,3)(3,2){Coupler}
+               (0,3)(0,2)(3,3)(3,2)
   \optcoupler[couplertype=crossswitch]%
-               (0,1.5)(0,0.5)(3,1.5)(3,0.5){Coupler}
+               (0,1.5)(0,0.5)(3,1.5)(3,0.5)
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -2649,7 +2727,9 @@
 %   \subsubsection{WDM Coupler}
 % \fi
 % \begin{ltxsyntax}
-% \xLfmultipole{wdmcoupler}\cmditem{wdmcoupler}(LeftTop)(LeftBottom)(Right){Label}%
+% \xLfmultipole{wdmcoupler}\label{cmd:wdmcoupler}%
+% \cmditem{wdmcoupler}(LeftTop)(LeftBottom)(Right)%
+% \cmditem{wdmcoupler}(LeftTop)(LeftBottom)(Right){Label}%
 % \iffalse
 %<*ignore>
 % \fi
@@ -2664,8 +2744,10 @@
 % \end{ltxsyntax}
 % 
 % \begin{optionlist}
-% \numitem[0.2]{couplersize}
-% \numitem[0.1]{couplersep} The vertical distance between the two input fiber ports.
+% \numitem[0.2]{couplersize} \sizeexplanation{2.5}{\ifGERMAN des Kopplers\fi\ifENGLISH coupler\fi}
+% \numitem[0.1]{couplersep}
+% \ifGERMAN Der vertikale Abstand zwischen den beiden Eingangsports.\fi
+% \ifENGLISH The vertical distance between the two input ports.\fi
 % \iffalse
 %<*ignore>
 % \fi
@@ -2679,15 +2761,17 @@
 % \fi
 % 
 % \choitem[elliptic]{couplertype}{none, elliptic, rectangular}
+% \ifGERMAN Wähle zwischen unterschiedlichen Kopplertypen.\fi
+% \ifENGLISH Select between different coupler types.\fi
 % \iffalse
 %<*ignore>
 % \fi
 \begin{LTXexample}
 \begin{pspicture}(3,3)
   \psset{labeloffset=0.5}
-  \wdmcoupler[couplertype=none](0,3)(0,2)(3,2.5){WDM}
+  \wdmcoupler[couplertype=none](0,3)(0,2)(3,2.5)
   \wdmcoupler[couplertype=rectangular]%
-               (0,1.5)(0,0.5)(3,1){WDM}
+               (0,1.5)(0,0.5)(3,1)
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -2695,6 +2779,8 @@
 % \fi
 % 
 % \choitem[center]{align}{top, bottom, center}
+% \ifGERMAN Die Ausrichtung des Kopplers bezüglich der Referenzknoten.\fi
+% \ifENGLISH The alignment of the coupler with respect to the reference nodes.\fi
 % \iffalse
 %<*ignore>
 % \fi
@@ -2702,9 +2788,9 @@
 \begin{pspicture}(3,3)
   \psset{labeloffset=0.4}
   \wdmcoupler[align=top,
-                couplertype=none](0,3)(0,2)(3,3){Top}
+                couplertype=none](0,3)(0,2)(3,3){top}
   \wdmcoupler[align=bottom]
-               (0,1.5)(0,0.5)(3,0.5){Bottom}
+               (0,1.5)(0,0.5)(3,0.5){bottom}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -2714,7 +2800,9 @@
 % 
 % \subsubsection{WDM Splitter}
 % \begin{ltxsyntax}
-% \xLfmultipole{wdmcoupler}\cmditem{wdmsplitter}(Left)(RightTop)(RightBottom){Label}%
+% \xLfmultipole{wdmcoupler}\label{cmd:wdmcoupler}%
+% \cmditem{wdmsplitter}(Left)(RightTop)(RightBottom)%
+% \cmditem{wdmsplitter}(Left)(RightTop)(RightBottom){Label}%
 % \iffalse
 %<*ignore>
 % \fi
@@ -2728,8 +2816,10 @@
 % \fi
 % \end{ltxsyntax}
 % \begin{optionlist}
-% \numitem[0.2]{couplersize}
-% \numitem[0.1]{couplersep} The vertical distance between the two output fiber ports.
+% \numitem[0.2]{couplersize} \sizeexplanation{2.5}{\ifGERMAN des Kopplers\fi\ifENGLISH coupler\fi}
+% \numitem[0.1]{couplersep} 
+% \ifGERMAN Der vertikale Abstand zwischen den beiden Ausgangsports.\fi
+% \ifENGLISH The vertical distance between the two output ports.\fi
 % \iffalse
 %<*ignore>
 % \fi
@@ -2743,15 +2833,17 @@
 % \fi
 % 
 % \choitem[elliptic]{couplertype}{none, elliptic, rectangular}
+% \ifGERMAN Wähle zwischen unterschiedlichen Kopplertypen.\fi
+% \ifENGLISH Select between different coupler types.\fi
 % \iffalse
 %<*ignore>
 % \fi
 \begin{LTXexample}
 \begin{pspicture}(3,3)
   \psset{labeloffset=0.5}
-  \wdmsplitter[couplertype=none](0,2.5)(3,3)(3,2){WDM}
+  \wdmsplitter[couplertype=none](0,2.5)(3,3)(3,2)
   \wdmsplitter[couplertype=rectangular]%
-                 (0,1)(3,1.5)(3,0.5){Coupler}
+                 (0,1)(3,1.5)(3,0.5)
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -2759,6 +2851,8 @@
 % \fi
 % 
 % \choitem[center]{align}{top, bottom, center}
+% \ifGERMAN Die Ausrichtung des Kopplers bezüglich der Referenzknoten.\fi
+% \ifENGLISH The alignment of the coupler with respect to the reference nodes.\fi
 % \iffalse
 %<*ignore>
 % \fi
@@ -2766,8 +2860,8 @@
 \begin{pspicture}(3,3)
   \psset{labeloffset=0.4}
   \wdmsplitter[align=top,
-                 couplertype=none](0,3)(3,3)(3,2){Top}
-  \wdmsplitter[align=bottom](0,0.5)(3,1.5)(3,0.5){Bottom}
+                 couplertype=none](0,3)(3,3)(3,2){top}
+  \wdmsplitter[align=bottom](0,0.5)(3,1.5)(3,0.5){bottom}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -3499,6 +3593,64 @@
 %</ignore>
 % \fi
 % 
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(0.4,0.1)(9,3.4)
+  \pnode(2,3){Laser}\pnode(2,1){PwMeter}
+  \pnode(6,3){CplTop}\pnode(6,1){CplBot}
+  \psset{arrowscale=1.5, arrowinset=0}
+  \optbox[endbox, optboxheight=1, optboxwidth=1.6, labeloffset=0]([Xnodesep=0.1]Laser)(Laser){%
+    \begin{tabular}{@{}c@{}}Nd:YAG\\cw laser\end{tabular}}
+  \optcoupler[addtoFiberIn1={ArrowInside=->},
+              addtoFiberIn2={ArrowInside=-<},
+              labeloffset=0.4]%
+              (Laser)(PwMeter)(CplTop)(CplBot){WDM}
+  \optfiber[addtoFiberOut={ncurv=1, angleB=0},
+            addtoFiberIn={ncurv=1, angleA=0}, 
+            compshift=-1,
+            label=0.2 . l](CplBot)(CplTop){Fiber}
+  \optdetector[labelangle=180, dettype=diode]([Xnodesep=0.1]PwMeter)(PwMeter){power meter}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}[showgrid=true](1,1.2)(6.2,5)
+  \pnode(1,4){SigIn}
+  \pnode(3,4){BS}
+  \pnode(3,5){LO}
+  \pnode(5,4){Det1}
+  \pnode(3,2){Det2}
+  \begin{optexp}
+  \optplane(LO)(1,0){LO}
+  \beamsplitter[compname=BS](SigIn)(BS)(Det2)
+  \lens[abspos=0.5, compname=L2, n=2.1](Det2)(BS)
+  \lens[abspos=0.5, compname=L1, n=2.1](Det1)(BS)
+  \optdetector[compname=Det1, extnode=c](BS)(Det1){PD1}
+  \optdetector[compname=Det2, extnode=c](BS)(Det2){PD2}
+  \addtopsstyle{Beam}{beamwidth=0.2, fillstyle=solid, fillcolor=green, opacity=0.2}
+  \drawwidebeam{(SigIn)}{BS}{L2}{Det2}
+  \drawwidebeam[beaminsidefirst]{BS}{L1}{Det1}
+  \newpsstyle{Beam}{linecolor=red, linestyle=dashed, linewidth=1.5\pslinewidth}
+  \drawbeam{LO}{BS}{L1}{Det1}
+  \drawbeam[beaminsidefirst]{BS}{L2}{Det2}
+\end{optexp}
+  \cnodeput([Xnodesep=0.5, offset=-0.5]\oenodeExt{Det1}|\oenodeExt{Det2}){M}{\rule{3mm}{1pt}}
+  \nccurve[angleA=90, arrows=<-]{M}{\oenodeExt{Det1}}
+  \nccurve[angleA=180, angleB=-90, arrows=<-]{M}{\oenodeExt{Det2}}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
 % \iffalse
 %<*ignore>
 % \fi
