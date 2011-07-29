@@ -279,11 +279,6 @@
   \cmditem{#1}[Options](In)(Out){Label}%
 }
 
-\newcommand{\refstringexplanation}[0]{%
-  A \paramvalue{<ref string>} is any combination of \paramvalue{c}
-  (center), \paramvalue{t} (top), \paramvalue{b} (bottom), \paramvalue{l}
-  (left), \paramvalue{r} (right)}
-
 \addtopsstyle{Fiber}{linecolor=DOrange,linewidth=1.5\pslinewidth}
 \addtopsstyle{Beam}{linewidth=1.5\pslinewidth}
 \EnableCrossrefs
@@ -376,6 +371,18 @@
 %     relation.
 %   \fi
 % }%
+% \newcommand{\refstringexplanation}{%
+%   \ifGERMAN
+%   Analog zum Referenzpunkt von \nxLcs{rput}, kann jede Kombination von
+%   \opt{c} (mittig), \opt{t} (oben), \opt{b} (unten), \opt{l} (links) und
+%   \opt{r} (rechts) sein.
+%   \fi
+%   \ifENGLISH
+%   Like the reference point of \nxLcs{rput}, can be any comination of
+%   \opt{c} (center), \opt{t} (top), \opt{b} (bottom), \opt{l} (left), and
+%   \opt{r} (right).
+%   \fi}
+%
 % \newcommand*{\linewidthexplanation}[2]{% 
 % \ifGERMAN
 % Die Linienbreite #1. Diese könnte ebenfalls über den
@@ -567,24 +574,37 @@
 %   \section{Getting started}
 % \fi
 % \label{sec:quick}
+% \ifGERMAN 
+% In diesem einführenden Kapitel werden der typische Entwicklungsprozess
+% sowie die grundlegenden Elemente einer Versuchsskizze
+% vorgestellt. Etwas weiterführende Beispiele, die einige der besonderen
+% Stärken des \LPack{pst-optexp} Paketes demonstrieren, werden Schritt
+% für Schritt erläutert.
+% \fi 
+% 
 % \ifGERMAN
-% In diesem einführenden Abschnitt soll anhand von ein paar kurzen Beispielen der
-% typische Entwicklungsprozess sowie einige der besonderen Stärken des
-% \LPack{pst-optexp} Paketes demonstriert werden.
+%   \subsection{Die Komponenten}
 % \fi
-% \iffalse
-%<*ignore>
+% \ifENGLISH
+%   \subsection{The components}
 % \fi
 %
 % \ifGERMAN
-%   \subsection{Beispiele}
+% 
+% \fi
+% \ifGERMAN
+%   \subsection{Schritt-für-Schritt-Beispiele}
 % \fi
 % \ifENGLISH
-%   \subsection{Examples}
+%   \subsection{Step-by-step examples}
 % \fi
-%%\begingroup
-%%\catcode`\*=13
-%%\def*{}%
+%
+% \iffalse
+%<*ignore>
+% \fi
+% \begingroup
+% \catcode`\*=13
+% \def*{}%
 \psset{unit=1.5}
 \begin{LTXexample}[pos=t, vsep=10mm, numbers=left, numberstyle=\footnotesize]
 \begin{pspicture}[showgrid=true](0,-0.3)(5,2.3)
@@ -933,25 +953,102 @@
 % 
 % \ifGERMAN
 %   \subsection{Beschriftungen}
+%   Alle Komponenten können mit einer Beschriftung versehen werden,
+%   deren Position und Ausrichtung genau angepasst werden kann.
 % \fi
 % \ifENGLISH
 %   \subsection{Labels}
+%   All components may have a label, which position and alignment can be
+%   adjusted precisely.
 % \fi
 % \label{sec:labels}
 %
 % \begin{optionlist}
 % \numitem[0.8]{labeloffset}
-% Specify the offset from the label reference node of the object which in most
-% cases is the center.
-% 
+% \ifGERMAN Der Abstand des Referenzknotens für die Beschriftung zum Zentrum der Komponente.\fi
+% \ifENGLISH The offset of the label reference node from the component center.\fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[linerange={1-2,6-6}]
+\begin{pspicture}(3,1.8)
+  \optbox[beam, labeloffset=1](0,1.5)(3,0.8){label}
+  \psdot[linecolor=blue](\oenodeCenter{})
+  \psdot[linecolor=red](\oenodeLabel{})
+  \ncline[arrows=<->]{\oenodeCenter{}}{\oenodeLabel{}}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
 % \valitem[\nxLcs{small}]{labelstyle}{macros}
-% Define the textstyle that is used to typeset the label. 
+% \ifGERMAN Der Schriftstil der Beschriftungen.\fi
+% \ifENGLISH The textstyle that is used to typeset the label.\fi
 % 
 % \valitem[c]{labelalign}{refstring}
-% Has the same meaning as the refpoint of \Lcs{rput} and can take the same values.
-% 
+% \ifGERMAN Definiert die Ausrichtung der Beschriftung bezüglich des vorgesehenen Referenzknotens.\fi
+% \ifENGLISH Defines the alignment of the label relative to the reference node.\fi
+% \refstringexplanation
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[linerange={1-3,6-6}]
+\begin{pspicture}(3,1.8)
+  \psset{beam, labeloffset=1}
+  \optbox[labelalign=bl](0,1.5)(3,0.8){label}
+  \psdot[linecolor=blue](\oenodeCenter{})
+  \psdot[linecolor=red](\oenodeLabel{})
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % \numitem[0]{labelangle}
-% Set the label rotation angle around the object. \nxLkeyword{labelref} can be used to change the reference system.
+% \ifGERMAN
+% Der Rotationswinkel des Referenzknotens um das Zentrum. Der Nullpunkt
+% hängt sowohl von dem jeweiligen Komponententypen und dem
+% Referenzsystem ab (siehe \nxLkeyword{labelref}).
+% \fi
+% \ifENGLISH
+% The rotation angle of the reference node around the component
+% center. The origin depends both on the component type and the
+% reference system (see \nxLkeyword{labelref}).
+% \fi
+%
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[linerange={1-2,4-6,25-25}]
+\begin{pspicture}(-0.3,0)(2,3.7)
+  \psset{labeloffset=1, optboxwidth=1, arrowscale=1.5, arrowinset=0}
+  \begin{optexp}
+  \optbox[endbox, labelangle=90](1,1)(1,2){Box}
+  \beamsplitter[labelangle=-90](1,2)(1,1)(2,1){BS}
+  \drawbeam[arrows=->]{1}{2}{(2,1)}
+  \frontlayer{%
+    \psdot[linecolor=blue](\oenodeCenter{1})
+    \psdot[linecolor=blue](\oenodeCenter{2})
+    \psdot[linecolor=red](\oenodeLabel{1})
+    \psdot[linecolor=red](\oenodeLabel{2})
+  }
+  \backlayer{%
+    \bgroup
+    \psset{linecolor=gray!40}
+    \psline(\oenodeCenter{2})([offset=-1]\oenodeCenter{2})
+    \psline(\oenodeCenter{2})([Xnodesep=-1]\oenodeCenter{2})
+    \psarc[arrows=<-](\oenodeCenter{2}){0.7}{180}{270}
+    \psline(\oenodeCenter{1})([Xnodesep=1]\oenodeCenter{1})
+    \psline(\oenodeCenter{1})([offset=1]\oenodeCenter{1})
+    \psarc[arrows=->](\oenodeCenter{1}){0.7}{0}{90}
+    \egroup
+  }
+  \end{optexp}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % 
 % \choitem[relgrav]{labelref}{relative, relgrav, global}
 % Set the reference coordinate system for the \nxLkeyword{labelangle} and the orientation of
@@ -962,7 +1059,7 @@
 %<*ignore>
 % \fi
 \begin{LTXexample}
-\begin{pspicture}(-2,-2)(2.5,2)
+\begin{pspicture}(-2,-2)(2,2)
   \psset{endbox, optboxwidth=1, optboxheight=0.6}
   \multido{\i=0+45}{8}{%
     \optbox[label=0 . . relative](0,0)(1;\i){\i}
@@ -971,7 +1068,7 @@
 \end{LTXexample}
 
 \begin{LTXexample}
-\begin{pspicture}(-2,-2)(2.5,2)
+\begin{pspicture}(-2,-2)(2,2)
   \psset{endbox, optboxwidth=1, optboxheight=0.6}
   \multido{\i=0+72}{5}{%
     \optbox[labelref=relgrav](0,0)(1;\i){\i}
@@ -980,7 +1077,7 @@
 \end{LTXexample}
 
 \begin{LTXexample}
-\begin{pspicture}(-2,-2)(2.5,2)
+\begin{pspicture}(-2,-2)(2,2)
   \psset{endbox, optboxwidth=1, optboxheight=0.6}
   \multido{\i=0+72}{5}{%
     \optbox[labelref=global](0,0)(1;\i){\i}
@@ -992,11 +1089,21 @@
 % \fi
 % 
 % \optitem{label}{\prm{offset}[ \prm{angle}[ \prm{ref string}[ \prm{labelref}]]]}
-% Allows simplified notation for changing more than one
-% label-related parameter. It takes up to four space-separated arguments
-% (\nxLkeyword{labeloffset}, \nxLkeyword{labelangle}, \nxLkeyword{labelalign}, and
-% \nxLkeyword{labelref}). Unchanged intermediate arguments may be specified with a dot.
-% 
+% \ifGERMAN
+% Diese Option erlaubt die kompakte Definition mehrerer
+% Beschriftungsparameter. Es können bis zu vier Leerzeichen-getrennte
+% Argumente übergeben werden (\nxLkeyword{labeloffset},
+% \nxLkeyword{labelangle}, \nxLkeyword{labelalign} und
+% \nxLkeyword{labelref}). Mit einem Punkt kann eine Option übersprungen
+% werden.
+% \fi
+% \ifENGLISH
+% Allows compact definition of several label parameters. It takes up to
+% four space-separated arguments (\nxLkeyword{labeloffset},
+% \nxLkeyword{labelangle}, \nxLkeyword{labelalign}, and
+% \nxLkeyword{labelref}). Unchanged intermediate arguments can be
+% skipped with a dot.
+% \fi
 % \iffalse
 %<*ignore>
 % \fi
@@ -7402,8 +7509,8 @@
 %
 % \subsection{The Postscript Header file}
 % \makeatletter
-%% Copied this definition from doc.sty and changed it not to add a
-%% backslash to the Postscript procedure name in the index.
+% % Copied this definition from doc.sty and changed it not to add a
+% % backslash to the Postscript procedure name in the index.
 % \def\SpecialIndex@#1#2{%
 %    \@SpecialIndexHelper@#1\@nil
 %    \def\@tempb{ }%
