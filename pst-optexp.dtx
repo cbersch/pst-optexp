@@ -376,6 +376,18 @@
 %     relation.
 %   \fi
 % }%
+% \newcommand*{\linewidthexplanation}[2]{% 
+% \ifGERMAN
+% Die Linienbreite #1. Diese könnte ebenfalls über den
+% \opt{linewidth} Parameter gesetzt werden. Mit diesem Parameter kann
+% aber die Linienbreite aller #2 global eingestellt werden.
+% \fi
+% \ifENGLISH
+% The linewidth of the #1. This could be defined also with the
+% generic \opt{linewidth} option. But this parameter allows setting
+% globally the linewidth of all #2.
+% \fi
+% }%
 %
 % \makeatletter
 % \renewcommand\maketitle{%
@@ -1249,14 +1261,11 @@
 % \fi
 % \end{ltxsyntax}
 % \begin{optionlist}
-%   \numitem[1]{plateheight} The height of the plate.
+%   \numitem[1]{plateheight} \ifGERMAN Die Höhe des Plättchens.\fi\ifENGLISH The height of the plate.\fi
 % 
-%   \optitem[2\nxLcs{pslinewidth}]{platelinewidth}{\prm{num} or \prm{dimen}} The linewidth of the
-%   plate. This could be defined also with the generic \opt{linewidth} option,
-%   possibly inside the \opt{OptComp} style. But using \opt{platelinewidth} allows
-%   to globally change the linewidth of all \nxLcs{optplate} objects.
-% 
-% \numitem[0]{angle} Rotate the plate around its center.
+%   \optitem[2\nxLcs{pslinewidth}]{platelinewidth}{\prm{num} or \prm{dimen}} 
+%   \ifGERMAN \linewidthexplanation{des Plättchens}{Plättchen}\fi
+%   \ifENGLISH \linewidthexplanation{plate}{plates}\fi
 % \iffalse
 %<*ignore>
 % \fi
@@ -1292,8 +1301,8 @@
 % \end{ltxsyntax}
 % 
 % \begin{optionlist}
-% \numitem[1]{plateheight} The height of the plate.
-% \numitem[0.1]{platewidth} The width of the plate.
+% \numitem[1]{plateheight} \ifGERMAN Die Höhe des Plättchens.\fi\ifENGLISH The height of the plate.\fi
+% \numitem[0.1]{platewidth} \ifGERMAN Die Breite des Plättchens.\fi\ifENGLISH The width of the plate.\fi
 % \end{optionlist}
 % 
 % \subsection{Pinhole}
@@ -1314,22 +1323,29 @@
 % \end{ltxsyntax}
 % 
 % \begin{optionlist}
-% \numitem[1]{outerheight}
-% \numitem[0.1]{innerheight}
+% \numitem[1]{outerheight} \ifGERMAN Die Höhe des Pinholes.\fi\ifENGLISH The height of the pinhole.\fi
+% \numitem[0.1]{innerheight} \ifGERMAN Die Höhe des Lochs.\fi\ifENGLISH The height of the hole.\fi
 % \optitem[2\nxLcs{pslinewidth}]{phlinewidth}{\prm{num} or \prm{dimen}}
-% The linewidth of the pinhole. This could be defined also with the generic \opt{linewidth} option,
-% possibly inside the \opt{OptComp} style. But using \opt{phlinewidth} allows
-% to globally change the linewidth of all \nxLcs{pinhole} objects.
+% \ifGERMAN \linewidthexplanation{des Pinholes}{Pinholes}\fi
+% \ifENGLISH \linewidthexplanation{pinhole}{pinholes}\fi
 % 
-% \numitem[0]{phwidth} The pinhole is drawn in a more plastic style if the
-% \nxLkeyword{phwidth} is not zero.
-% 
+% \numitem[0]{phwidth} 
+% \ifGERMAN 
+% Das Pinhole wird plastischer gezeichnet, falls \nxLkeyword{phwidth}
+% ungleich Null ist. Bei einem negativen Wert wird die Form gespiegelt.
+% \fi
+% \ifENGLISH
+% The pinhole is drawn in a more plastic style if the
+% \nxLkeyword{phwidth} is not zero. For negative values the shape is
+% mirrored.
+% \fi 
 % \iffalse
 %<*ignore>
 % \fi
 \begin{LTXexample}
 \begin{pspicture}(3,1.5)
-  \pinhole[beam, phwidth=-0.1](0,1)(3,1){PH}
+  \pinhole[beam, phwidth=-0.1](0,1)(1.5,1){neg}
+  \pinhole[beam, phwidth=0.05](1.5,1)(3,1){neg}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -1576,6 +1592,8 @@
 % \choitem[parallel]{poltype}{parallel, perp, misc, lcirc, rcirc}
 % \numitem[0.6]{polsize}
 % \optitem[0.7\nxLcs{pslinewidth}]{pollinewidth}{\prm{num} or \prm{dimen}}
+%   \ifGERMAN \linewidthexplanation{des Polarisationszeichens}{Polarisationszeichen}\fi
+%   \ifENGLISH \linewidthexplanation{polarisation sign}{polarisation signs}\fi
 % \iffalse
 %<*ignore>
 % \fi
@@ -1631,16 +1649,8 @@
 % \fi
 % 
 % \optitem[2\nxLcs{pslinewidth}]{mirrorlinewidth}{\prm{num} or \prm{dimen}} 
-% \ifGERMAN
-% Die Linienbreite des Spiegels. Diese könnte ebenfalls über den
-% \opt{linewidth} Parameter gesetzt werden. Mit diesem Parameter kann
-% aber die Linienbreite aller Spiegel global eingestellt werden.
-% \fi
-% \ifENGLISH
-% The linewidth of the grating. This could be defined also with the
-% generic \opt{linewidth} option. But this parameter allows setting
-% globally the linewidth of all mirrors.
-% \fi
+% \ifGERMAN \linewidthexplanation{des Spiegels}{Spiegel}\fi
+% \ifENGLISH \linewidthexplanation{mirror}{mirrors}\fi
 %
 % \numitem[0]{mirrorradius} 
 % \ifGERMAN
@@ -1960,16 +1970,8 @@
 % \fi
 % 
 % \optitem[0.7\nxLcs{pslinewidth}]{gratinglinewidth}{\prm{num} or \prm{dimen}} 
-% \ifGERMAN
-% Die Linienbreite des Gitters. Diese könnte ebenfalls über den
-% \opt{linewidth} Parameter gesetzt werden. Mit diesem Parameter kann
-% aber die Linienbreite aller Gitter global eingestellt werden.
-% \fi
-% \ifENGLISH
-% The linewidth of the grating. This could be defined also with the
-% generic \opt{linewidth} option. But this parameter allows setting
-% globally the linewidth of all gratings.
-% \fi
+% \ifGERMAN \linewidthexplanation{des Gitters}{Gitter}\fi
+% \ifENGLISH \linewidthexplanation{grating}{gratings}\fi
 % \end{optionlist}
 % 
 % \ifGERMAN
@@ -2662,7 +2664,7 @@
 % \fi
 % \end{ltxsyntax}
 % \begin{optionlist}
-% \numitem[0.2]{couplersize} \sizeexplanation{2.5}{\ifGERMAN des Kopplers\fi\ifENGLISH coupler\fi}
+% \numitem[0.2]{couplersize} \sizeexplanation[2.5]{\ifGERMAN des Kopplers\fi\ifENGLISH coupler\fi}
 % \numitem[0.1]{couplersep} 
 % \ifGERMAN Der vertikale Abstand zwischen zwei Faserports.\fi
 % \ifENGLISH The vertical distance between two fiber ports.\fi
@@ -2744,7 +2746,7 @@
 % \end{ltxsyntax}
 % 
 % \begin{optionlist}
-% \numitem[0.2]{couplersize} \sizeexplanation{2.5}{\ifGERMAN des Kopplers\fi\ifENGLISH coupler\fi}
+% \numitem[0.2]{couplersize} \sizeexplanation[2.5]{\ifGERMAN des Kopplers\fi\ifENGLISH coupler\fi}
 % \numitem[0.1]{couplersep}
 % \ifGERMAN Der vertikale Abstand zwischen den beiden Eingangsports.\fi
 % \ifENGLISH The vertical distance between the two input ports.\fi
@@ -2816,7 +2818,7 @@
 % \fi
 % \end{ltxsyntax}
 % \begin{optionlist}
-% \numitem[0.2]{couplersize} \sizeexplanation{2.5}{\ifGERMAN des Kopplers\fi\ifENGLISH coupler\fi}
+% \numitem[0.2]{couplersize} \sizeexplanation[2.5]{\ifGERMAN des Kopplers\fi\ifENGLISH coupler\fi}
 % \numitem[0.1]{couplersep} 
 % \ifGERMAN Der vertikale Abstand zwischen den beiden Ausgangsports.\fi
 % \ifENGLISH The vertical distance between the two output ports.\fi
@@ -4024,10 +4026,12 @@
 %    \begin{macrocode}
     \edef\POE@str@basicname@default{tempNode}
     \edef\POE@str@basicname@prefix{}
+    \edef\POE@str@basicname@sep{Intern}
     \edef\POE@str@extnode@postfix{ExtNode}
   \or
     \edef\POE@str@basicname@default{@}
     \edef\POE@str@basicname@prefix{OE@}
+    \edef\POE@str@basicname@sep{-}
     \edef\POE@str@extnode@postfix{Ext}
   \fi
 }%
@@ -4497,14 +4501,15 @@
     \psset{b@sicname=\POE@str@basicname@default\the\POE@cnt}%
     \ifPOE@compat
       \psset{extnoden@me={}}%
+      \def\POE@str@basicname@sep{}%
      \else
        \psset{extnoden@me=\POE@str@basicname@default\the\POE@cnt}%
      \fi
   \else
     \edef\POE@key@compname{#1}%
     \ifPOE@compat
-      \def\POE@str@basicname@prefix{}%
-      \psset{b@sicname=#1Intern}%
+      \def\POE@str@basicname@sep{Intern}%
+      \psset{b@sicname=#1\POE@str@basicname@sep}%
     \else
       \psset{b@sicname=#1}%   
     \fi
@@ -5270,7 +5275,10 @@
       \POE@str@basicname@default
     \fi
     #1%
-    \fi
+  \fi
+  \ifPOE@compat
+    \POE@str@basicname@sep
+  \fi
   #2%
 }%
 %    \end{macrocode}
@@ -5389,9 +5397,11 @@
    \def\POE@key@comp@Yshift{0}%
 }%
 \def\end@OptexpObj{%
-    \edef\pst@temp{\POE@str@basicname@default\the\POE@cnt}%
-    \ifx\POE@key@compname\pst@temp\else
-      \POE@compalias{\POE@key@compname}{\pst@temp}%
+    \ifPOE@compat\else
+      \edef\pst@temp{\POE@str@basicname@default\the\POE@cnt}%
+      \ifx\POE@key@compname\pst@temp\else
+        \POE@compalias{\POE@key@compname}{\pst@temp}%
+      \fi
     \fi
   \endgroup
   \ignorespaces%
@@ -5827,8 +5837,7 @@
 \def\POE@putcomp#1#2{%
   \@ifundefined{#1@ref}{}{\@nameuse{#1@ref}}%
    \rput(\POE@key@comp@Xshift,\POE@key@comp@Yshift){%
-     \pnode(! \POE@dict{@@x0 @@x \POE@key@rotate@xref\space mul add
-                        @@y0 @@y \POE@key@rotate@yref\space mul add}){\oenodeRotref{}}%
+     \pnode(! \POE@dict{ExtNode}){\oenodeRotref{}}%
      \ifdim\POE@key@angle pt=0pt
         #2%
         \POE@pnode@shiftedrot(0,\POE@key@labeloffset)%
