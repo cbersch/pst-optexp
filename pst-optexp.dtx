@@ -460,7 +460,7 @@
 %   \backlayer{%
 %     \psline[style=Beam,ArrowInside=->, linewidth=2\pslinewidth, arrowinset=0](In)(\oenodeIn{3})(\oenodeOut{4})
 %   }
-%   \drawbeam[beamangle=0.29,startpos=0.1, arrows=<-, linewidth=2\pslinewidth, arrowinset=0]{([Xnodesep=-0.2]Out)}{8}{7}
+%   \drawbeam[beamangle=0.29,beampos=0.1, arrows=<-, linewidth=2\pslinewidth, arrowinset=0]{([Xnodesep=-0.2]Out)}{8}{7}
 % \end{optexp}
 % \rput(4,4.5){%
 %   \psframe[fillstyle=solid,fillcolor=gray!70](-0.1, -0.6)(0.1, 0.7)
@@ -3069,13 +3069,10 @@
 % are demonstrated separately in the next section.
 % 
 % \begin{optionlist}
-%   \optitem[0]{startpos}{[\prm{X}] \prm{Y}} This is the start position
+%   \optitem[0]{beampos}{[\prm{X}] \prm{Y}} This is the start position
 %   (\prm{X}, \prm{Y}) of the beam at the first interface. Can be any code
 %   which evaluates in Postscript to one or two numbers. If is only one
 %   number then the $x$-coordinate is set to \texttt{0}.
-% 
-% \medskip
-% 
 % \iffalse
 %<*ignore>
 % \fi
@@ -3088,21 +3085,38 @@
   \mirror[mirrorradius=2](A)(B)(C){} 
   \mirror(B)(C)(B){} 
   \drawbeam[linecolor=red, 
-              startpos=-0.2]{1}{2}{3}
+              beampos=-0.2]{1}{2}{3}
   \drawbeam[linecolor=blue]{1}{2}{3}
   \drawbeam[linecolor=green,
-              startpos=0.2]{1}{2}{3}
+              beampos=0.2]{1}{2}{3}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
 %</ignore>
 % \fi
 % 
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[linerange={1-7,9-9}]
+\begin{pspicture}[showgrid=true](3,4)
+  \lens[lens=4 4 4, abspos=0.5](0.5,2)(3,2)
+  \optplate[position=1, plateheight=4](0.5,2)(3,2)
+  \psset{beampos=1}
+  \drawbeam[beamangle=-60]{1}{2}
+  \drawbeam[beamangle=-40]{1}{2}
+  \drawbeam[beamangle=-20]{1}{2}
+  \psline[linecolor=gray!40, linewidth=2\pslinewidth, arrows=->, arrowinset=0, arrowscale=1.3](\oenodeOut{1})([offset=1]\oenodeOut{1})
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
 % \numitem[0]{beamangle}
 % This is the start angle of the beam and can by anything which evaluates to a number in Postscript.
 % The \nxLkeyword{beamangle} is relative to the connection between the first
 % two components, use \Lkeyword{beamangleabs} to change this.
-% 
 % \iffalse
 %<*ignore>
 % \fi
@@ -3130,12 +3144,86 @@
 % \boolitem[false]{connectplanes}
 % 
 % \numitem[1.5]{n}
+%
+% \numitem[1]{nmul}
+%
+% \numitem[0]{nadd}
 % 
-% \boolitem[false]{beaminside}
-% 
-% \boolitem[false]{beaminsidelast}
-% 
+% \boolitem[true]{beaminside}
+% \ifGERMAN
+% Zeichne den Strahlengang innerhalb aller Komponenten mit Ausnahme der
+% ersten und letzten.
+% \fi
+% \ifENGLISH
+% Draw the internal beams in all components except for the first and last one.
+% \fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(0.3,0.3)(3,4)
+  \psset{optboxwidth=1}
+  \optbox[endbox](1,1)(1,3)
+  \optretplate(1,1)(1,3)
+  \pentaprism(1,3)(1,1)(2,1)
+  \optbox[endbox](1,1)(2,1)
+  \drawbeam[beampos=-0.05, linecolor=red]{1}{2}{3}{4}
+  \drawbeam[beampos=0.05, beaminside=false]{1}{2}{3}{4}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
 % \boolitem[false]{beaminsidefirst}
+% \ifGERMAN
+% Zeichne den Strahlengang innerhalb der ersten Komponenten.
+% \fi
+% \ifENGLISH
+% Draw the internal beams in the first component.
+% \fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(0.3,0.3)(3,4)
+  \psset{optboxwidth=1}
+  \optbox[endbox](1,1)(1,3)
+  \optretplate(1,1)(1,3)
+  \pentaprism(1,3)(1,1)(2,1)
+  \optbox[endbox](1,1)(2,1)
+  \drawbeam[beampos=-0.05, linecolor=red]{1}{2}{3}{4}
+  \drawbeam[beampos=0.05, beaminsidefirst]{1}{2}{3}{4}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
+% \boolitem[false]{beaminsidelast}
+% \ifGERMAN
+% Zeichne den Strahlengang innerhalb der letzten Komponenten.
+% \fi
+% \ifENGLISH
+% Draw the internal beams in the last component.
+% \fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(0.3,0.3)(3,4)
+  \psset{optboxwidth=1}
+  \optbox[endbox](1,1)(1,3)
+  \optretplate(1,1)(1,3)
+  \pentaprism(1,3)(1,1)(2,1)
+  \optbox[endbox](1,1)(2,1)
+  \drawbeam[beampos=-0.05, linecolor=red]{1}{2}{3}{4}
+  \drawbeam[beampos=0.05, beaminsidelast]{1}{2}{3}{4}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % \end{optionlist}
 % 
 % \subsubsection{Internal component structure}
@@ -4808,7 +4896,7 @@
 % The keys related to the \cs{draw*} macros
 % \begin{macrocode}
 \define@key[psset]{optexp}{beamangle}{\edef\POE@key@beamangle{#1}}%
-\define@key[psset]{optexp}{startpos}{\edef\POE@key@startpos{#1}}%
+\define@key[psset]{optexp}{beampos}{\edef\POE@key@beampos{#1}}%
 \define@key[psset]{optexp}{beamdiv}{\edef\POE@key@beamdiv{#1}}%
 \define@key[psset]{optexp}{beamwidth}{\edef\POE@key@beamwidth{#1}}%
 \define@boolkey[psset]{optexp}[POE@]{startinside}[true]{}%
@@ -4962,10 +5050,10 @@
      {/nmul \POE@key@nmul\space def
       /nadd \POE@key@nadd\space def
       /nforce \POE@key@n\space def} }%
-    \ifx\POE@key@startpos\@empty
+    \ifx\POE@key@beampos\@empty
       \addto@pscode{ {0 0} }%
     \else
-      \addto@pscode{ [\POE@key@startpos\space counttomark 1 eq { 0 exch } if \tx@ScreenCoor] cvx }%
+      \addto@pscode{ [\POE@key@beampos\space counttomark 1 eq { 0 exch } if \tx@ScreenCoor] cvx }%
     \fi
     \addto@pscode{%
        \POE@key@beamangle\space
@@ -5017,7 +5105,7 @@
 % the start positions
 %    \begin{macrocode}
   \addto@pscode{%
-    [\ifx\POE@key@startpos\@empty 0 0 \else\POE@key@startpos\space\fi
+    [\ifx\POE@key@beampos\@empty 0 0 \else\POE@key@beampos\space\fi
      counttomark 1 eq { 0 exch } if
      \ifx\POE@key@beamwidth\@empty 0 \else \POE@key@beamwidth\space 0.5 mul \fi\space
      3 copy add \tx@ScreenCoor\space ToVec 5 1 roll sub \tx@ScreenCoor] cvx
@@ -5158,7 +5246,7 @@
         ,beaminsidefirst=false
         ,beaminsidelast=false
         ,beamangle=0
-        ,startpos=\@empty
+        ,beampos=\@empty
         ,beamangleabs=false
         ,beamwidth=0
         ,beamdiv=\@empty
