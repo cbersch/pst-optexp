@@ -26,7 +26,7 @@
 %</stylefile>
 %
 %<*driver>
-\documentclass[toc=flat, a4paper, DIV=9]{scrartcl} 
+\documentclass[toc=flat, a4paper, DIV=9, oneside, toc=index]{scrreprt} 
 \usepackage{doc}
 \setcounter{IndexColumns}{2} 
 \usepackage[utf8]{inputenc}
@@ -39,6 +39,7 @@
 \usepackage{prettyref}
 \usepackage[dvipsnames,x11names,svgnames]{xcolor} 
 \usepackage{amsmath} 
+\usepackage{array,booktabs}
 \usepackage{ragged2e}
 \usepackage{paralist}
 \usepackage{nicefrac}
@@ -477,11 +478,17 @@
 % \clearpage
 % 
 % \ifGERMAN
-%   \section{Einführung}
+%   \chapter{Einführung}
+% \fi
+% \ifENGLISH
+%   \chapter{Introduction}
+% \fi
+% \ifGERMAN
+%   \section{Über das Paket}
 %   Das Paket \LPack{pst-optexp} ist eine Sammlung optischer Komponenten zum Zeichnen optischer Versuchsaufbauten.
 % \fi
 % \ifENGLISH
-%   \section{Introduction}
+%   \section{About the package}
 %   The package \LPack{pst-optexp} is a collection of optical components
 %   that facilitate easy sketching of optical experimental
 %   setups. Mechanisms for proper alignment of different components are
@@ -491,14 +498,7 @@
 % \fi
 %
 % \ifGERMAN
-%   \section{Paketgrundlagen}
-% \fi
-% \ifENGLISH
-%   \section{Basics for the package}
-% \fi
-% 
-% \ifGERMAN
-%   \subsection{Anforderungen}
+%   \section{Anforderungen}
 % \LPack{pst-optexp} Version 3.0 benötigt aktuelle Versionen der Pakete \LPack{pst-node}, \LPack{pstricks-add}, \LPack{multido},
 % \LPack{pst-eucl} und \LPack{environ}. 
 %
@@ -508,7 +508,7 @@
 % \url{http://tug.org/PSTricks/main.cgi?file=pdf/pdfoutput} beschrieben.
 % \fi 
 % \ifENGLISH
-%   \subsection{Requirements}
+%   \section{Requirements}
 %   \LPack{pst-optexp} version 3.0 requires recent versions of
 %   \LPack{pst-node}, \LPack{pstricks-add}, \LPack{multido},
 %   \LPack{pst-eucl}, and \LPack{environ}. 
@@ -520,7 +520,7 @@
 % \fi
 %
 % \ifGERMAN
-%   \subsection{Verbreitung und Installation}
+%   \section{Verbreitung und Installation}
 %   Dieses Paket ist auf CTAN
 %   (\url{http://mirror.ctan.org/graphics/pstricks/contrib/pst-optexp})
 %   erhältlich und in \TeX Live and MiK\TeX{} enthalten.
@@ -545,7 +545,7 @@
 %   \TeX{}-Baum.
 % \fi
 % \ifENGLISH
-%   \subsection{Distribution and installation}
+%   \section{Distribution and installation}
 %   This package is available on CTAN
 %   (\url{http://mirror.ctan.org/graphics/pstricks/contrib/pst-optexp})
 %   and is included in \TeX Live and MiK\TeX.
@@ -565,8 +565,92 @@
 %   system.
 % \fi
 %
-% \newpage
+% \ifGERMAN
+%   \section{Abwärtskompatibilität}
+% \fi
+% \ifENGLISH
+%   \section{Backward compatibility}
+%   \fi 
+%   \ifGERMAN Version 3.0 hat erhebliche fortgeschrittenere
+%   Funktionalität hinzugefügt, die es zu schwierig machte zur
+%   Vorgängerversion 2.1 vollständig abwärtskompatibel zu
+%   bleiben. Insbesondere war die Funktionsweise des \Lcs{drawbeam}
+%   Makros grundlegend falsch konzipiert, so dass ein Wechsel zur neuen
+%   Funktionalität so schnell wie möglich erfolgen musste.
+%
+% \begin{optionlist}
+% \item[\smash{\Loption{compat}\hspace{10pt}}] Mit dieser Paketoption können alte
+%   Dokumente kompiliert werden, ohne jedoch von vielen Neuerungen
+%   profitieren zu können.
+%
+%   \optitem[new]{namingscheme}{old, new} In Version 2.x musste
+%   spezielle Komponentenknoten über ihren expliziten Namen angesprochen
+%   werden. Wenn Sie nur das alte Namensschema benötigen, da Sie direkt
+%   auf die Knoten zugegriffen haben, so genügt es
+%   \nxLkeyword{namingscheme=old} zu verwenden, die Paketoption
+%   \nxLoption{compat} wird dann nicht benötigt. Seit Version 3.0 werden
+%   Makros für den Zugriff auf die Komponentenknoten bereitgestellt, so
+%   dass das eigentlichen Namensschema unerheblich ist.
+% \end{optionlist}
+% \fi
+% \ifENGLISH
+% Version 3.0 introduced a lot of advanced features which made it too
+% difficult to maintain full backward compatibility with version
+% 2.x. Especially the \Lcs{drawbeam} macro was broken by design, so that
+% it was best to drop the old flaw as early as possible.
+%
+% \begin{optionlist}
+% \item[\smash{\Loption{compat}}] However, using this package option
+%   allows you to compile old setups but without profiting from the new
+%   features.
+%
+%   \optitem[new]{namingscheme}{old, new} In version 2.x special
+%   component nodes had to be accessed by their explicit name. If you
+%   only need the old naming scheme, because you accessed internal nodes
+%   directly, then you can only set \nxLkeyword{namingscheme=old} and do
+%   not need to use the \nxLoption{compat} option. Since version 3.0
+%   explicit macros are provided to access all special component nodes,
+%   so that the actual naming scheme does not matter.
+% \end{optionlist}
+% \fi
+% \section{Todo}
 % 
+% \begin{itemize}
+% \item Automatic sizing of optboxes (like a \Lcs{psframebox}
+% \item Allow more than one extnode.
+% \item Support for number ranges for \nxLcs{draw*} macros.
+% \end{itemize}
+% 
+% \section{Acknowledgements}
+% 
+% I thank all the people of the PSTricks mailinglist for the continuous help, especially Herbert Vo\ss.
+% 
+% \section{Revision History}
+% \begin{changelog}
+%   \begin{release}{3.0}{NN}
+%   \item Renamed options \opt{optgrid*} to \opt{grating*}. The
+%   old options are still valid, but give a warning. This was a terminological
+%   error from the beginning.
+% \end{release}
+%
+% \begin{release}{1.1}{2007-09-06}
+% \item Considerably enhanced labeling of the components.
+% \item New parameter \opt{labelref}.
+% \item \opt{labelrelative} is deprecated, and replaced by \opt{labelref=relative}.
+% \end{release}
+% 
+% \begin{release}{1.0}{2007-07-18}
+% \item First CTAN version
+% \end{release}
+%
+% \end{changelog}
+%
+% \ifGERMAN
+%   \chapter{Grundlegende Ideen}
+% \fi
+% \ifENGLISH
+%   \chapter{Basic ideas}
+% \fi
 % \ifGERMAN
 %   \section{Erste Schritte}
 % \fi
@@ -734,54 +818,6 @@
 %
 % \fi 
 % 
-% \ifGERMAN
-%   \section{Abwärtskompatibilität}
-% \fi
-% \ifENGLISH
-%   \section{Backward compatibility}
-%   \fi 
-%   \ifGERMAN Version 3.0 hat erhebliche fortgeschrittenere
-%   Funktionalität hinzugefügt, die es zu schwierig machte zur
-%   Vorgängerversion 2.1 vollständig abwärtskompatibel zu
-%   bleiben. Insbesondere war die Funktionsweise des \Lcs{drawbeam}
-%   Makros grundlegend falsch konzipiert, so dass ein Wechsel zur neuen
-%   Funktionalität so schnell wie möglich erfolgen musste.
-%
-% \begin{optionlist}
-% \item[\smash{\Loption{compat}\hspace{10pt}}] Mit dieser Paketoption können alte
-%   Dokumente kompiliert werden, ohne jedoch von vielen Neuerungen
-%   profitieren zu können.
-%
-%   \optitem[new]{namingscheme}{old, new} In Version 2.x musste
-%   spezielle Komponentenknoten über ihren expliziten Namen angesprochen
-%   werden. Wenn Sie nur das alte Namensschema benötigen, da Sie direkt
-%   auf die Knoten zugegriffen haben, so genügt es
-%   \nxLkeyword{namingscheme=old} zu verwenden, die Paketoption
-%   \nxLoption{compat} wird dann nicht benötigt. Seit Version 3.0 werden
-%   Makros für den Zugriff auf die Komponentenknoten bereitgestellt, so
-%   dass das eigentlichen Namensschema unerheblich ist.
-% \end{optionlist}
-% \fi
-% \ifENGLISH
-% Version 3.0 introduced a lot of advanced features which made it too
-% difficult to maintain full backward compatibility with version
-% 2.x. Especially the \Lcs{drawbeam} macro was broken by design, so that
-% it was best to drop the old flaw as early as possible.
-%
-% \begin{optionlist}
-% \item[\smash{\Loption{compat}}] However, using this package option
-%   allows you to compile old setups but without profiting from the new
-%   features.
-%
-%   \optitem[new]{namingscheme}{old, new} In version 2.x special
-%   component nodes had to be accessed by their explicit name. If you
-%   only need the old naming scheme, because you accessed internal nodes
-%   directly, then you can only set \nxLkeyword{namingscheme=old} and do
-%   not need to use the \nxLoption{compat} option. Since version 3.0
-%   explicit macros are provided to access all special component nodes,
-%   so that the actual naming scheme does not matter.
-% \end{optionlist}
-% \fi
 % \section{Concept and general behavior}\label{sec:general}
 % 
 % This section introduces into the basic concepts of the package design and
@@ -864,7 +900,7 @@
 % controlled via psstyles. These are collections of parameters which are
 % applied only to selected subparts of the objects. In general, these
 % psstyles can be overwritten with the \Lcs{newpsstyle} macro and extended
-% with the \Lcs{addtopsstyle} macro. \ref{mylabel}
+% with the \Lcs{addtopsstyle} macro.
 % 
 % \begin{optionlist}
 % \styleitem{OptComp}
@@ -1204,14 +1240,35 @@
 % \fi
 % \end{optionlist}
 % 
-% \newpage
+% \ifGERMAN
+%   \chapter{Referenz}
+% \fi
+% \ifENGLISH
+%   \chapter{Reference}
+% \fi
 % 
+% This chapter contains detailed information about all object, macros and related options. It is divided into four parts:
+% \begin{itemize}
+% \item Section \ref{sec:freeraycomp}
+% \item Section \ref{sec:fibercomp}
+% \item Section \ref{sec:connecting}
+% \end{itemize}
+%
+% \begin{table}
+% \begin{tabular}{>{\itshape}ll} \toprule
+%   Name & Description\\ \midrule
+%   num & Any number\\ \bottomrule
+% \end{tabular}
+% \end{table}
+% 
+%
 % \ifGERMAN
 %   \section{Freistrahl-Komponenten}
 % \fi
 % \ifENGLISH
 %   \section{Free-Ray Objects}
 % \fi
+% \label{sec:freeraycomp}
 %
 % \ifGERMAN
 %   \subsection{Linse}
@@ -3145,10 +3202,48 @@
 % 
 % \numitem[1.5]{n}
 %
-% \numitem[1]{nmul}
-%
 % \numitem[0]{nadd}
-% 
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}[showgrid=true](3,3)
+  \pnode(0,1.5){A}\pnode(3,1.5){B}
+  \lens[lens=4 4 3, n=2, abspos=0.3](A)(B)
+  \optplane(B)(0,1){Plane}
+  \psset{beampos=0.6}
+  \drawbeam[linecolor=red]{(A)}{1}{Plane}
+  \drawbeam[linecolor=yellow, nadd=0.5]{(A)}{1}{Plane}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
+% \numitem[1]{nmul}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}[showgrid=true](4,3)
+  \pnode(0, 2.5){A}\pnode(1, 2.5){B}
+  \pnode(4, 1){C}
+  \optprism(A)(B)(C)
+  \definecolor[ps]{bl}{rgb}{%
+    tx@addDict begin Red Green Blue end}%
+  \addtopsstyle{Beam}{linecolor=bl, linewidth=0.4\pslinewidth}
+  \multido{\i=0+1}{20}{%
+    \pstVerb{%
+      \i\space 650 400 sub 19 div mul 400 add 
+      tx@addDict begin wavelengthToRGB end }%
+    \drawbeam[nadd=-0.002 \i\space mul]{(A)}{1}{(C)}
+  }%
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
 % \boolitem[true]{beaminside}
 % \ifGERMAN
 % Zeichne den Strahlengang innerhalb aller Komponenten mit Ausnahme der
@@ -3544,6 +3639,12 @@
 % \end{optionlist}
 % 
 % 
+% \ifGERMAN
+%   \chapter{Zusatzinformationen}
+% \fi
+% \ifENGLISH
+%   \chapter{Additional Information}
+% \fi
 % \section{Defining New Objects}
 % 
 % \subsection{Customized Versions of Existing Macros}
@@ -3669,9 +3770,12 @@
 % If you create a new component, please send it to me then I can
 % incorporate this in a new released version.
 % 
-% \newpage
-% 
-% \section{Examples}
+% \ifGERMAN
+%   \chapter{Beispiele}
+% \fi
+% \ifENGLISH
+%   \chapter{Examples}
+% \fi
 % \iffalse
 %<*ignore>
 % \fi
@@ -3952,35 +4056,6 @@
 %   \polcontrol([Xnodesep=3.5]LoopLU)(CPLin2){}
 % \end{pspicture}
 % 
-% \section{Todo}
-% 
-% \begin{itemize}
-% \item Automatic sizing of optboxes (like a \Lcs{psframebox}
-% \end{itemize}
-% 
-% \section{Acknowledgements}
-% 
-% I thank all the people of the PSTricks mailinglist for the continuous help, especially Herbert Vo\ss.
-% 
-% \section{Revision History}
-% \begin{changelog}
-%   \begin{release}{3.0}{NN}
-%   \item Renamed options \opt{optgrid*} to \opt{grating*}. The
-%   old options are still valid, but give a warning. This was a terminological
-%   error from the beginning.
-% \end{release}
-%
-% \begin{release}{1.1}{2007-09-06}
-% \item Considerably enhanced labeling of the components.   Added new parameter \opt{labelref} which specifies the reference coordinate   system for the label positioning and the rotation of the label. Default is   \opt{labelref=relgrav}, the label point is rotated together with the   component, but the label text itself is not rotated.
-% \item Parameter \opt{labelrelative} is now obsolete, and replaced by \opt{labelref=relative}. It will be removed in future versions.
-% \end{release}
-% 
-% \begin{release}{1.0}{2007-07-18}
-% \item First CTAN version
-% \end{release}
-%
-% \end{changelog}
-% 
 % \makeatletter
 % \bgroup
 % \newcommand*{\index@preamble}{}
@@ -4020,7 +4095,8 @@
 %
 % \StopEventually{}
 %
-% \section{Implementation}
+% \appendix
+% \chapter{Implementation}
 %
 %<*stylefile>
 %    \begin{macrocode}
@@ -7919,6 +7995,11 @@ tx@OptexpDict begin
       /ambiguous false def
       /name ED
       /correct false def
+%    \end{macrocode}
+% This definition does not work like for NewOptexpComp, because a
+% current point may not be available. Therefore, we translate to the
+% (X,Y) node and define X and Y = 0.
+%    \begin{macrocode}
       {0 0} exch 3 -1 roll exec
       gsave
           translate
@@ -8353,6 +8434,7 @@ tx@OptexpDict begin
 % -> Yn Xn drawToN? ... Y1 X1 drawTo1? Y0 X0
 %    \begin{macrocode}
 /TraceBeam {
+  (TraceBeam) == debugStack (done----------------) ==
   AngToVec /InVec ED /StartPoint ED
   /oldbeaminsidelast currentdict /beaminsidelast known { beaminsidelast } { false } ifelse def
 %    \end{macrocode}
@@ -8380,11 +8462,13 @@ tx@OptexpDict begin
     /InVec load
   } ifelse
   /CurrVec ED
+  (CurrVec = ) == /CurrVec load ==
   custombeam currentdict /lastBeamPoint known and {
     /lastBeamPoint load /Curr ED
   }{
     2 copy /StartPoint load  TransformStartPos /Curr ED
   } ifelse
+  (Curr =) == /Curr load ==
   counttomark /PlaneNum ED 
 %    \end{macrocode}
 % Init the refractive index
@@ -8810,6 +8894,7 @@ tx@OptexpDict begin
 % CompA desc/asc CompB desc/asc
 %    \begin{macrocode}
 /AdjustRelRot {
+  (AdjustRelRot) == 4 copy 4 {==} repeat (done---------------) ==
   exch dup cvn load /adjustRel known {
     dup dup 4 2 roll isAmb { exch pop (C)}{ desc eq {(N)}{1} ifelse } ifelse exch GetPlaneCenter 5 3 roll
     exch dup 3 1 roll isAmb { pop (C)}{ desc eq {1}{(N)} ifelse } ifelse exch GetPlaneCenter
@@ -9392,6 +9477,27 @@ tx@OptexpDict begin
     } ifelse
   } if
   relAngleTmp
+} bind def
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{debugStack}
+%    \begin{macrocode}
+/debugStack{ counttomark /@t ED @t copy @t{==}repeat } bind def
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{debugComp}
+%    \begin{macrocode}
+/debugComp{ 
+  dup (debug comp ") exch strcat ("-------------) strcat ==
+  cvn load { 
+    dup type /dicttype eq {
+      (plane----------------) == 
+      { == == } forall
+      } { == } ifelse
+      ==
+  } forall
 } bind def
 %    \end{macrocode}
 % \end{macro}

@@ -12,7 +12,7 @@
   \optbox[compname=Bbox](4,0)(4,-3){}
   % 
   \addtopsstyle{Beam}{linecolor=red, opacity=0.5, fillcolor=red, arrows=->}
-  \drawbeam[beamangle=-3,startpos=0.1]{Abox}{PPrism}{Bbox}
+  \drawbeam[beamangle=-3,beampos=0.1]{Abox}{PPrism}{Bbox}
 \end{pspicture}
 
 \bigskip
@@ -47,7 +47,7 @@
 %  \psset{n=1}
   \lens[lens=-0.5 0 0.4](0,2)(2,2){}
   \lens[abspos=2,lens=3](1,2)(6,2){}
-  \addtopsstyle{Beam}{beamInside=false,linecolor=red,linestyle=dashed,fillstyle=solid,fillcolor=green}%fillstyle=crosshatch*,fillcolor=black,hatchcolor=white,hatchwidth=0.4pt,hatchsep=0.6pt, hatchangle=0,stopIn}
+  \addtopsstyle{Beam}{beaminside=false,linecolor=red,linestyle=dashed,fillstyle=solid,fillcolor=green}%fillstyle=crosshatch*,fillcolor=black,hatchcolor=white,hatchwidth=0.4pt,hatchsep=0.6pt, hatchangle=0,stopIn}
   \drawwidebeam[beamwidth=0.2]{(0,2)}{1}{2}{(6,2)}
   % \addtopsstyle{Beam}{fillstyle=none}
   % \drawbeam[beamwidth=0.2,addtoBeam={fillstyle=none}]{(0,2)}{1}{3}{(6,2)}
@@ -107,8 +107,8 @@
   \pnode(9,2.5){C}%
   \optbox[compname=Cbox](B)(C){}%
 %
-  \drawbeam[startpos=0 0.4]{(0,1)}{Abox}{Bbox}{(9,2.5)}
-  \drawbeam[startpos=0 -0.4]{(0,1)}{Abox}{Bbox}{(9,2.5)}
+  \drawbeam[beampos=0 0.4]{(0,1)}{Abox}{Bbox}{(9,2.5)}
+  \drawbeam[beampos=0 -0.4]{(0,1)}{Abox}{Bbox}{(9,2.5)}
   % \addtopsstyle{Beam}{fillstyle=solid,opacity=0.5,fillcolor=red}
   % \addtopsstyle{Beam}{linecolor=black,strokeopacity=0.2}
   % \drawWidebeam[beamwidth=0.8, style=Beam]{(0,1)}{Abox}{Bbox}{(9,2.5)}
@@ -126,7 +126,7 @@
   \pnode(9,2.5){C}%
   \optbox[compname=Cbox](B)(C){}%
 %
-  \drawbeam[startpos=0.3,arrows=->]{(3,1.5)}{Bbox}{(9,2.5)}
+  \drawbeam[beampos=0.3,arrows=->]{(3,1.5)}{Bbox}{(9,2.5)}
 \end{pspicture}
 
 \bigskip
@@ -135,7 +135,7 @@
   \pnode(1,1){A}\pnode(6,2){B}%
   \lens[compname=Lens,lens=2 2 2](A)(B){}%
   \multido{\rpos=-0.4+0.1}{9}{%
-    \drawbeam[linewidth=0.5\pslinewidth,linestyle=dashed, startpos=0 \rpos,arrows=->]{(A)}{Lens}{(B)}
+    \drawbeam[linewidth=0.5\pslinewidth,linestyle=dashed, beampos=0 \rpos,arrows=->]{(A)}{Lens}{(B)}
   }
 \end{pspicture}
 
@@ -165,7 +165,7 @@
   \optbox[compname=Bbox,endbox](5,1)(9,1){}
 %
   \addtopsstyle{Beam}{linecolor=black, opacity=0.5, fillstyle=solid, fillcolor=red}
-  \drawwidebeam[beamwidth=0.4,beamInside=false]{Abox}{Lens}{Bbox}
+  \drawwidebeam[beamwidth=0.4,beaminside=false]{Abox}{Lens}{Bbox}
 \end{pspicture}
 
 \begin{pspicture}[showgrid=true](10,2)
@@ -175,7 +175,7 @@
   \optbox[compname=Bbox,endbox](5,1)(9,1){}
 %
   \addtopsstyle{Beam}{linecolor=black, opacity=0.5, fillstyle=solid, fillcolor=red}
-  \drawwidebeam[beamwidth=0.4,beamInside=false]{Abox}{Lens}{Bbox}
+  \drawwidebeam[beamwidth=0.4,beaminside=false]{Abox}{Lens}{Bbox}
 \end{pspicture}
 
 \begin{pspicture}[showgrid=true](10,6)
@@ -184,7 +184,7 @@
   \optbox[compname=Bbox](5,4)(3,7){}
   \addtopsstyle{Beam}{linecolor=red, opacity=0.5, fillstyle=solid, fillcolor=red}
   \multido{\r=-0.1+0.1}{3}{%
-    \drawbeam[style=Beam, startpos=\r]{Abox}{Mirror}{Bbox}
+    \drawbeam[style=Beam, beampos=\r]{Abox}{Mirror}{Bbox}
   }
 \end{pspicture}
 
@@ -218,9 +218,9 @@
    \MOLensIn[abspos=4.5](A)(B){}
 %   \addtopsstyle{Beam}{beamextended}
    \custombeam{%
-     \drawbeam[startpos=0 0.1, stopInside]{(A)}{1}
+     \drawbeam[beampos=0 0.1, stopinside]{(A)}{1}
      \drawbeam[beamangle=45]{1}{2}
-     \drawbeam[stopInside]{2}{3}
+     \drawbeam[stopinside]{2}{3}
      \drawbeam[beamangle=-45]{3}{4}
      \drawbeam{4}{(B)}
    }
@@ -236,9 +236,9 @@
    \MOLensIn[abspos=4.5](A)(B){}
    \addtopsstyle{Beam}{fillstyle=solid, fillcolor=red, opacity=0.3}
    \custombeam{%
-     \drawwidebeam[beamwidth=0.2, stopInside]{(A)}{1}
+     \drawwidebeam[beamwidth=0.2, stopinside]{(A)}{1}
      \drawwidebeam[beamdiv=45]{1}{2}
-     \drawwidebeam[stopInside]{2}{3}
+     \drawwidebeam[stopinside]{2}{3}
      \drawwidebeam[beamdiv=-45]{3}{4}
      \drawwidebeam{4}{(B)}
    }
@@ -257,7 +257,7 @@
   \pentaprism[labeloffset=1](A)(G)(B){PP}
   \lens[abspos=1](G)(B){L}
   \optbox[endbox, labeloffset=0, optboxwidth=1](G)(B){CCD}
-  \addtopsstyle{Beam}{beamwidth=0.1, linewidth=0.2\pslinewidth,fillstyle=solid,fillcolor=green!20!white, beamInside=false}
+  \addtopsstyle{Beam}{beamwidth=0.1, linewidth=0.2\pslinewidth,fillstyle=solid,fillcolor=green!20!white, beaminside=false}
   \drawwidebeam[connectplanes]{1}{2}{3}{4}{5}{6}{7}{8}{9}
 \end{pspicture}
 
@@ -278,11 +278,11 @@
   \lens[abspos=1](G)(B){L}
   \optbox[endbox, labeloffset=0, optboxwidth=1](G)(B){CCD}
 %  \drawWidebeam[fillstyle=solid,fillcolor=red,opacity=0.5,beamwidth=0.2]{1}{2}{3}{4}{5}{6}{7}{8}{9}%{3}{4}{5}{6}%{7}%{8}{9}
-  \addtopsstyle{Beam}{beamwidth=0.1, linewidth=0.2\pslinewidth,fillstyle=solid,fillcolor=green!20!white, beamInside, stopInside}
+  \addtopsstyle{Beam}{beamwidth=0.1, linewidth=0.2\pslinewidth,fillstyle=solid,fillcolor=green!20!white, beaminside, stopinside}
   \custombeam{%
     \drawwidebeam[nmul=1.3, beaminsidelast]{1}{2}{4}
-    \drawwidebeam[nmul=0.5, stopInside=false]{4}{5}{6}{7}{8}
-    \drawwidebeam[startInside, beaminsidefirst, beamdiv=-5.5]{8}{9}
+    \drawwidebeam[nmul=0.5, stopinside=false]{4}{5}{6}{7}{8}
+    \drawwidebeam[startinside, beaminsidefirst, beamdiv=-5.5]{8}{9}
   }%
 %  \end{optexp}
 %  \drawbeam{1}{2}{3}{4}{5}{6}{7}{8}{([Xnodesep=-0.5]B)}%{3}{4}{5}{6}%{7}%{8}{9}
