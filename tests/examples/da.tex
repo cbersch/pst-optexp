@@ -1,0 +1,45 @@
+\documentclass{scrartcl}
+\usepackage[latin1]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[ngerman]{babel}
+\usepackage{lmodern}
+\usepackage{pst-optexp}
+\usepackage{nicefrac}
+
+\begin{document}
+
+\begin{pspicture}(0,-0.4)(9,6)
+  \pnode(1.5,5){Laser}\pnode(4,5){PBS}\pnode(6.5,5){PBS2}
+  \pnode(6.5,5.7){piezo}\pnode(4,2){BSFwd}\pnode(6.5,2){BSBwd}
+  \pnode(2,2){BS4f}\pnode(2,0.5){M4f3}\pnode(8,2){M4f1}
+  \pnode(8,0.5){M4f2}\pnode(1,2){CCD}
+  \psset{mirrorwidth=0.6, plateheight=0.7, outerheight=0.7, labeloffset=0.7, labelstyle=\scriptsize, lens=1.2 1.2 0.8, bssize=0.5} 
+  \optbox[endbox,optboxwidth=1.5, optboxheight=0.7,labeloffset=0]% 
+     (PBS)(Laser){\parbox{1.5cm}{\centering Nd:YAG\\ 532\,nm}}
+  \lens[lensheight=0.5, position=0.2](Laser)(PBS){MO}
+  \pinhole[position=0.3,labelangle=180](Laser)(PBS){PH}
+  \lens[position=0.5](Laser)(PBS){L}
+  \optretplate[position=0.8](Laser)(PBS){$\nicefrac{\lambda}{2}$}
+  \beamsplitter(Laser)(PBS)(BSFwd){PBS}
+  \optretplate[position=0.4](PBS)(BSFwd){$\nicefrac{\lambda}{2}$}
+  \polarization(PBS)(BSFwd)\polarization(PBS2)(BSBwd)
+  \lens[position=0.8](PBS)(BSFwd){L}
+  \optretplate(PBS)(PBS2){$\nicefrac{\lambda}{2}$}
+  \beamsplitter(PBS)(PBS2)(piezo){PBS}
+  \optretplate[abspos=0.5](PBS2)(piezo){$\nicefrac{\lambda}{4}$}
+  \mirror[mirrortype=piezo,labelangle=90](PBS2)(piezo)(PBS2){PZ}
+  \lens[position=0.8,labelangle=180](PBS2)(BSBwd){L}
+  \crystal[crystalwidth=1, crystalheight=0.5, voltage, lamp, fillstyle=solid, fillcolor=yellow!90!black, labeloffset=0.8](BSFwd)(BSBwd){SBN:Ce}
+  \beamsplitter(PBS)(BSFwd)(BSBwd){BS}
+  \beamsplitter[labelangle=-90](PBS2)(BSBwd)(BSFwd){BS}
+  \mirror(BSBwd)(M4f1)(M4f2){M}\mirror(M4f1)(M4f2)(M4f3){M}
+  \lens[labelangle=180](M4f2)(M4f3){L}\mirror(M4f2)(M4f3)(BS4f){M}
+  \beamsplitter(M4f3)(BS4f)(CCD){BS}\optbox[endbox,labeloffset=0, optboxwidth=1](BS4f)(CCD){CCD}
+  \lens[abspos=0.7](BS4f)(BSFwd){L}\lens[abspos=0.7](BSBwd)(M4f1){L}
+  \addtopsstyle{Beam}{linewidth=2\pslinewidth}
+  \drawbeam{1}{2}%{3}{4}{5}{6}{11}{12}{13}{14}{13}{12}{15}{18}{16}{17}{25}{23}{24}
+%  \drawbeam[beaminsidefirst]{6}{7}{10}{17}{16}{18}{26}{19}{20}{21}{22}{23}{24}
+%  \drawbeam{1-6}{11-14}{13}{12}{15}{18}{16}{17}{25}{23}{24}
+%  \drawbeam[beaminsidefirst]{6}{7}{10}{17}{16}{18}{26}{19-24}
+\end{pspicture}
+\end{document}
