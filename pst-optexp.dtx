@@ -455,7 +455,7 @@
 %    \pstVerb{^^A
 %       \i\space 650 400 sub 39 div mul 400 add 
 %       tx@addDict begin wavelengthToRGB end }%
-%     \drawbeam[nadd=-0.002 \i\space mul]{(In)}{3}{4}{5}{2}{1}{6}{7}{8}{(Out)}
+%     \drawbeam[nadd=-0.002 \i\space mul]{(In)}{3-5}{2}{1}{6-8}{(Out)}
 %  }^^A
 %   \newpsstyle{Beam}{linecolor=red}
 %   \backlayer{%
@@ -3141,11 +3141,9 @@
   \psset{mirrortype=extended, mirrordepth=0.15}
   \mirror[mirrorradius=2](A)(B)(C){} 
   \mirror(B)(C)(B){} 
-  \drawbeam[linecolor=red, 
-              beampos=-0.2]{1}{2}{3}
-  \drawbeam[linecolor=blue]{1}{2}{3}
-  \drawbeam[linecolor=green,
-              beampos=0.2]{1}{2}{3}
+  \drawbeam[linecolor=red, beampos=-0.2]{1-3}
+  \drawbeam[linecolor=blue]{1-3}
+  \drawbeam[linecolor=green, beampos=0.2]{1-3}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -3185,11 +3183,9 @@
   \optbox[endbox](B)(A){}
   \mirror(A)(B)(C){} 
   \mirror(B)(C)(B){} 
-  \drawbeam[linecolor=red, 
-              beamangle=3]{1}{2}{3}
-  \drawbeam[linecolor=blue]{1}{2}{3}
-  \drawbeam[linecolor=green, 
-              beamangle=-3]{1}{2}{3}
+  \drawbeam[linecolor=red, beamangle=3]{-3}
+  \drawbeam[linecolor=blue]{1-}
+  \drawbeam[linecolor=green, beamangle=-3]{-}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -4023,10 +4019,8 @@
   \beamsplitter(M4f3)(BS4f)(CCD){BS}\optbox[endbox,labeloffset=0, optboxwidth=1](BS4f)(CCD){CCD}
   \lens[abspos=0.7](BS4f)(BSFwd){L}\lens[abspos=0.7](BSBwd)(M4f1){L}
   \addtopsstyle{Beam}{linewidth=2\pslinewidth}
-  \drawbeam{1}{2}{3}{4}{5}{6}{11}{12}{13}{14}{13}{12}{15}{18}{16}{17}{25}{23}{24}
-  \drawbeam[beaminsidefirst]{6}{7}{10}{17}{16}{18}{26}{19}{20}{21}{22}{23}{24}
-%% \drawbeam{1-6}{11-14}{13}{12}{15}{18}{16}{17}{25}{23}{24}
-%% \drawbeam[beaminsidefirst]{6}{7}{10}{17}{16}{18}{26}{19-24}
+  \drawbeam{1-6}{11-14}{13}{12}{15}{18}{16}{17}{25}{23}{24}
+  \drawbeam[beaminsidefirst]{6}{7}{10}{17}{16}{18}{26}{19-24}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -5240,47 +5234,43 @@
 %    \end{macrocode}
 % \end{macro}
 %    \begin{macrocode}
-\def\poe@checkoption#1-#2\END{%
+\def\poe@getcomprange#1-#2\END{%
   \ifx\\#2\\%
     \ifx\\#1\\%
       % empty option
-      \edef\poe@first{1}%
-      \edef\poe@last{\the\POE@cnt}%
+      \edef\poe@firstcomp{\the\POE@cnt}%
+      \edef\poe@lastcomp{\the\POE@cnt}%
     \else
-      \edef\poe@first{#1}%
-      \edef\poe@last{\the\POE@cnt}%
+      \edef\poe@firstcomp{#1}%
+      \edef\poe@lastcomp{#1}%
     \fi
   \else
     \ifx\\#1\\%
-      \edef\poe@first{1}%
+      \edef\poe@firstcomp{1}%
     \else
-      \edef\poe@first{#1}%
+      \edef\poe@firstcomp{#1}%
     \fi
-    \poe@checklast#2%
+    \poe@getlastcomp#2%
   \fi
-  \message{^^Jfirst:\poe@first|^^J}
-  \message{^^Jlast:\poe@last|^^J}
-  \ifnum\poe@first<1
-    \def\poe@first{1}
-  \else\ifnum\poe@first>\the\POE@cnt
-    \edef\poe@first{\the\POE@cnt}
+  \ifnum\poe@firstcomp<1
+    \def\poe@firstcomp{1}
+  \else\ifnum\poe@firstcomp>\the\POE@cnt
+    \edef\poe@firstcomp{\the\POE@cnt}
   \fi\fi
-  \ifnum\poe@last>\the\POE@cnt
-    \edef\poe@last{\the\POE@cnt}
-  \else\ifnum\poe@last<1
-    \def\poe@last{1}
+  \ifnum\poe@lastcomp>\the\POE@cnt
+    \edef\poe@lastcomp{\the\POE@cnt}
+  \else\ifnum\poe@lastcomp<1
+    \def\poe@lastcomp{1}
   \fi\fi
-  \message{^^Jfirst:\poe@first|^^J}
-  \message{^^Jlast:\poe@last|^^J}
 }
-\def\poe@checklast#1-{%
+\def\poe@getlastcomp#1-{%
   \ifx\\#1\\%
-    \edef\poe@last{\the\POE@cnt}%
+    \edef\poe@lastcomp{\the\POE@cnt}%
   \else
-    \ifx\@empty#1
-      \edef\poe@last{\the\POE@cnt}
+    \ifx\@empty#1\relax
+      \edef\poe@lastcomp{\the\POE@cnt}%
     \else
-      \edef\poe@last{#1}%
+      \edef\poe@lastcomp{#1}%
     \fi
   \fi
 }
@@ -5304,12 +5294,11 @@
   \else\ifx(#1\relax%)
     \POE@getplanenode#1#2%
   \else\ifnum9<1#1\relax
-    \poe@checkoption#1#2-\END
-    \POE@getcomp{(\POE@str@basicname@prefix\POE@str@basicname@default) \poe@first\space\poe@last\space GetCompRange }%
+    \poe@getcomprange#1#2-\END
+    \POE@getcomp{(\POE@str@basicname@prefix\POE@str@basicname@default) \poe@firstcomp\space\poe@lastcomp\space GetCompRange }%
   \else\ifx-#1\relax
-    \message{^^J|#1#2|^^J}
-    \poe@checkoption#1#2-\END
-    \POE@getcomp{(\POE@str@basicname@prefix\POE@str@basicname@default) \poe@first\space\poe@last\space GetCompRange }%
+    \poe@getcomprange#1#2-\END
+    \POE@getcomp{(\POE@str@basicname@prefix\POE@str@basicname@default) \poe@firstcomp\space\poe@lastcomp\space GetCompRange }%
   \else
     \POE@getcomp{(\POE@str@basicname@prefix#1#2)}%
   \fi\fi\fi\fi%
