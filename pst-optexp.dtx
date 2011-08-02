@@ -1,6 +1,6 @@
 % \iffalse meta-comment
 %
-% Copyright (C) 2011 by Christoph Bersch <usenet@bersch.net>
+% Copyright (C) 2007-2011 by Christoph Bersch <usenet@bersch.net>
 % -------------------------------------------------------
 % 
 % This file may be distributed and/or modified under the
@@ -22,7 +22,7 @@
 %<stylefile>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<stylefile>\ProvidesPackage{pst-optexp}
 %<*stylefile>
-    [2011/07/29 v3.0alpha Optical experimental setups with PSTricks]
+    [2011/08/02 v3.0alpha Optical experimental setups with PSTricks]
 %</stylefile>
 %
 %<*driver>
@@ -203,8 +203,8 @@
 \newcommand*{\POE@intitem}[2][]{%
   \xLkeyword{#2}%
   \ifblank{#1}
-    {\ltd@option{#2}{#2}{\prm{integer}}{}}
-    {\ltd@option{#2}{#2}{\prm{integer}}{\ltd@textverb{#1}}}}%
+    {\ltd@option{#2}{#2}{\prm{int}}{}}
+    {\ltd@option{#2}{#2}{\prm{int}}{\ltd@textverb{#1}}}}%
 \newcommand*{\POE@numitem}[2][]{%
   \xLkeyword{#2}%
   \ifblank{#1}
@@ -226,6 +226,7 @@
 \newcommand*{\PSname}[1]{{\normalfont\ttfamily/#1}}
 \newcommand*{\PSproc}[1]{{\normalfont\ttfamily\textbraceleft #1\textbraceright}}
 \newcommand*{\PSvar}[1]{{\normalfont\ttfamily #1}}
+\newcommand*{\PSop}[1]{{\normalfont\ttfamily\color{DOrange}#1}}
 
 \newcommand*{\nodename}[1]{\emph{#1}}
 \newcommand*{\param}[1]{\normalfont\texttt{#1}}
@@ -280,11 +281,17 @@
   \cmditem{#1}[Options](In)(Out){Label}%
 }
 
+\newenvironment*{pssyntax}
+  {\list{}{\small
+     \setlength{\labelsep}{0pt}%
+     \setlength{\leftmargin}{10pt}%
+     \item[]}}
+  {\endlist}
+
 \addtopsstyle{Fiber}{linecolor=DOrange,linewidth=1.5\pslinewidth}
 \addtopsstyle{Beam}{linewidth=1.5\pslinewidth}
 \EnableCrossrefs
 \CodelineIndex
-\OnlyDescription
 \begin{document}
   \DocInput{pst-optexp.dtx}
   \begin{otherlanguage}{english}
@@ -618,7 +625,6 @@
 % \begin{itemize}
 % \item Automatic sizing of optboxes (like a \Lcs{psframebox}
 % \item Allow more than one extnode.
-% \item Support for number ranges for \nxLcs{draw*} macros.
 % \end{itemize}
 % 
 % \section{Acknowledgements}
@@ -725,9 +731,9 @@
 % durch die optischen Eigenschaften der Linsen bestimmt.
 % \fi
 % 
-%%\begingroup
-%%\catcode`\*=13
-%%\def*{}%
+% \begingroup
+% \catcode`\*=13
+% \def*{}%
 % \iffalse
 %<*ignore>
 % \fi
@@ -1247,17 +1253,28 @@
 %   \chapter{Reference}
 % \fi
 % 
-% This chapter contains detailed information about all object, macros and related options. It is divided into four parts:
+% This chapter contains detailed information about all object, macros
+% and related options. It is divided into three parts:
 % \begin{itemize}
-% \item Section \ref{sec:freeraycomp}
-% \item Section \ref{sec:fibercomp}
-% \item Section \ref{sec:connecting}
+% \item Section \ref{sec:freeraycomp} explains in detail all free-ray
+%   components, reflective and transmittive. The free-ray components
+%   differ from the fiber-optical ones with respect to their ray-tracing
+%   capabilities, but they can also be connected with fibers.
+% \item Section \ref{sec:fibercomp} describes all fiber-optical
+%   components, which can be used with fiber connections only. They must
+%   not obey any refraction or reflection law.
+% \item Section \ref{sec:connecting} contains detailed information about
+%   all possiblities of beam and fiber connections.
 % \end{itemize}
 %
 % \begin{table}
 % \begin{tabular}{>{\itshape}ll} \toprule
 %   Name & Description\\ \midrule
-%   num & Any number\\ \bottomrule
+%   num & Any number\\ 
+%   int & Integer number\\ 
+%   dimen & Dimension\\
+%   psstyle & Custom graphics parameter configuration defined by \Lcs{newpsstyle}\\
+%   psnum & Any Postscript code that evaluates to a number\\ \bottomrule
 % \end{tabular}
 % \end{table}
 % 
@@ -3961,8 +3978,8 @@
 \begin{LTXexample}[pos=t, vsep=8mm]
 \makeatletter
 \def\LCLV@nodes{%
-  \newOptexpComp{ {-0.12 0} {0 1} trans {NewPlaneInt}
-                  {0.15 0} {0 1} trans {NewPlaneInt} \POE@key@n}%
+  \newOptexpComp{ {-0.12 0} {0 1} trans {PlaneIfc}
+                  {0.15 0} {0 1} trans {PlaneIfc} \POE@key@n}%
 }%
 \def\LCLV@comp{%
   \psframe[fillstyle=solid,fillcolor=black,dimen=outer](-0.12,-0.5)(0,0.5)
@@ -4870,7 +4887,6 @@
 %    \end{macrocode}
 %
 % \begin{macro}{\POE@getnode}
-% \begin{macro}{\POE@getcoor}
 %    \begin{macrocode}
 \def\POE@getnode#1#2\@nil{%
   \ifx(#1\relax%)
@@ -4884,6 +4900,9 @@
     \fi
   \fi%
 }%
+%    \end{macrocode}
+% \begin{macro}{\POE@getcoor}
+%    \begin{macrocode}
 \def\POE@getcoor(#1){%
   \pst@@getcoor{#1}
 }%
@@ -5688,8 +5707,9 @@
   \pst@getcoor{#1}\pst@tempOrig%
   \pst@getcoor{#2}\pst@tempDiff%
   \pst@OptexpVerb{%
-    {\pst@tempOrig} gsave STV CP T exec grestore ToVec 
-    {\pst@tempDiff} (\POE@str@basicname@prefix#3) {} NewNodeComp
+    [ {\pst@tempOrig} gsave STV CP T exec grestore ToVec 
+    {\pst@tempDiff} trans {PlaneIfc} 1
+    (\POE@str@basicname@prefix#3) {} false NewOptexpComp
   }%
 \ignorespaces}%
 %    \end{macrocode}
@@ -6095,7 +6115,10 @@
      Y@A X@A neg Y@B X@B neg ExchCoor def
      X@A Y@A end){\oenodeRefA{}}%
   \pnode(! \POE@dict{X@B Y@B}){\oenodeRefB{}}%
-  \pst@OptexpVerb{/@xref \POE@key@xref\space def /@yref \POE@key@yref\space def}%
+  \pst@OptexpVerb{%
+    /@xref \POE@key@xref\space def 
+    /@yref \POE@key@yref\space def
+  }%
 }\ignorespaces}%
 %    \end{macrocode}
 % \end{macro}
@@ -6289,7 +6312,7 @@
       \POE@drawcomponent{#4}{%
         \ifPOE@backlayer
           \pnode(0,0){\oenodeCenter{}}%
-          \newOptexpComp{{ 0 0 } { 0 1 } trans {NewPlaneInt} 1 }%
+          \newOptexpComp{{ 0 0 } { 0 1 } trans {PlaneIfc} 1 }%
         \fi
         \ifPOE@frontlayer
           #3
@@ -6311,7 +6334,7 @@
       \POE@calcNodes{#1}{#2}{#3}
       \POE@drawcomponent{#5}{%
          \pnode(0,0){\oenodeCenter{}}% 
-         \newOptexpComp{{ 0 0 } { 1 0 } refl {NewPlaneInt} 1 }%
+         \newOptexpComp{{ 0 0 } { 1 0 } refl {PlaneIfc} 1 }%
          #4
       }%
 %    \end{macrocode}
@@ -6521,7 +6544,7 @@
 % \begin{macro}{\tripole@nodes}
 %    \begin{macrocode}
 \def\tripole@nodes{%
-  \newOptexpComp{ {0 0} {1 0} refl {NewPlaneInt} 1}%
+  \newOptexpComp{ {0 0} {1 0} refl {PlaneIfc} 1}%
 \ignorespaces}%
 %    \end{macrocode}
 % \end{macro}
@@ -6530,9 +6553,9 @@
 %    \begin{macrocode}
 \def\dipole@nodes{%
   \newOptexpComp{%
-    {@@x0 @@x sub 0} {0 1} trans {NewPlaneInt} 
+    {@@x0 @@x sub 0} {0 1} trans {PlaneIfc} 
     @@x 0 eq not {
-      {@@x0 @@x add 0} {0 1} trans {NewPlaneInt}
+      {@@x0 @@x add 0} {0 1} trans {PlaneIfc}
     } if \POE@key@n }%
   \pnode(! \POE@dict{@@x0 @@y0}){\oenodeCenter{}}
 \ignorespaces}%
@@ -6570,9 +6593,9 @@
 \def\mirror@nodes{%
    \newOptexpComp{{ 0 0 } 
                   \ifdim\POE@key@mirrorradius pt=0pt
-                     { 1 0 } refl {NewPlaneInt}
+                     { 1 0 } refl {PlaneIfc}
                   \else
-                     { 0 \POE@key@mirrorradius\space neg} refl {NewCurvedInt}
+                     { 0 \POE@key@mirrorradius\space neg} refl {CurvedIfc}
                   \fi
                   1 }%
 }%
@@ -6599,14 +6622,14 @@
         \psset{style=ExtendedMirror}
         \begin@ClosedObj
           \addto@pscode{%
-            \pst@optexpdict \@ht \@r rightConcave \@postcode  
-            \@ht \@r rightConcave \@extpostcode arc
+            \pst@optexpdict \@ht \@r rightCurvedIfc \@postcode  
+            \@ht \@r rightCurvedIfc \@extpostcode arc
             closepath end}%
         \end@ClosedObj
       \egroup
     \fi
     \begin@OpenObj
-      \addto@pscode{\pst@optexpdict \@ht \@r rightConcave \@postcode end}%
+      \addto@pscode{\pst@optexpdict \@ht \@r rightCurvedIfc \@postcode end}%
     \end@OpenObj
 %    \end{macrocode}
 % convex mirrors
@@ -6620,14 +6643,14 @@
         \psset{style=ExtendedMirror}
         \begin@ClosedObj
           \addto@pscode{%
-            \pst@optexpdict \@ht \@r rightConvex \@postcode
-            \@ht \@r rightConvex \@extpostcode arcn
+            \pst@optexpdict \@ht \@r rightCurvedIfc \@postcode
+            \@ht \@r rightCurvedIfc \@extpostcode arcn
             closepath end}%
         \end@ClosedObj
       \egroup
     \fi
    \begin@OpenObj
-     \addto@pscode{\pst@optexpdict \@ht \@r rightConvex \@postcode end}%
+     \addto@pscode{\pst@optexpdict \@ht \@r rightCurvedIfc \@postcode end}%
    \end@OpenObj
   \else
 %    \end{macrocode}
@@ -6677,15 +6700,15 @@
   \fi
   \newOptexpComp{{\@lens@th\space -2 div 0} 
                   \ifdim\POE@key@lensradiusleft pt=0pt 
-                      {0 1} trans {NewPlaneInt}
+                      {0 1} trans {PlaneIfc}
                    \else 
-                      {\POE@key@lensradiusleft\space 0} trans {NewCurvedInt}
+                      {\POE@key@lensradiusleft\space 0} trans {CurvedIfc}
                    \fi
                    {\@lens@th\space 2 div 0} 
                    \ifdim\POE@key@lensradiusright pt=0pt
-                      {0 1} trans {NewPlaneInt}
+                      {0 1} trans {PlaneIfc}
                    \else
-                      {\POE@key@lensradiusright\space neg 0} trans {NewCurvedInt} 
+                      {\POE@key@lensradiusright\space neg 0} trans {CurvedIfc} 
                    \fi
                    \POE@key@n}%
 }%
@@ -6731,12 +6754,7 @@
     }%
     \addto@pscode{%
       /@th \ifPOE@thicklens @wd \else @rL @ht segLen \fi def
-      @ht @rL
-      \ifdim\POE@key@lensradiusleft pt<0pt
-        leftConcave
-      \else
-        leftConvex
-      \fi
+      @ht @rL leftCurvedIfc
     }%
   \fi
   \ifdim\POE@key@lensradiusright pt=0pt\else
@@ -6754,12 +6772,7 @@
     }%
     \addto@pscode{%
       /@th @th \ifPOE@thicklens @wd \else @rR @ht segLen \fi add def
-      @ht @rR
-      \ifdim\POE@key@lensradiusright pt<0pt
-        rightConcave
-      \else
-        rightConvex
-      \fi
+      @ht @rR rightCurvedIfc
     }%
   \fi
 %    \end{macrocode}
@@ -6850,16 +6863,16 @@
 %    \end{macrocode}
 % the old beamsplitter had only one defined plane
 %    \begin{macrocode}
-      \newOptexpCompAmb{ {0 0} {1 0} trans {NewPlaneInt} 1 }%
+      \newOptexpCompAmb{ {0 0} {1 0} trans {PlaneIfc} 1 }%
     \else
-      \newOptexpCompAmb{ {\@bs@wd 2 sqrt div neg dup} {-1 1} trans {NewPlaneInt}
-                         {\@bs@wd 2 sqrt div dup neg} {1 1} trans {NewPlaneInt}
-                         {\@bs@wd 2 sqrt div dup} {-1 1} trans {NewPlaneInt}
-                         {\@bs@wd 2 sqrt div neg dup neg} {1 1} trans {NewPlaneInt} 
-                         {0 0} {1 0} trans {NewPlaneInt} \POE@key@n}%
+      \newOptexpCompAmb{ {\@bs@wd 2 sqrt div neg dup} {-1 1} trans {PlaneIfc}
+                         {\@bs@wd 2 sqrt div dup neg} {1 1} trans {PlaneIfc}
+                         {\@bs@wd 2 sqrt div dup} {-1 1} trans {PlaneIfc}
+                         {\@bs@wd 2 sqrt div neg dup neg} {1 1} trans {PlaneIfc} 
+                         {0 0} {1 0} trans {PlaneIfc} \POE@key@n}%
     \fi
   \else\ifx\POE@key@bsstyle\POE@str@bsstyle@plate
-    \newOptexpCompAmb{ {0 0} {1 0} trans {NewPlaneInt} 1 }%
+    \newOptexpCompAmb{ {0 0} {1 0} trans {PlaneIfc} 1 }%
   \fi\fi
 \ignorespaces}%
 %    \end{macrocode}
@@ -7068,7 +7081,7 @@
 % \begin{macro}{\optdetector@nodes}
 %    \begin{macrocode}
 \def\optdetector@nodes{%
-  \newOptexpComp{{ 0 0} { 0 1 } refl {NewPlaneInt} 1 }%
+  \newOptexpComp{{ 0 0} { 0 1 } refl {PlaneIfc} 1 }%
   \ifx\POE@key@dettype\POE@str@dettype@round
     \pnode(! \POE@key@detsize\space 0.2 mul 0){\oenodeCenter{}}%
   \else\ifx\POE@key@dettype\POE@str@dettype@diode
@@ -7152,9 +7165,9 @@
 % \begin{macro}{\doveprism@nodes}
 %    \begin{macrocode}
 \def\doveprism@nodes{%
-  \newOptexpComp{ {\POE@key@doveprismsize\space neg 0} {1 1} trans {NewPlaneInt}
-                  {0 \POE@key@doveprismsize\space -0.5 mul} {1 0} refl {NewPlaneInt}
-                  {\POE@key@doveprismsize\space 0} {-1 1} trans {NewPlaneInt} \POE@key@n true }%
+  \newOptexpComp{ {\POE@key@doveprismsize\space neg 0} {1 1} trans {PlaneIfc}
+                  {0 \POE@key@doveprismsize\space -0.5 mul} {1 0} refl {PlaneIfc}
+                  {\POE@key@doveprismsize\space 0} {-1 1} trans {PlaneIfc} \POE@key@n true }%
 \ignorespaces}%
 %    \end{macrocode}
 % \end{macro}
@@ -7176,12 +7189,12 @@
 %    \begin{macrocode}
 \def\pentaprism@nodes{%
   \edef\@pp@size{\POE@key@pentaprismsize\space}%
-  \newOptexpComp{ {\@pp@size 2 sqrt -2 mul div dup } {-1 1} trans {NewPlaneInt}
+  \newOptexpComp{ {\@pp@size 2 sqrt -2 mul div dup } {-1 1} trans {PlaneIfc}
                   {\@pp@size 2 sqrt div 67.5 cos \@pp@size mul 67.5 sin 2 mul div sub \@pp@size 2 div}
-                  { 67.5 cos \@pp@size mul 67.5 sin div neg \@pp@size} refl {NewPlaneInt}
+                  { 67.5 cos \@pp@size mul 67.5 sin div neg \@pp@size} refl {PlaneIfc}
                   {\@pp@size 2 sqrt div neg 67.5 cos \@pp@size mul 67.5 sin 2 mul div add \@pp@size 2 div}
-                  { 67.5 cos \@pp@size mul 67.5 sin div \@pp@size} refl {NewPlaneInt}
-                  {\@pp@size 2 sqrt 2 mul div dup neg} {1 1} trans {NewPlaneInt} \POE@key@n}%   
+                  { 67.5 cos \@pp@size mul 67.5 sin div \@pp@size} refl {PlaneIfc}
+                  {\@pp@size 2 sqrt 2 mul div dup neg} {1 1} trans {PlaneIfc} \POE@key@n}%   
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -7208,8 +7221,8 @@
    \edef\@sz{\POE@key@prismsize\space}%
    \edef\@altan{\POE@key@prismangle\space 0.5 mul tan }%
    \edef\@hshift{\@sz 0.6 mul \@altan mul \pst@optexpdict OEangle end 0.5 mul tan div }%
-   \newOptexpComp{ {\@sz -0.6 mul \@altan mul \@hshift neg} {90 \POE@key@prismangle\space 0.5 mul sub dup cos exch sin} trans {NewPlaneInt}
-                   {\@sz 0.6 mul \@altan mul \@hshift neg} {90 \POE@key@prismangle\space 0.5 mul add dup cos exch sin} trans {NewPlaneInt} \POE@key@n true }%
+   \newOptexpComp{ {\@sz -0.6 mul \@altan mul \@hshift neg} {90 \POE@key@prismangle\space 0.5 mul sub dup cos exch sin} trans {PlaneIfc}
+                   {\@sz 0.6 mul \@altan mul \@hshift neg} {90 \POE@key@prismangle\space 0.5 mul add dup cos exch sin} trans {PlaneIfc} \POE@key@n true }%
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -7232,10 +7245,10 @@
 \def\rightangleprism@nodes{%
   \edef\@sz{\POE@key@raprismsize\space 0.5 mul }%
   \edef\@ht{\POE@dict{OEangle 0.5 mul sin modA mul} }%
-  \newOptexpComp{ {\@ht neg \@ht \@sz sub} {1 0} trans {NewPlaneInt}
-                  {\@ht neg 0} {1 1} refl {NewPlaneInt}
-                  {\@ht 0} {1 -1} refl {NewPlaneInt}
-                  {\@ht dup \@sz sub } {1 0} trans {NewPlaneInt} \POE@key@n }%
+  \newOptexpComp{ {\@ht neg \@ht \@sz sub} {1 0} trans {PlaneIfc}
+                  {\@ht neg 0} {1 1} refl {PlaneIfc}
+                  {\@ht 0} {1 -1} refl {PlaneIfc}
+                  {\@ht dup \@sz sub } {1 0} trans {PlaneIfc} \POE@key@n }%
 \ignorespaces}%
 %    \end{macrocode}
 % \end{macro}
@@ -7704,7 +7717,7 @@
 \def\fibercollimator@nodes{%
    \def\@sz{\POE@key@fibercolsize\space 0.5 mul }%
    \pnode(!\@sz neg 0){\oenodeIn{}}
-   \newOptexpComp{ {\@sz neg 0} {0 1} trans {NewPlaneInt} 1 }%
+   \newOptexpComp{ {\@sz neg 0} {0 1} trans {PlaneIfc} 1 }%
    \pnode(!\@sz 0){\oenodeOut{}}
 }%
 %    \end{macrocode}
@@ -7746,13 +7759,17 @@
 %    \fi}
 % \makeatother
 %<*prolog>
+% This is the dictionary where all components are stored in.
 %    \begin{macrocode}
-/tx@OptexpDict 70 dict def
+/tx@OptexpDict 200 dict def
 tx@OptexpDict begin
 %    \end{macrocode}
 % \begin{macro}{strcat}
+% Concatenate two strings and leave the result on the stack
+% \begin{pssyntax}
+%   \PSstring{str1} \PSstring{str2} \PSop{strcat} \PSstring{str1str2}
+% \end{pssyntax}
 %    \begin{macrocode}
-% Concatenate two strings.
 /strcat {
     exch 2 copy
     length exch length add
@@ -7762,17 +7779,36 @@ tx@OptexpDict begin
 } bind def
 %    \end{macrocode}
 % \end{macro}
-% \begin{macro}{nametostring}
+% \begin{macro}{nametostr}
 %    Convert a literal name to string.
+% \begin{pssyntax}
+%   \PSname{name} \PSop{nametostr} \PSstring{name}
+% \end{pssyntax}
 %    \begin{macrocode}
-/nametostring {
+/nametostr {
     dup length string cvs
+} bind def
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{nametostr}
+%    Convert an integer to a string.
+% \begin{pssyntax}
+%   \PSvar{int} \PSop{inttostr} \PSstring{int}
+% \end{pssyntax}
+%    \begin{macrocode}
+/inttostr {
+  dup type /integertype eq {
+    dup log 1 add floor cvi string cvs
+  } if
 } bind def
 %    \end{macrocode}
 % \end{macro}
 % 
 % \begin{macro}{calcNodes}
-% XB YB  XA YA XG YG are on the stack.
+% \begin{pssyntax}
+%   \PSvar{XB} \PSvar{YB} \PSvar{XA} \PSvar{YA} \PSvar{XG} \PSvar{YG} \PSop{calcNodes}
+% \end{pssyntax}
 %    \begin{macrocode}
 /calcNodes {
     /YG exch def /XG exch def
@@ -7782,7 +7818,7 @@ tx@OptexpDict begin
     /bx exch XG sub def
     /a ax ay Pyth def
 %    \end{macrocode}
-% This is stored for external use.
+% This is stored for \nxLcs{rightangleprism}.
 %    \begin{macrocode}
     /modA a def
     /b bx by Pyth def
@@ -7797,15 +7833,15 @@ tx@OptexpDict begin
 % are parallel or antiparallel.
 %    \begin{macrocode}
     c 0 eq {
-      ax bx mul ay by mul add 0 gt {
+      ax ay bx by SProd 0 gt {
 %    \end{macrocode}
-% If $\text{dotprod} > 0$ then a and b are parallel.
+% If $\text{dotprod} > 0$ then $a$ and $b$ are parallel.
 %    \begin{macrocode}
         /cx ax def
         /cy ay def
       }{
 %    \end{macrocode}
-% else a and b are antiparallel
+% else $a$ and $b$ are antiparallel.
 %    \begin{macrocode}
         /cx ay def
         /cy ax neg def
@@ -7836,7 +7872,11 @@ tx@OptexpDict begin
 % \end{macro}
 %
 % \begin{macro}{segLen}
-% Calculate the height a1 of a pole cap. The circle radius and the height are on the stack.
+% Calculate the height \PSvar{a1} of a pole cap. 
+% \begin{pssyntax}
+%   \PSvar{R} \PSvar{h} \PSop{segLen} \PSvar{a1}
+% \end{pssyntax}
+% \PSvar{R} is the circle radius and \PSvar{h} the width of the pole cap.
 %    \begin{macrocode}
 /segLen {
     dup mul neg exch abs dup 3 1 roll dup mul add sqrt sub
@@ -7844,82 +7884,60 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{leftConvex}
-% Calculate some parameters for the left plane of a convex lens.
-% Defines /a1 as the pole height and /ArcL which are used later in the code.
-%
-%
-% height R1 -> y |R1| alpha\textunderscore bottom alpha\textunderscore top R1
+% \begin{macro}{leftLensIfc}
+%   Calculate some parameters for the left plane of a lens. Defines
+%   \PSname{a1} as the pole height and \PSname{ArcL} which are used
+%   later in the code to actually draw the interface curve.
+% \begin{pssyntax}
+%  \PSvar{h R1} \PSop{leftCurvedIfc} \PSvar{y |R1| alpha\textunderscore bottom alpha\textunderscore top R1}
+% \end{pssyntax}
 %    \begin{macrocode}
-/leftConvex {
-   /R1 exch def /h exch def
-   /a1  R1 h segLen def
-   0 R1 abs
-   R1 a1 sub neg dup
-   h exch atan exch
-   h neg exch atan
-   /ArcL /arc load def
-   R1
+/leftCurvedIfc {
+  /R1 exch def /h exch def
+  /a1  R1 h segLen def
+  0 R1 abs dup a1 exch sub R1 sign mul dup
+  h exch atan exch
+  h neg exch atan
+  R1 0 lt {
+    /ArcL /arcn load def
+    /a1 0.1 a1 mul def
+  } {
+    /ArcL /arc load def
+  } ifelse
+  R1
 } bind def
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}{leftConcave}
-% Analogous to /leftConvex.
-% height R1 -> y |R1| alpha\textunderscore bottom alpha\textunderscore top R1
+% \begin{macro}{rightCurvedIfc}
+%   Analogous to \PSname{leftCurvedIfc} for «right» interfaces, defines
+%   \PSname{a2} and \PSname{ArcR} for later use.
+% \begin{pssyntax}
+%  \PSvar{h R2} \PSop{leftCurvedIfc} \PSvar{y |R2| alpha\textunderscore bottom alpha\textunderscore top R2}
+% \end{pssyntax}
 %    \begin{macrocode}
-/leftConcave {
-   /R1 exch def /h exch def
-   /a1 R1 h segLen def
-   0 R1 abs
-   R1 neg a1 sub dup
-   h exch atan exch
-   h neg exch atan
-   /ArcL /arcn load def
-   /a1 0.5 a1 mul def
-   R1
-} bind def
-%    \end{macrocode}
-% \end{macro}
-% 
-% \begin{macro}{rightConvex}
-% Analogous to /leftConvex, /a2 and /ArcR are defined
-% height R2 -> y |R2| alpha\textunderscore bottom alpha\textunderscore top R2
-%    \begin{macrocode}
-/rightConvex {
-   /R2 exch def /h exch def
-   /a2 R2 h segLen def
-   0 R2 abs
-   R2 a2 sub dup
-   h neg exch atan exch
-   h exch atan
-   R2
-   /ArcR /arc load def
-} bind def
-%    \end{macrocode}
-% \end{macro}
-% 
-% \begin{macro}{rightConcave}
-% Analogous to /rightConvex
-% height R2 -> y |R2| alpha\textunderscore bottom alpha\textunderscore top R2
-%    \begin{macrocode}
-/rightConcave {
-   /R2 exch def /h exch def
-   /a2 R2 h segLen def
-   0 R2 abs
-   R2 a2 add dup
-   h neg exch atan exch
-   h exch atan
-   /ArcR /arcn load def
-   /a2 0.5 a2 mul def
-   R2
+/rightCurvedIfc {
+  /R2 exch def /h exch def
+  /a2 R2 h segLen def
+  0 R2 abs dup a2 sub R2 sign mul dup
+  h neg exch atan exch
+  h exch atan
+  R2 0 lt {
+    /ArcR /arcn load def
+    /a2 0.1 a2 mul def
+  } {
+    /ArcR /arc load def
+  } ifelse
+  R2
 } bind def
 %    \end{macrocode}
 % \end{macro}
 % 
 % \begin{macro}{mwNode}
-% Calculate the center between two nodes 
-% x1 y1 x2 y2 -> (x1+x2)/2 (y1+y2)/2
+% Calculate the center between two nodes.
+% \begin{pssyntax}
+%   \PSvar{x1 y1 x2 y2} \PSop{mwNode} \PSvar{(x1+x2)/2 (y1+y2)/2}
+% \end{pssyntax}
 %    \begin{macrocode}
 /mwNode {
     exch 3 1 roll add 2 div 3 1 roll add 2 div exch
@@ -7928,26 +7946,38 @@ tx@OptexpDict begin
 % \end{macro}
 % 
 % \begin{macro}{FiberAngleB}
-% Calculate angle of a line from nodeA to nodeB. nodeA and nodeB must be given as literal names
-% nodeB nodeA -> angle
+%   Calculate angle of a line from \PSvar{nodeA} to \PSvar{nodeB}. Both
+%   nodes can be given either as strings or literal names. This is
+%   important because round braces are not allowed in the argument of
+%   \opt{angleA} and \opt{angleB} options.
+%   \begin{pssyntax}
+%     \PSvar{nodeB} \PSvar{nodeA} \PSop{FiberAngleB} \PSvar{angle}
+%   \end{pssyntax}
 %    \begin{macrocode}
-/FiberAngleB {%
+/FiberAngleB {
     @GetCenter 3 -1 roll @GetCenter exch 3 1 roll sub 3 1 roll sub atan
 } bind def
 %    \end{macrocode}
 % \end{macro}
 % 
 % \begin{macro}{FiberAngleA}
-% Calculate angle of line from nodeB to nodeA
-% nodeB nodeA -> angle
+% Calculate angle of line from \PSvar{nodeB} to \PSvar{nodeA}.
+%   \begin{pssyntax}
+%     \PSvar{nodeA} \PSvar{nodeB} \PSop{FiberAngleA} \PSvar{angle}
+%   \end{pssyntax}
 %    \begin{macrocode}
-/FiberAngleA {%
+/FiberAngleA {
     FiberAngleB 180 add
 } bind def
 %    \end{macrocode}
 % \end{macro}
 % 
 % \begin{macro}{ExtNode}
+%   Constructs the coordinates of an external node based on values that
+%   have been set beforehand.
+% \begin{pssyntax}
+%   \PSop{ExtNode} \PSvar{X Y}  
+% \end{pssyntax}
 %    \begin{macrocode}
 /ExtNode {%
     @@x0 @xref @@x mul add 
@@ -7957,17 +7987,39 @@ tx@OptexpDict begin
 % \end{macro}
 % 
 % \begin{macro}{GetInternalNodeNames}
-% Push all internal node names of (basicnodename) on the stack.
-% (basicnodename) reverse GetInternalNodeNames
+%   Push all internal node names of \PSstring{basicnodename} on the
+%   stack. If \PSvar{reverse} is \PSvar{true}, the names are pushed in
+%   reverse order.
+%
+% \PSstring{basicnodename} \PSvar{reverse} \PSop{GetInternalNodeNames}
+% \PSstring{N@basicnodenameN} \ldots{} \PSstring{N@basicnodename1} (if
+% \PSvar{reverse = false})
 %    \begin{macrocode}
 /GetInternalNodeNames {
+  exch dup cvn currentdict exch known {
+%    \end{macrocode}
+% This is the safe way to do it, but it works only for free-ray
+% components which were defined by \PSvar{NewOptexpComp}.
+%    \begin{macrocode}
+    exch /reverse exch def
+    dup (N@) exch strcat exch cvn load /N get dup
+    reverse { -1 1 } { 1 1 3 -1 roll } ifelse
+    { 2 copy eq { pop (N) } { inttostr } ifelse
+      3 -1 roll dup 4 1 roll exch strcat 3 1 roll
+    } for
+    pop pop
+  } {
+%    \end{macrocode}
+% This is the old implementation which still must be used for fiber
+% components. This implementation was only a problem in special cases
+% for free-ray components, so this should not be an issue to keep it for
+% the fiber components.
+%    \begin{macrocode}
+    exch 
     /reverse exch def
     (N@) exch strcat 1 {
-%    \end{macrocode}
-% counter and name on stack
-% \begin{macrocode}
-      2 copy dup 3 string cvs 3 -1 roll exch strcat dup
-      tx@NodeDict exch known {%
+      2 copy dup inttostr 3 -1 roll exch strcat dup
+      tx@NodeDict exch known {
         reverse {
           4 1 roll pop
         } {
@@ -7983,37 +8035,45 @@ tx@OptexpDict begin
       } ifelse
       1 add
     } loop
+  } ifelse
 } bind def
 %    \end{macrocode}
 % \end{macro}
 % 
 % \begin{macro}{GetInternalBeamNodes}
-% (basicnodename) reverse -> x\_n y\_n \ldots x\_1 y\_1 (if reverse = false)
+%   This is like \PSvar{GetInternalNodeNames}, but leaves the node
+%   coordinates on the stack
+% \begin{pssyntax}
+%   \PSstring{basicnodename} \PSvar{reverse} \PSop{GetInternalBeamNodes}
+%   $x_N$ $y_N$ \ldots\ $x_1$ $y_1$ (if \PSvar{reverse = false})
+% \end{pssyntax}
 %    \begin{macrocode}
 /GetInternalBeamNodes {
-    [ 3 1 roll GetInternalNodeNames ]
-    { @GetCenter } forall
+  [ 3 1 roll GetInternalNodeNames ]
+  { @GetCenter } forall
 } bind def
 %    \end{macrocode}
 % \end{macro}
 % 
 % \begin{macro}{InitOptexpComp}
-% Initialize some global variables for positioning of external nodes
-% This is called at the beginning of every component
+%   Initialize some global variables for positioning of external
+%   nodes. This is called at the beginning of every component.
 %    \begin{macrocode}
 /InitOptexpComp {%
-    /@@x 0 def
-    /@@y 0 def
-    /@@x0 0 def
-    /@@y0 0 def
-    /@xref 0 def
-    /@yref 0 def
+  /@@x 0 def
+  /@@y 0 def
+  /@@x0 0 def
+  /@@y0 0 def
+  /@xref 0 def
+  /@yref 0 def
 } bind def
 %    \end{macrocode}
 % \end{macro}
 % 
 % \begin{macro}{ExchCoor}
-% xa ya xb yb ExchCoor true/false
+%   \begin{pssyntax}
+%     \PSvar{Xa Ya Xb Yb} \PSop{ExchCoor} \PSvar{bool}
+%   \end{pssyntax}
 %    \begin{macrocode}
 /ExchCoor {
     exch 4 -1 roll 2 copy 
@@ -8021,11 +8081,11 @@ tx@OptexpDict begin
       pop pop pop pop false
     } {
 %    \end{macrocode}
-% xB > xA
+% \PSvar{Xb} $>$ \PSvar{Xa}
 %    \begin{macrocode}
         eq 3 1 roll gt and
 %    \end{macrocode}
-% $xA == xB$ and $yA < yB$
+% \PSvar{Xa} $=$ \PSvar{Xb} and \PSvar{Ya} $<$ \PSvar{Yb}
 %    \begin{macrocode}
         { false } { true } ifelse
     } ifelse
@@ -8033,85 +8093,94 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % \end{macro}
 %
-% Added for version 3.0
-%
 % \begin{macro}{NewTempNodeComp}
-% \{x y\} \{dx dy\} Name \{scaling procedure\}
+%   If \nxLcs{draw*beam} is invoked with a node as parameter, a
+%   temporary \nxLcs{optplane} is defined. However, this temporary plane
+%   does not have a fixed plane vector, but is adjusted such that it is
+%   perpendicular to the connection between the node and the following
+%   interface node. 
+%
+%   This is the only procedure which sets the \PSname{adjustRel} flag
+%   which indicates adjustment of the plane vector rotation depending on
+%   the incoming or outgoing connection direction.
+% 
+%   For an explanation of the other dictionary member, please see
+%   \PSvar{NewOptexpComp}.
+%   \begin{pssyntax}
+%     \PSproc{x y} \PSproc{dx dy} (name) \PSproc{scaling}
+%   \end{pssyntax}
 %    \begin{macrocode}
 /NewTempNodeComp {
   /sc ED
   dup cvn
   6 dict dup 3 1 roll def begin
-      /ambiguous false def
-      /name ED
-      /correct false def
+    /ambiguous false def
+    /name ED
+    /correct false def
 %    \end{macrocode}
-% This definition does not work like for NewOptexpComp, because a
-% current point may not be available. Therefore, we translate to the
-% (X,Y) node and define X and Y = 0.
+% This definition does not work like for \PSvar{NewOptexpComp}, because
+% a current point may not be available. Therefore, we translate to the
+% $(X, Y)$ node and define $X = Y = 0$.
 %    \begin{macrocode}
-      {0 0} exch 3 -1 roll exec
-      gsave
-          translate
-          /CompMtrx CM def
-      grestore
-      /N 1 def
-      /n 1 def
-      5 dict dup dup /P@1 ED /P@N ED
-      begin
-          /mode trans def
-          {} NewPlaneInt
-      end
-      /adjustRel true def
+    {0 0} exch 3 -1 roll exec
+    gsave
+      translate
+      /CompMtrx CM def
+    grestore
+    /N 1 def
+    /n 1 def
+    5 dict dup dup /P@1 ED /P@N ED
+    begin
+      /mode trans def
+      {} PlaneIfc
+    end
+  /adjustRel true def
   end
 } bind def
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}{NewNodeComp}
+% \begin{macro}{CurvedIfc}
+% Defines a curved interface.
+% \begin{pssyntax}
+%   \PSop{CurvedIfc}
+% \end{pssyntax}
 %    \begin{macrocode}
-/NewNodeComp {
-    [ 5 1 roll trans {NewPlaneInt} 1 5 3 roll false NewOptexpComp
-} bind def
-%    \end{macrocode}
-% \end{macro}
-% 
-% \begin{macro}{NewCurvedInt}
-%    \begin{macrocode}
-/NewCurvedInt {
+/CurvedIfc {
     2 copy 5 3 roll exec 3 -1 roll exec VecAdd 5 -1 roll exec /Y ED /X ED
     exch exec 3 -1 roll exec 2 copy tx@Dict begin Pyth end /R ED /RY ED /RX ED
 } bind def
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}{NewPlaneInt}
+% \begin{macro}{PlaneIfc}
 %    \begin{macrocode}
-/NewPlaneInt {
+/PlaneIfc {
     dup 3 -1 roll exec 3 -1 roll exec /DY ED /DX ED
     exch exec 3 -1 roll exec /Y ED /X ED
 } bind def
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}{NewCompInt}
-% Must be called within NewOptexpComp
-% The plane has several attributes:
-% \{x y\} are the coordinates of the node on the respective plane that is used
-%       for unexpanded beams.
-% \{...\} in case of a simple plane, this contains \{dx dy\} which is the relative
-%       vector that defines the line representing the plane.
-%       For curved surfaces, this procedure contains more values.
-% type  Integer, characterizes if a surface is reflective or transmittent.
-%       To avoid confusion you should use the parameters designed for that
-%       (/refl and /trans)
-% Name  String, Is the name of the new plane. It is expanded by an 'P@'
-% \{New..Int\} Should contain the matching procedure for proper handling of the
-%       variable procedure content \{...\}. Can be \{NewPlaneInt\} or \{NewCurvedInt\}
-%
-% \PSproc{x y} \PSproc{dx dy | rx ry} mode (CompName) (Name) \PSproc{New\ldots Int} \PSproc{scaling}
+% \begin{macro}{NewCompIfc}
+% Defines a new interface of a component, must be called within \PSvar{NewOptexpComp}.
+% \begin{pssyntax}
+%   \PSproc{x y} \PSproc{dx dy | rx ry} mode (CompName) (Name) \PSproc{New\ldots Ifc} \PSproc{scaling} \PSop{NewCompIfc}
+% \end{pssyntax}
+% \begin{description}
+% \item[\PSproc{x y}] The coordinates of the interface node which lies on the optical axis.??
+% \item[\PSproc{dx dy | rx ry}] For a plane interface, this is the vector that describes the plane, for a curved interface this is the
+% \item[\PSvar{mode}] An integer which characterizes if an interface is
+%   reflective or transmittive. You should use the predefined variable
+%   \PSname{refl} and \PSname{trans} for this.
+% \item[\PSstring{CompName}] The name of the component we are in.
+% \item[\PSstring{Name}] The name of the new interface. It is prefixed by «P@».
+% \item[\PSproc{\ldots Ifc}] Contain the actual procedure to define the
+%   concrete interface type, can be \PSproc{PlaneIfc} or
+%   \PSproc{CurvedIfc}.
+% \end{description}
 %    \begin{macrocode}
-/NewCompInt {
+/NewCompIfc {
   /scl ED
   /next ED
   dup (P@) exch strcat cvn
@@ -8124,7 +8193,8 @@ tx@OptexpDict begin
     {scl} next
   end
 %    \end{macrocode}
-% store a new node /N@NameX, with X=1..N this node always represents the intersection of an untilted and unshifted incoming beam
+% store a new node \PSname{N@NameX}, with X=1..N this node always
+% represents the intersection of an untilted and unshifted incoming beam
 % on the optical axis with the respective interface
 %    \begin{macrocode}
   3 1 roll strcat exch exec scl ToVec exch
@@ -8149,7 +8219,7 @@ tx@OptexpDict begin
 % /P@1 ... /P@N  -> planes used for the 'ray tracing'
 %
 % \begin{macro}{NewOptexpComp}
-% [ \PSproc{x y} \PSproc{dx dy | rx ry} type \PSproc{New\ldots Int} \ldots\ refrIndex correct? (CompName) \PSproc{scaling} amb?
+% [ \PSproc{x y} \PSproc{dx dy | rx ry} type \PSproc{New\ldots Ifc} \ldots\ refrIndex correct? (CompName) \PSproc{scaling} amb?
 %    \begin{macrocode}
 /NewOptexpComp {
   3 1 roll /sc ED 
@@ -8176,21 +8246,21 @@ tx@OptexpDict begin
 % only a single plane is specified
 %    \begin{macrocode}
       ambiguous { 
-        name (C) 3 -1 roll {sc} NewCompInt 
+        name (C) 3 -1 roll {sc} NewCompIfc
         (C) (1) PlaneAlias
         (C) (N) PlaneAlias
       } {
-        name (1) 3 -1 roll {sc} NewCompInt 
+        name (1) 3 -1 roll {sc} NewCompIfc 
         (1) (N) PlaneAlias
       } ifelse
   }{
       ambiguous {
-        name (C) 3 -1 roll {sc} NewCompInt
+        name (C) 3 -1 roll {sc} NewCompIfc
         /N N 1 sub def
       } if
       N -1 1 { %
-        dup N eq { pop (N) }{3 string cvs} ifelse
-        exch name 3 1 roll {sc} NewCompInt
+        dup N eq { pop (N) }{inttostr} ifelse
+        exch name 3 1 roll {sc} NewCompIfc
       } for
   } ifelse
   end
@@ -8631,19 +8701,20 @@ tx@OptexpDict begin
 % \end{macro}
 % 
 % \begin{macro}{TraceWideBeam}
-% Stroke an extendend beam. Only rearranges the input parameters and calls Drawbeam twice, for the upper
-% and lower beam.
-% [ CompN ... Comp1 \PSproc{options} \PSproc{start point up} \PSproc{input vector up} \PSproc{start point low} \PSproc{input vector low}
+%   Stroke a wide beam. Only rearranges the input parameters and calls
+%   \PSvar{TraceBeam} twice, for the upper and lower beam.
+% \begin{pssyntax}
+%   \PSvar{[ CompN \ldots{} Comp1} \PSproc{options} \PSproc{start point
+%     up} \PSproc{beamangle\_up} \PSproc{start point low}
+%   \PSproc{beamangle\_low} \PSop{TraceWideBeam}
+% \end{pssyntax}
 %    \begin{macrocode}
 /TraceWideBeam {
-%    \end{macrocode}
-% correct rotation of input vectors
-%    \begin{macrocode}
-  5 -1 roll dup 6 1 roll 3 1 roll % {opt} {sup} {inup} {opt} {slow} {inlow}
+  5 -1 roll dup 6 1 roll 3 1 roll
   counttomark 6 sub /numComp ED
-  numComp 7 add 6 roll numComp 1 add copy % {opt} {sup} {inup} {opt} {slow} {inlow} [ CompN .. Comp1 [ CompN .. Comp1
-  numComp 1 add 2 mul 6 add numComp 1 add roll % [ CompN .. Comp1 {opt} {sup} {inup} {opt} {slow} {inlow} [ CompN .. Comp1
-  numComp 1 add 3 add -3 roll % [ CompN .. Comp1 {opt} {sup} {inup} [ CompN .. Comp1 {opt} {slow} {inlow}
+  numComp 7 add 6 roll numComp 1 add copy
+  numComp 1 add 2 mul 6 add numComp 1 add roll
+  numComp 1 add 3 add -3 roll
   currentdict /lastBeamPointLow known {
     /lastBeamPointLow load /lastBeamPoint ED
   } if
@@ -8658,12 +8729,14 @@ tx@OptexpDict begin
   TraceBeam
   /lastBeamPoint load /lastBeamPointUp ED
   /lastVec load /lastVecUp ED
-  lastBeamPointUp lastBeamPointLow @ABVect lastVecUp lastVecLow 3 -1 roll add 3 1 roll add exch
+  lastBeamPointUp lastBeamPointLow @ABVect 
+  lastVecUp lastVecLow 3 -1 roll add 3 1 roll add exch
   4 -1 roll mul 3 1 roll mul sub 0 gt {
 %    \end{macrocode}
 % swap upper and lower beam points for next beam
 %    \begin{macrocode}
-    /lastBeamPointUp load /lastBeamPointLow load /lastBeamPointUp ED /lastBeamPointLow ED
+    /lastBeamPointUp load /lastBeamPointLow load
+    /lastBeamPointUp ED /lastBeamPointLow ED
   } if
 } bind def
 %    \end{macrocode}
@@ -8672,8 +8745,11 @@ tx@OptexpDict begin
 % \begin{macro}{FillWideBeam}
 % Fill a wide beam. This must have an own procedure, because all segments
 % of the beam must be filled separately.
-% 
-% [ CompN ... Comp1 \PSproc{options} \PSproc{start point up} \PSvar{beamangle\_up} \PSproc{start point low} \PSvar{beamangle\_low} 
+% \begin{pssyntax}
+%   \PSvar{[} \PSstring{CompN} \PSvar{\ldots{}} \PSstring{Comp1}
+%   \PSproc{options} \PSproc{start point up} \PSvar{beamangle\_up}
+%   \PSproc{start point low} \PSvar{beamangle\_low} \PSop{FillWideBeam}
+% \end{pssyntax}
 %    \begin{macrocode}
 /FillWideBeam {
   AngToVec /InvecLow ED /StartLow ED 
@@ -8681,7 +8757,9 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % preset options
 %    \begin{macrocode}
-  currentdict /fillBeam known not { /fillBeam {gsave fill grestore} def } if
+  currentdict /fillBeam known not { 
+    /fillBeam {gsave fill grestore} def 
+  } if
   /DrawnSegm 0 def
   /nmul 1 def
   /nadd 0 def
@@ -8705,7 +8783,8 @@ tx@OptexpDict begin
     /InvecLow load /CurrVecLow ED
     /InvecUp load /CurrVecUp ED
   } ifelse
-  custombeam currentdict /lastBeamPointLow known currentdict /lastBeamPointUp known and and {
+  custombeam currentdict /lastBeamPointLow known 
+  currentdict /lastBeamPointUp known and and {
     /lastBeamPointLow load /CurrLow ED
     /lastBeamPointUp load /CurrUp ED
   } {
@@ -8750,8 +8829,9 @@ tx@OptexpDict begin
 %    \begin{macrocode}
     CurrUp CurrVecUp
     connectplanes PrevCorrect PN 2 ge and and {
-      CurrVecUp CurrPCenter CurrPCenterTmp PrevMode currentdict /relAngleUp known { relAngleUp } { 0 } ifelse connectPlanes
-      /relAngleUp ED
+      CurrVecUp CurrPCenter CurrPCenterTmp PrevMode 
+      currentdict /relAngleUp known { relAngleUp } { 0 } ifelse 
+      connectPlanes /relAngleUp ED
     } if
     2 copy ToVec /OldVecUp ED
     curved { CurvedInterface } { PlainInterface } ifelse
@@ -8764,8 +8844,9 @@ tx@OptexpDict begin
 %    \begin{macrocode}
     CurrLow CurrVecLow
     connectplanes PrevCorrect PN 2 ge and and {
-      CurrVecLow CurrPCenter CurrPCenterTmp PrevMode currentdict /relAngleLow known { relAngleLow } { 0 } ifelse connectPlanes
-      /relAngleLow ED
+      CurrVecLow CurrPCenter CurrPCenterTmp PrevMode 
+      currentdict /relAngleLow known { relAngleLow } { 0 } ifelse 
+      connectPlanes /relAngleLow ED
     } if
     2 copy ToVec /OldVecLow ED
     curved { CurvedInterface } { PlainInterface } ifelse
@@ -8941,7 +9022,6 @@ tx@OptexpDict begin
 % CompA desc/asc CompB desc/asc
 %    \begin{macrocode}
 /AdjustRelRot {
-%%  (AdjustRelRot) == 4 copy 4 {==} repeat (done---------------) ==
   exch dup cvn load /adjustRel known {
     dup dup 4 2 roll isAmb { exch pop (C)}{ desc eq {(N)}{1} ifelse } ifelse exch GetPlaneCenter 5 3 roll
     exch dup 3 1 roll isAmb { pop (C)}{ desc eq {1}{(N)} ifelse } ifelse exch GetPlaneCenter
@@ -9034,7 +9114,7 @@ tx@OptexpDict begin
           exch dup N eq {
             pop (N)
           } {
-            3 string cvs
+            inttostr
           } ifelse exch
           3 1 roll name % refrIndex draw (i) name
           4 1 roll % name refrIndex draw (i)
@@ -9064,7 +9144,7 @@ tx@OptexpDict begin
   dup N eq {
     pop (N)
   } {
-    3 string cvs
+    inttostr
   } ifelse
   (P@) exch strcat
 } bind def
@@ -9313,7 +9393,7 @@ tx@OptexpDict begin
   /dist -1 def
   1 {% name and counter on stack
     2 copy % name cnt name cnt 
-    3 string cvs strcat dup % name cnt (namecnt) (namecnt)
+    inttostr strcat dup % name cnt (namecnt) (namecnt)
     tx@NodeDict exch known {%
       @GetCenter 2 copy
       NodeB @ABDist % name cnt X Y dist
@@ -9351,9 +9431,9 @@ tx@OptexpDict begin
 % CompA/NodeA CombB/NodeB -> Coordinates of nodeA or the node of CompA which is nearest to nodeB
 %    \begin{macrocode}
 /NearestNode {
-  dup xcheck not { nametostring } if /CompB ED
+  dup xcheck not { nametostr } if /CompB ED
   dup xcheck not {% CompA
-    nametostring /CompA ED
+    nametostr /CompA ED
     /CompB load dup xcheck not {% CompB
       /mindist -1 def
       [ exch false GetInternalNodeNames ] 
@@ -9378,8 +9458,8 @@ tx@OptexpDict begin
 % $@@X_B$ $@@Y_B$ $@@X_A$ $@@Y_A$ A B $\quad\longmapsto\quad$ angleA
 %    \begin{macrocode}
 /RelFiberAngle {
-  dup xcheck not { nametostring } if /CompB ED
-  dup xcheck not { nametostring } if /CompA ED
+  dup xcheck not { nametostr } if /CompB ED
+  dup xcheck not { nametostr } if /CompA ED
   /CompA load xcheck {
     /CompB load xcheck {
 %    \end{macrocode}
@@ -9489,8 +9569,8 @@ tx@OptexpDict begin
   dup xcheck {
       exch pop exec
   } {
-      nametostring (N@) exch strcat
-      exch nametostring strcat
+      nametostr (N@) exch strcat
+      exch nametostr strcat
       @GetCenter
   } ifelse
 } bind def
@@ -9533,7 +9613,7 @@ tx@OptexpDict begin
 %    \begin{macrocode}
 /GetCompRange {
   2 copy gt { 1 }{ -1 } ifelse 3 -1 roll
-  { exch dup 3 -1 roll 3 string cvs strcat exch} for
+  { exch dup 3 -1 roll inttostr strcat exch} for
   pop
 } bind def
 %    \end{macrocode}
