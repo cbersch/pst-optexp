@@ -22,7 +22,7 @@
 %<stylefile>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<stylefile>\ProvidesPackage{pst-optexp}
 %<*stylefile>
-    [2011/08/02 v3.0alpha Optical experimental setups with PSTricks]
+    [2011/08/03 v3.0alpha Optical experimental setups with PSTricks]
 %</stylefile>
 %
 %<*driver>
@@ -287,6 +287,19 @@
      \setlength{\leftmargin}{10pt}%
      \item[]}}
   {\endlist}
+
+\newcommand{\psarglistfont}{\small}
+\newenvironment*{psarglist}
+  {\list{}{%
+     \setlength{\labelwidth}{0pt}%
+     \setlength{\labelsep}{0pt}%
+     \setlength{\leftmargin}{0pt}%
+     \setlength{\itemsep}{\parsep}%
+     \setlength{\parsep}{0pt}%
+     \renewcommand*{\makelabel}[1]{\hss\psarglistfont##1}}}
+  {\endlist}
+
+\def\psargitem#1{\item[#1]\hfill\par\nobreak}
 
 \addtopsstyle{Fiber}{linecolor=DOrange,linewidth=1.5\pslinewidth}
 \addtopsstyle{Beam}{linewidth=1.5\pslinewidth}
@@ -6693,10 +6706,10 @@
 \def\lens@nodes{%
   \edef\@lens@th{0}% 
   \ifdim\POE@key@lensradiusleft pt=0pt\else
-    \edef\@lens@th{\ifPOE@thicklens \POE@key@lenswidth\space 2 div \else \POE@key@lensradiusleft\space\POE@key@lensheight\space 2 div segLen \fi}%     
+    \edef\@lens@th{\ifPOE@thicklens \POE@key@lenswidth\space 2 div \else \POE@key@lensradiusleft\space\POE@key@lensheight\space 2 div capHeight \fi}%     
   \fi
   \ifdim\POE@key@lensradiusright pt=0pt\else
-    \edef\@lens@th{\@lens@th\space\ifPOE@thicklens \POE@key@lenswidth\space 2 div\else \POE@key@lensradiusright\space\POE@key@lensheight\space 2 div segLen \fi\space add}%
+    \edef\@lens@th{\@lens@th\space\ifPOE@thicklens \POE@key@lenswidth\space 2 div\else \POE@key@lensradiusright\space\POE@key@lensheight\space 2 div capHeight \fi\space add}%
   \fi
   \newOptexpComp{{\@lens@th\space -2 div 0} 
                   \ifdim\POE@key@lensradiusleft pt=0pt 
@@ -6740,7 +6753,7 @@
 % the macro is necessary for the outer nodes
 %    \begin{macrocode}
     \edef\@lens@newwd{%
-      \POE@key@lensradiusleft\space\POE@key@lensheight\space 2 div segLen
+      \POE@key@lensradiusleft\space\POE@key@lensheight\space 2 div capHeight
       \ifdim\POE@key@lensradiusleft pt<0pt
         0.5 mul\space
       \fi
@@ -6749,11 +6762,11 @@
       \ifPOE@thicklens
         \POE@key@lenswidth\space 2 div 
       \else
-        \POE@key@lensradiusleft\space\POE@key@lensheight\space 2 div segLen
+        \POE@key@lensradiusleft\space\POE@key@lensheight\space 2 div capHeight
       \fi
     }%
     \addto@pscode{%
-      /@th \ifPOE@thicklens @wd \else @rL @ht segLen \fi def
+      /@th \ifPOE@thicklens @wd \else @rL @ht capHeight \fi def
       @ht @rL leftCurvedIfc
     }%
   \fi
@@ -6767,11 +6780,11 @@
       \ifPOE@thicklens 
         \POE@key@lenswidth\space 2 div
       \else
-        \POE@key@lensradiusright\space\POE@key@lensheight\space 2 div segLen 
+        \POE@key@lensradiusright\space\POE@key@lensheight\space 2 div capHeight 
       \fi\space add
     }%
     \addto@pscode{%
-      /@th @th \ifPOE@thicklens @wd \else @rR @ht segLen \fi add def
+      /@th @th \ifPOE@thicklens @wd \else @rR @ht capHeight \fi add def
       @ht @rR rightCurvedIfc
     }%
   \fi
@@ -7871,20 +7884,20 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{segLen}
+% \begin{macro}{capHeight}
 % Calculate the height \PSvar{a1} of a pole cap. 
 % \begin{pssyntax}
-%   \PSvar{R} \PSvar{h} \PSop{segLen} \PSvar{a1}
+%   \PSvar{R} \PSvar{h} \PSop{capHeight} \PSvar{a1}
 % \end{pssyntax}
 % \PSvar{R} is the circle radius and \PSvar{h} the width of the pole cap.
 %    \begin{macrocode}
-/segLen {
+/capHeight {
     dup mul neg exch abs dup 3 1 roll dup mul add sqrt sub
 } bind def
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{leftLensIfc}
+% \begin{macro}{leftCurvedIfc}
 %   Calculate some parameters for the left plane of a lens. Defines
 %   \PSname{a1} as the pole height and \PSname{ArcL} which are used
 %   later in the code to actually draw the interface curve.
@@ -7894,7 +7907,7 @@ tx@OptexpDict begin
 %    \begin{macrocode}
 /leftCurvedIfc {
   /R1 exch def /h exch def
-  /a1  R1 h segLen def
+  /a1  R1 h capHeight def
   0 R1 abs dup a1 exch sub R1 sign mul dup
   h exch atan exch
   h neg exch atan
@@ -7918,7 +7931,7 @@ tx@OptexpDict begin
 %    \begin{macrocode}
 /rightCurvedIfc {
   /R2 exch def /h exch def
-  /a2 R2 h segLen def
+  /a2 R2 h capHeight def
   0 R2 abs dup a2 sub R2 sign mul dup
   h neg exch atan exch
   h exch atan
@@ -8167,18 +8180,18 @@ tx@OptexpDict begin
 % \begin{pssyntax}
 %   \PSproc{x y} \PSproc{dx dy | rx ry} mode (CompName) (Name) \PSproc{New\ldots Ifc} \PSproc{scaling} \PSop{NewCompIfc}
 % \end{pssyntax}
-% \begin{description}
-% \item[\PSproc{x y}] The coordinates of the interface node which lies on the optical axis.??
-% \item[\PSproc{dx dy | rx ry}] For a plane interface, this is the vector that describes the plane, for a curved interface this is the
-% \item[\PSvar{mode}] An integer which characterizes if an interface is
+% \begin{psarglist}
+% \psargitem{\PSproc{x y}} The coordinates of the interface node which lies on the optical axis.??
+% \psargitem{\PSproc{dx dy | rx ry}} For a plane interface, this is the vector that describes the plane, for a curved interface this is the
+% \psargitem{\PSvar{mode}} An integer which characterizes if an interface is
 %   reflective or transmittive. You should use the predefined variable
 %   \PSname{refl} and \PSname{trans} for this.
-% \item[\PSstring{CompName}] The name of the component we are in.
-% \item[\PSstring{Name}] The name of the new interface. It is prefixed by «P@».
-% \item[\PSproc{\ldots Ifc}] Contain the actual procedure to define the
+% \psargitem{\PSstring{CompName}} The name of the component we are in.
+% \psargitem{\PSstring{Name}} The name of the new interface. It is prefixed by «P@».
+% \psargitem{\PSproc{\ldots Ifc}} Contain the actual procedure to define the
 %   concrete interface type, can be \PSproc{PlaneIfc} or
 %   \PSproc{CurvedIfc}.
-% \end{description}
+% \end{psarglist}
 %    \begin{macrocode}
 /NewCompIfc {
   /scl ED
@@ -8198,7 +8211,9 @@ tx@OptexpDict begin
 % on the optical axis with the respective interface
 %    \begin{macrocode}
   3 1 roll strcat exch exec scl ToVec exch
-  tx@NodeDict begin (N@) exch strcat cvn false exch 10 {InitPnode } NewNode end
+  tx@NodeDict begin 
+    (N@) exch strcat cvn false exch 10 {InitPnode } NewNode 
+  end
 } bind def
 %    \end{macrocode}
 % \end{macro}
@@ -8219,7 +8234,48 @@ tx@OptexpDict begin
 % /P@1 ... /P@N  -> planes used for the 'ray tracing'
 %
 % \begin{macro}{NewOptexpComp}
-% [ \PSproc{x y} \PSproc{dx dy | rx ry} type \PSproc{New\ldots Ifc} \ldots\ refrIndex correct? (CompName) \PSproc{scaling} amb?
+% \PSvar{NewOptexpComp} creates a new dictionary that contains everything needed
+% for an optical component. It contains the following variables:
+% \begin{psarglist} 
+%   \psargitem{\PSvar{n}} The basic refractive index which was set for
+%   the component. This may be overwritten with the \opt{n} option or
+%   changed by \opt{nmul} and \opt{nadd} options of the \nxLcs{drawbeam}
+%   macros.  
+%
+%   \psargitem{\PSvar{CompMtrx}} The transformation matrix at time of
+%   the component definition. The method is the same as for the
+%   \nxLPack{pst-node} nodes.
+%
+%   \psargitem{\PSvar{name}} The name of the component. This is build of
+%   several components which are put together in the \TeX\ code.
+%
+%   \psargitem{\PSvar{N}} The number of interfaces of the component.
+%
+%   \psargitem{\PSvar{P@1 \ldots{} P@N}} The actual
+%   interfaces. \PSvar{P@1} and \PSvar{P@N} are always defined, even if
+%   \PSvar{N = 1}. In that case the two names link to the same
+%   dictionary, so that changes in one of them are automatically present
+%   also in the second one.
+%
+%   \psargitem{\PSproc{sc}} The scaling procedure for the coordinates.
+%
+%   \psargitem{\PSvar{ambiguous}} There is a class of components (at the
+%   moment only \nxLcs{beamsplitter}), which have a central interface
+%   \PSvar{P@C} which can be either transmittive or reflective,
+%   depending on the previous and following component positions. The
+%   mode of the \PSvar{P@C} is determined at the time of the beam
+%   drawing and requires special attention.
+%
+%   \psargitem{\PSvar{correct}} If \opt{true}, the input vectors after
+%   the transmittive interfaces are corrected when using
+%   \opt{connectplanes}.
+% \end{psarglist}
+%
+% \begin{pssyntax}
+%   \PSvar{[} \PSproc{x y} \PSproc{dx dy | rx ry} \PSvar{type}
+%   \PSproc{\ldots Ifc} \PSvar{\ldots{} n correct?} \PSstring{CompName}
+%   \PSproc{scaling} \PSvar{amb?} \PSop{NewOptexpComp}
+% \end{pssyntax}
 %    \begin{macrocode}
 /NewOptexpComp {
   3 1 roll /sc ED 
@@ -8230,28 +8286,22 @@ tx@OptexpDict begin
   /ambiguous ED
   dup type /booleantype eq not { false } if /correct ED
   tx@Dict begin
-%    \end{macrocode}
-% set scaling for all planes
-%    \begin{macrocode}
     STV {CP T} stopped pop
   end
   /CompMtrx CM def
   grestore
-%    \end{macrocode}
-% count the planes and save their number
-%    \begin{macrocode}
   counttomark dup 4 idiv dup /N ED 4 mul eq { 1 } if /n ED
   1 N eq {
 %    \end{macrocode}
-% only a single plane is specified
+% only a single plane is specified, create the aliases.
 %    \begin{macrocode}
       ambiguous { 
         name (C) 3 -1 roll {sc} NewCompIfc
-        (C) (1) PlaneAlias
-        (C) (N) PlaneAlias
+        (C) (1) IfcAlias
+        (C) (N) IfcAlias
       } {
         name (1) 3 -1 roll {sc} NewCompIfc 
-        (1) (N) PlaneAlias
+        (1) (N) IfcAlias
       } ifelse
   }{
       ambiguous {
@@ -8269,15 +8319,18 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{PlaneAlias}
-% Must be called inside \PSvar{NewOptexpComp}.
+% \begin{macro}{IfcAlias}
+%   Create an alias of an interface. This involves creating also an
+%   alias for the associated node.  Must be called withing
+%   \PSvar{NewOptexpComp}.
 %
-% \PSstring{OrigPN} \PSstring{AliasPN}
+% \PSstring{OrigPN} \PSstring{AliasPN} \PSop{IfcAlias}
 %    \begin{macrocode}
-/PlaneAlias {
+/IfcAlias {
   2 copy (P@) exch strcat cvn exch (P@) exch strcat cvn load def
   tx@NodeDict begin 
-    (N@) name strcat dup 3 -1 roll strcat cvn 3 1 roll exch strcat cvn load def 
+    (N@) name strcat dup 3 -1 roll strcat 
+    cvn 3 1 roll exch strcat cvn load def 
   end
 } bind def
 %    \end{macrocode}
