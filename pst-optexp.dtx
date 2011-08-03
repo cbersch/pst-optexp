@@ -843,7 +843,7 @@
 % \catcode`\*=13
 % \def*{}%
 \begin{LTXexample}[numbers=left, numberstyle=\footnotesize]
-\begin{pspicture}[showgrid=true](0.5,0)(2.2,4)
+\begin{pspicture}(0.5,0)(2.2,4)
   \pnode(0,1){In}\pnode(1,1){BS}\pnode(2,1){G}\pnode(1,4){Out}
   \beamsplitter(G)(BS)(Out)
   \optgrating(BS)(G)(BS)
@@ -859,7 +859,7 @@
 % \iffalse
 %</ignore>
 % \fi
-% \end{document}
+%
 % \section{Concept and general behavior}\label{sec:general}
 % 
 % This section introduces into the basic concepts of the package design and
@@ -5753,10 +5753,6 @@
 % \end{macro}
 % 
 % \begin{macro}{\begin@OptexpObj}
-% \begin{macro}{\begin@OptexpMultipole}
-% \begin{macro}{\end@OptexpObj}
-% \begin{macro}{\end@OptexpDipole}
-% \begin{macro}{\end@OptexpMultipole}
 %    \begin{macrocode}
 \def\begin@OptexpObj{%
   \global\advance\POE@cnt by 1
@@ -5773,6 +5769,11 @@
     \let\POE@key@comp@Yshift\POE@key@compshift%
     \def\POE@key@comp@Xshift{0}%
 }%
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\begin@OptexpMultipole}
+%    \begin{macrocode}
 \def\begin@OptexpMultipole{%
   \begin@OptexpObj
 %    \end{macrocode}
@@ -5781,6 +5782,11 @@
   \let\POE@key@comp@Xshift\POE@key@compshift%
    \def\POE@key@comp@Yshift{0}%
 }%
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\end@OptexpObj}
+%    \begin{macrocode}
 \def\end@OptexpObj{%
     \ifPOE@compat\else
       \edef\pst@temp{\POE@str@basicname@default\the\POE@cnt}%
@@ -5791,13 +5797,18 @@
   \endgroup
   \ignorespaces%
 }%
-\let\end@OptexpDipole\end@OptexpObj
-\let\end@OptexpMultipole\end@OptexpObj
 %    \end{macrocode}
 % \end{macro}
+% \begin{macro}{\end@OptexpDipole}
+%    \begin{macrocode}
+\let\end@OptexpDipole\end@OptexpObj
+%    \end{macrocode}
 % \end{macro}
-% \end{macro}
-% \end{macro}
+%
+% \begin{macro}{\end@OptexpMultipole}
+%    \begin{macrocode}
+\let\end@OptexpMultipole\end@OptexpObj
+%    \end{macrocode}
 % \end{macro}
 % 
 % \begin{macro}{\addafter@par}
@@ -5873,10 +5884,11 @@
           \POE@adjustTempNodes
         \fi
         \POE@drawcomponent[#2]{##3}{\@nameuse{#2@ii}}
+        \pst@OptexpVerb{(\oenode{}{}) CorrectNodes }%
         \ifPOE@backlayer
           \POE@drawInternalConnections
         \fi
-      \end@OptexpObj
+      \end@OptexpDipole
     }%
     \dipole@iimacro{#2}%
   }{%
@@ -5902,10 +5914,11 @@
           \POE@adjustTempNodes
         \fi
         \POE@drawcomponent[#2]{##3}{\@nameuse{#2@ii}}
+        \pst@OptexpVerb{(\oenode{}{}) CorrectNodes }%
         \ifPOE@backlayer
           \POE@drawInternalConnections
         \fi
-        \end@OptexpObj
+        \end@OptexpDipole
       }%
       \fiberdipole@iimacro{#2}%
    }{%
@@ -5934,9 +5947,9 @@
           \pst@getcoor{##3}\pst@tempB%
           \pst@OptexpVerb{%
             tx@NodeDict begin
-            {\pst@tempA } false chirality 0 le { /N@\oenodeRefB{}\space }{ /N@\oenodeRefA{}\space } ifelse
+            {\pst@tempA } false chirality 0 le { /N@\oenodeRefB{} }{ /N@\oenodeRefA{} } ifelse
             10 {InitPnode } NewNode
-            {\pst@tempB } false chirality 0 le { /N@\oenodeRefA{}\space }{ /N@\oenodeRefB{}\space } ifelse
+            {\pst@tempB } false chirality 0 le { /N@\oenodeRefA{} }{ /N@\oenodeRefB{} } ifelse
             10 {InitPnode } NewNode
             end
           }%
@@ -9291,6 +9304,15 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % \end{macro}
 % 
+% \begin{macro}{VecMul}
+% ax ay fac VecMul fax*ax fax*ay
+%    \begin{macrocode}
+/VecMul {
+  dup 4 -1 roll mul 3 1 roll mul
+} bind def
+%    \end{macrocode}
+% \end{macro}
+%
 % \begin{macro}{ToVec}
 % X Y -> \PSproc{X Y}
 %    \begin{macrocode}
@@ -9695,16 +9717,60 @@ tx@OptexpDict begin
 } bind def
 %    \end{macrocode}
 % \end{macro}
+%
+% \begin{macro}{CorrectNodes}
+%   \begin{pssyntax}
+%     \PSstring{basename} \PSop{CorrectNodes}
+%   \end{pssyntax}
+%    \begin{macrocode}
+/CorrectNodes {
+  (N@) exch strcat dup dup
+  gsave
+    tx@Dict begin 
+      STV CP T
+      (1) strcat @GetCenter 3 -1 roll (N) strcat @GetCenter 
+    end
+  grestore
+  4 copy @ABDist 1e-7 lt {
+%    \end{macrocode}
+% The two nodes are closer together than 1e-7, correct that to avoid
+% problems with the angle direction when drawing fibers.
+%    \begin{macrocode}
+    5 -1 roll dup dup dup 8 2 roll
+    gsave
+      tx@Dict begin 
+        STV CP T
+        (TrefA) strcat @GetCenter 3 -1 roll 
+        (TrefB) strcat @GetCenter 
+      end
+    grestore
+    @ABVect NormalizeVec 2 copy
+    1e-4 VecMul 8 -2 roll VecAdd ToVec
+    tx@NodeDict begin 
+      6 -1 roll (1) strcat cvn false exch 10 {InitPnode } NewNode 
+    end
+    -1e-4 VecMul VecAdd ToVec
+    tx@NodeDict begin
+      exch (N) strcat cvn false exch 10 {InitPnode } NewNode
+    end
+  } {
+    5 { pop } repeat
+  } ifelse
+} bind def
+%    \end{macrocode}
+% \end{macro}
 % 
 % \begin{macro}{debugStack}
 %    \begin{macrocode}
-/debugStack{ counttomark /@t ED @t copy @t{==}repeat } bind def
+/debugStack { 
+  counttomark /@t ED @t copy @t{==}repeat 
+} bind def
 %    \end{macrocode}
 % \end{macro}
 %
 % \begin{macro}{debugComp}
 %    \begin{macrocode}
-/debugComp{ 
+/debugComp { 
   dup (debug comp ") exch strcat ("-------------) strcat ==
   cvn load { 
     dup type /dicttype eq {
