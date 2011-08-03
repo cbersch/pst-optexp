@@ -801,9 +801,9 @@
 % \iffalse
 %<*ignore>
 % \fi
-%%\begingroup
-%%\catcode`\*=13
-%%\def*{}%
+% \begingroup
+% \catcode`\*=13
+% \def*{}%
 \begin{LTXexample}[pos=t, vsep=10mm, numbers=left, numberstyle=\footnotesize]
 \begin{pspicture}[showgrid=true](-0.2,-0.3)(7.7,2.4)
   \pnode(1,1){Laser}\pnode(3,1){PcOut}*\label{l:ex3-nodes1}*
@@ -818,7 +818,7 @@
   \optbox[endbox, labeloffset=0](Laser)(Osa){OSA}*\label{l:ex3-osa}*
 \end{pspicture}
 \end{LTXexample}
-%%\endgroup
+% \endgroup
 % \iffalse
 %</ignore>
 % \fi
@@ -834,9 +834,32 @@
 % Die Referenzknoten werden in
 % \prettyref{l:ex3-nodes1}--\ref{l:ex3-nodes2} definiert, anschließend
 % allgemeine Einstellungen festgelegt (\prettyref{l:ex3-set}).
-%
-% \fi 
+% \fi
 % 
+% \iffalse
+%<*ignore>
+% \fi
+% \begingroup
+% \catcode`\*=13
+% \def*{}%
+\begin{LTXexample}[numbers=left, numberstyle=\footnotesize]
+\begin{pspicture}[showgrid=true](0.5,0)(2.2,4)
+  \pnode(0,1){In}\pnode(1,1){BS}\pnode(2,1){G}\pnode(1,4){Out}
+  \beamsplitter(G)(BS)(Out)
+  \optgrating(BS)(G)(BS)
+  \lens[lens=2 2 1.5, compshift=0.1, n=2.25](BS)(Out)
+  \pinhole[phwidth=0.05, innerheight=0.05, position=0.8, compshift=0.18](BS)(Out)
+  \optplane(Out)(1, 0){Out}
+  \addtopsstyle{Beam}{linestyle=none, beamwidth=0.2, fillstyle=solid}
+  \drawwidebeam[fillcolor=red!25!white]{(In)}{1}{2}{1}{3}{4}
+  \drawwidebeam[fillcolor=red!50!white, beamangle=-5]{2}{1}{3}{4}{Out}
+\end{pspicture}
+\end{LTXexample}
+% \endgroup
+% \iffalse
+%</ignore>
+% \fi
+% \end{document}
 % \section{Concept and general behavior}\label{sec:general}
 % 
 % This section introduces into the basic concepts of the package design and
