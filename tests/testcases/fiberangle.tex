@@ -1,0 +1,28 @@
+\documentclass{scrartcl}
+\usepackage[latin1]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{pst-optexp}
+\begin{document}
+\begin{pspicture}[showgrid=false](7.5,10)
+  \pnode(2,0){A}\pnode(2,2.5){B}
+  \pnode(8,2.5){C}\pnode(8,0){D}
+  \pnode(1,0){A1}\pnode(1,2){B1}
+  \optcoupler[labeloffset=0.3, 
+              abspos=1, 
+              align=bottom, 
+              fiberin=top, 
+              fiberout=none](In1)(B)(C)(C){}
+  \optcoupler[labeloffset=0.3, 
+              align=bottom, 
+              nofiber, 
+              abspos=3.5](B)(B)(C)(C){}
+  \optfiber[fiberloops=1, position=0.4,
+            fiberloopradius=0.2, 
+            compshift=0.5,
+            ](\oenode{1}{3})(\oenode{2}{1})
+  \optbox[abspos=1](B)(C)
+  \optbox[abspos=3.5](B)(C)
+  \drawfiber[linecolor=red, linestyle=dashed]{1}{3}
+  \drawfiber[linecolor=green]{3}{4}
+\end{pspicture}
+\end{document}
