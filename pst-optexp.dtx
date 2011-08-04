@@ -3428,6 +3428,42 @@
 % 
 % \numitem[0]{beamdiv}
 % \end{optionlist}
+%
+% \subsection{Error handling}\label{sec:error-handling}
+%
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(3,2.7)
+  \optplane(0,1)(0,1){A}
+  \lens[lens=2 2 2, abspos=2.5](0,1)(3,1)
+  \optplane(3,1)(0,1){B}
+  \drawbeam{A}{1}{B}
+  \drawbeam[beamangle=15]{A}{1}{B}
+  \drawbeam[beamangle=28]{A}{1}{B}
+  \drawbeam[beamangle=29]{A}{1}{B}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(0,0.3)(3,2.5)
+  \pnode(0,2){A}\optplane(A)(0,1){A}
+  \pnode(4,0){B}\optplane(3,0)(0,1){B}
+  \optprism[n=1.8](A)([Xnodesep=2]A)(B)
+  \addtopsstyle{Beam}{fillcolor=red, fillstyle=solid, opacity=0.3}
+  \drawwidebeam[beamdiv=5]{A}{2}{B}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % 
 % \subsection{Drawing fibers}\label{sec:drawfiber}
 % 
@@ -5884,7 +5920,7 @@
           \POE@adjustTempNodes
         \fi
         \POE@drawcomponent[#2]{##3}{\@nameuse{#2@ii}}
-        \pst@OptexpVerb{(\oenode{}{}) CorrectDipoleNodes }%
+        \pst@OptexpVerb{(1) (N) (\oenode{}{}) CorrectDipoleNodes }%
         \ifPOE@backlayer
           \POE@drawInternalConnections
         \fi
@@ -5914,7 +5950,7 @@
           \POE@adjustTempNodes
         \fi
         \POE@drawcomponent[#2]{##3}{\@nameuse{#2@ii}}
-        \pst@OptexpVerb{(\oenode{}{}) CorrectDipoleNodes }%
+        \pst@OptexpVerb{(1) (N) (\oenode{}{}) CorrectDipoleNodes }%
         \ifPOE@backlayer
           \POE@drawInternalConnections
         \fi
@@ -5993,6 +6029,10 @@
          \fi\fi
        \fi
        \POE@drawcomponent[#2]{##5}{\@nameuse{#2@ii}}
+       \pst@OptexpVerb{%
+         (1) (3) (\oenode{}{}) CorrectDipoleNodes 
+         (2) (N) (\oenode{}{}) CorrectDipoleNodes 
+       }%
        \ifPOE@backlayer
          \ifPOE@fiberin@top
            \drawfiber@{FiberIn1}[stopnode=1]{(##1)}{\POE@key@compname}
@@ -6077,6 +6117,7 @@
       \fi\fi
     \fi
     \POE@drawcomponent[wdmsplitter]{#4}\wdmsplitter@ii
+    \pst@OptexpVerb{(1) (N) (\oenode{}{}) CorrectDipoleNodes }%
     \ifPOE@backlayer
       \ifPOE@fiberin@
         \drawfiber@{FiberIn}[stopnode=1]{(#1)}{\POE@key@compname}
@@ -6118,6 +6159,7 @@
       \fi\fi
     \fi
     \POE@drawcomponent[wdmcoupler]{#4}\wdmcoupler@ii
+    \pst@OptexpVerb{(1) (N) (\oenode{}{}) CorrectDipoleNodes }%
     \ifPOE@backlayer 
       \ifPOE@fiberout@
         \drawfiber@{FiberOut}[startnode=N]{\POE@key@compname}{(#3)}
@@ -9725,15 +9767,16 @@ tx@OptexpDict begin
 %   properly. So these nodes are separated as less as possible so tha
 %   the NearestNode procedure estimates two different distances.
 %   \begin{pssyntax}
-%     \PSstring{basename} \PSop{CorrectDipoleNodes}
+%     \PSstring{node1} \PSstring{node2} \PSstring{basename} \PSop{CorrectDipoleNodes}
 %   \end{pssyntax}
 %    \begin{macrocode}
 /CorrectDipoleNodes {
-  (N@) exch strcat dup dup
+  (N@) exch strcat dup dup dup
+  6 -1 roll strcat exch 5 -1 roll strcat 2 copy 6 2 roll
   gsave
     tx@Dict begin 
       STV CP T
-      (1) strcat @GetCenter 3 -1 roll (N) strcat @GetCenter 
+      exch @GetCenter 3 -1 roll @GetCenter
     end
   grestore
   4 copy @ABDist 1e-7 lt {
@@ -9741,11 +9784,11 @@ tx@OptexpDict begin
 % The two nodes are closer together than 1e-7, correct that to avoid
 % problems with the angle direction when drawing fibers.
 %    \begin{macrocode}
-    5 -1 roll dup dup dup 8 2 roll
+    6 -1 roll
     gsave
       tx@Dict begin 
         STV CP T
-        (TrefA) strcat @GetCenter 3 -1 roll 
+        (TrefA) strcat @GetCenter 7 -1 roll 
         (TrefB) strcat @GetCenter 
       end
     grestore
@@ -9756,15 +9799,15 @@ tx@OptexpDict begin
 % be separated by 1e-7 times the maximum coordinate value.
 %    \begin{macrocode}
     8 -2 roll 2 copy abs exch abs max 1e-7 mul 3 1 roll 5 2 roll VecMul VecAdd ToVec
-    tx@NodeDict begin 
-      6 -1 roll (1) strcat cvn false exch 10 {InitPnode } NewNode 
+    tx@NodeDict begin
+      7 -1 roll cvn false exch 10 {InitPnode } NewNode 
     end
     4 2 roll 2 copy abs exch abs max -1e-7 mul 3 1 roll 5 2 roll VecMul VecAdd ToVec
     tx@NodeDict begin
-      exch (N) strcat cvn false exch 10 {InitPnode } NewNode
+      exch cvn false exch 10 {InitPnode } NewNode
     end
   } {
-    5 { pop } repeat
+    8 { pop } repeat
   } ifelse
 } bind def
 %    \end{macrocode}

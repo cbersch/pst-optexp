@@ -6,28 +6,22 @@
 \usepackage{pst-optexp}
 
 \begin{document}
-\begin{pspicture}[showgrid=true](3,5)
-  \pnode(0,4){A}\optplane(A)(0,3){A}
-  \pnode(4,2){B}\optplane(B)(1,0){B}
-  \optprism[n=1.8](A)([Xnodesep=2]A)(B){}
-  \drawbeam{A}{1}{B}
-  \drawbeam[beamangle=5.7]{A}{1}{B}
-
-  \pnode(0,2){C}\optplane(C)(0,1){C}
-  \pnode(4,0){D}\optplane(D)(1,0){D}
-  \optprism[n=1.8](C)([Xnodesep=2]C)(D){}
+\begin{pspicture}(0,0.3)(3,2.5)
+  \pnode(0,2){A}\optplane(A)(0,1){A}
+  \pnode(4,0){B}\optplane(3,0)(0,1){B}
+  \optprism[n=1.8](A)([Xnodesep=2]A)(B)
   \addtopsstyle{Beam}{fillcolor=red, fillstyle=solid, opacity=0.3}
-  \drawwidebeam[beamdiv=5]{C}{2}{D}
+  \drawwidebeam[beamdiv=5]{A}{2}{B}
 \end{pspicture}
 \vspace*{1cm}
 
-\begin{pspicture}[showgrid=true](5,3)
-  \optbox[compname=Box](0,2)(2,2){}
-  \lens[compname=Lens](2,2)(4,2){}
-  \optplane(4,2)(0,1){A}
-  \drawbeam{Box}{Lens}{A}
-  \drawbeam[beamangle=16.7]{Box}{Lens}{A}
-  \drawbeam[beamangle=27]{Box}{Lens}{A}
-  \drawbeam[beamangle=31]{Box}{Lens}{A}
+\begin{pspicture}(3,2.7)
+  \optplane(0,1)(0,1){A}
+  \lens[lens=2 2 2, abspos=2.5](0,1)(3,1)
+  \optplane(3,1)(0,1){B}
+  \drawbeam{A}{1}{B}
+  \drawbeam[beamangle=15]{A}{1}{B}
+  \drawbeam[beamangle=28]{A}{1}{B}
+  \drawbeam[beamangle=29]{A}{1}{B}
 \end{pspicture}
 \end{document}
