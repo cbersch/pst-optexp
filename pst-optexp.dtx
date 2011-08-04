@@ -22,7 +22,7 @@
 %<stylefile>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<stylefile>\ProvidesPackage{pst-optexp}
 %<*stylefile>
-    [2011/08/03 v3.0alpha Optical experimental setups with PSTricks]
+    [2011/08/04 v3.0alpha Optical experimental setups with PSTricks]
 %</stylefile>
 %
 %<*driver>
@@ -226,7 +226,7 @@
 \newcommand*{\PSname}[1]{{\normalfont\ttfamily/#1}}
 \newcommand*{\PSproc}[1]{{\normalfont\ttfamily\textbraceleft #1\textbraceright}}
 \newcommand*{\PSvar}[1]{{\normalfont\ttfamily #1}}
-\newcommand*{\PSop}[1]{{\normalfont\ttfamily\color{DOrange}#1}}
+\newcommand*{\PSop}[1]{{\normalfont\ttfamily\color{DOrange}\hskip 3pt #1\hskip 3pt}}
 
 \newcommand*{\nodename}[1]{\emph{#1}}
 \newcommand*{\param}[1]{\normalfont\texttt{#1}}
@@ -4326,11 +4326,13 @@
 % 
 % Style for devices marked as 'optional', inherits from OptComp by default.
 %    \begin{macrocode}
-\newpsstyle{OptionalStyle}{style=OptComp, linestyle=dashed,dash=1.5pt 1pt}%
+\newpsstyle{OptionalStyle}{style=OptComp, 
+                           linestyle=dashed,dash=1.5pt 1pt}%
 %    \end{macrocode}
 % Style for beams drawn with \cs{drawbeam}
 %    \begin{macrocode}
-\newpsstyle{Beam}{linecolor=green!90!black,linewidth=\pslinewidth, linejoin=1}%
+\newpsstyle{Beam}{linecolor=green!90!black,
+                  linewidth=\pslinewidth, linejoin=1}%
 \define@key[psset]{optexp}{newBeam}{\newpsstyle{Beam}{#1}}
 \define@key[psset]{optexp}{addtoBeam}{\addtopsstyle{Beam}{#1}}
 %    \end{macrocode}
@@ -4376,10 +4378,13 @@
                 hatchwidth=0.5\POE@key@mirrorlinewidth,
                 hatchsep=1.4\POE@key@mirrorlinewidth,%
                 fillstyle=hlines}%
-\newpsstyle{VariableMirror}{linewidth=0.8\pslinewidth, arrowinset=0, arrowscale=0.8, arrows=<->}
+\newpsstyle{VariableMirror}{linewidth=0.8\pslinewidth, arrowinset=0, 
+                            arrowscale=0.8, arrows=<->}
 \newpsstyle{PiezoMirror}{fillstyle=solid,fillcolor=black!30}%
 \newpsstyle{IsolatorArrow}{linewidth=2\pslinewidth, arrowinset=0}
-\newpsstyle{CrystalCaxis}{linestyle=dashed, dash=2pt 2pt, linewidth=0.7\pslinewidth, arrowinset=0, arrows=->}
+\newpsstyle{CrystalCaxis}{linestyle=dashed, dash=2pt 2pt, 
+                          linewidth=0.7\pslinewidth, arrowinset=0, 
+                          arrows=->}
 \newpsstyle{FdlArrow}{arrowinset=0, arrows=->}
 \newpsstyle{VariableCoupler}{arrowinset=0, arrows=->}
 %    \end{macrocode}
@@ -9096,27 +9101,21 @@ tx@OptexpDict begin
 % \end{macro}
 %
 % \begin{macro}{PrearrangePlanes}
-% [ CompN .. Comp1 PrearrangePlanes -> [ desc/asc CompN .. desc/asc Comp1 
+%   \begin{pssyntax}
+%     \PSvar{[} \PSstring{CompN} \PSvar{\ldots} \PSvar{Comp1} \PSop{PrearrangePlanes}\\
+%     \PSvar{[} \PSvar{desc|asc} \PSstring{CompN} \PSvar{\ldots} \PSvar{desc|asc} \PSstring{Comp1}
+%   \end{pssyntax}
 %    \begin{macrocode}
 /PrearrangePlanes {
   counttomark /N ED
   /CompA ED dup /CompB ED
   CompA isAmb {
-%    \end{macrocode}
-% first component is ambiguous
-%    \begin{macrocode}
     amb dup CompA
   } {
     CompB isAmb {
-%    \end{macrocode}
-% only second component is ambiguous
-%    \begin{macrocode}
       1 CompA GetPlaneCenter (C) CompB GetPlaneCenter @ABDist
       (N) CompA GetPlaneCenter (C) CompB GetPlaneCenter @ABDist
     } {
-%    \end{macrocode}
-% none is ambiguous
-%    \begin{macrocode}
       1 CompA GetPlaneCenter 1 CompB GetPlaneCenter (N) CompB GetPlaneCenter true OrderNodes exch pop
       (N) CompA GetPlaneCenter 1 CompB GetPlaneCenter (N) CompB GetPlaneCenter true OrderNodes exch pop % dist1 distN
     } ifelse
@@ -9151,12 +9150,26 @@ tx@OptexpDict begin
 % \end{macro}
 % 
 % \begin{macro}{AdjustRelRot}
-% CompA desc/asc CompB desc/asc
+%   Adjusts the relative orientation of \PSstring{CompB} based on the
+%   relative connection between \PSstring{CompA} and \PSstring{CompB}.
+%   \begin{pssyntax}
+%     \PSstring{CompA} \PSvar{desc|asc} \PSstring{CompB} \PSvar{desc|asc} \PSop{AdjustRelRot}
+%   \end{pssyntax}
 %    \begin{macrocode}
 /AdjustRelRot {
   exch dup cvn load /adjustRel known {
-    dup dup 4 2 roll isAmb { exch pop (C)}{ desc eq {(N)}{1} ifelse } ifelse exch GetPlaneCenter 5 3 roll
-    exch dup 3 1 roll isAmb { pop (C)}{ desc eq {1}{(N)} ifelse } ifelse exch GetPlaneCenter
+    dup dup 4 2 roll isAmb { 
+      exch pop (C)
+    }{ 
+      desc eq { (N) }{ 1 } ifelse 
+    } ifelse 
+    exch GetPlaneCenter 5 3 roll
+    exch dup 3 1 roll isAmb { 
+      pop (C)
+    }{ 
+      desc eq { 1 }{ (N) } ifelse 
+    } ifelse 
+    exch GetPlaneCenter
     @ABVect exch atan exch
     cvn load begin
       adjustRel {
@@ -9174,9 +9187,17 @@ tx@OptexpDict begin
 % \end{macro}
 % 
 % \begin{macro}{PushAllPlanesOnStack}
-% [ desc/asc CompN .. desc/asc Comp1 PushAllPlanesOnStack -> \PSproc{PlaneNumber CompName n mode draw}
-% n is the refractive index after the respective interface,
-% but draw determines if the connection to this interface is drawn
+%   \begin{pssyntax}
+%     \PSvar{[} \PSvar{desc|asc} \PSstring{CompN} \PSvar{\ldots} \PSvar{desc|asc} \PSstring{Comp1} \PSop{PushAllPlanesOnStack}
+%     \PSvar{[} \PSproc{PN \PSstring{CompName} n mode draw?} \PSvar{\ldots{}}
+%   \end{pssyntax}
+%   \begin{psarglist}
+%     \psargitem{PN} The number of the plane of the component \PSstring{CompNameN}, can be an integer or a string.
+%     \psargitem{CompName} The name of the component which the interface \PSvar{PN} belongs to.
+%     \psargitem{n} The refractive index after the respective interface.
+%     \psargitem{mode} Specifies if the interface is transmittive (\PSvar{trans}) or reflective (\PSvar{refl}).
+%     \psargitem{draw?} Specifies if the connection to this interface should be drawn or if the current point is only moved.
+%   \end{psarglist}
 %    \begin{macrocode}
 /PushAllPlanesOnStack {
   counttomark 2 div cvi /numComp ED
@@ -9200,27 +9221,30 @@ tx@OptexpDict begin
       /name get drawinside [ 3 1 roll ]
       counttomark 1 roll pop
     } {
-      begin % comp dict
+      begin
+%    \end{macrocode}
+% Start of the component dict.
+%    \begin{macrocode}
         desc eq {
           N N -1 1 1
         } {
           1 1 1 N N
-        } ifelse % start start inc stop stop
+        } ifelse
         first startinside not and {
 %    \end{macrocode}
 % first comp and we do not start inside
 %    \begin{macrocode}
-          5 -2 roll % inc stop stop start start
-          pop pop % inc stop stop
+          5 -2 roll
+          pop pop
           2 copy 5 2 roll
         } if
-        5 1 roll % stop start start inc stop
+        5 1 roll
         {
 %    \end{macrocode}
 % iterate over all planes
 %    \begin{macrocode}
-          3 1 roll 2 copy 5 -1 roll % stop start stop start i
-          dup 3 1 roll % stop start stop i start i
+          3 1 roll 2 copy 5 -1 roll
+          dup 3 1 roll
           eq first not and {
 %    \end{macrocode}
 % always draw the line to the first plane of a component
@@ -9231,8 +9255,8 @@ tx@OptexpDict begin
 % the other beams depend on some options
 %    \begin{macrocode}
             drawinside
-          } ifelse % on stack: stop i draw?
-          exch dup 4 -1 roll eq {% draw i i stop
+          } ifelse
+          exch dup 4 -1 roll eq {
 %    \end{macrocode}
 % after the last component plane we have always air
 %    \begin{macrocode}
@@ -9242,16 +9266,16 @@ tx@OptexpDict begin
 % otherwise the respective refractive index of the component
 %    \begin{macrocode}
             nforce 0 eq { n } {nforce} ifelse
-          } ifelse % draw i refrIndex
+          } ifelse
           exch dup N eq {
             pop (N)
           } {
             inttostr
           } ifelse exch
-          3 1 roll name % refrIndex draw (i) name
-          4 1 roll % name refrIndex draw (i)
-          dup PlaneName load /mode get % name refrIndex draw i mode
-          3 1 roll 5 1 roll % i name refrIndex mode draw
+          3 1 roll name
+          4 1 roll
+          dup PlaneName load /mode get
+          3 1 roll 5 1 roll
           [ 6 1 roll ] cvx counttomark 1 roll
           last {
             custombeam stopinside not and
@@ -9302,8 +9326,12 @@ tx@OptexpDict begin
 % \end{macro}
 %
 % \begin{macro}{NormalVec}
-% Construct a normal plane vector such that $n \times(-in) > 0$
-% X\_in Y\_in X\_plane Y\_plane NormalVec -> X\_norm Y\_norm
+%   Construct a normal vector $\vec{n}$ to the plane such that its
+%   scalar product with the incomping wave vector $\vec{v}_\text{in}$ is
+%   negative: $\vec{n}\cdot (-\vec{v}_\text{in}) > 0$ 
+%   \begin{pssyntax}
+%     \PSvar{Xin Yin Xplane Yplane} \PSop{NormalVec} \PSvar{Xnorm Ynorm}
+%   \end{pssyntax}
 %    \begin{macrocode}
 /NormalVec {
   neg exch 2 copy 6 2 roll SProd 0 gt {
@@ -9315,8 +9343,10 @@ tx@OptexpDict begin
 % \end{macro}
 % 
 % \begin{macro}{SProd}
-% Scalar product
-% ax ay bx by SProd -> val
+% Scalar product between two vectors.
+% \begin{pssyntax}
+%   \PSvar{Xa Ya Xb Yb} \PSop{SProd} \PSvar{val}
+% \end{pssyntax}
 %    \begin{macrocode}
 /SProd {
     3 -1 roll mul 3 1 roll mul add
@@ -9325,20 +9355,28 @@ tx@OptexpDict begin
 % \end{macro}
 % 
 % \begin{macro}{VecAngle}
-% Angle between two vectors
-% $\cos(\alpha) = \frac{ab}{|a||b|}$
-%
-% ax ay bx by -> angle
+% Angle between two vectors $\cos(\alpha) = \frac{ab}{|a||b|}$
+% \begin{pssyntax}
+%   \PSvar{Xa Ya Xb Yb} \PSop{VecAngle} \PSvar{angle}
+% \end{pssyntax}
 %    \begin{macrocode}
 /VecAngle {
-    4 copy 4 copy SProd 5 1 roll tx@Dict begin Pyth 3 1 roll Pyth end mul div Acos
-    5 2 roll mul 4 1 roll 3 -1 roll mul 3 -1 roll sub 0 le {-1}{1} ifelse mul
+  4 copy 4 copy SProd 5 1 roll 
+  tx@Dict begin 
+    Pyth 3 1 roll Pyth 
+  end mul 
+  div Acos
+  5 2 roll mul 4 1 roll 3 -1 roll mul 3 -1 roll sub 
+  0 le { -1 }{ 1 } ifelse mul
 } bind def
 %    \end{macrocode}
 % \end{macro}
 %
 % \begin{macro}{VecAdd}
-% ax ay bx by VecAdd ax+bx ay+by
+% Addition of two vectors.
+% \begin{pssyntax}
+%   \PSvar{Xa Ya Xb Yb} \PSop{VecAdd} \PSvar{Xa+Xb Ya+Yb}
+% \end{pssyntax}
 %    \begin{macrocode}
 /VecAdd {
     3 -1 roll add 3 1 roll add exch
@@ -9347,7 +9385,10 @@ tx@OptexpDict begin
 % \end{macro}
 % 
 % \begin{macro}{VecMul}
-% ax ay fac VecMul fax*ax fax*ay
+% Scale a vector.
+% \begin{pssyntax}
+%   \PSvar{Xa Ya fac} \PSop{VecMul} \PSvar{fac}$\cdot$\PSvar{Xa} \PSvar{fac}$\cdot$\PSvar{Ya}
+% \end{pssyntax}
 %    \begin{macrocode}
 /VecMul {
   dup 4 -1 roll mul 3 1 roll mul
@@ -9356,7 +9397,9 @@ tx@OptexpDict begin
 % \end{macro}
 %
 % \begin{macro}{ToVec}
-% X Y -> \PSproc{X Y}
+%   \begin{pssyntax}
+%     \PSvar{X Y} \PSop{ToVec} \PSproc{X Y}
+%   \end{pssyntax}
 %    \begin{macrocode}
 /ToVec {
     [ 3 1 roll ] cvx
@@ -9365,7 +9408,10 @@ tx@OptexpDict begin
 % \end{macro}
 %
 % \begin{macro}{AngToVec}
-% angle -> \PSproc{X Y}
+% Convert an angle to the related vector representation (normalized).
+% \begin{pssyntax}
+%   \PSvar{angle} \PSop{AngToVec} \PSproc{X Y}
+%   \end{pssyntax}
 %    \begin{macrocode}
 /AngToVec {
     dup cos exch sin ToVec
@@ -9374,7 +9420,10 @@ tx@OptexpDict begin
 % \end{macro}
 % 
 % \begin{macro}{NormalizeVec}
-% X Y NormalizeVec X' Y' (with $X^2 + Y^2 = 1$)
+% Normalize a vector ($X'^2 + Y'^2 = 1$)
+% \begin{pssyntax}
+%   \PSvar{X Y} \PSop{NormalizeVec} \PSvar{X' Y'}
+% \end{pssyntax}
 %    \begin{macrocode}
 /NormalizeVec {
   2 copy
@@ -9388,36 +9437,78 @@ tx@OptexpDict begin
 % 
 % \begin{macro}{@ABVect}
 % Shorthand definition for \PSvar{ABVect} procedure of the \nxLPack{pst-eucl} package.
+% \begin{pssyntax}
+%   \PSvar{Xa Ya Xb Yb} \PSop{@ABVect} \PSvar{dX dY}
+% \end{pssyntax}
 %    \begin{macrocode}
-/@ABVect { tx@EcldDict begin ABVect end } bind def
+/@ABVect { 
+  tx@EcldDict begin ABVect end 
+} bind def
 %    \end{macrocode}
 % \end{macro}
 %
-% Shorthand definition for \PSvar{ABDist} procedure of the \nxLPack{pst-eucl} package.
 % \begin{macro}{@ABDist}
+% Shorthand definition for \PSvar{ABDist} procedure of the \nxLPack{pst-eucl} package.
+% \begin{pssyntax}
+%   \PSvar{Xa Ya Xb Yb} \PSop{@ABDist} \PSvar{dist}
+% \end{pssyntax}
 %    \begin{macrocode}
-/@ABDist { tx@EcldDict begin ABDist end } bind def
+/@ABDist { 
+  tx@EcldDict begin ABDist end 
+} bind def
 %    \end{macrocode}
 % \end{macro}
 %
 % \begin{macro}{@InterLines}
+%   Shorthand definition for \PSvar{InterLines} procedure of the
+%   \nxLPack{pst-eucl} package. Takes care of a bug in the
+%   \nxLPack{pst-eucl} package, that too many items are popped off the
+%   stack if no intersection point exists.
+% \begin{pssyntax}
+%   \PSvar{X1 Y1 X2 Y2 X3 Y3 X4 Y4} \PSop{@InterLines} \PSvar{X Y}
+% \end{pssyntax}
 %    \begin{macrocode}
-/@InterLines { [ 0 0 11 3 roll tx@EcldDict begin InterLines end counttomark 4 eq { 5 2 roll pop pop pop } { 3 -1 roll pop } ifelse } bind def
+/@InterLines { 
+  [ 0 0 11 3 roll 
+  tx@EcldDict begin InterLines end 
+  counttomark 4 eq { 
+    5 2 roll pop pop pop 
+  } { 
+    3 -1 roll pop 
+  } ifelse 
+} bind def
+%    \end{macrocode}
+% \end{macro}
 % 
 % \begin{macro}{@GetCenter}
+%   Shorthand definition for the \PSvar{GetCenter} procedure of the
+%   \nxLPack{pst-node} package. Takes either a string or a literal name
+%   for the node name \PSvar{name}.
+%   \begin{pssyntax}
+%     \PSvar{name} \PSop{@GetCenter} \PSvar{X Y}
+%   \end{pssyntax}
 %    \begin{macrocode}
-/@GetCenter { dup type /stringtype eq { cvn } if tx@NodeDict begin load GetCenter end } bind def
+/@GetCenter { 
+  dup type /stringtype eq { cvn } if 
+  tx@NodeDict begin load GetCenter end 
+} bind def
 %    \end{macrocode}
 % \end{macro}
 %
 % \begin{macro}{RefractVec}
-% see \url{http://en.wikipedia.org/wiki/Snell%27s_law#Vector_form}
-%
-% X\_in Y\_in X\_norm Y\_norm n1 n2 RefractVec -> X\_out Y\_out
+%   Calculate the refracted vector, the normal plane vector must be
+%   constructed with \PSvar{NormVec}, see
+%   \url{http://en.wikipedia.org/wiki/Snell%27s_law#Vector_form} for the
+%     formulas.
+%     \begin{pssyntax}
+%       \PSvar{Xin Yin Xnorm Ynorm n1 n2} \PSop{RefractVec} \PSvar{Xout Yout}
+%     \end{pssyntax}
+%  If it would be total internal reflection, the output vector is (0, 0).
 %    \begin{macrocode}
 /RefractVec {
-  div /n ED 4 2 roll NormalizeVec /Yin ED /Xin ED /Ynorm ED /Xnorm ED
-  n 1 eq {
+  div /n ED /Ynorm ED /Xnorm ED
+  NormalizeVec /Yin ED /Xin ED 
+  n abs 1 eq {
     Xin Yin
   }{
     /costheta1 Xnorm Ynorm Xin neg Yin neg SProd def
@@ -9429,7 +9520,9 @@ tx@OptexpDict begin
       pop 0 0
     } {
       sqrt /costheta2 ED
-      n Xin mul n Yin mul n costheta1 mul costheta2 sub dup Xnorm mul exch Ynorm mul VecAdd
+      n Xin mul n Yin mul 
+      n costheta1 mul costheta2 sub dup 
+      Xnorm mul exch Ynorm mul VecAdd
     } ifelse
   } ifelse
 } bind def
@@ -9437,7 +9530,11 @@ tx@OptexpDict begin
 % \end{macro}
 % 
 % \begin{macro}{ReflectVec}
-% X\_in Y\_in X\_norm Y\_norm ReflectVec -> X\_out Y\_out
+%   Calculate the reflected vector, the normal plane vector must be
+%   constructed with \PSvar{NormVec}.
+%   \begin{pssyntax}
+%     \PSvar{Xin Yin Xnorm Ynorm} \PSop{ReflectVec} \PSvar{Xout Yout}
+%   \end{pssyntax}
 %    \begin{macrocode}
 /ReflectVec {
   /Ynorm ED /Xnorm ED NormalizeVec /Yin ED /Xin ED
@@ -9448,7 +9545,9 @@ tx@OptexpDict begin
 % \end{macro}
 % 
 % \begin{macro}{CurvedInterface}
-% X\_p Y\_p X\_r Y\_r trans/refl n2 X0 Y0 X\_in Y\_in CurvedInterface -> X' Y' X\_out Y\_out
+%   \begin{pssyntax}
+%     \PSvar{Xp Yp Xr Yr mode n2 X0 Y0 Xin Yin} \PSop{CurvedInterface} \PSvar{X0' Y0' Xout Yout}
+%   \end{pssyntax}
 %    \begin{macrocode}
 /CurvedInterface {
   /Yin ED /Xin ED /Y0 ED /X0 ED /n2 ED /mode ED
@@ -9496,7 +9595,9 @@ tx@OptexpDict begin
 % \end{macro}
 % 
 % \begin{macro}{PlainInterface}
-% Xp Yp dXp dYp trans/refl n2 X0 Y0 X\_in Y\_in PlainInterface -> X' Y' X\_out Y\_out
+%   \begin{pssyntax}
+%     \PSvar{Xp Yp dXp dYp mode n2 X0 Y0 Xin Yin} \PSop{PlainInterface} \PSvar{X0' Y0' Xout Yout}
+%   \end{pssyntax}
 %    \begin{macrocode}
 /PlainInterface {%
   /Yin ED /Xin ED /Y0 ED /X0 ED /n2 ED /mode ED /dYp ED /dXp ED /Yp ED /Xp ED
