@@ -5884,7 +5884,7 @@
           \POE@adjustTempNodes
         \fi
         \POE@drawcomponent[#2]{##3}{\@nameuse{#2@ii}}
-        \pst@OptexpVerb{(\oenode{}{}) CorrectNodes }%
+        \pst@OptexpVerb{(\oenode{}{}) CorrectDipoleNodes }%
         \ifPOE@backlayer
           \POE@drawInternalConnections
         \fi
@@ -5914,7 +5914,7 @@
           \POE@adjustTempNodes
         \fi
         \POE@drawcomponent[#2]{##3}{\@nameuse{#2@ii}}
-        \pst@OptexpVerb{(\oenode{}{}) CorrectNodes }%
+        \pst@OptexpVerb{(\oenode{}{}) CorrectDipoleNodes }%
         \ifPOE@backlayer
           \POE@drawInternalConnections
         \fi
@@ -9718,12 +9718,17 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{CorrectNodes}
+% \begin{macro}{CorrectDipoleNodes}
+%   For a dipole which has two interface nodes (1) and (N) which are
+%   very close together ($\text{dist} < 1e-7$) or which coincide, the
+%   automatic angle estimation of the fiber connections does not work
+%   properly. So these nodes are separated as less as possible so tha
+%   the NearestNode procedure estimates two different distances.
 %   \begin{pssyntax}
-%     \PSstring{basename} \PSop{CorrectNodes}
+%     \PSstring{basename} \PSop{CorrectDipoleNodes}
 %   \end{pssyntax}
 %    \begin{macrocode}
-/CorrectNodes {
+/CorrectDipoleNodes {
   (N@) exch strcat dup dup
   gsave
     tx@Dict begin 
@@ -9745,11 +9750,16 @@ tx@OptexpDict begin
       end
     grestore
     @ABVect NormalizeVec 2 copy
-    1e-4 VecMul 8 -2 roll VecAdd ToVec
+%    \end{macrocode}
+% The floating-point precision of the Postscript interpreter is
+% approximately 8 digits, so in order to have an effect, the nodes must
+% be separated by 1e-7 times the maximum coordinate value.
+%    \begin{macrocode}
+    8 -2 roll 2 copy abs exch abs max 1e-7 mul 3 1 roll 5 2 roll VecMul VecAdd ToVec
     tx@NodeDict begin 
       6 -1 roll (1) strcat cvn false exch 10 {InitPnode } NewNode 
     end
-    -1e-4 VecMul VecAdd ToVec
+    4 2 roll 2 copy abs exch abs max -1e-7 mul 3 1 roll 5 2 roll VecMul VecAdd ToVec
     tx@NodeDict begin
       exch (N) strcat cvn false exch 10 {InitPnode } NewNode
     end
@@ -9763,7 +9773,15 @@ tx@OptexpDict begin
 % \begin{macro}{debugStack}
 %    \begin{macrocode}
 /debugStack { 
-  counttomark /@t ED @t copy @t{==}repeat 
+  counttomark debug
+} bind def
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{debugStack}
+%    \begin{macrocode}
+/debug { 
+  /@t ED @t copy @t { == } repeat
 } bind def
 %    \end{macrocode}
 % \end{macro}
