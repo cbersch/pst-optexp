@@ -5813,15 +5813,20 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\begin@OptexpMultipole}
+% \begin{macro}{\begin@OptexpTripole}
 %    \begin{macrocode}
-\def\begin@OptexpMultipole{%
+\def\begin@OptexpTripole{%
   \begin@OptexpObj
 %    \end{macrocode}
-% for multipoles the default shifting is in x-direction
+% for multipoles the default shifting is in $x$-direction
 %    \begin{macrocode}
   \let\POE@key@comp@Xshift\POE@key@compshift%
-   \def\POE@key@comp@Yshift{0}%
+  \def\POE@key@comp@Yshift{0}%
+%    \end{macrocode}
+% The positioning parameters are disabled, because \opt{compshift} does the job for tripoles.
+%    \begin{macrocode}
+  \let\POE@key@abspos\@empty
+  \let\POE@key@position\@empty
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -5846,9 +5851,9 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\end@OptexpMultipole}
+% \begin{macro}{\end@OptexpTripole}
 %    \begin{macrocode}
-\let\end@OptexpMultipole\end@OptexpObj
+\let\end@OptexpTripole\end@OptexpObj
 %    \end{macrocode}
 % \end{macro}
 % 
@@ -5873,6 +5878,7 @@
 %    \begin{macrocode}
 \def\getCLWH{CLW \pst@number\psxunit 2 mul div }%
 \def\getCLW{CLW \pst@number\psxunit div }%
+\let\POE@restorerefnodes\relax
 %    \end{macrocode}
 % 
 % New high-level macros 
@@ -5980,23 +5986,27 @@
     \expandafter\def\csname #2@i@\endcsname(##1)(##2)(##3)##4{%
       \addbefore@par{#3}%
       \addafter@par{ref@angle=180,#1}%
-      \begin@OptexpMultipole
+      \begin@OptexpTripole
         \POE@calcNodes{##1}{##2}{##3}%
-        \POE@drawcomponent[#2]{##4}{\@nameuse{#2@ii}}
-        \ifPOE@backlayer
+        \def\POE@restorerefnodes{%
           \pst@getcoor{##1}\pst@tempA%
           \pst@getcoor{##3}\pst@tempB%
           \pst@OptexpVerb{%
             tx@NodeDict begin
-            {\pst@tempA } false chirality 0 le { /N@\oenodeRefB{} }{ /N@\oenodeRefA{} } ifelse
-            10 {InitPnode } NewNode
-            {\pst@tempB } false chirality 0 le { /N@\oenodeRefA{} }{ /N@\oenodeRefB{} } ifelse
-            10 {InitPnode } NewNode
+              {\pst@tempA} false 
+              chirality 0 le { /N@\oenodeRefB{} }{ /N@\oenodeRefA{} } ifelse
+              10 {InitPnode } NewNode
+              {\pst@tempB} false 
+              chirality 0 le { /N@\oenodeRefA{} }{ /N@\oenodeRefB{} } ifelse
+              10 {InitPnode } NewNode
             end
           }%
+        }%
+        \POE@drawcomponent[#2]{##4}{\@nameuse{#2@ii}}
+        \ifPOE@backlayer
           \POE@drawInternalConnections
         \fi
-      \end@OptexpMultipole
+      \end@OptexpTripole
     }%
     \tripole@iimacro{#2}%
   }{%
@@ -6427,7 +6437,7 @@
 %    \begin{macrocode}
 \def\opttripole{\pst@object{opttripole}}
 \def\opttripole@i(#1)(#2)(#3)#4#5{%
-   \begin@OptexpMultipole
+   \begin@OptexpTripole
       \POE@calcNodes{#1}{#2}{#3}
       \POE@drawcomponent{#5}{%
          \pnode(0,0){\oenodeCenter{}}% 
@@ -6450,7 +6460,7 @@
          end
       }%
       \POE@drawInternalConnections
-   \end@OptexpMultipole
+   \end@OptexpTripole
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -6590,11 +6600,17 @@
   \ifPOE@frontlayer
     \POE@putlabel{#2}%
   \fi
+  \POE@restorerefnodes
   \ifPOE@backlayer
-    \pnode(! \POE@dict{%
-               (N@\oenodeRotref{}) @GetCenter 2 copy
-               (N@\oenodeRefA{}) @GetCenter \POE@key@comp@Xshift\space\POE@key@comp@Yshift\space\tx@ScreenCoor VecAdd 4 2 roll @ABVect \POE@key@angle\space matrix rotate dtransform VecAdd
-             \tx@UserCoor}){\oenodeTrefA{}}%
+    \pnode(!
+      \POE@dict{%
+        (N@\oenodeRotref{}) @GetCenter 2 copy
+        (N@\oenodeRefA{}) @GetCenter 
+        \POE@key@comp@Xshift\space\POE@key@comp@Yshift\space
+        \tx@ScreenCoor VecAdd 4 2 roll @ABVect 
+        \POE@key@angle\space matrix rotate dtransform VecAdd
+        \tx@UserCoor
+      }){\oenodeTrefA{}}%
     \pnode(! \POE@dict{%
                (N@\oenodeRotref{}) @GetCenter 2 copy
                (N@\oenodeRefB{}) @GetCenter \POE@key@comp@Xshift\space\POE@key@comp@Yshift\space\tx@ScreenCoor VecAdd 4 2 roll @ABVect \POE@key@angle\space matrix rotate dtransform VecAdd
@@ -7831,7 +7847,7 @@
 %
 %</stylefile> 
 %
-% \subsection{The Postscript Header file}
+% \section{The Postscript Header file}
 % \makeatletter
 % % Copied this definition from doc.sty and changed it not to add a
 % % backslash to the Postscript procedure name in the index.
@@ -7856,6 +7872,7 @@
 %    \fi}
 % \makeatother
 %<*prolog>
+%
 % This is the dictionary where all components are stored in.
 %    \begin{macrocode}
 /tx@OptexpDict 200 dict def

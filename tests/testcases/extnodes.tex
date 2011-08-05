@@ -1,115 +1,35 @@
-%%% extnodes.tex --- 
-%
-%% Author: Christoph Bersch
-%% Version: $Id: extnodes.tex,v 0.0 2011/06/24 16:05:53 christoph Exp$
-%
-%
 \documentclass{scrartcl}
-\usepackage[latin1]{inputenc}
 \usepackage[T1]{fontenc}
-\usepackage[ngerman]{babel}
-\usepackage{lmodern}
+\usepackage{luximono}
 \usepackage{pst-optexp}
-\newcommand{\extdot}{\tmpextdot(\oenodeExt{})}
+\makeatletter
+\newcommand{\testextnodes}[3][]{%
+  \bgroup
+  \@nameuse{#2}[extnode=tl,#1]#3{\ttfamily
+    \ifx\\#1\\\relax\textbackslash #2
+    \else\begin{tabular}{@{}r@{}}\textbackslash #2\\ #1\end{tabular}\fi}\psdot(\oenodeExt{})
+  \psset{frontlayer=false}
+  \@nameuse{#2}[extnode=t,#1]#3{}\psdot(\oenodeExt{})
+  \@nameuse{#2}[extnode=tr,#1]#3{}\psdot(\oenodeExt{})
+  \@nameuse{#2}[extnode=l,#1]#3{}\psdot(\oenodeExt{})
+  \@nameuse{#2}[extnode=c,#1]#3{}\psdot(\oenodeExt{})
+  \@nameuse{#2}[extnode=r,#1]#3{}\psdot(\oenodeExt{})
+  \@nameuse{#2}[extnode=bl,#1]#3{}\psdot(\oenodeExt{})
+  \@nameuse{#2}[extnode=b,#1]#3{}\psdot(\oenodeExt{})
+  \@nameuse{#2}[extnode=br,#1]#3{}\psdot(\oenodeExt{})
+  \egroup
+}%
+\makeatother
 \begin{document}
-\section*{Test all objects for correct extnode code}
-\psset{optboxheight=0.5, labeloffset=1, labelangle=75}
-\newpsobject{tmpextdot}{psdot}{linecolor=magenta, dotsize=0.4, linewidth=3\pslinewidth, dotstyle=x}
-\begin{pspicture}[showgrid=true](11,4)
-   \optbox[extnode=bl](0,1)(3,1){\texttt{bl}}\extdot
-   \optbox[extnode=b](4,1)(7,1){\texttt{b}}\extdot
-   \optbox[extnode=br](8,1)(11,1){\texttt{br}}\extdot
-%
-   \optbox[extnode=l](0,2)(3,2){\texttt{l}}\extdot
-   \optbox[extnode=c](4,2)(7,2){\texttt{c}}\extdot
-   \optbox[extnode=r](8,2)(11,2){\texttt{r}}\extdot
-%
-   \optbox[extnode=tl](0,3)(3,3){\texttt{tl}}\extdot
-   \optbox[extnode=t](4,3)(7,3){\texttt{t}}\extdot
-   \optbox[extnode=tr](8,3)(11,3){\texttt{tr}}\extdot
-\end{pspicture}
-
-\begin{pspicture}[showgrid=true](11,4)
-   \optfilter[extnode=bl](0,1)(3,1){\texttt{bl}}\extdot
-   \optfilter[extnode=b](4,1)(7,1){\texttt{b}}\extdot
-   \optfilter[extnode=br](8,1)(11,1){\texttt{br}}\extdot
-%
-   \optfilter[extnode=l](0,2)(3,2){\texttt{l}}\extdot
-   \optfilter[extnode=c](4,2)(7,2){\texttt{c}}\extdot
-   \optfilter[extnode=r](8,2)(11,2){\texttt{r}}\extdot
-%
-   \optfilter[extnode=tl](0,3)(3,3){\texttt{tl}}\extdot
-   \optfilter[extnode=t](4,3)(7,3){\texttt{t}}\extdot
-   \optfilter[extnode=tr](8,3)(11,3){\texttt{tr}}\extdot
-\end{pspicture}
-
-\begin{pspicture}[showgrid=true](11,4)
-   \optmzm[extnode=bl](0,1)(3,1){\texttt{bl}}\extdot
-   \optmzm[extnode=b](4,1)(7,1){\texttt{b}}\extdot
-   \optmzm[extnode=br](8,1)(11,1){\texttt{br}}\extdot
-%
-   \optmzm[extnode=l](0,2)(3,2){\texttt{l}}\extdot
-   \optmzm[extnode=c](4,2)(7,2){\texttt{c}}\extdot
-   \optmzm[extnode=r](8,2)(11,2){\texttt{r}}\extdot
-%
-   \optmzm[extnode=tl](0,3)(3,3){\texttt{tl}}\extdot
-   \optmzm[extnode=t](4,3)(7,3){\texttt{t}}\extdot
-   \optmzm[extnode=tr](8,3)(11,3){\texttt{tr}}\extdot
-\end{pspicture}
-
-\begin{pspicture}[showgrid=true](11,4)
-   \optswitch[extnode=bl](0,1)(3,1){\texttt{bl}}\extdot
-   \optswitch[extnode=b](4,1)(7,1){\texttt{b}}\extdot
-   \optswitch[extnode=br](8,1)(11,1){\texttt{br}}\extdot
-%
-   \optswitch[extnode=l](0,2)(3,2){\texttt{l}}\extdot
-   \optswitch[extnode=c](4,2)(7,2){\texttt{c}}\extdot
-   \optswitch[extnode=r](8,2)(11,2){\texttt{r}}\extdot
-%
-   \optswitch[extnode=tl](0,3)(3,3){\texttt{tl}}\extdot
-   \optswitch[extnode=t](4,3)(7,3){\texttt{t}}\extdot
-   \optswitch[extnode=tr](8,3)(11,3){\texttt{tr}}\extdot
-\end{pspicture}
-
-\begin{pspicture}[showgrid=true](11,4)
-   \fiberdelayline[extnode=bl](0,1)(3,1){\texttt{bl}}\extdot
-   \fiberdelayline[extnode=b](4,1)(7,1){\texttt{b}}\extdot
-   \fiberdelayline[extnode=br](8,1)(11,1){\texttt{br}}\extdot
-%
-   \fiberdelayline[extnode=l](0,2)(3,2){\texttt{l}}\extdot
-   \fiberdelayline[extnode=c](4,2)(7,2){\texttt{c}}\extdot
-   \fiberdelayline[extnode=r](8,2)(11,2){\texttt{r}}\extdot
-%
-   \fiberdelayline[extnode=tl](0,3)(3,3){\texttt{tl}}\extdot
-   \fiberdelayline[extnode=t](4,3)(7,3){\texttt{t}}\extdot
-   \fiberdelayline[extnode=tr](8,3)(11,3){\texttt{tr}}\extdot
-\end{pspicture}
-
-\begin{pspicture}[showgrid=true](11,4)
-   \optdetector[extnode=bl](0,1)(3,1){\texttt{bl}}\extdot
-   \optdetector[extnode=b](4,1)(7,1){\texttt{b}}\extdot
-   \optdetector[extnode=br](8,1)(11,1){\texttt{br}}\extdot
-%
-   \optdetector[extnode=l](0,2)(3,2){\texttt{l}}\extdot
-   \optdetector[extnode=c](4,2)(7,2){\texttt{c}}\extdot
-   \optdetector[extnode=r](8,2)(11,2){\texttt{r}}\extdot
-%
-   \optdetector[extnode=tl](0,3)(3,3){\texttt{tl}}\extdot
-   \optdetector[extnode=t](4,3)(7,3){\texttt{t}}\extdot
-   \optdetector[extnode=tr](8,3)(11,3){\texttt{tr}}\extdot
-\end{pspicture}
-
-\begin{pspicture}[showgrid=true](11,4)
-   \optdetector[extnode=bl, dettype=diode](0,1)(3,1){\texttt{bl}}\extdot
-   \optdetector[extnode=b, dettype=diode](4,1)(7,1){\texttt{b}}\extdot
-   \optdetector[extnode=br, dettype=diode](8,1)(11,1){\texttt{br}}\extdot
-%
-   \optdetector[extnode=l, dettype=diode](0,2)(3,2){\texttt{l}}\extdot
-   \optdetector[extnode=c, dettype=diode](4,2)(7,2){\texttt{c}}\extdot
-   \optdetector[extnode=r, dettype=diode](8,2)(11,2){\texttt{r}}\extdot
-%
-   \optdetector[extnode=tl, dettype=diode](0,3)(3,3){\texttt{tl}}\extdot
-   \optdetector[extnode=t, dettype=diode](4,3)(7,3){\texttt{t}}\extdot
-   \optdetector[extnode=tr, dettype=diode](8,3)(11,3){\texttt{tr}}\extdot
+\psset{unit=1.5, label=1 180 r global}
+\begin{pspicture}[showgrid=true](3,10)
+  \testextnodes{optbox}{(0,0)(2,0)}
+  \addtopsstyle{PiezoMirror}{unit=1.5}
+  \testextnodes[mirrortype=piezo]{mirror}{(0,2)(1,2)(1,1)}
+  \testextnodes{optdetector}{(0,4)(1,4)}
+  \testextnodes[dettype=diode]{optdetector}{(0,6)(1,6)}
+  \testextnodes{optplate}{(0,8)(2,8)}
+  \testextnodes{crystal}{(0,10)(2,10)}
+  \testextnodes{mirror}{(3,2)(4,2)(4,1)}
 \end{pspicture}
 \end{document}
