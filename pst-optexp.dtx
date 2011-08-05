@@ -1233,7 +1233,12 @@
 %   \cmditem{oenodeRefB}{Obj}
 %
 %   The input and output reference nodes.
-%
+% \iffalse
+%<*ignore>
+% \fi
+% \iffalse
+%</ignore>
+% \fi
 %   \cmditem{oenodeTrefA}{Obj}
 %   \cmditem{oenodeTrefB}{Obj}
 %
@@ -6026,18 +6031,8 @@
       \begin@OptexpTripole
         \POE@calcNodes{##1}{##2}{##3}%
         \def\POE@restorerefnodes{%
-          \pst@getcoor{##1}\pst@tempA%
-          \pst@getcoor{##3}\pst@tempB%
-          \pst@OptexpVerb{%
-            tx@NodeDict begin
-              {\pst@tempA} false 
-              chirality 0 le { /N@\oenodeRefB{} }{ /N@\oenodeRefA{} } ifelse
-              10 {InitPnode } NewNode
-              {\pst@tempB} false 
-              chirality 0 le { /N@\oenodeRefA{} }{ /N@\oenodeRefB{} } ifelse
-              10 {InitPnode } NewNode
-            end
-          }%
+          \pnode(##1){\oenodeRefA{}}
+          \pnode(##3){\oenodeRefB{}}
         }%
         \POE@drawcomponent[#2]{##4}{\@nameuse{#2@ii}}
         \ifPOE@backlayer
