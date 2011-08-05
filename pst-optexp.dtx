@@ -299,12 +299,16 @@
      \renewcommand*{\makelabel}[1]{\hss\psarglistfont##1}}}
   {\endlist}
 
+\makeatletter
+\renewenvironment{theglossary}{\GlossaryParms \let\item\@idxitem \ignorespaces}{}
+\makeatother
 \def\psargitem#1{\item[#1]\hfill\par\nobreak}
 
 \addtopsstyle{Fiber}{linecolor=DOrange,linewidth=1.5\pslinewidth}
 \addtopsstyle{Beam}{linewidth=1.5\pslinewidth}
 \EnableCrossrefs
 \CodelineIndex
+\RecordChanges
 \begin{document}
   \DocInput{pst-optexp.dtx}
   \begin{otherlanguage}{english}
@@ -633,36 +637,21 @@
 %   so that the actual naming scheme does not matter.
 % \end{optionlist}
 % \fi
-% \section{Todo}
-% 
-% \begin{itemize}
-% \item Automatic sizing of optboxes (like a \Lcs{psframebox}
-% \item Allow more than one extnode.
-% \end{itemize}
 % 
 % \section{Acknowledgements}
 % 
 % I thank all the people of the PSTricks mailinglist for the continuous help, especially Herbert Vo\ss.
 % 
 % \section{Revision History}
-% \begin{changelog}
-%   \begin{release}{3.0}{NN}
-%   \item Renamed options \opt{optgrid*} to \opt{grating*}. The
-%   old options are still valid, but give a warning. This was a terminological
-%   error from the beginning.
-% \end{release}
-%
-% \begin{release}{1.1}{2007-09-06}
-% \item Considerably enhanced labeling of the components.
-% \item New parameter \opt{labelref}.
-% \item \opt{labelrelative} is deprecated, and replaced by \opt{labelref=relative}.
-% \end{release}
-% 
-% \begin{release}{1.0}{2007-07-18}
-% \item First CTAN version
-% \end{release}
-%
-% \end{changelog}
+% \begingroup
+% \makeatletter\have@multicolfalse\makeatother
+% \PrintChanges
+% \endgroup
+% \changes{3.0}{NN}{Renamed options \opt{optgrid*} to \opt{grating*}.}
+% \changes{1.1}{2007/09/06}{Enhanced labeling features}
+% \changes{1.1}{2007/09/06}{New parameter \opt{labelref}}
+% \changes{1.1}{2007/09/06}{\opt{labelrelative} is deprecated, superseeded by \opt{labelref}}
+% \changes{1.0}{2007/07/18}{First CTAN version}
 %
 % \ifGERMAN
 %   \chapter{Grundlegende Ideen}
@@ -5361,7 +5350,7 @@
   \fi\fi
 }
 \def\poe@getlastcomp#1-{%
-  \ifx\\#1\\%
+  \ifx.#1.%
     \edef\poe@lastcomp{\the\POE@cnt}%
   \else
     \ifx\@empty#1\relax
