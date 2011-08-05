@@ -36,12 +36,14 @@ $(PACKAGE)-DE.dvi: $(PACKAGE).dtx $(PACKAGE).sty $(PACKAGE).ist $(PACKAGE).pro
 		$(basename $@)-idx.idx
 	makeindex -s pst-optexp.ist -t $(basename $@)-doc.ilg -o $(basename $@)-doc.ind \
 		$(basename $@)-doc.idx
+	makeindex -s gglo.ist -t $(basename $@).glg -o $(basename $@).gls $(basename $@).glo
 	$(LATEX) '\newcommand*{\mainlang}{ngerman}\input{$(basename $@).dtx}'
 	splitindex -m "" $(basename $@).idx
 	makeindex -s gind.ist -t $(basename $@)-idx.ilg -o $(basename $@)-idx.ind \
 		$(basename $@)-idx.idx
 	makeindex -s pst-optexp.ist -t $(basename $@)-doc.ilg -o $(basename $@)-doc.ind \
 		$(basename $@)-doc.idx
+	makeindex -s gglo.ist -t $(basename $@).glg -o $(basename $@).gls $(basename $@).glo
 	$(LATEX) '\newcommand*{\mainlang}{ngerman}\input{$(basename $@).dtx}'
 	$(RM) $(basename $@).dtx
 
@@ -54,12 +56,14 @@ $(PACKAGE).dvi: $(PACKAGE).dtx $(PACKAGE).sty $(PACKAGE).ist $(PACKAGE).pro
 		$(basename $@)-idx.idx
 	makeindex -s pst-optexp.ist -t $(basename $@)-doc.ilg -o $(basename $@)-doc.ind \
 		$(basename $@)-doc.idx
+	makeindex -s gglo.ist -t $(basename $@).glg -o $(basename $@).gls $(basename $@).glo
 	$(LATEX) '\newcommand*{\mainlang}{english}\input{$(basename $@).dtx}'
 	splitindex -m "" $(basename $@).idx
 	makeindex -s gind.ist -t $(basename $@)-idx.ilg -o $(basename $@)-idx.ind \
 		$(basename $@)-idx.idx
 	makeindex -s pst-optexp.ist -t $(basename $@)-doc.ilg -o $(basename $@)-doc.ind \
 		$(basename $@)-doc.idx
+	makeindex -s gglo.ist -t $(basename $@).glg -o $(basename $@).gls $(basename $@).glo
 	$(LATEX) '\newcommand*{\mainlang}{english}\input{$(basename $@).dtx}'
 
 %.ps: %.dvi
