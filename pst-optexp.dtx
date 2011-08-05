@@ -1188,15 +1188,10 @@
 % \fi
 % \end{optionlist}
 % 
-% \subsection{Accessing Objects and Special Nodes}\label{sec:objnodes}
-% 
-% Every \nxLPack{pst-optexp} object of an experimental setup provides several
-% special nodes which are related to the geometry and the positioning of the
-% component. These are useful for related positioning and drawing.
-% 
-% \subsubsection{Object Names}\label{sec:namingobj}
-% All objects are numbered automatically in increasing order by their definition
-% in the code. The objects as well as their special nodes can be accessed via this
+% \subsection{Object Names}\label{sec:namingobj}
+% All objects of a \nxLPack{pst-optexp} sketch are numbered
+% automatically in increasing order by their definition in the code. The
+% objects as well as their special nodes can be accessed via this
 % number.
 % 
 % \begin{optionlist}
@@ -1210,27 +1205,63 @@
 % \psset{compname=MyName}            % not valid, gives an error
 % \end{lstlisting}
 % \end{optionlist}
+%
+% \subsection{Special nodes}\label{sec:objnodes}
 % 
-% \subsubsection{Accessing Internal Nodes}\label{sec:internalnodes}
-% 
-% Every object defines several special internal nodes which are very useful for
-% related positioning and drawing. You should always use the provided \nxLcs{oenode*}
-% macros to access the node names.
+% Every \nxLPack{pst-optexp} object of an experimental setup provides several
+% special nodes which are related to the geometry and the positioning of the
+% component. These are useful for related positioning and drawing.
 % 
 % \begin{ltxsyntax}
-% \cmditem{oenode}{Obj}{Node}
-% 
-% This is the basic command which takes as first argument the name of the
-% target object (for naming see \ref{sec:namingobj}) and as second argument the
-% name of the requested special node. For most special nodes an appropriate macro is provided.
-% 
+%   \cmditem{oenode}{Obj}{Node} 
+%
+%   This is the basic command to access any
+%   node associated with a certain object. The first argument is the
+%   name of the target object (for naming see \ref{sec:namingobj}), if
+%   it is left empty, the last defined component is choosen. The second
+%   argument is the name postfix of the requested special node. 
+%
+%   For most special nodes an appropriate macro is provided, which you
+%   are strongly advised to use. Only the interface nodes except for the
+%   first and last one do not have an explicit macro associated.
 % \end{ltxsyntax}
 % 
-% \subsection{Nodes For External Usage}\label{sec:extnode}
-% 
-% Some of the objects can provide a supplementary node for additional
-% connections. A laser diode may be connected for example to a frequency synthesizer
-% (use package \LPack{pst-circ}) or a detector to a computer.
+% \subsubsection{Reference nodes}\label{sec:refnodes}
+%
+% \begin{ltxsyntax}
+%   \cmditem{oenodeRefA}{Obj}
+%   \cmditem{oenodeRefB}{Obj}
+%
+%   The input and output reference nodes.
+%
+%   \cmditem{oenodeTrefA}{Obj}
+%   \cmditem{oenodeTrefB}{Obj}
+%
+%   The transformed input and output reference nodes.
+% \end{ltxsyntax}
+%
+% \subsubsection{Input and output node}\label{sec:inoutnode}
+% \begin{ltxsyntax}
+%   \cmditem{oenodeIn}{Obj}
+%   \cmditem{oenodeOut}{Obj}
+% \end{ltxsyntax}
+%
+% \subsubsection{Rotation reference node}\label{sec:rotrefnode}
+% \begin{ltxsyntax}
+%   \cmditem{oenodeRotref}{Obj}
+% \end{ltxsyntax}
+%
+% \subsubsection{Center node}\label{sec:centernode}
+% \begin{ltxsyntax}
+%   \cmditem{oenodeCenter}{Obj}
+% \end{ltxsyntax}
+%
+% \subsubsection{Label node}\label{sec:labelnode}
+% \begin{ltxsyntax}
+%   \cmditem{oenodeLabel}{Obj}
+% \end{ltxsyntax}
+%
+% \subsubsection{External nodes}\label{sec:extnode}
 % 
 % \begin{optionlist}
 % \valitem{extnode}{refstring}
@@ -1270,7 +1301,24 @@
 %</ignore>
 % \fi
 % \end{optionlist}
-% 
+%
+% \subsubsection{Interface nodes}\label{sec:ifcnodes}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}[showgrid=true](2.5,3) 
+  \pentaprism[pentaprismsize=1.3](0,1.5)(1.5,1.5)(1.5,0)
+  \drawbeam[arrows=->, arrowinset=0, arrowscale=1.5]{(0,1.5)}{}{(1.5,0)}
+  \psdot(\oenodeIn{})\uput[135](\oenodeIn{}){1}
+  \psdot(\oenode{}{2})\uput[0](\oenode{}{2}){2}
+  \psdot(\oenode{}{3})\uput[90](\oenode{}{3}){3}
+  \psdot(\oenodeOut{})\uput[-45](\oenode{}{N}){N}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % \ifGERMAN
 %   \chapter{Referenz}
 % \fi
