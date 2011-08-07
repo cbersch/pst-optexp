@@ -22,26 +22,25 @@
 %<stylefile>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<stylefile>\ProvidesPackage{pst-optexp}
 %<*stylefile>
-    [2011/08/04 v3.0alpha Optical experimental setups with PSTricks]
+    [2011/08/07 v3.0alpha Optical experimental setups with PSTricks]
 %</stylefile>
 %
 %<*driver>
-\documentclass[toc=flat, a4paper, DIV=9, oneside, toc=index]{scrreprt} 
+\documentclass[toc=flat, a4paper, DIV=9, oneside, toc=index]{scrreprt}
 \usepackage{doc}
-\setcounter{IndexColumns}{2} 
-\usepackage[utf8]{inputenc}
-\usepackage[T1]{fontenc} 
+\setcounter{IndexColumns}{2}
+\usepackage[utf8]{inputenc} 
+\usepackage[T1]{fontenc}
 \usepackage{lmodern} 
-\usepackage{amsfonts}
-\usepackage{bera} 
+\usepackage{amsfonts} 
+\usepackage{bera}
 \providecommand*\mainlang{}
-\usepackage[english,ngerman,\mainlang]{babel}
+\usepackage[english,ngerman,\mainlang]{babel} 
 \usepackage{prettyref}
 \usepackage[dvipsnames,x11names,svgnames]{xcolor} 
-\usepackage{amsmath} 
-\usepackage{array,booktabs}
-\usepackage{ragged2e}
-\usepackage{paralist}
+\usepackage{amsmath}
+\usepackage{array,booktabs,tabularx} 
+\usepackage{ragged2e} 
 \usepackage{nicefrac}
 \usepackage{pst-func} 
 \usepackage{pst-tree}
@@ -50,27 +49,22 @@
 \usepackage{pst-circ}
 \usepackage[makeindex]{splitidx} 
 \usepackage{etoolbox}
-\usepackage{hypdoc}
-\hypersetup{colorlinks=true,
-            urlcolor=pdfurlcolor, 
-            filecolor=pdffilecolor, 
-            linkcolor=pdflinkcolor,
-            breaklinks, 
-            linktocpage=true}
+\usepackage{hypdoc} 
+\hypersetup{colorlinks=true, urlcolor=pdfurlcolor,
+  filecolor=pdffilecolor, linkcolor=pdflinkcolor, breaklinks,
+  linktocpage=true} 
 \usepackage{breakurl}
-\definecolor{DOrange}{rgb}{0.9,.36,.18}
+\definecolor{DOrange}{rgb}{0.9,.36,.18} 
 \colorlet{pdflinkcolor}{DOrange}
-\colorlet{pdfurlcolor}{DOrange}
+\colorlet{pdfurlcolor}{DOrange} 
 \colorlet{pdffilecolor}{DOrange}
-\usepackage{showexpl}
-\makeatletter\renewcommand*\SX@Info{}\makeatother 
+\usepackage{showexpl} 
+\makeatletter\renewcommand*\SX@Info{}\makeatother
 \definecolor{colKeys}{rgb}{0,0,0}
 \definecolor{colIdentifier}{rgb}{0,0,0}
 \colorlet{colComments}{DOrange!50!white}
-\definecolor{colString}{rgb}{0,0.5,0} 
-\lstset{%
-  language=[LaTeX]TeX, 
-  identifierstyle=\color{colIdentifier}, %
+\definecolor{colString}{rgb}{0,0.5,0} \lstset{%
+  language=[LaTeX]TeX, identifierstyle=\color{colIdentifier}, %
   keywordstyle=\color{colKeys}, %
   stringstyle=\color{colString}, %
   commentstyle=\color{colComments}, %
@@ -83,39 +77,40 @@
   showspaces=false, %
   showstringspaces=false, %
   breaklines=true, %
-  breakautoindent=true, captionpos=b, xleftmargin=1em,
-  rulecolor=\color{black!20}, 
-  texcsstyle = [20]\color{DOrange},
+  breakautoindent=true, %
+  captionpos=b, %
+  xleftmargin=1em, %
+  rulecolor=\color{black!20}, %
+  texcsstyle = [20]\color{DOrange}, %
   moretexcs = [20]{lens, optbox, oenode, oenodeIn, oenodeExt, oenodeOut,
-    oenodeRefA, oenodeRefB, oenodeTrefA, oenodeTrefB, optplate,
-    optretplate, pinhole, crystal,optdetector, optdiode, doveprism,
-    polarization, mirror, beamsplitter, optgrating, optprism,
-    rightangleprism, pentaprism, optdipole, optripole, optfiber, optamp,
-    optmzm, optfilter, polcontrol, optisolator, optswitch,
-    fiberdelayline, optfiberpolarizer, fibercollimator, optcoupler,
-    wdmcoupler, wdmsplitter, drawbeam, drawwidebeam, drawfiber,
-    custombeam, frontlayer, backlayer, newOptexpDipole,
-    newOptexpTripole, newOptexpFiberDipole},
+    oenodeRefA, oenodeRefB, oenodeTrefA, oenodeTrefB, oenodeLabel,
+    oenodeCenter, optplate, optretplate, pinhole, crystal,optdetector,
+    optdiode, doveprism, polarization, mirror, beamsplitter, optgrating,
+    optprism, rightangleprism, pentaprism, optdipole, optripole,
+    optfiber, optamp, optmzm, optfilter, polcontrol, optisolator,
+    optswitch, fiberdelayline, optfiberpolarizer, fibercollimator,
+    optcoupler, wdmcoupler, wdmsplitter, drawbeam, drawwidebeam,
+    drawfiber, custombeam, frontlayer, backlayer, newOptexpDipole,
+    newOptexpTripole, newOptexpFiberDipole}, %
   explpreset={%
-    escapeinside={*}{*}, 
-    pos=l,width=-99pt,overhang=0pt,hsep=5mm,
+    escapeinside={*}{*}, pos=l,width=-99pt,overhang=0pt,hsep=5mm,
     varwidth,vsep=\bigskipamount,rframe={}}, }
 \colorlet{sectioncolor}{DOrange}
 \addtokomafont{sectioning}{\color{sectioncolor}}
 \addtokomafont{subsection}{\Large}
 \addtokomafont{subsubsection}{\Large}
-\usepackage[automark,nouppercase]{scrpage2} 
+\usepackage[automark,nouppercase]{scrpage2}
 \pagestyle{scrheadings}
 \clearscrheadings
-\clearscrplain 
-\ohead{\pagemark} 
+\clearscrplain
+\ohead{\pagemark}
 \ihead{\headmark}
 \ofoot[\pagemark]{}
 \automark[subsection]{section}
 \setheadsepline{.4pt}[\color{DOrange}]
 \setheadwidth[0pt]{text}
 \setfootwidth[0pt]{text}
-\undef{\cs} 
+\undef{\cs}
 \undef{\cmd}
 \usepackage{ltxdockit}
 \usepackage{csquotes}
@@ -523,23 +518,23 @@
 %
 % \ifGERMAN
 %   \section{Anforderungen}
-% \LPack{pst-optexp} Version 3.0 benötigt aktuelle Versionen der Pakete \LPack{pst-node}, \LPack{pstricks-add}, \LPack{multido},
-% \LPack{pst-eucl} und \LPack{environ}. 
+%   \LPack{pst-optexp} Version 3.0 benötigt aktuelle Versionen der
+%   Pakete \LPack{pst-node}, \LPack{pstricks-add}, \LPack{multido},
+%   \LPack{pst-eucl} und \LPack{environ}.
 %
-% Alle PSTricks-Pakete machen regen Gebrauch von Postscript, so dass der
-% typische Arbeitsfluss \cmd{latex}, \cmd{dvips} und ggf. \cmd{ps2pdf}
-% umfasst. Alternative Methoden sind auf
-% \url{http://tug.org/PSTricks/main.cgi?file=pdf/pdfoutput} beschrieben.
-% \fi 
-% \ifENGLISH
+%   Alle PSTricks-Pakete machen regen Gebrauch von Postscript, so dass
+%   der typische Arbeitsfluss \opt{latex}, \opt{dvips} und
+%   ggf. \opt{ps2pdf} umfasst. Alternative Methoden sind auf
+%   \url{http://tug.org/PSTricks/main.cgi?file=pdf/pdfoutput}
+%   beschrieben.  \fi \ifENGLISH
 %   \section{Requirements}
 %   \LPack{pst-optexp} version 3.0 requires recent versions of
 %   \LPack{pst-node}, \LPack{pstricks-add}, \LPack{multido},
 %   \LPack{pst-eucl}, and \LPack{environ}. 
 %
 %   All PSTricks package heavily rely on the Postscript language so that
-%   the typical workflow involves \cmd{latex}, \cmd{dvips}, and
-%   \cmd{ps2pdf}. Of course there are several alternative ways, see
+%   the typical workflow involves \opt{latex}, \opt{dvips}, and
+%   \opt{ps2pdf}. Of course there are several alternative ways, see
 %   \url{http://tug.org/PSTricks/main.cgi?file=pdf/pdfoutput} for details.
 % \fi
 %
@@ -553,10 +548,10 @@
 %   \texttt{pst-optexp.ins} und \texttt{pst-optexp.dtx}. Durch Aufrufen
 %   von \texttt{latex pst-optexp.ins} werden die beiden folgenden
 %   Dateien erzeugt:
-%   \begin{compactitem}
+%   \begin{itemize}
 %   \item \texttt{pst-optexp.pro}: die Postscript Prologdatei
 %   \item \texttt{pst-optexp.sty}: die \LaTeX{} Stildatei
-%   \end{compactitem}
+%   \end{itemize}
 %   Speichern Sie diese Dateien in einem Verzeichnis der Teil Ihres
 %   lokalen \TeX-Baums ist.
 % 
@@ -575,10 +570,10 @@
 %   and is included in \TeX Live and MiK\TeX.
 % 
 %   The \LPack{pst-optexp} package consists of the two main files \texttt{pst-optexp.ins} and \texttt{pst-optexp.dtx}. 
-%   \begin{compactitem}
+%   \begin{itemize}
 %   \item \texttt{pst-optexp.pro}: the Postscript prolog file
 %   \item \texttt{pst-optexp.sty}: the \LaTeX{} style file
-%   \end{compactitem}
+%   \end{itemize}
 %   Save the files in a directory which is part of your local \TeX{} tree.
 % 
 %   Do not forget to run \texttt{texhash} to update this tree. For MiK\TeX{}
@@ -886,45 +881,6 @@
 % Some hybrid dipoles (optbox, detector etc.) can be used both as
 % fiber-optical or free-ray elements. 
 % 
-% \subsection{General settings}
-% 
-% Some generic parameters which can be used for all objects.
-% 
-% \begin{optionlist}
-% \numitem[0]{angle}
-% Rotate an object by \nxLkeyword{angle} degrees.
-% 
-% \boolitem[false]{optional}
-% \styleitem{OptionalStyle}
-% Can be used with every object and marks it as optional. The style of an
-% optional element can be configured by changing the style
-% \nxLkeyword{OptionalStyle}.
-% 
-% \iffalse
-%<*ignore>
-% \fi
-\begin{LTXexample}
-\begin{pspicture}(3,1.5)
-\lens[optional, beam](0,1)(3,1){L}
-\end{pspicture}
-\end{LTXexample}
-% \iffalse
-%</ignore>
-% \fi
-% 
-% \boolitem[false]{showoptdots}
-% Draw some internal nodes which are used to place the object and the
-% label. The black points are used for positioning, the red points mark
-% the label references.
-% 
-% \begin{lstlisting}[gobble=2]
-% \begin{pspicture}(3,2)
-% \mirror[showoptdots,
-%           beam](0,1)(1.9,1)(1.9,0){mirror}
-% \end{pspicture}
-% \end{lstlisting}
-% \end{optionlist}
-% 
 % \subsection{Using PSStyles}\label{sec:styles}
 % 
 % The appearance of many functional parts of \LPack{pst-optexp} objects is
@@ -961,6 +917,280 @@
 % \styleitem{OptionalStyle}
 % \end{optionlist}
 %
+% \subsection{Object names}\label{sec:namingobj}
+% All objects of a \nxLPack{pst-optexp} sketch are numbered
+% automatically in increasing order by their definition in the code. The
+% objects as well as their special nodes can be accessed via this
+% number.
+% 
+% \begin{optionlist}
+%   \valitem{compname}{string} Assigns a name to an object, which can
+%   then be referenced both by this name and by its number. The
+%   parameter can be assigned only directly within a
+%   \nxLPack{pst-optexp} object and should be unique within one
+%   \nxLkeyword{pspicture} environment.
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(2,2)
+  \optbox[compname=MyBox](0,1)(2,2)
+  \psdot[linecolor=red](\oenodeIn{MyBox})% use the compname
+  \psdot[linecolor=blue](\oenodeOut{1})  % use the number
+\end{pspicture}
+\end{LTXexample}
+% \end{optionlist}
+% \iffalse
+%</ignore>
+% \fi
+%
+% \subsection{Special nodes}\label{sec:objnodes}
+% 
+% Every \nxLPack{pst-optexp} object of an experimental setup provides several
+% special nodes which are related to the geometry and the positioning of the
+% component. These are useful for related positioning and drawing.
+% 
+% \begin{ltxsyntax}
+%   \cmditem{oenode}{Obj}{Node} 
+%
+%   This is the basic command to access any
+%   node associated with a certain object. The first argument \prm{Obj} is the
+%   name of the target object (according to \prettyref{sec:namingobj}), if
+%   it is left empty, the last defined component is used. The second
+%   argument is the name postfix of the requested special node. 
+%
+%   For most special nodes an appropriate macro is provided, which you
+%   are strongly advised to use. Only the interface nodes except for the
+%   first and last one do not have an explicit macro associated.
+% \end{ltxsyntax}
+% 
+% \subsubsection{Reference nodes}\label{sec:refnodes}
+%
+% \begin{ltxsyntax}
+%   \cmditem{oenodeRefA}{Obj}
+%   \cmditem{oenodeRefB}{Obj}
+%
+%   The input and output reference nodes.
+% \iffalse
+%<*ignore>
+% \fi
+% \iffalse
+%</ignore>
+% \fi
+%
+%   \cmditem{oenodeTrefA}{Obj}
+%   \cmditem{oenodeTrefB}{Obj}
+%
+%   The transformed input and output reference nodes.
+% \end{ltxsyntax}
+%
+% \subsubsection{Input and output node}\label{sec:inoutnode}
+% \begin{ltxsyntax}
+%   \cmditem{oenodeIn}{Obj}
+%   \cmditem{oenodeOut}{Obj}
+% \end{ltxsyntax}
+%
+% \subsubsection{Rotation reference node}\label{sec:rotrefnode}
+% \begin{ltxsyntax}
+%   \cmditem{oenodeRotref}{Obj}
+% \end{ltxsyntax}
+%
+% \subsubsection{Center node}\label{sec:centernode}
+% \begin{ltxsyntax}
+%   \cmditem{oenodeCenter}{Obj}
+% \end{ltxsyntax}
+%
+% \subsubsection{Label node}\label{sec:labelnode}
+% \begin{ltxsyntax}
+%   \cmditem{oenodeLabel}{Obj}
+% \end{ltxsyntax}
+%
+% \subsubsection{External nodes}\label{sec:extnode}
+% 
+% \begin{optionlist}
+% \valitem{extnode}{refstring}
+% 
+% Controls the position of the additional node and
+% takes a \paramvalue{<ref string>} as its argument. By default this
+% parameter is empty (\paramvalue{\{\}}) and no node is created.
+% 
+% The name of the new node depends on the \Lkeyword{compname} parameter
+% (see Sec.~\ref{sec:namedobj} for naming conventions). If \nxLkeyword{compname} is empty
+% the new node is named \nodename{ExtNode} by default and overwritten by
+% following objects.
+% 
+% Table.~\ref{tab:nodes} shows all objects which provide an external
+% node. Some allow any possible \paramvalue{<ref string>} for \Lkeyword{extnode}, others have
+% only one reasonable possibility (e.g. piezo mirror, see
+% Sec.~\ref{sec:mirror}) which does not depend on the actual value of \Lkeyword{extnode}.
+% 
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[pos=t, vsep=8mm]
+\begin{pspicture}[showgrid=true](11,3) 
+   \psset{beam, beaminside=false, labelangle=-90, labeloffset=0.3}
+   \optbox[extnode=tl](0,2.5)(3,2.5){\texttt{tl}}\psdot(\oenodeExt{})
+   \optbox[extnode=l](0,1.5)(3,1.5){\texttt{l}}\psdot(\oenodeExt{})
+   \optbox[extnode=bl](0,0.5)(3,0.5){\texttt{bl}}\psdot(\oenodeExt{})
+   \optbox[extnode=t](4,2.5)(7,2.5){\texttt{t}}\psdot(\oenodeExt{})
+   \optbox[extnode=c](4,1.5)(7,1.5){\texttt{c}}\psdot(\oenodeExt{})
+   \optbox[extnode=b](4,0.5)(7,0.5){\texttt{b}}\psdot(\oenodeExt{})
+   \optbox[extnode=tr](8,2.5)(11,2.5){\texttt{tr}}\psdot(\oenodeExt{})
+   \optbox[extnode=r](8,1.5)(11,1.5){\texttt{r}}\psdot(\oenodeExt{})
+   \optbox[extnode=br](8,0.5)(11,0.5){\texttt{br}}\psdot(\oenodeExt{})
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+% \end{optionlist}
+%
+% \subsubsection{Interface nodes}\label{sec:ifcnodes}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(2.8,3) 
+  \pentaprism[pentaprismsize=1.3](0,1.5)(1.5,1.5)(1.5,0)
+  \drawbeam[arrows=->, arrowinset=0, arrowscale=1.5]{(0,1.5)}{}{(1.5,0)}
+  \psdot(\oenodeIn{})\uput[135](\oenodeIn{}){1}
+  \psdot(\oenode{2}{})\uput[0](\oenode{2}{}){2}
+  \psdot(\oenode{3}{})\uput[90](\oenode{3}{}){3}
+  \psdot(\oenodeOut{})\uput[-45](\oenode{N}{}){N}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+% \ifGERMAN
+%   \chapter{Referenz}
+% \fi
+% \ifENGLISH
+%   \chapter{Reference}
+% \fi
+% 
+% This chapter contains detailed information about all object, macros
+% and related options. It is divided into three parts:
+% \begin{itemize}
+% \item Section \ref{sec:freeraycomp} explains in detail all free-ray
+%   components, reflective and transmittive. The free-ray components
+%   differ from the fiber-optical ones with respect to their ray-tracing
+%   capabilities, but they can also be connected with fibers.
+% \item Section \ref{sec:fibercomp} describes all fiber-optical
+%   components, which can be used with fiber connections only. They must
+%   not obey any refraction or reflection law.
+% \item Section \ref{sec:connecting} contains detailed information about
+%   all possiblities of beam and fiber connections.
+% \end{itemize}
+%
+% \begin{table}\centering
+% \begin{tabularx}{0.9\linewidth}{>{\itshape}lX} \toprule
+%   Name & Description\\ \midrule
+%   num & Any number\\ 
+%   int & Integer number\\ 
+%   dimen & Dimension\\
+%   psstyle & Custom graphics parameter configuration defined with \Lcs{newpsstyle}\\
+%   psnum & Any Postscript code that evaluates to a number\\
+%   refstring & \refstringexplanation\\ \bottomrule
+% \end{tabularx}
+% \end{table}
+% 
+% \section{General parameters}
+% 
+% Some general parameters which can be used for all objects.
+% 
+% \begin{optionlist}
+%   \boolitem[false]{optional} Mark an object as optional by applying
+%   the \opt{OptionalStyle} style.
+%
+%   \styleitem{OptionalStyle} Can be used with every object and marks it
+%   as optional. The style of an optional element can be configured by
+%   changing the style \nxLkeyword{OptionalStyle}. 
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(3,1.5)
+\lens[optional, beam](0,1)(3,1){L}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+% 
+% \boolitem[false]{showoptdots}
+% Draw some internal nodes which are used to place the object and the
+% label. The black points are used for positioning, the red points mark
+% the label references.
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(3,2)
+\mirror[showoptdots,
+          beam](0,1)(1.9,1)(1.9,0){mirror}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+% \end{optionlist}
+%
+% \subsection{Rotating and Shifting}
+% \begin{optionlist}
+% \numitem[0]{angle}
+% \numitem[c]{rotateref}{refstring}
+% The parameter \Lkeyword{angle} describes the tilt of the box
+% relative to the reference line defined by the two reference nodes. The
+% reference point for the rotation can be defined
+% with \Lkeyword{rotateref} which can take any combination
+% of \paramvalue{c}, \paramvalue{t}, \paramvalue{b}, \paramvalue{l}
+% and \paramvalue{r} (compare with \Lkeyword{extnode} in
+% Sec.~\ref{sec:extnode}). Note, that all connection-related nodes are
+% also rotate, while the label is not affected. 
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(3,2)
+  \optbox[angle=20, beam, rotateref=l, 
+            labeloffset=0.5](0,1)(3,1){box}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
+% \numitem[0]{compshift} Shift a component perpendicular to its
+% reference line (see \prettyref{sec:refnodes}). For reflective components it is shifted along the
+% reflective interface.
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(3,2)
+  \pnode(0,1){A}\pnode(2.7,1){B}
+  \lens[compshift=0.3](A)(B){L}
+  \psline[linecolor=gray!30](A)(B)
+  \psdot(\oenodeRefA{})\uput[-90](\oenodeRefA{}){RefA}
+  \psdot(\oenodeRefB{})\uput[-90](\oenodeRefB{}){RefB}
+\end{pspicture}
+\end{LTXexample}
+\begin{LTXexample}
+\begin{pspicture}(3,2) 
+  \pnode(0,1){A}\pnode(2,0){B}
+  \mirror[compshift=0.3](A)(2,1)(B){mirror}
+  \psline[linecolor=gray!30](\oenodeRefA{})(\oenodeRefB{}|\oenodeRefA{})(\oenodeRefB{})
+  \psdot(\oenodeRefA{})\uput[-90](\oenodeRefA{}){RefA}
+  \psdot(\oenodeRefB{})\uput[180](\oenodeRefB{}){RefB}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+% \end{optionlist}
+%
 % \subsection{Positioning}\label{sec:positioning}
 % \begin{optionlist}
 %   \numitem{position} Equivalent to the \Lkeyword{npos} parameter of
@@ -988,28 +1218,6 @@
 \begin{LTXexample}
 \begin{pspicture}(3,1.5) 
   \lens[beam, abspos=1](0,1)(3,1){L}
-\end{pspicture}
-\end{LTXexample}
-% \iffalse
-%</ignore>
-% \fi
-% 
-% \numitem[0]{compshift}
-% 
-% \iffalse
-%<*ignore>
-% \fi
-\begin{LTXexample}
-\begin{pspicture}(3,2) 
-  \lens[compshift=0.1, n=1](0,1)(3,1){L}
-  \addtopsstyle{Beam}{beamangleabs}
-  \drawbeam{(0,1)}{}{(3,1)}
-\end{pspicture}
-\end{LTXexample}
-
-\begin{LTXexample}
-\begin{pspicture}(3,2) 
-  \mirror[beam, compshift=0.2, beamangleabs, labelangle=45](0,1)(2,1)(2,0){mirror}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -1188,175 +1396,6 @@
 % \fi
 % \end{optionlist}
 % 
-% \subsection{Object Names}\label{sec:namingobj}
-% All objects of a \nxLPack{pst-optexp} sketch are numbered
-% automatically in increasing order by their definition in the code. The
-% objects as well as their special nodes can be accessed via this
-% number.
-% 
-% \begin{optionlist}
-%   \valitem{compname}{string} This parameter can be used to assign a unique
-%   name instead of the automatic number to an object. It can be used only
-%   directly within a \nxLPack{pst-optexp} object and must be unique within one
-%   \nxLkeyword{pspicture} environment.
-% 
-% \begin{lstlisting}[gobble=2]
-% \optbox[compname=MyBox](A)(B){Box} % valid use of 'compname'
-% \psset{compname=MyName}            % not valid, gives an error
-% \end{lstlisting}
-% \end{optionlist}
-%
-% \subsection{Special nodes}\label{sec:objnodes}
-% 
-% Every \nxLPack{pst-optexp} object of an experimental setup provides several
-% special nodes which are related to the geometry and the positioning of the
-% component. These are useful for related positioning and drawing.
-% 
-% \begin{ltxsyntax}
-%   \cmditem{oenode}{Obj}{Node} 
-%
-%   This is the basic command to access any
-%   node associated with a certain object. The first argument is the
-%   name of the target object (for naming see \ref{sec:namingobj}), if
-%   it is left empty, the last defined component is choosen. The second
-%   argument is the name postfix of the requested special node. 
-%
-%   For most special nodes an appropriate macro is provided, which you
-%   are strongly advised to use. Only the interface nodes except for the
-%   first and last one do not have an explicit macro associated.
-% \end{ltxsyntax}
-% 
-% \subsubsection{Reference nodes}\label{sec:refnodes}
-%
-% \begin{ltxsyntax}
-%   \cmditem{oenodeRefA}{Obj}
-%   \cmditem{oenodeRefB}{Obj}
-%
-%   The input and output reference nodes.
-% \iffalse
-%<*ignore>
-% \fi
-% \iffalse
-%</ignore>
-% \fi
-%   \cmditem{oenodeTrefA}{Obj}
-%   \cmditem{oenodeTrefB}{Obj}
-%
-%   The transformed input and output reference nodes.
-% \end{ltxsyntax}
-%
-% \subsubsection{Input and output node}\label{sec:inoutnode}
-% \begin{ltxsyntax}
-%   \cmditem{oenodeIn}{Obj}
-%   \cmditem{oenodeOut}{Obj}
-% \end{ltxsyntax}
-%
-% \subsubsection{Rotation reference node}\label{sec:rotrefnode}
-% \begin{ltxsyntax}
-%   \cmditem{oenodeRotref}{Obj}
-% \end{ltxsyntax}
-%
-% \subsubsection{Center node}\label{sec:centernode}
-% \begin{ltxsyntax}
-%   \cmditem{oenodeCenter}{Obj}
-% \end{ltxsyntax}
-%
-% \subsubsection{Label node}\label{sec:labelnode}
-% \begin{ltxsyntax}
-%   \cmditem{oenodeLabel}{Obj}
-% \end{ltxsyntax}
-%
-% \subsubsection{External nodes}\label{sec:extnode}
-% 
-% \begin{optionlist}
-% \valitem{extnode}{refstring}
-% 
-% Controls the position of the additional node and
-% takes a \paramvalue{<ref string>} as its argument. By default this
-% parameter is empty (\paramvalue{\{\}}) and no node is created.
-% 
-% The name of the new node depends on the \Lkeyword{compname} parameter
-% (see Sec.~\ref{sec:namedobj} for naming conventions). If \nxLkeyword{compname} is empty
-% the new node is named \nodename{ExtNode} by default and overwritten by
-% following objects.
-% 
-% Table.~\ref{tab:nodes} shows all objects which provide an external
-% node. Some allow any possible \paramvalue{<ref string>} for \Lkeyword{extnode}, others have
-% only one reasonable possibility (e.g. piezo mirror, see
-% Sec.~\ref{sec:mirror}) which does not depend on the actual value of \Lkeyword{extnode}.
-% 
-% \iffalse
-%<*ignore>
-% \fi
-\begin{LTXexample}[pos=t, vsep=8mm]
-\begin{pspicture}[showgrid=true](11,3) 
-   \psset{beam, beaminside=false, labelangle=-90, labeloffset=0.3}
-   \optbox[extnode=tl](0,2.5)(3,2.5){\texttt{tl}}\psdot(\oenodeExt{})
-   \optbox[extnode=l](0,1.5)(3,1.5){\texttt{l}}\psdot(\oenodeExt{})
-   \optbox[extnode=bl](0,0.5)(3,0.5){\texttt{bl}}\psdot(\oenodeExt{})
-   \optbox[extnode=t](4,2.5)(7,2.5){\texttt{t}}\psdot(\oenodeExt{})
-   \optbox[extnode=c](4,1.5)(7,1.5){\texttt{c}}\psdot(\oenodeExt{})
-   \optbox[extnode=b](4,0.5)(7,0.5){\texttt{b}}\psdot(\oenodeExt{})
-   \optbox[extnode=tr](8,2.5)(11,2.5){\texttt{tr}}\psdot(\oenodeExt{})
-   \optbox[extnode=r](8,1.5)(11,1.5){\texttt{r}}\psdot(\oenodeExt{})
-   \optbox[extnode=br](8,0.5)(11,0.5){\texttt{br}}\psdot(\oenodeExt{})
-\end{pspicture}
-\end{LTXexample}
-% \iffalse
-%</ignore>
-% \fi
-% \end{optionlist}
-%
-% \subsubsection{Interface nodes}\label{sec:ifcnodes}
-% \iffalse
-%<*ignore>
-% \fi
-\begin{LTXexample}
-\begin{pspicture}[showgrid=true](2.5,3) 
-  \pentaprism[pentaprismsize=1.3](0,1.5)(1.5,1.5)(1.5,0)
-  \drawbeam[arrows=->, arrowinset=0, arrowscale=1.5]{(0,1.5)}{}{(1.5,0)}
-  \psdot(\oenodeIn{})\uput[135](\oenodeIn{}){1}
-  \psdot(\oenode{}{2})\uput[0](\oenode{}{2}){2}
-  \psdot(\oenode{}{3})\uput[90](\oenode{}{3}){3}
-  \psdot(\oenodeOut{})\uput[-45](\oenode{}{N}){N}
-\end{pspicture}
-\end{LTXexample}
-% \iffalse
-%</ignore>
-% \fi
-% \ifGERMAN
-%   \chapter{Referenz}
-% \fi
-% \ifENGLISH
-%   \chapter{Reference}
-% \fi
-% 
-% This chapter contains detailed information about all object, macros
-% and related options. It is divided into three parts:
-% \begin{itemize}
-% \item Section \ref{sec:freeraycomp} explains in detail all free-ray
-%   components, reflective and transmittive. The free-ray components
-%   differ from the fiber-optical ones with respect to their ray-tracing
-%   capabilities, but they can also be connected with fibers.
-% \item Section \ref{sec:fibercomp} describes all fiber-optical
-%   components, which can be used with fiber connections only. They must
-%   not obey any refraction or reflection law.
-% \item Section \ref{sec:connecting} contains detailed information about
-%   all possiblities of beam and fiber connections.
-% \end{itemize}
-%
-% \begin{table}
-% \begin{tabular}{>{\itshape}ll} \toprule
-%   Name & Description\\ \midrule
-%   num & Any number\\ 
-%   int & Integer number\\ 
-%   dimen & Dimension\\
-%   psstyle & Custom graphics parameter configuration defined by \Lcs{newpsstyle}\\
-%   psnum & Any Postscript code that evaluates to a number\\ \bottomrule
-% \end{tabular}
-% \end{table}
-% 
-%
 % \ifGERMAN
 %   \section{Freistrahl-Komponenten}
 % \fi
@@ -1696,30 +1735,6 @@
 \begin{pspicture}(3,2)
   \optbox[beam, endbox, label=0 . . relative]%
            (0,0)(1.5,1){box}
-\end{pspicture}
-\end{LTXexample}
-% \iffalse
-%</ignore>
-% \fi
-% 
-% \numitem[0]{angle}
-% \numitem[c]{rotateref}{refstring}
-% The parameter \Lkeyword{angle} describes the tilt of the box
-% relative to the reference line defined by the two reference nodes. The
-% reference point for the rotation can be defined
-% with \Lkeyword{rotateref} which can take any combination
-% of \paramvalue{c}, \paramvalue{t}, \paramvalue{b}, \paramvalue{l}
-% and \paramvalue{r} (compare with \Lkeyword{extnode} in
-% Sec.~\ref{sec:extnode}). Note, that all connection-related nodes are
-% also rotate, while the label is not affected.
-% 
-% \iffalse
-%<*ignore>
-% \fi
-\begin{LTXexample}
-\begin{pspicture}(3,2)
-  \optbox[angle=20, beam, rotateref=l, 
-            labeloffset=0.5](0,1)(3,1){box}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -4907,7 +4922,7 @@
   \gdef\POE@complist{}\global\POE@cnt=0\relax
 }%
 %    \end{macrocode}
-% Set the component name. If the parameter is empty, a generated name is used.
+% Set the component name. 
 %    \begin{macrocode}
 \define@key[psset]{optexp}{compname}{%
   \ifPOE@insideobj\else
@@ -4939,7 +4954,7 @@
   \@expandtwoargs\in@{,\POE@key@compname,}{,\POE@complist,}%
   \ifin@
     \PackageWarning{pst-optexp}%
-         {^^Jcompname '\POE@key@compname' already used. Previously defined nodes will be overwritten!^^J}%
+      {^^Jcompname '\POE@key@compname' already used. Previously defined nodes will be overwritten!^^J}%
   \else
 %    \end{macrocode}
 % Use definition of \cs{XKV@addtolist@x} with an \cs{xdef} instead of \cs{edef} in order to keep the bookkeeping global
@@ -5734,19 +5749,19 @@
 % \begin{macro}{\oenode}
 %    \begin{macrocode}
 \def\oenode#1#2{%
-  \ifx.#1.%
+  \ifx.#2.%
     \POE@getlastcompname
   \else
     \POE@str@basicname@prefix
-    \ifnum9<1#1 
+    \ifnum9<1#2 
       \POE@str@basicname@default
     \fi
-    #1%
+    #2%
   \fi
   \ifPOE@compat
     \POE@str@basicname@sep
   \fi
-  #2%
+  #1%
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -5757,16 +5772,16 @@
 % \begin{macro}{\oenodeCenter}
 % \begin{macro}{\oenodeLabel}
 %    \begin{macrocode}
-\def\oenodeExt#1{\oenode{#1}{\POE@str@extnode@postfix}}%
-\def\oenodeIn#1{\oenode{#1}{1}}%
-\def\oenodeOut#1{\oenode{#1}{N}}%
-\def\oenodeCenter#1{\oenode{#1}{Center}}%
-\def\oenodeLabel#1{\oenode{#1}{Label}}%
-\def\oenodeRefA#1{\oenode{#1}{A}}%
-\def\oenodeRefB#1{\oenode{#1}{B}}%
-\def\oenodeRotref#1{\oenode{#1}{Rotref}}%
-\def\oenodeTrefA#1{\oenode{#1}{TrefA}}%
-\def\oenodeTrefB#1{\oenode{#1}{TrefB}}%
+\def\oenodeExt#1{\oenode{\POE@str@extnode@postfix}{#1}}%
+\def\oenodeIn#1{\oenode{1}{#1}}%
+\def\oenodeOut#1{\oenode{N}{#1}}%
+\def\oenodeCenter#1{\oenode{Center}{#1}}%
+\def\oenodeLabel#1{\oenode{Label}{#1}}%
+\def\oenodeRefA#1{\oenode{A}{#1}}%
+\def\oenodeRefB#1{\oenode{B}{#1}}%
+\def\oenodeRotref#1{\oenode{Rotref}{#1}}%
+\def\oenodeTrefA#1{\oenode{TrefA}{#1}}%
+\def\oenodeTrefB#1{\oenode{TrefB}{#1}}%
 %    \end{macrocode}
 % \end{macro}
 % \end{macro}
@@ -5862,7 +5877,7 @@
 %    \end{macrocode}
 % for multipoles the default shifting is in $x$-direction
 %    \begin{macrocode}
-  \let\POE@key@comp@Xshift\POE@key@compshift%
+  \def\POE@key@comp@Xshift{\POE@key@compshift\space neg }%
   \def\POE@key@comp@Yshift{0}%
 %    \end{macrocode}
 % The positioning parameters are disabled, because \opt{compshift} does the job for tripoles.
@@ -6326,7 +6341,7 @@
 %    \begin{macrocode}
 \def\POE@putcomp#1#2{%
   \@ifundefined{#1@ref}{}{\@nameuse{#1@ref}}%
-   \rput(\POE@key@comp@Xshift,\POE@key@comp@Yshift){%
+   \rput(! \POE@key@comp@Xshift\space\POE@key@comp@Yshift){%
      \pnode(! \POE@dict{ExtNode}){\oenodeRotref{}}%
      \ifdim\POE@key@angle pt=0pt
         #2%
@@ -7672,15 +7687,15 @@
     \def\@yshift{0 }%
   \fi\fi
   \ifx\POE@key@couplertype\POE@str@couplertype@none
-    \pnode(! \@sz -0.5 mul \@yshift \@sep add){\oenode{}{1}}
-    \pnode(! \@sz -0.5 mul \@yshift \@sep sub){\oenode{}{2}}
-    \pnode(! \@sz 0.5 mul \@yshift \@sep add){\oenode{}{3}}
-    \pnode(! \@sz 0.5 mul \@yshift \@sep sub){\oenode{}{N}}
+    \pnode(! \@sz -0.5 mul \@yshift \@sep add){\oenode{1}{}}
+    \pnode(! \@sz -0.5 mul \@yshift \@sep sub){\oenode{2}{}}
+    \pnode(! \@sz 0.5 mul \@yshift \@sep add){\oenode{3}{}}
+    \pnode(! \@sz 0.5 mul \@yshift \@sep sub){\oenode{N}{}}
   \else
-    \pnode(! \@sz neg \getCLW 0.3 mul add \@yshift \@sep add){\oenode{}{1}}
-    \pnode(! \@sz neg \getCLW 0.3 mul add \@yshift \@sep sub){\oenode{}{2}}
-    \pnode(! \@sz \getCLW 0.3 mul sub \@yshift \@sep add){\oenode{}{3}}
-    \pnode(! \@sz \getCLW 0.3 mul sub \@yshift \@sep sub){\oenode{}{N}}
+    \pnode(! \@sz neg \getCLW 0.3 mul add \@yshift \@sep add){\oenode{1}{}}
+    \pnode(! \@sz neg \getCLW 0.3 mul add \@yshift \@sep sub){\oenode{2}{}}
+    \pnode(! \@sz \getCLW 0.3 mul sub \@yshift \@sep add){\oenode{3}{}}
+    \pnode(! \@sz \getCLW 0.3 mul sub \@yshift \@sep sub){\oenode{N}{}}
   \fi
   \pnode(! 0 \@yshift){\oenodeCenter{}}
 }%
@@ -7700,8 +7715,8 @@
     \def\@yshift{0 }%
   \fi\fi
   \ifx\POE@key@couplertype\POE@str@couplertype@none
-    \psline[style=Fiber](\oenode{}{1})(\oenode{}{3})
-    \psline[style=Fiber](\oenode{}{2})(\oenode{}{N})
+    \psline[style=Fiber](\oenode{1}{})(\oenode{3}{})
+    \psline[style=Fiber](\oenode{2}{})(\oenode{N}{})
   \else\ifx\POE@key@couplertype\POE@str@couplertype@elliptic
     \psellipse[dimen=outer](!0 \@yshift)(! \@sz \@sz 0.4 mul)
   \else\ifx\POE@key@couplertype\POE@str@couplertype@rectangular
@@ -7739,13 +7754,13 @@
     \def\@yshift{0 }%
   \fi\fi
   \ifx\POE@key@couplertype\POE@str@couplertype@none
-    \pnode(! \@sz -0.5 mul \@yshift \@sep add){\oenode{}{1}}
-    \pnode(! \@sz -0.5 mul \@yshift \@sep sub){\oenode{}{2}}
-    \pnode(! \@sz 0.5 mul 0){\oenode{}{N}}
+    \pnode(! \@sz -0.5 mul \@yshift \@sep add){\oenode{1}{}}
+    \pnode(! \@sz -0.5 mul \@yshift \@sep sub){\oenode{2}{}}
+    \pnode(! \@sz 0.5 mul 0){\oenode{N}{}}
   \else
-    \pnode(! \@sz neg \getCLW 0.3 mul add \@yshift \@sep add){\oenode{}{1}}
-    \pnode(! \@sz neg \getCLW 0.3 mul add \@yshift \@sep sub){\oenode{}{2}}
-    \pnode(! \@sz \getCLW 0.3 mul sub 0){\oenode{}{N}}
+    \pnode(! \@sz neg \getCLW 0.3 mul add \@yshift \@sep add){\oenode{1}{}}
+    \pnode(! \@sz neg \getCLW 0.3 mul add \@yshift \@sep sub){\oenode{2}{}}
+    \pnode(! \@sz \getCLW 0.3 mul sub 0){\oenode{N}{}}
   \fi
   \pnode(! 0 \@yshift){\oenodeCenter{}}
 }%
@@ -7776,12 +7791,12 @@
                          (!\@sz \@yshift \@sz 0.4 mul add)
   \else\ifx\POE@key@couplertype\POE@str@couplertype@none
     \ifx\POE@key@align\POE@str@top
-      \psline[style=Fiber](\oenode{}{1})(\oenodeOut{})
-      \psline[style=Fiber](! \pst@optexpdict /N@\oenodeOut{} @GetCenter end \tx@UserCoor \POE@key@couplersep\space sub)(\oenode{}{2})
+      \psline[style=Fiber](\oenode{1}{})(\oenodeOut{})
+      \psline[style=Fiber](! \pst@optexpdict /N@\oenodeOut{} @GetCenter end \tx@UserCoor \POE@key@couplersep\space sub)(\oenode{2}{})
     \else
-      \psline[style=Fiber](\oenode{}{2})(\oenodeOut{})
+      \psline[style=Fiber](\oenode{2}{})(\oenodeOut{})
       \ifx\POE@key@aling\POE@str@bottom
-        \psline[style=Fiber](! \pst@optexpdict /N@\oenodeIn{} @GetCenter end \tx@UserCoor \POE@key@couplersep\space sub)(\oenode{}{1}) 
+        \psline[style=Fiber](! \pst@optexpdict /N@\oenodeIn{} @GetCenter end \tx@UserCoor \POE@key@couplersep\space sub)(\oenode{1}{}) 
       \fi
     \fi
   \fi\fi\fi
@@ -7807,13 +7822,13 @@
     \def\@yshift{0 }%
   \fi\fi
   \ifx\POE@key@couplertype\POE@str@couplertype@none
-    \pnode(! \@sz -0.5 mul 0){\oenode{}{1}}
-    \pnode(! \@sz 0.5 mul \@yshift \@sep add){\oenode{}{2}}
-    \pnode(! \@sz 0.5 mul \@yshift \@sep sub){\oenode{}{N}}
+    \pnode(! \@sz -0.5 mul 0){\oenode{1}{}}
+    \pnode(! \@sz 0.5 mul \@yshift \@sep add){\oenode{2}{}}
+    \pnode(! \@sz 0.5 mul \@yshift \@sep sub){\oenode{N}{}}
   \else
-    \pnode(! \@sz neg \getCLW 0.3 mul add 0){\oenode{}{1}}
-    \pnode(! \@sz \getCLW 0.3 mul sub \@yshift \@sep add){\oenode{}{2}}
-    \pnode(! \@sz \getCLW 0.3 mul sub \@yshift \@sep sub){\oenode{}{N}}
+    \pnode(! \@sz neg \getCLW 0.3 mul add 0){\oenode{1}{}}
+    \pnode(! \@sz \getCLW 0.3 mul sub \@yshift \@sep add){\oenode{2}{}}
+    \pnode(! \@sz \getCLW 0.3 mul sub \@yshift \@sep sub){\oenode{N}{}}
   \fi
   \pnode(! 0 \@yshift){\oenodeCenter{}}
 }%
@@ -7844,12 +7859,12 @@
                          (!\@sz \@yshift \@sz 0.4 mul add)
   \else\ifx\POE@key@couplertype\POE@str@couplertype@none
     \ifx\POE@key@align\POE@str@top
-      \psline[style=Fiber](\oenodeIn{})(\oenode{}{2})
-      \psline[style=Fiber](! \pst@optexpdict /N@\oenodeIn{} @GetCenter end \tx@UserCoor \POE@key@couplersep\space sub)(\oenode{}{N})
+      \psline[style=Fiber](\oenodeIn{})(\oenode{2}{})
+      \psline[style=Fiber](! \pst@optexpdict /N@\oenodeIn{} @GetCenter end \tx@UserCoor \POE@key@couplersep\space sub)(\oenode{N}{})
     \else
-      \psline[style=Fiber](\oenodeIn{})(\oenode{}{N})
+      \psline[style=Fiber](\oenodeIn{})(\oenode{N}{})
       \ifx\POE@key@align\POE@str@bottom
-        \psline[style=Fiber](! \pst@optexpdict /N@\oenodeIn{} @GetCenter end \tx@UserCoor \POE@key@couplersep\space sub)(\oenode{}{2})
+        \psline[style=Fiber](! \pst@optexpdict /N@\oenodeIn{} @GetCenter end \tx@UserCoor \POE@key@couplersep\space sub)(\oenode{2}{})
       \fi
     \fi
   \fi\fi\fi
