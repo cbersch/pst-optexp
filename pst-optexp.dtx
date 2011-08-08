@@ -1137,25 +1137,50 @@
 % \fi
 % \end{optionlist}
 %
-% \subsection{Rotating and Shifting}
+% \ifGERMAN
+%   \subsection{Drehen und Verschieben}
+% \fi
+% \ifENGLISH
+%   \subsection{Rotating and Shifting}
+% \fi\label{sec:rotshift}
+% \ifGERMAN
+% Alle Komponenten können versetzt und um verschiedene Bezugspunkte
+% gedreht werden. Beachten Sie, dass mit den Komponenten auch die
+% Grenzflächenknoten transformiert werden. Die transformierten
+% Referenzknoten sind als eigene Knoten verfügbar (siehe
+% \prettyref{sec:refnodes}).
+% \fi
+% \ifENGLISH
+% All components can be shifted and rotated around different reference
+% nodes. Please note, that together with the components also their
+% interface nodes are transformed. The transformed reference nodes are
+% accessible as new nodes (see \prettyref{sec:refnodes}).
+% \fi
 % \begin{optionlist}
 % \numitem[0]{angle}
+% \ifGERMAN
+% Dreht eine Komponente um den Winkel \prm{num} (in Grad).
+% \fi
+% \ifENGLISH
+% Rotate a component by an angle \prm{num} (in degree).
+% \fi
 % \numitem[c]{rotateref}{refstring}
-% The parameter \Lkeyword{angle} describes the tilt of the box
-% relative to the reference line defined by the two reference nodes. The
-% reference point for the rotation can be defined
-% with \Lkeyword{rotateref} which can take any combination
-% of \paramvalue{c}, \paramvalue{t}, \paramvalue{b}, \paramvalue{l}
-% and \paramvalue{r} (compare with \Lkeyword{extnode} in
-% Sec.~\ref{sec:extnode}). Note, that all connection-related nodes are
-% also rotate, while the label is not affected. 
+% \ifGERMAN
+% Setzt den Bezugspunkt für die Drehung der Komponente. Die möglichen
+% Bezugspunkte jeder Komponente können Sie \prettyref{sec:rotateref}
+% entnehmen.
+% \fi
+% \ifENGLISH
+% Set the reference point for the rotation of the component. For the
+% possible nodes for each component, please refer to
+% \prettyref{sec:rotateref}.
 % \iffalse
 %<*ignore>
 % \fi
 \begin{LTXexample}
 \begin{pspicture}(3,2)
   \optbox[angle=20, beam, rotateref=l, 
-            labeloffset=0.5](0,1)(3,1){box}
+            label=0 . . relative](0,1)(3,1){box}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -1163,21 +1188,21 @@
 % \fi
 %
 % \numitem[0]{compshift} Shift a component perpendicular to its
-% reference line (see \prettyref{sec:refnodes}). For reflective components it is shifted along the
-% reflective interface.
+% reference line (see \prettyref{sec:refnodes}). For reflective
+% components it is shifted along the reflective interface.
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}
+\begin{LTXexample}[linerange={1-3,7-7}]
 \begin{pspicture}(3,2)
   \pnode(0,1){A}\pnode(2.7,1){B}
   \lens[compshift=0.3](A)(B){L}
-  \psline[linecolor=gray!30](A)(B)
+  \psline[linecolor=gray!30](\oenodeRefA{})(\oenodeRefB{})
   \psdot(\oenodeRefA{})\uput[-90](\oenodeRefA{}){RefA}
   \psdot(\oenodeRefB{})\uput[-90](\oenodeRefB{}){RefB}
 \end{pspicture}
 \end{LTXexample}
-\begin{LTXexample}
+\begin{LTXexample}[linerange={1-3,7-7}]
 \begin{pspicture}(3,2) 
   \pnode(0,1){A}\pnode(2,0){B}
   \mirror[compshift=0.3](A)(2,1)(B){mirror}
@@ -1191,12 +1216,33 @@
 % \fi
 % \end{optionlist}
 %
-% \subsection{Positioning}\label{sec:positioning}
+% \ifGERMAN
+%   \subsection{Positionierung}
+% \fi
+% \ifENGLISH
+%   \subsection{Positioning}
+% \fi\label{sec:positioning}
+% \ifGERMAN
+% Alle Komponenten außer den Freistrahl-Dreipolen können zwischen ihren
+% beiden Referenzknoten (\Lcs{oenodeRefA} und \Lcs{oenodeRefB})
+% positioniert werden.
+% \fi
+% \ifENGLISH
+% All components but the tripoles can be positioned between their two
+% reference nodes (\Lcs{oenodeRefA} and \Lcs{oenodeRefB}).
+% \fi
 % \begin{optionlist}
-%   \numitem{position} Equivalent to the \Lkeyword{npos} parameter of
-%   \Lcs{ncput} (a number in the range $0-1$) and controls the relative position
-%   of object between the two reference points. It is available for all components
-%   but the free-ray tripoles.
+%   \numitem{position} 
+%   \ifGERMAN 
+%   Setzt die relative Position eines Objektes zwischen seinen beiden
+%   Referenzknoten. Ist äquivalent zum \Lkeyword{npos} Parameter von
+%   \Lcs{ncput} (eine Zahl im Intervall $[0,1]$).
+%   \fi
+%   \ifENGLISH
+%   Control the relative position of an object between its two reference
+%   points. Equivalent to the \Lkeyword{npos} parameter of \Lcs{ncput}
+%   (a number in the range $[0,1]$).
+%   \fi
 % \iffalse
 %<*ignore>
 % \fi
@@ -1210,8 +1256,12 @@
 % \fi
 % 
 % \numitem{abspos}
-% The parameter \Lkeyword{abspos} allows absolute positioning between the
-% two reference nodes.
+% \ifGERMAN
+% Setzt die absolute Position zwischen den beiden Referenzknoten.
+% \fi
+% \ifENGLISH
+% Control the absolute position between the two reference nodes.
+% \fi
 % \iffalse
 %<*ignore>
 % \fi
@@ -4843,7 +4893,6 @@
 % Coupler
 %    \begin{macrocode}
 \define@key[psset]{optexp}{couplersize}{\pst@checknum{#1}\POE@key@couplersize}
-\define@key[psset]{optexp}{coupleroutshift}{\pst@checknum{#1}\POE@key@coupleroutshift}
 \define@key[psset]{optexp}{couplersep}{\pst@checknum{#1}\POE@key@couplersep}
 \define@choicekey+[psset]{optexp}{couplertype}[\val\nr]{none,elliptic,crossswitch,rectangular}%
    {\edef\POE@key@couplertype{#1}}%
@@ -4853,7 +4902,6 @@
   couplersize=0.2,
   couplersep=0.05,
   align=center,
-  coupleroutshift=0,
   couplertype=elliptic
 }%
 %    \end{macrocode}
@@ -5782,6 +5830,10 @@
 \def\oenodeRotref#1{\oenode{Rotref}{#1}}%
 \def\oenodeTrefA#1{\oenode{TrefA}{#1}}%
 \def\oenodeTrefB#1{\oenode{TrefB}{#1}}%
+\def\oenode@RefA#1{\oenode{@A}{#1}}%
+\def\oenode@RefB#1{\oenode{@B}{#1}}%
+\def\oenode@TrefA#1{\oenode{@TrefA}{#1}}%
+\def\oenode@TrefB#1{\oenode{@TrefB}{#1}}%
 %    \end{macrocode}
 % \end{macro}
 % \end{macro}
@@ -5866,6 +5918,14 @@
 %    \begin{macrocode}
     \let\POE@key@comp@Yshift\POE@key@compshift%
     \def\POE@key@comp@Xshift{0}%
+    \edef\POE@refnodeA{\oenodeRefA{}}%
+    \edef\POE@refnodeB{\oenodeRefB{}}%
+    \edef\POE@trefnodeA{\oenodeTrefA{}}%
+    \edef\POE@trefnodeB{\oenodeTrefB{}}%
+    \def\POE@transformnodes{%
+      \POE@transformnode{\oenodeRefA{}}{\oenodeTrefA{}}%
+      \POE@transformnode{\oenodeRefB{}}{\oenodeTrefB{}}%
+    }%
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -5884,6 +5944,16 @@
 %    \begin{macrocode}
   \let\POE@key@abspos\@empty
   \let\POE@key@position\@empty
+  \edef\POE@refnodeA{\oenode@RefA{}}%
+  \edef\POE@refnodeB{\oenode@RefB{}}%
+  \edef\POE@trefnodeA{\oenode@TrefA{}}%
+  \edef\POE@trefnodeB{\oenode@TrefB{}}%
+  \def\POE@transformnodes{
+    \POE@transformnode{\oenodeRefA{}}{\oenodeTrefA{}}%
+    \POE@transformnode{\oenodeRefB{}}{\oenodeTrefB{}}%
+    \POE@transformnode{\oenode@RefA{}}{\oenode@TrefA{}}%
+    \POE@transformnode{\oenode@RefB{}}{\oenode@TrefB{}}%
+  }%
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -6044,8 +6114,9 @@
       \addbefore@par{#3}%
       \addafter@par{ref@angle=180,#1}%
       \begin@OptexpTripole
-        \POE@calcNodes{##1}{##2}{##3}%
-        \def\POE@restorerefnodes{%
+        \POE@regNodes{##1}{##3}%
+          \POE@calcNodes{##1}{##2}{##3}%
+          \def\POE@restorerefnodes{%
           \pnode(##1){\oenodeRefA{}}
           \pnode(##3){\oenodeRefB{}}
         }%
@@ -6175,7 +6246,7 @@
          \pst@getcoor{#3}\pst@tempB%
          \pnode(!\pst@tempA\pst@number\psyunit div exch \pst@number\psxunit div exch
                  \pst@tempB\pst@number\psyunit div exch \pst@number\psxunit div exch 
-                 \pst@optexpdict mwNode end \POE@key@coupleroutshift\space add){\oenodeRefB{}}
+                 \pst@optexpdict mwNode end){\oenodeRefB{}}
       \fi\fi
     \fi
     \POE@drawcomponent[wdmsplitter]{#4}\wdmsplitter@ii
@@ -6265,10 +6336,8 @@
      \pst@tempc \tx@UserCoor
      \pst@tempb \tx@UserCoor
      calcNodes
-     /ExchCoorSwitch 
-     Y@A X@A neg Y@B X@B neg ExchCoor def
-     X@A Y@A end){\oenodeRefA{}}%
-  \pnode(! \POE@dict{X@B Y@B}){\oenodeRefB{}}%
+     X@A Y@A end){\oenode@RefA{}}%
+  \pnode(! \POE@dict{X@B Y@B}){\oenode@RefB{}}%
   \pst@OptexpVerb{%
     /@xref \POE@key@xref\space def 
     /@yref \POE@key@yref\space def
@@ -6328,9 +6397,9 @@
 % Used to put the label for labelref=relative
 %    \begin{macrocode}
 \def\POE@putlabelrelative#1{%
-   \nput[labelsep=0]{\POE@key@labelangle}%
-        {\oenodeLabel{}}%
-        {\rput[\POE@key@labelalign](0,0){\POE@key@labelstyle #1}}%
+  \nput[labelsep=0]{\POE@key@labelangle}%
+       {\oenodeLabel{}}%
+       {\rput[\POE@key@labelalign](0,0){\POE@key@labelstyle #1}}%
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -6407,12 +6476,12 @@
               { /yA ED /xA ED /yB ED /xB ED} ifelse
           } ifelse
       } if >%
-      \ncline[linestyle=none,fillstyle=none,npos=]{\oenodeRefA{}}{\oenodeRefB{}}%
+      \ncline[linestyle=none,fillstyle=none,npos=]{\POE@trefnodeA}{\POE@trefnodeB}%
       \ifx\POE@key@position\@empty
          \ifx\POE@key@abspos\@empty
             \ncput[nrot=:U,npos=]{\POE@putlabelrelative{#1}}%
          \else
-            \nlput[nrot=:U](\oenodeRefA{})(\oenodeRefB{}){\POE@key@abspos}{\POE@putlabelrelative{#1}}%
+            \nlput[nrot=:U](\POE@refnodeA)(\POE@refnodeB){\POE@key@abspos}{\POE@putlabelrelative{#1}}%
          \fi
       \else
          \ncput[nrot=:U,npos=\POE@key@position]{\POE@putlabelrelative{#1}}
@@ -6484,30 +6553,18 @@
 %    \begin{macrocode}
 \def\opttripole{\pst@object{opttripole}}
 \def\opttripole@i(#1)(#2)(#3)#4#5{%
-   \begin@OptexpTripole
-      \POE@calcNodes{#1}{#2}{#3}
-      \POE@drawcomponent{#5}{%
-         \pnode(0,0){\oenodeCenter{}}% 
-         \newOptexpComp{{ 0 0 } { 1 0 } refl {PlaneIfc} 1 }%
-         #4
-      }%
-%    \end{macrocode}
-% adjust tempNode@A and tempNode@B for the connections
-% check if node must be switched, therefore we implement this
-% directly as PS code
-%    \begin{macrocode}
-      \pst@getcoor{#1}\pst@tempA%
-      \pst@getcoor{#3}\pst@tempB%
-      \pst@OptexpVerb{%
-         tx@NodeDict begin
-            {\pst@tempA } false chirality 0 le { /N@\oenodeRefB{}\space }{ /N@\oenodeRefA{}\space } ifelse
-             10 {InitPnode } NewNode
-             {\pst@tempB } false chirality 0 le { /N@\oenodeRefA{}\space }{ /N@\oenodeRefB{}\space } ifelse
-             10 {InitPnode } NewNode
-         end
-      }%
-      \POE@drawInternalConnections
-   \end@OptexpTripole
+  \begin@OptexpTripole
+    \ifPOE@backlayer   
+      \POE@regNodes{#1}{#3}%
+      \POE@calcNodes{#1}{#2}{#3}%
+    \fi
+    \POE@drawcomponent{#5}{%
+      \pnode(0,0){\oenodeCenter{}}% 
+      \newOptexpComp{{ 0 0 } { 1 0 } refl {PlaneIfc} 1 }%
+      #4
+    }%
+    \POE@drawInternalConnections
+  \end@OptexpTripole
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -6644,24 +6701,11 @@
       \ncput[nrot=:U,npos=\POE@key@position]{\POE@putcomp{#1}{\@@comp}}%
     \fi
   \endgroup
+  \ifPOE@backlayer
+    \POE@transformnodes
+  \fi
   \ifPOE@frontlayer
     \POE@putlabel{#2}%
-  \fi
-  \POE@restorerefnodes
-  \ifPOE@backlayer
-    \pnode(!
-      \POE@dict{%
-        (N@\oenodeRotref{}) @GetCenter 2 copy
-        (N@\oenodeRefA{}) @GetCenter 
-        \POE@key@comp@Xshift\space\POE@key@comp@Yshift\space
-        \tx@ScreenCoor VecAdd 4 2 roll @ABVect 
-        \POE@key@angle\space matrix rotate dtransform VecAdd
-        \tx@UserCoor
-      }){\oenodeTrefA{}}%
-    \pnode(! \POE@dict{%
-               (N@\oenodeRotref{}) @GetCenter 2 copy
-               (N@\oenodeRefB{}) @GetCenter \POE@key@comp@Xshift\space\POE@key@comp@Yshift\space\tx@ScreenCoor VecAdd 4 2 roll @ABVect \POE@key@angle\space matrix rotate dtransform VecAdd
-             \tx@UserCoor}){\oenodeTrefB{}}%
   \fi
 %    \end{macrocode}
 % Show some special dots for debugging
@@ -6683,6 +6727,19 @@
 %    \end{macrocode}
 % \end{macro}
 % 
+% \begin{macro}{POE@transformnode}
+%    \begin{macrocode}
+\def\POE@transformnode#1#2{%
+  \pnode(!
+    \POE@dict{%
+      (N@\oenodeRotref{}) @GetCenter 2 copy
+      (N@#1) @GetCenter 
+      \POE@key@comp@Xshift\space\POE@key@comp@Yshift\space
+      \tx@ScreenCoor VecAdd 4 2 roll @ABVect 
+      \POE@key@angle\space matrix rotate dtransform VecAdd
+      \tx@UserCoor
+    }){#2}%
+}%
 % \begin{macro}{\oeifcnodes}
 %    \begin{macrocode}
 \def\oeifcnodes{\pst@object{oeifcnodes}}
