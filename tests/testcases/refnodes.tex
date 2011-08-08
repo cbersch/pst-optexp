@@ -4,25 +4,42 @@
 \begin{document}
 \begin{pspicture}[showgrid=true](4,4)
   \pnode(0,3){A}\pnode(3,3){B}\pnode(3,0){C}
-  \mirror[mirrortype=piezo, position=2](A)(B)(C)
-  \psdot[linecolor=red](\oenodeRefA{})
+  \begingroup
+    \psset{dotstyle=+, dotscale=1.5, linecolor=green}
+    \psdot(A)\psdot(B)\psdot(C)
+  \endgroup
+  \mirror[labelref=relative, mirrortype=piezo, position=2](A)(B)(C){label}
+  \psdot(\oenodeRefA{})
+  \makeatletter\psdot[dotstyle=x, dotscale=1.5](\oenode@RefA{})\makeatother
+  \psset{linecolor=red}
+  \psdot(\oenodeRefB{})
+  \makeatletter\psdot[dotstyle=x, dotscale=1.5](\oenode@RefB{})\makeatother
 \end{pspicture}
+\vspace*{1cm}
 
 \begin{pspicture}[showgrid=true](4,4)
   \pnode(0,3){A}\pnode(3,3){B}\pnode(3,0){C}
-  \mirror[mirrortype=piezo](C)(B)(A)
-  \psdot[linecolor=red](\oenodeRefA{})
+  \begingroup
+    \psset{dotstyle=+, dotscale=1.5, linecolor=green}
+    \psdot(A)\psdot(B)\psdot(C)
+  \endgroup
+  \mirror[angle=20, mirrortype=piezo](C)(B)(A){label}
+  \psdot(\oenodeRefA{})
+  \makeatletter\psdot[dotstyle=x, dotscale=1.5](\oenode@RefA{})\makeatother
+  \psset{linecolor=red}
+  \psdot(\oenodeRefB{})
+  \makeatletter\psdot[dotstyle=x, dotscale=1.5](\oenode@RefB{})\makeatother
 \end{pspicture}
 
-\begin{pspicture}[showgrid=true](4,4)
-  \pnode(0,1){A}\pnode(3,1){B}
-  \lens(A)(B){L}
-  \psdot[linecolor=red](\oenodeRefA{})
-\end{pspicture}
+% \begin{pspicture}[showgrid=true](4,4)
+%   \pnode(0,1){A}\pnode(3,1){B}
+%   \lens(A)(B){L}
+%   \psdot[linecolor=red](\oenodeRefA{})
+% \end{pspicture}
 
-\begin{pspicture}[showgrid=true](4,4)
-  \pnode(0,1){A}\pnode(3,1){B}
-  \lens(B)(A){L}
-  \psdot[linecolor=red](\oenodeRefA{})
-\end{pspicture}
+% \begin{pspicture}[showgrid=true](4,4)
+%   \pnode(0,1){A}\pnode(3,1){B}
+%   \lens(B)(A){L}
+%   \psdot[linecolor=red](\oenodeRefA{})
+% \end{pspicture}
 \end{document}
