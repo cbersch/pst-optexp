@@ -1156,6 +1156,7 @@
 % interface nodes are transformed. The transformed reference nodes are
 % accessible as new nodes (see \prettyref{sec:refnodes}).
 % \fi
+% 
 % \begin{optionlist}
 % \numitem[0]{angle}
 % \ifGERMAN
@@ -1164,6 +1165,7 @@
 % \ifENGLISH
 % Rotate a component by an angle \prm{num} (in degree).
 % \fi
+%
 % \numitem[c]{rotateref}{refstring}
 % \ifGERMAN
 % Setzt den Bezugspunkt für die Drehung der Komponente. Die möglichen
@@ -1174,6 +1176,7 @@
 % Set the reference point for the rotation of the component. For the
 % possible nodes for each component, please refer to
 % \prettyref{sec:rotateref}.
+% \fi
 % \iffalse
 %<*ignore>
 % \fi
@@ -6108,18 +6111,17 @@
   \@ifundefined{#2@i}{%
     \@namedef{#2}{\pst@object{#2}}%
     \expandafter\def\csname #2@i\endcsname(##1)(##2)(##3){%
-      \@ifnextchar\bgroup{\@nameuse{#2@i@}(##1)(##2)(##3)}{\@nameuse{#2@i@}(##1)(##2)(##3){}}%
+      \@ifnextchar\bgroup{\@nameuse{#2@i@}(##1)(##2)(##3)}%
+                         {\@nameuse{#2@i@}(##1)(##2)(##3){}}%
     }%
     \expandafter\def\csname #2@i@\endcsname(##1)(##2)(##3)##4{%
       \addbefore@par{#3}%
       \addafter@par{ref@angle=180,#1}%
       \begin@OptexpTripole
-        \POE@regNodes{##1}{##3}%
+        \ifPOE@backlayer
           \POE@calcNodes{##1}{##2}{##3}%
-          \def\POE@restorerefnodes{%
-          \pnode(##1){\oenodeRefA{}}
-          \pnode(##3){\oenodeRefB{}}
-        }%
+          \POE@regNodes{##1}{##3}%
+        \fi
         \POE@drawcomponent[#2]{##4}{\@nameuse{#2@ii}}
         \ifPOE@backlayer
           \POE@drawInternalConnections
@@ -6330,13 +6332,13 @@
   \pst@getcoor{#1}\pst@tempa%
   \pst@getcoor{#2}\pst@tempb%
   \pst@getcoor{#3}\pst@tempc%
-  \pnode(!%
-     \pst@optexpdict
-     \pst@tempa \tx@UserCoor
-     \pst@tempc \tx@UserCoor
-     \pst@tempb \tx@UserCoor
-     calcNodes
-     X@A Y@A end){\oenode@RefA{}}%
+  \pnode(!
+    \pst@optexpdict
+    \pst@tempa \tx@UserCoor
+    \pst@tempc \tx@UserCoor
+    \pst@tempb \tx@UserCoor
+    calcNodes
+    X@A Y@A end){\oenode@RefA{}}%
   \pnode(! \POE@dict{X@B Y@B}){\oenode@RefB{}}%
   \pst@OptexpVerb{%
     /@xref \POE@key@xref\space def 
@@ -6673,7 +6675,7 @@
     \fi
     \psset{position=1}%
   \fi%
-  \ncline[linestyle=none,fillstyle=none,npos=]{\oenodeRefA{}}{\oenodeRefB{}}%
+  \ncline[linestyle=none,fillstyle=none,npos=]{\POE@refnodeA}{\POE@refnodeB}%
 %    \end{macrocode}
 % Positioning of the component
 %    \begin{macrocode}
@@ -6695,7 +6697,7 @@
       \ifx\POE@key@abspos\@empty
         \ncput[nrot=:U,npos=]{\POE@putcomp{#1}{\@@comp}}%
       \else
-        \nlput[nrot=:U](\oenodeRefA{})(\oenodeRefB{}){\POE@key@abspos}{\POE@putcomp{#1}{\@@comp}}%
+        \nlput[nrot=:U](\POE@refnodeA)(\POE@refnodeB){\POE@key@abspos}{\POE@putcomp{#1}{\@@comp}}%
       \fi
     \else
       \ncput[nrot=:U,npos=\POE@key@position]{\POE@putcomp{#1}{\@@comp}}%
