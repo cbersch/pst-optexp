@@ -2,44 +2,124 @@
 \usepackage[T1]{fontenc}
 \usepackage{pst-optexp}
 \begin{document}
-\begin{pspicture}[showgrid=true](4,4)
-  \pnode(0,3){A}\pnode(3,3){B}\pnode(3,0){C}
-  \begingroup
-    \psset{dotstyle=+, dotscale=1.5, linecolor=green}
-    \psdot(A)\psdot(B)\psdot(C)
-  \endgroup
-  \mirror[labelref=relative, mirrortype=piezo, position=2](A)(B)(C){label}
-  \psdot(\oenodeRefA{})
-  \makeatletter\psdot[dotstyle=x, dotscale=1.5](\oenode@RefA{})\makeatother
-  \psset{linecolor=red}
-  \psdot(\oenodeRefB{})
-  \makeatletter\psdot[dotstyle=x, dotscale=1.5](\oenode@RefB{})\makeatother
+\addtopsstyle{Fiber}{linecolor=red}
+\addtopsstyle{gridstyle}{gridlabels=0pt}
+\psset{unit=1.5}
+\begin{pspicture}[showgrid=true](3,1)
+  \pnode(0.5,0.5){A}\pnode(2.5,0.5){B}
+  \lens(A)(B)
+  \psdot(\oenodeRefA{})\uput[-90](\oenodeRefA{}){RefA}
+  \psdot(\oenodeRefB{})\uput[-90](\oenodeRefB{}){RefB}
+  \psline[linecolor=gray!50](\oenodeRefA{})(\oenodeRefB{})
+\end{pspicture}
+\hspace{1cm}
+\begin{pspicture}[showgrid=true](3,1)
+  \pnode(0.5,0.5){A}\pnode(2.5,0.5){B}
+  \optmzm[optmzmsize=0.5](A)(B)
+  \psdot(\oenodeRefA{})\uput[-90](\oenodeRefA{}){RefA}
+  \psdot(\oenodeRefB{})\uput[-90](\oenodeRefB{}){RefB}
 \end{pspicture}
 \vspace*{1cm}
 
-\begin{pspicture}[showgrid=true](4,4)
-  \pnode(0,3){A}\pnode(3,3){B}\pnode(3,0){C}
-  \begingroup
-    \psset{dotstyle=+, dotscale=1.5, linecolor=green}
-    \psdot(A)\psdot(B)\psdot(C)
-  \endgroup
-  \mirror[angle=20, mirrortype=piezo](C)(B)(A){label}
-  \psdot(\oenodeRefA{})
-  \makeatletter\psdot[dotstyle=x, dotscale=1.5](\oenode@RefA{})\makeatother
-  \psset{linecolor=red}
-  \psdot(\oenodeRefB{})
-  \makeatletter\psdot[dotstyle=x, dotscale=1.5](\oenode@RefB{})\makeatother
+\begin{pspicture}[showgrid=true](3,2)
+  \pnode(0.5,1.5){A}\pnode(2.5,1.5){B}\pnode(2.5,0.5){C}
+  \mirror[mirrortype=extended](A)(B)(C)
+  \psdot(\oenodeRefA{})\uput[-90](\oenodeRefA{}){RefA}
+  \psdot(\oenodeRefB{})\uput[-90](\oenodeRefB{}){RefB}
+  \psline[linecolor=gray!50](\oenodeRefA{})(\oenodeRefB{}|\oenodeRefA{})(\oenodeRefB{})
+\end{pspicture}
+\hspace*{1cm}
+\begin{pspicture}[showgrid=true](3,1)
+  \pnode(0.5,0.5){A}\pnode(2.5,1){B}\pnode(2.5,0){C}
+  \wdmsplitter(A)(B)(C)
+  \psdot(\oenodeRefA{})\uput[-90](\oenodeRefA{}){RefA}
+  \psdot(\oenodeRefB{})\uput[-90](\oenodeRefB{}){RefB}
+\end{pspicture}
+\vspace*{1cm}
+
+\begin{pspicture}[showgrid=true](3,1)
+  \pnode(0.5,0.9){A}\pnode(2.5,0.9){B}\pnode(2.5,0){C}
+  \wdmsplitter[align=top](A)(B)(C)
+  \psdot(\oenodeRefA{})\uput[-90](\oenodeRefA{}){RefA}
+  \psdot(\oenodeRefB{})\uput[-90](\oenodeRefB{}){RefB}
+\end{pspicture}
+\hspace*{1cm}
+\begin{pspicture}[showgrid=true](3,1)
+  \pnode(0.5,0.1){A}\pnode(2.5,1){B}\pnode(2.5,0.1){C}
+  \wdmsplitter[align=bottom](A)(B)(C)
+  \psdot(\oenodeRefA{})\uput[90](\oenodeRefA{}){RefA}
+  \psdot(\oenodeRefB{})\uput[90](\oenodeRefB{}){RefB}
 \end{pspicture}
 
-% \begin{pspicture}[showgrid=true](4,4)
-%   \pnode(0,1){A}\pnode(3,1){B}
-%   \lens(A)(B){L}
-%   \psdot[linecolor=red](\oenodeRefA{})
-% \end{pspicture}
+\subsection{with compshift}
+\psset{compshift=0.2}
+\begin{pspicture}[showgrid=true](3,1)
+  \pnode(0.5,0.5){A}\pnode(2.5,0.5){B}
+  \lens(A)(B)
+  \psdot(\oenodeRefA{})\uput[-90](\oenodeRefA{}){RefA}
+  \psdot(\oenodeRefB{})\uput[-90](\oenodeRefB{}){RefB}
+  \psline[linecolor=gray!50, linestyle=dashed](\oenodeTrefA{})(\oenodeTrefB{})
+  \psset{dotstyle=x, dotscale=1.5}
+  \psdot(\oenodeTrefA{})\uput[90](\oenodeTrefA{}){TrefA}
+  \psdot(\oenodeTrefB{})\uput[90](\oenodeTrefB{}){TrefB}
+\end{pspicture}
+\hspace{1cm}
+\begin{pspicture}[showgrid=true](3,1)
+  \pnode(0.5,0.5){A}\pnode(2.5,0.5){B}
+  \optmzm[optmzmsize=0.5](A)(B)
+  \psdot(\oenodeRefA{})\uput[-90](\oenodeRefA{}){RefA}
+  \psdot(\oenodeRefB{})\uput[-90](\oenodeRefB{}){RefB}
+  \psset{dotstyle=x, dotscale=1.5}
+  \psdot(\oenodeTrefA{})\uput[90](\oenodeTrefA{}){TrefA}
+  \psdot(\oenodeTrefB{})\uput[90](\oenodeTrefB{}){TrefB}
+  \psline[linecolor=gray!50, linestyle=dashed](\oenodeTrefA{})(\oenodeTrefB{})
+\end{pspicture}
+\vspace*{1cm}
 
-% \begin{pspicture}[showgrid=true](4,4)
-%   \pnode(0,1){A}\pnode(3,1){B}
-%   \lens(B)(A){L}
-%   \psdot[linecolor=red](\oenodeRefA{})
-% \end{pspicture}
+\begin{pspicture}[showgrid=true](3,2)
+  \pnode(0.5,1.5){A}\pnode(2.5,1.5){B}\pnode(2.5,0.5){C}
+  \mirror[mirrortype=extended](A)(B)(C)
+  \psdot(\oenodeRefA{})\uput[-90](\oenodeRefA{}){RefA}
+  \psdot(\oenodeRefB{})\uput[-90](\oenodeRefB{}){RefB}
+  \psline[linecolor=gray!50, linestyle=dashed](\oenodeTrefA{})(\oenodeTrefB{}|\oenodeTrefA{})(\oenodeTrefB{})
+  \psset{dotstyle=x, dotscale=1.5}
+  \psdot(\oenodeTrefA{})\uput[90](\oenodeTrefA{}){TrefA}
+  \psdot(\oenodeTrefB{})\uput[90](\oenodeTrefB{}){TrefB}
+\end{pspicture}
+\hspace*{1cm}
+\begin{pspicture}[showgrid=true](3,1)
+  \pnode(0.5,0.5){A}\pnode(2.5,1){B}\pnode(2.5,0){C}
+  \wdmsplitter(A)(B)(C)
+  \psdot(\oenodeRefA{})\uput[-90](\oenodeRefA{}){RefA}
+  \psdot(\oenodeRefB{})\uput[-90](\oenodeRefB{}){RefB}
+  \psset{dotstyle=x, dotscale=1.5}
+  \psdot(\oenodeTrefA{})\uput[90](\oenodeTrefA{}){TrefA}
+  \psdot(\oenodeTrefB{})\uput[90](\oenodeTrefB{}){TrefB}
+  \psline[linecolor=gray!50, linestyle=dashed](\oenodeTrefA{})(\oenodeTrefB{})
+\end{pspicture}
+\vspace*{1cm}
+
+\begin{pspicture}[showgrid=true](3,1)
+  \pnode(0.5,0.9){A}\pnode(2.5,0.9){B}\pnode(2.5,0){C}
+  \wdmsplitter[align=top](A)(B)(C)
+  \psdot(\oenodeRefA{})\uput[-90](\oenodeRefA{}){RefA}
+  \psdot(\oenodeRefB{})\uput[-90](\oenodeRefB{}){RefB}
+  \psset{dotstyle=x, dotscale=1.5}
+  \psdot(\oenodeTrefA{})\uput[90](\oenodeTrefA{}){TrefA}
+  \psdot(\oenodeTrefB{})\uput[90](\oenodeTrefB{}){TrefB}
+  \psline[linecolor=gray!50, linestyle=dashed](\oenodeTrefA{})(\oenodeTrefB{})
+\end{pspicture}
+\hspace*{1cm}
+\begin{pspicture}[showgrid=true](3,1)
+  \pnode(0.5,0.1){A}\pnode(2.5,1){B}\pnode(2.5,0.1){C}
+  \wdmsplitter[align=bottom](A)(B)(C)
+  \psdot(\oenodeRefA{})\uput[90](\oenodeRefA{}){RefA}
+  \psdot(\oenodeRefB{})\uput[90](\oenodeRefB{}){RefB}
+  \psset{dotstyle=x, dotscale=1.5}
+  \psdot(\oenodeTrefA{})\uput[90](\oenodeTrefA{}){TrefA}
+  \psdot(\oenodeTrefB{})\uput[90](\oenodeTrefB{}){TrefB}
+  \psline[linecolor=gray!50, linestyle=dashed](\oenodeTrefA{})(\oenodeTrefB{})
+\end{pspicture}
+
+
 \end{document}
