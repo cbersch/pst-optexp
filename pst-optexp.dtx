@@ -35,7 +35,7 @@
 \usepackage{amsfonts} 
 \usepackage{bera}
 \providecommand*\mainlang{}
-\usepackage[english,ngerman,\mainlang]{babel} 
+\usepackage[ngerman, english,\mainlang]{babel} 
 \usepackage{prettyref}
 \usepackage[dvipsnames,x11names,svgnames]{xcolor} 
 \usepackage{amsmath}
@@ -945,24 +945,57 @@
 %</ignore>
 % \fi
 %
-% \subsection{Special nodes}\label{sec:objnodes}
+% \ifGERMAN
+% \subsection{Spezielle Komponentenknoten}
+% \fi
+% \ifENGLISH
+% \subsection{Special component nodes}
+% \fi\label{sec:objnodes}
 % 
-% Every \nxLPack{pst-optexp} object of an experimental setup provides several
-% special nodes which are related to the geometry and the positioning of the
-% component. These are useful for related positioning and drawing.
-% 
+% \ifGERMAN
+% Jedes \nxLPack{pst-optexp} Objekt einer Skizze stellt mehrere
+% spezielle Knoten zur Verfügung, die mit dessen Geometrie und
+% Positionierung zusammenhängen. Diese Knoten stehen für weitere
+% Aktionen zur Verfügung.
+%
+% Sie sollten immer die dafür vorgesehenen Makros verwenden um auf die
+% Knotennamen zuzugreifen.
+% \fi
+% \ifENGLISH
+% Every \nxLPack{pst-optexp} object of an experimental setup provides
+% several special nodes which are related to its geometry and
+% positioning. They can be accessed and used for related positioning and
+% drawing.
+%
+% You should always use the dedicated macros to access these node names.
+% \fi
 % \begin{ltxsyntax}
 %   \cmditem{oenode}{Obj}{Node} 
 %
-%   This is the basic command to access any
-%   node associated with a certain object. The first argument \prm{Obj} is the
-%   name of the target object (according to \prettyref{sec:namingobj}), if
-%   it is left empty, the last defined component is used. The second
-%   argument is the name postfix of the requested special node. 
+% \ifGERMAN
+% Das ist das grundlegende Makro mit dem auf die Knotennamen einer
+% Komponente zugegriffen werden kann. Das erste Argument \prm{Obj} ist
+% der Name der Komponente (gemäß \prettyref{sec:namingobj}). Ist dieses
+% leer so wird die zuletzt Definierte verwendet. Das zweite Argument ist
+% der Bezeichner des angeforderten Knotens.
 %
-%   For most special nodes an appropriate macro is provided, which you
-%   are strongly advised to use. Only the interface nodes except for the
-%   first and last one do not have an explicit macro associated.
+% Für viele der Knoten wird ein eigenes Makro bereitgestellt, das Sie
+% dann auch verwenden sollten, da die Namenskonventionen geändert werden
+% könnten. Die Makros stellen sicher, dass Sie immer die passenden
+% Knotennamen erhalten.
+% \fi
+% \ifENGLISH
+% This is the basic command to access any node associated with a certain
+% object. The first argument \prm{Obj} is the name of the target object
+% (according to \prettyref{sec:namingobj}), if it is left empty, the
+% last defined component is used. The second argument is the name
+% postfix of the requested special node.
+%
+% For most special nodes an appropriate macro is provided, which you are
+% strongly advised to use, because the naming conventions may
+% change. Using the macros makes sure, that you always get the correct
+% node names.
+% \fi
 % \end{ltxsyntax}
 % 
 % \subsubsection{Reference nodes}\label{sec:refnodes}
@@ -971,10 +1004,28 @@
 %   \cmditem{oenodeRefA}{Obj}
 %   \cmditem{oenodeRefB}{Obj}
 %
+%   \ifENGLISH
 %   The input and output reference nodes.
+%
+%   For all dipoles and free-ray tripoles, the input reference node
+%   \nxLcs{oenodeRefA} is the first node which is used for the component
+%   positioning, the output reference node is the last node. For
+%   couplers it depends on the \opt{align} parameter. For a complete
+%   list of possible reference nodes, see
+%   \prettyref{sec:overview-refnodes}.
+%   \fi
 % \iffalse
 %<*ignore>
 % \fi
+\begin{LTXexample}[pos=t, linerange={1-5, 7-7}]
+\begin{pspicture}(5,1)
+\pnode(0.5,0.5){A}\pnode(4.5,0.5){B}
+\optbox(A)(B)
+\psdot(\oenodeRefA{})\uput[-90](\oenodeRefA{}){RefA}
+\psdot(\oenodeRefB{})\uput[-90](\oenodeRefB{}){RefB}
+\psline[linecolor=gray!50](\oenodeRefA{})(\oenodeRefB{})
+\end{pspicture}
+\end{LTXexample}
 % \iffalse
 %</ignore>
 % \fi
@@ -982,7 +1033,30 @@
 %   \cmditem{oenodeTrefA}{Obj}
 %   \cmditem{oenodeTrefB}{Obj}
 %
+%   \ifENGLISH
 %   The transformed input and output reference nodes.
+%
+%   These are the input and output reference nodes which are transformed
+%   together with the component regarding the \opt{compshift} and
+%   \opt{angle} parameters. For a complete list, see \prettyref{sec:overview-refnodes}.
+%   \fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[pos=t, linerange={1-7,9-9}]
+\begin{pspicture}(5,1.8)
+\pnode(0.5,0.5){A}\pnode(4.5,0.5){B}
+\optbox[compshift=0.5, angle=10](A)(B)
+\psdot(\oenodeRefA{})\uput[-90](\oenodeRefA{}){RefA}
+\psdot(\oenodeRefB{})\uput[-90](\oenodeRefB{}){RefB}
+\psdot(\oenodeTrefA{})\uput[90](\oenodeTrefA{}){TrefA}
+\psdot(\oenodeTrefB{})\uput[90](\oenodeTrefB{}){TrefB}
+\psline[linecolor=gray!50](\oenodeTrefA{})(\oenodeTrefB{})
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % \end{ltxsyntax}
 %
 % \subsubsection{Input and output node}\label{sec:inoutnode}
@@ -991,55 +1065,109 @@
 %   \cmditem{oenodeOut}{Obj}
 % \end{ltxsyntax}
 %
-% \subsubsection{Rotation reference node}\label{sec:rotrefnode}
-% \begin{ltxsyntax}
-%   \cmditem{oenodeRotref}{Obj}
-% \end{ltxsyntax}
-%
 % \subsubsection{Center node}\label{sec:centernode}
 % \begin{ltxsyntax}
 %   \cmditem{oenodeCenter}{Obj}
+% 
+% \ifGERMAN
+% Der Knoten liegt, bis auf wenige Ausnahmen in der geometrischen Mitte
+% der Komponente.
+% \fi
+% \ifENGLISH
+% The center node of the component.
+% \fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[linerange={1-4, 6-6}]
+\begin{pspicture}(3,1)
+\pnode(0,0.5){A}\pnode(3,0.5){B}
+\optbox(A)(B)
+\psdot(\oenodeCenter{})
+\psline[linecolor=gray!50](\oenodeRefA{})(\oenodeRefB{})
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % \end{ltxsyntax}
 %
 % \subsubsection{Label node}\label{sec:labelnode}
 % \begin{ltxsyntax}
 %   \cmditem{oenodeLabel}{Obj}
-% \end{ltxsyntax}
 %
-% \subsubsection{External nodes}\label{sec:extnode}
-% 
-% \begin{optionlist}
-% \valitem{extnode}{refstring}
-% 
-% Controls the position of the additional node and
-% takes a \paramvalue{<ref string>} as its argument. By default this
-% parameter is empty (\paramvalue{\{\}}) and no node is created.
-% 
-% The name of the new node depends on the \Lkeyword{compname} parameter
-% (see Sec.~\ref{sec:namedobj} for naming conventions). If \nxLkeyword{compname} is empty
-% the new node is named \nodename{ExtNode} by default and overwritten by
-% following objects.
-% 
-% Table.~\ref{tab:nodes} shows all objects which provide an external
-% node. Some allow any possible \paramvalue{<ref string>} for \Lkeyword{extnode}, others have
-% only one reasonable possibility (e.g. piezo mirror, see
-% Sec.~\ref{sec:mirror}) which does not depend on the actual value of \Lkeyword{extnode}.
-% 
+%   \ifGERMAN
+%   Auf diesen Knoten wird die Beschriftung platziert. Der Knoten ist
+%   auch verfügbar wenn keine Beschriftung angegeben wurde. Für
+%   \opt{labeloffset=0} fällt der Knoten mit dem zentralen Knoten
+%   zusammen.
+%   \fi
+%   \ifENGLISH
+%   The node where the component label is placed. It is available also
+%   if no label was specified. The label node coincides with the center
+%   node for \opt{labeloffset=0}.
+%   \fi
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}[pos=t, vsep=8mm]
-\begin{pspicture}[showgrid=true](11,3) 
-   \psset{beam, beaminside=false, labelangle=-90, labeloffset=0.3}
-   \optbox[extnode=tl](0,2.5)(3,2.5){\texttt{tl}}\psdot(\oenodeExt{})
-   \optbox[extnode=l](0,1.5)(3,1.5){\texttt{l}}\psdot(\oenodeExt{})
-   \optbox[extnode=bl](0,0.5)(3,0.5){\texttt{bl}}\psdot(\oenodeExt{})
-   \optbox[extnode=t](4,2.5)(7,2.5){\texttt{t}}\psdot(\oenodeExt{})
-   \optbox[extnode=c](4,1.5)(7,1.5){\texttt{c}}\psdot(\oenodeExt{})
-   \optbox[extnode=b](4,0.5)(7,0.5){\texttt{b}}\psdot(\oenodeExt{})
-   \optbox[extnode=tr](8,2.5)(11,2.5){\texttt{tr}}\psdot(\oenodeExt{})
-   \optbox[extnode=r](8,1.5)(11,1.5){\texttt{r}}\psdot(\oenodeExt{})
-   \optbox[extnode=br](8,0.5)(11,0.5){\texttt{br}}\psdot(\oenodeExt{})
+\begin{LTXexample}[linerange={1-4,6-6}]
+\begin{pspicture}(3,1.5)
+\pnode(0,1){A}\pnode(3,1){B}
+\optbox(A)(B)
+\psdot(\oenodeLabel{})
+\psline[linecolor=gray!50](\oenodeTrefA{})(\oenodeTrefB{})
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+% \end{ltxsyntax}
+%
+% \subsubsection{External nodes}\label{sec:extnode}
+% \begin{ltxsyntax}
+%   \cmditem{oenodeExt}{Obj}
+% \end{ltxsyntax}
+% \begin{optionlist}
+% \valitem{extnode}{refstring}
+% \begin{pspicture}(6,2.5) 
+%   \addtopsstyle{Beam}{beaminside=false, arrows=->, arrowinset=0, arrowscale=1.5}
+%    \psset{optboxheight=1.5, optboxwidth=2.5}\ttfamily
+%    \pnode(0,1.25){A}\pnode(6,1.25){B}
+%    \optbox[beam, extnode=tl](A)(B)
+%    \psdot(\oenodeExt{})\uput[135](\oenodeExt{}){tl}
+%    \backlayer{%
+%      \optbox[extnode=t](A)(B)\psdot(\oenodeExt{})\uput[90](\oenodeExt{}){t}
+%      \optbox[extnode=tr](A)(B)\psdot(\oenodeExt{})\uput[90](\oenodeExt{}){tr}
+%      \optbox[extnode=r](A)(B)\psdot(\oenodeExt{})\uput[45](\oenodeExt{}){r}
+%      \optbox[extnode=br](A)(B)\psdot(\oenodeExt{})\uput[-90](\oenodeExt{}){br}
+%      \optbox[extnode=b](A)(B)\psdot(\oenodeExt{})\uput[-90](\oenodeExt{}){b}
+%      \optbox[extnode=bl](A)(B)\psdot(\oenodeExt{})\uput[-90](\oenodeExt{}){bl}
+%      \optbox[extnode=l](A)(B)\psdot(\oenodeExt{})\uput[135](\oenodeExt{}){l}
+%      \optbox[extnode=c](A)(B)\psdot(\oenodeExt{})\uput[180](\oenodeExt{}){c}
+%    }
+% \end{pspicture}
+%
+% \boolitem[true]{adaptnoderef}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(-2,-2)(2,2)
+  \psset{extnode=tr, endbox, optboxwidth=1, optboxheight=0.6, dotscale=1.5}
+  \multido{\i=0+45}{8}{%
+    \optbox[label=0 . . relative](0,0)(1;\i){\i}
+    \psdot(\oenodeExt{})
+  }
+\end{pspicture}
+\end{LTXexample}
+\begin{LTXexample}
+\begin{pspicture}(-2,-2)(2,2)
+  \psset{adaptnoderef=false, extnode=tr, endbox, optboxwidth=1, optboxheight=0.6, dotscale=1.5}
+  \multido{\i=0+45}{8}{%
+    \optbox[label=0 . . relative](0,0)(1;\i){\i}
+    \psdot(\oenodeExt{})
+    
+  }%
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -1048,6 +1176,9 @@
 % \end{optionlist}
 %
 % \subsubsection{Interface nodes}\label{sec:ifcnodes}
+% \begin{ltxsyntax}
+%   \cmditem{oenodeIfc}{Obj}{num}
+% \end{ltxsyntax}
 % \iffalse
 %<*ignore>
 % \fi
@@ -1064,6 +1195,12 @@
 % \iffalse
 %</ignore>
 % \fi
+%
+% \subsubsection{Rotation reference node}\label{sec:rotrefnode}
+% \begin{ltxsyntax}
+%   \cmditem{oenodeRotref}{Obj}
+% \end{ltxsyntax}
+%
 % \ifGERMAN
 %   \chapter{Referenz}
 % \fi
@@ -3968,10 +4105,11 @@
 % 
 %
 % \section{Overview of special nodes}
-% \subsection{External and rotation reference nodes}
+% \subsection{External and rotation reference nodes}\label{sec:overview-extnodes}
 %
-% \subsection{Reference nodes}
-% \subsection{Interface nodes}
+% \subsection{Reference nodes}\label{sec:overview-refnodes}
+%
+% \subsection{Interface nodes}\label{sec:overview-ifcnodes}
 %
 % \ifGERMAN
 %   \chapter{Beispiele}
@@ -4375,6 +4513,7 @@
 \newif\ifPOE@connectplanes
 \newif\ifPOE@custombeam\POE@custombeamfalse
 \newif\ifPOE@insideobj\POE@insideobjfalse
+\newif\ifPOE@adaptnoderef
 %    \end{macrocode}
 % count the components in a pspicture environment
 %    \begin{macrocode}
@@ -4918,7 +5057,8 @@
 %    \end{macrocode}
 % External node
 %    \begin{macrocode}
-\define@key[psset]{optexp}{extnoden@me}{\edef\POE@key@extnoden@me{\POE@str@basicname@prefix#1\POE@str@extnode@postfix}}
+\define@boolkey[psset]{optexp}[POE@]{adaptnoderef}[true]{}%
+\define@key[psset]{optexp}{extnoden@me}{\edef\POE@key@extnoden@me{\POE@str@basicname@prefix#1\POE@str@extnode@postfix}}%
 %    \end{macrocode}
 % (this part was copied and adapted from \cs{psset@@ref} from pstricks.tex)
 %    \begin{macrocode}
@@ -4928,7 +5068,10 @@
       \pst@expandafter\psset@@extnode{#1}\@empty,,\@nil
    \fi
 }%
-\psset[optexp]{extnode=\@empty}%
+\psset[optexp]{%
+  extnode=\@empty, 
+  adaptnoderef=true
+}%
 \def\POE@key@xref{0}%
 \def\POE@key@yref{0}%
 \def\psset@@extnode#1#2,#3,#4\@nil{%
@@ -5845,6 +5988,15 @@
 \def\oenode@RefB#1{\oenode{@B}{#1}}%
 \def\oenode@TrefA#1{\oenode{@TrefA}{#1}}%
 \def\oenode@TrefB#1{\oenode{@TrefB}{#1}}%
+\def\oenodeIfc#1#2{%
+  \ifnum9<1#1 %
+    \oenode{#1}{#2}%
+  \else\ifx#1N %
+    \oenode{#1}{#2}%
+  \else
+    \PackageWarning{pst-optexp}{oenodeIfc takes only integers or 'N' as node arguments.!}
+  \fi\fi
+}%
 %    \end{macrocode}
 % \end{macro}
 % \end{macro}
@@ -5917,11 +6069,11 @@
 %    \begin{macrocode}
 \def\begin@OptexpObj{%
   \global\advance\POE@cnt by 1
-  \addbefore@par{compname={}}
+  \addbefore@par{compname={}}%
   \pst@killglue
   \begingroup
     \POE@insideobjtrue
-    \pst@OptexpVerb{InitOptexpComp}%
+    \pst@OptexpVerb{InitOptexpComp }%
     \use@par
 %    \end{macrocode}
 % Usually the shift refers to the y-direction, shifting in x-direction
@@ -6348,10 +6500,6 @@
     calcNodes
     X@A Y@A end){\oenode@RefA{}}%
   \pnode(! \POE@dict{X@B Y@B}){\oenode@RefB{}}%
-  \pst@OptexpVerb{%
-    /@xref \POE@key@xref\space def 
-    /@yref \POE@key@yref\space def
-  }%
 }\ignorespaces}%
 %    \end{macrocode}
 % \end{macro}
@@ -6364,6 +6512,7 @@
 \def\POE@regNodes#1#2{%
     \pnode(#1){\oenodeRefA{}}
     \pnode(#2){\oenodeRefB{}}
+    \pst@OptexpVerb{/@xref \POE@key@xref\space def /@yref \POE@key@yref\space def}%
 \ignorespaces}%
 %    \end{macrocode}
 % \end{macro}
@@ -6371,6 +6520,7 @@
 % \begin{macro}{\POE@adjustTempNodes}
 %    \begin{macrocode}
 \def\POE@adjustTempNodes{%
+  \ifPOE@adaptnoderef
     \pst@OptexpVerb{%
       (N@\oenodeRefA{}) @GetCenter (N@\oenodeRefB{}) @GetCenter
       currentdict /chirality known not {%
@@ -6380,6 +6530,7 @@
       {/@xref \POE@key@xref\space neg def /@yref \POE@key@yref\space neg def} 
       {/@xref \POE@key@xref\space def /@yref \POE@key@yref\space def} ifelse
     }%
+  \fi
 \ignorespaces}%
 %    \end{macrocode}
 % \end{macro}
@@ -6415,8 +6566,8 @@
 % \end{macro}
 % 
 % \begin{macro}{\POE@putcomp}
-% Place the component in argument \#1 and define a new node \cs{poe@nodeLabelShifted}
-% for positioning of the label
+%   Place the component in argument \#1 and define a new node
+%   \oenodeLabel{} for positioning of the label.
 %    \begin{macrocode}
 \def\POE@putcomp#1#2{%
   \@ifundefined{#1@ref}{}{\@nameuse{#1@ref}}%
