@@ -1,125 +1,217 @@
-\documentclass{scrartcl}
-\usepackage[T1]{fontenc}
+\documentclass[DIV9]{scrartcl}
 \usepackage{pst-optexp}
+\usepackage{bera}
 \begin{document}
-\addtopsstyle{Fiber}{linecolor=red}
-\addtopsstyle{gridstyle}{gridlabels=0pt}
-\psset{unit=1.5}
-\begin{pspicture}[showgrid=true](3,1)
-  \pnode(0.5,0.5){A}\pnode(2.5,0.5){B}
-  \lens(A)(B)
-  \psdot(\oenodeRefA{})\uput[-90](\oenodeRefA{}){RefA}
-  \psdot(\oenodeRefB{})\uput[-90](\oenodeRefB{}){RefB}
-  \psline[linecolor=gray!50](\oenodeRefA{})(\oenodeRefB{})
-\end{pspicture}
-\hspace{1cm}
-\begin{pspicture}[showgrid=true](3,1)
-  \pnode(0.5,0.5){A}\pnode(2.5,0.5){B}
-  \optmzm[optmzmsize=0.5](A)(B)
-  \psdot(\oenodeRefA{})\uput[-90](\oenodeRefA{}){RefA}
-  \psdot(\oenodeRefB{})\uput[-90](\oenodeRefB{}){RefB}
-\end{pspicture}
-\vspace*{1cm}
+\psset{unit=1.2}
+\section*{Dipoles}
+\addtopsstyle{Beam}{arrows=->, arrowinset=0, arrowscale=1.5}
+\newcommand{\showdipoleallext}[1]{%
+  \begin{pspicture}(0,-0.5)(3,1) 
+    \psset{dotstyle=x}
+    \pnode(0,0.5){A}\pnode(3,0.5){B}
+    \csname #1\endcsname[extnode=tl](A)(B)
+    \drawbeam{(A)}{}{(B)}
+    \psdot(\oenodeExt{})\uput[135](\oenodeExt{}){\ttfamily\footnotesize tl}
+    \backlayer{%
+      \csname #1\endcsname[extnode=t](A)(B)
+      \psdot(\oenodeExt{})\uput[90](\oenodeExt{}){\ttfamily\footnotesize t}
+      \csname #1\endcsname[extnode=tr](A)(B)
+      \psdot(\oenodeExt{})\uput[45](\oenodeExt{}){\ttfamily\footnotesize tr}
+      \csname #1\endcsname[extnode=l](A)(B)
+      \psdot(\oenodeExt{})\uput[135](\oenodeExt{}){\ttfamily\footnotesize l}
+      \csname #1\endcsname[extnode=c](A)(B)
+      \psdot(\oenodeExt{})\uput[-110](\oenodeExt{}){\ttfamily\footnotesize c}
+      \csname #1\endcsname[extnode=r](A)(B)
+      \psdot(\oenodeExt{})\uput[45](\oenodeExt{}){\ttfamily\footnotesize r}
+      \csname #1\endcsname[extnode=bl](A)(B)
+      \psdot(\oenodeExt{})\uput[-135](\oenodeExt{}){\ttfamily\footnotesize bl}
+      \csname #1\endcsname[extnode=b](A)(B)
+      \psdot(\oenodeExt{})\uput[-90](\oenodeExt{}){\ttfamily\footnotesize b}
+      \csname #1\endcsname[extnode=br](A)(B)
+      \psdot(\oenodeExt{})\uput[-45](\oenodeExt{}){\ttfamily\footnotesize br}
+    }
+    \rput[bl](0,-0.8){\ttfamily\textbackslash #1}
+  \end{pspicture}
+}%
+\newcommand{\showdipolebctext}[1]{%
+  \begin{pspicture}(0,-0.5)(3,1) 
+    \psset{dotstyle=x}
+    \pnode(0,0.5){A}\pnode(3,0.5){B}
+    \csname #1\endcsname[extnode=t](A)(B)
+    \drawbeam{(A)}{}{(B)}
+    \psdot(\oenodeExt{})\uput[180](\oenodeExt{}){\ttfamily\footnotesize t}
+    \backlayer{%
+      \csname #1\endcsname[extnode=c](A)(B)
+      \psdot(\oenodeExt{})\uput[45](\oenodeExt{}){\ttfamily\footnotesize c}
+      \csname #1\endcsname[extnode=b](A)(B)
+      \psdot(\oenodeExt{})\uput[180](\oenodeExt{}){\ttfamily\footnotesize b}
+    }
+    \rput[bl](0,-0.4){\ttfamily\textbackslash #1}
+  \end{pspicture}
+}%
+\newcommand{\showdipoleoneifc}[1]{%
+  \begin{pspicture}(0,-0.5)(3,1) 
+    \pnode(0,0.5){A}\pnode(3,0.5){B}
+    \csname #1\endcsname(A)(B)
+    \drawbeam{(A)}{}{(B)}
+    \psdot(\oenodeIn{})\uput[-135](\oenodeIn{}){1, N}
+    \rput[bl](0,-0.4){\ttfamily\textbackslash #1}
+  \end{pspicture}
+}%
+\showdipolebctext{lens}\hspace{\fill}%
+\showdipolebctext{optplate}\hspace{\fill}%
+\bgroup\psset{platewidth=0.3}
+\showdipoleallext{optretplate}\egroup%
+\bigskip
 
-\begin{pspicture}[showgrid=true](3,2)
-  \pnode(0.5,1.5){A}\pnode(2.5,1.5){B}\pnode(2.5,0.5){C}
-  \mirror[mirrortype=extended](A)(B)(C)
-  \psdot(\oenodeRefA{})\uput[-90](\oenodeRefA{}){RefA}
-  \psdot(\oenodeRefB{})\uput[-90](\oenodeRefB{}){RefB}
-  \psline[linecolor=gray!50](\oenodeRefA{})(\oenodeRefB{}|\oenodeRefA{})(\oenodeRefB{})
-\end{pspicture}
-\hspace*{1cm}
-\begin{pspicture}[showgrid=true](3,1)
-  \pnode(0.5,0.5){A}\pnode(2.5,1){B}\pnode(2.5,0){C}
-  \wdmsplitter(A)(B)(C)
-  \psdot(\oenodeRefA{})\uput[-90](\oenodeRefA{}){RefA}
-  \psdot(\oenodeRefB{})\uput[-90](\oenodeRefB{}){RefB}
-\end{pspicture}
-\vspace*{1cm}
+\noindent\showdipolebctext{pinhole}\hspace{\fill}%
+\showdipoleallext{crystal}\hspace{\fill}%
+\showdipoleallext{optbox}
+\bigskip
 
-\begin{pspicture}[showgrid=true](3,1)
-  \pnode(0.5,0.9){A}\pnode(2.5,0.9){B}\pnode(2.5,0){C}
-  \wdmsplitter[align=top](A)(B)(C)
-  \psdot(\oenodeRefA{})\uput[-90](\oenodeRefA{}){RefA}
-  \psdot(\oenodeRefB{})\uput[-90](\oenodeRefB{}){RefB}
-\end{pspicture}
-\hspace*{1cm}
-\begin{pspicture}[showgrid=true](3,1)
-  \pnode(0.5,0.1){A}\pnode(2.5,1){B}\pnode(2.5,0.1){C}
-  \wdmsplitter[align=bottom](A)(B)(C)
-  \psdot(\oenodeRefA{})\uput[90](\oenodeRefA{}){RefA}
-  \psdot(\oenodeRefB{})\uput[90](\oenodeRefB{}){RefB}
-\end{pspicture}
+\noindent\begin{pspicture}(0, -0.5)(3,1)
+  \pnode(0,0.5){A}\pnode(2.5,0.5){B}
+  \optdetector(A)(B)
+  \drawbeam{(A)}{}
+  \psdot(\oenodeIn{})\uput[-135](\oenodeIn{}){1, N}
+  \rput[bl](0,-0.4){\ttfamily\textbackslash optdetector}
+\end{pspicture}%
+\hspace{\fill}%
+\bgroup
+\addtopsstyle{Beam}{beaminside=false}%
+\showdipoleallext{optdiode}\egroup%
+\hspace{\fill}%
+\begin{pspicture}(0,-0.5)(3,1) 
+  \pnode(0,0.5){A}\pnode(3,0.5){B}
+  \doveprism(A)(B)
+  \drawbeam[connectplanes, arrows=->, arrowinset=0, arrowscale=1.5]{(A)}{}{(B)}
+  \psdot(\oenodeIn{})\uput[135](\oenodeIn{}){1}
+  \psdot(\oenodeIfc{2}{})\uput[90](\oenodeIfc{2}{}){2}
+  \psdot(\oenodeOut{})\uput[45](\oenodeOut{}){N}
+  \rput[bl](0,-0.4){\ttfamily\textbackslash doveprism}
+\end{pspicture}%
 
-\subsection{with compshift}
-\psset{compshift=0.2}
-\begin{pspicture}[showgrid=true](3,1)
-  \pnode(0.5,0.5){A}\pnode(2.5,0.5){B}
-  \lens(A)(B)
-  \psdot(\oenodeRefA{})\uput[-90](\oenodeRefA{}){RefA}
-  \psdot(\oenodeRefB{})\uput[-90](\oenodeRefB{}){RefB}
-  \psline[linecolor=gray!50, linestyle=dashed](\oenodeTrefA{})(\oenodeTrefB{})
-  \psset{dotstyle=x, dotscale=1.5}
-  \psdot(\oenodeTrefA{})\uput[90](\oenodeTrefA{}){TrefA}
-  \psdot(\oenodeTrefB{})\uput[90](\oenodeTrefB{}){TrefB}
-\end{pspicture}
-\hspace{1cm}
-\begin{pspicture}[showgrid=true](3,1)
-  \pnode(0.5,0.5){A}\pnode(2.5,0.5){B}
-  \optmzm[optmzmsize=0.5](A)(B)
-  \psdot(\oenodeRefA{})\uput[-90](\oenodeRefA{}){RefA}
-  \psdot(\oenodeRefB{})\uput[-90](\oenodeRefB{}){RefB}
-  \psset{dotstyle=x, dotscale=1.5}
-  \psdot(\oenodeTrefA{})\uput[90](\oenodeTrefA{}){TrefA}
-  \psdot(\oenodeTrefB{})\uput[90](\oenodeTrefB{}){TrefB}
-  \psline[linecolor=gray!50, linestyle=dashed](\oenodeTrefA{})(\oenodeTrefB{})
-\end{pspicture}
-\vspace*{1cm}
+\section*{Tripoles}
+\begin{pspicture}(3,1.5)
+  \pnode(0,1){A}\pnode(2.5,1){B}\pnode(2.5,0){C}
+  \mirror(A)(B)(C)
+  \drawbeam{(A)}{}{(C)}
+  \psdot(\oenodeIn{})\uput[-135](\oenodeIn{}){1, N}
+  \rput[bl](0,0){\ttfamily\textbackslash mirror}
+\end{pspicture}%
+\hspace{\fill}%
+\begin{pspicture}(3,1.5) 
+  \pnode(0,1){A}\pnode(1.5,1){B}\pnode(3,0){C}
+  \optprism(A)(B)(C)
+  \drawbeam[connectplanes, arrows=->, arrowinset=0, arrowscale=1.5]{(A)}{}{(C)}
+  \psdot(\oenodeIn{})\uput[135](\oenodeIn{}){1}
+  \psdot(\oenodeOut{})\uput[45](\oenodeOut{}){N}
+  \rput[bl](0,0){\ttfamily\textbackslash optprism}
+\end{pspicture}%
+\hspace{\fill}%
+\begin{pspicture}(3,1.5)
+  \pnode(0,1){A}\pnode(2.5,1){B}\pnode(2.5,0){C}
+  \optgrating(A)(B)(C)
+  \drawbeam{(A)}{}{(C)}
+  \psdot(\oenodeIn{})\uput[-135](\oenodeIn{}){1, N}
+  \rput[bl](0,0){\ttfamily\textbackslash optgrating}
+\end{pspicture}%
+\bigskip
 
-\begin{pspicture}[showgrid=true](3,2)
-  \pnode(0.5,1.5){A}\pnode(2.5,1.5){B}\pnode(2.5,0.5){C}
-  \mirror[mirrortype=extended](A)(B)(C)
-  \psdot(\oenodeRefA{})\uput[-90](\oenodeRefA{}){RefA}
-  \psdot(\oenodeRefB{})\uput[-90](\oenodeRefB{}){RefB}
-  \psline[linecolor=gray!50, linestyle=dashed](\oenodeTrefA{})(\oenodeTrefB{}|\oenodeTrefA{})(\oenodeTrefB{})
-  \psset{dotstyle=x, dotscale=1.5}
-  \psdot(\oenodeTrefA{})\uput[90](\oenodeTrefA{}){TrefA}
-  \psdot(\oenodeTrefB{})\uput[90](\oenodeTrefB{}){TrefB}
-\end{pspicture}
-\hspace*{1cm}
-\begin{pspicture}[showgrid=true](3,1)
-  \pnode(0.5,0.5){A}\pnode(2.5,1){B}\pnode(2.5,0){C}
-  \wdmsplitter(A)(B)(C)
-  \psdot(\oenodeRefA{})\uput[-90](\oenodeRefA{}){RefA}
-  \psdot(\oenodeRefB{})\uput[-90](\oenodeRefB{}){RefB}
-  \psset{dotstyle=x, dotscale=1.5}
-  \psdot(\oenodeTrefA{})\uput[90](\oenodeTrefA{}){TrefA}
-  \psdot(\oenodeTrefB{})\uput[90](\oenodeTrefB{}){TrefB}
-  \psline[linecolor=gray!50, linestyle=dashed](\oenodeTrefA{})(\oenodeTrefB{})
-\end{pspicture}
-\vspace*{1cm}
+\noindent\begin{pspicture}(3,2.5)
+  \pnode(0,1.5){A}\pnode(2.5,1.5){B}\pnode(2.5,0){C}
+  \beamsplitter[bssize=1.2](A)(B)(C)
+  \drawbeam{(A)}{}{(C)}
+  \psdot(\oenodeIfc{1}{})\uput[135](\oenodeIfc{1}{}){1}
+  \psdot(\oenodeIfc{2}{})\uput[-45](\oenodeIfc{2}{}){2}
+  \psdot(\oenodeIfc{3}{})\uput[0](\oenodeIfc{3}{}){3}
+  \psdot(\oenodeIfc{N}{})\uput[90](\oenodeIfc{N}{}){N}
+  \psdot(\oenodeIfc{C}{})\uput[-135](\oenodeIfc{C}{}){C}
+  \rput[bl](0,0){\ttfamily\textbackslash beamsplitter}
+\end{pspicture}%
+\hspace{\fill}%
+\begin{pspicture}(3,2.5)
+  \pnode(0,2){A}\pnode(2.5,1.5){B}\pnode(0,1){C}
+  \rightangleprism[raprismsize=2](A)(B)(C)
+  \drawbeam[arrows=->, arrowinset=0, arrowscale=1.5]{(A)}{}{(C)}
+  \psdot(\oenodeIn{})\uput[135](\oenodeIn{}){1}
+  \psdot(\oenodeIfc{2}{})\uput[45](\oenodeIfc{2}{}){2}
+  \psdot(\oenodeIfc{3}{})\uput[-45](\oenodeIfc{3}{}){3}
+  \psdot(\oenodeOut{})\uput[-135](\oenodeOut{}){N}
+  \rput[bl](0,0){\ttfamily\textbackslash rightangleprism}
+\end{pspicture}%
+\hspace{\fill}%
+\begin{pspicture}(3,2.5) 
+  \pnode(0,1.5){A}\pnode(2.1,1.5){B}\pnode(2.1,0){C}
+  \pentaprism[pentaprismsize=1](A)(B)(C)
+  \drawbeam[arrows=->, arrowinset=0, arrowscale=1.5]{(A)}{}{(C)}
+  \psdot(\oenodeIn{})\uput[135](\oenodeIn{}){1}
+  \psdot(\oenodeIfc{2}{})\uput[0](\oenodeIfc{2}{}){2}
+  \psdot(\oenodeIfc{3}{})\uput[90](\oenodeIfc{3}{}){3}
+  \psdot(\oenodeOut{})\uput[-45](\oenodeOut{}){N}
+  \rput[bl](0,0){\ttfamily\textbackslash pentaprism}
+\end{pspicture}%
 
-\begin{pspicture}[showgrid=true](3,1)
-  \pnode(0.5,0.9){A}\pnode(2.5,0.9){B}\pnode(2.5,0){C}
-  \wdmsplitter[align=top](A)(B)(C)
-  \psdot(\oenodeRefA{})\uput[-90](\oenodeRefA{}){RefA}
-  \psdot(\oenodeRefB{})\uput[-90](\oenodeRefB{}){RefB}
-  \psset{dotstyle=x, dotscale=1.5}
-  \psdot(\oenodeTrefA{})\uput[90](\oenodeTrefA{}){TrefA}
-  \psdot(\oenodeTrefB{})\uput[90](\oenodeTrefB{}){TrefB}
-  \psline[linecolor=gray!50, linestyle=dashed](\oenodeTrefA{})(\oenodeTrefB{})
-\end{pspicture}
-\hspace*{1cm}
-\begin{pspicture}[showgrid=true](3,1)
-  \pnode(0.5,0.1){A}\pnode(2.5,1){B}\pnode(2.5,0.1){C}
-  \wdmsplitter[align=bottom](A)(B)(C)
-  \psdot(\oenodeRefA{})\uput[90](\oenodeRefA{}){RefA}
-  \psdot(\oenodeRefB{})\uput[90](\oenodeRefB{}){RefB}
-  \psset{dotstyle=x, dotscale=1.5}
-  \psdot(\oenodeTrefA{})\uput[90](\oenodeTrefA{}){TrefA}
-  \psdot(\oenodeTrefB{})\uput[90](\oenodeTrefB{}){TrefB}
-  \psline[linecolor=gray!50, linestyle=dashed](\oenodeTrefA{})(\oenodeTrefB{})
-\end{pspicture}
+\section*{Fiber dipoles}
+\newcommand{\showfdipoleifc}[1]{%
+  \begin{pspicture}(0,-0.5)(3,1) 
+    \pnode(0,0.5){A}\pnode(3,0.5){B}
+    \csname #1\endcsname(A)(B)
+    \psdot(\oenodeIn{})\uput[-135](\oenodeIn{}){1}
+    \psdot(\oenodeOut{})\uput[-45](\oenodeOut{}){N}
+    \rput[bl](0,-0.4){\ttfamily\textbackslash #1}
+  \end{pspicture}%
+}%
+\addtopsstyle{Fiber}{ArrowInside=->, ArrowInsidePos=0.6, arrowscale=1.5, arrowinset=0, linecolor=red}
+\showfdipoleifc{optfiber}\hspace{\fill}%
+\showfdipoleifc{optamp}\hspace{\fill}%
+\showfdipoleifc{optmzm}%
+\bigskip
 
+\noindent\showfdipoleifc{optfilter}\hspace{\fill}%
+\begin{pspicture}(0,-0.5)(3,1)
+  \pnode(0,0.5){A}\pnode(3,0.5){B}
+  \polcontrol(A)(B)
+  \psdot(\oenodeIn{})\uput[-90](\oenodeIn{}){1, N}
+  \rput[bl](0,-0.4){\ttfamily\textbackslash polcontrol}
+\end{pspicture}\hspace{\fill}%
+\showfdipoleifc{optisolator}%
+\bigskip
 
+\noindent\showfdipoleifc{optswitch}\hspace{\fill}%
+\showfdipoleifc{fiberdelayline}\hspace{\fill}%
+\showfdipoleifc{optfiberpolarizer}%
+\bigskip
+
+\bgroup\psset{beam}
+\noindent\showfdipoleifc{fibercollimator}\egroup
+\bigskip
+
+\noindent\begin{pspicture}(0,-0.5)(3,1.5)
+  \pnode(0,0.75){A}\pnode(3,1.5){B}\pnode(3,0){C}
+  \wdmsplitter[couplersize=0.5, couplersep=0.2](A)(B)(C)
+  \psdot(\oenodeIn{})\uput[135](\oenodeIn{}){1}
+  \psdot(\oenodeIfc{2}{})\uput[90](\oenodeIfc{2}{}){2}
+  \psdot(\oenodeOut{})\uput[-90](\oenodeOut{}){N}
+  \rput[bl](0,-0.4){\ttfamily\textbackslash wdmsplitter}
+\end{pspicture}%
+\hspace{\fill}%
+\begin{pspicture}(0,-0.5)(3,1.5)
+  \pnode(0,1.5){A}\pnode(0,0){B}\pnode(3,0.75){C}
+  \wdmcoupler[couplersize=0.5, couplersep=0.2](A)(B)(C)
+  \psdot(\oenodeIn{})\uput[90](\oenodeIn{}){1}
+  \psdot(\oenodeIfc{2}{})\uput[-90](\oenodeIfc{2}{}){2}
+  \psdot(\oenodeOut{})\uput[45](\oenodeOut{}){N}
+  \rput[bl](0,-0.4){\ttfamily\textbackslash wdmcoupler}
+\end{pspicture}%
+\hspace{\fill}%
+\begin{pspicture}(0,-0.5)(3,1.5)
+  \pnode(0,1.5){A}\pnode(0,0){B}\pnode(3,1.5){C}\pnode(3,0){D}
+  \optcoupler[couplersize=0.5, couplersep=0.2](A)(B)(C)(D)
+  \psdot(\oenodeIn{})\uput[90](\oenodeIn{}){1}
+  \psdot(\oenodeIfc{2}{})\uput[-90](\oenodeIfc{2}{}){2}
+  \psdot(\oenodeIfc{3}{})\uput[90](\oenodeIfc{3}{}){3}
+  \psdot(\oenodeOut{})\uput[-90](\oenodeOut{}){N}
+  \rput[bl](0,-0.4){\ttfamily\textbackslash optcoupler}
+\end{pspicture}%
 \end{document}
