@@ -22,7 +22,7 @@
 %<stylefile>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<stylefile>\ProvidesPackage{pst-optexp}
 %<*stylefile>
-    [2011/08/07 v3.0alpha Optical experimental setups with PSTricks]
+    [2011/08/11 v3.0alpha Optical experimental setups with PSTricks]
 %</stylefile>
 %
 %<*driver>
@@ -1059,12 +1059,6 @@
 % \fi
 % \end{ltxsyntax}
 %
-% \subsubsection{Input and output node}\label{sec:inoutnode}
-% \begin{ltxsyntax}
-%   \cmditem{oenodeIn}{Obj}
-%   \cmditem{oenodeOut}{Obj}
-% \end{ltxsyntax}
-%
 % \subsubsection{Center node}\label{sec:centernode}
 % \begin{ltxsyntax}
 %   \cmditem{oenodeCenter}{Obj}
@@ -1166,7 +1160,6 @@
   \multido{\i=0+45}{8}{%
     \optbox[label=0 . . relative](0,0)(1;\i){\i}
     \psdot(\oenodeExt{})
-    
   }%
 \end{pspicture}
 \end{LTXexample}
@@ -1177,7 +1170,17 @@
 %
 % \subsubsection{Interface nodes}\label{sec:ifcnodes}
 % \begin{ltxsyntax}
-%   \cmditem{oenodeIfc}{Obj}{num}
+%   \cmditem{oenodeIfc}{num}{Obj}
+%
+%   Get interface node \prm{num}, where the number is in the range
+%   \opt{1\ldots N}. The last node is always defined as \opt{N}.
+%
+%   \cmditem{oenodeIn}{Obj}
+%   \cmditem{oenodeOut}{Obj}
+%
+%   The first and the last interface node. \nxLcs{oenodeIn} is
+%   equivalent to \nxLcs{oenodeIfc\{1\}}, \nxLcs{oenodeOut} is
+%   equivalent to \nxLcs{oenodeIfc\{N\}}.
 % \end{ltxsyntax}
 % \iffalse
 %<*ignore>
@@ -1187,18 +1190,47 @@
   \pentaprism[pentaprismsize=1.3](0,1.5)(1.5,1.5)(1.5,0)
   \drawbeam[arrows=->, arrowinset=0, arrowscale=1.5]{(0,1.5)}{}{(1.5,0)}
   \psdot(\oenodeIn{})\uput[135](\oenodeIn{}){1}
-  \psdot(\oenode{2}{})\uput[0](\oenode{2}{}){2}
-  \psdot(\oenode{3}{})\uput[90](\oenode{3}{}){3}
-  \psdot(\oenodeOut{})\uput[-45](\oenode{N}{}){N}
+  \psdot(\oenodeIfc{2}{})\uput[0](\oenodeIfc{2}{}){2}
+  \psdot(\oenodeIfc{3}{})\uput[90](\oenodeIfc{3}{}){3}
+  \psdot(\oenodeOut{})\uput[-45](\oenodeOut{}){N}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
 %</ignore>
 % \fi
 %
+% See \prettyref{sec:overview-ifcnodes} for a complete list of all
+% components with their interface nodes.
+%
 % \subsubsection{Rotation reference node}\label{sec:rotrefnode}
 % \begin{ltxsyntax}
 %   \cmditem{oenodeRotref}{Obj}
+%
+%   The node around which a component is rotated by
+%   \Lkeyword{angle}. The position of the node is specified with the
+%   \Lkeyword{rotateref} parameter. See
+%   \prettyref{sec:overview-extnodes} for possible rotation reference
+%   nodes of all components.
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[pos=t, linerange={1-2, 6-7, 11-12}]
+\begin{pspicture}(0,0.1)(12,1.8) 
+  \optbox[angle=20](0.5,1)(4.5,1)
+  \psdot(\oenodeRefA{})\uput[-90](\oenodeRefA{}){RefA}
+  \psdot(\oenodeRefB{})\uput[-90](\oenodeRefB{}){RefB}
+  \psline[linecolor=gray!50](\oenodeRefA{})(\oenodeRefB{})
+  \psdot(\oenodeRotref{})\uput[-90](\oenodeRotref{}){Rotref}
+  \optbox[angle=20, rotateref=bl](7.5,1)(11.5,1)
+  \psdot(\oenodeRefA{})\uput[-90](\oenodeRefA{}){RefA}
+  \psdot(\oenodeRefB{})\uput[-90](\oenodeRefB{}){RefB}
+  \psline[linecolor=gray!50](\oenodeRefA{})(\oenodeRefB{})
+  \psdot(\oenodeRotref{})\uput[-90](\oenodeRotref{}){Rotref}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % \end{ltxsyntax}
 %
 % \ifGERMAN
@@ -4110,6 +4142,185 @@
 % \subsection{Reference nodes}\label{sec:overview-refnodes}
 %
 % \subsection{Interface nodes}\label{sec:overview-ifcnodes}
+% Here, all available components and their interface nodes are listed. If
+% a node is labelled as «1, N», it means that both nodes are equal.
+% \bgroup \psset{unit=1.2}
+% \subsubsection*{Free-ray components}
+% \addtopsstyle{Beam}{arrows=->, arrowinset=0, arrowscale=1.5}
+% \newcommand{\showdipoleifc}[1]{%
+%   \begin{pspicture}(0,-0.5)(3,1) 
+%     \pnode(0,0.5){A}\pnode(3,0.5){B}
+%     \csname #1\endcsname(A)(B)
+%     \drawbeam{(A)}{}{(B)}
+%     \psdot(\oenodeIn{})\uput[-135](\oenodeIn{}){1}
+%     \psdot(\oenodeOut{})\uput[-45](\oenodeOut{}){N}
+%     \rput[bl](0,-0.4){\ttfamily\textbackslash #1}
+%   \end{pspicture}
+% }%
+% \newcommand{\showdipoleoneifc}[1]{%
+%   \begin{pspicture}(0,-0.5)(3,1) 
+%     \pnode(0,0.5){A}\pnode(3,0.5){B}
+%     \csname #1\endcsname(A)(B)
+%     \drawbeam{(A)}{}{(B)}
+%     \psdot(\oenodeIn{})\uput[-135](\oenodeIn{}){1, N}
+%     \rput[bl](0,-0.4){\ttfamily\textbackslash #1}
+%   \end{pspicture}
+% }%
+% \showdipoleifc{lens}\hspace{\fill}%
+% \showdipoleoneifc{optplate}\hspace{\fill}%
+% \showdipoleifc{optretplate}%
+% \bigskip
+%
+% \noindent\showdipoleoneifc{pinhole}\hspace{\fill}%
+% \showdipoleifc{crystal}\hspace{\fill}%
+% \showdipoleifc{optbox}
+% \bigskip
+%
+% \noindent\begin{pspicture}(0, -0.5)(3,1)
+%   \pnode(0,0.5){A}\pnode(2.5,0.5){B}
+%   \optdetector(A)(B)
+%   \drawbeam{(A)}{}
+%   \psdot(\oenodeIn{})\uput[-135](\oenodeIn{}){1, N}
+%   \rput[bl](0,-0.4){\ttfamily\textbackslash optdetector}
+% \end{pspicture}%
+% \hspace{\fill}%
+% \bgroup
+% \addtopsstyle{Beam}{beaminside=false}%
+% \showdipoleifc{optdiode}\egroup%
+% \hspace{\fill}%
+% \begin{pspicture}(0,-0.5)(3,1) 
+%   \pnode(0,0.5){A}\pnode(3,0.5){B}
+%   \doveprism(A)(B)
+%   \drawbeam[connectplanes]{(A)}{}{(B)}
+%   \psdot(\oenodeIn{})\uput[135](\oenodeIn{}){1}
+%   \psdot(\oenodeIfc{2}{})\uput[90](\oenodeIfc{2}{}){2}
+%   \psdot(\oenodeOut{})\uput[45](\oenodeOut{}){N}
+%   \rput[bl](0,-0.4){\ttfamily\textbackslash doveprism}
+% \end{pspicture}%
+%
+% \begin{pspicture}(3,1.5)
+%   \pnode(0,1){A}\pnode(2.5,1){B}\pnode(2.5,0){C}
+%   \mirror(A)(B)(C)
+%   \drawbeam{(A)}{}{(C)}
+%   \psdot(\oenodeIn{})\uput[-135](\oenodeIn{}){1, N}
+%   \rput[bl](0,0){\ttfamily\textbackslash mirror}
+% \end{pspicture}%
+% \hspace{\fill}%
+% \begin{pspicture}(3,1.5) 
+%   \pnode(0,1){A}\pnode(1.5,1){B}\pnode(3,0){C}
+%   \optprism(A)(B)(C)
+%   \drawbeam[connectplanes]{(A)}{}{(C)}
+%   \psdot(\oenodeIn{})\uput[135](\oenodeIn{}){1}
+%   \psdot(\oenodeOut{})\uput[45](\oenodeOut{}){N}
+%   \rput[bl](0,0){\ttfamily\textbackslash optprism}
+% \end{pspicture}%
+% \hspace{\fill}%
+% \begin{pspicture}(3,1.5)
+%   \pnode(0,1){A}\pnode(2.5,1){B}\pnode(2.5,0){C}
+%   \optgrating(A)(B)(C)
+%   \drawbeam{(A)}{}{(C)}
+%   \psdot(\oenodeIn{})\uput[-135](\oenodeIn{}){1, N}
+%   \rput[bl](0,0){\ttfamily\textbackslash optgrating}
+% \end{pspicture}%
+% \bigskip
+%
+% \noindent\begin{pspicture}(3,2.5)
+%   \pnode(0,1.5){A}\pnode(2.5,1.5){B}\pnode(2.5,0){C}
+%   \beamsplitter[bssize=1.2](A)(B)(C)
+%   \drawbeam{(A)}{}{(C)}
+%   \psdot(\oenodeIfc{1}{})\uput[135](\oenodeIfc{1}{}){1}
+%   \psdot(\oenodeIfc{2}{})\uput[-45](\oenodeIfc{2}{}){2}
+%   \psdot(\oenodeIfc{3}{})\uput[0](\oenodeIfc{3}{}){3}
+%   \psdot(\oenodeIfc{N}{})\uput[90](\oenodeIfc{N}{}){N}
+%   \psdot(\oenodeIfc{C}{})\uput[-135](\oenodeIfc{C}{}){C}
+%   \rput[bl](0,0){\ttfamily\textbackslash beamsplitter}
+% \end{pspicture}%
+% \hspace{\fill}%
+% \begin{pspicture}(3,2.5)
+%   \pnode(0,2){A}\pnode(2.5,1.5){B}\pnode(0,1){C}
+%   \rightangleprism[raprismsize=2](A)(B)(C)
+%   \drawbeam[arrows=->, arrowinset=0, arrowscale=1.5]{(A)}{}{(C)}
+%   \psdot(\oenodeIn{})\uput[135](\oenodeIn{}){1}
+%   \psdot(\oenodeIfc{2}{})\uput[45](\oenodeIfc{2}{}){2}
+%   \psdot(\oenodeIfc{3}{})\uput[-45](\oenodeIfc{3}{}){3}
+%   \psdot(\oenodeOut{})\uput[-135](\oenodeOut{}){N}
+%   \rput[bl](0,0){\ttfamily\textbackslash rightangleprism}
+% \end{pspicture}%
+% \hspace{\fill}%
+% \begin{pspicture}(3,2.5) 
+%   \pnode(0,1.5){A}\pnode(2.1,1.5){B}\pnode(2.1,0){C}
+%   \pentaprism[pentaprismsize=1](A)(B)(C)
+%   \drawbeam[arrows=->, arrowinset=0, arrowscale=1.5]{(A)}{}{(C)}
+%   \psdot(\oenodeIn{})\uput[135](\oenodeIn{}){1}
+%   \psdot(\oenodeIfc{2}{})\uput[0](\oenodeIfc{2}{}){2}
+%   \psdot(\oenodeIfc{3}{})\uput[90](\oenodeIfc{3}{}){3}
+%   \psdot(\oenodeOut{})\uput[-45](\oenodeOut{}){N}
+%   \rput[bl](0,0){\ttfamily\textbackslash pentaprism}
+% \end{pspicture}%
+%
+% \subsubsection*{Fiber components}
+% \newcommand{\showfdipoleifc}[1]{%
+%   \begin{pspicture}(0,-0.5)(3,1) 
+%     \pnode(0,0.5){A}\pnode(3,0.5){B}
+%     \csname #1\endcsname(A)(B)
+%     \psdot(\oenodeIn{})\uput[-135](\oenodeIn{}){1}
+%     \psdot(\oenodeOut{})\uput[-45](\oenodeOut{}){N}
+%     \rput[bl](0,-0.4){\ttfamily\textbackslash #1}
+%   \end{pspicture}%
+% }%
+% \addtopsstyle{Fiber}{ArrowInside=->, ArrowInsidePos=0.6, arrowscale=1.5, arrowinset=0}
+% \showfdipoleifc{optfiber}\hspace{\fill}%
+% \showfdipoleifc{optamp}\hspace{\fill}%
+% \showfdipoleifc{optmzm}%
+% \bigskip
+%
+% \noindent\showfdipoleifc{optfilter}\hspace{\fill}%
+% \begin{pspicture}(0,-0.5)(3,1)
+%   \pnode(0,0.5){A}\pnode(3,0.5){B}
+%   \polcontrol(A)(B)
+%   \psdot(\oenodeIn{})\uput[-90](\oenodeIn{}){1, N}
+%   \rput[bl](0,-0.4){\ttfamily\textbackslash polcontrol}
+% \end{pspicture}\hspace{\fill}%
+% \showfdipoleifc{optisolator}%
+% \bigskip
+%
+% \noindent\showfdipoleifc{optswitch}\hspace{\fill}%
+% \showfdipoleifc{fiberdelayline}\hspace{\fill}%
+% \showfdipoleifc{optfiberpolarizer}%
+% \bigskip
+%
+% \bgroup\psset{beam}
+% \noindent\showfdipoleifc{fibercollimator}\egroup
+% \bigskip
+%
+% \noindent\begin{pspicture}(0,-0.5)(3,1.5)
+%   \pnode(0,0.75){A}\pnode(3,1.5){B}\pnode(3,0){C}
+%   \wdmsplitter[couplersize=0.5, couplersep=0.2](A)(B)(C)
+%   \psdot(\oenodeIn{})\uput[135](\oenodeIn{}){1}
+%   \psdot(\oenodeIfc{2}{})\uput[90](\oenodeIfc{2}{}){2}
+%   \psdot(\oenodeOut{})\uput[-90](\oenodeOut{}){N}
+%   \rput[bl](0,-0.4){\ttfamily\textbackslash wdmsplitter}
+% \end{pspicture}%
+% \hspace{\fill}%
+% \begin{pspicture}(0,-0.5)(3,1.5)
+%   \pnode(0,1.5){A}\pnode(0,0){B}\pnode(3,0.75){C}
+%   \wdmcoupler[couplersize=0.5, couplersep=0.2](A)(B)(C)
+%   \psdot(\oenodeIn{})\uput[90](\oenodeIn{}){1}
+%   \psdot(\oenodeIfc{2}{})\uput[-90](\oenodeIfc{2}{}){2}
+%   \psdot(\oenodeOut{})\uput[45](\oenodeOut{}){N}
+%   \rput[bl](0,-0.4){\ttfamily\textbackslash wdmcoupler}
+% \end{pspicture}%
+% \hspace{\fill}%
+% \begin{pspicture}(0,-0.5)(3,1.5)
+%   \pnode(0,1.5){A}\pnode(0,0){B}\pnode(3,1.5){C}\pnode(3,0){D}
+%   \optcoupler[couplersize=0.5, couplersep=0.2](A)(B)(C)(D)
+%   \psdot(\oenodeIn{})\uput[90](\oenodeIn{}){1}
+%   \psdot(\oenodeIfc{2}{})\uput[-90](\oenodeIfc{2}{}){2}
+%   \psdot(\oenodeIfc{3}{})\uput[90](\oenodeIfc{3}{}){3}
+%   \psdot(\oenodeOut{})\uput[-90](\oenodeOut{}){N}
+%   \rput[bl](0,-0.4){\ttfamily\textbackslash optcoupler}
+% \end{pspicture}%
+% \egroup
 %
 % \ifGERMAN
 %   \chapter{Beispiele}
@@ -5072,23 +5283,23 @@
   extnode=\@empty, 
   adaptnoderef=true
 }%
-\def\POE@key@xref{0}%
-\def\POE@key@yref{0}%
+\def\POE@key@extnode@xref{0}%
+\def\POE@key@extnode@yref{0}%
 \def\psset@@extnode#1#2,#3,#4\@nil{%
-  \def\POE@key@xref{0}%
-  \def\POE@key@yref{0}%
+  \def\POE@key@extnode@xref{0}%
+  \def\POE@key@extnode@yref{0}%
   \ifx\@empty#3\@empty
     \@nameuse{getref@optexp@#1}%
     \@nameuse{getref@optexp@#2}%
   \else
-    \pst@checknum{#1#2}\POE@key@xref%
-    \pst@checknum{#3}\POE@key@yref%
+    \pst@checknum{#1#2}\POE@key@extnode@xref%
+    \pst@checknum{#3}\POE@key@extnode@yref%
   \fi}%
 \def\getref@optexp@c{}%
-\def\getref@optexp@t{\def\POE@key@yref{1}}%
-\def\getref@optexp@b{\def\POE@key@yref{-1}}%
-\def\getref@optexp@l{\def\POE@key@xref{-1}}%
-\def\getref@optexp@r{\def\POE@key@xref{1}}%
+\def\getref@optexp@t{\def\POE@key@extnode@yref{1}}%
+\def\getref@optexp@b{\def\POE@key@extnode@yref{-1}}%
+\def\getref@optexp@l{\def\POE@key@extnode@xref{-1}}%
+\def\getref@optexp@r{\def\POE@key@extnode@xref{1}}%
 \define@key[psset]{optexp}{rotateref}{%
    \def\pst@temp{#1}%
    \ifx\@empty\pst@temp\else
@@ -5993,9 +6204,11 @@
     \oenode{#1}{#2}%
   \else\ifx#1N %
     \oenode{#1}{#2}%
+  \else\ifx#1C %
+    \oenode{#1}{#2}%
   \else
-    \PackageWarning{pst-optexp}{oenodeIfc takes only integers or 'N' as node arguments.!}
-  \fi\fi
+    \PackageWarning{pst-optexp}{oenodeIfc takes only integers, 'N', or 'C' as node arguments.!}
+  \fi\fi\fi
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -6512,7 +6725,7 @@
 \def\POE@regNodes#1#2{%
     \pnode(#1){\oenodeRefA{}}
     \pnode(#2){\oenodeRefB{}}
-    \pst@OptexpVerb{/@xref \POE@key@xref\space def /@yref \POE@key@yref\space def}%
+    \pst@OptexpVerb{/@xref \POE@key@extnode@xref\space def /@yref \POE@key@extnode@yref\space def}%
 \ignorespaces}%
 %    \end{macrocode}
 % \end{macro}
@@ -6527,8 +6740,8 @@
         /chirality 1 def 
       } if
       ExchCoor dup /ExchCoorSwitch ED 
-      {/@xref \POE@key@xref\space neg def /@yref \POE@key@yref\space neg def} 
-      {/@xref \POE@key@xref\space def /@yref \POE@key@yref\space def} ifelse
+      {/@xref \POE@key@extnode@xref\space neg def /@yref \POE@key@extnode@yref\space neg def} 
+      {/@xref \POE@key@extnode@xref\space def /@yref \POE@key@extnode@yref\space def} ifelse
     }%
   \fi
 \ignorespaces}%
@@ -6572,7 +6785,10 @@
 \def\POE@putcomp#1#2{%
   \@ifundefined{#1@ref}{}{\@nameuse{#1@ref}}%
    \rput(! \POE@key@comp@Xshift\space\POE@key@comp@Yshift){%
-     \pnode(! \POE@dict{ExtNode}){\oenodeRotref{}}%
+     \pnode(! \POE@dict{
+       \POE@key@rotate@xref\space
+       \POE@key@rotate@yref\space
+       ExtNode}){\oenodeRotref{}}%
      \ifdim\POE@key@angle pt=0pt
         #2%
         \POE@pnode@shiftedrot(0,\POE@key@labeloffset)%
@@ -6746,18 +6962,23 @@
    \@ifnextchar(%)
      {\fibercollimator@iii}{\fibercollimator@iv}%
 }%
-\def\fibercollimator@iii(#1)#2{%
+\def\fibercollimator@iii(#1){%
    \def\pst@tempD{#1}%
-   \fibercollimator@iv{#2}%
+   \fibercollimator@iv
 }%
-\def\fibercollimator@iv#1{%
+\def\fibercollimator@iv{%
+  \@ifnextchar\bgroup{\fibercollimator@v}{\fibercollimator@v{}}%
+}%
+\def\fibercollimator@v#1{%
   \ifPOE@compat
     \addbefore@par{conn=o-f}%
   \fi
   \addbefore@par{fiberout=both}%
   \begin@OptexpObj
-    \POE@regNodes{\pst@tempA}{\pst@tempB}%
-    \POE@adjustTempNodes
+    \ifPOE@backlayer
+      \POE@regNodes{\pst@tempA}{\pst@tempB}%
+      \POE@adjustTempNodes
+    \fi
     \POE@drawcomponent[fibercollimator]{#1}{%
        \pnode(0,0){\oenodeCenter{}}%
        \ifPOE@backlayer
@@ -6783,9 +7004,9 @@
             \drawfiber{\POE@key@compname}{(\oenodeRefB{})}
           \fi
         \else\ifx\@empty\pst@tempD
-          \psbezier[style=FiberOut](\pst@tempC)(\pst@tempB)(\pst@tempB)(\oenodeOut{})%
+          \psbezier[style=FiberOut](\oenodeOut{})(\pst@tempB)(\pst@tempB)(\pst@tempC)%
         \else
-          \psbezier[style=FiberOut](\pst@tempD)(\pst@tempC)(\pst@tempB)(\oenodeOut{})%
+          \psbezier[style=FiberOut](\oenodeOut{})(\pst@tempB)(\pst@tempC)(\pst@tempD)%
         \fi\fi
       \fi
     \fi
@@ -6824,7 +7045,10 @@
     #3%
     \ifx\POE@key@extnode\@empty\else
       \ifPOE@backlayer
-        \pnode(! \POE@dict{ExtNode}){\POE@key@extnoden@me}%
+        \pnode(! \POE@dict{
+          \POE@key@extnode@xref\space
+          \POE@key@extnode@yref\space
+          ExtNode}){\POE@key@extnoden@me}%
       \fi
     \fi
   }%
@@ -7786,9 +8010,9 @@
 \def\polcontrol@comp{%
    \edef\@sz{\POE@key@polcontrolsize\space}%
    \ifPOE@usefiberstyle
-      \psset{style=Fiber}
+      \psset{style=Fiber}%
    \fi
-   \multips(! -2 \@sz mul \@sz)(! 2 \@sz mul 0){3}{\pscircle(0,0){\POE@key@polcontrolsize}}
+   \multips(! -2 \@sz mul \@sz)(! 2 \@sz mul 0){3}{\pscircle(0,0){\POE@key@polcontrolsize}}%
 \ignorespaces}%
 %    \end{macrocode}
 % \end{macro}
@@ -8355,12 +8579,12 @@ tx@OptexpDict begin
 %   Constructs the coordinates of an external node based on values that
 %   have been set beforehand.
 % \begin{pssyntax}
-%   \PSop{ExtNode} \PSvar{X Y}  
+%   \PSvar{xref yref} \PSop{ExtNode} \PSvar{X Y}  
 % \end{pssyntax}
 %    \begin{macrocode}
 /ExtNode {%
-    @@x0 @xref @@x mul add 
-    @@y0 @yref @@y mul add 
+  @@y mul @@y0 add 
+  exch @@x mul @@x0 add exch
 } bind def
 %    \end{macrocode}
 % \end{macro}
