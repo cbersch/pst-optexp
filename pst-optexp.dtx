@@ -304,6 +304,7 @@
 \EnableCrossrefs
 \CodelineIndex
 \RecordChanges
+\OnlyDescription
 \begin{document}
   \DocInput{pst-optexp.dtx}
   \begin{otherlanguage}{english}
@@ -1339,7 +1340,7 @@
 % \numitem[c]{rotateref}{refstring}
 % \ifGERMAN
 % Setzt den Bezugspunkt für die Drehung der Komponente. Die möglichen
-% Bezugspunkte jeder Komponente können Sie \prettyref{sec:rotateref}
+% Bezugspunkte jeder Komponente können Sie \prettyref{sec:rotrefnodes}
 % entnehmen.
 % \fi
 % \ifENGLISH
@@ -6007,7 +6008,7 @@
       [%]
       \pst@optexpdict
         (\POE@key@b@sicname) false GetInternalBeamNodes 
-        (N@\oenodeRefA{}) @GetCenter 
+        /N@\oenodeRefA{} @GetCenter 
       end
     }%
   \psline@ii
@@ -6018,19 +6019,19 @@
     \addto@pscode{%
       [%]
       \pst@optexpdict
-        (N@\oenodeRefB{}) @GetCenter
+        /N@\oenodeRefB{} @GetCenter
         (\POE@key@b@sicname) false GetInternalBeamNodes 
       end
     }%
   \psline@ii
 }%
-\def\psoe@cs@in@a{(N@\optexp@nodeA) \pst@optexpdict @GetCenter end }%
+\def\psoe@cs@in@a{/N@\optexp@nodeA\space \POE@dict{@GetCenter} }%
 \def\psoe@cs@in@A{(\POE@key@b@sicname) true \POE@dict{GetInternalBeamNodes} }%
-\def\psoe@cs@in@b{(N@\optexp@nodeB) \POE@dict{@GetCenter} }%
+\def\psoe@cs@in@b{/N@\optexp@nodeB\space \POE@dict{@GetCenter} }%
 \def\psoe@cs@in@B{(\POE@key@b@sicname) false \POE@dict{GetInternalBeamNodes} }%
-\def\psoe@cs@out@a{(N@\optexp@nodeA) \pst@optexpdict @GetCenter end }%
+\def\psoe@cs@out@a{/N@\optexp@nodeA\space \POE@dict{@GetCenter} }%
 \def\psoe@cs@out@A{(\POE@key@b@sicname) false \POE@dict{GetInternalBeamNodes} }%
-\def\psoe@cs@out@b{(N@\optexp@nodeB) \POE@dict{@GetCenter} }%
+\def\psoe@cs@out@b{/N@\optexp@nodeB\space \POE@dict{@GetCenter} }%
 \def\psoe@cs@out@B{(\POE@key@b@sicname) true \POE@dict{GetInternalBeamNodes} }%
 \def\drawbeam{%
   \def\conntable{,a-a,b-b,A-A,B-B}%
@@ -6436,7 +6437,7 @@
       \begin@OptexpObj
         \ifPOE@backlayer
           \POE@regNodes{##1}{##2}
-          \POE@adjustTempNodes
+          \POE@adaptnoderef
         \fi
         \POE@drawcomponent[#2]{##3}{\@nameuse{#2@ii}}
         \pst@OptexpVerb{(1) (N) (\oenode{}{}) CorrectDipoleNodes }%
@@ -6466,7 +6467,7 @@
       \begin@OptexpObj
         \ifPOE@backlayer
           \POE@regNodes{##1}{##2}
-          \POE@adjustTempNodes
+          \POE@adaptnoderef
         \fi
         \POE@drawcomponent[#2]{##3}{\@nameuse{#2@ii}}
         \pst@OptexpVerb{(1) (N) (\oenode{}{}) CorrectDipoleNodes }%
@@ -6735,18 +6736,15 @@
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}{\POE@adjustTempNodes}
+% \begin{macro}{\POE@adaptnoderef}
 %    \begin{macrocode}
-\def\POE@adjustTempNodes{%
+\def\POE@adaptnoderef{%
   \ifPOE@adaptnoderef
     \pst@OptexpVerb{%
-      (N@\oenodeRefA{}) @GetCenter (N@\oenodeRefB{}) @GetCenter
-      currentdict /chirality known not {%
-        /chirality 1 def 
-      } if
-      ExchCoor dup /ExchCoorSwitch ED 
-      {/@xref \POE@key@extnode@xref\space neg def /@yref \POE@key@extnode@yref\space neg def} 
-      {/@xref \POE@key@extnode@xref\space def /@yref \POE@key@extnode@yref\space def} ifelse
+      /N@\oenodeRefA{} @GetCenter /N@\oenodeRefB{} @GetCenter
+      @ABVect exch
+      dup 0 gt 3 1 roll 0 eq exch 0 lt and or
+      { /RefFac -1 def } if
     }%
   \fi
 \ignorespaces}%
@@ -6912,7 +6910,7 @@
    \begin@OptexpObj
       \ifPOE@backlayer
         \POE@regNodes{#1}{#2}
-        \POE@adjustTempNodes
+        \POE@adaptnoderef
       \fi
       \POE@drawcomponent{#4}{%
         \ifPOE@backlayer
@@ -6982,7 +6980,7 @@
   \begin@OptexpObj
     \ifPOE@backlayer
       \POE@regNodes{\pst@tempA}{\pst@tempB}%
-      \POE@adjustTempNodes
+      \POE@adaptnoderef
     \fi
     \POE@drawcomponent[fibercollimator]{#1}{%
        \pnode(0,0){\oenodeCenter{}}%
@@ -7122,8 +7120,8 @@
 \def\POE@transformnode#1#2{%
   \pnode(!
     \POE@dict{%
-      (N@\oenodeRotref{}) @GetCenter 2 copy
-      (N@#1) @GetCenter 
+      /N@\oenodeRotref{} @GetCenter 2 copy
+      /N@#1 @GetCenter 
       \POE@key@comp@Xshift\space\POE@key@comp@Yshift\space
       \tx@ScreenCoor VecAdd 4 2 roll @ABVect 
       \POE@key@angle\space matrix rotate dtransform VecAdd
@@ -8548,22 +8546,19 @@ tx@OptexpDict begin
 % \end{pssyntax}
 %    \begin{macrocode}
 /mwNode {
-    exch 3 1 roll add 2 div 3 1 roll add 2 div exch
+  VecAdd 0.5 VecMul
 } bind def
 %    \end{macrocode}
 % \end{macro}
 % 
 % \begin{macro}{FiberAngleB}
-%   Calculate angle of a line from \PSvar{nodeA} to \PSvar{nodeB}. Both
-%   nodes can be given either as strings or literal names. This is
-%   important because round braces are not allowed in the argument of
-%   \opt{angleA} and \opt{angleB} options.
+%   Calculate angle of a line from \PSname{nodeA} to \PSname{nodeB}.
 %   \begin{pssyntax}
-%     \PSvar{nodeB} \PSvar{nodeA} \PSop{FiberAngleB} \PSvar{angle}
+%     \PSname{nodeB} \PSname{nodeA} \PSop{FiberAngleB} \PSvar{angle}
 %   \end{pssyntax}
 %    \begin{macrocode}
 /FiberAngleB {
-    @GetCenter 3 -1 roll @GetCenter exch 3 1 roll sub 3 1 roll sub atan
+    @GetCenter 3 -1 roll @GetCenter @ABVect exch atan
 } bind def
 %    \end{macrocode}
 % \end{macro}
@@ -8588,8 +8583,8 @@ tx@OptexpDict begin
 % \end{pssyntax}
 %    \begin{macrocode}
 /ExtNode {%
-  @@y mul @@y0 add 
-  exch @@x mul @@x0 add exch
+  @@y mul RefFac mul @@y0 add 
+  exch @@x mul RefFac mul @@x0 add exch
 } bind def
 %    \end{macrocode}
 % \end{macro}
@@ -8600,20 +8595,20 @@ tx@OptexpDict begin
 %   reverse order.
 %
 % \PSstring{basicnodename} \PSvar{reverse} \PSop{GetInternalNodeNames}
-% \PSstring{N@basicnodenameN} \ldots{} \PSstring{N@basicnodename1} (if
+% \PSname{N@basicnodenameN} \ldots{} \PSname{N@basicnodename1} (if
 % \PSvar{reverse = false})
 %    \begin{macrocode}
 /GetInternalNodeNames {
-  exch dup cvn currentdict exch known {
+  /reverse ED
+  dup cvn currentdict exch known {
 %    \end{macrocode}
 % This is the safe way to do it, but it works only for free-ray
 % components which were defined by \PSvar{NewOptexpComp}.
 %    \begin{macrocode}
-    exch /reverse exch def
-    dup (N@) exch strcat exch cvn load /N get dup
+    dup cvn load /N get dup
     reverse { -1 1 } { 1 1 3 -1 roll } ifelse
     { 2 copy eq { pop (N) } { inttostr } ifelse
-      3 -1 roll dup 4 1 roll exch strcat 3 1 roll
+      3 -1 roll dup 4 1 roll exch NodeName 3 1 roll
     } for
     pop pop
   } {
@@ -8623,10 +8618,8 @@ tx@OptexpDict begin
 % for free-ray components, so this should not be an issue to keep it for
 % the fiber components.
 %    \begin{macrocode}
-    exch 
-    /reverse exch def
-    (N@) exch strcat 1 {
-      2 copy dup inttostr 3 -1 roll exch strcat dup
+    1 {
+      2 copy dup inttostr 3 -1 roll exch NodeName dup
       tx@NodeDict exch known {
         reverse {
           4 1 roll pop
@@ -8635,9 +8628,9 @@ tx@OptexpDict begin
         } ifelse
       } {
         reverse {
-          pop pop pop (N) strcat
+          pop pop pop (N) NodeName
         } {
-          pop pop exch (N) strcat exch 1 roll
+          pop pop exch (N) NodeName exch 1 roll
         } ifelse
         exit
       } ifelse
@@ -8674,29 +8667,7 @@ tx@OptexpDict begin
   /@@y0 0 def
   /@xref 0 def
   /@yref 0 def
-} bind def
-%    \end{macrocode}
-% \end{macro}
-% 
-% \begin{macro}{ExchCoor}
-%   \begin{pssyntax}
-%     \PSvar{Xa Ya Xb Yb} \PSop{ExchCoor} \PSvar{bool}
-%   \end{pssyntax}
-%    \begin{macrocode}
-/ExchCoor {
-    exch 4 -1 roll 2 copy 
-    gt {
-      pop pop pop pop false
-    } {
-%    \end{macrocode}
-% \PSvar{Xb} $>$ \PSvar{Xa}
-%    \begin{macrocode}
-        eq 3 1 roll gt and
-%    \end{macrocode}
-% \PSvar{Xa} $=$ \PSvar{Xb} and \PSvar{Ya} $<$ \PSvar{Yb}
-%    \begin{macrocode}
-        { false } { true } ifelse
-    } ifelse
+  /RefFac 1 def
 } bind def
 %    \end{macrocode}
 % \end{macro}
@@ -10012,11 +9983,10 @@ tx@OptexpDict begin
 %   \nxLPack{pst-node} package. Takes either a string or a literal name
 %   for the node name \PSvar{name}.
 %   \begin{pssyntax}
-%     \PSvar{name} \PSop{@GetCenter} \PSvar{X Y}
+%     \PSname{name} \PSop{@GetCenter} \PSvar{X Y}
 %   \end{pssyntax}
 %    \begin{macrocode}
 /@GetCenter { 
-  dup type /stringtype eq { cvn } if 
   tx@NodeDict begin load GetCenter end 
 } bind def
 %    \end{macrocode}
@@ -10158,11 +10128,11 @@ tx@OptexpDict begin
 % {NodeB} CompA -> shortest distance, planenum
 %    \begin{macrocode}
 /NearestNodeTmp {
-  (N@) exch strcat exch /NodeB ED
+  exch /NodeB ED
   /dist -1 def
   1 {% name and counter on stack
     2 copy % name cnt name cnt 
-    inttostr strcat dup % name cnt (namecnt) (namecnt)
+    NodeName dup
     tx@NodeDict exch known {%
       @GetCenter 2 copy
       NodeB @ABDist % name cnt X Y dist
@@ -10179,7 +10149,7 @@ tx@OptexpDict begin
       } ifelse
       1 add % increment counter
     } {% the last node
-      pop pop (N) strcat
+      pop pop (N) NodeName
       @GetCenter 2 copy
       NodeB @ABDist
       dup dist lt {
