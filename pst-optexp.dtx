@@ -22,7 +22,7 @@
 %<stylefile>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<stylefile>\ProvidesPackage{pst-optexp}
 %<*stylefile>
-    [2011/08/11 v3.0alpha Optical experimental setups with PSTricks]
+    [2011/08/12 v3.0alpha Optical experimental setups with PSTricks]
 %</stylefile>
 %
 %<*driver>
@@ -844,7 +844,7 @@
 % \iffalse
 %</ignore>
 % \fi
-%
+% 
 % \section{Concept and general behavior}\label{sec:general}
 % 
 % This section introduces into the basic concepts of the package design and
@@ -6240,23 +6240,28 @@
     /\POE@str@basicname@prefix#1 dup currentdict exch known { load /\POE@str@basicname@prefix#2 ED } if
     (\POE@str@basicname@prefix#2) (\POE@str@basicname@prefix#1)
     tx@NodeDict begin
-      (N@) exch strcat exch (N@) exch strcat exch 1 {
-        3 copy 3 string cvs dup 
-        3 1 roll 2 copy strcat 
+      1 {
+        3 copy inttostr dup 
+        3 1 roll 2 copy NodeName
         currentdict exch known {
-          strcat cvn load 3 1 roll strcat cvn ED
+          NodeName load 3 1 roll NodeName ED
           1 add
         } {
-          pop (N) strcat cvn load 3 1 roll pop (N) strcat cvn ED
-          pop
-          exit
+          pop (N) NodeName load 3 1 roll 
+          pop (N) NodeName ED
+          pop exit
         } ifelse
       } loop
-      [ (A) (B) (Center) (Label) (Rotref) (TrefA) (TrefB) (Ext)
+      [ (A) (B) (@A) (@B) (Center) (Label) (Rotref) 
+        (TrefA) (TrefB) (@TrefA) (@TrefB) (Ext)
       counttomark {
         counttomark 3 add -2 roll 2 copy counttomark 1 add 2 roll
-        3 -1 roll dup 4 1 roll strcat cvn dup 
-        currentdict exch known { load 3 1 roll exch strcat cvn ED } { pop pop pop } ifelse
+        3 -1 roll dup 4 1 roll NodeName dup 
+        currentdict exch known { 
+          load 3 1 roll exch NodeName ED 
+        } { 
+          pop pop pop 
+        } ifelse
       } repeat pop pop pop
     end
   }%
@@ -8800,9 +8805,9 @@ tx@OptexpDict begin
 % represents the intersection of an untilted and unshifted incoming beam
 % on the optical axis with the respective interface
 %    \begin{macrocode}
-  3 1 roll strcat exch exec scl ToVec exch
+  exec scl ToVec 3 1 roll
   tx@NodeDict begin 
-    (N@) exch strcat cvn false exch 10 {InitPnode } NewNode 
+    NodeName false exch 10 {InitPnode } NewNode 
   end
 } bind def
 %    \end{macrocode}
@@ -8917,10 +8922,9 @@ tx@OptexpDict begin
 % \PSstring{OrigPN} \PSstring{AliasPN} \PSop{IfcAlias}
 %    \begin{macrocode}
 /IfcAlias {
-  2 copy (P@) exch strcat cvn exch (P@) exch strcat cvn load def
+  2 copy IfcName exch IfcName load def
   tx@NodeDict begin 
-    (N@) name strcat dup 3 -1 roll strcat 
-    cvn 3 1 roll exch strcat cvn load def 
+    name exch NodeName name 3 -1 roll NodeName load def
   end
 } bind def
 %    \end{macrocode}
@@ -8931,7 +8935,7 @@ tx@OptexpDict begin
 %    \begin{macrocode}
 /GetPlaneVec {
     cvn load begin
-        PlaneName cvn load begin
+        IfcName load begin
             currentdict /RX known {
               RX RY CompMtrx dtransform CM idtransform
               neg exch
@@ -8961,7 +8965,7 @@ tx@OptexpDict begin
       } ifelse
     } if
     cvn load begin
-      PlaneName cvn load begin
+      IfcName load begin
         currentdict /RX known {
           X RX sub Y RY sub
         } {
@@ -9251,7 +9255,7 @@ tx@OptexpDict begin
     /Mode ED
     3 1 roll % n PlaneNumber CompName
     cvn load begin % comp dict
-      PlaneName cvn load begin % plane dict, n on stack
+      IfcName load begin % plane dict, n on stack
         X Y
         CompMtrx transform CM itransform % n1 X Y
         2 copy ToVec 4 1 roll % {X Y} n1 X Y
@@ -9448,7 +9452,7 @@ tx@OptexpDict begin
     /draw ED
     /Mode ED
     3 1 roll cvn load begin % comp dict
-      PlaneName cvn load begin % plane dict
+      IfcName load begin % plane dict
         X Y CompMtrx transform CM itransform
         2 copy ToVec 4 1 roll
         currentdict /RX known {
@@ -9780,7 +9784,7 @@ tx@OptexpDict begin
           } ifelse exch
           3 1 roll name
           4 1 roll
-          dup PlaneName load /mode get
+          dup IfcName load /mode get
           3 1 roll 5 1 roll
           [ 6 1 roll ] cvx counttomark 1 roll
           last {
@@ -9797,18 +9801,35 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}{PlaneName}
-% Construct the plane name from PlaneNum. This must be called within a dict of a
-% optexpcomp, because the last node ends with (N) instead of the number.
-% PlaneNum -> (P@PlaneNum)
+% \begin{macro}{IfcName}
+% Construct the interface name from \PSvar{num}. This must be called within a dict of a
+% optexpcomp, because the last node ends with (N) instead of the number and we must
+% know the number of component interfaces.
+% \begin{pssyntax}
+% \PSvar{num} \PSop{IfcName} \PSname{P@num}
+% \end{pssyntax}
 %    \begin{macrocode}
-/PlaneName {
+/IfcName {
   dup N eq {
     pop (N)
   } {
     inttostr
   } ifelse
-  (P@) exch strcat
+  (P@) exch strcat cvn
+} bind def
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{NodeName}
+% Construct the plane name from PlaneNum. This must be called within a dict of a
+% optexpcomp, because the last node ends with (N) instead of the number and we must
+% know the plane count of the component.
+% \begin{pssyntax}
+% \PSstring{name} \PSvar{num} \PSop{NodeName} \PSname{N@namenum}
+% \end{pssyntax}
+%    \begin{macrocode}
+/NodeName {
+  dup /stringtype eq not { inttostr } if
+  strcat (N@) exch strcat cvn
 } bind def
 %    \end{macrocode}
 % \end{macro}
@@ -10219,9 +10240,9 @@ tx@OptexpDict begin
 % B is a component, and A is a node: the angle at node A is calculated through the reference nodes of component B
 %    \begin{macrocode}
       4 copy @ABVect 6 2 roll pop pop % C-N C
-      (N@) CompB strcat dup dup (Center) strcat @GetCenter 6 -2 roll 4 2 roll @ABVect% C-N name name C-Center
+      CompB dup dup (Center) NodeName @GetCenter 6 -2 roll 4 2 roll @ABVect% C-N name name C-Center
       4 2 roll % C-N C-Center name name
-      (A) strcat exch (B) strcat
+      (A) NodeName exch (B) NodeName
       @GetCenter 3 -1 roll @GetCenter @ABVect 2 copy exch atan % C-N CenterB-B refB-refA angle
       7 3 roll 2 copy % refB-refA angle C-N C-Center C-Center
       9 -2 roll %  angle C-N C-Center C-Center refB-refA
@@ -10232,9 +10253,9 @@ tx@OptexpDict begin
 % A is a component, B is insignificant
 %    \begin{macrocode}
     4 2 roll pop pop
-    (N@) CompA strcat dup dup (Center) strcat @GetCenter 
+    CompA dup dup (Center) NodeName @GetCenter 
     6 -2 roll @ABVect 4 2 roll
-    (TrefA) strcat exch (TrefB) strcat
+    (TrefA) NodeName exch (TrefB) NodeName
     @GetCenter 3 -1 roll @GetCenter @ABVect 2 copy exch atan
     5 1 roll SProd 0 gt { 180 add } if
   } ifelse
@@ -10315,11 +10336,10 @@ tx@OptexpDict begin
 %    \begin{macrocode}
 /getsubnode {
   dup xcheck {
-      exch pop exec
+    exch pop exec
   } {
-      nametostr (N@) exch strcat
-      exch nametostr strcat
-      @GetCenter
+    nametostr exch nametostr NodeName
+    @GetCenter
   } ifelse
 } bind def
 %    \end{macrocode}
@@ -10378,8 +10398,8 @@ tx@OptexpDict begin
 %   \end{pssyntax}
 %    \begin{macrocode}
 /CorrectDipoleNodes {
-  (N@) exch strcat dup dup dup
-  6 -1 roll strcat exch 5 -1 roll strcat 2 copy 6 2 roll
+  dup dup dup
+  6 -1 roll NodeName exch 5 -1 roll NodeName 2 copy 6 2 roll
   gsave
     tx@Dict begin 
       STV CP T
@@ -10395,8 +10415,8 @@ tx@OptexpDict begin
     gsave
       tx@Dict begin 
         STV CP T
-        (TrefA) strcat @GetCenter 7 -1 roll 
-        (TrefB) strcat @GetCenter 
+        (TrefA) NodeName @GetCenter 7 -1 roll 
+        (TrefB) NodeName @GetCenter 
       end
     grestore
     @ABVect NormalizeVec 2 copy
@@ -10407,11 +10427,11 @@ tx@OptexpDict begin
 %    \begin{macrocode}
     8 -2 roll 2 copy abs exch abs max 1e-7 mul 3 1 roll 5 2 roll VecMul VecAdd ToVec
     tx@NodeDict begin
-      7 -1 roll cvn false exch 10 {InitPnode } NewNode 
+      7 -1 roll false exch 10 {InitPnode } NewNode 
     end
     4 2 roll 2 copy abs exch abs max -1e-7 mul 3 1 roll 5 2 roll VecMul VecAdd ToVec
     tx@NodeDict begin
-      exch cvn false exch 10 {InitPnode } NewNode
+      exch false exch 10 {InitPnode } NewNode
     end
   } {
     8 { pop } repeat
