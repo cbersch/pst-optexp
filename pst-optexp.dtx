@@ -965,10 +965,9 @@
 % \fi\label{sec:objnodes}
 % 
 % \ifGERMAN
-% Jedes \nxLPack{pst-optexp} Objekt einer Skizze stellt mehrere
-% spezielle Knoten zur Verfügung, die mit dessen Geometrie und
-% Positionierung zusammenhängen. Diese Knoten stehen für weitere
-% Aktionen zur Verfügung.
+% Jedes \nxLPack{pst-optexp} Objekt stellt mehrere spezielle Knoten zur
+% Verfügung, die mit dessen Geometrie und Positionierung zusammenhängen. Diese
+% Knoten stehen für weitere Verwendung zur Verfügung.
 %
 % Sie sollten immer die dafür vorgesehenen Makros verwenden um auf die
 % Knotennamen zuzugreifen.
@@ -982,48 +981,58 @@
 % You should always use the dedicated macros to access these node names.
 % \fi
 % \begin{ltxsyntax}
-%   \cmditem{oenode}{Obj}{Node} 
+%   \cmditem{oenode}{node}{name} 
 %
 % \ifGERMAN
-% Das ist das grundlegende Makro mit dem auf die Knotennamen einer
-% Komponente zugegriffen werden kann. Das erste Argument \prm{Obj} ist
-% der Name der Komponente (gemäß \prettyref{sec:namingobj}). Ist dieses
-% leer so wird die zuletzt Definierte verwendet. Das zweite Argument ist
-% der Bezeichner des angeforderten Knotens.
+% Das ist das grundlegende Makro mit dem auf die Knotennamen einer Komponente
+% zugegriffen werden kann. Das erste Argument \prm{node} ist der Bezeichner des
+% angeforderten Knotens. Das zweite Argument \prm{name} ist der Name der
+% Komponente (gemäß \prettyref{sec:namingobj}). Ist dieses leer so wird das
+% zuletzt definierte Objekt verwendet.
 %
-% Für viele der Knoten wird ein eigenes Makro bereitgestellt, das Sie
-% dann auch verwenden sollten, da die Namenskonventionen geändert werden
-% könnten. Die Makros stellen sicher, dass Sie immer die passenden
-% Knotennamen erhalten.
+% Für viele der Knoten wird ein eigenes Makro bereitgestellt, das Sie dann auch
+% verwenden sollten, da sich die Namenskonventionen ändern könnten. Die Makros
+% stellen sicher, dass Sie immer die passenden Knotennamen erhalten. Daher sind
+% die verfügbaren Bezeichner auch nicht aufgelistet.
 % \fi
 % \ifENGLISH
 % This is the basic command to access any node associated with a certain
-% object. The first argument \prm{Obj} is the name of the target object
-% (according to \prettyref{sec:namingobj}), if it is left empty, the
-% last defined component is used. The second argument is the name
-% postfix of the requested special node.
+% object. The first argument \prm{node} is the identifier of the requested
+% node. The second argument \prm{name} is the name of the target object
+% (according to \prettyref{sec:namingobj}). If it is left empty, the last
+% defined component is used.
 %
 % For most special nodes an appropriate macro is provided, which you are
-% strongly advised to use, because the naming conventions may
-% change. Using the macros makes sure, that you always get the correct
-% node names.
+% strongly advised to use, because the naming conventions may change. Using the
+% macros makes sure, that you always get the correct node names. Therefore, the
+% available identifiers are not listed explicitely.
 % \fi
 % \end{ltxsyntax}
 % 
-% \subsubsection{Reference nodes}\label{sec:refnodes}
+% \ifGERMAN\subsubsection{Referenzknoten}\fi
+% \ifENGLISH\subsubsection{Reference nodes}\fi
+% \label{sec:refnodes}
 %
 % \begin{ltxsyntax}
 %   \cmditem{oenodeRefA}{Obj}
 %   \cmditem{oenodeRefB}{Obj}
 %
+%  \ifGERMAN
+%  Die Eingangs- und Ausgangs-Referenzknoten.
+%
+%  Das sind die ursprünglichen Knoten, die für die Positionierung der Komponente
+%  benutzt wurden, \nxLcs{oenodeRefA} ist der erste und \nxLcs{oenodeRefB} der
+%  letzte Knoten. Lediglich bei den Faserkoppler (\prettyref{sec:coupler}) hängt
+%  die Zuordnung von dem \opt{align} Parameter ab.
+%  Eine vollständige Liste finden Sie in \prettyref{sec:overview-refnodes}.
+%  \fi
 %   \ifENGLISH
 %   The input and output reference nodes.
 %
-%   For all dipoles and free-ray tripoles, the input reference node
-%   \nxLcs{oenodeRefA} is the first node which is used for the component
-%   positioning, the output reference node is the last node. For
-%   couplers it depends on the \opt{align} parameter. For a complete
-%   list of possible reference nodes, see
+%   These are the original nodes which were used for the component positioning.
+%   \nxLcs{oenodeRefA} is the first node and \nxLcs{oenodeRefB} the last
+%   node. Only for the couplers (\prettyref{sec:coupler}) it depends on the
+%   \opt{align} parameter. For a complete list of possible reference nodes, see
 %   \prettyref{sec:overview-refnodes}.
 %   \fi
 % \iffalse
@@ -1045,6 +1054,10 @@
 %   \cmditem{oenodeTrefA}{Obj}
 %   \cmditem{oenodeTrefB}{Obj}
 %
+%   \ifGERMAN
+%   Die transformierten Eingangs- und Ausgangs-Referenzknoten.
+%
+%   Das sind die Referenzknoten nach Transformation zusammen mit der Komponente bezüglich des \opt{compshift}
 %   \ifENGLISH
 %   The transformed input and output reference nodes.
 %
@@ -2650,9 +2663,7 @@
 \begin{LTXexample}
 \begin{pspicture}(3,3)
   \optdipole[labeloffset=1, beam](0,2)(3,1){%
-    \rput(0,0){%
-      \rule{0.5cm}{1cm}
-    }
+    \rput(0,0){\rule{0.5cm}{1cm}}%
   }{label}
 \end{pspicture}
 \end{LTXexample}
@@ -2666,11 +2677,8 @@
 % \fi
 \begin{LTXexample}
 \begin{pspicture}(3,3)
-  \pnode(0,0){A}
-  \pnode(1.5,2){G}
-  \pnode(3,1.5){B}
   \opttripole[beam](3,1.5)(1.5,2)(0,0){%
-    \rput[b](0,0){text}
+    \rput[b](0,0){text}%
   }{label}
 \end{pspicture}
 \end{LTXexample}
