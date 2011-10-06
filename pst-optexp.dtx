@@ -22,7 +22,7 @@
 %<stylefile>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<stylefile>\ProvidesPackage{pst-optexp}
 %<*stylefile>
-    [2011/08/12 v3.0alpha Optical experimental setups with PSTricks]
+    [2011/10/06 v3.0alpha Optical experimental setups with PSTricks]
 %</stylefile>
 %
 %<*driver>
@@ -1026,15 +1026,15 @@
 %  die Zuordnung von dem \opt{align} Parameter ab.
 %  Eine vollständige Liste finden Sie in \prettyref{sec:overview-refnodes}.
 %  \fi
-%   \ifENGLISH
-%   The input and output reference nodes.
+%  \ifENGLISH
+%  The input and output reference nodes.
 %
-%   These are the original nodes which were used for the component positioning.
-%   \nxLcs{oenodeRefA} is the first node and \nxLcs{oenodeRefB} the last
-%   node. Only for the couplers (\prettyref{sec:coupler}) it depends on the
-%   \opt{align} parameter. For a complete list of possible reference nodes, see
-%   \prettyref{sec:overview-refnodes}.
-%   \fi
+%  These are the original nodes which were used for the component positioning.
+%  \nxLcs{oenodeRefA} is the first node and \nxLcs{oenodeRefB} the last
+%  node. Only for the couplers (\prettyref{sec:coupler}) it depends on the
+%  \opt{align} parameter. For a complete list of possible reference nodes, see
+%  \prettyref{sec:overview-refnodes}.
+%  \fi
 % \iffalse
 %<*ignore>
 % \fi
@@ -1057,13 +1057,15 @@
 %   \ifGERMAN
 %   Die transformierten Eingangs- und Ausgangs-Referenzknoten.
 %
-%   Das sind die Referenzknoten nach Transformation zusammen mit der Komponente bezüglich des \opt{compshift}
+%   Das sind die Referenzknoten nachdem sie zusammen mit der Komponente gemäß
+%   der \opt{compshift} und \opt{angle} Parameter transformiert wurden.
+%   \fi
 %   \ifENGLISH
 %   The transformed input and output reference nodes.
 %
 %   These are the input and output reference nodes which are transformed
-%   together with the component regarding the \opt{compshift} and
-%   \opt{angle} parameters. For a complete list, see \prettyref{sec:overview-refnodes}.
+%   together with the component according to the \opt{compshift} and
+%   \opt{angle} parameters.
 %   \fi
 % \iffalse
 %<*ignore>
@@ -1084,16 +1086,20 @@
 % \fi
 % \end{ltxsyntax}
 %
-% \subsubsection{Center node}\label{sec:centernode}
+% \ifGERMAN
+% \subsubsection{Mittelpunktknoten}
+% \fi
+% \ifENGLISH
+% \subsubsection{Center node}
+% \fi\label{sec:centernode}
 % \begin{ltxsyntax}
 %   \cmditem{oenodeCenter}{Obj}
 % 
 % \ifGERMAN
-% Der Knoten liegt, bis auf wenige Ausnahmen in der geometrischen Mitte
-% der Komponente.
+% Dieser Knoten liegt, bis auf wenige Ausnahmen, im Mittelpunkt der Komponente.
 % \fi
 % \ifENGLISH
-% The center node of the component.
+% This node lays, except for a few components, in the center of the component.
 % \fi
 % \iffalse
 %<*ignore>
@@ -1110,20 +1116,26 @@
 %</ignore>
 % \fi
 % \end{ltxsyntax}
+% 
+% \ifGERMAN
+% \subsubsection{Beschriftungsknoten}
+% \fi
+% \ifENGLISH
+% \subsubsection{Label node}
+% \fi\label{sec:labelnode}
 %
-% \subsubsection{Label node}\label{sec:labelnode}
 % \begin{ltxsyntax}
 %   \cmditem{oenodeLabel}{Obj}
 %
 %   \ifGERMAN
-%   Auf diesen Knoten wird die Beschriftung platziert. Der Knoten ist
-%   auch verfügbar wenn keine Beschriftung angegeben wurde. Für
-%   \opt{labeloffset=0} fällt der Knoten mit dem zentralen Knoten
-%   zusammen.
+%   Auf diesen Knoten wird die Beschriftung platziert. Der Knoten ist auch
+%   verfügbar wenn keine Beschriftung angegeben wurde. Für \opt{labeloffset=0}
+%   ist dieser Knoten identisch mit dem Mittelpunktsknoten
+%   (\prettyref{sec:centernode}).
 %   \fi
 %   \ifENGLISH
-%   The node where the component label is placed. It is available also
-%   if no label was specified. The label node coincides with the center
+%   At this the node the component label is placed. It is also available
+%   if no label was specified. The label node is identical with the center
 %   node for \opt{labeloffset=0}.
 %   \fi
 % \iffalse
@@ -1142,12 +1154,40 @@
 % \fi
 % \end{ltxsyntax}
 %
-% \subsubsection{External nodes}\label{sec:extnode}
+% \ifGERMAN
+% \subsubsection{Externe Knoten}
+% \fi
+% \ifENGLISH
+% \subsubsection{External nodes}
+% \fi\label{sec:extnode}
+%
 % \begin{ltxsyntax}
 %   \cmditem{oenodeExt}{Obj}
+%
+% \ifGERMAN
+% Ein externer Knoten kann an unterschiedliche Positionen entlang des
+% Komponentenrandes gesetzt werden. Dieser wird nur für den externen Zugriff
+% definiert, und beineinflusst in keiner Weise die Komponente.
+% \fi
+% \ifENGLISH
+% An external node can be placed at different positions along the component
+% boundary. It gets defined only for external usage and does not affect the
+% component in any way.
+% \fi
 % \end{ltxsyntax}
 % \begin{optionlist}
 % \valitem{extnode}{refstring}
+% \ifGERMAN
+% Bestimmt die Positionierung des externen Knotens. \refstringexplanation Nicht
+% jede Komponente unterstützt alle möglichen Kombinationen, die möglichen
+% Positionen jeder Komponente sind in \prettyref{sec:overview-extnode}
+% zusammengefasst.
+% \fi
+% \ifENGLISH
+% Set the position of the external node. \refstringexplanation Not all
+% components support any possible combination. The allowed positions of each
+% component are listed in \prettyref{sec:overview-extnode}.
+% \fi
 % \begin{pspicture}(6,2.5) 
 %   \addtopsstyle{Beam}{beaminside=false, arrows=->, arrowinset=0, arrowscale=1.5}
 %    \psset{optboxheight=1.5, optboxwidth=2.5}\ttfamily
@@ -1166,7 +1206,27 @@
 %    }
 % \end{pspicture}
 %
-% \boolitem[true]{adaptnoderef}
+% \boolitem[true]{globalnoderef}
+% \ifGERMAN
+% Die Bezeichnung von «oben» (\opt{t}) den anderen Positionierungsparametern von
+% \opt{extnode} können global oder relativ zur Komponente betrachtet werden.
+%
+% In dem folgenden Beispiel ist der externe Knoten immer «oben rechts» platziert
+% unabhängig von der relativen Anordnung der Referenzknoten
+% (\opt{globalnoderef=true}). In dem darauffolgenden Beispiel ist die
+% Positionierung relativ zur Verbindung zwischen Eingangs- und
+% Ausgangsreferenzknoten (\opt{globalnoderef=false}).
+% \fi
+% \ifENGLISH 
+% The definition of «top» (\opt{t}) and the other \opt{extnode} refstring
+% parameters can be global or relative to the component.
+%
+% In the next example the external node is always placed «top right»,
+% independent of the actual ordering of the reference nodes
+% (\opt{globalnoderef=true}). In the following example the position is relative
+% to the connection from input to output reference node
+% (\opt{globalnoderef=false}).
+% \fi
 % \iffalse
 %<*ignore>
 % \fi
@@ -1181,7 +1241,7 @@
 \end{LTXexample}
 \begin{LTXexample}
 \begin{pspicture}(-2,-2)(2,2)
-  \psset{adaptnoderef=false, extnode=tr, endbox, optboxwidth=1, optboxheight=0.6, dotscale=1.5}
+  \psset{globalnoderef=false, extnode=tr, endbox, optboxwidth=1, optboxheight=0.6, dotscale=1.5}
   \multido{\i=0+45}{8}{%
     \optbox[label=0 . . relative](0,0)(1;\i){\i}
     \psdot(\oenodeExt{})
@@ -1193,7 +1253,12 @@
 % \fi
 % \end{optionlist}
 %
-% \subsubsection{Interface nodes}\label{sec:ifcnodes}
+% \ifGERMAN
+% \subsubsection{Grenzflächenknoten}
+% \fi
+% \ifENGLISH
+% \subsubsection{Interface nodes}
+% \fi\label{sec:ifcnodes}
 % \begin{ltxsyntax}
 %   \cmditem{oenodeIfc}{num}{Obj}
 %
@@ -4744,7 +4809,7 @@
 \newif\ifPOE@connectplanes
 \newif\ifPOE@custombeam\POE@custombeamfalse
 \newif\ifPOE@insideobj\POE@insideobjfalse
-\newif\ifPOE@adaptnoderef
+\newif\ifPOE@globalnoderef
 %    \end{macrocode}
 % count the components in a pspicture environment
 %    \begin{macrocode}
@@ -5288,7 +5353,7 @@
 %    \end{macrocode}
 % External node
 %    \begin{macrocode}
-\define@boolkey[psset]{optexp}[POE@]{adaptnoderef}[true]{}%
+\define@boolkey[psset]{optexp}[POE@]{globalnoderef}[true]{}%
 \define@key[psset]{optexp}{extnoden@me}{\edef\POE@key@extnoden@me{\POE@str@basicname@prefix#1\POE@str@extnode@postfix}}%
 %    \end{macrocode}
 % (this part was copied and adapted from \cs{psset@@ref} from pstricks.tex)
@@ -5301,7 +5366,7 @@
 }%
 \psset[optexp]{%
   extnode=\@empty, 
-  adaptnoderef=true
+  globalnoderef=true
 }%
 \def\POE@key@extnode@xref{0}%
 \def\POE@key@extnode@yref{0}%
@@ -6456,7 +6521,7 @@
       \begin@OptexpObj
         \ifPOE@backlayer
           \POE@regNodes{##1}{##2}
-          \POE@adaptnoderef
+          \POE@globalnoderef
         \fi
         \POE@drawcomponent[#2]{##3}{\@nameuse{#2@ii}}
         \pst@OptexpVerb{(1) (N) (\oenode{}{}) CorrectDipoleNodes }%
@@ -6486,7 +6551,7 @@
       \begin@OptexpObj
         \ifPOE@backlayer
           \POE@regNodes{##1}{##2}
-          \POE@adaptnoderef
+          \POE@globalnoderef
         \fi
         \POE@drawcomponent[#2]{##3}{\@nameuse{#2@ii}}
         \pst@OptexpVerb{(1) (N) (\oenode{}{}) CorrectDipoleNodes }%
@@ -6755,10 +6820,10 @@
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}{\POE@adaptnoderef}
+% \begin{macro}{\POE@globalnoderef}
 %    \begin{macrocode}
-\def\POE@adaptnoderef{%
-  \ifPOE@adaptnoderef
+\def\POE@globalnoderef{%
+  \ifPOE@globalnoderef
     \pst@OptexpVerb{%
       /N@\oenodeRefA{} @GetCenter /N@\oenodeRefB{} @GetCenter
       @ABVect exch
@@ -6929,7 +6994,7 @@
    \begin@OptexpObj
       \ifPOE@backlayer
         \POE@regNodes{#1}{#2}
-        \POE@adaptnoderef
+        \POE@globalnoderef
       \fi
       \POE@drawcomponent{#4}{%
         \ifPOE@backlayer
@@ -6999,7 +7064,7 @@
   \begin@OptexpObj
     \ifPOE@backlayer
       \POE@regNodes{\pst@tempA}{\pst@tempB}%
-      \POE@adaptnoderef
+      \POE@globalnoderef
     \fi
     \POE@drawcomponent[fibercollimator]{#1}{%
        \pnode(0,0){\oenodeCenter{}}%
