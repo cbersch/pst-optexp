@@ -1134,7 +1134,7 @@
 %   (\prettyref{sec:centernode}).
 %   \fi
 %   \ifENGLISH
-%   At this the node the component label is placed. It is also available
+%   The component label is placed at this node. It is also available
 %   if no label was specified. The label node is identical with the center
 %   node for \opt{labeloffset=0}.
 %   \fi
@@ -1188,6 +1188,7 @@
 % components support any possible combination. The allowed positions of each
 % component are listed in \prettyref{sec:overview-extnode}.
 % \fi
+%
 % \begin{pspicture}(6,2.5) 
 %   \addtopsstyle{Beam}{beaminside=false, arrows=->, arrowinset=0, arrowscale=1.5}
 %    \psset{optboxheight=1.5, optboxwidth=2.5}\ttfamily
@@ -1261,16 +1262,47 @@
 % \fi\label{sec:ifcnodes}
 % \begin{ltxsyntax}
 %   \cmditem{oenodeIfc}{num}{Obj}
-%
-%   Get interface node \prm{num}, where the number is in the range
-%   \opt{1\ldots N}. The last node is always defined as \opt{N}.
-%
 %   \cmditem{oenodeIn}{Obj}
 %   \cmditem{oenodeOut}{Obj}
+%   
+%   \ifGERMAN
+%   Der Grenzflächenknoten \prm{num}, wobei \prm{num} eine Ganzzahl zwischen
+%   \opt{1} und \opt{N} ist. Der letzte Knoten ist immer \opt{N}. Der Knoten
+%   \prm{1} ist Eingangsknoten, und sollte immer über \nxLcs{oenodeIn}
+%   angesprochen werden. Der Knoten \opt{N} ist der Ausgangsknoten und sollte
+%   immer über \nxLcs{oenodeOut} angesprochen werden.
 %
-%   The first and the last interface node. \nxLcs{oenodeIn} is
-%   equivalent to \nxLcs{oenodeIfc\{1\}}, \nxLcs{oenodeOut} is
-%   equivalent to \nxLcs{oenodeIfc\{N\}}.
+%   «Eingang» und «Ausgang» können nur anhand einer relativen Orientierung
+%   definiert werden. Per Definition ist der Eingangsknoten derjenige zu dem ein
+%   Lichtstrahl ausgehend vom Eingangsreferenzknoten \Lcs{oenodeRefB}
+%   verläuft. Analog dazu ist die Definition der Ausgangsknotens. Diese
+%   Bezeichnung kann nur für die Faserkoppler (\prettyref{sec:coupler}) nicht
+%   angewendet werden.
+%
+%   \nxLcs{oenodeIn} ist äquivalent zu \nxLcs{oenodeIfc\{1\}} und
+%   \nxLcs{oenodeOut} ist äquivalent zu \nxLcs{oenodeIfc\{N\}}. Die Eingangs-
+%   und Ausgangsknoten sollten über die explizit bereitgestellten Makros
+%   angesprochen werden, \nxLcs{oenodeIfc} sollte nur für die weiteren
+%   Grenzflächenknoten, sofern vorhanden, verwendet werden.
+%   \fi
+%   \ifENGLISH
+%   The interface node \prm{num}, where the number is in the range \opt{1\ldots
+%     N}. The last node is always defined as \opt{N}. The interface node \prm{1}
+%   is the input node, and should always be accessed via \nxLcs{oenodeIn}, the
+%   interface node \prm{N} is the output node and should be accessed via
+%   \nxLcs{oenodeOut}.
+%
+%   Here, «input» and «output» can define only relative orientations. The input
+%   node is by definition the node to which a beam coming from the input
+%   reference node (\Lcs{oenodeRefA}) is connected to. Accordingly is the
+%   definition of the output node. This definition breaks down only for the
+%   fiber couplers (see \prettyref{sec:coupler}).
+%
+%   \nxLcs{oenodeIn} is equivalent to \nxLcs{oenodeIfc\{1\}} and
+%   \nxLcs{oenodeOut} is equivalent to \nxLcs{oenodeIfc\{N\}}. You should use
+%   the \nxLcs{oenodeIfc} macro only to access the nodes which are not the input
+%   and output nodes as for those explicit macros are provided.
+%   \fi
 % \end{ltxsyntax}
 % \iffalse
 %<*ignore>
@@ -1289,18 +1321,39 @@
 %</ignore>
 % \fi
 %
+% \ifGERMAN
+% In \prettyref{sec:overview-ifcnodes} finden Sie eine vollständige Liste aller
+% Komponenten mit ihren Grenzflächenknoten.
+% \fi
+% \ifENGLISH
 % See \prettyref{sec:overview-ifcnodes} for a complete list of all
 % components with their interface nodes.
+% \fi
 %
-% \subsubsection{Rotation reference node}\label{sec:rotrefnode}
+% \ifGERMAN
+% \subsubsection{Referenzknoten für die Rotation}
+% \fi
+% \ifENGLISH
+% \subsubsection{Rotation reference node}
+% \fi\label{sec:rotrefnode}
 % \begin{ltxsyntax}
 %   \cmditem{oenodeRotref}{Obj}
 %
-%   The node around which a component is rotated by
-%   \Lkeyword{angle}. The position of the node is specified with the
-%   \Lkeyword{rotateref} parameter. See
-%   \prettyref{sec:overview-extnodes} for possible rotation reference
-%   nodes of all components.
+%   \ifGERMAN 
+%   Der Referenzknoten um den eine Komponente mit \Lkeyword{angle} gedreht
+%   wird. Die Position des Knotens wird mit dem \Lkeyword{rotateref} Parameter
+%   definiert und kann dieselben Werte annehmen wie der externe Knoten
+%   (\prettyref{sec:extnode}). Eine vollständige Liste der möglichen Positionen
+%   finden Sie in \prettyref{sec:overview-extnode}.
+%   \fi
+%   \ifENGLISH
+%   The node around which a component is rotated by \Lkeyword{angle}. The
+%   position of the node is specified with the \Lkeyword{rotateref}
+%   parameter. The position which can be defined are equal to those of the
+%   external nodes (\prettyref{sec:extnode}). See
+%   \prettyref{sec:overview-extnodes} for possible rotation reference nodes of
+%   all components.
+%   \fi
 % \iffalse
 %<*ignore>
 % \fi
@@ -3460,7 +3513,37 @@
 % \fi
 % \end{optionlist}
 % 
-% 
+% \ifGERMAN\subsubsection{Eingangs- und Ausgangsknoten}\fi
+% \ifENGLISH\subsubsection{Input and output nodes}\fi
+% \label{sec:coupler-nodes}
+% \ifGERMAN
+% Die Definition der Eingangs- und Ausgangsknoten aus \prettyref{sec:ifcnodes}
+% ist für die Koppler nicht gültig. Hier werden die Knoten einfach von \opt{1} (links
+% oben) bis \opt{N} (rechts unten) durchnummeriert.
+% \fi
+% \ifENGLISH
+% The definition of input and output nodes from \prettyref{sec:ifcnodes} is not
+% valid for couplers. Here, the nodes are simply numbered from \opt{1} (left
+% top) to \opt{N} (right bottom).
+% \fi
+%
+% \begin{pspicture}[showgrid=true](0,-0.5)(12,2.5)
+% \psset{couplersize=0.5, couplertype=rectangular, couplersep=0.2}
+% \wdmsplitter(0, 1)(3,2)(3,0)
+% \psdot(\oenodeIfc{1}{})\uput[180](\oenodeIfc{1}{}){1}
+% \psdot(\oenodeIfc{2}{})\uput[0](\oenodeIfc{2}{}){2}
+% \psdot(\oenodeIfc{N}{})\uput[0](\oenodeIfc{N}{}){N}
+% \wdmcoupler(4, 2)(4,0)(7,1)
+% \psdot(\oenodeIfc{1}{})\uput[180](\oenodeIfc{1}{}){1}
+% \psdot(\oenodeIfc{2}{})\uput[180](\oenodeIfc{2}{}){2}
+% \psdot(\oenodeIfc{N}{})\uput[0](\oenodeIfc{N}{}){N}
+% \optcoupler(8,2)(8,0)(11,2)(11,0)
+% \psdot(\oenodeIfc{1}{})\uput[180](\oenodeIfc{1}{}){1}
+% \psdot(\oenodeIfc{2}{})\uput[180](\oenodeIfc{2}{}){2}
+% \psdot(\oenodeIfc{3}{})\uput[0](\oenodeIfc{3}{}){3}
+% \psdot(\oenodeIfc{N}{})\uput[0](\oenodeIfc{N}{}){N}
+% \end{pspicture}
+%
 % \section{Connecting Objects}\label{sec:connecting}
 % 
 % The package provides several methods for automatic beam and fiber
