@@ -165,42 +165,78 @@
   \let\numitem\POE@numitem
   \let\poeitem\ltd@item}
 
-\newcommand*{\POE@optitem}[3][]{%
+\def\POE@optitem{%
+  \@ifstar
+    {\boolfalse{@tempswa}\POE@optitem@i}
+    {\booltrue{@tempswa}\POE@optitem@i}}
+\newcommand*{\POE@optitem@i}[3][]{%
+  \ifbool{@tempswa}{\label{prm:#2}}{}%
   \xLkeyword{#2}%
   \ifblank{#1}
     {\ltd@option{#2}{#2}{#3}{}}
     {\ltd@option{#2}{#2}{#3}{\ltd@textverb{#1}}}}%
 
-\newcommand*{\POE@styleitem}[2][]{%
+\def\POE@styleitem{%
+  \@ifstar
+    {\boolfalse{@tempswa}\POE@styleitem@i}
+    {\booltrue{@tempswa}\POE@styleitem@i}}
+\newcommand*{\POE@styleitem@i}[2][]{%
+  \ifbool{@tempswa}{\label{prm:#2}}{}%
   \xLstyle{#2}%
   \ifblank{#1}
     {\ltd@option{#2}{#2}{\prm{psstyle}}{}}
     {\ltd@option{#2}{#2}{\prm{psstyle}}{\ltd@textverb{#1}}}}%
 
-\newcommand*{\POE@valitem}[3][]{%
+\def\POE@valitem{%
+  \@ifstar
+    {\boolfalse{@tempswa}\POE@valitem@i}
+    {\booltrue{@tempswa}\POE@valitem@i}}
+\newcommand*{\POE@valitem@i}[3][]{%
+  \ifbool{@tempswa}{\label{prm:#2}}{}%
   \xLkeyword{#2}%
   \ifblank{#1}
     {\ltd@option{#2}{#2}{\prm{#3}}{}}
     {\ltd@option{#2}{#2}{\prm{#3}}{\ltd@textverb{#1}}}}%
 
-\newcommand*{\POE@choitem}[3][]{%
+\def\POE@choitem{%
+  \@ifstar
+    {\boolfalse{@tempswa}\POE@choitem@i}
+    {\booltrue{@tempswa}\POE@choitem@i}}
+\newcommand*{\POE@choitem@i}[3][]{%
+  \ifbool{@tempswa}{\label{prm:#2}}{}%
   \xLkeyword{#2}%
   \ifblank{#1}
     {\ltd@option{#2}{#2}{\ltd@verblist{#3}}{}}
     {\ltd@option{#2}{#2}{\ltd@verblist{#3}}{\ltd@textverb{#1}}}}%
 
-\newcommand*{\POE@boolitem}[2][]{%
+\def\POE@boolitem{%
+  \@ifstar
+    {\boolfalse{@tempswa}\POE@boolitem@i}
+    {\booltrue{@tempswa}\POE@boolitem@i}}
+\newcommand*{\POE@boolitem@i}[2][]{%
+  \ifbool{@tempswa}{\label{prm:#2}}{}%
   \xLkeyword{#2}%
   \ifblank{#1}
     {\ltd@option{#2}{#2}{\ltd@verblist{true,false}}{}}
     {\ltd@option{#2}{#2}{\ltd@verblist{true,false}}{\ltd@textverb{#1}}}}%
 
-\newcommand*{\POE@intitem}[2][]{%
+\def\POE@intitem{%
+  \@ifstar
+    {\boolfalse{@tempswa}\POE@intitem@i}
+    {\booltrue{@tempswa}\POE@intitem@i}}
+\newcommand*{\POE@intitem@i}[2][]{%
+  \ifbool{@tempswa}{\label{prm:#2}}{}%
   \xLkeyword{#2}%
   \ifblank{#1}
     {\ltd@option{#2}{#2}{\prm{int}}{}}
     {\ltd@option{#2}{#2}{\prm{int}}{\ltd@textverb{#1}}}}%
-\newcommand*{\POE@numitem}[2][]{%
+
+\def\POE@numitem{%
+  \@ifstar
+    {\boolfalse{@tempswa}\POE@numitem@i}
+    {\booltrue{@tempswa}\POE@numitem@i}}
+\newcommand*{\POE@numitem@i}[2][]{%
+  \ifbool{@tempswa}{\label{prm:#2}}{}%
   \xLkeyword{#2}%
   \ifblank{#1}
     {\ltd@option{#2}{#2}{\prm{num}}{}}
@@ -228,6 +264,7 @@
 \newcommand*{\paramvalue}[1]{\texttt{#1}}
 \newcommand*{\styleshape}[1]{\texttt{#1}}
 \newcommand{\docindex}[1]{\sindex[doc]{#1|hyperpage}}
+\makeatletter
 \def\xLcs#1{\docindex{#1=\nxLcs{#1}}\docindex{\POEindexMacro!#1=\nxLcs{#1}}}
 \def\Lcs#1{\nxLcs{#1}\xLcs{#1}}
 \def\nxLcs#1{\texttt{\textbackslash#1}}
@@ -235,7 +272,9 @@
 \def\LPack#1{\texttt{#1}\docindex{#1=\texttt{#1}}\docindex{\POEindexPackage!#1=\texttt{#1}}}
 \def\nxLPack#1{\texttt{#1}}
 
-\def\Lkeyword#1{\texttt{#1}\xLkeyword{#1}}
+\def\Lkeyword{\@ifstar{\Lkeyword@nobm}{\Lkeyword@bm}}
+\def\Lkeyword@nobm#1{\texttt{#1}\xLkeyword{#1}}
+\def\Lkeyword@bm#1{\hyperref[prm:#1]{\Lkeyword@nobm{#1}}}
 \def\xLkeyword#1{\docindex{#1=\texttt{#1}}\docindex{\POEindexKeyword!#1=\texttt{#1}}}
 \def\nxLkeyword#1{\texttt{#1}}
 
@@ -258,22 +297,23 @@
 
 \def\Lfmultipole#1{\nxLcs{#1}\xLfmultipole{#1}}
 \def\xLfmultipole#1{\docindex{#1=\nxLcs{#1}}\docindex{\POEindexFiberMultipoles!#1=\nxLcs{#1}}}
+\makeatother
 
 \newcommand{\dipoledesc}[1]{%
   \xLdipole{#1}\label{cmd:#1}%
-  \cmditem{#1}[Options](In)(Out)%
-  \xLdipole{#1}\cmditem{#1}[Options](In)(Out){Label}%
+  \cmditem{#1}[options](in)(out)%
+  \xLdipole{#1}\cmditem{#1}[Options](in)(out){label}%
 }
 \newcommand{\tripoledesc}[1]{%
   \xLtripole{#1}\label{cmd:#1}%
-  \cmditem{#1}[Options](In)(Center)(Out)%
-  \cmditem{#1}[Options](In)(Center)(Out){Label}%
+  \cmditem{#1}[options](in)(center)(out)%
+  \cmditem{#1}[options](in)(center)(out){label}%
 }
 
 \newcommand{\fiberdipoledesc}[1]{%
   \xLfdipole{#1}\label{cmd:#1}%
-  \cmditem{#1}[Options](In)(Out)%
-  \cmditem{#1}[Options](In)(Out){Label}%
+  \cmditem{#1}[options](in)(out)%
+  \cmditem{#1}[options](in)(out){label}%
 }
 
 \newenvironment*{pssyntax}
@@ -302,7 +342,7 @@
 \addtopsstyle{Fiber}{linecolor=DOrange,linewidth=1.5\pslinewidth}
 \addtopsstyle{Beam}{linewidth=1.5\pslinewidth}
 \EnableCrossrefs
-\CodelineIndex
+%\CodelineIndex
 \RecordChanges
 \OnlyDescription
 \begin{document}
@@ -365,8 +405,8 @@
 %   \newcommand{\POEindexFiberMultipoles}{Fasermultipol}
 % \fi
 % \ifENGLISH
-%   \newrefformat{sec}{sec.~\ref{#1}} 
-%   \newrefformat{l}{line.~\ref{#1}}
+%   \newrefformat{sec}{Sec.~\ref{#1}} 
+%   \newrefformat{l}{Line~\ref{#1}}
 %   \newindex[Code index]{idx}
 %   \newindex[Documentation index]{doc}
 %   \newcommand{\POEindexPackage}{Package}
@@ -649,7 +689,7 @@
 % \fi
 % 
 % \ifGERMAN\fi
-% \section{Revision History}
+% \section{Revision history}
 % \begingroup
 % \makeatletter\have@multicolfalse\makeatother
 % \PrintChanges
@@ -727,7 +767,7 @@
 % anhand derer die Komponenten positioniert werden. Die beiden Linsen
 % (\prettyref{l:ex1-l1}--\ref{l:ex1-l2}) werden absolut positioniert,
 % der Parameter \opt{abspos} gibt den Abstand vom ersten Referenzknoten
-% \prm{In} an. Ein negative Linsenradius \opt{lensradius} ergibt eine
+% \prm{in} an. Ein negative Linsenradius \opt{lensradius} ergibt eine
 % konkave Linse (\prettyref{l:ex1-l1}), ein positiver Linsenradius eine
 % konvexe Linse (\prettyref{l:ex1-l2}). Die dritte Komponente ist eine
 % Box (\prettyref{l:ex1-box}), deren eine Seite mit der Option
@@ -894,7 +934,7 @@
 % Some hybrid dipoles (optbox, detector etc.) can be used both as
 % fiber-optical or free-ray elements. 
 % 
-% \subsection{Using PSStyles}\label{sec:styles}
+% \subsection{Using psstyles}\label{sec:styles}
 % 
 % The appearance of many functional parts of \LPack{pst-optexp} objects is
 % controlled via psstyles. These are collections of parameters which are
@@ -926,8 +966,6 @@
 % \iffalse
 %</ignore>
 % \fi
-% 
-% \styleitem{OptionalStyle}
 % \end{optionlist}
 %
 % \subsection{Object names}\label{sec:namingobj}
@@ -1011,7 +1049,7 @@
 % 
 % \ifGERMAN\subsubsection{Referenzknoten}\fi
 % \ifENGLISH\subsubsection{Reference nodes}\fi
-% \label{sec:refnodes}
+% \label{sec:refnode}
 %
 % \begin{ltxsyntax}
 %   \cmditem{oenodeRefA}{Obj}
@@ -1024,7 +1062,7 @@
 %  benutzt wurden, \nxLcs{oenodeRefA} ist der erste und \nxLcs{oenodeRefB} der
 %  letzte Knoten. Lediglich bei den Faserkoppler (\prettyref{sec:coupler}) hängt
 %  die Zuordnung von dem \opt{align} Parameter ab.
-%  Eine vollständige Liste finden Sie in \prettyref{sec:overview-refnodes}.
+%  Eine vollständige Liste finden Sie in \prettyref{sec:overview-refnode}.
 %  \fi
 %  \ifENGLISH
 %  The input and output reference nodes.
@@ -1033,7 +1071,7 @@
 %  \nxLcs{oenodeRefA} is the first node and \nxLcs{oenodeRefB} the last
 %  node. Only for the couplers (\prettyref{sec:coupler}) it depends on the
 %  \opt{align} parameter. For a complete list of possible reference nodes, see
-%  \prettyref{sec:overview-refnodes}.
+%  \prettyref{sec:overview-refnode}.
 %  \fi
 % \iffalse
 %<*ignore>
@@ -1058,14 +1096,14 @@
 %   Die transformierten Eingangs- und Ausgangs-Referenzknoten.
 %
 %   Das sind die Referenzknoten nachdem sie zusammen mit der Komponente gemäß
-%   der \opt{compshift} und \opt{angle} Parameter transformiert wurden.
+%   der \Lkeyword{compshift} und \Lkeyword{angle} Parameter transformiert wurden.
 %   \fi
 %   \ifENGLISH
 %   The transformed input and output reference nodes.
 %
 %   These are the input and output reference nodes which are transformed
-%   together with the component according to the \opt{compshift} and
-%   \opt{angle} parameters.
+%   together with the component according to the \Lkeyword{compshift} and
+%   \Lkeyword{angle} parameters.
 %   \fi
 % \iffalse
 %<*ignore>
@@ -1259,7 +1297,7 @@
 % \fi
 % \ifENGLISH
 % \subsubsection{Interface nodes}
-% \fi\label{sec:ifcnodes}
+% \fi\label{sec:ifcnode}
 % \begin{ltxsyntax}
 %   \cmditem{oenodeIfc}{num}{Obj}
 %   \cmditem{oenodeIn}{Obj}
@@ -1276,8 +1314,8 @@
 %   definiert werden. Per Definition ist der Eingangsknoten derjenige zu dem ein
 %   Lichtstrahl ausgehend vom Eingangsreferenzknoten \Lcs{oenodeRefB}
 %   verläuft. Analog dazu ist die Definition der Ausgangsknotens. Diese
-%   Bezeichnung kann nur für die Faserkoppler (\prettyref{sec:coupler}) nicht
-%   angewendet werden.
+%   Bezeichnung kann nur für die Faserkoppler (\ref{sec:coupler}) und
+%   Strahlteiler (\ref{cmd:beamsplitter}) nicht angewendet werden.
 %
 %   \nxLcs{oenodeIn} ist äquivalent zu \nxLcs{oenodeIfc\{1\}} und
 %   \nxLcs{oenodeOut} ist äquivalent zu \nxLcs{oenodeIfc\{N\}}. Die Eingangs-
@@ -1296,7 +1334,8 @@
 %   node is by definition the node to which a beam coming from the input
 %   reference node (\Lcs{oenodeRefA}) is connected to. Accordingly is the
 %   definition of the output node. This definition breaks down only for the
-%   fiber couplers (see \prettyref{sec:coupler}).
+%   fiber couplers (\ref{sec:coupler}) and beamsplitter
+%   (\ref{cmd:beamsplitter}).
 %
 %   \nxLcs{oenodeIn} is equivalent to \nxLcs{oenodeIfc\{1\}} and
 %   \nxLcs{oenodeOut} is equivalent to \nxLcs{oenodeIfc\{N\}}. You should use
@@ -1322,11 +1361,11 @@
 % \fi
 %
 % \ifGERMAN
-% In \prettyref{sec:overview-ifcnodes} finden Sie eine vollständige Liste aller
+% In \prettyref{sec:overview-ifcnode} finden Sie eine vollständige Liste aller
 % Komponenten mit ihren Grenzflächenknoten.
 % \fi
 % \ifENGLISH
-% See \prettyref{sec:overview-ifcnodes} for a complete list of all
+% See \prettyref{sec:overview-ifcnode} for a complete list of all
 % components with their interface nodes.
 % \fi
 %
@@ -1351,7 +1390,7 @@
 %   position of the node is specified with the \Lkeyword{rotateref}
 %   parameter. The position which can be defined are equal to those of the
 %   external nodes (\prettyref{sec:extnode}). See
-%   \prettyref{sec:overview-extnodes} for possible rotation reference nodes of
+%   \prettyref{sec:overview-extnode} for possible rotation reference nodes of
 %   all components.
 %   \fi
 % \iffalse
@@ -1454,20 +1493,20 @@
 %   \subsection{Drehen und Verschieben}
 % \fi
 % \ifENGLISH
-%   \subsection{Rotating and Shifting}
+%   \subsection{Rotating and shifting}
 % \fi\label{sec:rotshift}
 % \ifGERMAN
 % Alle Komponenten können versetzt und um verschiedene Bezugspunkte
 % gedreht werden. Beachten Sie, dass mit den Komponenten auch die
 % Grenzflächenknoten transformiert werden. Die transformierten
 % Referenzknoten sind als eigene Knoten verfügbar (siehe
-% \prettyref{sec:refnodes}).
+% \prettyref{sec:refnode}).
 % \fi
 % \ifENGLISH
 % All components can be shifted and rotated around different reference
 % nodes. Please note, that together with the components also their
 % interface nodes are transformed. The transformed reference nodes are
-% accessible as new nodes (see \prettyref{sec:refnodes}).
+% accessible as new nodes (see \prettyref{sec:refnode}).
 % \fi
 % 
 % \begin{optionlist}
@@ -1482,13 +1521,13 @@
 % \numitem[c]{rotateref}{refstring}
 % \ifGERMAN
 % Setzt den Bezugspunkt für die Drehung der Komponente. Die möglichen
-% Bezugspunkte jeder Komponente können Sie \prettyref{sec:rotrefnodes}
+% Bezugspunkte jeder Komponente können Sie \prettyref{sec:rotrefnode}
 % entnehmen.
 % \fi
 % \ifENGLISH
 % Set the reference point for the rotation of the component. For the
 % possible nodes for each component, please refer to
-% \prettyref{sec:rotateref}.
+% \prettyref{sec:overview-extnode}.
 % \fi
 % \iffalse
 %<*ignore>
@@ -1504,7 +1543,7 @@
 % \fi
 %
 % \numitem[0]{compshift} Shift a component perpendicular to its
-% reference line (see \prettyref{sec:refnodes}). For reflective
+% reference line (see \prettyref{sec:refnode}). For reflective
 % components it is shifted along the reflective interface.
 % \iffalse
 %<*ignore>
@@ -1551,12 +1590,12 @@
 %   \numitem{position} 
 %   \ifGERMAN 
 %   Setzt die relative Position eines Objektes zwischen seinen beiden
-%   Referenzknoten. Ist äquivalent zum \Lkeyword{npos} Parameter von
+%   Referenzknoten. Ist äquivalent zum \Lkeyword*{npos} Parameter von
 %   \Lcs{ncput} (eine Zahl im Intervall $[0,1]$).
 %   \fi
 %   \ifENGLISH
 %   Control the relative position of an object between its two reference
-%   points. Equivalent to the \Lkeyword{npos} parameter of \Lcs{ncput}
+%   points. Equivalent to the \Lkeyword*{npos} parameter of \Lcs{ncput}
 %   (a number in the range $[0,1]$).
 %   \fi
 % \iffalse
@@ -1766,7 +1805,7 @@
 %   \section{Freistrahl-Komponenten}
 % \fi
 % \ifENGLISH
-%   \section{Free-Ray Objects}
+%   \section{Free-ray objects}
 % \fi
 % \label{sec:freeraycomp}
 %
@@ -1914,7 +1953,7 @@
 %   \subsection{Optisches Pl\"attchen}
 % \fi
 % \ifENGLISH
-%   \subsection{Optical Plate}
+%   \subsection{Optical plate}
 % \fi
 % 
 % \begin{ltxsyntax}
@@ -1972,7 +2011,7 @@
 % \end{ltxsyntax}
 % 
 % \begin{optionlist}
-% \numitem[1]{plateheight} \ifGERMAN Die Höhe des Plättchens.\fi\ifENGLISH The height of the plate.\fi
+% \numitem*[1]{plateheight} \ifGERMAN Die Höhe des Plättchens.\fi\ifENGLISH The height of the plate.\fi
 % \numitem[0.1]{platewidth} \ifGERMAN Die Breite des Plättchens.\fi\ifENGLISH The width of the plate.\fi
 % \end{optionlist}
 % 
@@ -2024,8 +2063,7 @@
 % \fi
 % \end{optionlist}
 % 
-% \subsection{Crystal}\label{sec:crystal}
-% 
+% \subsection{Crystal}
 % \begin{ltxsyntax}
 % \dipoledesc{crystal}
 % \iffalse
@@ -2050,8 +2088,6 @@
 % \boolitem[false]{voltage}
 % \boolitem[false]{lamp}
 % \numitem[0.3]{lampscale}
-% \numitem[0]{angle}
-% \valitem[c]{rotateref}{refstring}
 % \end{optionlist}
 % 
 % \noindent For a discussion of the \Lkeyword{angle} and \Lkeyword{rotateref}
@@ -2134,7 +2170,8 @@
 % \fi
 % \end{optionlist}
 % 
-% \subsection{Detector}
+% \ifGERMAN\subsection{Detektor}\fi
+% \ifENGLISH\subsection{Detector}\fi
 % 
 % \begin{ltxsyntax}
 % \dipoledesc{optdetector}
@@ -2152,11 +2189,21 @@
 % \end{ltxsyntax}
 % 
 % \begin{optionlist}
-%   \numitem[0.8]{detsize} For a \opt{round} detector this is the object
-%   diameter, for the \opt{diode} detector its side length.
+%   \numitem[0.8]{detsize} 
+%   \ifGERMAN 
+%   Das ist die Seitenlänge (\opt{diode}) bzw. der Durchmesser (\opt{round}) des Detektors.
+%   \fi
+%   \ifENGLISH 
+%   This is the side length (\opt{diode}) or the diameter \opt{round} of the detector.
+%   \fi
 % 
-% \choitem[round]{dettype}{round, diode} This parameter selects between different
-% types of detectors.
+%   \choitem[round]{dettype}{round, diode} 
+%   \ifGERMAN
+%   Dieser Parameter bestimmt den Typ und damit das Aussehen des Detektors.
+%   \fi
+%   \ifENGLISH
+%   This parameter selects between different types of detectors.
+%   \fi
 % \iffalse
 %<*ignore>
 % \fi
@@ -2170,9 +2217,9 @@
 % \fi
 % \end{optionlist}
 % 
-% \subsection{Optical Diode}\label{sec:optdiode}
-% 
-% 
+% \ifGERMAN\subsection{Optische Diode}\fi
+% \ifENGLISH\subsection{Optical diode}\fi
+%
 % \begin{ltxsyntax}
 % \dipoledesc{optdiode}
 % \iffalse
@@ -2189,9 +2236,16 @@
 % \end{ltxsyntax}
 % \begin{optionlist}
 % \numitem[0.8]{optdiodesize}
+% \ifGERMAN 
+% Die Seitenlänge der optischen Diode.
+% \fi
+% \ifENGLISH
+% The side length of the optical diode.
+% \fi
 % \end{optionlist}
 % 
-% \subsection{Dove Prism}\label{sec:doveprism}
+% \ifGERMAN\subsection{Doveprisma}\fi
+% \ifENGLISH\subsection{Dove prism}\fi
 % 
 % \begin{ltxsyntax}
 % \dipoledesc{doveprism}
@@ -2209,17 +2263,20 @@
 % \end{ltxsyntax}
 % 
 % \begin{optionlist}
-%   \numitem[0.6]{doveprismsize} The height of the prism, the total width is
+%   \numitem[0.6]{doveprismsize} 
+%   \ifGERMAN
+%   Die Höhe des Prismas, die Gesamtbreite ist das dreifache und die Winkel an
+%   der Eingangs- und Ausgangsfläche betragen 45\textdegree.
+%   \fi
+%   \ifENGLISH
+%    The height of the prism, the total width is set to
 %   three times the height and the angles at the input and output faces are
 %   45\textdegree.
+%   \fi
 % \end{optionlist}
 % 
-% \ifGERMAN
-%   \subsection{Polarisation}
-% \fi
-% \ifENGLISH
-%   \subsection{Polarization}
-% \fi
+% \ifGERMAN\subsection{Polarisation}\fi
+% \ifENGLISH\subsection{Polarization}\fi
 %
 % \begin{ltxsyntax}
 % \dipoledesc{polarization}
@@ -2263,13 +2320,8 @@
 % \fi
 % \end{optionlist}
 % 
-% \ifGERMAN
-%   \subsection{Spiegel}
-% \fi
-% \ifENGLISH
-%   \subsection{Mirror}
-% \fi
-% \label{sec:mirror}
+% \ifGERMAN\subsection{Spiegel}\fi
+% \ifENGLISH\subsection{Mirror}\fi
 % 
 % \begin{ltxsyntax}
 % \tripoledesc{mirror}
@@ -2314,7 +2366,7 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}[width=3.5cm]
+\begin{LTXexample}
 \begin{pspicture}(3,3)
   \psset{labeloffset=0.5}
   \mirror[mirrorradius=1](0,0)(1,2)(1.8,1){concave}
@@ -2450,12 +2502,9 @@
 % \fi
 % \end{optionlist}
 % 
-% \ifGERMAN
-%   \subsection{Strahlteiler}
-% \fi
-% \ifENGLISH
-%   \subsection{Beamsplitter}
-% \fi
+% \ifGERMAN\subsection{Strahlteiler}\fi
+% \ifENGLISH\subsection{Beamsplitter}\fi
+%
 % \begin{ltxsyntax}
 % \tripoledesc{beamsplitter}
 % \iffalse
@@ -2507,12 +2556,8 @@
 % \fi
 % \end{optionlist}
 % 
-% \ifGERMAN
-%   \subsection{Optisches Gitter}
-% \fi
-% \ifENGLISH
-%   \subsection{Optical Grating}
-% \fi
+% \ifGERMAN\subsection{Optisches Gitter}\fi
+% \ifENGLISH\subsection{Optical grating}\fi
 % 
 % \begin{ltxsyntax}
 % \tripoledesc{optgrating}
@@ -2621,13 +2666,8 @@
 % \ifENGLISH \linewidthexplanation{grating}{gratings}\fi
 % \end{optionlist}
 % 
-% \ifGERMAN
-%   \subsection{Prisma}
-% \fi
-% \ifENGLISH
-%   \subsection{Prism}
-% \fi
-% \label{sec:prism}
+% \ifGERMAN\subsection{Prisma}\fi
+% \ifENGLISH\subsection{Prism}\fi
 % 
 % \begin{ltxsyntax}
 % \tripoledesc{optprism}
@@ -2644,12 +2684,12 @@
 % \fi
 % \end{ltxsyntax}
 % \ifGERMAN
-% Das Prisma wird immer symmetrisch bezüglich der \prm{In} und \prm{Out}
+% Das Prisma wird immer symmetrisch bezüglich der \prm{in} und \prm{out}
 % Knoten ausgerichtet. Für asymmetrischen Strahlengang siehe
 % \prettyref{sec:connecting}.
 % \fi
 % \ifENGLISH
-% The prism is always placed symmetric between \prm{In} and \prm{Out}
+% The prism is always placed symmetric between \prm{in} and \prm{out}
 % nodes. For asymmetric beam traces see \prettyref{sec:connecting}.
 % \fi
 %
@@ -2673,13 +2713,8 @@
 % \fi
 % \end{optionlist}
 % 
-% \ifGERMAN
-%   \subsection{Umkehrprisma}
-% \fi
-% \ifENGLISH
-%   \subsection{Right-Angle Prism}
-% \fi
-% \label{sec:raprism}
+% \ifGERMAN\subsection{Umkehrprisma}\fi
+% \ifENGLISH\subsection{Right-angle prism}\fi
 % 
 % \begin{ltxsyntax}
 % \tripoledesc{raprism}
@@ -2725,13 +2760,8 @@
 % \ifENGLISH The length of the input plane.\fi
 % \end{optionlist}
 % 
-% \ifGERMAN
-%   \subsection{Pentaprisma}
-% \fi
-% \ifENGLISH
-%   \subsection{Penta Prism}
-% \fi
-% \label{sec:ppprism}
+% \ifGERMAN\subsection{Pentaprisma}\fi
+% \ifENGLISH\subsection{Penta prism}\fi
 % 
 % \begin{ltxsyntax}
 % \tripoledesc{pentaprism}
@@ -2754,12 +2784,8 @@
 %   \ifENGLISH The length of the input and output plane.\fi
 % \end{optionlist}
 % 
-% \ifGERMAN
-%   \subsection{Benutzerdefinierte Komponenten}
-% \fi
-% \ifENGLISH
-%   \subsection{Custom Components}
-% \fi
+% \ifGERMAN\subsection{Benutzerdefinierte Komponenten}\fi
+% \ifENGLISH\subsection{Custom components}\fi
 % \label{sec:custom}
 %
 % \ifGERMAN
@@ -2809,12 +2835,8 @@
 % it as a new component. For details on how to define your own components see
 % \prettyref{sec:newobj}.
 % 
-% \ifGERMAN
-%   \section{Faseroptische Komponenten}
-% \fi
-% \ifENGLISH
-%   \section{Fiber-Optical Components}
-% \fi
+% \ifGERMAN\section{Faseroptische Komponenten}\fi
+% \ifENGLISH\section{Fiber-optical components}\fi
 % \label{sec:fibercomp}
 % 
 % \begin{optionlist}
@@ -2825,12 +2847,8 @@
 %   which would be highlighted.
 % \end{optionlist}
 %
-% \ifGERMAN
-%   \subsection{Optische Faser}
-% \fi
-% \ifENGLISH
-%   \subsection{Optical Fiber}
-% \fi
+% \ifGERMAN\subsection{Optische Faser}\fi
+% \ifENGLISH\subsection{Optical fiber}\fi
 % 
 % \begin{ltxsyntax}
 % \fiberdipoledesc{optfiber}
@@ -2897,12 +2915,9 @@
 % \fi
 % \end{optionlist}
 % 
-% \ifGERMAN
-%   \subsection{Optischer Verstärker}
-% \fi
-% \ifENGLISH
-%   \subsection{Optical Amplifier}
-% \fi
+% \ifGERMAN\subsection{Optischer Verstärker}\fi
+% \ifENGLISH\subsection{Optical amplifier}\fi
+%
 % \begin{ltxsyntax}
 % \fiberdipoledesc{optamp}
 % \iffalse
@@ -2922,7 +2937,8 @@
 % \numitem[0.8]{optampsize} \sizeexplanation{\ifGERMAN des Verstärkers\fi\ifENGLISH amplifier\fi}
 % \end{optionlist}
 % 
-% \subsection{Mach-Zehnder Modulator}
+% \ifGERMAN\subsection{Mach-Zehnder-Modulator}\fi
+% \ifENGLISH\subsection{Mach-Zehnder modulator}\fi
 % 
 % \begin{ltxsyntax}
 % \fiberdipoledesc{optmzm}
@@ -2943,12 +2959,9 @@
 % \numitem[0.8]{optmzmsize} \sizeexplanation{\ifGERMAN des Modulators\fi\ifENGLISH modulator\fi}
 % \end{optionlist}
 % 
-% \ifGERMAN
-%   \subsection{Optischer Filter}
-% \fi
-% \ifENGLISH
-%   \subsection{Optical Filter}
-% \fi
+% \ifGERMAN\subsection{Optischer Filter}\fi
+% \ifENGLISH\subsection{Optical filter}\fi
+%
 % \begin{ltxsyntax}
 % \fiberdipoledesc{optfilter}
 % \iffalse
@@ -3007,12 +3020,8 @@
 % \fi
 % \end{optionlist}
 % 
-% \ifGERMAN
-%   \subsection{Polarisationssteller}
-% \fi
-% \ifENGLISH
-%   \subsection{Polarization Controller}
-% \fi
+% \ifGERMAN\subsection{Polarisationssteller}\fi
+% \ifENGLISH\subsection{Polarization controller}\fi
 % 
 % \begin{ltxsyntax}
 % \fiberdipoledesc{polcontrol}
@@ -3079,12 +3088,8 @@
 % \fi
 % \end{optionlist}
 % 
-% \ifGERMAN
-%   \subsection{Schalter}
-% \fi
-% \ifENGLISH
-%   \subsection{Switch}
-% \fi
+% \ifGERMAN\subsection{Optischer Schalter}\fi
+% \ifENGLISH\subsection{Optical switch}\fi
 % 
 % \begin{ltxsyntax}
 % \fiberdipoledesc{optswitch}
@@ -3122,12 +3127,8 @@
 % \fi
 % \end{optionlist}
 % 
-% \ifGERMAN
-%   \subsection{Faserverzögerungstrecke}
-% \fi
-% \ifENGLISH
-%   \subsection{Fiber Delay Line}
-% \fi
+% \ifGERMAN\subsection{Faserverzögerungstrecke}\fi
+% \ifENGLISH\subsection{Fiber delay line}\fi
 % 
 % \begin{ltxsyntax}
 % \fiberdipoledesc{fiberdelayline}
@@ -3172,12 +3173,8 @@
 % \fi
 % \end{optionlist}
 % 
-% \ifGERMAN
-%   \subsection{Polarisator}
-% \fi
-% \ifENGLISH
-%   \subsection{Polarizer}
-% \fi
+% \ifGERMAN\subsection{Polarisator}\fi
+% \ifENGLISH\subsection{Polarizer}\fi
 % 
 % \begin{ltxsyntax}
 % \fiberdipoledesc{optfiberpolarizer}
@@ -3198,12 +3195,8 @@
 %   \numitem[0.6]{fiberpolsize} \sizeexplanation{\ifGERMAN des Polarisators\fi\ifENGLISH polarizer\fi}
 % \end{optionlist}
 % 
-% \ifGERMAN
-%   \subsection{Faserkollimator}
-% \fi
-% \ifENGLISH
-%   \subsection{Fiber Collimator}
-% \fi
+% \ifGERMAN\subsection{Faserkollimator}\fi
+% \ifENGLISH\subsection{Fiber collimator}\fi
 % 
 % \begin{ltxsyntax}
 % \xLcs{fibercollimator}\cmditem{fibercollimator}(In)(A)(B)(Out){Label}%
@@ -3275,20 +3268,12 @@
 %</ignore>
 % \fi
 % 
-% \ifGERMAN
-%   \subsection{Koppler}
-% \fi
-% \ifENGLISH
-%   \subsection{Coupler}
-% \fi
-% \label{sec:coupler}
+% \ifGERMAN\subsection{Faserkoppler}\fi
+% \ifENGLISH\subsection{Fiber coupler}\fi\label{sec:coupler}
 %
-% \ifGERMAN
-%   \subsubsection{\texorpdfstring{\mathversion{bold}$2\times 2$}{2x2}-Koppler}
-% \fi
-% \ifENGLISH
-%   \subsubsection{\texorpdfstring{\mathversion{bold}$2\times 2$}{2x2} Coupler}
-% \fi
+% \ifGERMAN\subsubsection{\texorpdfstring{\mathversion{bold}$2\times 2$}{2x2}-Koppler}\fi
+% \ifENGLISH\subsubsection{\texorpdfstring{\mathversion{bold}$2\times 2$}{2x2} coupler}\fi
+%
 % \begin{ltxsyntax}
 % \xLfmultipole{optcoupler}\label{cmd:optcoupler}%
 % \cmditem{optcoupler}(LeftTop)(LeftBottom)(RightTop)(RightBottom)%
@@ -3364,12 +3349,9 @@
 % \fi
 % \end{optionlist}
 % 
-% \ifGERMAN
-%   \subsubsection{WDM-Koppler}
-% \fi
-% \ifENGLISH
-%   \subsubsection{WDM Coupler}
-% \fi
+% \ifGERMAN\subsubsection{WDM-Koppler}\fi
+% \ifENGLISH\subsubsection{WDM coupler}\fi
+%
 % \begin{ltxsyntax}
 % \xLfmultipole{wdmcoupler}\label{cmd:wdmcoupler}%
 % \cmditem{wdmcoupler}(LeftTop)(LeftBottom)(Right)%
@@ -3388,8 +3370,8 @@
 % \end{ltxsyntax}
 % 
 % \begin{optionlist}
-% \numitem[0.2]{couplersize} \sizeexplanation[2.5]{\ifGERMAN des Kopplers\fi\ifENGLISH coupler\fi}
-% \numitem[0.1]{couplersep}
+% \numitem*[0.2]{couplersize} \sizeexplanation[2.5]{\ifGERMAN des Kopplers\fi\ifENGLISH coupler\fi}
+% \numitem*[0.1]{couplersep}
 % \ifGERMAN Der vertikale Abstand zwischen den beiden Eingangsports.\fi
 % \ifENGLISH The vertical distance between the two input ports.\fi
 % \iffalse
@@ -3404,7 +3386,7 @@
 %</ignore>
 % \fi
 % 
-% \choitem[elliptic]{couplertype}{none, elliptic, rectangular}
+% \choitem*[elliptic]{couplertype}{none, elliptic, rectangular}
 % \ifGERMAN Wähle zwischen unterschiedlichen Kopplertypen.\fi
 % \ifENGLISH Select between different coupler types.\fi
 % \iffalse
@@ -3422,7 +3404,7 @@
 %</ignore>
 % \fi
 % 
-% \choitem[center]{align}{top, bottom, center}
+% \choitem*[center]{align}{top, bottom, center}
 % \ifGERMAN Die Ausrichtung des Kopplers bezüglich der Referenzknoten.\fi
 % \ifENGLISH The alignment of the coupler with respect to the reference nodes.\fi
 % \iffalse
@@ -3442,9 +3424,11 @@
 % \fi
 % \end{optionlist}
 % 
-% \subsubsection{WDM Splitter}
+% \ifGERMAN\subsubsection{WDM-Teiler}\fi
+% \ifENGLISH\subsubsection{WDM splitter}\fi
+%
 % \begin{ltxsyntax}
-% \xLfmultipole{wdmcoupler}\label{cmd:wdmcoupler}%
+% \xLfmultipole{wdmcoupler}\label{cmd:wdmsplitter}%
 % \cmditem{wdmsplitter}(Left)(RightTop)(RightBottom)%
 % \cmditem{wdmsplitter}(Left)(RightTop)(RightBottom){Label}%
 % \iffalse
@@ -3460,8 +3444,8 @@
 % \fi
 % \end{ltxsyntax}
 % \begin{optionlist}
-% \numitem[0.2]{couplersize} \sizeexplanation[2.5]{\ifGERMAN des Kopplers\fi\ifENGLISH coupler\fi}
-% \numitem[0.1]{couplersep} 
+% \numitem*[0.2]{couplersize} \sizeexplanation[2.5]{\ifGERMAN des Kopplers\fi\ifENGLISH coupler\fi}
+% \numitem*[0.1]{couplersep} 
 % \ifGERMAN Der vertikale Abstand zwischen den beiden Ausgangsports.\fi
 % \ifENGLISH The vertical distance between the two output ports.\fi
 % \iffalse
@@ -3476,7 +3460,7 @@
 %</ignore>
 % \fi
 % 
-% \choitem[elliptic]{couplertype}{none, elliptic, rectangular}
+% \choitem*[elliptic]{couplertype}{none, elliptic, rectangular}
 % \ifGERMAN Wähle zwischen unterschiedlichen Kopplertypen.\fi
 % \ifENGLISH Select between different coupler types.\fi
 % \iffalse
@@ -3494,7 +3478,7 @@
 %</ignore>
 % \fi
 % 
-% \choitem[center]{align}{top, bottom, center}
+% \choitem*[center]{align}{top, bottom, center}
 % \ifGERMAN Die Ausrichtung des Kopplers bezüglich der Referenzknoten.\fi
 % \ifENGLISH The alignment of the coupler with respect to the reference nodes.\fi
 % \iffalse
@@ -3516,13 +3500,14 @@
 % \ifGERMAN\subsubsection{Eingangs- und Ausgangsknoten}\fi
 % \ifENGLISH\subsubsection{Input and output nodes}\fi
 % \label{sec:coupler-nodes}
+%
 % \ifGERMAN
-% Die Definition der Eingangs- und Ausgangsknoten aus \prettyref{sec:ifcnodes}
+% Die Definition der Eingangs- und Ausgangsknoten aus \prettyref{sec:ifcnode}
 % ist für die Koppler nicht gültig. Hier werden die Knoten einfach von \opt{1} (links
 % oben) bis \opt{N} (rechts unten) durchnummeriert.
 % \fi
 % \ifENGLISH
-% The definition of input and output nodes from \prettyref{sec:ifcnodes} is not
+% The definition of input and output nodes from \prettyref{sec:ifcnode} is not
 % valid for couplers. Here, the nodes are simply numbered from \opt{1} (left
 % top) to \opt{N} (right bottom).
 % \fi
@@ -3530,26 +3515,26 @@
 % \begin{pspicture}[showgrid=true](0,-0.5)(12,2.5)
 % \psset{couplersize=0.5, couplertype=rectangular, couplersep=0.2}
 % \wdmsplitter(0, 1)(3,2)(3,0)
-% \psdot(\oenodeIfc{1}{})\uput[180](\oenodeIfc{1}{}){1}
-% \psdot(\oenodeIfc{2}{})\uput[0](\oenodeIfc{2}{}){2}
-% \psdot(\oenodeIfc{N}{})\uput[0](\oenodeIfc{N}{}){N}
+% \psdot(\oenodeIfc{1}{})\uput[90](\oenodeIfc{1}{}){1}
+% \psdot(\oenodeIfc{2}{})\uput[90](\oenodeIfc{2}{}){2}
+% \psdot(\oenodeIfc{N}{})\uput[-90](\oenodeIfc{N}{}){N}
 % \wdmcoupler(4, 2)(4,0)(7,1)
-% \psdot(\oenodeIfc{1}{})\uput[180](\oenodeIfc{1}{}){1}
-% \psdot(\oenodeIfc{2}{})\uput[180](\oenodeIfc{2}{}){2}
-% \psdot(\oenodeIfc{N}{})\uput[0](\oenodeIfc{N}{}){N}
+% \psdot(\oenodeIfc{1}{})\uput[90](\oenodeIfc{1}{}){1}
+% \psdot(\oenodeIfc{2}{})\uput[-90](\oenodeIfc{2}{}){2}
+% \psdot(\oenodeIfc{N}{})\uput[90](\oenodeIfc{N}{}){N}
 % \optcoupler(8,2)(8,0)(11,2)(11,0)
-% \psdot(\oenodeIfc{1}{})\uput[180](\oenodeIfc{1}{}){1}
-% \psdot(\oenodeIfc{2}{})\uput[180](\oenodeIfc{2}{}){2}
-% \psdot(\oenodeIfc{3}{})\uput[0](\oenodeIfc{3}{}){3}
-% \psdot(\oenodeIfc{N}{})\uput[0](\oenodeIfc{N}{}){N}
+% \psdot(\oenodeIfc{1}{})\uput[90](\oenodeIfc{1}{}){1}
+% \psdot(\oenodeIfc{2}{})\uput[-90](\oenodeIfc{2}{}){2}
+% \psdot(\oenodeIfc{3}{})\uput[90](\oenodeIfc{3}{}){3}
+% \psdot(\oenodeIfc{N}{})\uput[-90](\oenodeIfc{N}{}){N}
 % \end{pspicture}
 %
-% \section{Connecting Objects}\label{sec:connecting}
+% \section{Connecting objects}\label{sec:connecting}
 % 
 % The package provides several methods for automatic beam and fiber
 % drawing which are two fundamentally different way of connecting.
 % 
-% \subsection{Accessing Objects}\label{sec:namedobj}
+% \subsection{Accessing objects}\label{sec:namedobj}
 % 
 % The macro arguments, specified as Obj$_1$, Obj$_2$, \ldots Obj$_N$ in
 % the following macro definitions, can be either objects or PSTricks
@@ -3956,8 +3941,10 @@
 % \caption{Inheritance diagram for the psstyles used for the automatic fiber
 %   connections. These styles should be changed with \protect\Lcs{addtopsstyle} to preserve
 %   the inheritance.}\label{fig:style-inheritance}
-% \xLstyle{Fiber}\xLstyle{FiberIn}\xLstyle{FiberIn1}\xLstyle{FiberIn2}
-% \xLstyle{FiberOut}\xLstyle{FiberOut1}\xLstyle{FiberOut2}
+% \xLstyle{Fiber}\label{prm:Fiber}\xLstyle{FiberIn}\label{prm:Fiber}%
+% \xLstyle{FiberIn1}\label{prm:FiberIn1}\xLstyle{FiberIn2}\label{prm:FiberIn2}%
+% \xLstyle{FiberOut}\label{prm:FiberOut}\xLstyle{FiberOut1}\label{prm:FiberOut1}%
+% \xLstyle{FiberOut2}\label{prm:FiberOut2}%
 % \end{figure}
 %
 % \begin{optionlist}
@@ -3996,9 +3983,6 @@
 % \fi
 \begin{LTXexample}
 \begin{pspicture}(3,2)
-  \addtopsstyle{FiberIn}{ArrowInside=->, 
-                           arrowscale=1.5,
-                           arrowinset=0}
   \optbox[fiber](0,1)(3,1){}
 \end{pspicture}
 \end{LTXexample}
@@ -4176,18 +4160,18 @@
 %   \chapter{Zusatzinformationen}
 % \fi
 % \ifENGLISH
-%   \chapter{Additional Information}
+%   \chapter{Additional information}
 % \fi
-% \section{Defining New Objects}
+% \section{Defining new objects}
 % 
-% \subsection{Customized Versions of Existing Macros}
+% \subsection{Customized versions of existing macros}
 % 
 % The easiest way to define your own components is to use the
 % \Lcs{newpsobject} macro. With this you can define a new component using
 % predefined objects with a set of options. These options serve only as
 % default values and can be overridden when calling the macro. The
 % following examples defines a new object \nxLcs{sbn} for the special crystal
-% used in Sec.~\ref{sec:crystal}.
+% used in Sec.~\ref{cmd:crystal}.
 % 
 % \iffalse
 %<*ignore>
@@ -4238,7 +4222,7 @@
 %</ignore>
 % \fi
 % 
-% \subsection{Defining New Objects}\label{sec:newobj}
+% \subsection{Defining new objects}\label{sec:newobj}
 % 
 % Since version 1.2 \nxLPack{pst-optexp} provides some high-level macros to
 % allow very convenient definition of completely new components. The macro
@@ -4305,13 +4289,13 @@
 % 
 %
 % \section{Overview of special nodes}
-% \subsection{External and rotation reference nodes}\label{sec:overview-extnodes}
+% \subsection{External and rotation reference nodes}\label{sec:overview-extnode}
 %
-% \subsection{Reference nodes}\label{sec:overview-refnodes}
+% \subsection{Reference nodes}\label{sec:overview-refnode}
 %
-% \subsection{Interface nodes}\label{sec:overview-ifcnodes}
+% \subsection{Interface nodes}\label{sec:overview-ifcnode}
 % Here, all available components and their interface nodes are listed. If
-% a node is labelled as «1, N», it means that both nodes are equal.
+% a node is labeled as «1, N», it means that both nodes are equal.
 % \bgroup \psset{unit=1.2}
 % \subsubsection*{Free-ray components}
 % \addtopsstyle{Beam}{arrows=->, arrowinset=0, arrowscale=1.5}
@@ -4437,6 +4421,7 @@
 %   \end{pspicture}%
 % }%
 % \addtopsstyle{Fiber}{ArrowInside=->, ArrowInsidePos=0.6, arrowscale=1.5, arrowinset=0}
+% \vspace*{5mm}%
 % \showfdipoleifc{optfiber}\hspace{\fill}%
 % \showfdipoleifc{optamp}\hspace{\fill}%
 % \showfdipoleifc{optmzm}%
@@ -4847,7 +4832,7 @@
 \IfFileExists{pst-optexp.pro}{\@addtofilelist{pst-optexp.pro}}{}%
 %    \end{macrocode}
 %
-% \subsection{The Actual \TeX\ Implementation}
+% \subsection{The actual \TeX\ implementation}
 %    \begin{macrocode}
 \csname PSToptexpLoaded\endcsname
 \let\PSToptexpLoaded\endinput
@@ -4953,7 +4938,7 @@
 \def\POE@str@extnode@postfix{Ext}
 %    \end{macrocode}
 % 
-% \subsubsection{Parameter and Style Definitions}
+% \subsubsection{Parameter and style definitions}
 %    \begin{macrocode}
 \newpsstyle{OptComp}{}%
 \define@key[psset]{optexp}{newOptComp}{\newpsstyle{OptComp}{#1}}
@@ -7040,7 +7025,7 @@
 %    \end{macrocode}
 % \end{macro}
 % 
-% \subsubsection{Free-Ray Components}
+% \subsubsection{Free-ray components}
 %
 % Define all free-ray dipoles
 %    \begin{macrocode}
@@ -8037,7 +8022,7 @@
 %    \end{macrocode}
 % \end{macro}
 % 
-% \subsubsection{Fiber Optics}
+% \subsubsection{Fiber optics}
 %
 % \begin{macro}{\optfiber@iii}
 %    \begin{macrocode}
@@ -8506,7 +8491,7 @@
 %
 %</stylefile> 
 %
-% \section{The Postscript Header file}
+% \section{The Postscript header file}
 % \makeatletter
 % % Copied this definition from doc.sty and changed it not to add a
 % % backslash to the Postscript procedure name in the index.
