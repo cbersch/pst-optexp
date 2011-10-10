@@ -43,8 +43,6 @@
 \usepackage{ragged2e} 
 \usepackage{nicefrac}
 \usepackage{pst-func} 
-\usepackage{pst-tree}
-\newcommand{\poeTR}[1]{\TR{\ttfamily\color{DOrange}#1}}
 \usepackage{pst-optexp} 
 \usepackage{pst-circ}
 \usepackage[makeindex]{splitidx} 
@@ -58,6 +56,8 @@
 \colorlet{pdflinkcolor}{DOrange}
 \colorlet{pdfurlcolor}{DOrange} 
 \colorlet{pdffilecolor}{DOrange}
+\usepackage{pst-tree}
+\newcommand{\poeTR}[1]{\TR{\ttfamily\color{DOrange}#1}}
 \usepackage{showexpl} 
 \makeatletter\renewcommand*\SX@Info{}\makeatother
 \definecolor{colKeys}{rgb}{0,0,0}
@@ -66,6 +66,7 @@
 \definecolor{colString}{rgb}{0,0.5,0} \lstset{%
   language=[LaTeX]TeX, identifierstyle=\color{colIdentifier}, %
   keywordstyle=\color{colKeys}, %
+  keywordstyle = [21]\color{red!80!black}, %
   stringstyle=\color{colString}, %
   commentstyle=\color{colComments}, %
   float=hbp,%
@@ -125,7 +126,7 @@
 \renewcommand*{\ltxsyntaxlabelfont}{\spotcolor\displayverbfont}
 
 \makeatletter
-%% and idea from GL to provide links inside the listings to the pst-optexp commands: 
+%% an idea from GL to provide links inside the listings to the pst-optexp commands: 
 %% <https://groups.google.com/groups/search?as_umsgid=4d89ee49%240%2418590%24426a74cc%40news.free.fr>
 \providerobustcmd*\ifrefundefined [1]{%
   \begingroup%
@@ -1052,8 +1053,8 @@
 % \label{sec:refnode}
 %
 % \begin{ltxsyntax}
-%   \cmditem{oenodeRefA}{Obj}
-%   \cmditem{oenodeRefB}{Obj}
+%   \cmditem{oenodeRefA}{obj}
+%   \cmditem{oenodeRefB}{obj}
 %
 %  \ifGERMAN
 %  Die Eingangs- und Ausgangs-Referenzknoten.
@@ -1089,8 +1090,8 @@
 %</ignore>
 % \fi
 %
-%   \cmditem{oenodeTrefA}{Obj}
-%   \cmditem{oenodeTrefB}{Obj}
+%   \cmditem{oenodeTrefA}{obj}
+%   \cmditem{oenodeTrefB}{obj}
 %
 %   \ifGERMAN
 %   Die transformierten Eingangs- und Ausgangs-Referenzknoten.
@@ -1131,7 +1132,7 @@
 % \subsubsection{Center node}
 % \fi\label{sec:centernode}
 % \begin{ltxsyntax}
-%   \cmditem{oenodeCenter}{Obj}
+%   \cmditem{oenodeCenter}{obj}
 % 
 % \ifGERMAN
 % Dieser Knoten liegt, bis auf wenige Ausnahmen, im Mittelpunkt der Komponente.
@@ -1163,7 +1164,7 @@
 % \fi\label{sec:labelnode}
 %
 % \begin{ltxsyntax}
-%   \cmditem{oenodeLabel}{Obj}
+%   \cmditem{oenodeLabel}{obj}
 %
 %   \ifGERMAN
 %   Auf diesen Knoten wird die Beschriftung platziert. Der Knoten ist auch
@@ -1200,7 +1201,7 @@
 % \fi\label{sec:extnode}
 %
 % \begin{ltxsyntax}
-%   \cmditem{oenodeExt}{Obj}
+%   \cmditem{oenodeExt}{obj}
 %
 % \ifGERMAN
 % Ein externer Knoten kann an unterschiedliche Positionen entlang des
@@ -1299,9 +1300,9 @@
 % \subsubsection{Interface nodes}
 % \fi\label{sec:ifcnode}
 % \begin{ltxsyntax}
-%   \cmditem{oenodeIfc}{num}{Obj}
-%   \cmditem{oenodeIn}{Obj}
-%   \cmditem{oenodeOut}{Obj}
+%   \cmditem{oenodeIfc}{num}{obj}
+%   \cmditem{oenodeIn}{obj}
+%   \cmditem{oenodeOut}{obj}
 %   
 %   \ifGERMAN
 %   Der Grenzflächenknoten \prm{num}, wobei \prm{num} eine Ganzzahl zwischen
@@ -1376,7 +1377,7 @@
 % \subsubsection{Rotation reference node}
 % \fi\label{sec:rotrefnode}
 % \begin{ltxsyntax}
-%   \cmditem{oenodeRotref}{Obj}
+%   \cmditem{oenodeRotref}{obj}
 %
 %   \ifGERMAN 
 %   Der Referenzknoten um den eine Komponente mit \Lkeyword{angle} gedreht
@@ -3534,16 +3535,16 @@
 % The package provides several methods for automatic beam and fiber
 % drawing which are two fundamentally different way of connecting.
 % 
-% \subsection{Accessing objects}\label{sec:namedobj}
+% \subsection{Accessing objects}\label{sec:accessobj}
 % 
-% The macro arguments, specified as Obj$_1$, Obj$_2$, \ldots Obj$_N$ in
-% the following macro definitions, can be either objects or PSTricks
-% nodes. To distinguish between named nodes (see \prettyref{sec:namedobj})
-% and object names, the node content must be enclosed in parenthesis
-% within the brackets. Components can either be assigned a name
-% explicitely using the \Lkeyword{compname} parameter, or they get a
-% unique number in ascending order by their definition in the code. If the
-% argument is left empty, the last object is used.
+% The macro arguments, specified as \prm{obj$_1$}, \prm{obj$_2$}, \ldots
+% \prm{obj$_N$} in the following macro definitions, can be either
+% \nxLPack{pst-optexp} object names (see \prettyref{sec:namingobj} or PSTricks
+% nodes. To distinguish between nodes and object names, the node content must be
+% enclosed in parenthesis within the brackets. 
+%
+% The components are number in increasing order by their definition in the
+% source code, starting with 1.
 % 
 % \iffalse
 %<*ignore>
@@ -3570,11 +3571,26 @@
 % \fi
 % 
 % \medskip
+% If the argument is left empty, the last defined component is used.
 % 
-% The objects which have an explicit \Lkeyword{compname} also increase the internal
-% counter, so that removing the \nxLkeyword{compname} from an intermediate
-% object does not affect the numbering of the following ones.
-% 
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(3,2)
+  \psset{endbox, labeloffset=0}
+  \optbox(0,0.5)(1.5,0.5){1}
+  \optbox(0,1.5)(1.5,1.5){2}
+  % an empty argument refers to the last object
+  \drawbeam{(0,1)}{}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
+% Objects which have an explicit \Lkeyword{compname} can also be accessed by this name or by their number.
+%
 % \iffalse
 %<*ignore>
 % \fi
@@ -3587,14 +3603,23 @@
   \drawbeam{(0,1)}{2}
 \end{pspicture}
 \end{LTXexample}
-
+% \iffalse
+%</ignore>
+% \fi
+%
+% This is especially useful when connecting a range of components.
+%
+% \iffalse
+%<*ignore>
+% \fi
 \begin{LTXexample}
-\begin{pspicture}(3,2)
-  \psset{endbox, labeloffset=0}
-  \optbox(0,0.5)(1.5,0.5){1}
-  \optbox(0,1.5)(1.5,1.5){2}
-  % an empty argument refers to the last object
-  \drawbeam{(0,1)}{}
+\begin{pspicture}[showgrid=true](3,3)
+  \psset{endbox, optboxwidth=0.5, optboxheight=0.5, bssize=0.5}
+  \optbox[compname=obj](0.5,0.5)(0.5,2.5){obj}
+  \beamsplitter(0.5,2.5)(0.5,0.5)(2.5,0.5){2}
+  \optbox(0.5,0.5)(2.5,0.5){3}
+  % named objects are also numbered
+  \drawbeam{1-3}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -3619,7 +3644,7 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}
+\begin{LTXexample}[morekeywords = {[21]{beampos}}]
 \begin{pspicture}(4,2.8)
   \pnode(1.5,0.5){A}\pnode(3.5,0.5){B}
   \pnode(3.5,2.5){C} 
@@ -3628,7 +3653,7 @@
   \mirror[mirrorradius=2](A)(B)(C){} 
   \mirror(B)(C)(B){} 
   \drawbeam[linecolor=red, beampos=-0.2]{1-3}
-  \drawbeam[linecolor=blue]{1-3}
+  \drawbeam[linecolor=blue, beampos=0]{1-3}
   \drawbeam[linecolor=green, beampos=0.2]{1-3}
 \end{pspicture}
 \end{LTXexample}
@@ -3639,8 +3664,8 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}[linerange={1-7,9-9}]
-\begin{pspicture}[showgrid=true](3,4)
+\begin{LTXexample}[linerange={1-7,9-9}, morekeywords = {[21]{beampos}}]
+\begin{pspicture}(3,4)
   \lens[lens=4 4 4, abspos=0.5](0.5,2)(3,2)
   \optplate[position=1, plateheight=4](0.5,2)(3,2)
   \psset{beampos=1}
@@ -3661,7 +3686,7 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}
+\begin{LTXexample}[morekeywords = {[21]{beamangle}}]
 \begin{pspicture}(4,3)
   \pnode(1.5,0.5){A}\pnode(3.5,0.5){B}
   \pnode(3.5,2.5){C} 
@@ -3688,7 +3713,7 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}
+\begin{LTXexample}[morekeywords = {[21]{nadd}}]
 \begin{pspicture}[showgrid=true](3,3)
   \pnode(0,1.5){A}\pnode(3,1.5){B}
   \lens[lens=4 4 3, n=2, abspos=0.3](A)(B)
@@ -3706,7 +3731,7 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}
+\begin{LTXexample}[morekeywords = {[21]{nmul}}]
 \begin{pspicture}[showgrid=true](4,3)
   \pnode(0, 2.5){A}\pnode(1, 2.5){B}
   \pnode(4, 1){C}
@@ -3737,7 +3762,7 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}
+\begin{LTXexample}[morekeywords = {[21]{beaminside}}]
 \begin{pspicture}(0.3,0.3)(3,4)
   \psset{optboxwidth=1}
   \optbox[endbox](1,1)(1,3)
@@ -3762,7 +3787,7 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}
+\begin{LTXexample}[morekeywords = {[21]{beaminsidefirst}}]
 \begin{pspicture}(0.3,0.3)(3,4)
   \psset{optboxwidth=1}
   \optbox[endbox](1,1)(1,3)
@@ -3787,7 +3812,7 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}
+\begin{LTXexample}[morekeywords = {[21]{beaminsidelast}}]
 \begin{pspicture}(0.3,0.3)(3,4)
   \psset{optboxwidth=1}
   \optbox[endbox](1,1)(1,3)
@@ -3803,58 +3828,9 @@
 % \fi
 % \end{optionlist}
 % 
-% \subsubsection{Internal component structure}
-% 
-% In order to understand properly how the automatic beam drawing actually works,
-% it is necessary to describe in more detail the internal component structure.
-% 
-% Every component type consists internally of interfaces which are defined by a
-% node on the optical axis, a plane vector or a curvature radius, and by its
-% optical characteristic (reflective or transmittive). The interface nodes can be
-% visualized for each component type with the \Lkeyword{showifcnodes}
-% parameter. 
-% 
-% \iffalse
-%<*ignore>
-% \fi
-\begin{LTXexample}
-\begin{pspicture}(4,3)
-  \psset{showifcnodes}
-  \optbox(0,2.5)(4,2.5){}
-  \doveprism(0,1.5)(4,1.5){}
-  \lens(0,0.5)(4,0.5){}
-  \mirror(0,0.5)(3.5,0.5)(3.5,3){}
-\end{pspicture}
-\end{LTXexample}
-% \iffalse
-%</ignore>
-% \fi
-% 
-% \medskip
-% 
-% \nxLcs{draw*beam} calculates the distance between the interface nodes of two
-% objects and connects the two nearest
-% 
-% \iffalse
-%<*ignore>
-% \fi
-\begin{LTXexample}
-\begin{pspicture}(-2,-2)(2,2)
-  \psset{optboxwidth=0.6, optboxheight=0.5, labeloffset=0}
-  \multido{\i=0+60,\ii=1+1}{6}{%
-    \pnode(1.75;\i){A}
-    \optbox([Xnodesep=-1]A)([Xnodesep=1]A){\ii}
-  }
-  \optbox[compname=ref](-1,0)(1,0){ref}
-  \addtopsstyle{Beam}{arrows=->}
-  \multido{\i=1+1}{6}{\drawbeam{ref}{\i}}
-\end{pspicture}
-\end{LTXexample}
-% \iffalse
-%</ignore>
-% \fi
-% 
-% \subsection{Drawing wide beams}\label{sec:drawwidebeam}
+% \ifGERMAN\subsection{Aufgeweitete Strahlen}\fi
+% \ifENGLISH\subsection{Drawing wide beams}\fi
+% \label{sec:drawwidebeam}
 % 
 % \begin{optionlist}
 % \numitem[0.1]{beamwidth}
@@ -3862,7 +3838,18 @@
 % \numitem[0]{beamdiv}
 % \end{optionlist}
 %
-% \subsection{Error handling}\label{sec:error-handling}
+% \ifGERMAN\subsection{Fehlerbehandlung}\fi
+% \ifENGLISH\subsection{Error handling}\fi
+% \label{sec:error-handling}
+%
+% \ifGERMAN
+% Da alle Strahlen direkt mit Postscript berechnet und gezeichnet werden, ist
+% eine umfassende Fehlerbehandlung zur Zeit der Kompilation nicht möglich. Um
+% jedoch trotzdem fehlerfreie Bilder zu bekommen, wird der Strahlengang
+% abgebrochen, sobald eine nicht vorvergesehene Situation eintritt. Das kann
+% eintreten, falls der Strahl eine gekrümmte Grenzfläche nicht trifft, oder
+% Totalreflektion auftritt.
+% \fi
 %
 % \iffalse
 %<*ignore>
@@ -3874,7 +3861,9 @@
   \optplane(3,1)(0,1){B}
   \drawbeam{A}{1}{B}
   \drawbeam[beamangle=15]{A}{1}{B}
+  % misses the second interface, draw only until the first interface
   \drawbeam[beamangle=28]{A}{1}{B}
+  % misses first interface, skipped completely
   \drawbeam[beamangle=29]{A}{1}{B}
 \end{pspicture}
 \end{LTXexample}
@@ -3886,7 +3875,7 @@
 %<*ignore>
 % \fi
 \begin{LTXexample}
-\begin{pspicture}(0,0.3)(3,2.5)
+\begin{pspicture}(3,2.5)
   \pnode(0,2){A}\optplane(A)(0,1){A}
   \pnode(4,0){B}\optplane(3,0)(0,1){B}
   \optprism[n=1.8](A)([Xnodesep=2]A)(B)
@@ -3902,7 +3891,7 @@
 % 
 % Fiber-optical objects are automatically connected to the reference
 % nodes. The style of all fiber connections can be configured
-% independently (see Sec.~\ref{sec:fiberstyles}).
+% independently (see \prettyref{fig:fiberstyles}).
 %
 % This works quiet well if the components are aligned serially, but ceases to
 % give good result for more complicated situations. In that case single or all
@@ -3913,7 +3902,7 @@
 % All fiber-optical components described in \prettyref{sec:fibercomp} are
 % connected automatically to their reference nodes with \Lcs{pccurve}. The
 % styles of the fiber connections can be configured independently by the
-% styles shown in \prettyref{fig:style-inheritance}.
+% styles shown in \prettyref{fig:fiberstyles}.
 %
 % \begin{figure}\centering
 % \begin{pspicture}(10,4.4)
@@ -3940,8 +3929,8 @@
 % \end{pspicture}
 % \caption{Inheritance diagram for the psstyles used for the automatic fiber
 %   connections. These styles should be changed with \protect\Lcs{addtopsstyle} to preserve
-%   the inheritance.}\label{fig:style-inheritance}
-% \xLstyle{Fiber}\label{prm:Fiber}\xLstyle{FiberIn}\label{prm:Fiber}%
+%   the inheritance.}\label{fig:fiberstyles}
+% \xLstyle{Fiber}\label{prm:Fiber}\xLstyle{FiberIn}\label{prm:FiberIn}%
 % \xLstyle{FiberIn1}\label{prm:FiberIn1}\xLstyle{FiberIn2}\label{prm:FiberIn2}%
 % \xLstyle{FiberOut}\label{prm:FiberOut}\xLstyle{FiberOut1}\label{prm:FiberOut1}%
 % \xLstyle{FiberOut2}\label{prm:FiberOut2}%
@@ -4287,6 +4276,57 @@
 % If you create a new component, please send it to me then I can
 % incorporate this in a new released version.
 % 
+%
+% \section{Internal component structure}
+% 
+% In order to understand properly how the automatic beam drawing actually works,
+% it is necessary to describe in more detail the internal component structure.
+% 
+% Every component type consists internally of interfaces which are defined by a
+% node on the optical axis, a plane vector or a curvature radius, and by its
+% optical characteristic (reflective or transmittive). The interface nodes can be
+% visualized for each component type with the \Lkeyword{showifcnodes}
+% parameter. 
+% 
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(4,3)
+  \psset{showifcnodes}
+  \optbox(0,2.5)(4,2.5){}
+  \doveprism(0,1.5)(4,1.5){}
+  \lens(0,0.5)(4,0.5){}
+  \mirror(0,0.5)(3.5,0.5)(3.5,3){}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+% 
+% \medskip
+% 
+% \nxLcs{draw*beam} calculates the distance between the interface nodes of two
+% objects and connects the two nearest
+% 
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(-2,-2)(2,2)
+  \psset{optboxwidth=0.6, optboxheight=0.5, labeloffset=0}
+  \multido{\i=0+60,\ii=1+1}{6}{%
+    \pnode(1.75;\i){A}
+    \optbox([Xnodesep=-1]A)([Xnodesep=1]A){\ii}
+  }
+  \optbox[compname=ref](-1,0)(1,0){ref}
+  \addtopsstyle{Beam}{arrows=->}
+  \multido{\i=1+1}{6}{\drawbeam{ref}{\i}}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 %
 % \section{Overview of special nodes}
 % \subsection{External and rotation reference nodes}\label{sec:overview-extnode}
@@ -5252,7 +5292,8 @@
 %    \begin{macrocode}
 \define@key[psset]{optexp}{mirrorwidth}{\pst@checknum{#1}\POE@key@mirrorwidth}
 \define@key[psset]{optexp}{mirrorlinewidth}{\edef\POE@key@mirrorlinewidth{#1}}
-\define@choicekey*[psset]{optexp}{mirrortype}[\val\nr]{piezo,extended,plain}{\edef\POE@key@mirrortype{#1}}
+\define@choicekey*[psset]{optexp}{mirrortype}[\val\nr]{piezo,extended,plain}{%
+  \edef\POE@key@mirrortype{#1}}
 \define@key[psset]{optexp}{mirrordepth}{\pst@checknum{#1}\POE@key@mirrordepth}
 \define@key[psset]{optexp}{mirrorradius}{\pst@checknum{#1}\POE@key@mirrorradius}
 \define@boolkey[psset]{optexp}[POE@]{variable}[true]{}
@@ -5269,32 +5310,39 @@
 %    \begin{macrocode}
 \define@key[psset]{optexp}{optgridcount}{%
   \pst@checknum{#1}\POE@key@gratingcount
-  \PackageWarning{pst-optexp}{Parameter optgridcount is deprecated, use gratingcount instead.}%
+  \PackageWarning{pst-optexp}{%
+    Parameter optgridcount is deprecated, use gratingcount instead.}%
 }%
 \define@key[psset]{optexp}{optgridwidth}{%
   \pst@checknum{#1}\POE@key@gratingwidth
-  \PackageWarning{pst-optexp}{Parameter optgridwidth is deprecated, use gratingwidth instead.}%
+  \PackageWarning{pst-optexp}{%
+    Parameter optgridwidth is deprecated, use gratingwidth instead.}%
 }%
 \define@key[psset]{optexp}{optgridheight}{%
   \pst@checknum{#1}\POE@key@gratingheight
-  \PackageWarning{pst-optexp}{Parameter optgridheight is deprecated, use gratingheight instead.}%
+  \PackageWarning{pst-optexp}{%
+    Parameter optgridheight is deprecated, use gratingheight instead.}%
 }%
 \define@choicekey*[psset]{optexp}{optgridtype}[\val\nr]{binary,blazed}{%
   \edef\POE@key@gratingtype{#1}%
-  \PackageWarning{pst-optexp}{Parameter optgridtype is deprecated, use gratingtype instead.}%
+  \PackageWarning{pst-optexp}{%
+    Parameter optgridtype is deprecated, use gratingtype instead.}%
 }%
 \define@key[psset]{optexp}{optgriddepth}{%
   \pst@checknum{#1}\POE@key@gratingdepth
-  \PackageWarning{pst-optexp}{Parameter optgriddepth is deprecated, use gratingdepth instead.}%
+  \PackageWarning{pst-optexp}{%
+    Parameter optgriddepth is deprecated, use gratingdepth instead.}%
 }%
 \define@key[psset]{optexp}{optgridlinewidth}{%
   \edef\POE@key@gratinglinewidth{#1}%
-  \PackageWarning{pst-optexp}{Parameter optgridlinewidth is deprecated, use gratinglinewidth instead.}%
+  \PackageWarning{pst-optexp}{%
+    Parameter optgridlinewidth is deprecated, use gratinglinewidth instead.}%
 }%
 \define@key[psset]{optexp}{gratingcount}{\pst@checknum{#1}\POE@key@gratingcount}
 \define@key[psset]{optexp}{gratingwidth}{\pst@checknum{#1}\POE@key@gratingwidth}
 \define@key[psset]{optexp}{gratingheight}{\pst@checknum{#1}\POE@key@gratingheight}
-\define@choicekey*[psset]{optexp}{gratingtype}[\val\nr]{binary,blazed}{\edef\POE@key@gratingtype{#1}}%
+\define@choicekey*[psset]{optexp}{gratingtype}[\val\nr]{binary,blazed}{%
+  \edef\POE@key@gratingtype{#1}}%
 \define@key[psset]{optexp}{gratingdepth}{\pst@checknum{#1}\POE@key@gratingdepth}
 \define@key[psset]{optexp}{gratinglinewidth}{\edef\POE@key@gratinglinewidth{#1}}
 \define@boolkey[psset]{optexp}[POE@]{reverse}[true]{}
@@ -5350,7 +5398,8 @@
 % Filter
 %    \begin{macrocode}
 \define@key[psset]{optexp}{filtersize}{\pst@checknum{#1}\POE@key@filtersize}
-\define@choicekey+[psset]{optexp}{filtertype}[\val\nr]{bandstop,bandpass,lowpass,highpass}%
+\define@choicekey+[psset]{optexp}{filtertype}[\val\nr]%
+   {bandstop,bandpass,lowpass,highpass}%
    {\edef\POE@key@filtertype{#1}}%
    {\PackageError{pst-optexp}{Unknown value '\val' for key filtertype}}
 \psset[optexp]{%
@@ -5408,9 +5457,10 @@
 %    \begin{macrocode}
 \define@key[psset]{optexp}{couplersize}{\pst@checknum{#1}\POE@key@couplersize}
 \define@key[psset]{optexp}{couplersep}{\pst@checknum{#1}\POE@key@couplersep}
-\define@choicekey+[psset]{optexp}{couplertype}[\val\nr]{none,elliptic,crossswitch,rectangular}%
-   {\edef\POE@key@couplertype{#1}}%
-   {\PackageError{pst-optexp}{Unknown value '\val' for key couplertype}}
+\define@choicekey+[psset]{optexp}{couplertype}[\val\nr]%
+  {none,elliptic,crossswitch,rectangular}%
+  {\edef\POE@key@couplertype{#1}}%
+  {\PackageError{pst-optexp}{Unknown value '\val' for key couplertype}}
 \define@key[psset]{optexp}{align}{\edef\POE@key@align{#1}}
 \psset[optexp]{%
   couplersize=0.2,
@@ -5422,7 +5472,8 @@
 % External node
 %    \begin{macrocode}
 \define@boolkey[psset]{optexp}[POE@]{globalnoderef}[true]{}%
-\define@key[psset]{optexp}{extnoden@me}{\edef\POE@key@extnoden@me{\POE@str@basicname@prefix#1\POE@str@extnode@postfix}}%
+\define@key[psset]{optexp}{extnoden@me}{%
+  \edef\POE@key@extnoden@me{\POE@str@basicname@prefix#1\POE@str@extnode@postfix}}%
 %    \end{macrocode}
 % (this part was copied and adapted from \cs{psset@@ref} from pstricks.tex)
 %    \begin{macrocode}
@@ -5651,10 +5702,14 @@
           \pnode(! \POE@comps exch \POE@dict{NearestNode} \tx@UserCoor){@@A}
           \pnode(! \POE@comps \POE@dict{NearestNode} \tx@UserCoor){@@B}
         \else
-          \pnode(! \POE@comps exch pop /N@@@B \POE@dict{@GetCenter ToVec NearestNode} \tx@UserCoor){@@A}
+          \pnode(! \POE@comps exch pop /N@@@B 
+                   \POE@dict{@GetCenter ToVec NearestNode} 
+                   \tx@UserCoor){@@A}
         \fi
       \else\ifx\POE@key@stopnode\POE@str@autonode
-        \pnode(! \POE@comps pop /N@@@A \POE@dict{@GetCenter ToVec NearestNode} \tx@UserCoor){@@B}
+        \pnode(! \POE@comps pop /N@@@A 
+                 \POE@dict{@GetCenter ToVec NearestNode} 
+                 \tx@UserCoor){@@B}
       \fi\fi
       \pst@getcoor{@@A}\pst@tempa
       \pst@getcoor{@@B}\pst@tempb
@@ -5853,7 +5908,8 @@
     \ifx\POE@key@beampos\@empty
       \addto@pscode{ {0 0} }%
     \else
-      \addto@pscode{ [\POE@key@beampos\space counttomark 1 eq { 0 exch } if \tx@ScreenCoor] cvx }%
+      \addto@pscode{ [\POE@key@beampos\space counttomark 1 eq 
+                     { 0 exch } if \tx@ScreenCoor] cvx }%
     \fi
     \addto@pscode{%
        \POE@key@beamangle\space
@@ -5922,8 +5978,12 @@
       counttomark 1 add copy 
       gsave
         /fillBeam { \psk@fillstyle } def
-        currentdict /lastBeamPointLow known { /TmpLastBeamPointLow /lastBeamPointLow load def} if
-        currentdict /lastBeamPointUp known { /TmpLastBeamPointUp /lastBeamPointUp load def} if
+        currentdict /lastBeamPointLow known { 
+          /TmpLastBeamPointLow /lastBeamPointLow load def
+        } if
+        currentdict /lastBeamPointUp known { 
+          /TmpLastBeamPointUp /lastBeamPointUp load def
+        } if
         FillWideBeam
       grestore pop
     }%
@@ -6015,10 +6075,12 @@
     \POE@getplanenode#1#2%
   \else\ifnum9<1#1\relax
     \poe@getcomprange#1#2-\END
-    \POE@getcomp{(\POE@str@basicname@prefix\POE@str@basicname@default) \poe@firstcomp\space\poe@lastcomp\space GetCompRange }%
+    \POE@getcomp{(\POE@str@basicname@prefix\POE@str@basicname@default) 
+                 \poe@firstcomp\space\poe@lastcomp\space GetCompRange }%
   \else\ifx-#1\relax
     \poe@getcomprange#1#2-\END
-    \POE@getcomp{(\POE@str@basicname@prefix\POE@str@basicname@default) \poe@firstcomp\space\poe@lastcomp\space GetCompRange }%
+    \POE@getcomp{(\POE@str@basicname@prefix\POE@str@basicname@default) 
+                 \poe@firstcomp\space\poe@lastcomp\space GetCompRange }%
   \else
     \POE@getcomp{(\POE@str@basicname@prefix#1#2)}%
   \fi\fi\fi\fi%
@@ -6390,7 +6452,9 @@
 %    \begin{macrocode}
 \def\POE@compalias#1#2{%
   \pst@OptexpVerb{%
-    /\POE@str@basicname@prefix#1 dup currentdict exch known { load /\POE@str@basicname@prefix#2 ED } if
+    /\POE@str@basicname@prefix#1 dup currentdict exch known { 
+      load /\POE@str@basicname@prefix#2 ED 
+    } if
     (\POE@str@basicname@prefix#2) (\POE@str@basicname@prefix#1)
     tx@NodeDict begin
       1 {
@@ -6466,6 +6530,7 @@
 %
 % \begin{macro}{\begin@OptexpTripole}
 %    \begin{macrocode}
+\let\POE@disablepos\relax
 \def\begin@OptexpTripole{%
   \begin@OptexpObj
 %    \end{macrocode}
@@ -6476,8 +6541,10 @@
 %    \end{macrocode}
 % The positioning parameters are disabled, because \opt{compshift} does the job for tripoles.
 %    \begin{macrocode}
-  \let\POE@key@abspos\@empty
-  \let\POE@key@position\@empty
+  \def\POE@disablepos{%
+    \let\POE@key@abspos\@empty
+    \let\POE@key@position\@empty
+  }%
   \edef\POE@refnodeA{\oenode@RefA{}}%
   \edef\POE@refnodeB{\oenode@RefB{}}%
   \edef\POE@trefnodeA{\oenode@TrefA{}}%
@@ -7213,6 +7280,7 @@
     \fi
     \psset{position=1}%
   \fi%
+  \POE@disablepos
   \ncline[linestyle=none,fillstyle=none,npos=]{\POE@refnodeA}{\POE@refnodeB}%
 %    \end{macrocode}
 % Positioning of the component
@@ -7667,7 +7735,8 @@
   \psframe(! \@wd neg \@ht neg)(! \@wd \@ht)
   \ifPOE@voltage%
     \psline(!\@wd 4 div 3 mul neg \@ht)(! \@wd 4 div 3 mul neg \@ht 0.2 add)
-    \pscircle[fillstyle=solid, fillcolor=white](! \@wd 4 div 3 mul neg \@ht 0.2 add){0.04}
+    \pscircle[fillstyle=solid, fillcolor=white]%
+      (! \@wd 4 div 3 mul neg \@ht 0.2 add){0.04}
     \psline(! \@wd 4 div 3 mul neg \@ht neg)%
            (! \@wd 4 div 3 mul neg \@ht neg 0.2 sub)%
     \psline(! \@wd 4 div 3 mul neg 0.15 sub \@ht neg 0.2 sub)%
@@ -7714,22 +7783,26 @@
 \def\polarization@comp{%
   \edef\@pol@size{\POE@key@polsize\space 0.5 mul }%
   \ifx\POE@key@poltype\POE@str@pol@polparallel
-    \psline[linestyle=solid, linewidth=\POE@key@pollinewidth, arrowscale=0.8]{<->}(! 0 \@pol@size neg)(! 0 \@pol@size)%
+    \psline[linestyle=solid, linewidth=\POE@key@pollinewidth, 
+            arrowscale=0.8, arrows=<->](! 0 \@pol@size neg)(! 0 \@pol@size)%
   \fi
   \ifx\POE@key@poltype\POE@str@pol@polperp
     \psdot[dotsize=0.05](0,0)%
     \pscircle[fillstyle=none,linestyle=solid,linewidth=\POE@key@pollinewidth](0,0){0.12}%
   \fi
   \ifx\POE@key@poltype\POE@str@pol@polmisc
-    \psline[linestyle=solid,linewidth=\POE@key@pollinewidth,arrowscale=0.8]{<->}(! 0 \@pol@size neg)(! 0 \@pol@size)%
+    \psline[linestyle=solid, linewidth=\POE@key@pollinewidth,
+            arrowscale=0.8, arrows=<->](! 0 \@pol@size neg)(! 0 \@pol@size)%
     \psdot[dotsize=0.05](0,0)%
     \pscircle[fillstyle=none,linestyle=solid,linewidth=0.7\pslinewidth](0,0){0.12}%
   \fi
   \ifx\POE@key@poltype\POE@str@pol@polrcirc
-    \psellipticarc[linewidth=\POE@key@pollinewidth]{->}(0,0)(! \@pol@size 2 div \@pol@size){20}{-20}%
+    \psellipticarc[linewidth=\POE@key@pollinewidth, arrows=<->]%
+      (0,0)(! \@pol@size 2 div \@pol@size){20}{-20}%
   \fi
   \ifx\POE@key@poltype\POE@str@pol@pollcirc
-    \psellipticarc[linewidth=\POE@key@pollinewidth]{<-}(0,0)(! \@pol@size 2 div \@pol@size){20}{-20}
+    \psellipticarc[linewidth=\POE@key@pollinewidth, arrows=<-]%
+      (0,0)(! \@pol@size 2 div \@pol@size){20}{-20}
   \fi
 \ignorespaces}%
 %
@@ -7819,7 +7892,8 @@
 % \begin{macro}{\optplate@comp}
 %    \begin{macrocode}
 \def\optplate@comp{%
-   \psline[linewidth=\POE@key@platelinewidth](! \POE@dict{0 @@y neg})(! \POE@dict{0 @@y})
+   \psline[linewidth=\POE@key@platelinewidth]%
+     (! \POE@dict{0 @@y neg})(! \POE@dict{0 @@y})
 \ignorespaces}%
 %    \end{macrocode}
 % \end{macro}
@@ -7858,8 +7932,10 @@
 % I could have use pswedge but then a correction of the component size
 % depending on the current linewidth is not possible
 %    \begin{macrocode}
-         \addto@pscode{CLW 0.5 mul 0 \POE@key@detsize\space\pst@number\psrunit mul 0.5 mul 
-            CLW sub -90 90 arc closepath }%
+         \addto@pscode{%
+           CLW 0.5 mul 0 
+           \POE@key@detsize\space\pst@number\psrunit mul 0.5 mul 
+           CLW sub -90 90 arc closepath }%
       \end@ClosedObj
    \else\ifx\POE@key@dettype\POE@str@dettype@diode
       \edef\@sz{\POE@key@detsize\space 0.5 mul }%
@@ -7867,7 +7943,8 @@
       \pspolygon(! \@sz 0.8 mul \@sz -0.4 mul)%
              (! \@sz 1.6 mul \@sz -0.4 mul)%
              (! \@sz 1.2 mul \@sz 0.4 mul)%
-      \psline(! \@sz 0.8 mul \@sz 0.4 mul \getCLWH add)(! \@sz 1.6 mul \@sz 0.4 mul \getCLWH add)
+      \psline(! \@sz 0.8 mul \@sz 0.4 mul \getCLWH add)%
+             (! \@sz 1.6 mul \@sz 0.4 mul \getCLWH add)
       \psset{arrows=->, arrowinset=0, arrowscale=0.8}
       \psline(! \@sz 0.2 mul \@sz 0.3 mul)(! \@sz 0.7 mul \@sz 0.15 mul)
       \psline(! \@sz 0.2 mul 0)(! \@sz 0.7 mul \@sz -0.15 mul)
@@ -7914,7 +7991,8 @@
    \pspolygon(! \@sz -0.2 mul \@sz -0.2 mul)
              (! \@sz -0.2 mul \@sz 0.2 mul)
              (! \@sz 0.2 mul 0)
-   \psline(! \@sz 0.2 mul \getCLWH add \@sz 0.2 mul)(! \@sz 0.2 mul \getCLWH add \@sz -0.2 mul)
+   \psline(! \@sz 0.2 mul \getCLWH add \@sz 0.2 mul)%
+          (! \@sz 0.2 mul \getCLWH add \@sz -0.2 mul)
 \ignorespaces}%
 %    \end{macrocode}
 % \end{macro}
@@ -7978,8 +8056,12 @@
    \edef\@sz{\POE@key@prismsize\space}%
    \edef\@altan{\POE@key@prismangle\space 0.5 mul tan }%
    \edef\@hshift{\@sz 0.6 mul \@altan mul \pst@optexpdict OEangle end 0.5 mul tan div }%
-   \newOptexpComp{ {\@sz -0.6 mul \@altan mul \@hshift neg} {90 \POE@key@prismangle\space 0.5 mul sub dup cos exch sin} trans {PlaneIfc}
-                   {\@sz 0.6 mul \@altan mul \@hshift neg} {90 \POE@key@prismangle\space 0.5 mul add dup cos exch sin} trans {PlaneIfc} \POE@key@n true }%
+   \newOptexpComp{ {\@sz -0.6 mul \@altan mul \@hshift neg} 
+                   {90 \POE@key@prismangle\space 0.5 mul sub dup cos exch sin} 
+                   trans {PlaneIfc}
+                   {\@sz 0.6 mul \@altan mul \@hshift neg} 
+                   {90 \POE@key@prismangle\space 0.5 mul add dup cos exch sin} 
+                   trans {PlaneIfc} \POE@key@n true }%
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -8167,7 +8249,9 @@
    \ifPOE@usefiberstyle
       \psset{style=Fiber}%
    \fi
-   \multips(! -2 \@sz mul \@sz)(! 2 \@sz mul 0){3}{\pscircle(0,0){\POE@key@polcontrolsize}}%
+   \multips(! -2 \@sz mul \@sz)(! 2 \@sz mul 0){3}{%
+     \pscircle(0,0){\POE@key@polcontrolsize}%
+   }%
 \ignorespaces}%
 %    \end{macrocode}
 % \end{macro}
@@ -8928,10 +9012,7 @@ tx@OptexpDict begin
 % represents the intersection of an untilted and unshifted incoming beam
 % on the optical axis with the respective interface
 %    \begin{macrocode}
-  exec scl ToVec 3 1 roll
-  tx@NodeDict begin 
-    NodeName false exch 10 {InitPnode } NewNode 
-  end
+  exec scl ToVec 3 1 roll NodeName @NewNode
 } bind def
 %    \end{macrocode}
 % \end{macro}
@@ -9395,7 +9476,9 @@ tx@OptexpDict begin
     12 -1 roll /CurrCenter ED
     5 1 roll % curved? X0 Y0 X_in Y_in
     connectplanes PrevCorrect and PN 2 ge and {
-      CurrVec CurrCenter CurrCenterTmp PrevMode currentdict /relAngle known { relAngle } { 0 } ifelse connectPlanes
+      CurrVec CurrCenter CurrCenterTmp PrevMode 
+      currentdict /relAngle known 
+      { relAngle } { 0 } ifelse connectPlanes
       /relAngle ED
     } if
     5 -1 roll
@@ -10144,6 +10227,17 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % \end{macro}
 %
+% \begin{macro}{@NewNode}
+% Shorthand definition for creating a new pnode.
+%    \begin{macrocode}
+/@NewNode {
+  tx@NodeDict begin 
+    false exch 10 {InitPnode } NewNode 
+  end
+} bind def
+%    \end{macrocode}
+% \end{macro}
+% 
 % \begin{macro}{RefractVec}
 %   Calculate the refracted vector, the normal plane vector must be
 %   constructed with \PSvar{NormVec}, see
@@ -10218,14 +10312,14 @@ tx@OptexpDict begin
   } if
   4 copy
 %    \end{macrocode}
-% which of the two intersection points to take? 
+% Chose which of the two intersection points to take.
 %    \begin{macrocode}
   Xr neg Yr neg 2 copy
-  8 -2 roll @ABDist %dist from first point
-  5 1 roll @ABDist % dist1 dist2
+  8 -2 roll @ABDist
+  5 1 roll @ABDist
   gt {
 %    \end{macrocode}
-% take second point
+% «dist from first point» $>$ «dist from second point», take second point.
 %    \begin{macrocode}
     4 2 roll
   } if pop pop
@@ -10468,6 +10562,9 @@ tx@OptexpDict begin
 % \end{macro}
 %
 % \begin{macro}{connectPlanes}
+%   \begin{pssyntax}
+%     \PSproc{vec}
+%   \end{pssyntax}
 % Vec Vec Center CenterTemp mode relangle
 %    \begin{macrocode}
 /connectPlanes {
@@ -10499,7 +10596,8 @@ tx@OptexpDict begin
 % \end{macro}
 %
 % \begin{macro}{GetCompRange}
-% \PSstring{basename} start stop 
+% \PSstring{basename} \PSvar{start stop} 
+% \PSop{GetCompRange} \PSstring{basenamestart} \ldots\ \PSstring{basenamestop}
 %    \begin{macrocode}
 /GetCompRange {
   2 copy gt { 1 }{ -1 } ifelse 3 -1 roll
@@ -10511,9 +10609,9 @@ tx@OptexpDict begin
 %
 % \begin{macro}{CorrectDipoleNodes}
 %   For a dipole which has two interface nodes (1) and (N) which are
-%   very close together ($\text{dist} < 1e-7$) or which coincide, the
+%   very close together ($\text{dist} < 10^{-7}$) or which coincide, the
 %   automatic angle estimation of the fiber connections does not work
-%   properly. So these nodes are separated as less as possible so tha
+%   properly. So these nodes are separated as less as possible so that
 %   the NearestNode procedure estimates two different distances.
 %   \begin{pssyntax}
 %     \PSstring{node1} \PSstring{node2} \PSstring{basename} \PSop{CorrectDipoleNodes}
@@ -10530,7 +10628,7 @@ tx@OptexpDict begin
   grestore
   4 copy @ABDist 1e-7 lt {
 %    \end{macrocode}
-% The two nodes are closer together than 1e-7, correct that to avoid
+% The two nodes are closer together than $10^{-7}$, correct that to avoid
 % problems with the angle direction when drawing fibers.
 %    \begin{macrocode}
     6 -1 roll
@@ -10545,16 +10643,12 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % The floating-point precision of the Postscript interpreter is
 % approximately 8 digits, so in order to have an effect, the nodes must
-% be separated by 1e-7 times the maximum coordinate value.
+% be separated by $10^{-7}$ times the maximum coordinate value.
 %    \begin{macrocode}
-    8 -2 roll 2 copy abs exch abs max 1e-7 mul 3 1 roll 5 2 roll VecMul VecAdd ToVec
-    tx@NodeDict begin
-      7 -1 roll false exch 10 {InitPnode } NewNode 
-    end
-    4 2 roll 2 copy abs exch abs max -1e-7 mul 3 1 roll 5 2 roll VecMul VecAdd ToVec
-    tx@NodeDict begin
-      exch false exch 10 {InitPnode } NewNode
-    end
+    8 -2 roll 2 copy abs exch abs max 1e-7 mul 3 1 roll 5 2 roll 
+    VecMul VecAdd ToVec 7 -1 roll @NewNode
+    4 2 roll 2 copy abs exch abs max -1e-7 mul 3 1 roll 5 2 roll 
+    VecMul VecAdd ToVec exch @NewNode
   } {
     8 { pop } repeat
   } ifelse
@@ -10570,7 +10664,9 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{debugStack}
+% \begin{macro}{debug}
+%
+% \PSvar{t} \PSop{debug}
 %    \begin{macrocode}
 /debug { 
   /@t ED @t copy @t { == } repeat
@@ -10602,9 +10698,9 @@ end % tx@OptexpDict
 % \endinput
 %
 %<*indexstyle>
-headings_flag       1		% headings yes
-heading_prefix   "\\textbf{" 	% boldfont
-heading_suffix   "}\n"		% newline
+headings_flag       1
+heading_prefix   "\\textbf{"
+heading_suffix   "}\n"
 quote		'"'
 level		'!'
 actual          '='
