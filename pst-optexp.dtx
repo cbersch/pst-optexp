@@ -85,6 +85,7 @@
   texcsstyle = [20]\color{DOrange}, %
   moretexcs = [20]{lens, optbox, oenode, oenodeIn, oenodeExt, oenodeOut,
     oenodeRefA, oenodeRefB, oenodeTrefA, oenodeTrefB, oenodeLabel,
+    oenodeRotref,
     oenodeCenter, optplate, optretplate, pinhole, crystal,optdetector,
     optdiode, doveprism, polarization, mirror, beamsplitter, optgrating,
     optprism, rightangleprism, pentaprism, optdipole, optripole,
@@ -303,7 +304,7 @@
 \newcommand{\dipoledesc}[1]{%
   \xLdipole{#1}\label{cmd:#1}%
   \cmditem{#1}[options](in)(out)%
-  \xLdipole{#1}\cmditem{#1}[Options](in)(out){label}%
+  \xLdipole{#1}\cmditem{#1}[options](in)(out){label}%
 }
 \newcommand{\tripoledesc}[1]{%
   \xLtripole{#1}\label{cmd:#1}%
@@ -772,7 +773,7 @@
 % konkave Linse (\prettyref{l:ex1-l1}), ein positiver Linsenradius eine
 % konvexe Linse (\prettyref{l:ex1-l2}). Die dritte Komponente ist eine
 % Box (\prettyref{l:ex1-box}), deren eine Seite mit der Option
-% \opt{endbox} auf den Referenzknoten \prm{Out} gelegt wird. Die
+% \opt{endbox} auf den Referenzknoten \prm{out} gelegt wird. Die
 % Beschriftung wird mittig in die Box gesetzt
 % (\opt{labeloffset=0}). Zuletzt wird ein grüner Lichtstrahl gezeichnet
 % (\prettyref{l:ex1-beam}), dessen Füllung etwas transparent ist
@@ -2734,12 +2735,12 @@
 % \end{ltxsyntax}
 % \ifGERMAN
 % Das Umkehrprisma wird so ausgerichtet, dass der einfallende und der
-% reflektierte Strahl parallel sind und der \prm{Center} Knoten vertikal
+% reflektierte Strahl parallel sind und der \prm{center} Knoten vertikal
 % zentriert in dem Prisma liegt.
 % \fi
 % \ifENGLISH
 % The right-angle prisms is align such that the incoming and reflected
-% beam are parallel and the \prm{Center} node is vertically centered in
+% beam are parallel and the \prm{center} node is vertically centered in
 % the prism.
 % \fi
 % \iffalse
@@ -3219,19 +3220,19 @@
 % \ifGERMAN
 % Der Fasekollimator kann mit zwei, drei oder vier Punkten verwendet
 % werden. Bei zwei Punkten wird der Kollimator wie jeder andere Zweipol
-% zwischen \prm{In} und \prm{Out} Knoten platziert. Bei drei Punkten
+% zwischen \prm{in} und \prm{out} Knoten platziert. Bei drei Punkten
 % wird eine \Lcs{psbezier} Kurve gezeichnet, wobei der mittlere Punkt
 % doppelt verwendet wird. Die Positionierungsparameter (see
 % \prettyref{sec:positioning}) können verwendet werden um den Kollimator
-% zwischen dem \prm{In} und \prm{A} Knoten auszurichten.
+% zwischen dem \prm{in} und \prm{A} Knoten auszurichten.
 % \fi
 % \ifENGLISH
 % The \nxLcs{fibercollimator} can be used with two, three or four
 % points. With two points, the collimator is placed like any other
-% dipole component between \prm{In} and \prm{Out} node. For three nodes,
+% dipole component between \prm{in} and \prm{out} node. For three nodes,
 % the fiber is drawn as \Lcs{psbezier} curve for which the central node
 % \prm{A} is used twice. Positioning parameters can be used to shift the
-% object between \prm{In} and \prm{A} nodes.
+% object between \prm{in} and \prm{A} nodes.
 % \fi
 % \iffalse
 %<*ignore>
@@ -3250,12 +3251,12 @@
 % Bei vier Konten wird eine \Lcs{psbezier} Kurve mit allen vier Knoten
 % gezeichnet. Die Positionierungsparameter (see
 % \prettyref{sec:positioning}) können verwendet werden um den Kollimator
-% zwischen dem \prm{In} und \prm{A} Knoten auszurichten.
+% zwischen dem \prm{in} und \prm{A} Knoten auszurichten.
 % \fi
 % \ifENGLISH
 % For four nodes, the fiber is drawn as \Lcs{psbezier} curve with the
 % specified nodes. Positioning parameters can be used to shift the
-% object between \prm{In} and \prm{A} nodes.
+% object between \prm{in} and \prm{A} nodes.
 % \fi
 % \iffalse
 %<*ignore>
@@ -3277,8 +3278,8 @@
 %
 % \begin{ltxsyntax}
 % \xLfmultipole{optcoupler}\label{cmd:optcoupler}%
-% \cmditem{optcoupler}(LeftTop)(LeftBottom)(RightTop)(RightBottom)%
-% \cmditem{optcoupler}(LeftTop)(LeftBottom)(RightTop)(RightBottom){Label}%
+% \cmditem{optcoupler}(lefttop)(leftbottom)(righttop)(rightbottom)%
+% \cmditem{optcoupler}(lefttop)(leftbottom)(righttop)(rightbottom){label}%
 % \iffalse
 %<*ignore>
 % \fi
@@ -3299,7 +3300,7 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}
+\begin{LTXexample}[morekeywords={[21]{couplersep}}]
 \begin{pspicture}(3,1.5)
   \optcoupler[couplersep=0]%
                (0,1.5)(0,0.5)(3,1.5)(3,0.5){Coupler}
@@ -3315,7 +3316,7 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}
+\begin{LTXexample}[morekeywords={[21]{couplertype}}]
 \begin{pspicture}(3,4.5)
   \psset{labeloffset=0.5}
   \optcoupler[couplertype=none]%
@@ -3336,7 +3337,7 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}
+\begin{LTXexample}[morekeywords={[21]{align}}]
 \begin{pspicture}(3,3)
   \psset{labeloffset=0.4}
   \optcoupler[align=top]%
@@ -3355,8 +3356,8 @@
 %
 % \begin{ltxsyntax}
 % \xLfmultipole{wdmcoupler}\label{cmd:wdmcoupler}%
-% \cmditem{wdmcoupler}(LeftTop)(LeftBottom)(Right)%
-% \cmditem{wdmcoupler}(LeftTop)(LeftBottom)(Right){Label}%
+% \cmditem{wdmcoupler}(lefttop)(leftbottom)(right)%
+% \cmditem{wdmcoupler}(lefttop)(leftbottom)(right){label}%
 % \iffalse
 %<*ignore>
 % \fi
@@ -3378,7 +3379,7 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}
+\begin{LTXexample}[morekeywords={[21]{couplersep}}]
 \begin{pspicture}(3,1.5)
   \wdmcoupler[couplersep=0](0,1.5)(0,0.5)(3,1){WDM}
 \end{pspicture}
@@ -3393,7 +3394,7 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}
+\begin{LTXexample}[morekeywords={[21]{couplertype}}]
 \begin{pspicture}(3,3)
   \psset{labeloffset=0.5}
   \wdmcoupler[couplertype=none](0,3)(0,2)(3,2.5)
@@ -3411,7 +3412,7 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}
+\begin{LTXexample}[morekeywords={[21]{align}}]
 \begin{pspicture}(3,3)
   \psset{labeloffset=0.4}
   \wdmcoupler[align=top,
@@ -3430,8 +3431,8 @@
 %
 % \begin{ltxsyntax}
 % \xLfmultipole{wdmcoupler}\label{cmd:wdmsplitter}%
-% \cmditem{wdmsplitter}(Left)(RightTop)(RightBottom)%
-% \cmditem{wdmsplitter}(Left)(RightTop)(RightBottom){Label}%
+% \cmditem{wdmsplitter}(left)(righttop)(rightbottom)%
+% \cmditem{wdmsplitter}(left)(righttop)(rightbottom){label}%
 % \iffalse
 %<*ignore>
 % \fi
@@ -3452,7 +3453,7 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}
+\begin{LTXexample}[morekeywords={[21]{couplersep}}]
 \begin{pspicture}(3,1.5)
   \wdmsplitter[couplersep=0](0,1)(3,1.5)(3,0.5){WDM}
 \end{pspicture}
@@ -3467,7 +3468,7 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}
+\begin{LTXexample}[morekeywords={[21]{couplertype}}]
 \begin{pspicture}(3,3)
   \psset{labeloffset=0.5}
   \wdmsplitter[couplertype=none](0,2.5)(3,3)(3,2)
@@ -3485,7 +3486,7 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}
+\begin{LTXexample}[morekeywords={[21]{align}}]
 \begin{pspicture}(3,3)
   \psset{labeloffset=0.4}
   \wdmsplitter[align=top,
@@ -3512,8 +3513,8 @@
 % valid for couplers. Here, the nodes are simply numbered from \opt{1} (left
 % top) to \opt{N} (right bottom).
 % \fi
-%
-% \begin{pspicture}[showgrid=true](0,-0.5)(12,2.5)
+% \begin{center}
+% \begin{pspicture}(11,2)
 % \psset{couplersize=0.5, couplertype=rectangular, couplersep=0.2}
 % \wdmsplitter(0, 1)(3,2)(3,0)
 % \psdot(\oenodeIfc{1}{})\uput[90](\oenodeIfc{1}{}){1}
@@ -3529,19 +3530,31 @@
 % \psdot(\oenodeIfc{3}{})\uput[90](\oenodeIfc{3}{}){3}
 % \psdot(\oenodeIfc{N}{})\uput[-90](\oenodeIfc{N}{}){N}
 % \end{pspicture}
+% \end{center}
 %
-% \section{Connecting objects}\label{sec:connecting}
+% \ifGERMAN\chapter{Verbinden von Komponenten}\fi
+% \ifENGLISH\chapter{Connecting components}\fi\label{sec:connecting}
 % 
-% The package provides several methods for automatic beam and fiber
-% drawing which are two fundamentally different way of connecting.
+% \ifGERMAN 
+% Das \nxLPack{pst-optexp}-Paket stellt unterschiedlichen Methoden bereit,
+% Komponenten vollautomatisch oder manuell mit Fasern oder Lichtstrahlen zu
+% verbinden.
+% \fi
+% \ifENGLISH
+% The \nxLPack{pst-optexp} package provides several methods for automatic and
+% manual beam and fiber drawing.  
+% \fi
 % 
-% \subsection{Accessing objects}\label{sec:accessobj}
+% \ifGERMAN\section{Zugriff auf Komponenten}\fi
+% \ifENGLISH\section{Accessing components}\fi\label{sec:accessobj}
 % 
-% The macro arguments, specified as \prm{obj$_1$}, \prm{obj$_2$}, \ldots
-% \prm{obj$_N$} in the following macro definitions, can be either
-% \nxLPack{pst-optexp} object names (see \prettyref{sec:namingobj} or PSTricks
-% nodes. To distinguish between nodes and object names, the node content must be
-% enclosed in parenthesis within the brackets. 
+% 
+% The arguments of the connection macros, specified as \prm{obj$_1$},
+% \prm{obj$_2$}, \ldots \prm{obj$_N$}, can be either \nxLPack{pst-optexp} object
+% names (see \prettyref{sec:namingobj} or PSTricks nodes. To distinguish between
+% nodes and object names, the node content must be enclosed in parenthesis
+% within the brackets.
+% 
 %
 % The components are number in increasing order by their definition in the
 % source code, starting with 1.
@@ -3589,7 +3602,8 @@
 %</ignore>
 % \fi
 %
-% Objects which have an explicit \Lkeyword{compname} can also be accessed by this name or by their number.
+% Objects which have an explicit \Lkeyword{compname} can also be accessed by
+% this name or by their number.
 %
 % \iffalse
 %<*ignore>
@@ -3626,19 +3640,23 @@
 %</ignore>
 % \fi
 % 
-% \subsection{Drawing beams}\label{sec:drawbeam}
+% \section{Drawing beams}\label{sec:drawbeam}
 % 
 % \begin{ltxsyntax}
-%   \xLcs{drawbeam}\cmditem{drawbeam}[Options]{Obj$_1$}{Obj$_2$}{\ldots}{Obj$_N$}
-%   \xLcs{drawwidebeam}\cmditem{drawwidebeam}[Options]{Obj$_1$}{Obj$_2$}{\ldots}{Obj$_N$}
+%   \xLcs{drawbeam}\cmditem{drawbeam}[options]{obj$_1$}{obj$_2$}{\ldots}{obj$_N$}
+%   \xLcs{drawwidebeam}\cmditem{drawwidebeam}[options]{obj$_1$}{obj$_2$}{\ldots}{obj$_N$}
 % \end{ltxsyntax}
 % The package provides two macros for connecting objects with beams. Most
 % parameters are valid for both, those which are specified for wide beams
 % are demonstrated separately in the next section.
+%
+% \begin{ltxsyntax}
+%   \xLcs{optplane}\cmditem{optplane}(center)(vec){name}
+% \end{ltxsyntax}
 % 
 % \begin{optionlist}
-%   \optitem[0]{beampos}{[\prm{X}] \prm{Y}} This is the start position
-%   (\prm{X}, \prm{Y}) of the beam at the first interface. Can be any code
+%   \optitem[0]{beampos}{[\prm{x}] \prm{y}} This is the start position
+%   (\prm{x}, \prm{y}) of the beam at the first interface. Can be any code
 %   which evaluates in Postscript to one or two numbers. If is only one
 %   number then the $x$-coordinate is set to \texttt{0}.
 % \iffalse
@@ -3838,6 +3856,34 @@
 % \numitem[0]{beamdiv}
 % \end{optionlist}
 %
+% \ifGERMAN\subsection{Zeichenebenen}\fi
+% \ifENGLISH\subsection{Layers}\fi
+%
+% \begin{ltxsyntax}
+%   \envitem{optexp}
+% \end{ltxsyntax}
+%
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[morekeywords = {[21]{optexp}}]
+\begin{pspicture}(3,4)
+  \psset{beam, fillstyle=solid, fillcolor=black}
+  \optbox(0,3.5)(3,3.5){no layers}
+  \begin{optexp}
+    \optbox(0,1.5)(3,1.5){with layers}
+  \end{optexp}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
+% \begin{ltxsyntax}
+%   \cmditem{frontlayer}{code}
+%   \cmditem{backlayer}{code}
+% \end{ltxsyntax}
+%
 % \ifGERMAN\subsection{Fehlerbehandlung}\fi
 % \ifENGLISH\subsection{Error handling}\fi
 % \label{sec:error-handling}
@@ -3870,7 +3916,7 @@
 % \iffalse
 %</ignore>
 % \fi
-%
+% 
 % \iffalse
 %<*ignore>
 % \fi
@@ -3887,17 +3933,17 @@
 %</ignore>
 % \fi
 % 
-% \subsection{Drawing fibers}\label{sec:drawfiber}
+% \section{Drawing fibers}\label{sec:drawfiber}
 % 
-% Fiber-optical objects are automatically connected to the reference
+% Fiber-optical components are automatically connected to the reference
 % nodes. The style of all fiber connections can be configured
 % independently (see \prettyref{fig:fiberstyles}).
 %
-% This works quiet well if the components are aligned serially, but ceases to
-% give good result for more complicated situations. In that case single or all
-% fiber can be omitted and drawn separately.
+% This works quiet well if the components are aligned in series, but ceases to
+% give good result for more complicated situations (e.g. loop setups). In that
+% case individual fibers can be omitted and drawn separately.
 %
-% \subsubsection{Automatic fiber connections}\label{sec:drawfiber-auto}
+% \subsection{Automatic fiber connections}\label{sec:drawfiber-auto}
 %
 % All fiber-optical components described in \prettyref{sec:fibercomp} are
 % connected automatically to their reference nodes with \Lcs{pccurve}. The
@@ -3918,7 +3964,8 @@
 %     }%
 %   }%
 %   \rput[l](-1,0|T-0){parent style}
-%   \rput[l](-1,0|T-0-0){\parbox{\widthof{outgoing fibers}}{\RaggedRight incoming and outgoing fibers}}
+%   \rput[l](-1,0|T-0-0){\parbox{\widthof{outgoing fibers}}{%
+%      \RaggedRight incoming and outgoing fibers}}
 %   \rput[t](! \psGetNodeCenter{T-0-0-0} \psGetNodeCenter{T-0-0-1}
 %      T-0-0-0.x T-0-0-1.x add 2 div T-0-0-0.y 0.4 sub){%
 %      \parbox{3.8cm}{\RaggedRight Upper(1) or lower(2) incoming fiber.}}
@@ -3946,13 +3993,14 @@
 %   \xLkeyword{newFiberOut1}\xLkeyword{addtoFiberOut1}
 %   \xLkeyword{newFiberOut2}\xLkeyword{addtoFiberOut2} For every style two
 %   appropriate keys \opt{new}\prm{style} and \opt{addto}\prm{style} are
-%   provided which can be used to change the styles for only one object. This
+%   provided which can be used to change the styles for single objects. This
 %   can be used to define own components with respectively changed fiber
-%   connections or to avoid grouping.
+%   connections or to avoid explicit grouping.
+%
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}
+\begin{LTXexample}[morekeywords={[21]{addtoFiberOut}}]
 \begin{pspicture}(3,2)
    \newpsobject{tapcoupler}{wdmsplitter}{%
      align=bottom, addtoFiberOut1={arrows=->, arrowscale=1.2, arrowinset=0}
@@ -3970,7 +4018,7 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}
+\begin{LTXexample}[morekeywords={[21]{fiber}}]
 \begin{pspicture}(3,2)
   \optbox[fiber](0,1)(3,1){}
 \end{pspicture}
@@ -3988,7 +4036,7 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}
+\begin{LTXexample}[morekeywords={[21]{fiberin}}]
 \begin{pspicture}(3,2)
   \optcoupler[fiberin=top](0,2)(0,0)(3,2)(3,0){}
 \end{pspicture}
@@ -4003,7 +4051,7 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}
+\begin{LTXexample}[morekeywords={[21]{fiberout}}]
 \begin{pspicture}(3,2)
   \wdmsplitter[fiberout=bottom](0,1)(3,2)(3,0){}
 \end{pspicture}
@@ -4013,14 +4061,14 @@
 % \fi
 % \end{optionlist}
 %
-% \minisec{Fiber angles}
+% \subsubsection{Fiber angles}
 %
 % The angles of the fiber connections are calculated automatically from the
 % orientation of the component. The automatic connections are a special case of
 % \Lcs{drawfiber} from a node to a component, see
 % \prettyref{sec:drawfiber-manual} for detail.
 % 
-% \subsubsection{Manual fiber connections}\label{sec:drawfiber-manual}
+% \subsection{Manual fiber connections}\label{sec:drawfiber-manual}
 %
 % \begin{ltxsyntax}
 %   \xLcs{drawfiber}\cmditem{drawfiber}[Options]{Obj$_1$}{Obj$_2$}
@@ -4038,8 +4086,9 @@
   \psdot(\oenodeTrefA{})\uput[180](\oenodeTrefA{}){TrefA}%
   \psdot(\oenodeTrefB{})\uput[0](\oenodeTrefB{}){TrefB}%
   \uput{0.5}[180](\oenodeTrefB{}){\textcolor{black!30}{reference line}}%
-  \psline[linecolor=black!30, 
-            linestyle=dashed](\oenodeTrefA{})(\oenodeTrefB{})
+  \psset{linecolor=black!30, linestyle=dashed}
+  \psline(\oenodeTrefA{})(\oenodeTrefB{})
+  \psline(\oenodeRefA{})(\oenodeRefB{})
   \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -4049,7 +4098,7 @@
 %<*ignore>
 % \fi
 \begin{LTXexample}[pos=t, explpreset={linerange={1,2,9-11}}]
-\begin{pspicture}[showgrid=true](-1,-0.1)(7,3.2)
+\begin{pspicture}(-1,-0.1)(7,3.2)
   \optbox[fiber, angle=-30, rotateref=t, compshift=0.5](0,1)(6,1){}
   \psdot(\oenodeRefA{})\uput[180](\oenodeRefA{}){RefA}%
   \psdot(\oenodeRefB{})\uput[0](\oenodeRefB{}){RefB}%
@@ -4057,33 +4106,10 @@
   \psdot(\oenodeTrefA{})\uput[180](\oenodeTrefA{}){TrefA}%
   \psdot(\oenodeTrefB{})\uput[0](\oenodeTrefB{}){TrefB}%
   \uput{0.5}[180](\oenodeTrefB{}){\textcolor{black!30}{reference line}}%
-  \psline[linecolor=black!30, 
-            linestyle=dashed](\oenodeTrefA{})(\oenodeTrefB{})
+  \psset{linecolor=black!30, linestyle=dashed}
+  \psline(\oenodeTrefA{})(\oenodeTrefB{})
+  \psline(\oenodeRefA{})(\oenodeRefB{})
   \end{pspicture}
-\end{LTXexample}
-% \iffalse
-%</ignore>
-% \fi
-%
-% \iffalse
-%<*ignore>
-% \fi
-\begin{LTXexample}
-\begin{pspicture}(3,2)
-  \optbox[angle=20, fiber](0,1)(3,1){}
-\end{pspicture}
-\end{LTXexample}
-% \iffalse
-%</ignore>
-% \fi
-%
-% \iffalse
-%<*ignore>
-% \fi
-\begin{LTXexample}
-\begin{pspicture}(3,2)
-  \optbox[compshift=0.5, fiber](0,1)(3,1){}
-\end{pspicture}
 \end{LTXexample}
 % \iffalse
 %</ignore>
@@ -4133,7 +4159,7 @@
 %</ignore>
 % \fi
 % 
-% \subsection{Custom beams}\label{sec:custombeam}
+% \section{Custom beams}\label{sec:custombeam}
 % \begin{ltxsyntax}
 %   \xLcs{custombeam}\cmditem{custombeam}[Options]{\nxLcs{draw*beam}}
 % \end{ltxsyntax}
@@ -4145,12 +4171,9 @@
 % \end{optionlist}
 % 
 % 
-% \ifGERMAN
-%   \chapter{Zusatzinformationen}
-% \fi
-% \ifENGLISH
-%   \chapter{Additional information}
-% \fi
+% \ifGERMAN\chapter{Zusatzinformationen}\fi
+% \ifENGLISH\chapter{Additional information}\fi
+%
 % \section{Defining new objects}
 % 
 % \subsection{Customized versions of existing macros}
@@ -4864,8 +4887,9 @@
 \ProcessOptions\relax
 \RequirePackage{environ}
   \long\def\POE@collect#1{%
+    \global\POE@oldcnt=\POE@cnt
     \psset{optexpenv, backlayer=true, frontlayer=false}#1%
-    \gdef\POE@complist{}\global\POE@cnt=0\relax
+    \gdef\POE@complist{}\global\POE@cnt=\POE@oldcnt\relax
     \psset{backlayer=false, frontlayer=true}%
     #1}%
 \newenvironment{optexp}{\Collect@Body\POE@collect}{}
@@ -4922,6 +4946,7 @@
 % count the components in a pspicture environment
 %    \begin{macrocode}
 \newcount\POE@cnt
+\newcount\POE@oldcnt
 %    \end{macrocode}
 % count the temporal planes which are created for connections to nodes
 %    \begin{macrocode}
