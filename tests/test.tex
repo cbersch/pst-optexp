@@ -4,17 +4,23 @@
 \usepackage[ngerman]{babel}
 \usepackage{lmodern}
 \usepackage{pst-optexp}
-
+\usepackage{showexpl}
 \begin{document}
-\begin{pspicture}[showgrid=true](3,3)
-\psset{endbox}
-%  \psset{endbox, optboxwidth=0.5, optboxheight=0.5, bssize=0.5}
-  \optbox[compname=obj](0.5,0.5)(0.5,2.5){obj}
-  \beamsplitter(0.5,2.5)(0.5,0.5)(2.5,0.5){2}
-  \optbox(0.5,0.5)(2.5,0.5){3}
-  % named objects are also numbered
-  \drawbeam{1-3}
-\end{pspicture}
+\lstset{explpreset={%
+    escapeinside={*}{*}, pos=l,width=-99pt,overhang=0pt,hsep=5mm,
+    varwidth,vsep=\bigskipamount,rframe={}}, }
+
+\begin{LTXexample}[explpreset={escapeinside={}}]
+\begin{pspicture*}(0,2)(3.05,6)
+  \lens[lens=8 8 8, abspos=0.6](0.5,2)(3,2)
+  \optplate[position=1, plateheight=6](0.5,2)(3,2)
+  \psset{beampos=2.1}
+  \drawbeam[beamangle=-60]{1}{2}
+  \drawbeam[beamangle=-40]{1}{2}
+  \drawbeam[beamangle=-20]{1}{2}
+  \psline[linecolor=gray!50, linewidth=3\pslinewidth, arrows=->, arrowinset=0, arrowscale=1.3](\oenodeOut{1})([offset=2.1]\oenodeOut{1})
+\end{pspicture*}
+\end{LTXexample}
 \end{document}
 \begin{pspicture}[showgrid=true](0,-0.5)(12,2.5)
 \psset{couplersize=0.5, couplertype=rectangular, couplersep=0.2}
