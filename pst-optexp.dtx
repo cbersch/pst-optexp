@@ -26,7 +26,7 @@
 %</stylefile>
 %
 %<*driver>
-\documentclass[toc=flat, a4paper, DIV=9, oneside, toc=index]{scrreprt}
+\documentclass[a4paper, DIV=9, oneside, toc=index]{scrreprt}
 \usepackage{doc}
 \setcounter{IndexColumns}{2}
 \usepackage[utf8]{inputenc} 
@@ -52,7 +52,7 @@
   filecolor=pdffilecolor, linkcolor=pdflinkcolor, breaklinks,
   linktocpage=true} 
 \usepackage{breakurl}
-\definecolor{DOrange}{rgb}{0.9,.36,.18} 
+\definecolor{DOrange}{rgb}{1,.4,.2}%
 \colorlet{pdflinkcolor}{DOrange}
 \colorlet{pdfurlcolor}{DOrange} 
 \colorlet{pdffilecolor}{DOrange}
@@ -63,10 +63,11 @@
 \definecolor{colKeys}{rgb}{0,0,0}
 \definecolor{colIdentifier}{rgb}{0,0,0}
 \colorlet{colComments}{DOrange!50!white}
-\definecolor{colString}{rgb}{0,0.5,0} \lstset{%
+\definecolor{colString}{rgb}{0,0.5,0} 
+\lstset{%
   language=[LaTeX]TeX, identifierstyle=\color{colIdentifier}, %
   keywordstyle=\color{colKeys}, %
-  keywordstyle = [21]\color{red!80!black}, %
+  keywordstyle = [21]\color{DOrange!60!red}, %
   stringstyle=\color{colString}, %
   commentstyle=\color{colComments}, %
   float=hbp,%
@@ -115,6 +116,14 @@
 \undef{\cs}
 \undef{\cmd}
 \usepackage{ltxdockit}
+%%
+\makeatletter
+\renewcommand*\l@section{\bprot@dottedtocline{1}{1.5em}{3.0em}}
+\renewcommand*\l@subsection{\bprot@dottedtocline{2}{3.8em}{4.0em}}
+\newrobustcmd*{\fnurl}[1][]{\hyper@normalise\ltd@fnurl{#1}}
+\def\ltd@fnurl#1#2{\footnote{#1\hyper@linkurl{\Hurl{#2}}{#2}}}
+\makeatother
+%%
 \usepackage{csquotes}
 \MakeAutoQuote{«}{»}
 \colorlet{spot}{sectioncolor}
@@ -165,6 +174,7 @@
   \let\boolitem\POE@boolitem
   \let\intitem\POE@intitem
   \let\numitem\POE@numitem
+  \let\psnumitem\POE@psnumitem
   \let\poeitem\ltd@item}
 
 \def\POE@optitem{%
@@ -243,6 +253,18 @@
   \ifblank{#1}
     {\ltd@option{#2}{#2}{\prm{num}}{}}
     {\ltd@option{#2}{#2}{\prm{num}}{\ltd@textverb{#1}}}}%
+
+\def\POE@psnumitem{%
+  \@ifstar
+    {\boolfalse{@tempswa}\POE@psnumitem@i}
+    {\booltrue{@tempswa}\POE@psnumitem@i}}
+\newcommand*{\POE@psnumitem@i}[2][]{%
+  \ifbool{@tempswa}{\label{prm:#2}}{}%
+  \xLkeyword{#2}%
+  \ifblank{#1}
+    {\ltd@option{#2}{#2}{\prm{psnum}}{}}
+    {\ltd@option{#2}{#2}{\prm{psnum}}{\ltd@textverb{#1}}}}%
+
 
 \let\plainllap\llap
 \newrobustcmd\macro@llap[1]{{\global\let\llap\plainllap
@@ -562,32 +584,28 @@
 %
 % \ifGERMAN
 %   \section{Anforderungen}
-%   \LPack{pst-optexp} Version 3.0 benötigt aktuelle Versionen der
+%   \LPack{pst-optexp} Version 3.0 benötigt \LaTeX{} und aktuelle Versionen der
 %   Pakete \LPack{pst-node}, \LPack{pstricks-add}, \LPack{multido},
 %   \LPack{pst-eucl} und \LPack{environ}.
 %
 %   Alle PSTricks-Pakete machen regen Gebrauch von Postscript, so dass
 %   der typische Arbeitsfluss \opt{latex}, \opt{dvips} und
-%   ggf. \opt{ps2pdf} umfasst. Alternative Methoden sind auf
-%   \url{http://tug.org/PSTricks/main.cgi?file=pdf/pdfoutput}
-%   beschrieben.  
+%   ggf. \opt{ps2pdf} umfasst. Es gibt viele alternative Methoden um die Dokumente zu kompilieren.\fnurl{http://tug.org/PSTricks/main.cgi?file=pdf/pdfoutput}
 % \fi
 % \ifENGLISH
 %   \section{Requirements}
-%   \LPack{pst-optexp} version 3.0 requires recent versions of
+%   \LPack{pst-optexp} version 3.0 requires \LaTeX{} and recent versions of
 %   \LPack{pst-node}, \LPack{pstricks-add}, \LPack{multido},
 %   \LPack{pst-eucl}, and \LPack{environ}. 
 %
 %   All PSTricks package heavily rely on the Postscript language so that
 %   the typical workflow involves \opt{latex}, \opt{dvips}, and
-%   \opt{ps2pdf}. Of course there are several alternative ways, see
-%   \url{http://tug.org/PSTricks/main.cgi?file=pdf/pdfoutput} for details.
+%   \opt{ps2pdf}. Of course there are several alternative ways to compile your documents.\fnurl{http://tug.org/PSTricks/main.cgi?file=pdf/pdfoutput}
 % \fi
 %
 % \ifGERMAN
 %   \section{Verbreitung und Installation}
-%   Dieses Paket ist auf CTAN
-%   (\url{http://mirror.ctan.org/graphics/pstricks/contrib/pst-optexp})
+%   Dieses Paket ist auf CTAN\fnurl{http://mirror.ctan.org/graphics/pstricks/contrib/pst-optexp}
 %   erhältlich und in \TeX Live and MiK\TeX{} enthalten.
 % 
 %   Das \LPack{pst-optexp} Paket umfasst die zwei Hauptdateien
@@ -611,8 +629,7 @@
 % \fi
 % \ifENGLISH
 %   \section{Distribution and installation}
-%   This package is available on CTAN
-%   (\url{http://mirror.ctan.org/graphics/pstricks/contrib/pst-optexp})
+%   This package is available on CTAN\fnurl{http://mirror.ctan.org/graphics/pstricks/contrib/pst-optexp}
 %   and is included in \TeX Live and MiK\TeX.
 % 
 %   The \LPack{pst-optexp} package consists of the two main files \texttt{pst-optexp.ins} and \texttt{pst-optexp.dtx}. 
@@ -630,6 +647,22 @@
 %   system.
 % \fi
 %
+% \ifGERMAN\section{Lizenz}\fi
+% \ifENGLISH\section{License}\fi
+% \ifGERMAN
+% Es wird die Erlaubnis gewährt, dieses Dokument zu kopieren, zu verteilen
+% und\slash oder zu modifizieren, unter den Bestimmungen der \LaTeX{} Project Public License, version
+% 1.3.\fnurl{http://www.ctan.org/tex-archive/macros/latex/base/lppl.txt}. Diese
+% Paket wird vom Autor betreut (author-maintained).
+% \fi
+% \ifENGLISH
+% Copyright \textcopyright\ 2007--2011 Christoph Bersch. Permission is granted
+% to copy, distribute and\slash or modify this software under the terms of the
+% \LaTeX{} Project Public License, version
+% 1.3.\fnurl{http://www.ctan.org/tex-archive/macros/latex/base/lppl.txt} This
+% package is author-maintained.
+% \fi
+%
 % \ifGERMAN
 %   \section{Abwärtskompatibilität}
 % \fi
@@ -644,7 +677,7 @@
 %   Funktionalität so schnell wie möglich erfolgen musste.
 %
 % \begin{optionlist}
-% \item[\smash{\Loption{compat}\hspace{10pt}}] Mit dieser Paketoption können alte
+% \item[\smash{\Loption{compat}\hspace*{3pt}}] Mit dieser Paketoption können alte
 %   Dokumente kompiliert werden, ohne jedoch von vielen Neuerungen
 %   profitieren zu können.
 %
@@ -665,7 +698,7 @@
 % it was best to drop the old flaw as early as possible.
 %
 % \begin{optionlist}
-% \item[\smash{\Loption{compat}}] However, using this package option
+% \item[\smash{\Loption{compat}\hspace*{3pt}}] However, using this package option
 %   allows you to compile old setups but without profiting from the new
 %   features.
 %
@@ -1418,15 +1451,17 @@
 % \end{ltxsyntax}
 %
 % \ifGERMAN
-%   \chapter{Referenz}
+%   \chapter{Komponenten-Referenz}
 % \fi
 % \ifENGLISH
-%   \chapter{Reference}
+%   \chapter{Component reference}
 % \fi
 % 
-% This chapter contains detailed information about all object, macros
-% and related options. It is divided into three parts:
+% This chapter contains detailed information about all components and related
+% options. It is divided into three parts:
 % \begin{itemize}
+% \item Section \ref{sec:generalparam} introduces all parameters which are
+%   generic to most of the components.
 % \item Section \ref{sec:freeraycomp} explains in detail all free-ray
 %   components, reflective and transmittive. The free-ray components
 %   differ from the fiber-optical ones with respect to their ray-tracing
@@ -1434,23 +1469,38 @@
 % \item Section \ref{sec:fibercomp} describes all fiber-optical
 %   components, which can be used with fiber connections only. They must
 %   not obey any refraction or reflection law.
-% \item Section \ref{sec:connecting} contains detailed information about
-%   all possiblities of beam and fiber connections.
 % \end{itemize}
 %
-% \begin{table}\centering
+% Often the parameter types are self-explanatory, but in some cases a clear
+% distinction is needed, e.g. between \prm{num} and
+% \prm{psnum}. Table~\ref{tab:paramref} explains some commonly used names.
+%
+% Parts in the parameter types which are indicated by square brackets are optional.
+%
+% \vspace*{\floatsep}
+% \noindent\begin{minipage}{\textwidth}\centering
 % \begin{tabularx}{0.9\linewidth}{>{\itshape}lX} \toprule
-%   Name & Description\\ \midrule
-%   num & Any number\\ 
-%   int & Integer number\\ 
-%   dimen & Dimension\\
-%   psstyle & Custom graphics parameter configuration defined with \Lcs{newpsstyle}\\
-%   psnum & Any Postscript code that evaluates to a number\\
+%   Name & \ifENGLISH description\fi\ifGERMAN Beschreibung\fi\\ \midrule
+%   num & \ifENGLISH float number\fi\ifGERMAN Gleitkommazahl\fi \\ 
+%   int & \ifENGLISH integer number\fi\ifGERMAN Ganzzahl\fi\\ 
+%   dimen & \ifENGLISH dimension\fi\ifGERMAN Länge\fi\\
+%   psstyle & \ifENGLISH custom graphics parameter configuration defined with \Lcs{newpsstyle}\fi
+%             \ifGERMAN Benutzer-definierte Parameterkonfiguration definiert mit \Lcs{newpsstyle}\fi\\
+%   psnum & \ifENGLISH Postscript code that evaluates to a number\fi
+%           \ifGERMAN Postscript-Kode der zu einer Zahl auswertet\fi\\
 %   refstring & \refstringexplanation\\ \bottomrule
 % \end{tabularx}
-% \end{table}
-% 
-% \section{General parameters}
+% \ifGERMAN
+% \captionof{table}{Parametertypen die in den Parameterdefinitionen verwendet werden.}
+% \fi
+% \ifENGLISH
+% \captionof{table}{Parameter types used in the parameter reference.}
+% \fi
+% \label{tab:paramref}
+% \end{minipage}
+%
+% \newpage
+% \section{General parameters}\label{sec:generalparam}
 % 
 % Some general parameters which can be used for all objects.
 % 
@@ -1520,16 +1570,18 @@
 % Rotate a component by an angle \prm{num} (in degree).
 % \fi
 %
-% \numitem[c]{rotateref}{refstring}
+% \valitem[c]{rotateref}{refstring}
 % \ifGERMAN
-% Setzt den Bezugspunkt für die Drehung der Komponente. Die möglichen
-% Bezugspunkte jeder Komponente können Sie \prettyref{sec:rotrefnode}
-% entnehmen.
+% Setzt den Bezugspunkt für die Drehung der Komponente. Bitte lesen Sie
+% \prettyref{sec:rotrefnode} für eine genauere Beschreibung und entnehmen Sie
+% \prettyref{sec:overview-extnode} die möglichen Bezugspunkte für alle
+% Komponenten.
 % \fi
 % \ifENGLISH
-% Set the reference point for the rotation of the component. For the
-% possible nodes for each component, please refer to
-% \prettyref{sec:overview-extnode}.
+% Set the reference point for the rotation of the component. Please see
+% \prettyref{sec:rotrefnode} for a detailed explanation and
+% \prettyref{sec:overview-extnode} for a list of the possible reference nodes of
+% all components.
 % \fi
 % \iffalse
 %<*ignore>
@@ -1671,7 +1723,6 @@
 % \valitem[c]{labelalign}{refstring}
 % \ifGERMAN Definiert die Ausrichtung der Beschriftung bezüglich des vorgesehenen Referenzknotens.\fi
 % \ifENGLISH Defines the alignment of the label relative to the reference node.\fi
-% \refstringexplanation
 % \iffalse
 %<*ignore>
 % \fi
@@ -3531,7 +3582,7 @@
 % \psdot(\oenodeIfc{N}{})\uput[-90](\oenodeIfc{N}{}){N}
 % \end{pspicture}
 % \end{center}
-%
+% 
 % \ifGERMAN\chapter{Verbinden von Komponenten}\fi
 % \ifENGLISH\chapter{Connecting components}\fi\label{sec:connecting}
 % 
@@ -3545,9 +3596,13 @@
 % manual beam and fiber drawing.  
 % \fi
 % 
+% \begin{itemize}
+% \item Section \ref{sec:accessobj} contains detailed information about
+%   all possiblities of beam and fiber connections.
+% \end{itemize}
+%
 % \ifGERMAN\section{Zugriff auf Komponenten}\fi
 % \ifENGLISH\section{Accessing components}\fi\label{sec:accessobj}
-% 
 % 
 % The arguments of the connection macros, specified as \prm{obj$_1$},
 % \prm{obj$_2$}, \ldots \prm{obj$_N$}, can be either \nxLPack{pst-optexp} object
@@ -3611,7 +3666,7 @@
 \begin{LTXexample}
 \begin{pspicture}(3,2)
   \psset{endbox, labeloffset=0}
-  \optbox[compname=obj](0,0.5)(1.5,0.5){obj}
+  \optbox[compname=obj](0,0.5)(1.5,0.5){obj, 1}
   \optbox(0,1.5)(1.5,1.5){2}
   % named objects are also numbered
   \drawbeam{(0,1)}{2}
@@ -3627,11 +3682,11 @@
 %<*ignore>
 % \fi
 \begin{LTXexample}
-\begin{pspicture}[showgrid=true](3,3)
+\begin{pspicture}(3,3)
   \psset{endbox, optboxwidth=0.5, optboxheight=0.5, bssize=0.5}
-  \optbox[compname=obj](0.5,0.5)(0.5,2.5){obj}
-  \beamsplitter(0.5,2.5)(0.5,0.5)(2.5,0.5){2}
-  \optbox(0.5,0.5)(2.5,0.5){3}
+  \optbox[compname=obj](0.5,0.5)(0.5,2.5){obj, 1}
+  \beamsplitter(0.5,2.5)(0.5,1)(2.5,1){2}
+  \optbox(0.5,1)(2.5,1){3}
   % named objects are also numbered
   \drawbeam{1-3}
 \end{pspicture}
@@ -3655,20 +3710,19 @@
 % \end{ltxsyntax}
 % 
 % \begin{optionlist}
-%   \optitem[0]{beampos}{[\prm{x}] \prm{y}} This is the start position
-%   (\prm{x}, \prm{y}) of the beam at the first interface. Can be any code
-%   which evaluates in Postscript to one or two numbers. If is only one
-%   number then the $x$-coordinate is set to \texttt{0}.
+%   \optitem[0]{beampos}{[\prm{x}] \prm{y}} This is the start position (\prm{x},
+%   \prm{y}) of the beam at the first interface. Both values are of \prm{psnum}
+%   type. If only one number is given then the $x$-coordinate is set to \opt{0}.
 % \iffalse
 %<*ignore>
 % \fi
 \begin{LTXexample}[morekeywords = {[21]{beampos}}]
-\begin{pspicture}(4,2.8)
+\begin{pspicture}(4,3.8)
   \pnode(1.5,0.5){A}\pnode(3.5,0.5){B}
-  \pnode(3.5,2.5){C} 
+  \pnode(3.5,3.5){C} 
   \optbox[endbox](B)(A){}
   \psset{mirrortype=extended, mirrordepth=0.15}
-  \mirror[mirrorradius=2](A)(B)(C){} 
+  \mirror[mirrorradius=3](A)(B)(C){} 
   \mirror(B)(C)(B){} 
   \drawbeam[linecolor=red, beampos=-0.2]{1-3}
   \drawbeam[linecolor=blue, beampos=0]{1-3}
@@ -3682,38 +3736,44 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}[linerange={1-7,9-9}, morekeywords = {[21]{beampos}}]
-\begin{pspicture}(3,4)
-  \lens[lens=4 4 4, abspos=0.5](0.5,2)(3,2)
-  \optplate[position=1, plateheight=4](0.5,2)(3,2)
-  \psset{beampos=1}
+\begin{LTXexample}[linerange={1-7,9-9}, morekeywords = {[21]{beampos}}, explpreset={escapeinside={}}]
+\begin{pspicture*}(0,2)(3.05,6)
+  \lens[lens=8 8 8, abspos=0.6](0.5,2)(3,2)
+  \optplate[position=1, plateheight=6](0.5,2)(3,2)
+  \psset{beampos=2.1}
   \drawbeam[beamangle=-60]{1}{2}
   \drawbeam[beamangle=-40]{1}{2}
   \drawbeam[beamangle=-20]{1}{2}
-  \psline[linecolor=gray!40, linewidth=2\pslinewidth, arrows=->, arrowinset=0, arrowscale=1.3](\oenodeOut{1})([offset=1]\oenodeOut{1})
-\end{pspicture}
+  \psline[linecolor=gray!50, linewidth=3\pslinewidth, arrows=->, arrowinset=0, arrowscale=1.3](\oenodeOut{1})([offset=2.1]\oenodeOut{1})
+\end{pspicture*}
 \end{LTXexample}
 % \iffalse
 %</ignore>
 % \fi
 %
-% \numitem[0]{beamangle}
-% This is the start angle of the beam and can by anything which evaluates to a number in Postscript.
-% The \nxLkeyword{beamangle} is relative to the connection between the first
+% \psnumitem[0]{beamangle}
+% \ifGERMAN
+% Der Anfangswinkel des Strahls. Dieser ist relativ zu der Verbindung von der
+% ersten zur zweiten Komponente, mit \Lkeyword{beamangleabs} kann dieser auf
+% globale Werte geändert werden.
+% \fi
+% \ifENGLISH
+% This is the start angle of the beam. It is relative to the connection between the first
 % two components, use \Lkeyword{beamangleabs} to change this.
+% \fi
 % \iffalse
 %<*ignore>
 % \fi
 \begin{LTXexample}[morekeywords = {[21]{beamangle}}]
-\begin{pspicture}(4,3)
+\begin{pspicture}(4,4)
   \pnode(1.5,0.5){A}\pnode(3.5,0.5){B}
-  \pnode(3.5,2.5){C} 
+  \pnode(3.5,3.5){C} 
   \psset{mirrortype=extended, mirrordepth=0.15}
   \optbox[endbox](B)(A){}
   \mirror(A)(B)(C){} 
   \mirror(B)(C)(B){} 
   \drawbeam[linecolor=red, beamangle=3]{-3}
-  \drawbeam[linecolor=blue]{1-}
+  \drawbeam[linecolor=blue, beamangle=0]{1-}
   \drawbeam[linecolor=green, beamangle=-3]{-}
 \end{pspicture}
 \end{LTXexample}
@@ -3725,13 +3785,24 @@
 % 
 % \boolitem[false]{connectplanes}
 % 
-% \numitem[1.5]{n}
+% \psnumitem[1.5]{n}
+% \ifGERMAN 
+% Der relative Brechungsindex der Komponente, der Hintergrund hat einen Index
+% von \opt{1}. Der Wert kann pro Komponente oder pro Strahlengang gesetzt
+% werden.
+% \fi
+% \ifENGLISH
+% The relative refractive index of the component, the background is set to
+% \opt{1}. The value can be set for each component or for one beam ray.
+% \fi
 %
-% \numitem[0]{nadd}
+% \psnumitem[0]{nadd}
+% \ifGERMAN
+%
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}[morekeywords = {[21]{nadd}}]
+\begin{LTXexample}[morekeywords = {[21]{nadd, n}}]
 \begin{pspicture}[showgrid=true](3,3)
   \pnode(0,1.5){A}\pnode(3,1.5){B}
   \lens[lens=4 4 3, n=2, abspos=0.3](A)(B)
@@ -3745,14 +3816,12 @@
 %</ignore>
 % \fi
 %
-% \numitem[1]{nmul}
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}[morekeywords = {[21]{nmul}}]
-\begin{pspicture}[showgrid=true](4,3)
-  \pnode(0, 2.5){A}\pnode(1, 2.5){B}
-  \pnode(4, 1){C}
+\begin{LTXexample}[morekeywords = {[21]{nadd}}]
+\begin{pspicture}(3.8,3)
+  \pnode(0,2.5){A}\pnode(1,2.5){B}\pnode(4,1){C}
   \optprism(A)(B)(C)
   \definecolor[ps]{bl}{rgb}{%
     tx@addDict begin Red Green Blue end}%
@@ -3761,12 +3830,25 @@
     \pstVerb{%
       \i\space 650 400 sub 19 div mul 400 add 
       tx@addDict begin wavelengthToRGB end }%
-    \drawbeam[nadd=-0.002 \i\space mul]{(A)}{1}{(C)}
+    \drawbeam[nadd=-2e-3 \i\space mul]{(A)}{1}{(C)}
   }%
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
 %</ignore>
+% \fi
+% \psnumitem[1]{nmul} 
+% \ifGERMAN
+% Analog zu \nxLkeyword{nadd}, nur dass der ursprüngliche Brechungsindex mit
+% diesem Faktor multipliziert wird. Wenn \nxLkeyword{nadd} und \nxLkeyword{nmul}
+% zusammen verwendet werden, wird zuerst die Multiplikation durchgeführt:
+% $n_\mathrm{neu} = n_\mathrm{alt}\times n_\mathrm{mul} + n_\mathrm{add}$.
+% \fi
+% \ifENGLISH
+% Like \nxLkeyword{nadd} only that the original refractive index is multiplied
+% by this factor. If both \nxLkeyword{nadd} and \nxLkeyword{nmul} are used, the
+% multiplication is carried out first: $n_\mathrm{new} = n_\mathrm{old}\times
+% n_\mathrm{mul} + n_\mathrm{add}$.
 % \fi
 %
 % \boolitem[true]{beaminside}
@@ -3846,46 +3928,21 @@
 % \fi
 % \end{optionlist}
 % 
-% \ifGERMAN\subsection{Aufgeweitete Strahlen}\fi
-% \ifENGLISH\subsection{Drawing wide beams}\fi
+% \ifGERMAN\section{Aufgeweitete Strahlen}\fi
+% \ifENGLISH\section{Drawing wide beams}\fi
 % \label{sec:drawwidebeam}
 % 
+% \begin{ltxsyntax}
+%   \xLcs{drawwidebeam}\cmditem{drawwidebeam}[options]{obj$_1$}{obj$_2$}{\ldots}{obj$_N$}
+% \end{ltxsyntax}
 % \begin{optionlist}
 % \numitem[0.1]{beamwidth}
 % 
 % \numitem[0]{beamdiv}
 % \end{optionlist}
 %
-% \ifGERMAN\subsection{Zeichenebenen}\fi
-% \ifENGLISH\subsection{Layers}\fi
-%
-% \begin{ltxsyntax}
-%   \envitem{optexp}
-% \end{ltxsyntax}
-%
-% \iffalse
-%<*ignore>
-% \fi
-\begin{LTXexample}[morekeywords = {[21]{optexp}}]
-\begin{pspicture}(3,4)
-  \psset{beam, fillstyle=solid, fillcolor=black}
-  \optbox(0,3.5)(3,3.5){no layers}
-  \begin{optexp}
-    \optbox(0,1.5)(3,1.5){with layers}
-  \end{optexp}
-\end{pspicture}
-\end{LTXexample}
-% \iffalse
-%</ignore>
-% \fi
-%
-% \begin{ltxsyntax}
-%   \cmditem{frontlayer}{code}
-%   \cmditem{backlayer}{code}
-% \end{ltxsyntax}
-%
-% \ifGERMAN\subsection{Fehlerbehandlung}\fi
-% \ifENGLISH\subsection{Error handling}\fi
+% \ifGERMAN\section{Fehlerbehandlung}\fi
+% \ifENGLISH\section{Error handling}\fi
 % \label{sec:error-handling}
 %
 % \ifGERMAN
@@ -3933,6 +3990,17 @@
 %</ignore>
 % \fi
 % 
+% \section{Custom beams}\label{sec:custombeam}
+% \begin{ltxsyntax}
+%   \xLcs{custombeam}\cmditem{custombeam}[Options]{\nxLcs{draw*beam}}
+% \end{ltxsyntax}
+% 
+% \begin{optionlist}
+% \boolitem[false]{startinside}
+% 
+% \boolitem[false]{stopinside}
+% \end{optionlist}
+%
 % \section{Drawing fibers}\label{sec:drawfiber}
 % 
 % Fiber-optical components are automatically connected to the reference
@@ -3951,10 +4019,10 @@
 % styles shown in \prettyref{fig:fiberstyles}.
 %
 % \begin{figure}\centering
-% \begin{pspicture}(10,4.4)
+% \begin{pspicture}(12,4.4)
 % \rput[lt](0,4.4){%
-%   \pstree[levelsep=1.5cm, treesep=0.4, 
-%           nodesep=5pt, arrows=<-, 
+%   \pstree[levelsep=1.5cm, treesep=0.6, 
+%           nodesep=4pt, arrows=<-, 
 %           arrowinset=0, arrowscale=1.5]{\poeTR{Fiber}}{%
 %     \pstree{\poeTR{FiberIn}}{%
 %       \poeTR{FiberIn1} \poeTR{FiberIn2}%
@@ -3963,20 +4031,33 @@
 %       \poeTR{FiberOut1} \poeTR{FiberOut2}%
 %     }%
 %   }%
-%   \rput[l](-1,0|T-0){parent style}
-%   \rput[l](-1,0|T-0-0){\parbox{\widthof{outgoing fibers}}{%
-%      \RaggedRight incoming and outgoing fibers}}
+%   \rput[l](-1,0|T-0){\ifGERMAN Grundstil\fi\ifENGLISH parent style\fi}
+%   \rput[l](-1,0|T-0-0){%
+%     \ifGERMAN\parbox{\widthof{ausgehende Fasern}}{%
+%       \RaggedRight eingehende und ausgehende Fasern}\fi
+%     \ifENGLISH\parbox{\widthof{outgoing fibers}}{%
+%       \RaggedRight incoming and outgoing fibers}\fi}
 %   \rput[t](! \psGetNodeCenter{T-0-0-0} \psGetNodeCenter{T-0-0-1}
 %      T-0-0-0.x T-0-0-1.x add 2 div T-0-0-0.y 0.4 sub){%
-%      \parbox{3.8cm}{\RaggedRight Upper(1) or lower(2) incoming fiber.}}
+%      \ifGERMAN\parbox{\widthof{Obere(1) oder untere(2)}}{\RaggedRight Obere(1) oder untere(2) eingehende Faser.}\fi
+%      \ifENGLISH\parbox{\widthof{Upper(1) or lower(2)}}{\RaggedRight Upper(1) or lower(2) incoming fiber.}\fi}
 %   \rput[t](! \psGetNodeCenter{T-0-1-0} \psGetNodeCenter{T-0-1-1}
 %      T-0-1-0.x T-0-1-1.x add 2 div T-0-1-0.y 0.4 sub){%
-%      \parbox{3.8cm}{\RaggedRight Upper(1) or lower(2) outgoing fiber.}}%
+%      \ifGERMAN\parbox{\widthof{Obere(1) oder untere(2)}}{\RaggedRight Obere(1) oder untere(2) ausgehende Faser.}\fi
+%      \ifENGLISH\parbox{\widthof{Upper(1) or lower(2)}}{\RaggedRight Upper(1) or lower(2) outgoing fiber.}\fi}
 % }%
 % \end{pspicture}
+% \ifGERMAN
+% \caption{Vererbungsdiagramm der PS-Stile für die automatischen
+%   Faserverbindungen. Sie sollten diese Stile mit \protect\Lcs{addtopsstyle}
+%   ändern um die Vererbungslinie beizubehalten.}%
+% \fi
+% \ifENGLISH
 % \caption{Inheritance diagram for the psstyles used for the automatic fiber
-%   connections. These styles should be changed with \protect\Lcs{addtopsstyle} to preserve
-%   the inheritance.}\label{fig:fiberstyles}
+%   connections. These styles should be changed with \protect\Lcs{addtopsstyle}
+%   to preserve the inheritance.}%
+% \fi
+% \label{fig:fiberstyles}
 % \xLstyle{Fiber}\label{prm:Fiber}\xLstyle{FiberIn}\label{prm:FiberIn}%
 % \xLstyle{FiberIn1}\label{prm:FiberIn1}\xLstyle{FiberIn2}\label{prm:FiberIn2}%
 % \xLstyle{FiberOut}\label{prm:FiberOut}\xLstyle{FiberOut1}\label{prm:FiberOut1}%
@@ -4061,7 +4142,7 @@
 % \fi
 % \end{optionlist}
 %
-% \subsubsection{Fiber angles}
+% \minisec{Fiber angles}
 %
 % The angles of the fiber connections are calculated automatically from the
 % orientation of the component. The automatic connections are a special case of
@@ -4158,17 +4239,35 @@
 % \iffalse
 %</ignore>
 % \fi
-% 
-% \section{Custom beams}\label{sec:custombeam}
+%
+%
+% \ifGERMAN\section{Zeichenebenen}\fi
+% \ifENGLISH\section{Layers}\fi
+%
 % \begin{ltxsyntax}
-%   \xLcs{custombeam}\cmditem{custombeam}[Options]{\nxLcs{draw*beam}}
+%   \envitem{optexp}
 % \end{ltxsyntax}
-% 
-% \begin{optionlist}
-% \boolitem[false]{startinside}
-% 
-% \boolitem[false]{stopinside}
-% \end{optionlist}
+%
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[morekeywords = {[21]{optexp}}]
+\begin{pspicture}(3,4)
+  \psset{beam, fillstyle=solid, fillcolor=black}
+  \optbox(0,3.5)(3,3.5){no layers}
+  \begin{optexp}
+    \optbox(0,1.5)(3,1.5){with layers}
+  \end{optexp}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
+% \begin{ltxsyntax}
+%   \cmditem{frontlayer}{code}
+%   \cmditem{backlayer}{code}
+% \end{ltxsyntax}
 % 
 % 
 % \ifGERMAN\chapter{Zusatzinformationen}\fi
@@ -4305,6 +4404,10 @@
 % In order to understand properly how the automatic beam drawing actually works,
 % it is necessary to describe in more detail the internal component structure.
 % 
+% \begin{optionlist}
+% \boolitem[false]{showifcnodes}
+% \styleitem{IfcNodeStyle}
+% \end{optionlist}
 % Every component type consists internally of interfaces which are defined by a
 % node on the optical axis, a plane vector or a curvature radius, and by its
 % optical characteristic (reflective or transmittive). The interface nodes can be
@@ -5014,6 +5117,7 @@
 %    \begin{macrocode}
 \newpsstyle{OptionalStyle}{style=OptComp, 
                            linestyle=dashed,dash=1.5pt 1pt}%
+\newpsstyle{IfcNodeStyle}{linecolor=blue}%
 %    \end{macrocode}
 % Style for beams drawn with \cs{drawbeam}
 %    \begin{macrocode}
@@ -7353,7 +7457,7 @@
   \fi
   \ifPOE@debug@showifcnodes
     \ifPOE@backlayer
-      \oeifcnodes[linecolor=blue]{\POE@key@b@sicname}
+      \POE@ifcnodes[style=IfcNodeStyle]{\POE@key@b@sicname}
     \fi
   \fi
 \ignorespaces}%
@@ -7373,10 +7477,10 @@
       \tx@UserCoor
     }){#2}%
 }%
-% \begin{macro}{\oeifcnodes}
+% \begin{macro}{\POE@ifcnodes}
 %    \begin{macrocode}
-\def\oeifcnodes{\pst@object{oeifcnodes}}
-\def\oeifcnodes@i#1{%
+\def\POE@ifcnodes{\pst@object{POE@ifcnodes}}
+\def\POE@ifcnodes@i#1{%
   \begin@SpecialObj%
   \solid@star%
   \addto@pscode{

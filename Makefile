@@ -1,4 +1,4 @@
-# Makefile -- Christoph Bersch, 2011-07-13, usenet@bersch.net
+# Makefile for pst-optexp -- Christoph Bersch, 2011-10-11, usenet@bersch.net
 
 .SUFFIXES : .tex .ltx .dvi .ps .pdf .eps
 
@@ -79,21 +79,17 @@ arch : Changes
 
 arch-tds : Changes
 	$(RM) $(ARCHNAME_TDS).zip
-	mkdir -p tds/tex/latex/pst-pdf
-	mkdir -p tds/doc/latex/pst-pdf
-	mkdir -p tds/source/latex/pst-pdf
-	mkdir -p tds/scripts/pst-pdf
-	cp pst-pdf.sty tds/tex/latex/pst-pdf/
-	cp CHANGES pst-pdf.pdf pst-pdf-DE.pdf \
-          pst-pdf-example1.tex pst-pdf-example2.tex \
-          pst-pdf-example1.pdf pst-pdf-example2.pdf \
-          README tds/doc/latex/pst-pdf/
-	cp CHANGES.tex elephant.ps insect1.eps insect15.eps \
-          knuth.png penguin.eps psf-demo.eps pst-pdf.dtx \
-          pst-pdf.ins tds/source/latex/pst-pdf
-	cp ps4pdf ps4pdf.bat ps4pdf.bat.noMiKTeX \
-          ps4pdf.bat.w95 tds/scripts/pst-pdf/
-	cd tds ; zip -r ../$(ARCHNAME_TDS).zip tex doc source scripts
+	mkdir -p tds/tex/latex/pst-optexp
+	mkdir -p tds/doc/latex/pst-optexp
+	mkdir -p tds/source/latex/pst-optexp
+	mkdir -p tds/dvips/pst-optexp
+	cp pst-optexp.sty tds/tex/latex/pst-optexp/
+	cp pst-optexp.pro tds/dvips/pst-optexp/
+	cp Changes pst-optexp.pdf pst-optexp-DE.pdf \
+          README tds/doc/latex/pst-optexp/
+	cp pst-optexp.dtx pst-optexp.ins \
+	  tds/source/latex/pst-optexp/
+	cd tds ; zip -r ../$(ARCHNAME_TDS).zip tex doc source
 	rm -rf tds
 
 ctan : dist arch-tds
