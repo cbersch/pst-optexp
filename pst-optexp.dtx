@@ -3949,7 +3949,7 @@
 % Da alle Strahlen direkt mit Postscript berechnet und gezeichnet werden, ist
 % eine umfassende Fehlerbehandlung zur Zeit der Kompilation nicht möglich. Um
 % jedoch trotzdem fehlerfreie Bilder zu bekommen, wird der Strahlengang
-% abgebrochen, sobald eine nicht vorvergesehene Situation eintritt. Das kann
+% abgebrochen, sobald eine Situation eintritt, die nicht unterstützt wird. Das kann
 % eintreten, falls der Strahl eine gekrümmte Grenzfläche nicht trifft, oder
 % Totalreflektion auftritt.
 % \fi
@@ -3991,10 +3991,43 @@
 % \fi
 % 
 % \section{Custom beams}\label{sec:custombeam}
+%
+% \ifGERMAN
+%
+% Im Prinzip können alle Strahlengänge mit passenden Wahl des Brechungsindex und
+% der Komponentenparameter (z.B. der Linsenkrümmung) realisiert werden, dass
+% kann aber sehr aufwändig werden. \nxLcs{custombeam} vereinfacht das erheblich
+% dadurch dass die Endpunkte eines Strahls als Anfangspunkt genutzt werden.
+% \fi
 % \begin{ltxsyntax}
 %   \xLcs{custombeam}\cmditem{custombeam}[Options]{\nxLcs{draw*beam}}
 % \end{ltxsyntax}
-% 
+%
+% Als Beispiel nehmen wir ein Teleskop, die Strahldivergenz am Eingang und am
+% Ausgang ist Null. Anstatt die Linsenparameter und den Brechungsindex genau
+% einzustellen, zeichnen wir einfach die drei Strahlenteile mit den
+% entsprechenden Parametern. 
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[morekeywords={[21]{custombeam}}]
+\begin{pspicture}(3,2) 
+  \pnode(0,1){A}\pnode(3,1){B}
+  \begin{optexp}
+  \lens[lens=0.5 0.5 0.5, abspos=0.5](A)(B)
+  \lens[lens=4 4 2, abspos=1.5](A)(B)
+  \addtopsstyle{Beam}{fillstyle=solid, fillcolor=green, opacity=0.3}
+  \custombeam{%
+    \drawwidebeam[beamwidth=0.2, stopinside]{(A)}{1}
+    \drawwidebeam[beamdiv=-35]{1}{2}
+    \drawwidebeam{2}{(B)}
+  }%
+  \end{optexp}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % \begin{optionlist}
 % \boolitem[false]{startinside}
 % 
