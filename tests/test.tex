@@ -6,10 +6,19 @@
 \usepackage{pst-optexp}
 \usepackage{showexpl}
 \begin{document}
-\lstset{explpreset={%
-    escapeinside={*}{*}, pos=l,width=-99pt,overhang=0pt,hsep=5mm,
-    varwidth,vsep=\bigskipamount,rframe={}}, }
 
+\begin{pspicture}[showgrid=true](5,5)
+  \pnode(0,1){A}
+  \pnode(5,1){B}
+  \lens[compshift=0.2, angle=20](A)(B)
+  \psset{beamangleabs}
+  \drawbeam[n=1, beampos=0.2, savebeampoints, stopinside]{(A)}{1}
+  \drawbeam[loadbeampoints, beamangle=10]{1}{(B)}
+  \addtopsstyle{Beam}{linestyle=none, fillcolor=red, fillstyle=solid}
+  \drawwidebeam[n=1, beamwidth=0.3, savebeampoints, stopinside]{(A)}{1}
+  \drawwidebeam[loadbeampoints, beamangle=10]{1}{(B)}
+\end{pspicture}
+\end{document}
 Czerny-Turner monochromator
 \begin{pspicture}[showgrid=true](0,-1)(10,5)
 \psset{linewidth=1.5\pslinewidth}
@@ -23,16 +32,31 @@ Czerny-Turner monochromator
 \optgrating[reverse, angle=15](B)(C)(D)
 \mirror(C)(D)(E)
 \pinhole[position=0.8](D)(E)
-\drawwidebeam[beamwidth=0.2, beamdiv=0.1 8 0.2 mul atan neg]{(A)}{1-3}
+\drawwidebeam[beamwidth=0.2, beamdiv=0.1 8 0.2 mul atan neg, savebeampoints]{(A)}{1-3}
+\psset{loadbeampoints}%
 \drawwidebeam[beamwidth=0.68, addtoBeam={linecolor=green!40!white}]{3-6}{(E)}
-\drawwidebeam[beamangle=3, beamwidth=0.7, addtoBeam={linecolor=blue!40!white}]{3-6}
-\drawwidebeam[beamangle=-3, beamwidth=0.65, addtoBeam={linecolor=red!40!white}]{3-6}
-%\custombeam{%
-%  \drawwidebeam[beamwidth=0.2, beamdiv=0.1 8 0.2 mul atan neg]{(A)}{2}
-%  \drawwidebeam{2-4}
-%  \drawwidebeam[beamdiv=0.1 8 0.2 mul atan neg]{4}{(E)}
-%}
+%\drawwidebeam[beamangle=3, addtoBeam={linecolor=blue!40!white}]{3-6}
+%\drawwidebeam[beamangle=-3, addtoBeam={linecolor=red!40!white}]{3-6}
 \end{pspicture}
+
+\end{document}
+\begin{pspicture}(4,2) 
+  \pnode(0,1){A}\pnode(4,1){B}
+  \begin{optexp}
+  \lens[lens=0.5 0.5 0.5, abspos=0.5](A)(B)
+  \lens[lens=4 4 2, abspos=2](A)(B)
+  \addtopsstyle{Beam}{fillstyle=solid, fillcolor=green, opacity=0.3}
+  \custombeam{%
+    \drawwidebeam[beamwidth=0.2, stopinside]{(A)}{1}
+    \drawwidebeam[beamdiv=-30]{1}{2}
+    \drawwidebeam{2}{(B)}
+  }%
+  \end{optexp}
+\end{pspicture}
+
+\lstset{explpreset={%
+    escapeinside={*}{*}, pos=l,width=-99pt,overhang=0pt,hsep=5mm,
+    varwidth,vsep=\bigskipamount,rframe={}}, }
 
 \begin{LTXexample}[explpreset={escapeinside={}}]
 \begin{pspicture*}(0,2)(3.05,6)
