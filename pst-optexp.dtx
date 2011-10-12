@@ -5158,6 +5158,8 @@
 \newif\ifPOE@stopinside
 \newif\ifPOE@beaminsidefirst
 \newif\ifPOE@beaminsidelast
+\newif\ifPOE@savebeampoints
+\newif\ifPOE@loadbeampoints
 \newif\ifPOE@beamangleabs
 \newif\ifPOE@beaminside
 \newif\ifPOE@connectplanes
@@ -6012,6 +6014,8 @@
 \define@boolkey[psset]{optexp}[POE@]{stopinside}[true]{}%
 \define@boolkey[psset]{optexp}[POE@]{beaminsidefirst}[true]{}%
 \define@boolkey[psset]{optexp}[POE@]{beaminsidelast}[true]{}%
+\define@boolkey[psset]{optexp}[POE@]{savebeampoints}[true]{}%
+\define@boolkey[psset]{optexp}[POE@]{loadbeampoints}[true]{}%
 \define@boolkey[psset]{optexp}[POE@]{beaminside}[true]{}%
 \define@boolkey[psset]{optexp}[POE@]{connectplanes}[true]{}%
 \define@boolkey[psset]{optexp}[POE@]{beamangleabs}[true]{}%
@@ -6079,10 +6083,16 @@
   \begin@SpecialObj%
   \addto@pscode{%
      \pst@optexpdict 
+     \ifPOE@custombeam
+       /loadbeampoints true def
+       /savebeampoints true def
+     \else
+       /loadbeampoints \ifPOE@loadbeampoints true \else false \fi def
+       /savebeampoints \ifPOE@savebeampoints true \else false \fi def
+     \fi
      /beaminsidefirst \ifPOE@beaminsidefirst true \else false \fi def
      /beaminsidelast \ifPOE@beaminsidelast true \else false \fi def
      /beaminside \ifPOE@beaminside true \else false \fi def
-     /custombeam \ifPOE@custombeam true \else false \fi def
      /startinside \ifPOE@startinside true \else false \fi def
      /stopinside \ifPOE@stopinside true \else false \fi def
      /connectplanes \ifPOE@connectplanes true \else false \fi def
@@ -6138,6 +6148,19 @@
 % 
 % \begin{macro}{\end@BeamObj}
 %    \begin{macrocode}
+\def\POE@beam@use@pscode{%
+  \pstverb{%
+    \pst@dict
+    \tx@STP
+    \pst@newpath
+    \psk@origin
+    \psk@swapaxes
+    \pst@code
+    end
+    count ocount add /ocount exch def
+  }%
+  \gdef\pst@code{}%
+}%
 \def\end@BeamObj{%
   \addto@pscode{ end}%
   \let\psk@fillstyle\relax
@@ -6146,6 +6169,7 @@
       \def\pst@code{}%
     \fi
   \fi
+  \let\use@pscode\POE@beam@use@pscode
   \end@SpecialObj%
 }%
 %    \end{macrocode}
@@ -6154,7 +6178,9 @@
 % \begin{macro}{\drawbeam@ii}
 %    \begin{macrocode}
 \def\drawbeam@ii{%
-  \ifx\pslinestyle\@none\else
+  \ifx\pslinestyle\@none
+    \addto@pscode{ 0 0 0 false }%
+  \else
     \addto@pscode{%
      {/nmul \POE@key@nmul\space def
       /nadd \POE@key@nadd\space def
@@ -6168,10 +6194,22 @@
     \addto@pscode{%
        \POE@key@beamangle\space
     }%
-    \addto@pscode{ TraceBeam }%
+    \addto@pscode{%
+      currentdict /lastBeamPointTmp undef
+      loadbeampoints currentdict /lastBeamPoint known and {
+        /lastBeamPoint load /lastBeamPointTmp ED
+      } if
+      TraceBeam 
+    }%
     \POE@strokebeam
+    \addto@pscode{%
+      savebeampoints { 
+        /lastBeamPoint lastBeamPointTmp 
+      } if
+      savebeampoints }%
   \fi
   \end@BeamObj
+  \pst@OptexpVerb{ { ToVec def } if }%
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -6232,10 +6270,12 @@
       counttomark 1 add copy 
       gsave
         /fillBeam { \psk@fillstyle } def
-        currentdict /lastBeamPointLow known { 
+        currentdict /TmpLastBeamPointLow undef 
+        currentdict /TmpLastBeamPointUp undef 
+        loadbeampoints
+        currentdict /lastBeamPointLow known and
+        currentdict /lastBeamPointUp known and {
           /TmpLastBeamPointLow /lastBeamPointLow load def
-        } if
-        currentdict /lastBeamPointUp known { 
           /TmpLastBeamPointUp /lastBeamPointUp load def
         } if
         FillWideBeam
@@ -6248,13 +6288,29 @@
   \ifx\pslinestyle\@none
     \addto@pscode{ cleartomark }%
   \else
-    \ifx\psk@fillstyle\relax\else
-      \addto@pscode{ restoreBeamPoints }%
-    \fi
     \addto@pscode{ TraceWideBeam }%
     \POE@strokebeam
   \fi
+  \ifx\pslinestyle\@none
+    \ifx\psk@fillstyle\relax\else
+      \addto@pscode{%
+        savebeampoints {
+          /lastBeamPointLow TmpLastBeamPointLow
+          /lastBeamPointUp TmpLastBeamPointUp
+        } if
+        savebeampoints
+      }%
+    \fi
+  \else
+    \addto@pscode{%
+      savebeampoints {
+        /lastBeamPointLow dup load exec 
+        /lastBeamPointUp dup load exec 
+      } if 
+      savebeampoints }%
+  \fi
   \end@BeamObj
+  \pst@OptexpVerb{ { ToVec def ToVec def } if }%
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -6407,6 +6463,8 @@
         ,beaminside=true
         ,beaminsidefirst=false
         ,beaminsidelast=false
+        ,loadbeampoints=false
+        ,savebeampoints=false
         ,beamangle=0
         ,beampos=\@empty
         ,beamangleabs=false
@@ -9682,8 +9740,8 @@ tx@OptexpDict begin
     /InVec load
   } ifelse
   /CurrVec ED
-  custombeam currentdict /lastBeamPoint known and {
-    /lastBeamPoint load /Curr ED
+  currentdict /lastBeamPointTmp known {
+    /lastBeamPointTmp load /Curr ED
   }{
     2 copy /StartPoint load  TransformStartPos /Curr ED
   } ifelse
@@ -9744,7 +9802,7 @@ tx@OptexpDict begin
     draw
     counttomark 3 roll
     /CurrCenterTmp /CurrCenter load def
-    /lastBeamPoint /Curr load def
+    /lastBeamPointTmp /Curr load def
     /lastVec /CurrVec load def
     /PrevMode Mode def
     /PrevCorrect correct def
@@ -9818,28 +9876,33 @@ tx@OptexpDict begin
   numComp 7 add 6 roll numComp 1 add copy
   numComp 1 add 2 mul 6 add numComp 1 add roll
   numComp 1 add 3 add -3 roll
-  currentdict /lastBeamPointLow known {
-    /lastBeamPointLow load /lastBeamPoint ED
+  currentdict /lastBeamPointTmp undef
+  loadbeampoints currentdict /lastBeamPointLow known and {
+    /lastBeamPointLow load /lastBeamPointTmp ED
   } if
   TraceBeam
-  /lastBeamPoint load /lastBeamPointLow ED
-  /lastVec load /lastVecLow ED
-  currentdict /lastBeamPoint undef
-  currentdict /lastBeamPointUp known {
-    /lastBeamPointUp load /lastBeamPoint ED
+  savebeampoints {
+    /lastBeamPointTmp load /lastBeamPointLow ED
+    /lastVec load /lastVecLow ED
+  } if
+  currentdict /lastBeamPointTmp undef
+  loadbeampoints currentdict /lastBeamPointUp known and {
+    /lastBeamPointUp load /lastBeamPointTmp ED
   } if
   counttomark 1 add dup numComp 4 add add exch roll
   TraceBeam
-  /lastBeamPoint load /lastBeamPointUp ED
-  /lastVec load /lastVecUp ED
-  lastBeamPointUp lastBeamPointLow @ABVect 
-  lastVecUp lastVecLow 3 -1 roll add 3 1 roll add exch
-  4 -1 roll mul 3 1 roll mul sub 0 gt {
+  savebeampoints {
+    /lastBeamPointTmp load /lastBeamPointUp ED
+    /lastVec load /lastVecUp ED
+    lastBeamPointUp lastBeamPointLow @ABVect 
+    lastVecUp lastVecLow 3 -1 roll add 3 1 roll add exch
+    4 -1 roll mul 3 1 roll mul sub 0 gt {
 %    \end{macrocode}
 % swap upper and lower beam points for next beam
 %    \begin{macrocode}
-    /lastBeamPointUp load /lastBeamPointLow load
-    /lastBeamPointUp ED /lastBeamPointLow ED
+      /lastBeamPointUp load /lastBeamPointLow load
+      /lastBeamPointUp ED /lastBeamPointLow ED
+    } if
   } if
 } bind def
 %    \end{macrocode}
@@ -9886,10 +9949,10 @@ tx@OptexpDict begin
     /InvecLow load /CurrVecLow ED
     /InvecUp load /CurrVecUp ED
   } ifelse
-  custombeam currentdict /lastBeamPointLow known 
-  currentdict /lastBeamPointUp known and and {
-    /lastBeamPointLow load /CurrLow ED
-    /lastBeamPointUp load /CurrUp ED
+  currentdict /TmpLastBeamPointLow known 
+  currentdict /TmpLastBeamPointUp known and {
+    /TmpLastBeamPointLow load /CurrLow ED
+    /TmpLastBeamPointUp load /CurrUp ED
   } {
     2 copy /StartLow load TransformStartPos /CurrLow ED
     2 copy /StartUp load TransformStartPos /CurrUp ED
@@ -10046,11 +10109,11 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % swap upper and lower beam points for next beam
 %    \begin{macrocode}
-    /lastBeamPointUp /CurrLow load def
-    /lastBeamPointLow /CurrUp load def
+    /TmpLastBeamPointUp /CurrLow load def
+    /TmpLastBeamPointLow /CurrUp load def
   } {
-    /lastBeamPointLow /CurrLow load def
-    /lastBeamPointUp /CurrUp load def
+    /TmpLastBeamPointLow /CurrLow load def
+    /TmpLastBeamPointUp /CurrUp load def
   } ifelse
 } bind def
 %    \end{macrocode}
@@ -10244,8 +10307,8 @@ tx@OptexpDict begin
           3 1 roll 5 1 roll
           [ 6 1 roll ] cvx counttomark 1 roll
           last {
-            custombeam stopinside not and
-            custombeam not beaminsidelast not and or {
+            savebeampoints stopinside not and
+            savebeampoints not beaminsidelast not and or {
               exit
             } if
           } if
@@ -10729,25 +10792,6 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}{restoreBeamPoints}
-%    \begin{macrocode}
-/restoreBeamPoints {
-    tx@OptexpDict dup /TmpLastBeamPointLow known { 
-        /lastBeamPointLow /TmpLastBeamPointLow load def 
-        /TmpLastBeamPointLow undef 
-    } { 
-        /lastBeamPointLow undef 
-    } ifelse
-    tx@OptexpDict dup /TmpLastBeamPointUp known {
-        /lastBeamPointUp /TmpLastBeamPointUp load def 
-        /TmpLastBeamPointUp undef 
-    } { 
-        /lastBeamPointUp undef 
-    } ifelse
-} bind def
-%    \end{macrocode}
-% \end{macro}
-%
 % \begin{macro}{rearrangeSingleBeamPoints}
 % rearrange points of single beam
 %
