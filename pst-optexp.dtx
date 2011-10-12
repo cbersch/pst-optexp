@@ -64,6 +64,8 @@
 \definecolor{colIdentifier}{rgb}{0,0,0}
 \colorlet{colComments}{DOrange!50!white}
 \definecolor{colString}{rgb}{0,0.5,0} 
+\newlength{\codeoverhang}
+\setlength{\codeoverhang}{0.5\marginparwidth+0.5\marginparsep}
 \lstset{%
   language=[LaTeX]TeX, identifierstyle=\color{colIdentifier}, %
   keywordstyle=\color{colKeys}, %
@@ -74,7 +76,6 @@
   basicstyle=\ttfamily\small, %
   columns=flexible, %
   tabsize=4, %
-  frame=single, %
   extendedchars=true, %
   showspaces=false, %
   showstringspaces=false, %
@@ -96,8 +97,8 @@
     drawfiber, custombeam, frontlayer, backlayer, newOptexpDipole,
     newOptexpTripole, newOptexpFiberDipole}, %
   explpreset={%
-    escapeinside={*}{*}, pos=l,width=-99pt,overhang=0pt,hsep=5mm,
-    varwidth,vsep=\bigskipamount,rframe={}}, }
+    escapeinside={*}{*}, pos=l, width=-99pt, hsep=5mm, overhang=\codeoverhang,
+    varwidth, vsep=\bigskipamount, rframe={}}}
 \colorlet{sectioncolor}{DOrange}
 \addtokomafont{sectioning}{\color{sectioncolor}}
 \addtokomafont{subsection}{\Large}
@@ -2134,18 +2135,71 @@
 % 
 % \begin{optionlist}
 % \numitem[1.4]{crystalwidth}
+% \ifGERMAN Die Breite des Kristalls.\fi
+% \ifENGLISH The width of the crystal.\fi
+%
 % \numitem[0.6]{crystalheight}
+% \ifGERMAN Die Höhe des Kristalls.\fi
+% \ifENGLISH The height of the crystal.\fi
+%
 % \numitem[0.6]{caxislength}
+% \ifGERMAN Die Länge des Pfeils für die $c$-Achse, wird weggelassen falls die Länge \opt{0} ist.\fi
+% \ifENGLISH The length of the $c$-axis, is dropped when set to \opt{0}.\fi
+%
 % \boolitem[false]{caxisinv}
+% \ifGERMAN Invertiert die Richtung der $c$-Achse.\fi
+% \ifENGLISH Invert the direction of the $c$-axis.\fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(3,2)
+\crystal[voltage, caxisinv, beam](0,1)(3,1)
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
 % \styleitem{CrystalCaxis}
+% \ifGERMAN Der Stil für die $c$-Achse.\fi
+% \ifENGLISH The style of the $c$-axis.\fi
+%
 % \boolitem[false]{voltage}
+% \ifGERMAN Zeichne einen Spannungsangschluss und ein Erdungszeichen.\fi
+% \ifENGLISH Draw a voltage connection and a ground sign.\fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(3,2)
+\crystal[voltage, beam](0,1)(3,1)
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
 % \boolitem[false]{lamp}
+% \ifGERMAN Zeichne eine Lampe neben den Kristall.\fi
+% \ifENGLISH Draw a lamp near the crystal.\fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(3,2)
+\crystal[lamp, beam](0,1)(3,1)
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
 % \numitem[0.3]{lampscale}
+% \ifGERMAN Skalierung der Lampe.\fi
+% \ifENGLISH Scale for the lamp.\fi
 % \end{optionlist}
-% 
-% \noindent For a discussion of the \Lkeyword{angle} and \Lkeyword{rotateref}
-% parameters see Sec.~\ref{sec:box} about boxes.  \medskip
-% 
+%
 % \iffalse
 %<*ignore>
 % \fi
@@ -2346,11 +2400,21 @@
 % \fi
 % \end{ltxsyntax}
 % \begin{optionlist}
-% \choitem[parallel]{poltype}{parallel, perp, misc, lcirc, rcirc}
 % \numitem[0.6]{polsize}
+% \ifGERMAN Die Größe des Polarisationszeichens, der Kreis für \opt{perp} und
+% \opt{polmisc} ist halb so groß.\fi
+% \ifENGLISH The size of the polarization symbol, the circle for \opt{perp} and
+% \opt{polmisc} is half of this.\fi
+%
 % \optitem[0.7\nxLcs{pslinewidth}]{pollinewidth}{\prm{num} or \prm{dimen}}
 %   \ifGERMAN \linewidthexplanation{des Polarisationszeichens}{Polarisationszeichen}\fi
 %   \ifENGLISH \linewidthexplanation{polarisation sign}{polarisation signs}\fi
+% \ifGERMAN Dieser Parameter ist seit 3.0 veraltet, verwenden Sie stattdessen den \opt{Polarization}-Stil.\fi
+% \ifENGLISH This parameter is deprecated since 3.0, please use the \opt{Polarization} style instead.\fi
+%
+% \choitem[parallel]{poltype}{parallel, perp, misc, lcirc, rcirc}
+% \ifGERMAN Dieser Parameter wählt die Polarizationsart aus.\fi
+% \ifENGLISH This parameter choses the polarization type.\fi
 % \iffalse
 %<*ignore>
 % \fi
@@ -2371,6 +2435,7 @@
 % \iffalse
 %</ignore>
 % \fi
+% \styleitem{Polarization}
 % \end{optionlist}
 % 
 % \ifGERMAN\subsection{Spiegel}\fi
@@ -2407,13 +2472,13 @@
 % \numitem[0]{mirrorradius} 
 % \ifGERMAN
 % Diese Parameter setzt die Krümmung des Spiegels. Null ergibt einen
-% ebenen, ein negativer Radius einen konkaven und ein positiver Radius
-% einen konvexen Spiegel.
+% ebenen, ein negativer Radius einen konvexen und ein positiver Radius
+% einen konkaven Spiegel.
 % \fi
 % \ifENGLISH
 % This parameter defines the curvature of the mirror. A value of \opt{0}
-% is for a plain mirror, a negative radius for a concave mirror and a
-% positive radius gives you a convex mirror.
+% is for a plain mirror, a negative radius for a convex mirror and a
+% positive radius gives you a concave mirror.
 % \fi
 % 
 % \iffalse
@@ -2422,8 +2487,8 @@
 \begin{LTXexample}
 \begin{pspicture}(3,3)
   \psset{labeloffset=0.5}
-  \mirror[mirrorradius=1](0,0)(1,2)(1.8,1){concave}
-  \mirror[mirrorradius=-1](1,2)(1.8,1)(2.5,3){convex}
+  \mirror[mirrorradius=1](0,0)(1,2)(1.8,1){convex}
+  \mirror[mirrorradius=-1](1,2)(1.8,1)(2.5,3){concave}
   \drawbeam{(0,0)}{1}{2}{(2.5,3)}
 \end{pspicture}
 \end{LTXexample}
@@ -4010,16 +4075,37 @@
 % \iffalse
 %<*ignore>
 % \fi
+\begin{LTXexample}[morekeywords={[21]{custombeam}}, linerange={1-10,13-13}]
+\begin{pspicture}(4,3)
+  \pnode(0,0.5){A}\pnode(2,0.5){B}\pnode(4,3){C}
+  \nodexn{(C)-(1.5,0)}{C'}
+  \optgrating(A)(B)(C)
+  \addtopsstyle{Beam}{fillstyle=solid, fillcolor=green, opacity=0.3}
+  \drawwidebeam[beamwidth=0.3]{(A)}{1}{(C)}
+  \custombeam{%
+    \drawwidebeam[beamwidth=0.3]{(A)}{1}
+    \drawwidebeam{1}{(C')}
+  }%
+  \rput[rb]([Xnodesep=0.3, offset=0.2]C){0. order}
+  \rput[rb]([offset=0.2]C'){1. order}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+% \iffalse
+%<*ignore>
+% \fi
 \begin{LTXexample}[morekeywords={[21]{custombeam}}]
-\begin{pspicture}(3,2) 
-  \pnode(0,1){A}\pnode(3,1){B}
+\begin{pspicture}(4,2) 
+  \pnode(0,1){A}\pnode(4,1){B}
   \begin{optexp}
   \lens[lens=0.5 0.5 0.5, abspos=0.5](A)(B)
-  \lens[lens=4 4 2, abspos=1.5](A)(B)
+  \lens[lens=4 4 2, abspos=2](A)(B)
   \addtopsstyle{Beam}{fillstyle=solid, fillcolor=green, opacity=0.3}
   \custombeam{%
     \drawwidebeam[beamwidth=0.2, stopinside]{(A)}{1}
-    \drawwidebeam[beamdiv=-35]{1}{2}
+    \drawwidebeam[beamdiv=-30]{1}{2}
     \drawwidebeam{2}{(B)}
   }%
   \end{optexp}
@@ -5421,14 +5507,20 @@
 % Polarization
 %    \begin{macrocode}
 \define@key[psset]{optexp}{polsize}{\pst@checknum{#1}\POE@key@polsize}
-\define@key[psset]{optexp}{pollinewidth}{\edef\POE@key@pollinewidth{#1}}
+\define@key[psset]{optexp}{pollinewidth}{%
+  \edef\POE@key@pollinewidth{#1}%
+  \PackageWarning{pst-optexp}{%
+    Parameter pollinewidth is deprecated, use the Polarization style instead.}%
+}%
+\def\POE@key@pollinewidth{0.7\pslinewidth}%
+\newpsstyle{Polarization}{linestyle=solid, linewidth=\POE@key@pollinewidth, 
+  arrowscale=0.8, dotsize=3\pslinewidth}
 \define@choicekey+[psset]{optexp}{poltype}[\val\nr]{parallel,misc,perp,rcirc,lcirc}%
    {\edef\POE@key@poltype{#1}}
    {\PackageError{pst-optexp}{Unknown value '\val' for key poltype}}
 \psset[optexp]{%
   poltype=parallel,
-  polsize=0.6,
-  pollinewidth=0.7\pslinewidth
+  polsize=0.6
 }%
 %    \end{macrocode}
 % Optical Diode
@@ -7944,27 +8036,24 @@
 %    \begin{macrocode}
 \def\polarization@comp{%
   \edef\@pol@size{\POE@key@polsize\space 0.5 mul }%
+  \psset{style=Polarization}%
   \ifx\POE@key@poltype\POE@str@pol@polparallel
-    \psline[linestyle=solid, linewidth=\POE@key@pollinewidth, 
-            arrowscale=0.8, arrows=<->](! 0 \@pol@size neg)(! 0 \@pol@size)%
+    \psline[arrows=<->](! 0 \@pol@size neg)(! 0 \@pol@size)%
   \fi
   \ifx\POE@key@poltype\POE@str@pol@polperp
-    \psdot[dotsize=0.05](0,0)%
-    \pscircle[fillstyle=none,linestyle=solid,linewidth=\POE@key@pollinewidth](0,0){0.12}%
+    \psdot(0,0)%
+    \pscircle[fillstyle=none](0,0){0.12}%
   \fi
   \ifx\POE@key@poltype\POE@str@pol@polmisc
-    \psline[linestyle=solid, linewidth=\POE@key@pollinewidth,
-            arrowscale=0.8, arrows=<->](! 0 \@pol@size neg)(! 0 \@pol@size)%
-    \psdot[dotsize=0.05](0,0)%
-    \pscircle[fillstyle=none,linestyle=solid,linewidth=0.7\pslinewidth](0,0){0.12}%
+    \psline[arrows=<->](! 0 \@pol@size neg)(! 0 \@pol@size)%
+    \psdot(0,0)%
+    \pscircle[fillstyle=none](0,0){0.12}%
   \fi
   \ifx\POE@key@poltype\POE@str@pol@polrcirc
-    \psellipticarc[linewidth=\POE@key@pollinewidth, arrows=<->]%
-      (0,0)(! \@pol@size 2 div \@pol@size){20}{-20}%
+    \psellipticarc[arrows=->](0,0)(! \@pol@size 2 div \@pol@size){20}{-20}%
   \fi
   \ifx\POE@key@poltype\POE@str@pol@pollcirc
-    \psellipticarc[linewidth=\POE@key@pollinewidth, arrows=<-]%
-      (0,0)(! \@pol@size 2 div \@pol@size){20}{-20}
+    \psellipticarc[arrows=<-](0,0)(! \@pol@size 2 div \@pol@size){20}{-20}
   \fi
 \ignorespaces}%
 %
@@ -7973,8 +8062,7 @@
 % \begin{macro}{\optgrating@ref}
 %    \begin{macrocode}
 \def\optgrating@ref{%
-  \pst@OptexpVerb{/@@y0 \POE@key@gratingheight\space def
-                  /@@x \POE@key@gratingwidth\space 0.5 mul def}%
+  \pst@OptexpVerb{/@@x \POE@key@gratingwidth\space 0.5 mul def}%
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -7990,7 +8078,7 @@
   \ifx\POE@key@gratingtype\POE@str@gratingtype@blazed
     \pscustom[linewidth=\POE@key@gratinglinewidth, linejoin=1]{%
       \psline[liftpen=1](! \@wd \@dp)(! \@wd \@ht)%
-                        (! \@wd neg \@ht)(! \@wd neg \@dp)
+                        (! \@wd neg \@ht)(! \@wd neg \@dp)%
       \multido{\i=0+1}{\POE@key@gratingcount}{%
         \psline[liftpen=1](! \@wd neg \i\space \@step mul add \@dp)%
                           (! \@wd neg \i\space \ifPOE@reverse\else 1 add \fi \@step mul add 0)%
@@ -8001,7 +8089,7 @@
   \else\ifx\POE@key@gratingtype\POE@str@gratingtype@binary
     \pscustom[linewidth=\POE@key@gratinglinewidth]{%
       \psline[liftpen=1](! \@wd \@dp)(! \@wd \@ht)%
-                        (! \@wd neg \@ht)(! \@wd neg \@dp)
+                        (! \@wd neg \@ht)(! \@wd neg \@dp)%
       \multido{\i=0+1}{\POE@key@gratingcount}{%
         \psline[liftpen=1](! \@wd neg \i\space \@step mul add \@dp)%
                           (! \@wd neg \i\space \@step mul add 0)%

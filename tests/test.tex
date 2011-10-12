@@ -10,6 +10,30 @@
     escapeinside={*}{*}, pos=l,width=-99pt,overhang=0pt,hsep=5mm,
     varwidth,vsep=\bigskipamount,rframe={}}, }
 
+Czerny-Turner monochromator
+\begin{pspicture}[showgrid=true](0,-1)(10,5)
+\psset{linewidth=1.5\pslinewidth}
+\psframe[fillstyle=solid,fillcolor=gray!80,linestyle=none](0,-1)(9,4)
+\psset{linecolor=white}\addtopsstyle{Beam}{linecolor=white}
+\addtopsstyle{ExtendedMirror}{hatchcolor=white}
+\pnode(0,3){A}\pnode(8,3){B}\pnode(3,1.5){C}\pnode(8,0){D}\pnode(0,0){E}%
+\psset{mirrorradius=13,  mirrorwidth=1.5, gratingwidth=1.5, mirrortype=extended, phwidth=0.07, outerheight=1.5}%
+\pinhole[position=0.2](A)(B)%
+\mirror(A)(B)(C)
+\optgrating[reverse, angle=15](B)(C)(D)
+\mirror(C)(D)(E)
+\pinhole[position=0.8](D)(E)
+\drawwidebeam[beamwidth=0.2, beamdiv=0.1 8 0.2 mul atan neg]{(A)}{1-3}
+\drawwidebeam[beamwidth=0.68, addtoBeam={linecolor=green!40!white}]{3-6}{(E)}
+\drawwidebeam[beamangle=3, beamwidth=0.7, addtoBeam={linecolor=blue!40!white}]{3-6}
+\drawwidebeam[beamangle=-3, beamwidth=0.65, addtoBeam={linecolor=red!40!white}]{3-6}
+%\custombeam{%
+%  \drawwidebeam[beamwidth=0.2, beamdiv=0.1 8 0.2 mul atan neg]{(A)}{2}
+%  \drawwidebeam{2-4}
+%  \drawwidebeam[beamdiv=0.1 8 0.2 mul atan neg]{4}{(E)}
+%}
+\end{pspicture}
+
 \begin{LTXexample}[explpreset={escapeinside={}}]
 \begin{pspicture*}(0,2)(3.05,6)
   \lens[lens=8 8 8, abspos=0.6](0.5,2)(3,2)
