@@ -6,19 +6,60 @@
 \usepackage{pst-optexp}
 \usepackage{showexpl}
 \begin{document}
+\begin{pspicture}(2.1,3)
+\pnode(0,0){A}\pnode(2,0){B}
+\pnode(0.3,3){C}\pnode(1.7,3){D}
+\optcoupler[fiberout=none,
+            addtoFiberIn1={angleA=0, ArrowInside=->},
+            addtoFiberIn2={angleA=180, arrows=<-},
+            abspos=0.5, compname=Cpl](A)(B)(C)(D){}
+\optfiber[nofiber, compname=Hnlf, abspos=1](C)(C|A){}
+\optamp[nofiber, abspos=2, compname=Amp](D|B)(D){}
+\drawfiber{Cpl}{Hnlf}
+\drawfiber[startnode=1, stopnode=N, ncurv=1.2]{Hnlf}{Amp}
+\drawfiber{Cpl}{Amp}
+\end{pspicture}
+%\end{document}
+\begin{pspicture}(3,4)
+  \psset{beam, fillstyle=solid, fillcolor=black}
+  \optbox(0,3.5)(3,3.5){no layers}
+%  \begin{optexp}
+%    \optbox(0,1.5)(3,1.5){with layers}
+%  \end{optexp}
+\end{pspicture}
+\end{document}
+% \begin{pspicture}(3,2.5)
+%   \pnode(0,2){A}\optplane(A)(0,1){A}
+%   \pnode(4,0){B}\optplane(3,0)(0,1){B}
+%   \optprism[n=1.8](A)([Xnodesep=2]A)(B)
+%   \addtopsstyle{Beam}{fillcolor=red, fillstyle=solid, opacity=0.3}
+%   \drawwidebeam[beamdiv=5]{A}{2}{B}
+% \end{pspicture}
 
+\begin{pspicture}(3,2.7)
+  \optplane(0,1)(0,1){A}
+  \lens[lens=2 2 2, abspos=2.5](0,1)(3,1)
+  \optplane(3,1)(0,1){B}
+%  \drawbeam{A}{1}{B}
+%  \drawbeam[beamangle=15]{A}{1}{B}
+%  \drawbeam[beamangle=28]{A}{1}{B}
+  \drawbeam[beamangle=29]{A}{1}{B}
+  \drawbeam{A}{1}{B}
+\end{pspicture}
+\end{document}
 \begin{pspicture}[showgrid=true](5,5)
   \pnode(0,1){A}
   \pnode(5,1){B}
   \lens[compshift=0.2, angle=20](A)(B)
   \psset{beamangleabs}
-  \drawbeam[n=1, beampos=0.2, savebeampoints, stopinside]{(A)}{1}
-  \drawbeam[loadbeampoints, beamangle=10]{1}{(B)}
-  \addtopsstyle{Beam}{linestyle=none, fillcolor=red, fillstyle=solid}
-  \drawwidebeam[n=1, beamwidth=0.3, savebeampoints, stopinside]{(A)}{1}
-  \drawwidebeam[loadbeampoints, beamangle=10]{1}{(B)}
+  \drawbeam{(A)}{1}
+%  \drawbeam[n=1, beampos=0.2, savebeampoints, stopinside]{(A)}{1}
+%  \drawbeam[loadbeampoints, beamangle=10]{1}{(B)}
+%  \addtopsstyle{Beam}{linestyle=none, fillcolor=red, fillstyle=solid}
+%  \drawwidebeam[n=1, beamwidth=0.3, savebeampoints, stopinside]{(A)}{1}
+%  \drawwidebeam[loadbeampoints, beamangle=10]{1}{(B)}
 \end{pspicture}
-
+\end{document}
 Czerny-Turner monochromator
 
 \begin{pspicture}[showgrid=true](0,-1)(10,5)
