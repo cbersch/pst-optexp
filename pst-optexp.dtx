@@ -4061,12 +4061,12 @@
 %
 % Im Prinzip können alle Strahlengänge mit passenden Wahl des Brechungsindex und
 % der Komponentenparameter (z.B. der Linsenkrümmung) realisiert werden, dass
-% kann aber sehr aufwändig werden. \nxLcs{custombeam} vereinfacht das erheblich
-% dadurch dass die Endpunkte eines Strahls als Anfangspunkt genutzt werden.
+% kann aber sehr aufwändig werden. Die Endpunkte eines Strahls als Anfangspunkt genutzt werden.
 % \fi
-% \begin{ltxsyntax}
-%   \xLcs{custombeam}\cmditem{custombeam}[Options]{\nxLcs{draw*beam}}
-% \end{ltxsyntax}
+% \begin{optionlist}
+%   \boolitem[true]{savebeampoints}
+%   \boolitem[false]{loadbeampoints}
+% \end{optionlist}
 %
 % Als Beispiel nehmen wir ein Teleskop, die Strahldivergenz am Eingang und am
 % Ausgang ist Null. Anstatt die Linsenparameter und den Brechungsindex genau
@@ -4075,7 +4075,7 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}[morekeywords={[21]{custombeam}}, linerange={1-9,12-12}]
+\begin{LTXexample}[morekeywords={[21]{savebeampoints, loadbeampoints}}, linerange={1-9,12-12}]
 \begin{pspicture}(4,3)
   \pnode(0,0.5){A}\pnode(2,0.5){B}\pnode(4,3){C}
   \nodexn{(C)-(1.5,0)}{C'}
@@ -4095,7 +4095,7 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}[morekeywords={[21]{custombeam}}]
+\begin{LTXexample}[morekeywords={[21]{savebeampoints, loadbeampoints}}]
 \begin{pspicture}(4,2) 
   \pnode(0,1){A}\pnode(4,1){B}
   \begin{optexp}
@@ -5788,6 +5788,7 @@
 %    \begin{macrocode}
 \gdef\POE@complist{}%
 \g@addto@macro{\endpspicture}{%
+  \pst@OptexpVerb{ /lastBeamPointUp /lastBeamPointLow /lastBeamPoint 3 { currentdict exch undef } repeat }%
   \gdef\POE@complist{}\global\POE@cnt=0\relax
 }%
 %    \end{macrocode}
@@ -6082,7 +6083,11 @@
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}{\end@BeamObj}
+% \begin{macro}{\POE@beam@use@pscode}
+%   This is a hack which allows us to leave the names and coordinates of the
+%   beam end points on the stack after the \opt{@endspecial} call. This replaces
+%   \nxLcs{use@pscode} in \nxLcs{end@BeamObj}. These values on the stack must be
+%   consumed directly after closing the beam object.
 %    \begin{macrocode}
 \def\POE@beam@use@pscode{%
   \pstverb{%
@@ -6097,11 +6102,20 @@
   }%
   \gdef\pst@code{}%
 }%
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\end@BeamObj}
+%    \begin{macrocode}
 \def\end@BeamObj{%
   \addto@pscode{ end}%
   \let\psk@fillstyle\relax
   \ifPOE@optexpenv
     \ifPOE@frontlayer
+%    \end{macrocode}
+% Erase all beam-drawing code and leave only \opt{false} on the stack to 
+% indicate that no beampoints should be stored.
+%    \begin{macrocode}
       \def\pst@code{ false }%
     \fi
   \fi

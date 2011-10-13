@@ -6,6 +6,39 @@
 \usepackage{pst-optexp}
 \usepackage{showexpl}
 \begin{document}
+\begin{pspicture}(4,3)
+  \pnode(0,0.5){A}\pnode(2,0.5){B}\pnode(4,3){C}
+  \nodexn{(C)-(1.5,0)}{C'}
+  \optgrating(A)(B)(C)
+  \addtopsstyle{Beam}{fillstyle=solid, fillcolor=green, opacity=0.3}
+  \drawwidebeam[beamwidth=0.3]{(A)}{1}{(C)}
+  \psset{savebeampoints, loadbeampoints}
+  \drawwidebeam[beamwidth=0.3]{(A)}{1}
+  \drawwidebeam{1}{(C')}
+  \rput[rb]([Xnodesep=0.3, offset=0.2]C){0. order}
+  \rput[rb]([offset=0.2]C'){1. order}
+\end{pspicture}
+
+\begin{pspicture}(4,2) 
+  \pnode(0,1){A}\pnode(4,1){B}
+  \begin{optexp}
+  \lens[lens=0.5 0.5 0.5, abspos=0.5](A)(B)
+  \lens[lens=4 4 2, abspos=2](A)(B)
+  \addtopsstyle{Beam}{fillstyle=solid, fillcolor=green, opacity=0.3}
+  \psset{savebeampoints, loadbeampoints}
+  \drawwidebeam[beamwidth=0.2, stopinside]{(A)}{1}
+  \drawwidebeam[beamdiv=-30]{1}{2}
+  \drawwidebeam{2}{(B)}
+  \end{optexp}
+\end{pspicture}
+\end{document}
+\begin{pspicture}[showgrid=true](5,5)
+  \mirror[mirrorradius=2](0,3)(2,1)(0,0)
+  \drawwidebeam[connectplanes, beamwidth=0.2]{(0,3)}{}{(0,0)}
+  \lens(0,4)(5,4)
+  \drawwidebeam[connectplanes, beamwidth=0.2]{(0,4)}{}{(5,4)}
+\end{pspicture}
+\end{document}
 \begin{pspicture}(2.1,3)
 \pnode(0,0){A}\pnode(2,0){B}
 \pnode(0.3,3){C}\pnode(1.7,3){D}
