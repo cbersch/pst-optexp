@@ -351,7 +351,7 @@
 \newcommand{\psarglistfont}{\small}
 \newenvironment*{psarglist}
   {\list{}{%
-     \setlength{\labelwidth}{0pt}%
+     \setlength{\labelwidth}{10pt}%
      \setlength{\labelsep}{0pt}%
      \setlength{\leftmargin}{0pt}%
      \setlength{\itemsep}{\parsep}%
@@ -367,9 +367,9 @@
 \addtopsstyle{Fiber}{linecolor=DOrange,linewidth=1.5\pslinewidth}
 \addtopsstyle{Beam}{linewidth=1.5\pslinewidth}
 \EnableCrossrefs
-%\CodelineIndex
+\CodelineIndex
 \RecordChanges
-\OnlyDescription
+%%\OnlyDescription
 \begin{document}
   \DocInput{pst-optexp.dtx}
   \begin{otherlanguage}{english}
@@ -8837,8 +8837,8 @@
 %
 % \section{The Postscript header file}
 % \makeatletter
-% % Copied this definition from doc.sty and changed it not to add a
-% % backslash to the Postscript procedure name in the index.
+%% Copied this definition from doc.sty and changed it not to add a
+%% backslash to the Postscript procedure name in the index.
 % \def\SpecialIndex@#1#2{%
 %    \@SpecialIndexHelper@#1\@nil
 %    \def\@tempb{ }%
@@ -8859,6 +8859,7 @@
 %      \@tempc
 %    \fi}
 % \makeatother
+%
 %<*prolog>
 %
 % This is the dictionary where all components are stored in.
@@ -9310,13 +9311,15 @@ tx@OptexpDict begin
 %
 %   \psargitem{\PSvar{N}} The number of interfaces of the component.
 %
-%   \psargitem{\PSvar{P@1 \ldots{} P@N}} The actual
+%   \psargitem{\PSvar{P@1\ldots P@N}} The actual
 %   interfaces. \PSvar{P@1} and \PSvar{P@N} are always defined, even if
 %   \PSvar{N = 1}. In that case the two names link to the same
 %   dictionary, so that changes in one of them are automatically present
 %   also in the second one.
 %
-%   \psargitem{\PSproc{sc}} The scaling procedure for the coordinates.
+%   \psargitem{\PSproc{sc}} The scaling procedure for the coordinates to convert
+%   from \TeX{} to Postscript scaling. In should always be defined as
+%   \PSproc{\textbackslash psxunit, \textbackslash psyunit}.
 %
 %   \psargitem{\PSvar{ambiguous}} There is a class of components (at the
 %   moment only \nxLcs{beamsplitter}), which have a central interface
@@ -9861,7 +9864,7 @@ tx@OptexpDict begin
 % \end{macro}
 % 
 % \begin{macro}{FillWideBeam}
-% Fill a wide beam. This must have an own procedure, because all segments
+% Fill a wide beam. This has an own procedure, because each segment
 % of the beam must be filled separately.
 % \begin{pssyntax}
 %   \PSvar{[} \PSstring{CompN} \PSvar{\ldots{}} \PSstring{Comp1}
@@ -9875,14 +9878,9 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % preset options
 %    \begin{macrocode}
-  currentdict /fillBeam known not { 
-    /fillBeam {gsave fill grestore} def 
-  } if
-  /DrawnSegm 0 def
   /nmul 1 def
   /nadd 0 def
   /nforce 0 def
-  /PrevCorrect false def
 %    \end{macrocode}
 % execute user options
 %    \begin{macrocode}
@@ -9892,8 +9890,20 @@ tx@OptexpDict begin
   } if
   /startinside startinside beaminsidefirst or def
   /stopinside stopinside beaminsidelast or def
+%    \end{macrocode}
+% Number of segments already drawn
+%    \begin{macrocode}
+  /DrawnSegm 0 def
+%    \end{macrocode}
+% whether the previous plane required correction of the input vector (used only with \opt{connectplanes})
+%    \begin{macrocode}
+  /PrevCorrect false def
   PrearrangePlanes
   PushAllPlanesOnStack
+%    \end{macrocode}
+% If the \opt{beamangle} is not absolute, use the connection between the first
+% two planes as reference and transform the input vectors accordingly.
+%    \begin{macrocode}
   beamangleabs not {
     2 copy /InvecLow load TransformInVec /CurrVecLow ED
     2 copy /InvecUp load TransformInVec /CurrVecUp ED
@@ -9901,6 +9911,10 @@ tx@OptexpDict begin
     /InvecLow load /CurrVecLow ED
     /InvecUp load /CurrVecUp ED
   } ifelse
+%    \end{macrocode}
+% If \opt{loadbeampoints} is set, the nodes \PSname{TmpLastBeamPointLow} and
+% \PSname{TmpLastBeamPointUp} are defined and used as starting points.
+%    \begin{macrocode}
   currentdict /TmpLastBeamPointLow known 
   currentdict /TmpLastBeamPointUp known and {
     /TmpLastBeamPointLow load /CurrLow ED
@@ -9909,21 +9923,44 @@ tx@OptexpDict begin
     2 copy /StartLow load TransformStartPos /CurrLow ED
     2 copy /StartUp load TransformStartPos /CurrUp ED
   } ifelse
-  counttomark /PlaneNum ED /n1 1 def
+%    \end{macrocode}
+% \PSvar{PlaneNum} is the number of interfaces pushed on the stack by
+% \PSvar{PushAllPlanesOnStack}. This number may be corrected later if an
+% ambiguous components is among them.
+%    \begin{macrocode}
+  counttomark /PlaneNum ED 
+  /n1 1 def
   /CurrR false def
   /PN 1 def
   {
     dup xcheck not {
 %    \end{macrocode}
-% array, not executable
+% Found an array (not executable) instead of a procedure. This is an ambiguous
+% component, resolve the interfaces depending on the input vector and
+% surrounding interfaces. This can change \PSvar{PlaneNum}.
 %    \begin{macrocode}
       PushAmbCompPlanesOnStack
     } if
+%    \end{macrocode}
+% push the interface on the stack
+%    \begin{macrocode}
     exec
+%    \end{macrocode}
+% \PSvar{draw} indicates if the beam to the current interface should be drawn.
+%    \begin{macrocode}
     /draw ED
+%    \end{macrocode}
+% \PSvar{Mode} stores the mode (transmittive or reflective) of the current interface.
+%    \begin{macrocode}
     /Mode ED
-    3 1 roll cvn load begin % comp dict
-      IfcName load begin % plane dict
+%    \end{macrocode}
+% Enter the component dictionary
+%    \begin{macrocode}
+    3 1 roll cvn load begin
+%    \end{macrocode}
+% Enter the interface dictionary and push all required information on the stack
+%    \begin{macrocode}
+      IfcName load begin
         X Y CompMtrx transform CM itransform
         2 copy ToVec 4 1 roll
         currentdict /RX known {
@@ -9932,7 +9969,7 @@ tx@OptexpDict begin
           DX DY
         } ifelse
         CompMtrx dtransform CM idtransform 4 copy
-        Mode 10 -1 roll % {X Y} X Y DX DY X Y DX DY mode n1
+        Mode 10 -1 roll
         6 copy 
         currentdict /RX known
         correct
@@ -9941,9 +9978,12 @@ tx@OptexpDict begin
     /correct ED
     /curved ED
     /oldn1 n1 def % {X Y} X Y DX DY X Y DX DY mode n1 X Y DX DY mode n1
+%    \end{macrocode}
+% \PSvar{CurrPCenter} holds the coordinates of the current interface center.
+%    \begin{macrocode}
     17 -1 roll /CurrPCenter ED
 %    \end{macrocode}
-% new upper vector and intersection point
+% Calculate new upper vector and intersection point
 %    \begin{macrocode}
     CurrUp CurrVecUp
     connectplanes PrevCorrect PN 2 ge and and {
@@ -9958,7 +9998,7 @@ tx@OptexpDict begin
     ToVec /CurrUp ED
     /n1 oldn1 def
 %    \end{macrocode}
-% new lower vector and intersection point
+% Calculate new lower vector and intersection point
 %    \begin{macrocode}
     CurrLow CurrVecLow
     connectplanes PrevCorrect PN 2 ge and and {
@@ -10306,17 +10346,22 @@ tx@OptexpDict begin
 % \end{macro}
 % 
 % \begin{macro}{OrderNodes}
-% A B1 BN dist? OrderNodes -> desc/asc distance?
+%   Check if node (\PSvar{XB1}, \PSvar{YB1}) or (\PSvar{XBN}, \PSvar{YBN}) is nearer to node (\PSvar{XA}, \PSvar{YA}). If it
+%   \PSvar{B1} is nearer, push \PSvar{asc} on the stack, otherwise
+%   \PSvar{desc}. If \PSvar{calcDist} is \opt{true} it leaves also the actual
+%   smallest distance on the stack.
+%   \begin{pssyntax}
+%     \PSvar{XA YA XB1 YB1 XBN YBN calcDist} \PSop{OrderNodes} \PSvar{desc|asc} \PSvar{distance}
+%   \end{pssyntax}
 %    \begin{macrocode}
 /OrderNodes {
-   /dist ED
-   6 -2 roll 2 copy 8 2 roll
+   7 1 roll 6 -2 roll 2 copy 8 2 roll
    @ABDist 5 1 roll @ABDist 2 copy gt {
        pop asc exch
    } {
        exch pop desc exch
    } ifelse
-   dist not {
+   3 -1 roll not {
        pop
    } if
 } bind def
@@ -10326,7 +10371,7 @@ tx@OptexpDict begin
 % \begin{macro}{NormalVec}
 %   Construct a normal vector $\vec{n}$ to the plane such that its
 %   scalar product with the incomping wave vector $\vec{v}_\text{in}$ is
-%   negative: $\vec{n}\cdot (-\vec{v}_\text{in}) > 0$ 
+%   negative: $\vec{n}\cdot (-\vec{v}_\text{in}) > 0$.
 %   \begin{pssyntax}
 %     \PSvar{Xin Yin Xplane Yplane} \PSop{NormalVec} \PSvar{Xnorm Ynorm}
 %   \end{pssyntax}
@@ -10383,7 +10428,7 @@ tx@OptexpDict begin
 % \end{macro}
 % 
 % \begin{macro}{VecMul}
-% Scale a vector.
+% Scale a vector by a factor \PSvar{fac}.
 % \begin{pssyntax}
 %   \PSvar{Xa Ya fac} \PSop{VecMul} \PSvar{fac}$\cdot$\PSvar{Xa} \PSvar{fac}$\cdot$\PSvar{Ya}
 % \end{pssyntax}
@@ -10395,6 +10440,8 @@ tx@OptexpDict begin
 % \end{macro}
 %
 % \begin{macro}{ToVec}
+%   Convert two numbers to a procedure holding the two values. This
+%   representation is used to save coordinate values of nodes and vectors.
 %   \begin{pssyntax}
 %     \PSvar{X Y} \PSop{ToVec} \PSproc{X Y}
 %   \end{pssyntax}
@@ -10406,7 +10453,8 @@ tx@OptexpDict begin
 % \end{macro}
 %
 % \begin{macro}{AngToVec}
-% Convert an angle to the related vector representation (normalized).
+%   Convert an angle to the related vector representation (normalized). The
+%   angle is with respect to the positive $x$-axis.
 % \begin{pssyntax}
 %   \PSvar{angle} \PSop{AngToVec} \PSproc{X Y}
 %   \end{pssyntax}
@@ -10852,26 +10900,27 @@ tx@OptexpDict begin
 } bind def
 %    \end{macrocode}
 % \end{macro}
-% 
-% \begin{macro}{debugStack}
-%    \begin{macrocode}
-/debugStack { 
-  counttomark debug
-} bind def
-%    \end{macrocode}
-% \end{macro}
 %
 % \begin{macro}{debug}
-%
-% \PSvar{t} \PSop{debug}
+%   Print out the last \opt{N} elements from the stack, checks for
+%   stackunderflow. I \opt{N} is negative, the complete stack is
+%   printed. Compared to the \PSvar{stack} operand, it prints the content of
+%   procedures and array, which we use a lot.
+%   \begin{pssyntax}
+%     \PSvar{N} \PSop{debug}
+%   \end{pssyntax}
 %    \begin{macrocode}
 /debug { 
-  /@t ED @t copy @t { == } repeat
+  /@N ED count dup @N gt @N 0 ge and { pop @N } if copy @N { == } repeat
 } bind def
 %    \end{macrocode}
 % \end{macro}
 %
 % \begin{macro}{debugComp}
+% Print out all parameters and planes of the component \opt{compname}.
+%   \begin{pssyntax}
+%     \PSstring{compname} \PSop{debugComp}
+%   \end{pssyntax}
 %    \begin{macrocode}
 /debugComp { 
   dup (debug comp ") exch strcat ("-------------) strcat ==
