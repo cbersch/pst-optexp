@@ -5092,7 +5092,7 @@
 %
 % \appendix
 % \chapter{Implementation}
-%
+% \section{The \LaTeX/\TeX\ implementation}
 %<*stylefile>
 %    \begin{macrocode}
 \RequirePackage{pstricks}
@@ -5105,18 +5105,15 @@
 \DeclareOption{compat}{\gdef\pstoptexp@compat{}}
 \ProcessOptions\relax
 \RequirePackage{environ}
-  \long\def\POE@collect#1{%
-    \global\POE@oldcnt=\POE@cnt
-    \psset{optexpenv, backlayer=true, frontlayer=false}#1%
-    \gdef\POE@complist{}\global\POE@cnt=\POE@oldcnt\relax
-    \psset{backlayer=false, frontlayer=true}%
-    #1}%
+\long\def\POE@collect#1{%
+  \global\POE@oldcnt=\POE@cnt
+  \psset{optexpenv, backlayer=true, frontlayer=false}#1%
+  \gdef\POE@complist{}\global\POE@cnt=\POE@oldcnt\relax
+  \psset{backlayer=false, frontlayer=true}%
+  #1}%
 \newenvironment{optexp}{\Collect@Body\POE@collect}{}
-\IfFileExists{pst-optexp.pro}{\@addtofilelist{pst-optexp.pro}}{}%
-%    \end{macrocode}
+\@addtofilelist{pst-optexp.pro}{}%
 %
-% \subsection{The actual \TeX\ implementation}
-%    \begin{macrocode}
 \csname PSToptexpLoaded\endcsname
 \let\PSToptexpLoaded\endinput
 \pst@addfams{optexp}
@@ -5223,7 +5220,7 @@
 \def\POE@str@extnode@postfix{Ext}
 %    \end{macrocode}
 % 
-% \subsubsection{Parameter and style definitions}
+% \subsection{Parameter and style definitions}
 %    \begin{macrocode}
 \newpsstyle{OptComp}{}%
 \define@key[psset]{optexp}{newOptComp}{\newpsstyle{OptComp}{#1}}
@@ -5999,7 +5996,7 @@
 \expandafter\ifx\csname pstoptexp@compat\endcsname\relax%
 %    \end{macrocode}
 %
-% \subsubsection{New connection code}
+% \subsection{New connection code}
 % 
 % The keys related to the \cs{draw*} macros
 %    \begin{macrocode}
@@ -7356,7 +7353,7 @@
 %    \end{macrocode}
 % \end{macro}
 % 
-% \subsubsection{Free-ray components}
+% \subsection{Free-ray components}
 %
 % Define all free-ray dipoles
 %    \begin{macrocode}
@@ -8364,7 +8361,7 @@
 %    \end{macrocode}
 % \end{macro}
 % 
-% \subsubsection{Fiber optics}
+% \subsection{Fiber optics}
 %
 % \begin{macro}{\optfiber@iii}
 %    \begin{macrocode}
@@ -8801,11 +8798,13 @@
   \else\ifx\POE@key@couplertype\POE@str@couplertype@none
     \ifx\POE@key@align\POE@str@top
       \psline[style=Fiber](\oenodeIn{})(\oenode{2}{})
-      \psline[style=Fiber](! \pst@optexpdict /N@\oenodeIn{} @GetCenter end \tx@UserCoor \POE@key@couplersep\space sub)(\oenode{N}{})
+      \psline[style=Fiber](! \POE@dict{/N@\oenodeIn{} @GetCenter}
+        \tx@UserCoor \POE@key@couplersep\space sub)(\oenode{N}{})
     \else
       \psline[style=Fiber](\oenodeIn{})(\oenode{N}{})
       \ifx\POE@key@align\POE@str@bottom
-        \psline[style=Fiber](! \pst@optexpdict /N@\oenodeIn{} @GetCenter end \tx@UserCoor \POE@key@couplersep\space sub)(\oenode{2}{})
+        \psline[style=Fiber](! \POE@dict{/N@\oenodeIn{} @GetCenter}
+          \tx@UserCoor \POE@key@couplersep\space sub)(\oenode{2}{})
       \fi
     \fi
   \fi\fi\fi
@@ -8828,7 +8827,8 @@
 %    \begin{macrocode}
 \def\fibercollimator@comp{%
    \def\@sz{\POE@key@fibercolsize\space 0.5 mul }%
-   \pspolygon(! \@sz neg \getCLWH add \@sz neg)(!\@sz 0)(!\@sz neg \getCLWH add \@sz)
+   \pspolygon(! \@sz neg \getCLWH add \@sz neg)%
+             (!\@sz 0)(!\@sz neg \getCLWH add \@sz)
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -8929,7 +8929,8 @@ tx@OptexpDict begin
     /cy ay a div by b div add def
     /c@tmp cx cy Pyth def
     /c ax bx add ay by add Pyth def
-    /OEangle c dup mul a dup mul sub b dup mul sub -2 a b mul mul div Acos def
+    /OEangle c dup mul a dup mul sub b dup mul sub 
+             -2 a b mul mul div Acos def
 %    \end{macrocode}
 % If $c=0$, then set the coordinates of the vector manually
 % depending on the dotproduct (and thus, if 'a' and 'b'
@@ -9223,8 +9224,10 @@ tx@OptexpDict begin
 % \end{pssyntax}
 %    \begin{macrocode}
 /CurvedIfc {
-    2 copy 5 3 roll exec 3 -1 roll exec VecAdd 5 -1 roll exec /Y ED /X ED
-    exch exec 3 -1 roll exec 2 copy tx@Dict begin Pyth end /R ED /RY ED /RX ED
+    2 copy 5 3 roll exec 3 -1 roll exec VecAdd 
+    5 -1 roll exec /Y ED /X ED
+    exch exec 3 -1 roll exec 2 copy tx@Dict begin Pyth end 
+    /R ED /RY ED /RX ED
 } bind def
 %    \end{macrocode}
 % \end{macro}
@@ -9475,11 +9478,10 @@ tx@OptexpDict begin
 % Plane2 Plane1 \PSproc{StartPos} -> \PSproc{StartPos'+Plane1Center}
 %    \begin{macrocode}
 /TransformStartPos {
-    exec 2 copy 6 2 roll 0 eq exch 0 eq and not  % SPx SPy P2 P1 neq00
-    3 1 roll GetPlaneCenter 4 2 roll % SPx SPy X1 Y1 neq00 P2
-    GetPlaneCenter 5 2 roll % SPx SPy X2 Y2 X1 Y1 neq00
-    {% SP != (0,0)    SPx SPy X2 Y2 X1 Y1
-      2 copy 8 2 roll % X1 Y1 SPx SPy X2 Y2 X1 Y1
+    exec 2 copy 6 2 roll 0 eq exch 0 eq and not
+    3 1 roll GetPlaneCenter 4 2 roll
+    GetPlaneCenter 5 2 roll {
+      2 copy 8 2 roll
       @ABVect exch atan matrix rotate dtransform
       VecAdd
     } {
@@ -9494,7 +9496,7 @@ tx@OptexpDict begin
 % X Y CompName -> PlaneNumber
 %    \begin{macrocode}
 /GetNearestPlane {
-  3 copy 1 exch GetPlaneCenter @ABDist /dist ED /nearestPlane 1 def % X Y CompName
+  3 copy 1 exch GetPlaneCenter @ABDist /dist ED /nearestPlane 1 def
   dup cvn load /N get 2 1 3 -1 roll {
 %    \end{macrocode}
 % iterate through plane 2 to plane N of CompName 
@@ -9570,7 +9572,8 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % somewhere in the middle, check the mode (trans or refl)
 %    \begin{macrocode}
-      CurrVecTmp (C) name GetPlaneVec NormalVec outToPlane GetPlaneCenter (C) name GetPlaneCenter @ABVect SProd
+      CurrVecTmp (C) name GetPlaneVec NormalVec outToPlane 
+      GetPlaneCenter (C) name GetPlaneCenter @ABVect SProd
       0 lt { trans } { refl } ifelse % mode
     } ifelse
     true ] cvx
@@ -9597,7 +9600,8 @@ tx@OptexpDict begin
 % check if mode is trans or refl
 %    \begin{macrocode}
       CurrVecTmp nextPlane name GetPlaneVec NormalVec
-      (C) name GetPlaneCenter nextPlane name GetPlaneCenter @ABVect 2 copy 6 2 roll SProd 
+      (C) name GetPlaneCenter nextPlane name GetPlaneCenter 
+      @ABVect 2 copy 6 2 roll SProd 
       0 lt { trans }{ refl } ifelse
       3 1 roll ToVec /CurrVecTmp ED
       [ nextPlane name
@@ -9624,7 +9628,8 @@ tx@OptexpDict begin
 %    \begin{macrocode}
         [ (C) name
         nforce 0 eq { name cvn load /n get } { nforce } ifelse
-        CurrVecTmp (C) name GetPlaneVec NormalVec outToPlane GetPlaneCenter (C) name GetPlaneCenter @ABVect SProd
+        CurrVecTmp (C) name GetPlaneVec NormalVec outToPlane 
+        GetPlaneCenter (C) name GetPlaneCenter @ABVect SProd
         0 lt { trans } { refl } ifelse % mode
         draw ] cvx exch
 %    \end{macrocode}
@@ -9645,17 +9650,20 @@ tx@OptexpDict begin
 % \PSstring{comp} \PSproc{outToPlane} $\longmapsto$ \PSvar{PlaneNumber}
 %    \begin{macrocode}
 /GetNextPlane {
-  2 copy (C) 3 -1 roll % (CompName) {outToPlane} {outToPlane} (C) (CompName)
-  GetPlaneCenter 3 -1 roll exec GetPlaneCenter 4 2 roll 4 copy @ABVect /VecY ED /VecX ED @ABDist /centerDist ED
-  /sprod 1 def % (CompName) {outToPlane}
-  exch dup 3 1 roll cvn load /N get 1 1 3 -1 roll {% (CompName) {outToPlane} n
+  2 copy (C) 3 -1 roll
+  GetPlaneCenter 3 -1 roll exec GetPlaneCenter 
+  4 2 roll 4 copy @ABVect /VecY ED /VecX ED 
+  @ABDist /centerDist ED
+  /sprod 1 def
+  exch dup 3 1 roll cvn load /N get 1 1 3 -1 roll {
 %    \end{macrocode}
 % iterate through all planes of CompName
 %    \begin{macrocode}
-    3 copy 3 -1 roll 2 copy% (CompName) {outToPlane} n {outToPlane} n (CompName) n (CompName)
-    GetPlaneVec VecX VecY 4 2 roll NormalVec VecX VecY SProd dup sprod lt 
-    5 2 roll % sprod bool {outToPlane} n (CompName)
-    GetPlaneCenter 3 -1 roll exec GetPlaneCenter @ABDist centerDist lt and
+    3 copy 3 -1 roll 2 copy
+    GetPlaneVec VecX VecY 4 2 roll NormalVec 
+    VecX VecY SProd dup sprod lt 5 2 roll
+    GetPlaneCenter 3 -1 roll exec GetPlaneCenter @ABDist 
+    centerDist lt and
     { /sprod ED /nextPlane ED } { pop pop } ifelse
   } for
   pop pop nextPlane
@@ -9669,7 +9677,11 @@ tx@OptexpDict begin
 %    \begin{macrocode}
 /TraceBeam {
   AngToVec /InVec ED /StartPoint ED
-  /oldbeaminsidelast currentdict /beaminsidelast known { beaminsidelast } { false } ifelse def
+  /oldbeaminsidelast currentdict /beaminsidelast known { 
+    beaminsidelast 
+  } { 
+    false 
+  } ifelse def
 %    \end{macrocode}
 % preset options
 %    \begin{macrocode}
@@ -9790,7 +9802,10 @@ tx@OptexpDict begin
 %    \begin{macrocode}
     pop pop pop pop
   }{
-    pop 5 copy 3 -1 roll pop ArrowA pop pop pop pop % go to Startpoint
+%    \end{macrocode}
+% Go to start point
+%    \begin{macrocode}
+    pop 5 copy 3 -1 roll pop ArrowA pop pop pop pop
     counttomark 3 idiv -1 2 {
       pop {
         lineto
@@ -9977,7 +9992,8 @@ tx@OptexpDict begin
     end
     /correct ED
     /curved ED
-    /oldn1 n1 def % {X Y} X Y DX DY X Y DX DY mode n1 X Y DX DY mode n1
+    /oldn1 n1 def 
+    % {X Y} X Y DX DY X Y DX DY mode n1 X Y DX DY mode n1
 %    \end{macrocode}
 % \PSvar{CurrPCenter} holds the coordinates of the current interface center.
 %    \begin{macrocode}
@@ -10096,7 +10112,8 @@ tx@OptexpDict begin
     /PrevMode Mode def
     /PrevCorrect correct def
   } loop
-  CurrUp CurrLow @ABVect CurrVecUp CurrVecLow 3 -1 roll add 3 1 roll add exch
+  CurrUp CurrLow @ABVect 
+  CurrVecUp CurrVecLow 3 -1 roll add 3 1 roll add exch
   4 -1 roll mul 3 1 roll mul sub 0 gt {
 %    \end{macrocode}
 % swap upper and lower beam points for next beam
@@ -10137,8 +10154,14 @@ tx@OptexpDict begin
       1 CompA GetPlaneCenter (C) CompB GetPlaneCenter @ABDist
       (N) CompA GetPlaneCenter (C) CompB GetPlaneCenter @ABDist
     } {
-      1 CompA GetPlaneCenter 1 CompB GetPlaneCenter (N) CompB GetPlaneCenter true OrderNodes exch pop
-      (N) CompA GetPlaneCenter 1 CompB GetPlaneCenter (N) CompB GetPlaneCenter true OrderNodes exch pop % dist1 distN
+      1 CompA GetPlaneCenter 
+      1 CompB GetPlaneCenter 
+      (N) CompB GetPlaneCenter 
+      true OrderNodes exch pop
+      (N) CompA GetPlaneCenter 
+      1 CompB GetPlaneCenter 
+      (N) CompB GetPlaneCenter 
+      true OrderNodes exch pop
     } ifelse
     le { desc } { asc } ifelse dup CompA
   } ifelse
@@ -10146,7 +10169,8 @@ tx@OptexpDict begin
   2 1 N {
     /i ED exch /CompB ED %
     CompB isAmb not {
-      dup desc eq { 1 } { dup amb eq { (C) }{ (N) } ifelse } ifelse CompA GetPlaneCenter
+      dup desc eq { 1 } { dup amb eq { (C) }{ (N) } ifelse } ifelse 
+      CompA GetPlaneCenter
       1 CompB GetPlaneCenter
       (N) CompB GetPlaneCenter false OrderNodes dup dup
 %    \end{macrocode}
@@ -10637,7 +10661,8 @@ tx@OptexpDict begin
     4 2 roll
   } if pop pop
   Xp Yp VecAdd
-  2 copy Xp Yp 4 2 roll @ABVect exch neg Xin Yin 4 2 roll NormalVec Xin Yin 4 2 roll
+  2 copy Xp Yp 4 2 roll @ABVect exch neg Xin Yin 4 2 roll NormalVec 
+  Xin Yin 4 2 roll
 %    \end{macrocode}
 % on stack: crossing point, in vector, and normal vector
 %    \begin{macrocode}
@@ -10656,10 +10681,11 @@ tx@OptexpDict begin
 %   \end{pssyntax}
 %    \begin{macrocode}
 /PlainInterface {%
-  /Yin ED /Xin ED /Y0 ED /X0 ED /n2 ED /mode ED /dYp ED /dXp ED /Yp ED /Xp ED
+  /Yin ED /Xin ED /Y0 ED /X0 ED /n2 ED /mode ED 
+  /dYp ED /dXp ED /Yp ED /Xp ED
   n2 1 gt { /n2 n2 nmul mul nadd add def } if
-  Xp Yp Xp dXp add Yp dYp add X0 Y0 X0 Xin add Y0 Yin add @InterLines Xin Yin
-  Xin Yin dXp dYp NormalVec
+  Xp Yp Xp dXp add Yp dYp add X0 Y0 X0 Xin add Y0 Yin add 
+  @InterLines Xin Yin Xin Yin dXp dYp NormalVec
   mode trans eq {%
     n1 n2 RefractVec
   } {%
@@ -10673,11 +10699,10 @@ tx@OptexpDict begin
 % Xp Yp Xt1 Yt1 Xt2 Yt2
 %    \begin{macrocode}
 /TangentCrosspoint {
-    4 copy 4 copy 14 -2 roll 2 copy% Xt1 Yt1 Xt2 Yt2 Xt1 Yt1 Xt2 Yt2 Xp Yp Xp Yp
-    6 2 roll @ABVect neg exch% Xt1 Yt1 Xt2 Yt2 Xt1 Yt1 Xt2 Yt2 Xt1 Yt1 Xp Yp -(Yt2 -Yp) (Xt2-Xp)
-    6 2 roll @ABVect neg exch% Xt1 Yt1 Xt2 Yt2 Xt1 Yt1 Xt2 Yt2 -(Yt2-Yp) (Xt2-Xp) -(Yt1-Yp) (Xt1-Xp)
-    8 -2 roll VecAdd 10 2 roll % Xt1-(Yt1-Yp) Yt1+(Xt1-Xp) Xt1 Yt1 Xt2 Yt2 Xt2 Yt2 -(Yt2-Yp) (Xt2-Xp)
-    VecAdd % Xt1-(Yt1-Yp) Yt1+(Xt1-Xp) Xt1 Yt1 Xt2 Yt2 Xt2-(Yt2-Yp) Yt2+(Xt2-Xp)
+    4 copy 4 copy 14 -2 roll 2 copy
+    6 2 roll @ABVect neg exch
+    6 2 roll @ABVect neg exch
+    8 -2 roll VecAdd 10 2 roll VecAdd
     @InterLines
 } bind def
 %    \end{macrocode}
@@ -10730,20 +10755,34 @@ tx@OptexpDict begin
 %    \begin{macrocode}
 /NearestNode {
   dup xcheck not { nametostr } if /CompB ED
-  dup xcheck not {% CompA
+  dup xcheck not {
+%    \end{macrocode}
+% CompA is a component
+%    \begin{macrocode}
     nametostr /CompA ED
-    /CompB load dup xcheck not {% CompB
+    /CompB load dup xcheck not {
+%    \end{macrocode}
+% CompB is a component
+%    \begin{macrocode}
       /mindist -1 def
       [ exch false GetInternalNodeNames ] 
       { @GetCenter ToVec
         CompA NearestNodeTmp 
-        exch dup mindist gt mindist 0 ge and { pop pop }{ /mindist ED /minnodeA ED } ifelse
+        exch dup mindist gt mindist 0 ge and { 
+          pop pop 
+        }{ 
+          /mindist ED /minnodeA ED 
+        } ifelse
       } forall
       minnodeA
     } {
       CompA NearestNodeTmp exch pop exec
     } ifelse
-  } {% else, it is a node and we already have the appropriate coordinates on the stack
+  } {
+%    \end{macrocode}
+% else, it is a node and we already have the appropriate coordinates on the
+% stack
+%    \begin{macrocode}
     exec
   } ifelse
 } bind def
@@ -10768,13 +10807,12 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % B is a component, and A is a node: the angle at node A is calculated through the reference nodes of component B
 %    \begin{macrocode}
-      4 copy @ABVect 6 2 roll pop pop % C-N C
-      CompB dup dup (Center) NodeName @GetCenter 6 -2 roll 4 2 roll @ABVect% C-N name name C-Center
-      4 2 roll % C-N C-Center name name
+      4 copy @ABVect 6 2 roll pop pop
+      CompB dup dup (Center) NodeName @GetCenter 
+      6 -2 roll 4 2 roll @ABVect 4 2 roll
       (A) NodeName exch (B) NodeName
-      @GetCenter 3 -1 roll @GetCenter @ABVect 2 copy exch atan % C-N CenterB-B refB-refA angle
-      7 3 roll 2 copy % refB-refA angle C-N C-Center C-Center
-      9 -2 roll %  angle C-N C-Center C-Center refB-refA
+      @GetCenter 3 -1 roll @GetCenter @ABVect 2 copy exch atan
+      7 3 roll 2 copy 9 -2 roll
       SProd 0 gt 5 1 roll SProd 0 gt xor { 180 add } if
     } ifelse
   } {
@@ -10911,7 +10949,8 @@ tx@OptexpDict begin
 %   \end{pssyntax}
 %    \begin{macrocode}
 /debug { 
-  /@N ED count dup @N gt @N 0 ge and { pop @N } if copy @N { == } repeat
+  /@N ED count dup @N gt @N 0 ge and { pop @N } if 
+  copy @N { == } repeat
 } bind def
 %    \end{macrocode}
 % \end{macro}
