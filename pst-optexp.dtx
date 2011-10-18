@@ -6226,7 +6226,7 @@
           /TmpLastBeamPointUp /lastBeamPointUp load def
         } if
         FillWideBeam
-      grestore pop
+      grestore pop % pop off the mark
     }%
   \fi%
 %    \end{macrocode}
@@ -9285,6 +9285,7 @@ tx@OptexpDict begin
 %    \begin{macrocode}
 /refl 0 def /trans 1 def
 /desc 0 def /asc 1 def /amb 2 def
+/missed 0 def /tir 1 def /ok 2 def
 %    \end{macrocode}
 % 
 % About the design:
@@ -9758,6 +9759,12 @@ tx@OptexpDict begin
     } if
     5 -1 roll
     { CurvedInterface }{ PlainInterface } ifelse
+
+    missed eq {
+      counttomark PN 1 sub 3 mul sub {pop} repeat
+      exit
+    } if
+
     PN 1 eq {
       pop pop
       /draw beaminsidefirst oldbeaminsidelast xor def
@@ -10009,6 +10016,10 @@ tx@OptexpDict begin
     } if
     2 copy ToVec /OldVecUp ED
     curved { CurvedInterface } { PlainInterface } ifelse
+    dup /ret ED
+    missed eq {
+      counttomark {pop} repeat exit
+    } if
     /CurrUp load /OldUp ED
     ToVec /CurrVecUp ED
     ToVec /CurrUp ED
@@ -10024,6 +10035,15 @@ tx@OptexpDict begin
     } if
     2 copy ToVec /OldVecLow ED
     curved { CurvedInterface } { PlainInterface } ifelse
+    dup missed eq {
+      /ret ED
+      counttomark {pop} repeat exit
+    } if
+    tir eq ret tir eq or {
+      /ret tir def
+    } {
+      /ret ok def
+    } ifelse
     /CurrLow load /OldLow ED
     ToVec /CurrVecLow ED
     ToVec /CurrLow ED
@@ -10098,9 +10118,9 @@ tx@OptexpDict begin
       DrawnSegm 0 gt { fillBeam newpath } if
       exit
     } {
-      CurrVecUp 0 eq exch 0 eq and CurrVecLow 0 eq exch 0 eq and or {
+      ret tir eq {
 %    \end{macrocode}
-% last refraction was total internal reflection, exit!
+% at least one of the last two refractions was total internal reflection, exit!
 %    \begin{macrocode}
         PlaneNum PN sub {pop} repeat
         DrawnSegm 0 gt { fillBeam newpath } if	
@@ -10112,18 +10132,20 @@ tx@OptexpDict begin
     /PrevMode Mode def
     /PrevCorrect correct def
   } loop
-  CurrUp CurrLow @ABVect 
-  CurrVecUp CurrVecLow 3 -1 roll add 3 1 roll add exch
-  4 -1 roll mul 3 1 roll mul sub 0 gt {
+  ret missed eq not {
+    CurrUp CurrLow @ABVect 
+    CurrVecUp CurrVecLow 3 -1 roll add 3 1 roll add exch
+    4 -1 roll mul 3 1 roll mul sub 0 gt {
 %    \end{macrocode}
 % swap upper and lower beam points for next beam
 %    \begin{macrocode}
-    /TmpLastBeamPointUp /CurrLow load def
-    /TmpLastBeamPointLow /CurrUp load def
-  } {
-    /TmpLastBeamPointLow /CurrLow load def
-    /TmpLastBeamPointUp /CurrUp load def
-  } ifelse
+      /TmpLastBeamPointUp /CurrLow load def
+      /TmpLastBeamPointLow /CurrUp load def
+    } {
+      /TmpLastBeamPointLow /CurrLow load def
+      /TmpLastBeamPointUp /CurrUp load def
+    } ifelse
+  } if
 } bind def
 %    \end{macrocode}
 % \end{macro}
@@ -10535,17 +10557,23 @@ tx@OptexpDict begin
 %   \nxLPack{pst-eucl} package, that too many items are popped off the
 %   stack if no intersection point exists.
 % \begin{pssyntax}
-%   \PSvar{X1 Y1 X2 Y2 X3 Y3 X4 Y4} \PSop{@InterLines} \PSvar{X Y}
+%   \PSvar{X1 Y1 X2 Y2 X3 Y3 X4 Y4} \PSop{@InterLines} \PSvar{X Y ret}
 % \end{pssyntax}
 %    \begin{macrocode}
-/@InterLines { 
-  [ 0 0 11 3 roll 
-  tx@EcldDict begin InterLines end 
-  counttomark 4 eq { 
-    5 2 roll pop pop pop 
-  } { 
-    3 -1 roll pop 
-  } ifelse 
+/@InterLines {
+  tx@EcldDict begin
+    EqDr /D1c exch def /D1b exch def /D1a exch def
+    EqDr /D2c exch def /D2b exch def /D2a exch def
+    D1a D2b mul D1b D2a mul sub dup 
+    ZeroEq { % parallel lines
+      pop 0 0 missed 
+    }{
+      /Det exch def
+      D1b D2c mul D1c D2b mul sub Det div
+      D1a D2c mul D2a D1c mul sub Det div
+      ok
+    } ifelse  
+  end
 } bind def
 %    \end{macrocode}
 % \end{macro}
@@ -10642,35 +10670,38 @@ tx@OptexpDict begin
   4 copy
   0 eq 3 {exch 0 eq and} repeat {
 %    \end{macrocode}
-% all coordinates are zero, missed circle, stop
+% check if all coordinates are zero, missed circle, stop
 %    \begin{macrocode}
-    PlaneNum PN sub 4 add {pop} repeat
-    exit
-  } if
-  4 copy
+%%    PlaneNum PN sub 4 add {pop} repeat
+%%    exit
+    missed
+  } {
+    4 copy
 %    \end{macrocode}
 % Chose which of the two intersection points to take.
 %    \begin{macrocode}
-  Xr neg Yr neg 2 copy
-  8 -2 roll @ABDist
-  5 1 roll @ABDist
-  gt {
+    Xr neg Yr neg 2 copy
+    8 -2 roll @ABDist
+    5 1 roll @ABDist
+    gt {
 %    \end{macrocode}
 % «dist from first point» $>$ «dist from second point», take second point.
 %    \begin{macrocode}
-    4 2 roll
-  } if pop pop
-  Xp Yp VecAdd
-  2 copy Xp Yp 4 2 roll @ABVect exch neg Xin Yin 4 2 roll NormalVec 
-  Xin Yin 4 2 roll
+      4 2 roll
+    } if pop pop
+    Xp Yp VecAdd
+    2 copy Xp Yp 4 2 roll @ABVect exch neg Xin Yin 4 2 roll NormalVec 
+    Xin Yin 4 2 roll
 %    \end{macrocode}
 % on stack: crossing point, in vector, and normal vector
 %    \begin{macrocode}
-  mode trans eq {
-    n1 n2 RefractVec
-  } {
-    ReflectVec
-  } ifelse /n1 n2 def
+    mode trans eq {
+      n1 n2 RefractVec
+      2 copy 0 eq exch 0 eq and { tir } { ok } ifelse
+    } {
+      ReflectVec ok
+    } ifelse /n1 n2 def
+  } ifelse
 } bind def
 %    \end{macrocode}
 % \end{macro}
@@ -10685,12 +10716,17 @@ tx@OptexpDict begin
   /dYp ED /dXp ED /Yp ED /Xp ED
   n2 1 gt { /n2 n2 nmul mul nadd add def } if
   Xp Yp Xp dXp add Yp dYp add X0 Y0 X0 Xin add Y0 Yin add 
-  @InterLines Xin Yin Xin Yin dXp dYp NormalVec
-  mode trans eq {%
-    n1 n2 RefractVec
-  } {%
-    ReflectVec
-  } ifelse /n1 n2 def
+  @InterLines missed eq {
+    missed
+  } {
+    Xin Yin Xin Yin dXp dYp NormalVec
+    mode trans eq {
+      n1 n2 RefractVec
+      2 copy 0 eq exch 0 eq and { tir } { ok } ifelse
+    } {
+      ReflectVec ok
+    } ifelse /n1 n2 def
+  } ifelse
 } bind def
 %    \end{macrocode}
 % \end{macro}
@@ -10703,7 +10739,7 @@ tx@OptexpDict begin
     6 2 roll @ABVect neg exch
     6 2 roll @ABVect neg exch
     8 -2 roll VecAdd 10 2 roll VecAdd
-    @InterLines
+    @InterLines pop
 } bind def
 %    \end{macrocode}
 % \end{macro}
