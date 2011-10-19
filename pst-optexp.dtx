@@ -4066,6 +4066,7 @@
 % \begin{optionlist}
 %   \boolitem[true]{savebeampoints}
 %   \boolitem[false]{loadbeampoints}
+%   \intitem[0]{skipconn}
 % \end{optionlist}
 %
 % Als Beispiel nehmen wir ein Teleskop, die Strahldivergenz am Eingang und am
@@ -6010,9 +6011,11 @@
 \define@boolkey[psset]{optexp}[POE@]{beaminsidelast}[true]{}%
 \define@boolkey[psset]{optexp}[POE@]{savebeampoints}[true]{}%
 \define@boolkey[psset]{optexp}[POE@]{loadbeampoints}[true]{}%
+\define@key[psset]{optexp}{skipconn}{\pst@checknum{#1}\POE@key@skipconn}%
 \define@boolkey[psset]{optexp}[POE@]{beaminside}[true]{}%
 \define@boolkey[psset]{optexp}[POE@]{connectplanes}[true]{}%
 \define@boolkey[psset]{optexp}[POE@]{beamangleabs}[true]{}%
+\psset{skipconn=0}%
 %    \end{macrocode}
 %
 % \begin{macro}{\begin@BeamObj}
@@ -6031,6 +6034,7 @@
      /stopinside \ifPOE@stopinside true \else false \fi def
      /connectplanes \ifPOE@connectplanes true \else false \fi def
      /beamangleabs \ifPOE@beamangleabs true \else false \fi def
+     /skipconn \POE@key@skipconn\space def
   }%
 }%
 %    \end{macrocode}
@@ -9773,7 +9777,7 @@ tx@OptexpDict begin
     } ifelse
     2 copy
     ToVec /Curr ED 
-    draw
+    draw PN skipconn 1 add gt and
     counttomark 3 roll
     /CurrCenterTmp /CurrCenter load def
     /lastBeamPointTmp /Curr load def
@@ -9970,7 +9974,7 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % \PSvar{draw} indicates if the beam to the current interface should be drawn.
 %    \begin{macrocode}
-    /draw ED
+    PN skipconn 1 add gt and /draw ED
 %    \end{macrocode}
 % \PSvar{Mode} stores the mode (transmittive or reflective) of the current interface.
 %    \begin{macrocode}
