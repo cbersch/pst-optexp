@@ -730,7 +730,8 @@
 % \makeatletter\have@multicolfalse\makeatother
 % \PrintChanges
 % \endgroup
-% \changes{3.0}{NN}{Renamed options \opt{optgrid*} to \opt{grating*}.}
+% \changes{3.0}{NN}{Renamed \nxLcs{optgrid} to \nxLcs{optgrating} and options \opt{optgrid*} to \opt{grating*}.}
+% \changes{3.0}{NN}{Make \opt{angle} and \opt{compshift} work for all components.}
 % \changes{1.1}{2007/09/06}{Enhanced labeling features}
 % \changes{1.1}{2007/09/06}{New parameter \opt{labelref}}
 % \changes{1.1}{2007/09/06}{\opt{labelrelative} is deprecated, superseeded by \opt{labelref}}
@@ -1024,6 +1025,7 @@
   \optbox[compname=MyBox](0,1)(2,2)
   \psdot[linecolor=red](\oenodeIn{MyBox})% use the compname
   \psdot[linecolor=blue](\oenodeOut{1})  % use the number
+  \psdot[linecolor=green](\oenodeCenter{})  % the last component
 \end{pspicture}
 \end{LTXexample}
 % \end{optionlist}
@@ -1082,6 +1084,35 @@
 % available identifiers are not listed explicitely.
 % \fi
 % \end{ltxsyntax}
+%
+% \begin{optionlist}
+%   \boolitem[false]{showoptdots} 
+%   \ifGERMAN 
+%   Markiert einige der speziellen Komponentenknoten: die schwarzen Punkte sind
+%   die normalen und die schwarzen Kreuze die transformierten Referenzknoten
+%   (\prettyref{sec:refnode}), der rote Punkt ist der Mittelpunktknoten
+%   (\prettyref{sec:centernode}) und das rote Kreuz der Beschriftungsknoten
+%   (\prettyref{sec:labelnode}).
+%   \fi
+%   \ifENGLISH 
+%   Draw some special component nodes for debugging: The black points are the
+%   normal and the black crosses are the transformed reference nodes
+%   (\prettyref{sec:refnode}), the red point is the center node
+%   (\prettyref{sec:centernode}), and the red cross is the label node
+%   (\prettyref{sec:labelnode}).
+%   \fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(3,2)
+\mirror[showoptdots, angle=10, beam](0,1)(1.9,1)(1.9,0)
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+% \end{optionlist}
 % 
 % \ifGERMAN\subsubsection{Referenzknoten}\fi
 % \ifENGLISH\subsubsection{Reference nodes}\fi
@@ -1509,9 +1540,7 @@
 %   \boolitem[false]{optional} Mark an object as optional by applying
 %   the \opt{OptionalStyle} style.
 %
-%   \styleitem{OptionalStyle} Can be used with every object and marks it
-%   as optional. The style of an optional element can be configured by
-%   changing the style \nxLkeyword{OptionalStyle}. 
+%   \styleitem{OptionalStyle} The style of an object marked as \nxLkeyword{optional}. Can be used with any components.
 % \iffalse
 %<*ignore>
 % \fi
@@ -1524,22 +1553,6 @@
 %</ignore>
 % \fi
 % 
-% \boolitem[false]{showoptdots}
-% Draw some internal nodes which are used to place the object and the
-% label. The black points are used for positioning, the red points mark
-% the label references.
-% \iffalse
-%<*ignore>
-% \fi
-\begin{LTXexample}
-\begin{pspicture}(3,2)
-\mirror[showoptdots,
-          beam](0,1)(1.9,1)(1.9,0){mirror}
-\end{pspicture}
-\end{LTXexample}
-% \iffalse
-%</ignore>
-% \fi
 % \end{optionlist}
 %
 % \ifGERMAN
@@ -7585,10 +7598,12 @@
 %    \begin{macrocode}
   \ifPOE@debug@showoptdots
     \ifPOE@backlayer
-      \psdot[linecolor=green](\oenodeCenter{})
-      \psdot[linecolor=red](\oenodeLabel{})
+      \psdot[linecolor=red](\oenodeCenter{})
+      \psdot[linecolor=red, dotstyle=x, dotscale=1.5](\oenodeLabel{})
       \psdot[linecolor=black](\oenodeRefA{})
       \psdot[linecolor=black](\oenodeRefB{})
+      \psdot[linecolor=black, dotstyle=x, dotscale=1.5](\oenodeTrefA{})
+      \psdot[linecolor=black, dotstyle=x, dotscale=1.5](\oenodeTrefB{})
     \fi
   \fi
   \ifPOE@debug@showifcnodes
