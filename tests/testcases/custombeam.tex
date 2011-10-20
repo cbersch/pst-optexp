@@ -13,10 +13,10 @@
   \pnode(5,1){B}
   \MOLensIn[abspos=0.5](A)(B){}
   \MOLensOut[abspos=2](A)(B){}
-  \custombeam[addtoBeam={arrows=->, linecolor=blue}]{%
-    \drawbeam[addtoBeam={linecolor=red},beampos=0.1, n=2, beaminsidelast]{(A)}{1}{2}
-    \drawbeam[beamangleabs, beamangle=45]{2}{(B)}
-  }
+  \addtopsstyle{Beam}{arrows=->, linecolor=blue}
+  \psset{loadbeampoints, savebeampoints}
+  \drawbeam[beampos=0.1, n=2, beaminsidelast]{(A)}{1}{2}
+  \drawbeam[beamangleabs, beamangle=45]{2}{(B)}
 \end{pspicture}
 \vspace*{1cm}
 
@@ -28,13 +28,12 @@
    \MOLensOut[abspos=1](A)(B){}
    \MOLensOut[abspos=4](A)(B){}
    \MOLensIn[abspos=4.5](A)(B){}
-   \custombeam{%
-     \drawbeam[beampos=0 0.1, stopinside]{(A)}{1}
-     \drawbeam[beamangle=45]{1}{2}
-     \drawbeam[stopinside]{2}{3}
-     \drawbeam[beamangle=-45]{3}{4}
-     \drawbeam{4}{(B)}
-   }%
+   \psset{loadbeampoints, savebeampoints}
+   \drawbeam[beampos=0 0.1, stopinside]{(A)}{1}
+   \drawbeam[beamangle=45]{1}{2}
+   \drawbeam[stopinside]{2}{3}
+   \drawbeam[beamangle=-45]{3}{4}
+   \drawbeam{4}{(B)}
  \end{optexp}
 \end{pspicture}
 \bigskip
@@ -48,17 +47,16 @@
    \MOLensOut[abspos=4](A)(B)
    \MOLensIn[abspos=4.5](A)(B)
    \addtopsstyle{Beam}{fillstyle=solid, fillcolor=red, opacity=0.3}
-   \custombeam{%
-     \drawwidebeam[beamwidth=0.2, stopinside]{(A)}{1}
-     \drawwidebeam[beamdiv=45]{1}{2}
-     \drawwidebeam[stopinside]{2}{3}
-     \drawwidebeam[beamdiv=-40]{3}{4}
-%     \drawwidebeam{4}{(B)}
-   }%
+   \psset{loadbeampoints, savebeampoints}
+   \drawwidebeam[beamwidth=0.2, stopinside]{(A)}{1}
+   \drawwidebeam[beamdiv=45]{1}{2}
+   \drawwidebeam[stopinside]{2}{3}
+   \drawwidebeam[beamdiv=-40]{3}{4}
+   % \drawwidebeam{4}{(B)}
  \end{optexp}
 \end{pspicture}
 \bigskip
-\end{document}
+
 \begin{pspicture}[showgrid=true](4,5)
   \psset{n=1}
   \begin{optexp}
@@ -74,15 +72,12 @@
   \optbox[labeloffset=0, optboxwidth=1, endbox](G)(B){CCD}
   \addtopsstyle{Beam}{beamwidth=0.1, linewidth=0.2\pslinewidth,fillstyle=solid, opacity=0.2,
     fillcolor=green , beaminside}%, beamConnectComp}
-  \custombeam{%
-    \drawwidebeam[beaminsidelast]{1}{2}
-    \drawwidebeam[beamdiv=-30]{2}{4}
-    \drawwidebeam[beaminsidefirst, beaminsidelast]{4}{5}{6}
-    % Note: beamdiv here is positive for a contracting beam
-    % because upper and lower beams were crossed before.
-    \drawwidebeam[beamdiv=4]{6}{7}{8}
-    \drawwidebeam[beaminsidefirst]{8}{9}
-  }%
+  \psset{loadbeampoints, savebeampoints}
+  \drawwidebeam[beaminsidelast]{1}{2}
+  \drawwidebeam[beamdiv=-30]{2}{4}
+  \drawwidebeam[beaminsidefirst, beaminsidelast]{4}{5}{6}
+  \drawwidebeam[beamdiv=-4]{6}{7}{8}
+  \drawwidebeam[beaminsidefirst]{8}{9}
   \end{optexp}
 \end{pspicture}
 \end{document}
