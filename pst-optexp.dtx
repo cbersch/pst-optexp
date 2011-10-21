@@ -22,7 +22,7 @@
 %<stylefile>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<stylefile>\ProvidesPackage{pst-optexp}
 %<*stylefile>
-    [2011/10/06 v3.0alpha Optical experimental setups with PSTricks]
+    [2011/10/21 v3.0alpha Optical experimental setups with PSTricks]
 %</stylefile>
 %
 %<*driver>
@@ -64,7 +64,7 @@
 \makeatletter\renewcommand*\SX@Info{}\makeatother
 \definecolor{colKeys}{rgb}{0,0,0}
 \definecolor{colIdentifier}{rgb}{0,0,0}
-\colorlet{colComments}{DOrange!70!white}
+\colorlet{colComments}{green!80!black}
 \definecolor{colString}{rgb}{0,0.5,0} 
 \newlength{\codeoverhang}
 \setlength{\codeoverhang}{0.5\marginparwidth+0.5\marginparsep}
@@ -1512,16 +1512,25 @@
 % \item[\smash{\begin{tabular}[t]{@{}r}\opt{newOptComp}\\\opt{addtoOptComp}\end{tabular}}]
 % \xLkeyword{newOptComp}\xLkeyword{addtoOptComp}
 % \ifGERMAN
+% Bestimmt das Aussehen aller optischen Komponenten. Die üblichen Parameter, wie
+% z.B. \opt{linestyle}, würden auch die Verbindungen beeinflussen, die mit der
+% Komponente zusammen gezeichnet werden (\Lkeyword{beam}, \Lkeyword{fiber}
+% usw.). Mit \nxLkeyword{newOptComp} und \nxLkeyword{addtoOptComp} kann der Stil
+% für einzelne Kompoenenten oder zusammen mit \nxLcs{newpsobject} im optionalen
+% Argument verwendet werden.
 % \fi
 % \ifENGLISH
-% Affects the appearence of all optical components. Using the standard graphics
-% parameters (\opt{linestyle} etc) would change also the connections that are
-% drawn within the component.
+% Affects the appearence of all optical components. Using standard graphics
+% parameters like e.g. \opt{linestyle} would change also the connections that
+% are drawn together with the component (\Lkeyword{beam}, \Lkeyword{fiber}
+% etc.). Use the key \nxLkeyword{newOptComp} and \nxLkeyword{addtoOptComp} to
+% change the style for single components or for use with \nxLcs{newpsobject} via
+% the optional argument.
 % \fi
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}
+\begin{LTXexample}[morekeywords={[21]{addtoOptComp}}]
 \begin{pspicture}(3,4)
   \psset{beam}
   % wrong, also beam width is changed
@@ -1534,16 +1543,28 @@
 %</ignore>
 % \fi
 % 
-%   \boolitem[false]{optional} Mark an object as optional by applying
-%   the \opt{OptionalStyle} style.
+% \boolitem[false]{optional}
+% \ifGERMAN
+% Markiert eine Komponente als optional indem der Stil
+% \nxLkeyword{OptionalStyle} angewendet wird.
+% \fi
+% \ifENGLISH
+% Mark an object as optional by applying the \opt{OptionalStyle} style.
+% \fi
 %
-%   \styleitem{OptionalStyle} The additional style of an object marked as
-%   \nxLkeyword{optional}, applies to the same parts as the \nxLkeyword{OptComp}
-%   style.
+% \styleitem{OptionalStyle} 
+% \ifGERMAN
+% Der Stil wird zusätzlich zu \nxLkeyword{OptComp} auf Komponenten angewendet,
+% die als \nxLkeyword{optional} markiert sind.
+% \fi
+% \ifENGLISH
+% This style is applied in addition to \nxLkeyword{OptComp} to components marked
+% as \nxLkeyword{optional}.
+% \fi
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}
+\begin{LTXexample}[morekeywords={[21]{optional}}]
 \begin{pspicture}(3,1.5)
 \lens[optional, beam](0,1)(3,1)
 \end{pspicture}
@@ -1552,18 +1573,24 @@
 %</ignore>
 % \fi
 % 
-% \nxLkeyword{OptionalStyle} is is applied after \nxLkeyword{OptComp} so that it
+% \ifGERMAN
+% \nxLkeyword{OptionalStyle} wird nach \nxLkeyword{OptComp} angewendet, so dass
+% einzelne Einstellungen überschrieben werden können.
+% \fi
+% \ifENGLISH
+% \nxLkeyword{OptionalStyle} is applied after \nxLkeyword{OptComp} so that it
 % can overwrite the general settings.
+% \fi
 %
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}
+\begin{LTXexample}[morekeywords={[21]{OptComp, OptionalStyle, optional}}]
 \begin{pspicture}(3,1.5)
 \addtopsstyle{OptComp}{linewidth=3\pslinewidth, linecolor=red}
 \newpsstyle{OptionalStyle}{linecolor=blue}
 \lens(0,1)(2,1)
-% linecolor overwritten, linewidth of OptComp
+% linecolor overwritten, linewidth kept
 \lens[optional](0,1)(3,1)
 \end{pspicture}
 \end{LTXexample}
@@ -1618,7 +1645,7 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}
+\begin{LTXexample}[morekeywords={[21]{rotateref}}]
 \begin{pspicture}(3,2)
   \optbox[angle=20, beam, rotateref=l, 
             label=0 . . relative](0,1)(3,1){box}
@@ -1634,7 +1661,7 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}[linerange={1-3,7-7}]
+\begin{LTXexample}[linerange={1-3,7-7}, morekeywords={[21]{compshift}}]
 \begin{pspicture}(3,2)
   \pnode(0,1){A}\pnode(2.7,1){B}
   \lens[compshift=0.3](A)(B){L}
@@ -1643,7 +1670,7 @@
   \psdot(\oenodeRefB{})\uput[-90](\oenodeRefB{}){RefB}
 \end{pspicture}
 \end{LTXexample}
-\begin{LTXexample}[linerange={1-3,7-7}]
+\begin{LTXexample}[linerange={1-3,7-7}, morekeywords={[21]{compshift}}]
 \begin{pspicture}(3,2) 
   \pnode(0,1){A}\pnode(2,0){B}
   \mirror[compshift=0.3](A)(2,1)(B){mirror}
@@ -1687,7 +1714,7 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}
+\begin{LTXexample}[morekeywords={[21]{position}}]
 \begin{pspicture}(3,1.5) 
   \lens[beam, position=0.8](0,1)(3,1){L}
 \end{pspicture}
@@ -1706,7 +1733,7 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}
+\begin{LTXexample}[morekeywords={[21]{abspos}}]
 \begin{pspicture}(3,1.5) 
   \lens[beam, abspos=1](0,1)(3,1){L}
 \end{pspicture}
@@ -1736,7 +1763,7 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}[linerange={1-2,6-6}]
+\begin{LTXexample}[linerange={1-2,6-6}, morekeywords={[21]{labeloffset}}]
 \begin{pspicture}(3,1.8)
   \optbox[beam, labeloffset=1](0,1.5)(3,0.8){label}
   \psdot[linecolor=blue](\oenodeCenter{})
@@ -1758,7 +1785,7 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}[linerange={1-3,6-6}]
+\begin{LTXexample}[linerange={1-3,6-6}, morekeywords={[21]{labeloffset, labelalign}}]
 \begin{pspicture}(3,1.8)
   \psset{beam, labeloffset=1}
   \optbox[labelalign=bl](0,1.5)(3,0.8){label}
@@ -1784,7 +1811,7 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}[linerange={1-2,4-6,25-25}]
+\begin{LTXexample}[linerange={1-2,4-6,25-25}, morekeywords={[21]{labelangle}}]
 \begin{pspicture}(-0.3,0)(2,3.7)
   \psset{labeloffset=1, optboxwidth=1, arrowscale=1.5, arrowinset=0}
   \begin{optexp}
@@ -1816,34 +1843,41 @@
 % \fi
 % 
 % \choitem[relgrav]{labelref}{relative, relgrav, global}
-% Set the reference coordinate system for the \nxLkeyword{labelangle} and the orientation of
-% the label text. The detailed behaviour is best illustrated looking at
-% the following three examples.
-% 
+% \ifGERMAN
+% Wählt das Bezugssystem für \nxLkeyword{labelangle} und die Orientierung der
+% Beschriftung. Das genaue Verhalten kann am besten mit den drei folgenden
+% Beispielen erläutert werden.
+% \fi
+% \ifENGLISH
+% Set the reference coordinate system for the \nxLkeyword{labelangle} and the
+% orientation of the label text. The detailed behaviour is best illustrated
+% looking at the following three examples.
+% \fi
+%
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}
+\begin{LTXexample}[morekeywords={[21]{label}}]
 \begin{pspicture}(-2,-2)(2,2)
-  \psset{endbox, optboxwidth=1, optboxheight=0.6}
+  \psset{endbox, optboxwidth=1, optboxheight=0.6, label=0 . . relative}
   \multido{\i=0+45}{8}{%
-    \optbox[label=0 . . relative](0,0)(1;\i){\i}
+    \optbox(0,0)(1;\i){\i}
   }
 \end{pspicture}
 \end{LTXexample}
 
-\begin{LTXexample}
+\begin{LTXexample}[morekeywords={[21]{labelref}}]
 \begin{pspicture}(-2,-2)(2,2)
-  \psset{endbox, optboxwidth=1, optboxheight=0.6}
+  \psset{endbox, optboxwidth=1, optboxheight=0.6, labelref=relgrav}
   \multido{\i=0+72}{5}{%
-    \optbox[labelref=relgrav](0,0)(1;\i){\i}
+    \optbox(0,0)(1;\i){\i}
   }
 \end{pspicture}
 \end{LTXexample}
 
-\begin{LTXexample}
+\begin{LTXexample}[morekeywords={[21]{labelref}}]
 \begin{pspicture}(-2,-2)(2,2)
-  \psset{endbox, optboxwidth=1, optboxheight=0.6}
+  \psset{endbox, optboxwidth=1, optboxheight=0.6, labelref=global}
   \multido{\i=0+72}{5}{%
     \optbox[labelref=global](0,0)(1;\i){\i}
   }
@@ -1872,10 +1906,10 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}
+\begin{LTXexample}[morekeywords={[21]{label}}]
 \begin{pspicture}(0,0)(4,3)
   \psset{endbox, beam}
-  \optbox[label=0.7](1.5,2.5)(2.5,2.5){label}
+  \optbox[label=0.7](1.5,2.5)(2.5,2.5){box}
   \optbox[label=1 -45](1.5,1)(2.5,1){$-45$}
   \optbox[label=0 . . relative]%
          (0.6,0.6)(0.6,1.6){relative}
@@ -1907,7 +1941,7 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}
+\begin{LTXexample}[morekeywords={[21]{lens}}]
 \begin{pspicture}(3,1.5)
 \lens[beam](0,1)(3,1){L}
 \end{pspicture}
@@ -1923,7 +1957,7 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}
+\begin{LTXexample}[morekeywords={[21]{lensheight}}]
 \begin{pspicture}(3,1.5)
 \lens[beam](0,1)(3,1){L1}
 \lens[lensheight=0.5](2,1)(3,1){L2}
@@ -1953,7 +1987,7 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}
+\begin{LTXexample}[morekeywords={[21]{lensradiusleft, lensradiusright}}]
 \begin{pspicture}(3,1.5)
   \psset{lensradiusright=0, beam}
   \lens[lensradiusleft=1](0,1)(1.5,1){$R > 0$}
@@ -1974,7 +2008,7 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}
+\begin{LTXexample}[morekeywords={[21]{lensradius}}]
 \begin{pspicture}(3,1.5)
   \lens[lensradius=-2, beam](0,1)(3,1){L1}
 \end{pspicture}
@@ -2002,7 +2036,7 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}
+\begin{LTXexample}[morekeywords={[21]{lenswidth}}]
 \begin{pspicture}(3,2)
   \lens[lenswidth=0.5, beam](0,1)(2,1){thicklens}
   \lens[lenswidth=0.1, beam](2,1)(3,1){}
@@ -2022,7 +2056,7 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}
+\begin{LTXexample}[morekeywords={[21]{lens}}]
 \begin{pspicture}(3,1.5)
   \lens[lens=1](0,1)(1,1){L1}
   \lens[lens=-2 1, beam](0,1)(3,1){L2}
@@ -2046,7 +2080,7 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}
+\begin{LTXexample}[morekeywords={[21]{optplate}}]
 \begin{pspicture}(3,1.5)
   \optplate[beam](0,1)(3,1){filter}
 \end{pspicture}
@@ -2056,21 +2090,14 @@
 % \fi
 % \end{ltxsyntax}
 % \begin{optionlist}
-%   \numitem[1]{plateheight} \ifGERMAN Die Höhe des Plättchens.\fi\ifENGLISH The height of the plate.\fi
+%   \numitem[1]{plateheight} 
+%   \ifGERMAN Die Höhe des Plättchens.\fi\ifENGLISH The height of the plate.\fi
 % 
 %   \optitem[2\nxLcs{pslinewidth}]{platelinewidth}{\prm{num} or \prm{dimen}} 
 %   \ifGERMAN \linewidthexplanation{des Plättchens}{Plättchen}\fi
 %   \ifENGLISH \linewidthexplanation{plate}{plates}\fi
 % \iffalse
 %<*ignore>
-% \fi
-\begin{LTXexample}
-\begin{pspicture}(3,1.5)
-  \optplate[angle=10, beam](0,1.2)(3,1.2){glass plate}
-\end{pspicture}
-\end{LTXexample}
-% \iffalse
-%</ignore>
 % \fi
 % \end{optionlist}
 % 
@@ -2085,7 +2112,7 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}
+\begin{LTXexample}[morekeywords={[21]{optretplate}}]
 \begin{pspicture}(3,1.5)
   \optretplate[beam](0,1)(3,1){$\nicefrac{\lambda}{2}$}
 \end{pspicture}
@@ -2107,7 +2134,7 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}
+\begin{LTXexample}[morekeywords={[21]{pinhole}}]
 \begin{pspicture}(3,1.5)
   \pinhole[beam](0,1)(3,1){PH}
 \end{pspicture}
@@ -2118,10 +2145,10 @@
 % \end{ltxsyntax}
 % 
 % \begin{optionlist}
-% \numitem[1]{outerheight} \ifGERMAN Die Höhe des Pinholes.\fi\ifENGLISH The height of the pinhole.\fi
+% \numitem[1]{outerheight} \ifGERMAN Die Höhe der Lochblende.\fi\ifENGLISH The height of the pinhole.\fi
 % \numitem[0.1]{innerheight} \ifGERMAN Die Höhe des Lochs.\fi\ifENGLISH The height of the hole.\fi
 % \optitem[2\nxLcs{pslinewidth}]{phlinewidth}{\prm{num} or \prm{dimen}}
-% \ifGERMAN \linewidthexplanation{des Pinholes}{Pinholes}\fi
+% \ifGERMAN \linewidthexplanation{der Lochblende}{Lochblende}\fi
 % \ifENGLISH \linewidthexplanation{pinhole}{pinholes}\fi
 % 
 % \numitem[0]{phwidth} 
@@ -2137,10 +2164,10 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}
+\begin{LTXexample}[morekeywords={[21]{phwidth}}]
 \begin{pspicture}(3,1.5)
   \pinhole[beam, phwidth=-0.1](0,1)(1.5,1){neg}
-  \pinhole[beam, phwidth=0.05](1.5,1)(3,1){neg}
+  \pinhole[beam, phwidth=0.05](1.5,1)(3,1){pos}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -2154,7 +2181,7 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}
+\begin{LTXexample}[morekeywords={[21]{crystal}}]
 \begin{pspicture}(3,1.3)
 \crystal[beam](0,1)(3,1){Crystal}
 \end{pspicture}
@@ -2183,7 +2210,7 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}
+\begin{LTXexample}[morekeywords={[21]{voltage, caxisinv}}]
 \begin{pspicture}(0,0.5)(3,1.6)
 \crystal[voltage, caxisinv, beam](0,1)(3,1)
 \end{pspicture}
@@ -2202,7 +2229,7 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}
+\begin{LTXexample}[morekeywords={[21]{voltage}}]
 \begin{pspicture}(0,0.4)(3,1.5)
 \crystal[voltage, beam](0,1)(3,1)
 \end{pspicture}
@@ -2217,7 +2244,7 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}
+\begin{LTXexample}[morekeywords={[21]{lamp}}]
 \begin{pspicture}(0,0.4)(3,1.7)
 \crystal[lamp, beam](0,1)(3,1)
 \end{pspicture}
@@ -2234,7 +2261,7 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}
+\begin{LTXexample}[morekeywords={[21]{voltage, lamp}}]
 \begin{pspicture}(3,1.7)
 \crystal[fillstyle=solid, fillcolor=yellow!90!black, 
            label=1.2 -45, voltage, 
@@ -2254,7 +2281,7 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}
+\begin{LTXexample}[morekeywords={[21]{optbox}}]
 \begin{pspicture}(3,2)
   \optbox[beam](0,0)(3,2){box}
 \end{pspicture}
@@ -2265,42 +2292,28 @@
 % \end{ltxsyntax}
 % 
 % \begin{optionlist}
-% \numitem[0.8]{optboxheight}
 % \numitem[1.4]{optboxwidth}
+% \ifGERMAN Die Breite der Box.\fi\ifENGLISH The width of the box.\fi
+%
+% \numitem[0.8]{optboxheight}
+% \ifGERMAN Die Höhe der Box.\fi\ifENGLISH The height of the box.\fi
+%
 % \boolitem[false]{endbox}
+% \ifGERMAN 
+% Setzt die Box ans Ende der Referenzlinie. Mit \Lkeyword{abspos} oder
+% \Lkeyword{position} wäre das im Allgemeinen recht schwierig.
+% \fi
+% \ifENGLISH
+% Place the box at the end of the reference line. With \Lkeyword{abspos} or
+% \Lkeyword{position} this is in general not so easy to achieve.
+% \fi
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}
+\begin{LTXexample}[morekeywords={[21]{endbox}}]
 \begin{pspicture}(3,2)
   \optbox[beam, endbox, label=0 . . relative]%
            (0,0)(1.5,1){box}
-\end{pspicture}
-\end{LTXexample}
-% \iffalse
-%</ignore>
-% \fi
-% 
-% \numitem{refractiveindex}
-% Together with the parameter \Lkeyword{refractiveindex} this
-% can be exploited to sketch the refraction through a tilted homogeneous
-% medium (e.g. a glass plate). Then, however, the reference nodes for the
-% beam connection must be corrected which is rather easy using the outer
-% nodes of the object as coordinate references and the 
-% node
-% operator.
-% 
-% \medskip
-% 
-% \iffalse
-%<*ignore>
-% \fi
-\begin{LTXexample}
-\begin{pspicture}(3,1.5)
-  \pnode(0,1){A}\pnode(3,1){B}
-  \optbox[labeloffset=0.8, optboxwidth=0.5, optboxheight=1, angle=20, n=2.3, compname=Box](A)(B){glass plate}
-  \drawbeam{(A|\oenodeIn{Box})}{Box}
-  \drawbeam{Box}{(B|\oenodeOut{Box})}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -2316,7 +2329,7 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}
+\begin{LTXexample}[morekeywords={[21]{optdetector}}] 
 \begin{pspicture}(3,1.2)
   \optdetector[beam](0,0)(1.5,1){detector}
 \end{pspicture}
@@ -2345,7 +2358,7 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}
+\begin{LTXexample}[morekeywords={[21]{dettype}}] 
 \begin{pspicture}(3,1.5)
   \optdetector[beam, dettype=diode](0,0)(1.5,1){detector}
 \end{pspicture}
@@ -2363,7 +2376,7 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}
+\begin{LTXexample}[morekeywords={[21]{optdiode}}] 
 \begin{pspicture}(3,2)
    \optdiode[beam, beaminside=false](0,1)(3,1){Diode}
 \end{pspicture}
@@ -2390,7 +2403,7 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}
+\begin{LTXexample}[morekeywords={[21]{doveprism}}] 
 \begin{pspicture}(3,1.5)
   \doveprism[beam](0,1)(3,1){Dove}
 \end{pspicture}
@@ -2421,7 +2434,7 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}
+\begin{LTXexample}[morekeywords={[21]{polarization}}] 
 \begin{pspicture}(3,1)
   \polarization[beam](0,0.5)(3,0.5)
 \end{pspicture}
@@ -2449,7 +2462,7 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}
+\begin{LTXexample}[morekeywords={[21]{poltype}}] 
 \begin{pspicture}(3,5)
   \psset{beam}
   \begin{optexp}
@@ -2477,7 +2490,7 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}
+\begin{LTXexample}[morekeywords={[21]{mirror}}] 
 \begin{pspicture}(3,2)
   \mirror[beam](0,0)(1.8,1.5)(0,2){M}
 \end{pspicture}
