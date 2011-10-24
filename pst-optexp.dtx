@@ -5244,7 +5244,7 @@
 \def\POE@str@bsstyle@cube{cube}
 \def\POE@str@bsstyle@plate{plate}
 \def\POE@str@autonode{auto}
-\def\pst@OptexpVerb#1{\pst@Verb{\pst@optexpdict #1 end }}%
+\def\POE@Verb#1{\pst@Verb{\pst@optexpdict #1 end }}%
 %    \end{macrocode}
 %
 % Some strings which control the naming scheme of internal nodes and components.
@@ -5385,34 +5385,33 @@
 \define@key[psset]{optexp}{labelalign}{\def\POE@key@labelalign{#1}}
 \define@key[psset]{optexp}{labelref}{\edef\POE@key@labelref{#1}}
 \define@key[psset]{optexp}{label}{%
-  \pst@expandafter\psset@@label{#1} {} {} {} {} {}\@nil
+  \pst@expandafter\POE@psset@@label{#1} {} {} {} {} {}\@nil
 }%
 %    \end{macrocode}
 % parameters: offset angle align ref, intermediate ones can be skipped with a dot
 %    \begin{macrocode}
-\def\psset@@label#1 #2 #3 #4 #5\@nil{%
-  \edef\POE@dot{.}%
-  \edef\pst@temp{#4}%
-  \ifx\pst@temp\@empty\else
-    \ifx\pst@temp\POE@dot\else
+\def\POE@psset@@label#1 #2 #3 #4 #5\@nil{%
+  \edef\POE@temp{#4}%
+  \ifx\POE@temp\@empty\else
+    \expandafter\ifx\POE@temp.\else
       \psset{labelref=#4}%
     \fi
   \fi
-  \edef\pst@temp{#3}
-  \ifx\pst@temp\@empty\else
-    \ifx\pst@temp\POE@dot\else
+  \edef\POE@temp{#3}
+  \ifx\POE@temp\@empty\else
+    \expandafter\ifx\POE@temp.\else
       \psset{labelalign=#3}%
     \fi
   \fi
-  \edef\pst@temp{#2}%
-  \ifx\pst@temp\@empty\else
-    \ifx\pst@temp\POE@dot\else
+  \edef\POE@temp{#2}%
+  \ifx\POE@temp\@empty\else
+    \expandafter\ifx\POE@temp.\else
       \psset{labelangle=#2}%
     \fi
   \fi
-  \edef\pst@temp{#1}%
-  \ifx\pst@temp\@empty\else
-    \ifx\pst@temp\POE@dot\else
+  \edef\POE@temp{#1}%
+  \ifx\POE@temp\@empty\else
+    \expandafter\ifx\POE@temp.\else
       \psset{labeloffset=#1}%
     \fi
   \fi
@@ -5440,28 +5439,28 @@
 \define@key[psset]{optexp}{lensradiusright}{\pst@checknum{#1}\POE@key@lensradiusright}
 \define@boolkey[psset]{optexp}[POE@]{thicklens}[true]{}
 \define@key[psset]{optexp}{lensradius}{%
-  \edef\pst@temp{#1}%
-  \ifx\pst@temp\@empty\else
+  \edef\POE@temp{#1}%
+  \ifx\POE@temp\@empty\else
     \psset{lensradiusleft=#1, lensradiusright=#1}%
   \fi
 }%
 \define@key[psset]{optexp}{lens}{%
-  \pst@expandafter\psset@@lens{#1} {} {} {} {} {}\@nil
+  \pst@expandafter\POE@psset@@lens{#1} {} {} {} {} {}\@nil
 }%
 %    \end{macrocode}
 % parameters: radiusleft radiusright height width.
 %    \begin{macrocode}
-\def\psset@@lens#1 #2 #3 #4 #5\@nil{%
-  \edef\pst@temp{#4}%
-  \ifx\pst@temp\@empty\else
+\def\POE@psset@@lens#1 #2 #3 #4 #5\@nil{%
+  \edef\POE@temp{#4}%
+  \ifx\POE@temp\@empty\else
      \psset{lenswidth=#4}%
   \fi
-  \edef\pst@temp{#3}%
-  \ifx\pst@temp\@empty\else
+  \edef\POE@temp{#3}%
+  \ifx\POE@temp\@empty\else
      \psset{lensheight=#3}
   \fi
-  \edef\pst@temp{#2}%
-  \ifx\pst@temp\@empty
+  \edef\POE@temp{#2}%
+  \ifx\POE@temp\@empty
      \psset{lensradiusright=#1}%
   \else
      \psset{lensradiusright=#2}%
@@ -5769,7 +5768,7 @@
 \define@key[psset]{optexp}{extnode}{%
    \edef\POE@key@extnode{#1}%
    \ifx\@empty\POE@key@extnode\else
-      \pst@expandafter\psset@@extnode{#1}\@empty,,\@nil
+      \pst@expandafter\POE@psset@@extnode{#1}\@empty,,\@nil
    \fi
 }%
 \psset[optexp]{%
@@ -5778,44 +5777,44 @@
 }%
 \def\POE@key@extnode@xref{0}%
 \def\POE@key@extnode@yref{0}%
-\def\psset@@extnode#1#2,#3,#4\@nil{%
+\def\POE@psset@@extnode#1#2,#3,#4\@nil{%
   \def\POE@key@extnode@xref{0}%
   \def\POE@key@extnode@yref{0}%
   \ifx\@empty#3\@empty
-    \@nameuse{getref@optexp@#1}%
-    \@nameuse{getref@optexp@#2}%
+    \@nameuse{POE@getref@#1}%
+    \@nameuse{POE@getref@#2}%
   \else
     \pst@checknum{#1#2}\POE@key@extnode@xref%
     \pst@checknum{#3}\POE@key@extnode@yref%
   \fi}%
-\def\getref@optexp@c{}%
-\def\getref@optexp@t{\def\POE@key@extnode@yref{1}}%
-\def\getref@optexp@b{\def\POE@key@extnode@yref{-1}}%
-\def\getref@optexp@l{\def\POE@key@extnode@xref{-1}}%
-\def\getref@optexp@r{\def\POE@key@extnode@xref{1}}%
+\def\POE@getref@c{}%
+\def\POE@getref@t{\def\POE@key@extnode@yref{1}}%
+\def\POE@getref@b{\def\POE@key@extnode@yref{-1}}%
+\def\POE@getref@l{\def\POE@key@extnode@xref{-1}}%
+\def\POE@getref@r{\def\POE@key@extnode@xref{1}}%
 \define@key[psset]{optexp}{rotateref}{%
-   \def\pst@temp{#1}%
-   \ifx\@empty\pst@temp\else
-      \pst@expandafter\psset@@rotateref{#1}\@empty,,\@nil
+   \def\POE@temp{#1}%
+   \ifx\@empty\POE@temp\else
+      \pst@expandafter\POE@psset@@rotateref{#1}\@empty,,\@nil
    \fi
 }%
 \def\POE@key@rotate@xref{0}%
 \def\POE@key@rotate@yref{0}%
-\def\psset@@rotateref#1#2,#3,#4\@nil{%
+\def\POE@psset@@rotateref#1#2,#3,#4\@nil{%
   \def\POE@key@rotate@xref{0}%
   \def\POE@key@rotate@yref{0}%
   \ifx\@empty#3\@empty
-    \@nameuse{getref@optexp@rotate@#1}%
-    \@nameuse{getref@optexp@rotate@#2}%
+    \@nameuse{POE@getref@rotate@#1}%
+    \@nameuse{POE@getref@rotate@#2}%
   \else
     \pst@checknum{#1#2}\POE@key@rotate@xref%
     \pst@checknum{#3}\POE@key@rotate@yref%
   \fi}%
-\def\getref@optexp@rotate@c{}%
-\def\getref@optexp@rotate@t{\def\POE@key@rotate@yref{1}}%
-\def\getref@optexp@rotate@b{\def\POE@key@rotate@yref{-1}}%
-\def\getref@optexp@rotate@l{\def\POE@key@rotate@xref{-1}}%
-\def\getref@optexp@rotate@r{\def\POE@key@rotate@xref{1}}%
+\def\POE@getref@rotate@c{}%
+\def\POE@getref@rotate@t{\def\POE@key@rotate@yref{1}}%
+\def\POE@getref@rotate@b{\def\POE@key@rotate@yref{-1}}%
+\def\POE@getref@rotate@l{\def\POE@key@rotate@xref{-1}}%
+\def\POE@getref@rotate@r{\def\POE@key@rotate@xref{1}}%
 \psset[optexp]{rotateref=c}%
 %    \end{macrocode}
 %    \begin{macrocode}
@@ -5825,7 +5824,7 @@
 %    \begin{macrocode}
 \gdef\POE@complist{}%
 \g@addto@macro{\endpspicture}{%
-  \pst@OptexpVerb{ /lastBeamPointUp /lastBeamPointLow /lastBeamPoint 3 { currentdict exch undef } repeat }%
+  \POE@Verb{ /lastBeamPointUp /lastBeamPointLow /lastBeamPoint 3 { currentdict exch undef } repeat }%
   \gdef\POE@complist{}\global\POE@cnt=0\relax
 }%
 %    \end{macrocode}
@@ -5933,12 +5932,12 @@
 \def\POE@getnode#1#2\@nil{%
   \ifx(#1\relax%)
     \POE@getcoor#1#2
-    \edef\oe@temp{{\pst@coor}}%
+    \edef\POE@temp{{\pst@coor}}%
   \else
     \ifnum9<1#1 %
-      \edef\oe@temp{/\POE@str@basicname@prefix\POE@str@basicname@default#1#2\space}%
+      \edef\POE@temp{/\POE@str@basicname@prefix\POE@str@basicname@default#1#2\space}%
     \else
-      \edef\oe@temp{/\POE@str@basicname@prefix#1#2\space}%
+      \edef\POE@temp{/\POE@str@basicname@prefix#1#2\space}%
     \fi
   \fi%
 }%
@@ -5966,19 +5965,19 @@
     \let\psk@angleA\relax
     \let\psk@angleB\relax
     \use@par
-    \def\oe@tempa{#2}
-    \ifx\oe@tempa\@empty
+    \def\POE@tempa{#2}
+    \ifx\POE@tempa\@empty
       \edef\POE@comps{/\POE@getlastcompname\space}
     \else
       \expandafter\POE@getnode#2\@nil
-      \edef\POE@comps{\oe@temp}
+      \edef\POE@comps{\POE@temp}
     \fi
-    \def\oe@tempb{#3}
-    \ifx\oe@tempb\@empty
+    \def\POE@tempb{#3}
+    \ifx\POE@tempb\@empty
       \edef\POE@comps{/\POE@getlastcompname\space \POE@comps}
     \else
       \expandafter\POE@getnode#3\@nil
-      \edef\POE@comps{\oe@temp\space \POE@comps}
+      \edef\POE@comps{\POE@temp\space \POE@comps}
     \fi   
     \ifPOE@backlayer
       \ifx\POE@key@startnode\POE@str@autonode\else
@@ -6001,20 +6000,20 @@
                  \POE@dict{@GetCenter ToVec NearestNode} 
                  \tx@UserCoor){@@B}
       \fi\fi
-      \pst@getcoor{@@A}\pst@tempa
-      \pst@getcoor{@@B}\pst@tempb
+      \pst@getcoor{@@A}\POE@tempa
+      \pst@getcoor{@@B}\POE@tempb
       \ifx\psk@angleA\relax
-        \psset{angleA=! \POE@dict{\pst@tempb \pst@tempa \POE@comps exch RelFiberAngle}}%
+        \psset{angleA=! \POE@dict{\POE@tempb \POE@tempa \POE@comps exch RelFiberAngle}}%
       \else
         \ifPOE@relangle
-          \psset{angleA=! \POE@dict{\pst@tempb \pst@tempa \POE@comps exch RelFiberAngle} \psk@angleA\space add}%
+          \psset{angleA=! \POE@dict{\POE@tempb \POE@tempa \POE@comps exch RelFiberAngle} \psk@angleA\space add}%
         \fi
       \fi
       \ifx\psk@angleB\relax
-        \psset{angleB=! \POE@dict{\pst@tempa \pst@tempb \POE@comps RelFiberAngle}}%
+        \psset{angleB=! \POE@dict{\POE@tempa \POE@tempb \POE@comps RelFiberAngle}}%
       \else
         \ifPOE@relangle
-          \psset{angleB=! \POE@dict{\pst@tempa \pst@tempb \POE@comps RelFiberAngle} \psk@angleB\space add }%
+          \psset{angleB=! \POE@dict{\POE@tempa \POE@tempb \POE@comps RelFiberAngle} \psk@angleB\space add }%
       \fi\fi
       \nccurve{@@A}{@@B}
     \fi
@@ -6199,7 +6198,7 @@
       savebeampoints }%
   \fi
   \end@BeamObj
-  \pst@OptexpVerb{ { ToVec def } if }%
+  \POE@Verb{ { ToVec def } if }%
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -6300,7 +6299,7 @@
       savebeampoints }%
   \fi
   \end@BeamObj
-  \pst@OptexpVerb{ { ToVec def ToVec def } if }%
+  \POE@Verb{ { ToVec def ToVec def } if }%
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -6314,43 +6313,43 @@
 %    \end{macrocode}
 % \end{macro}
 %    \begin{macrocode}
-\def\poe@getcomprange#1-#2\END{%
+\def\POE@getcomprange#1-#2\END{%
   \ifx\\#2\\%
     \ifx\\#1\\%
       % empty option
-      \edef\poe@firstcomp{\the\POE@cnt}%
-      \edef\poe@lastcomp{\the\POE@cnt}%
+      \edef\POE@firstcomp{\the\POE@cnt}%
+      \edef\POE@lastcomp{\the\POE@cnt}%
     \else
-      \edef\poe@firstcomp{#1}%
-      \edef\poe@lastcomp{#1}%
+      \edef\POE@firstcomp{#1}%
+      \edef\POE@lastcomp{#1}%
     \fi
   \else
     \ifx\\#1\\%
-      \edef\poe@firstcomp{1}%
+      \edef\POE@firstcomp{1}%
     \else
-      \edef\poe@firstcomp{#1}%
+      \edef\POE@firstcomp{#1}%
     \fi
-    \poe@getlastcomp#2%
+    \POE@getlastcomp#2%
   \fi
-  \ifnum\poe@firstcomp<1
-    \def\poe@firstcomp{1}%
-  \else\ifnum\poe@firstcomp>\the\POE@cnt
-    \edef\poe@firstcomp{\the\POE@cnt}%
+  \ifnum\POE@firstcomp<1
+    \def\POE@firstcomp{1}%
+  \else\ifnum\POE@firstcomp>\the\POE@cnt
+    \edef\POE@firstcomp{\the\POE@cnt}%
   \fi\fi
-  \ifnum\poe@lastcomp>\the\POE@cnt
-    \edef\poe@lastcomp{\the\POE@cnt}%
-  \else\ifnum\poe@lastcomp<1
-    \def\poe@lastcomp{1}%
+  \ifnum\POE@lastcomp>\the\POE@cnt
+    \edef\POE@lastcomp{\the\POE@cnt}%
+  \else\ifnum\POE@lastcomp<1
+    \def\POE@lastcomp{1}%
   \fi\fi
 }
-\def\poe@getlastcomp#1-{%
+\def\POE@getlastcomp#1-{%
   \ifx.#1.%
-    \edef\poe@lastcomp{\the\POE@cnt}%
+    \edef\POE@lastcomp{\the\POE@cnt}%
   \else
     \ifx\@empty#1\relax
-      \edef\poe@lastcomp{\the\POE@cnt}%
+      \edef\POE@lastcomp{\the\POE@cnt}%
     \else
-      \edef\poe@lastcomp{#1}%
+      \edef\POE@lastcomp{#1}%
     \fi
   \fi
 }
@@ -6366,21 +6365,21 @@
 \def\POE@@getcomps{%
   \@ifnextchar\bgroup{\POE@@@getcomps}{\POE@aftercomps}%
 }%
-\def\POE@@@getcomps#1{\def\oe@temp{#1\@empty}\expandafter\POE@@@@getcomps\oe@temp\@nil}%
+\def\POE@@@getcomps#1{\def\POE@temp{#1\@empty}\expandafter\POE@@@@getcomps\POE@temp\@nil}%
 \def\POE@@@@getcomps#1#2\@nil{%
-  \edef\oe@temp{#1}%
-  \ifx\oe@temp\@empty
+  \edef\POE@temp{#1}%
+  \ifx\POE@temp\@empty
     \POE@getcomp{(\POE@getlastcompname)}%
   \else\ifx(#1\relax%)
     \POE@getplanenode#1#2%
   \else\ifnum9<1#1\relax
-    \poe@getcomprange#1#2-\END
+    \POE@getcomprange#1#2-\END
     \POE@getcomp{(\POE@str@basicname@prefix\POE@str@basicname@default) 
-                 \poe@firstcomp\space\poe@lastcomp\space GetCompRange }%
+                 \POE@firstcomp\space\POE@lastcomp\space GetCompRange }%
   \else\ifx-#1\relax
-    \poe@getcomprange#1#2-\END
+    \POE@getcomprange#1#2-\END
     \POE@getcomp{(\POE@str@basicname@prefix\POE@str@basicname@default) 
-                 \poe@firstcomp\space\poe@lastcomp\space GetCompRange }%
+                 \POE@firstcomp\space\POE@lastcomp\space GetCompRange }%
   \else
     \POE@getcomp{(\POE@str@basicname@prefix#1#2)}%
   \fi\fi\fi\fi%
@@ -6470,54 +6469,54 @@
 %    \begin{macrocode}
 \def\optexp@nodeA{\POE@key@b@sicname 1}%
 \def\optexp@nodeB{\POE@key@b@sicname N}%
-\def\POS@basicname@postfix{Intern}%
+\def\POE@str@basicname@postfix{Intern}%
 \define@key[psset]{optexp}{connjoin}{%
- \edef\pst@temp{#1}%
- \ifnum\pst@temp<0
+ \edef\POE@temp{#1}%
+ \ifnum\POE@temp<0
    \POE@connjoinfalse
- \else\ifnum\pst@temp>2
+ \else\ifnum\POE@temp>2
    \POE@connjoinfalse
  \else
    \POE@connjointrue
-   \edef\POE@key@connjoin{\pst@temp}
+   \edef\POE@key@connjoin{\POE@temp}
  \fi\fi
 }%
 \define@key[psset]{optexp}{conn}{%
-  \edef\pst@tempg{#1}%
-  \expandafter\psset@@conn\pst@tempg\@empty-\@empty\@nil
+  \edef\POE@temp{#1}%
+  \expandafter\POE@psset@@conn\POE@temp\@empty-\@empty\@nil
   \if@pst\else
    \pstrickserr{Bad connection specification: #1}\@ehpa
   \fi
 }%
-\def\psset@@conn#1-#2\@empty#3\@nil{%
+\def\POE@psset@@conn#1-#2\@empty#3\@nil{%
   \@psttrue
-  \def\next##1,#1-##2,##3\@nil{\def\pst@tempg{##2}}%
-  \expandafter\next\pst@optexp@conntable,#1-#1,\@nil
-  \@ifundefined{psoe@cs@in@\pst@tempg}%
+  \def\POE@next##1,#1-##2,##3\@nil{\def\POE@temp{##2}}%
+  \expandafter\POE@next\POE@conntable,#1-#1,\@nil
+  \@ifundefined{POE@conn@in@\POE@temp}%
     {\@pstfalse\def\POE@connIn{}}%
-    {\edef\POE@connIn{psoe@cs@in@\pst@tempg}}%
-  \@ifundefined{psoe@cs@out@#2}%
+    {\edef\POE@connIn{POE@conn@in@\POE@temp}}%
+  \@ifundefined{POE@conn@out@#2}%
     {\@pstfalse\def\POE@connOut{}}%
-    {\def\POE@connOut{psoe@cs@out@#2}}%
+    {\def\POE@connOut{POE@conn@out@#2}}%
 }%
 \def\POE@connIn{}%
 \def\POE@connOut{}%
-\def\pst@optexp@conntable{,o-o,i-i,f-f}%
-\def\psoe@cs@out@{}%
-\def\psoe@cs@in@{}%
-\def\psoe@cs@in@o{\psline[style=Beam](\oenodeRefA{})(\optexp@nodeA)}%
-\def\psoe@cs@out@o{\psline[style=Beam](\optexp@nodeB)(\oenodeRefB{})}%
-\def\psoe@cs@in@f{%
+\def\POE@conntable{,o-o,i-i,f-f}%
+\def\POE@conn@out@{}%
+\def\POE@conn@in@{}%
+\def\POE@conn@in@o{\psline[style=Beam](\oenodeRefA{})(\optexp@nodeA)}%
+\def\POE@conn@out@o{\psline[style=Beam](\optexp@nodeB)(\oenodeRefB{})}%
+\def\POE@conn@in@f{%
   \pccurve[angleA=!\POE@dict{/N@\oenodeRefB{} /N@\oenodeRefA{} FiberAngleA}, 
            angleB=!\POE@dict{/N@\oenodeRefB{} /N@\oenodeRefA{} FiberAngleB}, 
            style=FiberIn](\oenodeRefA{})(\optexp@nodeA)%
 }%
-\def\psoe@cs@out@f{%
+\def\POE@conn@out@f{%
    \pccurve[angleA=!\POE@dict{/N@\oenodeRefB{} /N@\oenodeRefA{} FiberAngleA}, 
             angleB=!\POE@dict{/N@\oenodeRefB{} /N@\oenodeRefA{} FiberAngleB}, 
             style=FiberOut](\optexp@nodeB)(\oenodeRefB{})%
 }%
-\def\psoe@cs@in@i{%
+\def\POE@conn@in@i{%
   \def\pst@par{style=Beam}
   \begin@OpenObj
     \addto@pscode{%
@@ -6529,7 +6528,7 @@
     }%
   \psline@ii
 }%
-\def\psoe@cs@out@i{%
+\def\POE@conn@out@i{%
   \def\pst@par{style=Beam}
   \begin@OpenObj
     \addto@pscode{%
@@ -6541,41 +6540,41 @@
     }%
   \psline@ii
 }%
-\def\psoe@cs@in@a{/N@\optexp@nodeA\space \POE@dict{@GetCenter} }%
-\def\psoe@cs@in@A{(\POE@key@b@sicname) false \POE@dict{GetInternalBeamNodes} }%
-\def\psoe@cs@in@b{/N@\optexp@nodeB\space \POE@dict{@GetCenter} }%
-\def\psoe@cs@in@B{(\POE@key@b@sicname) true \POE@dict{GetInternalBeamNodes} }%
-\def\psoe@cs@out@a{/N@\optexp@nodeA\space \POE@dict{@GetCenter} }%
-\def\psoe@cs@out@A{(\POE@key@b@sicname) true \POE@dict{GetInternalBeamNodes} }%
-\def\psoe@cs@out@b{/N@\optexp@nodeB\space \POE@dict{@GetCenter} }%
-\def\psoe@cs@out@B{(\POE@key@b@sicname) false \POE@dict{GetInternalBeamNodes} }%
+\def\POE@conn@in@a{/N@\optexp@nodeA\space \POE@dict{@GetCenter} }%
+\def\POE@conn@in@A{(\POE@key@b@sicname) false \POE@dict{GetInternalBeamNodes} }%
+\def\POE@conn@in@b{/N@\optexp@nodeB\space \POE@dict{@GetCenter} }%
+\def\POE@conn@in@B{(\POE@key@b@sicname) true \POE@dict{GetInternalBeamNodes} }%
+\def\POE@conn@out@a{/N@\optexp@nodeA\space \POE@dict{@GetCenter} }%
+\def\POE@conn@out@A{(\POE@key@b@sicname) true \POE@dict{GetInternalBeamNodes} }%
+\def\POE@conn@out@b{/N@\optexp@nodeB\space \POE@dict{@GetCenter} }%
+\def\POE@conn@out@B{(\POE@key@b@sicname) false \POE@dict{GetInternalBeamNodes} }%
 \def\drawbeam{%
-  \def\conntable{,a-a,b-b,A-A,B-B}%
+  \def\POE@conntable{,a-a,b-b,A-A,B-B}%
   \begingroup
     \psset{style=Beam}%
     \pst@object{drawbeam}%
 }%
 \def\POE@getfirstchar#1#2\@nil{#1}%
 \def\drawbeam@i#1#2{%
-  \def\pst@tempA{\POE@getfirstchar#1\@nil}%
-  \def\pst@tempB{\POE@getfirstchar#2\@nil}%
+  \def\POE@tempa{\POE@getfirstchar#1\@nil}%
+  \def\POE@tempb{\POE@getfirstchar#2\@nil}%
   \ifPOE@connjoin
     \psset{linejoin=\POE@key@connjoin}%
   \fi
   \begin@OpenObj%
-  \if(\pst@tempB%)
+  \if(\POE@tempb%)
     \POE@getcoor#2
     \def\POE@connOut{pst@coor}%
   \else
     \POE@checkcompname{#2}%
-    \edef\POE@key@b@sicnameB{#2\POS@basicname@postfix}%
+    \edef\POE@key@b@sicnameB{#2\POE@str@basicname@postfix}%
   \fi
-  \if(\pst@tempA%)
+  \if(\POE@tempa%)
     \POE@getcoor#1%
     \def\POE@connIn{pst@coor}%
   \else
     \POE@checkcompname{#1}%
-    \edef\POE@key@b@sicnameA{#1\POS@basicname@postfix}%
+    \edef\POE@key@b@sicnameA{#1\POE@str@basicname@postfix}%
   \fi
   \let\POE@key@b@sicname\POE@key@b@sicnameB
   \addto@pscode{[%] 
@@ -6601,9 +6600,9 @@
       \fi
     \else
       \ifPOE@connjoin
-        \def\tmp@A{psoe@cs@in@i}%
+        \def\tmp@A{POE@conn@in@i}%
         \ifx\tmp@A\POE@connIn
-          \def\tmp@B{psoe@cs@out@o}
+          \def\tmp@B{POE@conn@out@o}
           \ifx\tmp@B\POE@connOut
             \pscustom[style=Beam, linejoin=\POE@key@connjoin]{%
               \@nameuse{\POE@connIn}\@nameuse{\POE@connOut}}%
@@ -6614,9 +6613,9 @@
             \@nameuse{\POE@connIn}\@nameuse{\POE@connOut}%
           \fi\fi
         \else
-          \def\tmp@A{psoe@cs@in@o}%
+          \def\tmp@A{POE@conn@in@o}%
           \ifx\tmp@A\POE@connIn
-            \def\tmp@B{psoe@cs@out@o}
+            \def\tmp@B{POE@conn@out@o}
             \ifx\tmp@B\POE@connOut
               \@nameuse{\POE@connIn}\@nameuse{\POE@connOut}%
             \else\ifx\@empty\POE@connOut
@@ -6737,7 +6736,7 @@
 % \begin{macro}{\newOptexpComp}
 %    \begin{macrocode}
 \def\newOptexpComp#1{%
-  \pst@OptexpVerb{[ #1 (\POE@key@b@sicname) {\tx@ScreenCoor} false NewOptexpComp}%
+  \POE@Verb{[ #1 (\POE@key@b@sicname) {\tx@ScreenCoor} false NewOptexpComp}%
 \ignorespaces}%
 %    \end{macrocode}
 % \end{macro}
@@ -6745,7 +6744,7 @@
 % \begin{macro}{\newOptexpCompAmb}
 %    \begin{macrocode}
 \def\newOptexpCompAmb#1{%
-  \pst@OptexpVerb{[ #1 (\POE@key@b@sicname) {\tx@ScreenCoor} true NewOptexpComp}%
+  \POE@Verb{[ #1 (\POE@key@b@sicname) {\tx@ScreenCoor} true NewOptexpComp}%
 \ignorespaces}%
 %    \end{macrocode}
 % \end{macro}
@@ -6753,7 +6752,7 @@
 % \begin{macro}{\POE@compalias}
 %    \begin{macrocode}
 \def\POE@compalias#1#2{%
-  \pst@OptexpVerb{%
+  \POE@Verb{%
     /\POE@str@basicname@prefix#1 dup currentdict exch known { 
       load /\POE@str@basicname@prefix#2 ED 
     } { 
@@ -6793,11 +6792,11 @@
 % \begin{macro}{\optplane}
 %    \begin{macrocode}
 \def\optplane(#1)(#2)#3{%
-  \pst@getcoor{#1}\pst@tempOrig%
-  \pst@getcoor{#2}\pst@tempDiff%
-  \pst@OptexpVerb{%
-    [ {\pst@tempOrig} gsave STV CP T exec grestore ToVec 
-    {\pst@tempDiff} trans {PlaneIfc} 1
+  \pst@getcoor{#1}\POE@tempa% origin
+  \pst@getcoor{#2}\POE@tempb% difference vector
+  \POE@Verb{%
+    [ {\POE@tempa} gsave STV CP T exec grestore ToVec 
+    {\POE@tempb} trans {PlaneIfc} 1
     (\POE@str@basicname@prefix#3) {} false NewOptexpComp
   }%
 \ignorespaces}%
@@ -6812,7 +6811,7 @@
   \pst@killglue
   \begingroup
     \POE@insideobjtrue
-    \pst@OptexpVerb{InitOptexpComp }%
+    \POE@Verb{InitOptexpComp }%
     \use@par
 %    \end{macrocode}
 % Usually the shift refers to the y-direction, shifting in x-direction
@@ -6867,9 +6866,9 @@
 %    \begin{macrocode}
 \def\end@OptexpObj{%
     \ifPOE@compat\else
-      \edef\pst@temp{\POE@str@basicname@default\the\POE@cnt}%
-      \ifx\POE@key@compname\pst@temp\else
-        \POE@compalias{\POE@key@compname}{\pst@temp}%
+      \edef\POE@temp{\POE@str@basicname@default\the\POE@cnt}%
+      \ifx\POE@key@compname\POE@temp\else
+        \POE@compalias{\POE@key@compname}{\POE@temp}%
       \fi
     \fi
   \endgroup
@@ -6963,7 +6962,7 @@
           \POE@globalnoderef
         \fi
         \POE@drawcomponent[#2]{##3}{\@nameuse{#2@ii}}
-        \pst@OptexpVerb{(1) (N) (\oenode{}{}) CorrectDipoleNodes }%
+        \POE@Verb{(1) (N) (\oenode{}{}) CorrectDipoleNodes }%
         \ifPOE@backlayer
           \POE@drawInternalConnections
         \fi
@@ -6993,7 +6992,7 @@
           \POE@globalnoderef
         \fi
         \POE@drawcomponent[#2]{##3}{\@nameuse{#2@ii}}
-        \pst@OptexpVerb{(1) (N) (\oenode{}{}) CorrectDipoleNodes }%
+        \POE@Verb{(1) (N) (\oenode{}{}) CorrectDipoleNodes }%
         \ifPOE@backlayer
           \POE@drawInternalConnections
         \fi
@@ -7057,16 +7056,16 @@
             \pnode(##2){\oenodeRefA{}}
             \pnode(##4){\oenodeRefB{}}
           \else
-            \pst@getcoor{##1}\pst@tempA%
-            \pst@getcoor{##2}\pst@tempB%
-            \pnode(!\pst@tempA \pst@tempB \pst@optexpdict mwNode end \tx@UserCoor){\oenodeRefA{}}
-            \pst@getcoor{##3}\pst@tempA%
-            \pst@getcoor{##4}\pst@tempB%
-            \pnode(!\pst@tempA \pst@tempB \pst@optexpdict mwNode end \tx@UserCoor){\oenodeRefB{}}
+            \pst@getcoor{##1}\POE@tempa%
+            \pst@getcoor{##2}\POE@tempb%
+            \pnode(!\POE@tempa \POE@tempb \pst@optexpdict mwNode end \tx@UserCoor){\oenodeRefA{}}
+            \pst@getcoor{##3}\POE@tempa%
+            \pst@getcoor{##4}\POE@tempb%
+            \pnode(!\POE@tempa \POE@tempb \pst@optexpdict mwNode end \tx@UserCoor){\oenodeRefB{}}
          \fi\fi
        \fi
        \POE@drawcomponent[#2]{##5}{\@nameuse{#2@ii}}
-       \pst@OptexpVerb{%
+       \POE@Verb{%
          (1) (3) (\oenode{}{}) CorrectDipoleNodes 
          (2) (N) (\oenode{}{}) CorrectDipoleNodes 
        }%
@@ -7146,15 +7145,15 @@
       \else\ifx\POE@key@align\POE@str@bottom
          \pnode(#3){\oenodeRefB{}}
       \else
-         \pst@getcoor{#2}\pst@tempA%
-         \pst@getcoor{#3}\pst@tempB%
-         \pnode(!\pst@tempA\pst@number\psyunit div exch \pst@number\psxunit div exch
-                 \pst@tempB\pst@number\psyunit div exch \pst@number\psxunit div exch 
+         \pst@getcoor{#2}\POE@tempa%
+         \pst@getcoor{#3}\POE@tempb%
+         \pnode(!\POE@tempa\pst@number\psyunit div exch \pst@number\psxunit div exch
+                 \POE@tempb\pst@number\psyunit div exch \pst@number\psxunit div exch 
                  \pst@optexpdict mwNode end){\oenodeRefB{}}
       \fi\fi
     \fi
     \POE@drawcomponent[wdmsplitter]{#4}\wdmsplitter@ii
-    \pst@OptexpVerb{(1) (N) (\oenode{}{}) CorrectDipoleNodes }%
+    \POE@Verb{(1) (N) (\oenode{}{}) CorrectDipoleNodes }%
     \ifPOE@backlayer
       \ifPOE@fiberin@
         \drawfiber@{FiberIn}[stopnode=1]{(#1)}{\POE@key@compname}
@@ -7188,15 +7187,15 @@
       \else\ifx\POE@key@align\POE@str@bottom
          \pnode(#2){\oenodeRefA{}}
       \else
-         \pst@getcoor{#1}\pst@tempA%
-         \pst@getcoor{#2}\pst@tempB%
-         \pnode(!\pst@tempA\pst@number\psyunit div exch \pst@number\psxunit div exch
-                 \pst@tempB\pst@number\psyunit div exch \pst@number\psxunit div exch 
+         \pst@getcoor{#1}\POE@tempa%
+         \pst@getcoor{#2}\POE@tempb%
+         \pnode(!\POE@tempa\pst@number\psyunit div exch \pst@number\psxunit div exch
+                 \POE@tempb\pst@number\psyunit div exch \pst@number\psxunit div exch 
                  \pst@optexpdict mwNode end){\oenodeRefA{}}
       \fi\fi
     \fi
     \POE@drawcomponent[wdmcoupler]{#4}\wdmcoupler@ii
-    \pst@OptexpVerb{(1) (N) (\oenode{}{}) CorrectDipoleNodes }%
+    \POE@Verb{(1) (N) (\oenode{}{}) CorrectDipoleNodes }%
     \ifPOE@backlayer 
       \ifPOE@fiberout@
         \drawfiber@{FiberOut}[startnode=N]{\POE@key@compname}{(#3)}
@@ -7231,14 +7230,14 @@
 %  grid etc.)
 %    \begin{macrocode}
 \def\POE@calcNodes#1#2#3{{%
-  \pst@getcoor{#1}\pst@tempa%
-  \pst@getcoor{#2}\pst@tempb%
-  \pst@getcoor{#3}\pst@tempc%
+  \pst@getcoor{#1}\POE@tempa%
+  \pst@getcoor{#2}\POE@tempb%
+  \pst@getcoor{#3}\POE@tempc%
   \pnode(!
     \pst@optexpdict
-    \pst@tempa \tx@UserCoor
-    \pst@tempc \tx@UserCoor
-    \pst@tempb \tx@UserCoor
+    \POE@tempa \tx@UserCoor
+    \POE@tempc \tx@UserCoor
+    \POE@tempb \tx@UserCoor
     calcNodes
     X@A Y@A end){\oenode@RefA{}}%
   \pnode(! \POE@dict{X@B Y@B}){\oenode@RefB{}}%
@@ -7254,7 +7253,7 @@
 \def\POE@regNodes#1#2{%
     \pnode(#1){\oenodeRefA{}}
     \pnode(#2){\oenodeRefB{}}
-    \pst@OptexpVerb{/@xref \POE@key@extnode@xref\space def /@yref \POE@key@extnode@yref\space def}%
+    \POE@Verb{/@xref \POE@key@extnode@xref\space def /@yref \POE@key@extnode@yref\space def}%
 \ignorespaces}%
 %    \end{macrocode}
 % \end{macro}
@@ -7263,7 +7262,7 @@
 %    \begin{macrocode}
 \def\POE@globalnoderef{%
   \ifPOE@globalnoderef
-    \pst@OptexpVerb{%
+    \POE@Verb{%
       /N@\oenodeRefA{} @GetCenter /N@\oenodeRefB{} @GetCenter
       @ABVect exch
       dup 0 gt 3 1 roll 0 eq exch 0 lt and or
@@ -7279,9 +7278,9 @@
 % Aditionally rotate the new node by \#4 degree around existing node as origin.
 %    \begin{macrocode}
 \def\POE@pnode@shiftedrot(#1)#2#3#4{%
-    \pst@getcoor{#1}\pst@tempDiff%
+    \pst@getcoor{#1}\POE@temp%
     \pnode(!%
-       \pst@tempDiff /YDiff ED /XDiff ED %
+       \POE@temp /YDiff ED /XDiff ED %
          /N@#2 load GetCenter /YShifted ED /XShifted ED
          /rot@angle #4 \POE@key@labelrefangle\space add def
          /XDiff@Rot rot@angle cos XDiff mul rot@angle sin YDiff mul add def
@@ -7350,8 +7349,8 @@
 % \end{description}
 %    \begin{macrocode}  
 \def\POE@putlabel#1{%
-   \def\pst@temp{#1}%
-   \ifx\pst@temp\@empty\else
+   \def\POE@temp{#1}%
+   \ifx\POE@temp\@empty\else
    \ifx\POE@key@labelref\POE@str@labelref@global
       \nput[labelsep=\POE@key@labeloffset]%
            {\POE@key@labelangle}%
@@ -7476,20 +7475,20 @@
 %    \begin{macrocode}
 \def\fibercollimator{\pst@object{fibercollimator}}
 \def\fibercollimator@i(#1)(#2){%
-   \def\pst@tempA{#1}%        
-   \def\pst@tempB{#2}%
-   \def\pst@tempC{}%
-   \def\pst@tempD{}%
+   \def\POE@tempa{#1}%
+   \def\POE@tempb{#2}%
+   \def\POE@tempc{}%
+   \def\POE@tempd{}%
    \@ifnextchar(%)
      {\fibercollimator@ii}{\fibercollimator@iv}%
 }%
 \def\fibercollimator@ii(#1){%
-   \def\pst@tempC{#1}%
+   \def\POE@tempc{#1}%
    \@ifnextchar(%)
      {\fibercollimator@iii}{\fibercollimator@iv}%
 }%
 \def\fibercollimator@iii(#1){%
-   \def\pst@tempD{#1}%
+   \def\POE@tempd{#1}%
    \fibercollimator@iv
 }%
 \def\fibercollimator@iv{%
@@ -7502,7 +7501,7 @@
   \addbefore@par{fiberout=both}%
   \begin@OptexpObj
     \ifPOE@backlayer
-      \POE@regNodes{\pst@tempA}{\pst@tempB}%
+      \POE@regNodes{\POE@tempa}{\POE@tempb}%
       \POE@globalnoderef
     \fi
     \POE@drawcomponent[fibercollimator]{#1}{%
@@ -7523,16 +7522,16 @@
         \fi
       \fi
       \ifPOE@fiberout@
-        \ifx\@empty\pst@tempC
+        \ifx\@empty\POE@tempc
           \ifPOE@compat
             \@nameuse{\POE@connOut}
           \else
             \drawfiber{\POE@key@compname}{(\oenodeRefB{})}
           \fi
-        \else\ifx\@empty\pst@tempD
-          \psbezier[style=FiberOut](\oenodeOut{})(\pst@tempB)(\pst@tempB)(\pst@tempC)%
+        \else\ifx\@empty\POE@tempd
+          \psbezier[style=FiberOut](\oenodeOut{})(\POE@tempb)(\POE@tempb)(\POE@tempc)%
         \else
-          \psbezier[style=FiberOut](\oenodeOut{})(\pst@tempB)(\pst@tempC)(\pst@tempD)%
+          \psbezier[style=FiberOut](\oenodeOut{})(\POE@tempb)(\POE@tempc)(\POE@tempd)%
         \fi\fi
       \fi
     \fi
@@ -7707,13 +7706,13 @@
 %    \begin{macrocode}
 \def\mirror@ref{%
   \ifx\POE@key@mirrortype\POE@str@mirrortype@piezo
-    \pst@OptexpVerb{/@@y0 \pst@number\psyunit def}%
+    \POE@Verb{/@@y0 \pst@number\psyunit def}%
     \bgroup
       \psset{style=PiezoMirror}
-      \pst@OptexpVerb{\pst@number\psyunit @@y0 div \POE@key@mirrorwidth\space 0.5 mul mul 2.5 div /@@y0 ED}%
+      \POE@Verb{\pst@number\psyunit @@y0 div \POE@key@mirrorwidth\space 0.5 mul mul 2.5 div /@@y0 ED}%
     \egroup
   \else\ifdim\POE@key@mirrorradius pt=0pt
-    \pst@OptexpVerb{/@@x \POE@key@mirrorwidth\space 0.5 mul def}%
+    \POE@Verb{/@@x \POE@key@mirrorwidth\space 0.5 mul def}%
   \fi\fi
 }%
 %    \end{macrocode}
@@ -7814,7 +7813,7 @@
 % \begin{macro}{\lens@ref}
 %    \begin{macrocode}
 \def\lens@ref{%
-  \pst@OptexpVerb{/@@y \POE@key@lensheight\space 0.5 mul def}%
+  \POE@Verb{/@@y \POE@key@lensheight\space 0.5 mul def}%
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -7956,7 +7955,7 @@
 % \begin{macro}{\pinhole@ref}
 %    \begin{macrocode}
 \def\pinhole@ref{%
-  \pst@OptexpVerb{/@@y \POE@key@outerheight\space 0.5 mul def}%
+  \POE@Verb{/@@y \POE@key@outerheight\space 0.5 mul def}%
 \ignorespaces}%
 %    \end{macrocode}
 % \end{macro}
@@ -8114,7 +8113,7 @@
 % \begin{macro}{\optgrating@ref}
 %    \begin{macrocode}
 \def\optgrating@ref{%
-  \pst@OptexpVerb{/@@x \POE@key@gratingwidth\space 0.5 mul def}%
+  \POE@Verb{/@@x \POE@key@gratingwidth\space 0.5 mul def}%
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -8158,12 +8157,12 @@
 % \begin{macro}{\optbox@ref}
 %    \begin{macrocode}
 \def\optbox@ref{%
-  \pst@OptexpVerb{%
+  \POE@Verb{%
     /@@x \POE@key@optboxwidth\space 0.5 mul def
     /@@y \POE@key@optboxheight\space 0.5 mul def
   }%
   \ifPOE@endbox
-    \pst@OptexpVerb{/@@x0 @@x def}%
+    \POE@Verb{/@@x0 @@x def}%
   \fi
 }%
 %    \end{macrocode}
@@ -8186,7 +8185,7 @@
 % \begin{macro}{\optplate@ref}
 %    \begin{macrocode}
 \def\optplate@ref{%
-  \pst@OptexpVerb{/@@y \POE@key@plateheight\space 0.5 mul def }%
+  \POE@Verb{/@@y \POE@key@plateheight\space 0.5 mul def }%
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -8203,9 +8202,9 @@
 % \begin{macro}{\optdetector@ref}
 %    \begin{macrocode}
 \def\optdetector@ref{%
-  \pst@OptexpVerb{/@@x0 \POE@key@detsize\space 0.5 mul def}%
+  \POE@Verb{/@@x0 \POE@key@detsize\space 0.5 mul def}%
   \ifx\POE@key@dettype\POE@str@dettype@diode
-    \pst@OptexpVerb{ @@x0 dup /@@x ED /@@y ED}%
+    \POE@Verb{ @@x0 dup /@@x ED /@@y ED}%
   \fi
 }%
 %    \end{macrocode}
@@ -8258,7 +8257,7 @@
 % \begin{macro}{\optretplate@ref}
 %    \begin{macrocode}
 \def\optretplate@ref{%
-   \pst@OptexpVerb{%
+   \POE@Verb{%
      /@@y \POE@key@plateheight\space 0.5 mul def
      /@@x \POE@key@platewidth\space 0.5 mul def
    }%
@@ -8280,7 +8279,7 @@
 % \begin{macro}{\optdiode@ref}
 %    \begin{macrocode}
 \def\optdiode@ref{%
-   \pst@OptexpVerb{\POE@key@optdiodesize\space 0.5 mul dup /@@y ED /@@x ED }%
+   \POE@Verb{\POE@key@optdiodesize\space 0.5 mul dup /@@y ED /@@x ED }%
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -8427,7 +8426,7 @@
 % \begin{macro}{\optmzm@ref}
 %    \begin{macrocode}
 \def\optmzm@ref{%
-  \pst@OptexpVerb{\POE@key@optmzmsize\space dup 0.8 mul /@@x ED 0.5 mul /@@y ED }%
+  \POE@Verb{\POE@key@optmzmsize\space dup 0.8 mul /@@x ED 0.5 mul /@@y ED }%
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -8454,7 +8453,7 @@
 % \begin{macro}{\optfilter@ref}
 %    \begin{macrocode}
 \def\optfilter@ref{%
-  \pst@OptexpVerb{\POE@key@filtersize\space 0.5 mul dup /@@y ED /@@x ED }%
+  \POE@Verb{\POE@key@filtersize\space 0.5 mul dup /@@y ED /@@x ED }%
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -8561,7 +8560,7 @@
 % \begin{macro}{\optisolator@ref}
 %    \begin{macrocode}
 \def\optisolator@ref{%
-  \pst@OptexpVerb{\POE@key@isolatorsize\space dup 0.8 mul /@@x ED 0.5 mul /@@y ED }%
+  \POE@Verb{\POE@key@isolatorsize\space dup 0.8 mul /@@x ED 0.5 mul /@@y ED }%
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -8580,7 +8579,7 @@
 % \begin{macro}{\optfiberpolarizer@ref}
 %    \begin{macrocode}
 \def\optfiberpolarizer@ref{%
-  \pst@OptexpVerb{\POE@key@fiberpolsize\space dup 0.8 mul /@@x ED 0.5 mul /@@y ED }%
+  \POE@Verb{\POE@key@fiberpolsize\space dup 0.8 mul /@@x ED 0.5 mul /@@y ED }%
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -8599,7 +8598,7 @@
 % \begin{macro}{\optswitch@ref}
 %    \begin{macrocode}
 \def\optswitch@ref{%
-  \pst@OptexpVerb{\POE@key@switchsize\space 0.5 mul dup /@@y ED /@@x ED }%
+  \POE@Verb{\POE@key@switchsize\space 0.5 mul dup /@@y ED /@@x ED }%
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -8641,7 +8640,7 @@
 % \begin{macro}{\fiberdelayline@ref}
 %    \begin{macrocode}
 \def\fiberdelayline@ref{%
-  \pst@OptexpVerb{\POE@key@fdlsize\space dup 0.8 mul /@@x ED 0.5 mul /@@y ED }%
+  \POE@Verb{\POE@key@fdlsize\space dup 0.8 mul /@@x ED 0.5 mul /@@y ED }%
 }%
 %    \end{macrocode}
 % \end{macro}
