@@ -771,8 +771,8 @@
 %   \item Removed option \opt{polwidth}
 %   \item Removed option \opt{pol}
 %   \item Removed old lens code\see{cmd:lens}
-%   \item Extended use of \opt{angle} and \opt{rotateref} to all components\see{sec:rotshifting}
-%   \item Renamed option \opt{refractiveindex} to \opt{n}
+%   \item Extended use of \opt{angle} and \opt{rotateref} to all components\see{sec:rotshift}
+%   \item Renamed option \opt{refractiveindex} to \opt{n}\see{sec:drawbeam}
 %     
 %   \end{release}
 %   \begin{release}{2.1}{2009-11-05}
@@ -5752,7 +5752,10 @@
   gratinglinewidth=0.7\pslinewidth,
   reverse=false
 }%
-\define@key[psset]{optexp}{refractiveindex}{\pst@checknum{#1}\POE@key@n}
+\define@key[psset]{optexp}{refractiveindex}{%
+  \pst@checknum{#1}\POE@key@n%
+  \PackageWarning{pst-optexp}{Option 'refractiveindex' is deprecated, use 'n' instead}%
+}%
 \define@key[psset]{optexp}{n}{\pst@checknum{#1}\POE@key@n}
 \define@key[psset]{optexp}{nmul}{\edef\POE@key@nmul{#1}}
 \define@key[psset]{optexp}{nadd}{\edef\POE@key@nadd{#1}}
