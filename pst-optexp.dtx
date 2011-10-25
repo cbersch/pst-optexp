@@ -771,6 +771,8 @@
 %   \item Removed option \opt{polwidth}
 %   \item Removed option \opt{pol}
 %   \item Removed old lens code\see{cmd:lens}
+%   \item Extended use of \opt{angle} and \opt{rotateref} to all components\see{sec:rotshifting}
+%   \item Renamed option \opt{refractiveindex} to \opt{n}
 %     
 %   \end{release}
 %   \begin{release}{2.1}{2009-11-05}
@@ -5251,9 +5253,9 @@
 \RequirePackage{environ}
 \long\def\POE@collect#1{%
   \global\POE@oldcnt=\POE@cnt
-  \psset{optexpenv, backlayer=true, frontlayer=false}#1%
+  \psset[optexp]{optexpenv, backlayer=true, frontlayer=false}#1%
   \gdef\POE@complist{}\global\POE@cnt=\POE@oldcnt\relax
-  \psset{backlayer=false, frontlayer=true}%
+  \psset[optexp]{backlayer=false, frontlayer=true}%
   #1}%
 \newenvironment{optexp}{\Collect@Body\POE@collect}{}
 \@addtofilelist{pst-optexp.pro}{}%
@@ -5501,25 +5503,25 @@
   \edef\POE@temp{#4}%
   \ifx\POE@temp\@empty\else
     \expandafter\ifx\POE@temp.\else
-      \psset{labelref=#4}%
+      \psset[optexp]{labelref=#4}%
     \fi
   \fi
   \edef\POE@temp{#3}
   \ifx\POE@temp\@empty\else
     \expandafter\ifx\POE@temp.\else
-      \psset{labelalign=#3}%
+      \psset[optexp]{labelalign=#3}%
     \fi
   \fi
   \edef\POE@temp{#2}%
   \ifx\POE@temp\@empty\else
     \expandafter\ifx\POE@temp.\else
-      \psset{labelangle=#2}%
+      \psset[optexp]{labelangle=#2}%
     \fi
   \fi
   \edef\POE@temp{#1}%
   \ifx\POE@temp\@empty\else
     \expandafter\ifx\POE@temp.\else
-      \psset{labeloffset=#1}%
+      \psset[optexp]{labeloffset=#1}%
     \fi
   \fi
 }%
@@ -5539,7 +5541,7 @@
 \define@key[psset]{optexp}{lenswidth}{%
   \pst@checknum{#1}\POE@key@lenswidth
   \ifdim\POE@key@lenswidth pt > 0pt
-    \psset{thicklens=true}
+    \psset[optexp]{thicklens=true}
   \fi
 }
 \define@key[psset]{optexp}{lensradiusleft}{\pst@checknum{#1}\POE@key@lensradiusleft}
@@ -5548,7 +5550,7 @@
 \define@key[psset]{optexp}{lensradius}{%
   \edef\POE@temp{#1}%
   \ifx\POE@temp\@empty\else
-    \psset{lensradiusleft=#1, lensradiusright=#1}%
+    \psset[optexp]{lensradiusleft=#1, lensradiusright=#1}%
   \fi
 }%
 \define@key[psset]{optexp}{lens}{%
@@ -5560,19 +5562,19 @@
 \def\POE@psset@@lens#1 #2 #3 #4 #5\@nil{%
   \edef\POE@temp{#4}%
   \ifx\POE@temp\@empty\else
-     \psset{lenswidth=#4}%
+     \psset[optexp]{lenswidth=#4}%
   \fi
   \edef\POE@temp{#3}%
   \ifx\POE@temp\@empty\else
-     \psset{lensheight=#3}
+     \psset[optexp]{lensheight=#3}
   \fi
   \edef\POE@temp{#2}%
   \ifx\POE@temp\@empty
-     \psset{lensradiusright=#1}%
+     \psset[optexp]{lensradiusright=#1}%
   \else
-     \psset{lensradiusright=#2}%
+     \psset[optexp]{lensradiusright=#2}%
   \fi
-  \psset{lensradiusleft=#1}%
+  \psset[optexp]{lensradiusleft=#1}%
 }%
 \psset[optexp]{%
   lenswidth=0,
@@ -5944,22 +5946,22 @@
   \edef\pst@tmp{#1}%
   \ifx\pst@tmp\@empty
     \edef\POE@key@compname{\POE@str@basicname@default\the\POE@cnt}%
-    \psset{b@sicname=\POE@str@basicname@default\the\POE@cnt}%
+    \psset[optexp]{b@sicname=\POE@str@basicname@default\the\POE@cnt}%
     \ifPOE@compat
-      \psset{extnoden@me={}}%
+      \psset[optexp]{extnoden@me={}}%
       \def\POE@str@basicname@sep{}%
      \else
-       \psset{extnoden@me=\POE@str@basicname@default\the\POE@cnt}%
+       \psset[optexp]{extnoden@me=\POE@str@basicname@default\the\POE@cnt}%
      \fi
   \else
     \edef\POE@key@compname{#1}%
     \ifPOE@compat
       \def\POE@str@basicname@sep{Intern}%
-      \psset{b@sicname=#1\POE@str@basicname@sep}%
+      \psset[optexp]{b@sicname=#1\POE@str@basicname@sep}%
     \else
-      \psset{b@sicname=#1}%   
+      \psset[optexp]{b@sicname=#1}%   
     \fi
-    \psset{extnoden@me=#1}%
+    \psset[optexp]{extnoden@me=#1}%
   \fi
 %    \end{macrocode}
 % check if compname was already defined
@@ -5987,13 +5989,13 @@
 %    \begin{macrocode}
 \define@choicekey*[psset]{optexp}{fiberin}[\val\nr]{none,top,bottom,both}[both]{%
   \ifcase\nr\relax
-    \psset{fiberin@=false, fiberin@top=false, fiberin@bottom=false}
+    \psset[optexp]{fiberin@=false, fiberin@top=false, fiberin@bottom=false}
   \or
-    \psset{fiberin@=true, fiberin@top, fiberin@bottom=false, fiber@}
+    \psset[optexp]{fiberin@=true, fiberin@top, fiberin@bottom=false, fiber@}
   \or
-    \psset{fiberin@=true, fiberin@top=false, fiberin@bottom=true, fiber@}
+    \psset[optexp]{fiberin@=true, fiberin@top=false, fiberin@bottom=true, fiber@}
   \or
-    \psset{fiberin@=true, fiberin@top=true, fiberin@bottom=true, fiber@}
+    \psset[optexp]{fiberin@=true, fiberin@top=true, fiberin@bottom=true, fiber@}
   \fi
 }%
 %    \end{macrocode}
@@ -6001,13 +6003,13 @@
 %    \begin{macrocode}
 \define@choicekey*[psset]{optexp}{fiberout}[\val\nr]{none,top,bottom,both}[both]{%
   \ifcase\nr\relax
-    \psset{fiberout@=false, fiberout@top=false, fiberout@bottom=false}
+    \psset[optexp]{fiberout@=false, fiberout@top=false, fiberout@bottom=false}
   \or
-    \psset{fiberout@=true, fiberout@top, fiberout@bottom=false, fiber@}
+    \psset[optexp]{fiberout@=true, fiberout@top, fiberout@bottom=false, fiber@}
   \or
-    \psset{fiberout@=true, fiberout@top=false, fiberout@bottom=true, fiber@}
+    \psset[optexp]{fiberout@=true, fiberout@top=false, fiberout@bottom=true, fiber@}
   \or
-    \psset{fiberout@=true, fiberout@top=true, fiberout@bottom=true, fiber@}
+    \psset[optexp]{fiberout@=true, fiberout@top=true, fiberout@bottom=true, fiber@}
   \fi
 }%
 %    \end{macrocode}
@@ -6160,7 +6162,7 @@
 \define@boolkey[psset]{optexp}[POE@]{beaminside}[true]{}%
 \define@boolkey[psset]{optexp}[POE@]{connectplanes}[true]{}%
 \define@boolkey[psset]{optexp}[POE@]{beamangleabs}[true]{}%
-\psset{skipconn=0}%
+\psset[optexp]{skipconn=0}%
 %    \end{macrocode}
 %
 % \begin{macro}{\begin@BeamObj}
@@ -6546,10 +6548,10 @@
 % 
 %    \begin{macrocode}
 \define@choicekey[psset]{optexp}{fiber}[\val\nr]{}[]{%
-   \psset{fiberin, fiberout}%
+   \psset[optexp]{fiberin, fiberout}%
 }
 \define@choicekey[psset]{optexp}{nofiber}[\val\nr]{}[]{%
-   \psset{fiberin=none, fiberout=none}%
+   \psset[optexp]{fiberin=none, fiberout=none}%
 }
 % Set default settings for the new connection code
 %    \begin{macrocode}
@@ -6743,13 +6745,13 @@
   \fi
 }%
 \define@choicekey[psset]{optexp}{beam}[\val\nr]{}[]{%
-  \psset{conn=o-i}%
+  \psset[optexp]{conn=o-i}%
 }
 \define@choicekey[psset]{optexp}{fiber}[\val\nr]{}[]{%
-  \psset{conn=f-f, fiberin, fiberout}%
+  \psset[optexp]{conn=f-f, fiberin, fiberout}%
 }
 \define@choicekey[psset]{optexp}{nofiber}[\val\nr]{}[]{%
-  \psset{conn=-, fiberin=none, fiberout=none}%
+  \psset[optexp]{conn=-, fiberin=none, fiberout=none}%
 }
 \POE@compattrue
 \psset[optexp]{%
@@ -7394,7 +7396,7 @@
          /YDiff@Rot rot@angle cos YDiff mul rot@angle sin XDiff mul sub def
          XShifted XDiff@Rot add YShifted YDiff@Rot add neg \tx@UserCoor
        ){#3}%
-    \psset{ref@angle=0}
+    \psset[optexp]{ref@angle=0}
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -7686,9 +7688,9 @@
   }%
   \ifPOE@endbox%
     \ifx\POE@key@labeloffset\@empty
-      \psset{labeloffset=0}%
+      \psset[optexp]{labeloffset=0}%
     \fi
-    \psset{position=1}%
+    \psset[optexp]{position=1}%
   \fi%
   \POE@disablepos
   \ncline[linestyle=none,fillstyle=none,npos=]{\POE@refnodeA}{\POE@refnodeB}%
