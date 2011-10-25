@@ -135,6 +135,8 @@
 \renewcommand*{\optionlistfont}{\spotcolor\sffamily\displayverbfont}
 \renewcommand*{\ltxsyntaxfont}{\ttfamily}
 \renewcommand*{\ltxsyntaxlabelfont}{\spotcolor\displayverbfont}
+\renewcommand*{\changelogfont}{\normalfont}
+\renewcommand*{\changeloglabelfont}{\spotcolor\sffamily\bfseries}
 
 \makeatletter
 %% an idea from GL to provide links inside the listings to the pst-optexp commands: 
@@ -368,7 +370,6 @@
 \addtopsstyle{Beam}{linewidth=1.5\pslinewidth}
 \EnableCrossrefs
 \CodelineIndex
-\RecordChanges
 %%\OnlyDescription
 \begin{document}
   \DocInput{pst-optexp.dtx}
@@ -721,21 +722,87 @@
 % \fi
 % \ifGERMAN\fi
 % \ifENGLISH
-%   I thank all the people of the PSTricks mailinglist for the continuous help, especially Herbert Vo\ss.
+% I thank all the people of the PSTricks mailinglist for the continuous help,
+% especially Herbert Vo\ss. Thanks also to Christine Römer, which convinced my
+% with her article in the german DTK to provide a german translation of the
+% documentation, and Philipp Lehman, whose documentation style of the biblatex
+% package is wonderful.
 % \fi
 % 
-% \ifGERMAN\fi
+% \ifGERMAN
+% \section{Versionsgeschichte}
+%
+% Diese Versionsgeschichte ist eine Liste von Änderungen, die für den Nutzer des
+% Pakets von Bedeutung sind. Änderungen, die eher technischer Natur sind und für
+% den Nutzer des Pakets nicht relevant sind und das Verhalten des Pakets nicht
+% ändern, werden nicht aufgeführt. Wenn ein Eintrag der Versionsgeschichte ein
+% Feature als \emph{improved} oder \emph{extended} bekannt gibt, so bedeutet dies,
+% dass eine Modifikation die Syntax und das Verhalten des Pakets nicht
+% beeinflusst, oder das es für ältere Versionen kompatibel ist. Einträge, die
+% als \emph{modified}, \emph{renamed}, oder \emph{removed} deklariert sind,
+% verlangen besondere Aufmerksamkeit. Diese bedeuten, dass eine Modifikation
+% Änderungen in bereits existierenden Stilen oder Dokumenten mit sich zieht. Die
+% Zahlen an der rechten Seite stehen für die relevante Stelle dieser
+% Dokumentation.
+% \fi
+% \ifENGLISH
 % \section{Revision history}
-% \begingroup
-% \makeatletter\have@multicolfalse\makeatother
-% \PrintChanges
-% \endgroup
-% \changes{3.0}{NN}{Renamed \nxLcs{optgrid} to \nxLcs{optgrating} and options \opt{optgrid*} to \opt{grating*}.}
-% \changes{3.0}{NN}{Make \opt{angle} and \opt{compshift} work for all components.}
-% \changes{1.1}{2007/09/06}{Enhanced labeling features}
-% \changes{1.1}{2007/09/06}{New parameter \opt{labelref}}
-% \changes{1.1}{2007/09/06}{\opt{labelrelative} is deprecated, superseeded by \opt{labelref}}
-% \changes{1.0}{2007/07/18}{First CTAN version}
+% This revision history is a list of changes relevant to users of this
+% package. Changes of a more technical nature which do not affect the user
+% interface or the behavior of the package are not included in the list. If an
+% entry in the revision history states that a feature has been \emph{improved}
+% or \emph{extended}, this indicates a modification which either does not affect
+% the syntax and behavior of the package or is syntactically backwards
+% compatible (such as the addition of an optional argument to an existing
+% command). Entries stating that a feature has been \emph{modified},
+% \emph{renamed}, or \emph{removed} demand attention. They indicate a
+% modification which may require changes to existing styles or documents in
+% some, hopefully rare, cases. The numbers on the right indicate the relevant
+% section of this manual.
+% \fi
+%
+% \begin{changelog}
+%   \begin{release}{2.0}{2008-07-27}
+%     \item Added fiber-optical components\see{sec:fibercomp}
+%     \item Added component \cs{optdiode}\see{cmd:optdiode}
+%     \item Added component \cs{pentaprism}\see{cmd:pentaprism}
+%     \item Added component \cs{rightangleprism}\see{cmd:rightangleprism}
+%     \item Added component \cs{doveprism}\see{cmd:doveprism}
+%     \item Added component \cs{optprism}\see{cmd:optprism}
+%     \item Added \cs{drawbeam}\see{sec:drawbeam}
+%     \item Added component connections (options \opt{fiber}, \opt{conn} and \opt{beam})\see{sec:connecting}
+%     \item Added option \opt{compname}\see{sec:naming}
+%     \item Added option \opt{extnode}\see{sec:extnode}
+%     \item Renamed \cs{detector} to \cs{optdetector}\see{cmd:optdetector}
+%   \end{release}
+%   \begin{release}{1.2}{2008-06-17}
+%   \item Modified lens design\see{cmd:lens}
+%   \item Added options \opt{lensradiusleft} and \opt{lensradiusright}\see{cmd:lens}
+%   \item Added option \opt{thicklens}\see{cmd:lens}
+%   \item Added option \opt{lenstype}\see{cmd:lens}
+%   \item Added option \opt{mirrorradius} (curved mirrors)\see{cmd:mirror}
+%   \item Added option \opt{optgridtype} (binary gratings)\see{cmd:optgrating}
+%   \item Added \cs{newOptexpDipole}\see{sec:newobj}
+%   \item Added \cs{newOptexpDipoleNolabel}\see{sec:newobj}
+%   \item Added \cs{newOptexpTripole}\see{sec:newobj}
+%   \item General improvements of \TeX{} and Postscript code
+%   \end{release}
+%   \begin{release}{1.1}{2007-09-06}
+%   \item Improved labeling features\see{sec:labels}
+%   \item Added parameter \opt{labelref}\see{sec:labels}
+%   \item Replaced \opt{labelrelative} by \opt{labelref=relative}\see{sec:labels}
+%   \item Renamed \cs{polarisation} to \cs{polarization}\see{cmd:polarization}
+%   \item Renamed \opt{polwidth} to \opt{polsize}\see{cmd:polarization}
+%   \item Renamed \opt{bswidth} to \opt{bssize}\see{cmd:beamsplitter}
+%   \item Renamed \opt{iwidth} to \opt{innerheight}\see{cmd:pinhole}
+%   \item Renamed \opt{owidth} to \opt{outerheight}\see{cmd:pinhole}
+%   \item Added support for fillstyle for all components
+%   \end{release}
+%
+%   \begin{release}{1.0}{2007-07-18}
+%   \item First CTAN version
+%   \end{release}
+% \end{changelog}
 %
 % \ifGERMAN
 %   \chapter{Grundlegende Ideen}
@@ -2204,6 +2271,11 @@
 % \boolitem[false]{caxisinv}
 % \ifGERMAN Invertiert die Richtung der $c$-Achse.\fi
 % \ifENGLISH Invert the direction of the $c$-axis.\fi
+%
+% \styleitem{CrystalCaxis}
+% \ifGERMAN Der Stil für die $c$-Achse.\fi
+% \ifENGLISH The style of the $c$-axis.\fi
+%
 % \iffalse
 %<*ignore>
 % \fi
@@ -2215,10 +2287,6 @@
 % \iffalse
 %</ignore>
 % \fi
-%
-% \styleitem{CrystalCaxis}
-% \ifGERMAN Der Stil für die $c$-Achse.\fi
-% \ifENGLISH The style of the $c$-axis.\fi
 %
 % \boolitem[false]{voltage}
 % \ifGERMAN Zeichne einen Spannungsangschluss und ein Erdungszeichen.\fi
@@ -2876,7 +2944,7 @@
 % \ifENGLISH\subsection{Right-angle prism}\fi
 % 
 % \begin{ltxsyntax}
-% \tripoledesc{raprism}
+% \tripoledesc{rightangleprism}
 % \iffalse
 %<*ignore>
 % \fi
