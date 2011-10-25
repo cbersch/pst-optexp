@@ -762,6 +762,30 @@
 % \fi
 %
 % \begin{changelog}
+%
+%   \begin{release}{3.0}{2011-00-00}
+%   \item Removed option \opt{labelrelative}
+%   \item Removed option \opt{iwidth}
+%   \item Removed option \opt{owidth}
+%   \item Removed option \opt{bswidth}
+%   \item Removed option \opt{polwidth}
+%   \item Removed option \opt{pol}
+%   \item Removed old lens code\see{cmd:lens}
+%     
+%   \end{release}
+%   \begin{release}{2.1}{2009-11-05}
+%   \item Added component \cs{optfiberpolarizer}\see{cmd:optfiberpolarizer}
+%   \item Added option \opt{compshift}\see{sec:rotshift}
+%   \item Added option \opt{label}\see{sec:labels}
+%   \item Added option \opt{connjoin}
+%   \item Added options \opt{addtoBeam} and \opt{newBeam}\see{sec:drawbeam}
+%   \item Added options \opt{addtoOptComp} and \opt{newOptComp}\see{sec:appearance}
+%   \item Added option \opt{bsstyle} to \cs{beamsplitter}\see{cmd:beamsplitter}
+%   \item Extended \cs{fibercollimator}\see{cmd:fibercollimator}
+%   \item Use pst-doc class for the documentation
+%   \item Improved \opt{thicklens} to work with plain lenses\see{cmd:lens}
+%   \end{release}
+%
 %   \begin{release}{2.0}{2008-07-27}
 %     \item Added fiber-optical components\see{sec:fibercomp}
 %     \item Added component \cs{optdiode}\see{cmd:optdiode}
@@ -793,6 +817,7 @@
 %   \item Replaced \opt{labelrelative} by \opt{labelref=relative}\see{sec:labels}
 %   \item Renamed \cs{polarisation} to \cs{polarization}\see{cmd:polarization}
 %   \item Renamed \opt{polwidth} to \opt{polsize}\see{cmd:polarization}
+%   \item Renamed \opt{pol} to \opt{poltype}\see{cmd:polarization}
 %   \item Renamed \opt{bswidth} to \opt{bssize}\see{cmd:beamsplitter}
 %   \item Renamed \opt{iwidth} to \opt{innerheight}\see{cmd:pinhole}
 %   \item Renamed \opt{owidth} to \opt{outerheight}\see{cmd:pinhole}
@@ -1985,6 +2010,9 @@
 % \iffalse
 %</ignore>
 % \fi
+% \boolitem{innerlabel}
+% \ifGERMAN Das ist ein Alias für \opt{label=0 . . relative}\fi
+% \ifENGLISH This is an alias for \opt{label=0 . . relative}\fi
 % \end{optionlist}
 % 
 % \ifGERMAN
@@ -3426,7 +3454,7 @@
 % \ifENGLISH\subsection{Fiber collimator}\fi
 % 
 % \begin{ltxsyntax}
-% \xLcs{fibercollimator}\cmditem{fibercollimator}(In)(A)(B)(Out){Label}%
+% \xLcs{fibercollimator}\cmditem{fibercollimator}(in)(A)(B)(out){label}%
 % \iffalse
 %<*ignore>
 % \fi
@@ -5458,6 +5486,11 @@
 \define@key[psset]{optexp}{labelstyle}{\def\POE@key@labelstyle{#1}}
 \define@key[psset]{optexp}{labelalign}{\def\POE@key@labelalign{#1}}
 \define@key[psset]{optexp}{labelref}{\edef\POE@key@labelref{#1}}
+\define@choicekey*[psset]{optexp}{innerlabel}[\val\nr]{true,false}[true]{%
+  \ifcase\nr\relax
+    \psset[optexp]{labeloffset=0, labelref=relative}%
+  \fi
+}%
 \define@key[psset]{optexp}{label}{%
   \pst@expandafter\POE@psset@@label{#1} {} {} {} {} {}\@nil
 }%
