@@ -5766,7 +5766,7 @@
 }
 \define@choicekey*+[psset]{optexp}{dettype}[\val\nr]{round,diode}%
    {\edef\POE@key@dettype{\val}}
-   {\PackageError{pst-optexp}{Unknown value '\val' for key dettype}}
+   {\PackageError{pst-optexp}{Unknown dettype '\val'}}
 \psset[optexp]{%
   detsize=0.8,
   dettype=round
@@ -5791,7 +5791,7 @@
 \define@choicekey+[psset]{optexp}{poltype}%
   [\val\nr]{parallel,misc,perp,rcirc,lcirc}%
   {\edef\POE@key@poltype{#1}}
-  {\PackageError{pst-optexp}{Unknown value '\val' for key poltype}}
+  {\PackageError{pst-optexp}{Unknown poltype '\val'}}
 \psset[optexp]{%
   poltype=parallel,
   polsize=0.6
@@ -7833,8 +7833,8 @@
       {\oenodeCenter{}}%
       {\rput[\POE@key@labelalign](0,0){\POE@key@labelstyle #1}}%
   \else\ifx\POE@key@labelref\POE@str@labelref@relgrav
-    \rput[\POE@key@labelalign](\oenodeLabel{})%
-      {\POE@key@labelstyle #1}%
+    \rput[\POE@key@labelalign](\oenodeLabel{}){%
+      \POE@key@labelstyle #1}%
   \else\ifx\POE@key@labelref\POE@str@labelref@relative
     \begingroup
 %    \end{macrocode}
@@ -7855,18 +7855,15 @@
               { /yA ED /xA ED /yB ED /xB ED} ifelse
           } ifelse
       } if >%
-      \ncline[linestyle=none,fillstyle=none,npos=]%
-        {\POE@trefnodeA}{\POE@trefnodeB}%
+      \ncline[linestyle=none,fillstyle=none, npos=]{\POE@trefnodeA}{\POE@trefnodeB}%
       \ifx\POE@key@position\@empty
         \ifx\POE@key@abspos\@empty
           \ncput[nrot=:U,npos=]{\POE@putlabelrelative{#1}}%
         \else
-          \nlput[nrot=:U](\POE@refnodeA)(\POE@refnodeB)%
-            {\POE@key@abspos}{\POE@putlabelrelative{#1}}%
+          \nlput[nrot=:U](\POE@refnodeA)(\POE@refnodeB){\POE@key@abspos}{\POE@putlabelrelative{#1}}%
         \fi
       \else
-        \ncput[nrot=:U,npos=\POE@key@position]%
-          {\POE@putlabelrelative{#1}}%
+        \ncput[nrot=:U, npos=\POE@key@position]{\POE@putlabelrelative{#1}}%
       \fi
     \endgroup
   \fi\fi\fi
@@ -7897,7 +7894,9 @@
 \newOptexpTripole[ref@angle=-135]{beamsplitter}{}%
 \newOptexpTripole{optgrating}{}%
 \def\optgrid{%
-  \PackageWarning{pst-optexp}{\protect\optgrid\space is deprecated, use \protect\optgrating\space instead.}%
+  \PackageWarning{pst-optexp}{%
+    \protect\optgrid\space is deprecated,\MessageBreak
+    use \protect\optgrating\space instead.}%
   \optgrating%
 }%
 \newOptexpTripole[ref@angle=-135]{pentaprism}{}%
@@ -8009,9 +8008,11 @@
             \drawfiber{\POE@key@compname}{(\oenodeRefB{})}
           \fi
         \else\ifx\@empty\POE@tempd
-          \psbezier[style=FiberOut](\oenodeOut{})(\POE@tempb)(\POE@tempb)(\POE@tempc)%
+          \psbezier[style=FiberOut](\oenodeOut{})(\POE@tempb)%
+                                   (\POE@tempb)(\POE@tempc)%
         \else
-          \psbezier[style=FiberOut](\oenodeOut{})(\POE@tempb)(\POE@tempc)(\POE@tempd)%
+          \psbezier[style=FiberOut](\oenodeOut{})(\POE@tempb)%
+                                   (\POE@tempc)(\POE@tempd)%
         \fi\fi
       \fi
     \fi
@@ -8222,11 +8223,17 @@
 % \begin{macro}{\mirror@comp}
 %    \begin{macrocode}
 \def\mirror@comp{%
-  \edef\@ht{\POE@key@mirrorwidth\space\pst@number\psyunit mul 0.5 mul }%
+  \edef\@ht{%
+    \POE@key@mirrorwidth\space\pst@number\psyunit mul 0.5 mul %
+  }%
   \edef\@dp{\POE@key@mirrordepth\space\pst@number\psxunit mul }%
   \edef\@r{\POE@key@mirrorradius\space\pst@number\psxunit mul }%
-  \edef\@postcode{neg 5 -1 roll exch 5 2 roll 90 add exch 90 add exch ArcR }%
-  \edef\@extpostcode{neg \@dp add 5 -1 roll exch 5 2 roll 90 add exch 90 add }%
+  \edef\@postcode{%
+    neg 5 -1 roll exch 5 2 roll 90 add exch 90 add exch ArcR %
+  }%
+  \edef\@extpostcode{%
+    neg \@dp add 5 -1 roll exch 5 2 roll 90 add exch 90 add %
+  }%
 %    \end{macrocode}
 % concave mirrors
 %    \begin{macrocode}
@@ -8246,7 +8253,7 @@
       \egroup
     \fi
     \begin@OpenObj
-      \addto@pscode{\pst@optexpdict \@ht \@r rightCurvedIfc \@postcode end}%
+      \addto@pscode{\POE@dict{ \@ht \@r rightCurvedIfc \@postcode }}%
     \end@OpenObj
 %    \end{macrocode}
 % convex mirrors
@@ -8267,7 +8274,7 @@
       \egroup
     \fi
    \begin@OpenObj
-     \addto@pscode{\pst@optexpdict \@ht \@r rightCurvedIfc \@postcode end}%
+     \addto@pscode{\POE@dict{ \@ht \@r rightCurvedIfc \@postcode }}%
    \end@OpenObj
   \else
 %    \end{macrocode}
@@ -8276,10 +8283,12 @@
     \edef\@ht{\POE@key@mirrorwidth\space 0.5 mul }%
     \ifPOE@variable
       \psarc[style=VariableMirror](! \@ht 0.4 sub 0){0.6}{-20}{20}
-      \psarc[style=VariableMirror](! \@ht 0.4 sub neg 0){0.6}{160}{200}
+      \psarc[style=VariableMirror](! 0.4 \@ht sub 0){0.6}{160}{200}
      \fi%
      \ifx\POE@key@mirrortype\POE@str@mirrortype@piezo%
-       \psframe[style=PiezoMirror,dimen=outer](! \@ht 4 div 0)(! \@ht -4 div \@ht 2.5 div)
+       \psframe[style=PiezoMirror,
+                dimen=outer](! \@ht 4 div 0)%
+                            (! \@ht -4 div \@ht 2.5 div)
        \ifx\POE@key@extnode\@empty
          \psbezier(! 0 \@ht 2.5 div)%
                   (! 0 \@ht 1.5 div)%
@@ -8291,7 +8300,9 @@
          (! \@ht neg \POE@key@mirrordepth\space )%
          (! \@ht 0)%
     \fi\fi
-    \psline[linewidth=\POE@key@mirrorlinewidth](! \@ht neg \getCLWH)(! \@ht \getCLWH)
+    \psline[linewidth=\POE@key@mirrorlinewidth]%
+      (! \@ht neg \getCLWH)%
+      (! \@ht \getCLWH)
   \fi\fi
 }%
 %    \end{macrocode}
@@ -8310,24 +8321,42 @@
 \def\lens@nodes{%
   \edef\@lens@th{0}% 
   \ifdim\POE@key@lensradiusleft pt=0pt\else
-    \edef\@lens@th{\ifPOE@thicklens \POE@key@lenswidth\space 2 div \else \POE@key@lensradiusleft\space\POE@key@lensheight\space 2 div capHeight \fi}%     
+    \edef\@lens@th{%
+      \ifPOE@thicklens 
+        \POE@key@lenswidth\space 2 div 
+      \else 
+        \POE@key@lensradiusleft\space
+        \POE@key@lensheight\space 2 div capHeight 
+      \fi
+    }%     
   \fi
   \ifdim\POE@key@lensradiusright pt=0pt\else
-    \edef\@lens@th{\@lens@th\space\ifPOE@thicklens \POE@key@lenswidth\space 2 div\else \POE@key@lensradiusright\space\POE@key@lensheight\space 2 div capHeight \fi\space add}%
+    \edef\@lens@th{%
+      \@lens@th\space
+      \ifPOE@thicklens 
+        \POE@key@lenswidth\space 2 div
+      \else 
+        \POE@key@lensradiusright\space
+        \POE@key@lensheight\space 2 div capHeight 
+      \fi
+      \space add
+    }%
   \fi
-  \newOptexpComp{{\@lens@th\space -2 div 0} 
-                  \ifdim\POE@key@lensradiusleft pt=0pt 
-                      {0 1} trans {PlaneIfc}
-                   \else 
-                      {\POE@key@lensradiusleft\space 0} trans {CurvedIfc}
-                   \fi
-                   {\@lens@th\space 2 div 0} 
-                   \ifdim\POE@key@lensradiusright pt=0pt
-                      {0 1} trans {PlaneIfc}
-                   \else
-                      {\POE@key@lensradiusright\space neg 0} trans {CurvedIfc} 
-                   \fi
-                   \POE@key@n}%
+  \newOptexpComp{%
+    {\@lens@th\space -2 div 0} 
+    \ifdim\POE@key@lensradiusleft pt=0pt 
+      {0 1} trans {PlaneIfc}
+    \else 
+      {\POE@key@lensradiusleft\space 0} trans {CurvedIfc}
+    \fi
+    {\@lens@th\space 2 div 0} 
+    \ifdim\POE@key@lensradiusright pt=0pt
+      {0 1} trans {PlaneIfc}
+    \else
+      {\POE@key@lensradiusright\space neg 0} trans {CurvedIfc} 
+    \fi
+    \POE@key@n
+  }%
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -8338,7 +8367,9 @@
   \addbefore@par{linejoin=1}%
   \begin@ClosedObj
   \edef\@lens@newwd{0 }%
-  \edef\@lens@wd{\POE@key@lenswidth\space\pst@number\psxunit mul 2 div }%
+  \edef\@lens@wd{%
+    \POE@key@lenswidth\space\pst@number\psxunit mul 0.5 mul %
+  }%
   \edef\@lens@th{0}%
   \addto@pscode{%
     \pst@optexpdict
@@ -8357,7 +8388,8 @@
 % the macro is necessary for the outer nodes
 %    \begin{macrocode}
     \edef\@lens@newwd{%
-      \POE@key@lensradiusleft\space\POE@key@lensheight\space 2 div capHeight
+      \POE@key@lensradiusleft\space
+      \POE@key@lensheight\space 2 div capHeight
       \ifdim\POE@key@lensradiusleft pt<0pt
         0.5 mul\space
       \fi
@@ -8366,7 +8398,8 @@
       \ifPOE@thicklens
         \POE@key@lenswidth\space 2 div 
       \else
-        \POE@key@lensradiusleft\space\POE@key@lensheight\space 2 div capHeight
+        \POE@key@lensradiusleft\space
+        \POE@key@lensheight\space 2 div capHeight
       \fi
     }%
     \addto@pscode{%
@@ -8384,11 +8417,13 @@
       \ifPOE@thicklens 
         \POE@key@lenswidth\space 2 div
       \else
-        \POE@key@lensradiusright\space\POE@key@lensheight\space 2 div capHeight 
+        \POE@key@lensradiusright\space
+        \POE@key@lensheight\space 2 div capHeight 
       \fi\space add
     }%
     \addto@pscode{%
-      /@th @th \ifPOE@thicklens @wd \else @rR @ht capHeight \fi add def
+      /@th @th \ifPOE@thicklens @wd \else @rR @ht capHeight \fi 
+      add def
       @ht @rR rightCurvedIfc
     }%
   \fi
@@ -8452,20 +8487,24 @@
 \def\pinhole@comp{%
   \ifdim\POE@key@phwidth pt=0pt
     \psline[linewidth=\POE@key@phlinewidth]%
-           (! 0 \POE@key@outerheight\space 2 div)%
-           (! 0 \POE@key@innerheight\space 2 div)%
+      (! 0 \POE@key@outerheight\space 2 div)%
+      (! 0 \POE@key@innerheight\space 2 div)%
     \psline[linewidth=\POE@key@phlinewidth]%
-           (! 0 \POE@key@outerheight\space -2 div)%
-           (! 0 \POE@key@innerheight\space -2 div)%
+      (! 0 \POE@key@outerheight\space -2 div)%
+      (! 0 \POE@key@innerheight\space -2 div)%
   \else
-    \pspolygon*[linestyle=none](! 0 \POE@key@innerheight\space 2 div)%
-               (! 0 \POE@key@outerheight\space 2 div)%
-               (! \POE@key@phwidth\space \POE@key@outerheight\space 2 div)%
-               (! \POE@key@phwidth\space \POE@key@innerheight\space dup neg \POE@key@outerheight\space add 2 div add 2 div)%
-    \pspolygon*[linestyle=none](! 0 \POE@key@innerheight\space -2 div)%
-               (! 0 \POE@key@outerheight\space -2 div)%
-               (! \POE@key@phwidth\space \POE@key@outerheight\space -2 div)%
-               (! \POE@key@phwidth\space \POE@key@innerheight\space dup neg \POE@key@outerheight\space add 2 div add -2 div)%
+    \pspolygon*[linestyle=none]%
+      (! 0 \POE@key@innerheight\space 2 div)%
+      (! 0 \POE@key@outerheight\space 2 div)%
+      (! \POE@key@phwidth\space\POE@key@outerheight\space 2 div)%
+      (! \POE@key@phwidth\space\POE@key@innerheight\space dup neg
+         \POE@key@outerheight\space add 2 div add 2 div)%
+    \pspolygon*[linestyle=none]%
+      (! 0 \POE@key@innerheight\space -2 div)%
+      (! 0 \POE@key@outerheight\space -2 div)%
+      (! \POE@key@phwidth\space\POE@key@outerheight\space -2 div)%
+      (! \POE@key@phwidth\space\POE@key@innerheight\space dup neg 
+         \POE@key@outerheight\space add 2 div add -2 div)%
   \fi
 \ignorespaces}%
 %    \end{macrocode}
@@ -8482,11 +8521,13 @@
 %    \begin{macrocode}
       \newOptexpCompAmb{ {0 0} {1 0} trans {PlaneIfc} 1 }%
     \else
-      \newOptexpCompAmb{ {\@bs@wd 2 sqrt div neg dup} {-1 1} trans {PlaneIfc}
-                         {\@bs@wd 2 sqrt div dup neg} {1 1} trans {PlaneIfc}
-                         {\@bs@wd 2 sqrt div dup} {-1 1} trans {PlaneIfc}
-                         {\@bs@wd 2 sqrt div neg dup neg} {1 1} trans {PlaneIfc} 
-                         {0 0} {1 0} trans {PlaneIfc} \POE@key@n}%
+      \newOptexpCompAmb{%
+        {\@bs@wd 2 sqrt div neg dup} {-1 1} trans {PlaneIfc}
+        {\@bs@wd 2 sqrt div dup neg} {1 1} trans {PlaneIfc}
+        {\@bs@wd 2 sqrt div dup} {-1 1} trans {PlaneIfc}
+        {\@bs@wd 2 sqrt div neg dup neg} {1 1} trans {PlaneIfc} 
+        {0 0} {1 0} trans {PlaneIfc} \POE@key@n
+      }%
     \fi
   \else\ifx\POE@key@bsstyle\POE@str@bsstyle@plate
     \newOptexpCompAmb{ {0 0} {1 0} trans {PlaneIfc} 1 }%
@@ -8500,8 +8541,11 @@
 \def\beamsplitter@comp{%
   \edef\@bs@wd{\POE@key@bssize\space 2.0 div }%
   \ifx\POE@key@bsstyle\POE@str@bsstyle@cube
-    \psline{cc-cc}(! \@bs@wd neg 2 sqrt mul 0)(! \@bs@wd 2 sqrt mul 0)
-    \rput[c]{45}(0,0){\psframe(! \@bs@wd neg \@bs@wd neg)(! \@bs@wd \@bs@wd)}
+    \psline[arrows=cc-cc](! \@bs@wd neg 2 sqrt mul 0)
+                  (! \@bs@wd 2 sqrt mul 0)
+    \rput[c]{45}(0,0){%
+      \psframe(! \@bs@wd neg \@bs@wd neg)(! \@bs@wd \@bs@wd)
+    }
   \else\ifx\POE@key@bsstyle\POE@str@bsstyle@plate
     \psline(! \@bs@wd neg 2 sqrt mul 0)(! \@bs@wd 2 sqrt mul 0)
   \fi\fi
@@ -8526,7 +8570,8 @@
   \edef\@ht{\POE@key@crystalheight\space 0.5 mul }
   \psframe(! \@wd neg \@ht neg)(! \@wd \@ht)
   \ifPOE@voltage%
-    \psline(!\@wd 4 div 3 mul neg \@ht)(! \@wd 4 div 3 mul neg \@ht 0.2 add)
+    \psline(!\@wd 4 div 3 mul neg \@ht)%
+           (! \@wd 4 div 3 mul neg \@ht 0.2 add)
     \pscircle[fillstyle=solid, fillcolor=white]%
       (! \@wd 4 div 3 mul neg \@ht 0.2 add){0.04}
     \psline(! \@wd 4 div 3 mul neg \@ht neg)%
@@ -8535,14 +8580,18 @@
            (! \@wd 4 div 3 mul neg 0.15 add \@ht neg 0.2 sub)%
   \fi
   \ifPOE@lamp
-    \rput{180}(! \@wd \@ht 1.4 \POE@key@lampscale\space mul add){\crystal@lamp}%
+    \rput{180}(! \@wd \@ht 1.4 \POE@key@lampscale\space mul add){%
+      \crystal@lamp
+    }%
   \fi
   \ifdim\POE@key@caxislength pt>0pt
     \edef\@c@caxisL{\POE@key@caxislength\space 2 div }%
     \ifPOE@caxisinv
-      \psline[style=CrystalCaxis](! 0 \@ht neg)(! 0 \@ht \@c@caxisL add)%
+      \psline[style=CrystalCaxis](! 0 \@ht neg)%
+                                 (! 0 \@ht \@c@caxisL add)%
     \else
-      \psline[style=CrystalCaxis](! 0 \@ht)(! 0 \@ht neg \@c@caxisL sub)%
+      \psline[style=CrystalCaxis](! 0 \@ht)%
+                                 (! 0 \@ht neg \@c@caxisL sub)%
     \fi
   \fi
 \ignorespaces}%
@@ -8564,7 +8613,9 @@
           (! 0.1 \@sz mul 0.15 \@sz mul)%
           (! 0.05 \@sz mul 0)
   \multido{\i=-210+40}{7}{%
-    \rput{\i}(! 0 0.45 \@sz mul){\psline(! -0.35 \@sz mul 0)(! -0.6 \@sz mul 0)}
+    \rput{\i}(! 0 0.45 \@sz mul){%
+      \psline(! -0.35 \@sz mul 0)(! -0.6 \@sz mul 0)
+    }
   }%
 \ignorespaces}%
 %    \end{macrocode}
@@ -8576,22 +8627,24 @@
   \edef\@pol@size{\POE@key@polsize\space 0.5 mul }%
   \psset{style=Polarization}%
   \ifx\POE@key@poltype\POE@str@pol@polparallel
-    \psline[arrows=<->](! 0 \@pol@size neg)(! 0 \@pol@size)%
+    \psline[arrows=<->](! 0 \@pol@size neg)(! 0 \@pol@size)
   \fi
   \ifx\POE@key@poltype\POE@str@pol@polperp
-    \psdot(0,0)%
-    \pscircle[fillstyle=none](0,0){0.12}%
+    \psdot(0,0)
+    \pscircle[fillstyle=none](0,0){0.12}
   \fi
   \ifx\POE@key@poltype\POE@str@pol@polmisc
-    \psline[arrows=<->](! 0 \@pol@size neg)(! 0 \@pol@size)%
-    \psdot(0,0)%
-    \pscircle[fillstyle=none](0,0){0.12}%
+    \psline[arrows=<->](! 0 \@pol@size neg)(! 0 \@pol@size)
+    \psdot(0,0)
+    \pscircle[fillstyle=none](0,0){0.12}
   \fi
   \ifx\POE@key@poltype\POE@str@pol@polrcirc
-    \psellipticarc[arrows=->](0,0)(! \@pol@size 2 div \@pol@size){20}{-20}%
+    \psellipticarc[arrows=->]%
+      (0,0)(! \@pol@size 2 div \@pol@size){20}{-20}
   \fi
   \ifx\POE@key@poltype\POE@str@pol@pollcirc
-    \psellipticarc[arrows=<-](0,0)(! \@pol@size 2 div \@pol@size){20}{-20}
+    \psellipticarc[arrows=<-]%
+      (0,0)(! \@pol@size 2 div \@pol@size){20}{-20}
   \fi
 \ignorespaces}%
 %
@@ -8618,9 +8671,11 @@
       \psline[liftpen=1](! \@wd \@dp)(! \@wd \@ht)%
                         (! \@wd neg \@ht)(! \@wd neg \@dp)%
       \multido{\i=0+1}{\POE@key@gratingcount}{%
-        \psline[liftpen=1](! \@wd neg \i\space \@step mul add \@dp)%
-                          (! \@wd neg \i\space \ifPOE@reverse\else 1 add \fi \@step mul add 0)%
-                          (! \@wd neg \i\space 1 add \@step mul add \@dp)%
+        \psline[liftpen=1]%
+          (! \@wd neg \i\space \@step mul add \@dp)%
+          (! \@wd neg \i\space 
+             \ifPOE@reverse\else 1 add \fi \@step mul add 0)%
+          (! \@wd neg \i\space 1 add \@step mul add \@dp)%
       }%
       \closepath
     }%
@@ -8629,11 +8684,12 @@
       \psline[liftpen=1](! \@wd \@dp)(! \@wd \@ht)%
                         (! \@wd neg \@ht)(! \@wd neg \@dp)%
       \multido{\i=0+1}{\POE@key@gratingcount}{%
-        \psline[liftpen=1](! \@wd neg \i\space \@step mul add \@dp)%
-                          (! \@wd neg \i\space \@step mul add 0)%
-                          (! \@wd neg \i\space 0.5 add \@step mul add 0)%
-                          (! \@wd neg \i\space 0.5 add \@step mul add \@dp)%
-                          (! \@wd neg \i\space 1 add \@step mul add \@dp)%
+        \psline[liftpen=1]%
+          (! \@wd neg \i\space \@step mul add \@dp)%
+          (! \@wd neg \i\space \@step mul add 0)%
+          (! \@wd neg \i\space 0.5 add \@step mul add 0)%
+          (! \@wd neg \i\space 0.5 add \@step mul add \@dp)%
+          (! \@wd neg \i\space 1 add \@step mul add \@dp)%
       }%
     }%
   \fi\fi
@@ -8734,7 +8790,8 @@
       \psline(! \@sz 0.8 mul \@sz 0.4 mul \getCLWH add)%
              (! \@sz 1.6 mul \@sz 0.4 mul \getCLWH add)
       \psset{arrows=->, arrowinset=0, arrowscale=0.8}
-      \psline(! \@sz 0.2 mul \@sz 0.3 mul)(! \@sz 0.7 mul \@sz 0.15 mul)
+      \psline(! \@sz 0.2 mul \@sz 0.3 mul)%
+             (! \@sz 0.7 mul \@sz 0.15 mul)
       \psline(! \@sz 0.2 mul 0)(! \@sz 0.7 mul \@sz -0.15 mul)
    \fi\fi
 \ignorespaces}%
@@ -8766,7 +8823,9 @@
 % \begin{macro}{\optdiode@ref}
 %    \begin{macrocode}
 \def\optdiode@ref{%
-   \POE@Verb{\POE@key@optdiodesize\space 0.5 mul dup /@@y ED /@@x ED }%
+  \POE@Verb{%
+    \POE@key@optdiodesize\space 0.5 mul dup /@@y ED /@@x ED 
+  }%
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -8788,9 +8847,12 @@
 % \begin{macro}{\doveprism@nodes}
 %    \begin{macrocode}
 \def\doveprism@nodes{%
-  \newOptexpComp{ {\POE@key@doveprismsize\space neg 0} {1 1} trans {PlaneIfc}
-                  {0 \POE@key@doveprismsize\space -0.5 mul} {1 0} refl {PlaneIfc}
-                  {\POE@key@doveprismsize\space 0} {-1 1} trans {PlaneIfc} \POE@key@n true }%
+  \newOptexpComp{%
+    {\POE@key@doveprismsize\space neg 0} {1 1} trans {PlaneIfc}
+    {0 \POE@key@doveprismsize\space -0.5 mul} {1 0} refl {PlaneIfc}
+    {\POE@key@doveprismsize\space 0} {-1 1} trans {PlaneIfc} 
+    \POE@key@n true 
+  }%
 \ignorespaces}%
 %    \end{macrocode}
 % \end{macro}
@@ -8812,12 +8874,18 @@
 %    \begin{macrocode}
 \def\pentaprism@nodes{%
   \edef\@pp@size{\POE@key@pentaprismsize\space}%
-  \newOptexpComp{ {\@pp@size 2 sqrt -2 mul div dup } {-1 1} trans {PlaneIfc}
-                  {\@pp@size 2 sqrt div 67.5 cos \@pp@size mul 67.5 sin 2 mul div sub \@pp@size 2 div}
-                  { 67.5 cos \@pp@size mul 67.5 sin div neg \@pp@size} refl {PlaneIfc}
-                  {\@pp@size 2 sqrt div neg 67.5 cos \@pp@size mul 67.5 sin 2 mul div add \@pp@size 2 div}
-                  { 67.5 cos \@pp@size mul 67.5 sin div \@pp@size} refl {PlaneIfc}
-                  {\@pp@size 2 sqrt 2 mul div dup neg} {1 1} trans {PlaneIfc} \POE@key@n}%   
+  \newOptexpComp{%
+    {\@pp@size 2 sqrt -2 mul div dup } {-1 1} trans {PlaneIfc}
+    {\@pp@size 2 sqrt div 67.5 cos \@pp@size mul 
+      67.5 sin 2 mul div sub \@pp@size 2 div}
+    { 67.5 cos \@pp@size mul 67.5 sin div neg \@pp@size} 
+      refl {PlaneIfc}
+    {\@pp@size 2 sqrt div neg 67.5 cos \@pp@size mul 
+      67.5 sin 2 mul div add \@pp@size 2 div}
+    { 67.5 cos \@pp@size mul 67.5 sin div \@pp@size} refl {PlaneIfc}
+    {\@pp@size 2 sqrt 2 mul div dup neg} {1 1} trans {PlaneIfc} 
+    \POE@key@n
+  }%
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -8825,15 +8893,17 @@
 % \begin{macro}{\pentaprism@comp}
 %    \begin{macrocode}
 \def\pentaprism@comp{%
-   \edef\@pp@size{\POE@key@pentaprismsize\space}%
-   \pscustom{%
-      \psline(! \@pp@size 2 sqrt div 0)%
-         (! \@pp@size 2 sqrt div 67.5 cos \@pp@size mul 67.5 sin div sub \@pp@size)%
-         (! 67.5 cos \@pp@size mul 67.5 sin div \@pp@size 2 sqrt div sub \@pp@size)%
-         (! \@pp@size 2 sqrt div neg 0)%
-         (! 0 \@pp@size 2 sqrt div neg)%
-      \closepath
-   }%
+  \edef\@pp@size{\POE@key@pentaprismsize\space}%
+  \pscustom{%
+    \psline(! \@pp@size 2 sqrt div 0)%
+           (! \@pp@size 2 sqrt div 67.5 cos \@pp@size mul 
+              67.5 sin div sub \@pp@size)%
+           (! 67.5 cos \@pp@size mul 67.5 sin div \@pp@size 
+              2 sqrt div sub \@pp@size)%
+           (! \@pp@size 2 sqrt div neg 0)%
+           (! 0 \@pp@size 2 sqrt div neg)%
+    \closepath
+  }%
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -8841,15 +8911,18 @@
 % \begin{macro}{\optprism@nodes}
 %    \begin{macrocode}
 \def\optprism@nodes{%
-   \edef\@sz{\POE@key@prismsize\space}%
-   \edef\@altan{\POE@key@prismangle\space 0.5 mul tan }%
-   \edef\@hshift{\@sz 0.6 mul \@altan mul \pst@optexpdict OEangle end 0.5 mul tan div }%
-   \newOptexpComp{ {\@sz -0.6 mul \@altan mul \@hshift neg} 
-                   {90 \POE@key@prismangle\space 0.5 mul sub dup cos exch sin} 
-                   trans {PlaneIfc}
-                   {\@sz 0.6 mul \@altan mul \@hshift neg} 
-                   {90 \POE@key@prismangle\space 0.5 mul add dup cos exch sin} 
-                   trans {PlaneIfc} \POE@key@n true }%
+  \edef\@sz{\POE@key@prismsize\space}%
+  \edef\@altan{\POE@key@prismangle\space 0.5 mul tan }%
+  \edef\@hshift{%
+    \@sz 0.6 mul \@altan mul \POE@dict{OEangle} 0.5 mul tan div 
+  }%
+  \newOptexpComp{%
+    {\@sz -0.6 mul \@altan mul \@hshift neg} 
+    {90 \POE@key@prismangle\space 0.5 mul sub dup cos exch sin} 
+    trans {PlaneIfc}
+    {\@sz 0.6 mul \@altan mul \@hshift neg} 
+    {90 \POE@key@prismangle\space 0.5 mul add dup cos exch sin} 
+    trans {PlaneIfc} \POE@key@n true }%
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -8857,12 +8930,14 @@
 % \begin{macro}{\optprism@comp}
 %    \begin{macrocode}
 \def\optprism@comp{%
-   \edef\@sz{\POE@key@prismsize\space}%
-   \edef\@altan{\POE@key@prismangle\space 0.5 mul tan }%
-   \edef\@hshift{\@sz 0.6 mul \@altan mul \pst@optexpdict OEangle end 0.5 mul tan div }%
-   \pspolygon(! \@sz neg \@altan mul \@sz -0.4 mul \@hshift sub)
-             (! \@sz \@altan mul \@sz -0.4 mul \@hshift sub)
-             (! 0 \@sz 0.6 mul \@hshift sub)
+  \edef\@sz{\POE@key@prismsize\space}%
+  \edef\@altan{\POE@key@prismangle\space 0.5 mul tan }%
+  \edef\@hshift{%
+    \@sz 0.6 mul \@altan mul \POE@dict{OEangle} 0.5 mul tan div %
+  }%
+  \pspolygon(! \@sz neg \@altan mul \@sz -0.4 mul \@hshift sub)
+            (! \@sz \@altan mul \@sz -0.4 mul \@hshift sub)
+            (! 0 \@sz 0.6 mul \@hshift sub)
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -8872,10 +8947,13 @@
 \def\rightangleprism@nodes{%
   \edef\@sz{\POE@key@raprismsize\space 0.5 mul }%
   \edef\@ht{\POE@dict{OEangle 0.5 mul sin modA mul} }%
-  \newOptexpComp{ {\@ht neg \@ht \@sz sub} {1 0} trans {PlaneIfc}
-                  {\@ht neg 0} {1 1} refl {PlaneIfc}
-                  {\@ht 0} {1 -1} refl {PlaneIfc}
-                  {\@ht dup \@sz sub } {1 0} trans {PlaneIfc} \POE@key@n }%
+  \newOptexpComp{%
+    {\@ht neg \@ht \@sz sub} {1 0} trans {PlaneIfc}
+    {\@ht neg 0} {1 1} refl {PlaneIfc}
+    {\@ht 0} {1 -1} refl {PlaneIfc}
+    {\@ht dup \@sz sub } {1 0} trans {PlaneIfc} 
+    \POE@key@n 
+  }%
 \ignorespaces}%
 %    \end{macrocode}
 % \end{macro}
@@ -8897,15 +8975,16 @@
 % \begin{macro}{\optfiber@iii}
 %    \begin{macrocode}
 \def\optfiber@iii{%
-   \edef\@f@cnt{\POE@key@fiberloops\space}%
-   \edef\@f@r{\POE@key@fiberloopradius\space}%
-   \edef\@f@sep{\POE@key@fiberloopsep\space}%
-   \parametricplot[plotpoints=200,style=Fiber]{0}{1}{%
-      t 360 mul \@f@cnt mul sin \@f@r mul \@f@sep \@f@cnt 1 sub mul t 0.5 sub mul add
-      1 t 360 mul \@f@cnt mul cos sub \@f@r mul
-   }%
-   \pnode(! \@f@sep \@f@cnt 1 sub mul -0.5 mul 0){\oenodeIn{}}
-   \pnode(! \@f@sep \@f@cnt 1 sub mul 0.5 mul 0){\oenodeOut{}}
+  \edef\@f@cnt{\POE@key@fiberloops\space}%
+  \edef\@f@r{\POE@key@fiberloopradius\space}%
+  \edef\@f@sep{\POE@key@fiberloopsep\space}%
+  \parametricplot[plotpoints=200,style=Fiber]{0}{1}{%
+    t 360 mul \@f@cnt mul sin \@f@r mul \@f@sep 
+    \@f@cnt 1 sub mul t 0.5 sub mul add
+     1 t 360 mul \@f@cnt mul cos sub \@f@r mul
+  }%
+  \pnode(! \@f@sep \@f@cnt 1 sub mul -0.5 mul 0){\oenodeIn{}}
+  \pnode(! \@f@sep \@f@cnt 1 sub mul 0.5 mul 0){\oenodeOut{}}
 \ignorespaces}%
 %    \end{macrocode}
 % \end{macro}
@@ -8913,7 +8992,9 @@
 % \begin{macro}{\optmzm@ref}
 %    \begin{macrocode}
 \def\optmzm@ref{%
-  \POE@Verb{\POE@key@optmzmsize\space dup 0.8 mul /@@x ED 0.5 mul /@@y ED }%
+  \POE@Verb{%
+    \POE@key@optmzmsize\space dup 0.8 mul /@@x ED 0.5 mul /@@y ED 
+  }%
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -8927,9 +9008,11 @@
     \ifPOE@usefiberstyle
       \psset{style=Fiber}
     \fi
-    \psline(! \@wd neg 0)(! \@wd -0.7 mul 0)(! \@wd -0.4 mul \@ht 0.6 mul)%
-           (! \@wd 0.4 mul \@ht 0.6 mul)(! \@wd 0.7 mul 0)(! \@wd 0)%
-           (! \@wd 0.7 mul 0)(! \@wd 0.4 mul \@ht -0.6 mul)%
+    \psline(! \@wd neg 0)(! \@wd -0.7 mul 0)%
+           (! \@wd -0.4 mul \@ht 0.6 mul)%
+           (! \@wd 0.4 mul \@ht 0.6 mul)(! \@wd 0.7 mul 0)%
+           (! \@wd 0)(! \@wd 0.7 mul 0)%
+           (! \@wd 0.4 mul \@ht -0.6 mul)%
            (! \@wd -0.4 mul \@ht -0.6 mul)(! \@wd -0.7 mul 0)%
   \egroup
   \psframe[dimen=outer](! \@wd neg \@ht neg)(! \@wd \@ht)
@@ -8951,7 +9034,8 @@
   \edef\@sz{\POE@key@filtersize\space 0.5 mul }%
   \def\filter@curve{%
     \parametricplot[plotstyle=curve,arrows=c-c]{-1}{1}{%
-      t \@sz mul 0.7 mul t Pi mul RadtoDeg 90 add cos 0.2 \@sz mul mul}%
+      t \@sz mul 0.7 mul t Pi mul RadtoDeg 
+      90 add cos 0.2 \@sz mul mul}%
   }%
   \psframe[dimen=outer](! \@sz neg dup)(! \@sz dup)
   \ifx\POE@key@filtertype\POE@str@filtertype@bandpass
@@ -9047,7 +9131,9 @@
 % \begin{macro}{\optisolator@ref}
 %    \begin{macrocode}
 \def\optisolator@ref{%
-  \POE@Verb{\POE@key@isolatorsize\space dup 0.8 mul /@@x ED 0.5 mul /@@y ED }%
+  \POE@Verb{%
+    \POE@key@isolatorsize\space dup 0.8 mul /@@x ED 0.5 mul /@@y ED 
+  }%
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -9058,7 +9144,8 @@
   \edef\@ht{\POE@key@isolatorsize\space 0.5 mul }%
   \edef\@wd{\POE@key@isolatorsize\space 0.8 mul }%
   \psframe[dimen=outer](! \@wd neg \@ht neg)(! \@wd \@ht)
-  \psline[style=IsolatorArrow]{->}(! \@wd neg 0.6 mul 0)(!\@wd 0.6 mul 0)
+  \psline[style=IsolatorArrow,
+          arrows=->](! \@wd neg 0.6 mul 0)(!\@wd 0.6 mul 0)
 \ignorespaces}%
 %    \end{macrocode}
 % \end{macro}
@@ -9066,7 +9153,9 @@
 % \begin{macro}{\optfiberpolarizer@ref}
 %    \begin{macrocode}
 \def\optfiberpolarizer@ref{%
-  \POE@Verb{\POE@key@fiberpolsize\space dup 0.8 mul /@@x ED 0.5 mul /@@y ED }%
+  \POE@Verb{%
+    \POE@key@fiberpolsize\space dup 0.8 mul /@@x ED 0.5 mul /@@y ED 
+  }%
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -9112,10 +9201,12 @@
       \fi
       \psdot[dotsize=3\pslinewidth](! \@sz 0.6 mul 0)%
       \psdot[dotsize=3\pslinewidth](! \@sz -0.6 mul 0)%
-      \psline[arrows=-, linewidth=1.5\pslinewidth](! \@sz -0.6 mul @lw)(! \@sz 0.6 mul @lw)%      
+      \psline[arrows=-, linewidth=1.5\pslinewidth]%
+        (! \@sz -0.6 mul @lw)(! \@sz 0.6 mul @lw)%      
     \egroup
   \else
-    \psline[arrows=-, linewidth=1.5\pslinewidth](! \@sz -0.6 mul @lw add @lw)(! \@sz 0.6 mul dup)%
+    \psline[arrows=-, linewidth=1.5\pslinewidth]%
+      (! \@sz -0.6 mul @lw add @lw)(! \@sz 0.6 mul dup)%
     \pscircle(! \@sz -0.6 mul 0){\pslinewidth}%
     \psdot[dotsize=3\pslinewidth](! \@sz 0.6 mul 0)%
   \fi
@@ -9127,7 +9218,9 @@
 % \begin{macro}{\fiberdelayline@ref}
 %    \begin{macrocode}
 \def\fiberdelayline@ref{%
-  \POE@Verb{\POE@key@fdlsize\space dup 0.8 mul /@@x ED 0.5 mul /@@y ED }%
+  \POE@Verb{%
+    \POE@key@fdlsize\space dup 0.8 mul /@@x ED 0.5 mul /@@y ED 
+  }%
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -9138,7 +9231,9 @@
   \def\@wd{\POE@key@fdlsize\space 0.8 mul }%
   \def\@ht{\POE@key@fdlsize\space 0.5 mul }%
   \psframe[dimen=outer](! \@wd neg \@ht neg)(! \@wd \@ht)
-  \psline[style=FdlArrow](! \@wd -0.3 mul \@ht -1.5 mul)(! \@wd 0.3 mul \@ht 1.2 mul CLW \pst@number\psyunit div 5 mul add)
+  \psline[style=FdlArrow](! \@wd -0.3 mul \@ht -1.5 mul)%
+                         (! \@wd 0.3 mul \@ht 1.2 mul CLW 
+                            \pst@number\psyunit div 5 mul add)
 \ignorespaces}%
 %    \end{macrocode}
 % \end{macro}
@@ -9161,10 +9256,14 @@
     \pnode(! \@sz 0.5 mul \@yshift \@sep add){\oenode{3}{}}
     \pnode(! \@sz 0.5 mul \@yshift \@sep sub){\oenode{N}{}}
   \else
-    \pnode(! \@sz neg \getCLW 0.3 mul add \@yshift \@sep add){\oenode{1}{}}
-    \pnode(! \@sz neg \getCLW 0.3 mul add \@yshift \@sep sub){\oenode{2}{}}
-    \pnode(! \@sz \getCLW 0.3 mul sub \@yshift \@sep add){\oenode{3}{}}
-    \pnode(! \@sz \getCLW 0.3 mul sub \@yshift \@sep sub){\oenode{N}{}}
+    \pnode(! \@sz neg \getCLW 0.3 mul add 
+             \@yshift \@sep add){\oenode{1}{}}
+    \pnode(! \@sz neg \getCLW 0.3 mul add 
+             \@yshift \@sep sub){\oenode{2}{}}
+    \pnode(! \@sz \getCLW 0.3 mul sub 
+             \@yshift \@sep add){\oenode{3}{}}
+    \pnode(! \@sz \getCLW 0.3 mul sub 
+             \@yshift \@sep sub){\oenode{N}{}}
   \fi
   \pnode(! 0 \@yshift){\oenodeCenter{}}
 }%
@@ -9199,7 +9298,9 @@
     \psline(! \@csz neg \@csz)(! \@csz dup neg)
   \fi\fi\fi\fi
   \ifPOE@variable
-    \psline[style=VariableCoupler](!\@sz -0.5 mul \@sz neg \@yshift add)(!\@sz 0.5 mul \@sz \@yshift add)
+    \psline[style=VariableCoupler]%
+      (!\@sz -0.5 mul \@sz neg \@yshift add)%
+      (!\@sz 0.5 mul \@sz \@yshift add)
   \fi
 }%
 %    \end{macrocode}
@@ -9227,8 +9328,10 @@
     \pnode(! \@sz -0.5 mul \@yshift \@sep sub){\oenode{2}{}}
     \pnode(! \@sz 0.5 mul 0){\oenode{N}{}}
   \else
-    \pnode(! \@sz neg \getCLW 0.3 mul add \@yshift \@sep add){\oenode{1}{}}
-    \pnode(! \@sz neg \getCLW 0.3 mul add \@yshift \@sep sub){\oenode{2}{}}
+    \pnode(! \@sz neg \getCLW 0.3 mul add 
+             \@yshift \@sep add){\oenode{1}{}}
+    \pnode(! \@sz neg \getCLW 0.3 mul add 
+             \@yshift \@sep sub){\oenode{2}{}}
     \pnode(! \@sz \getCLW 0.3 mul sub 0){\oenode{N}{}}
   \fi
   \pnode(! 0 \@yshift){\oenodeCenter{}}
@@ -9261,11 +9364,15 @@
   \else\ifx\POE@key@couplertype\POE@str@couplertype@none
     \ifx\POE@key@align\POE@str@top
       \psline[style=Fiber](\oenode{1}{})(\oenodeOut{})
-      \psline[style=Fiber](! \pst@optexpdict /N@\oenodeOut{} @GetCenter end \tx@UserCoor \POE@key@couplersep\space sub)(\oenode{2}{})
+      \psline[style=Fiber]%
+        (!/N@\oenodeOut{} \POE@dict{@GetCenter} 
+          \tx@UserCoor \POE@key@couplersep\space sub)(\oenode{2}{})
     \else
       \psline[style=Fiber](\oenode{2}{})(\oenodeOut{})
       \ifx\POE@key@aling\POE@str@bottom
-        \psline[style=Fiber](! \pst@optexpdict /N@\oenodeIn{} @GetCenter end \tx@UserCoor \POE@key@couplersep\space sub)(\oenode{1}{}) 
+        \psline[style=Fiber]%
+          (!/N@\oenodeIn{} \POE@dict{@GetCenter} 
+            \tx@UserCoor \POE@key@couplersep\space sub)(\oenode{1}{})
       \fi
     \fi
   \fi\fi\fi
@@ -9296,8 +9403,10 @@
     \pnode(! \@sz 0.5 mul \@yshift \@sep sub){\oenode{N}{}}
   \else
     \pnode(! \@sz neg \getCLW 0.3 mul add 0){\oenode{1}{}}
-    \pnode(! \@sz \getCLW 0.3 mul sub \@yshift \@sep add){\oenode{2}{}}
-    \pnode(! \@sz \getCLW 0.3 mul sub \@yshift \@sep sub){\oenode{N}{}}
+    \pnode(! \@sz \getCLW 0.3 mul sub 
+             \@yshift \@sep add){\oenode{2}{}}
+    \pnode(! \@sz \getCLW 0.3 mul sub 
+             \@yshift \@sep sub){\oenode{N}{}}
   \fi
   \pnode(! 0 \@yshift){\oenodeCenter{}}
 }%
@@ -9489,7 +9598,7 @@ tx@OptexpDict begin
     /Y@B YG cy c@tmp div sub def
 %    \end{macrocode}
 % chirality:
-% test the order of the input points as a input angle $> 90°$
+% test the order of the input points as a input angle $> 90$°
 % doesn't really make sense.
 % So if chir $<= 0$ exchange the calculated coordinates of 
 % A and B and otherwise leave it as is
