@@ -47,14 +47,12 @@
 \usepackage[makeindex]{splitidx} 
 \usepackage{etoolbox}
 \usepackage{hypdoc} 
-\hypersetup{colorlinks=true, urlcolor=pdfurlcolor,
-  filecolor=pdffilecolor, linkcolor=pdflinkcolor, breaklinks,
+\hypersetup{colorlinks=true, urlcolor=black,
+  linkcolor=pdflinkcolor, breaklinks,
   linktocpage=true} 
 \usepackage{breakurl}
 \definecolor{DOrange}{rgb}{1,.4,.2}%
 \colorlet{pdflinkcolor}{DOrange}
-\colorlet{pdfurlcolor}{DOrange} 
-\colorlet{pdffilecolor}{DOrange}
 \usepackage{pst-tree}
 \newcommand{\poeTR}[1]{\TR{\ttfamily\color{DOrange}#1}}
 \usepackage{showexpl} 
@@ -64,14 +62,14 @@
 \makeatletter\renewcommand*\SX@Info{}\makeatother
 \definecolor{colKeys}{rgb}{0,0,0}
 \definecolor{colIdentifier}{rgb}{0,0,0}
-\colorlet{colComments}{green!80!black}
+\colorlet{colComments}{green!60!black}
 \definecolor{colString}{rgb}{0,0.5,0} 
 \newlength{\codeoverhang}
 \setlength{\codeoverhang}{0.5\marginparwidth+0.5\marginparsep}
 \lstset{%
   language=[LaTeX]TeX, identifierstyle=\color{colIdentifier}, %
   keywordstyle=\color{colKeys}, %
-  keywordstyle = [21]\color{DOrange!60!red}, %
+  keywordstyle = [21]\color{DOrange}, %
   stringstyle=\color{colString}, %
   commentstyle=\color{colComments}, %
   float=hbp,%
@@ -828,7 +826,7 @@
 % \def*{}%
 \psset{unit=1.5}
 \begin{LTXexample}[pos=t, vsep=10mm, numbers=left, numberstyle=\footnotesize]
-\begin{pspicture}[showgrid=true](0,-0.3)(5,2.3)
+\begin{pspicture}(0,-0.3)(5,2.3)
   \pnode(0,1){In}\pnode(3.5,1){Out}*\label{l:ex1-nodes}*
   \lens[lensradius=-0.7, lenswidth=0.1, abspos=1](In)(Out){concave}*\label{l:ex1-l1}*
   \lens[lensradius=2.3, lensheight=1.3, abspos=2.6](In)(Out){convex}*\label{l:ex1-l2}*
@@ -848,17 +846,17 @@
 % In \prettyref{l:ex1-nodes} werden die beiden Referenzknoten definiert,
 % anhand derer die Komponenten positioniert werden. Die beiden Linsen
 % (\prettyref{l:ex1-l1}--\ref{l:ex1-l2}) werden absolut positioniert,
-% der Parameter \opt{abspos} gibt den Abstand vom ersten Referenzknoten
-% \prm{in} an. Ein negative Linsenradius \opt{lensradius} ergibt eine
+% der Parameter \Lkeyword{abspos} gibt den Abstand vom ersten Referenzknoten
+% \prm{in} an. Ein negative Linsenradius \Lkeyword{lensradius} ergibt eine
 % konkave Linse (\prettyref{l:ex1-l1}), ein positiver Linsenradius eine
 % konvexe Linse (\prettyref{l:ex1-l2}). Die dritte Komponente ist eine
 % Box (\prettyref{l:ex1-box}), deren eine Seite mit der Option
-% \opt{endbox} auf den Referenzknoten \prm{out} gelegt wird. Die
+% \Lkeyword{endbox} auf den Referenzknoten \prm{out} gelegt wird. Die
 % Beschriftung wird mittig in die Box gesetzt
 % (\opt{labeloffset=0}). Zuletzt wird ein grüner Lichtstrahl gezeichnet
 % (\prettyref{l:ex1-beam}), dessen Füllung etwas transparent ist
 % (\prettyref{l:ex1-style}). Die Anfangsbreite des Strahls wird mit dem
-% Parameter \opt{beamwidth} vorgegeben, der weitere Strahlverlauf wird nur
+% Parameter \Lkeyword{beamwidth} vorgegeben, der weitere Strahlverlauf wird nur
 % durch die optischen Eigenschaften der Linsen bestimmt.
 % \fi
 % \ifENGLISH\fi
@@ -870,7 +868,7 @@
 %<*ignore>
 % \fi
 \begin{LTXexample}[hsep=8mm, numbers=left, numberstyle=\footnotesize]
-\begin{pspicture}[showgrid=true](3.2,5)
+\begin{pspicture}(3.2,5)
   \pnode(0,3){In}\pnode(1,3){BS}\pnode(3,3){M1}*\label{l:ex2-nodes1}*
   \pnode(1,5){M2}\pnode(1,1){PD}*\label{l:ex2-nodes2}*
   \psset{mirrortype=extended, mirrordepth=0.2, bsstyle=plate, dettype=diode}*\label{l:ex2-set}*
@@ -905,12 +903,12 @@
 % das Aussehen des Lichtstrahls definiert (\prettyref{l:ex2-style}) und
 % der Strahl gezeichnet (\prettyref{l:ex2-beam}). 
 %
-% Diese Mal haben wir den Komponenten Namen gegeben (\opt{compname}) die
+% Diese Mal haben wir den Komponenten Namen gegeben (\Lkeyword{compname}) die
 % beim Raytracing anstatt der automatisch vergebenen Nummern verwendet
 % werden können. Dies erleichtert die Nachverfolgung des Strahlenganges.
 % 
 % Alle Komponenten und Strahlen wurden zusätzlich in eine
-% \opt{optexp}-Umgebung gekapselt. Innerhalb dieser werden alle
+% \Lkeyword{optexp}-Umgebung gekapselt. Innerhalb dieser werden alle
 % Lichtstrahlen hinter die Komponenten gelegt, sodass diese nicht
 % verdeckt werden.
 % \fi
@@ -923,7 +921,7 @@
 % \catcode`\*=13
 % \def*{}%
 \begin{LTXexample}[pos=t, vsep=10mm, numbers=left, numberstyle=\footnotesize]
-\begin{pspicture}[showgrid=true](-0.2,-0.3)(7.7,2.4)
+\begin{pspicture}(-0.2,-0.3)(7.7,2.4)
   \pnode(1,1){Laser}\pnode(3,1){PcOut}*\label{l:ex3-nodes1}*
   \pnode(4.5,1){MzmOut}\pnode(6.5,1){Osa}
   \pnode([offset=1]Osa){Pd}*\label{l:ex3-nodes2}*
@@ -1141,7 +1139,7 @@
 %  Das sind die ursprünglichen Knoten, die für die Positionierung der Komponente
 %  benutzt wurden, \nxLcs{oenodeRefA} ist der erste und \nxLcs{oenodeRefB} der
 %  letzte Knoten. Lediglich bei den Faserkoppler (\prettyref{sec:coupler}) hängt
-%  die Zuordnung von dem \opt{align} Parameter ab.
+%  die Zuordnung von dem \Lkeyword{align} Parameter ab.
 %  Eine vollständige Liste finden Sie in \prettyref{sec:overview-refnode}.
 %  \fi
 %  \ifENGLISH
@@ -1150,7 +1148,7 @@
 %  These are the original nodes which were used for the component positioning.
 %  \nxLcs{oenodeRefA} is the first node and \nxLcs{oenodeRefB} the last
 %  node. Only for the couplers (\prettyref{sec:coupler}) it depends on the
-%  \opt{align} parameter. For a complete list of possible reference nodes, see
+%  \Lkeyword{align} parameter. For a complete list of possible reference nodes, see
 %  \prettyref{sec:overview-refnode}.
 %  \fi
 % \iffalse
@@ -1247,14 +1245,14 @@
 %
 %   \ifGERMAN
 %   Auf diesen Knoten wird die Beschriftung platziert. Der Knoten ist auch
-%   verfügbar wenn keine Beschriftung angegeben wurde. Für \opt{labeloffset=0}
+%   verfügbar wenn keine Beschriftung angegeben wurde. Für \Lkeyword{labeloffset}\opt{=0}
 %   ist dieser Knoten identisch mit dem Mittelpunktsknoten
 %   (\prettyref{sec:centernode}).
 %   \fi
 %   \ifENGLISH
 %   The component label is placed at this node. It is also available
 %   if no label was specified. The label node is identical with the center
-%   node for \opt{labeloffset=0}.
+%   node for \Lkeyword{labeloffset}\opt{=0}.
 %   \fi
 % \iffalse
 %<*ignore>
@@ -1328,23 +1326,23 @@
 % \boolitem[true]{globalnoderef}
 % \ifGERMAN
 % Die Bezeichnung von «oben» (\opt{t}) den anderen Positionierungsparametern von
-% \opt{extnode} können global oder relativ zur Komponente betrachtet werden.
+% \Lkeyword{extnode} können global oder relativ zur Komponente betrachtet werden.
 %
 % In dem folgenden Beispiel ist der externe Knoten immer «oben rechts» platziert
 % unabhängig von der relativen Anordnung der Referenzknoten
-% (\opt{globalnoderef=true}). In dem darauffolgenden Beispiel ist die
+% (\Lkeyword{globalnoderef}\opt{=true}). In dem darauffolgenden Beispiel ist die
 % Positionierung relativ zur Verbindung zwischen Eingangs- und
-% Ausgangsreferenzknoten (\opt{globalnoderef=false}).
+% Ausgangsreferenzknoten (\Lkeyword{globalnoderef}\opt{=false}).
 % \fi
 % \ifENGLISH 
-% The definition of «top» (\opt{t}) and the other \opt{extnode} refstring
+% The definition of «top» (\opt{t}) and the other \Lkeyword{extnode} refstring
 % parameters can be global or relative to the component.
 %
 % In the next example the external node is always placed «top right»,
 % independent of the actual ordering of the reference nodes
-% (\opt{globalnoderef=true}). In the following example the position is relative
+% (\Lkeyword{globalnoderef}\opt{=true}). In the following example the position is relative
 % to the connection from input to output reference node
-% (\opt{globalnoderef=false}).
+% (\Lkeyword{globalnoderef}\opt{=false}).
 % \fi
 % \iffalse
 %<*ignore>
@@ -2375,7 +2373,7 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}[morekeywords={[21]{optdetector}}] 
+\begin{LTXexample}
 \begin{pspicture}(3,1.2)
   \optdetector[beam](0,0)(1.5,1){detector}
 \end{pspicture}
@@ -3958,7 +3956,7 @@
 %<*ignore>
 % \fi
 \begin{LTXexample}[morekeywords = {[21]{nadd, n}}]
-\begin{pspicture}[showgrid=true](3,3)
+\begin{pspicture}(3,3)
   \pnode(0,1.5){A}\pnode(3,1.5){B}
   \lens[lens=4 4 3, n=2, abspos=0.3](A)(B)
   \optplane(B)(0,1){Plane}
@@ -4555,56 +4553,54 @@
 %   \cmditem{newOptexpFiberDipole}[fixopt]{name}{dftopt}\xLcs{newOptexpFiberDipole}
 % \end{ltxsyntax}
 %
-% These macros generate all organizing code for the components, you only have to define the actual drawing of the component outline.
+% These macros generate all organizing code for the components which handle the
+% positioning, label placement, rotation and shifting and the layering. In the
+% simplest case you only have to define the actual drawing of the component
+% outline.
 %
-% The macro
-% \Lcs{newOptexpDipole} generates all organizing code for a new free-ray
-% component. 
-% All you have to do is to define a new `drawing' macro
-% \nxLcs{mycomponent@iii} which contains all drawing code. Analogously
-% \Lcs{newOptexpDipoleNolabel} defines a new free-ray object without label
-% (like \Lcs{polarization}) and \Lcs{newOptexpTripole} defines a new
-% reflective component. 
-% 
-% New fiber-optical components can be defined using
-% \Lcs{newOptexpFiberDipole}. This macro differs from its free-ray
-% analogous only in that it presets \Lkeyword{fiber} and hence directly
-% connects the component with its reference nodes. The first node in the
-% parameter list gets connected with a node \nodename{tempNode@A@}, the
-% second node with a node \nodename{tempNode@B@}. These two internal
-% nodes are preset to \paramvalue{(0,0)} and can be overwritten within the
-% drawing macro.
-% 
-% The syntax of the macros is
-% \begin{lstlisting}[gobble=2]
-% \newOptexpDipole[fixed options]{name}{default options}
-% \newOptexpDipoleNolabel[fixed options]{name}{default options}
-% \newOptexpTripole[fixed options]{name}{default options}
-% \newOptexpFiberDipole[fixed options]{name}{default options}
-% \end{lstlisting}
-% The \texttt{default options} are simply a list of PSTricks parameters
-% which are taken as defaults for the new component. The optional argument
-% allows setting of parameters which cannot be overridden later.
-% 
-% This is illustrate a bit more in the next code snippet, which also shows
-% how the coordinate system is handled within the \nxLcs{mycomponent@iii}
-% macro.
-% 
+% The macro \Lcs{newOptexpDipoleNolabel} is superfluous because since version
+% 3.0 the label is optional for all components.
+%
+% The actual process of creating a new component is split up in different parts,
+% depending on the component complexity and user requirements:
+% \begin{enumerate}
+% \item The component drawing, this is the only required part.
+% \item Support for layering (optional).
+% \item Support for \Lkeyword{rotateref} and \Lkeyword{extnode} (optional).
+% \end{enumerate}
+%
+% \subsubsection{The component drawing}
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}
-\newOptexpTripole{mygrid}{%
-  subgriddiv=5, griddots=0, 
-  subgridwidth=\pslinewidth, gridwidth=2\pslinewidth}
+\begin{LTXexample}[morekeywords={[21]{newOptexpDipole}}]
+\newOptexpDipole{mydipole}{}
 \makeatletter
-\def\mygrid@comp{% put here all PSTricks drawing code
-  \psgrid(-1,0)(1,1)
+\def\mydipole@comp{%
+  \psaxes[arrows=->](0,0)(0,-1.1)(1.3,1.3)[$x$,90][$y$,0]
 }%
 \makeatother
-\begin{pspicture}(3,3.7) 
-   \mygrid[gridcolor=red,
-             labeloffset=1.5](0,1)(2,1.7)(3,0){myGrid}
+\begin{pspicture}(3.5,2.6)
+  \mydipole(0,1)(3.5,1){label}
+  \drawbeam{(0,1)}{1}{(3.5,1)}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[morekeywords={[21]{newOptexpTripole}}]
+\newOptexpTripole{mytripole}{labelangle=-60}
+\makeatletter
+\def\mytripole@comp{%
+  \psaxes[arrows=->](0,0)(-1.1,0)(1.3,1.3)[$x$,90][$y$,0]
+}%
+\makeatother
+\begin{pspicture}(3.5,3.7)
+   \mytripole(0,1)(2,1.7)(3,0){label}
    \drawbeam{(0,1)}{1}{(3,0)}
 \end{pspicture}
 \end{LTXexample}
@@ -4612,14 +4608,13 @@
 %</ignore>
 % \fi
 % \medskip
-% 
-% The default position of the label reference point is (0,0). If you want
-% to change this, you have to define a new pnode named
-% \nodename{tempNode@Label} in the \nxLcs{mycomponent@iii} macro.
-% 
-% If you create a new component, please send it to me then I can
-% incorporate this in a new released version.
-% 
+%
+% \subsubsection{Layering support}
+%
+% To support layering, the component nodes and the drawings must be separated
+% into two macro. \nxLcs{component@nodes} contains the nodes and the Postscript
+% definition of the component interfaces. \nxLcs{component@comp} hold only the drawings.
+%
 %
 % \section{Internal component structure}
 % 
@@ -5021,7 +5016,7 @@
 %<*ignore>
 % \fi
 \begin{LTXexample}[pos=t]
-\begin{pspicture}[showgrid=true](1,1.2)(6.2,5)
+\begin{pspicture}(1,1.2)(6.2,5)
   \pnode(1,4){SigIn}
   \pnode(3,4){BS}
   \pnode(3,5){LO}
