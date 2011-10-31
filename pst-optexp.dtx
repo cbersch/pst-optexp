@@ -6462,6 +6462,51 @@
 \define@boolkey[psset]{optexp}[POE@]{connectplanes}[true]{}%
 \define@boolkey[psset]{optexp}[POE@]{beamangleabs}[true]{}%
 \psset[optexp]{skipconn=0}%
+\def\POE@conntable{,o-o,i-i,f-f}%
+\define@key[psset]{optexp}{conn}{%
+  \edef\POE@temp{#1}%
+  \expandafter\POE@psset@@conn\POE@temp\@empty-\@empty\@nil
+  \if@pst\else
+    \PackageError{pst-optexp}{Bad connection specification: #1}%
+  \fi
+}%
+\def\POE@psset@@conn#1-#2\@empty#3\@nil{%
+  \@psttrue
+  \def\POE@next##1,#1-##2,##3\@nil{\def\POE@tempa{##2}}%
+  \expandafter\POE@next\POE@conntable,#1-#1,\@nil
+  \def\POE@tempb{#2}%
+  \expandafter\ifx\POE@tempa f
+    \drawfiber{(\oenodeRefA{})}{}%
+    \def\POE@tempa{}%
+  \fi
+  \expandafter\ifx\POE@tempb f
+    \drawfiber{}{(\oenodeRefB{})}%
+    \def\POE@tempb
+  \fi
+  \expandafter\psset[optexp]{conn@=\POE@tempa-\POE@tempb}
+}%
+\define@choicekey[psset]{optexp}{conn@}%
+  [\val\nr]{-,-i,-o,i-,i-i,i-o,o-,o-i,o-o}{%
+  \ifcase\nr\relax
+  \or% -i
+    \addtopsstyle{beaminside, skipconn=1}
+  \or% -o
+    \addtopsstyle{beaminside=false, skipconn=1}
+  \or% i-
+    \addtopsstyle{beaminside, skipconn=-1}
+  \or% i-i
+    \addtopsstyle{beaminside}
+  \or% i-o
+    \addtopsstyle{beaminside}
+  \or% o-
+    \addtopsstyle{beaminside=false, skipconn=-1}
+  \or% o-i
+    \addtopsstyle{beaminside}
+  \or% o-o
+    \addtopsstyle{beaminside=false}
+  \fi
+  \drawbeam[connectplanes]{(\oenodeRefA{})}{}{(\oenodeRefB{})}
+}
 %    \end{macrocode}
 %
 % \begin{macro}{\begin@BeamObj}
@@ -10422,7 +10467,8 @@ tx@OptexpDict begin
     } ifelse
     2 copy
     ToVec /Curr ED 
-    draw PN skipconn 1 add gt and
+    draw skipconn 0 ge PN skipconn 1 add gt and 
+    skipconn 0 lt PN PlaneNum skipconn 1 add add lt and or and
     counttomark 3 roll
     /CurrCenterTmp /CurrCenter load def
     /lastBeamPointTmp /Curr load def
@@ -10619,7 +10665,8 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % \PSvar{draw} indicates if the beam to the current interface should be drawn.
 %    \begin{macrocode}
-    PN skipconn 1 add gt and /draw ED
+    skipconn 0 ge PN skipconn 1 add gt and 
+    skipconn 0 lt PN PlaneNum skipconn 1 add add lt and or and /draw ED
 %    \end{macrocode}
 % \PSvar{Mode} stores the mode (transmittive or reflective) of the current interface.
 %    \begin{macrocode}
