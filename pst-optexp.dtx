@@ -5311,7 +5311,8 @@
 \RequirePackage{multido}
 \RequirePackage{pst-eucl}
 \RequirePackage{pstricks-add}
-\DeclareOption{compat}{\gdef\pstoptexp@compat{}}
+\newif\ifPOE@compat\POE@compatfalse
+\DeclareOption{compat}{\POE@compattrue}
 \ProcessOptions\relax
 \RequirePackage{environ}
 \long\def\POE@collect#1{%
@@ -5333,7 +5334,6 @@
 %    \end{macrocode}
 % IFs for the boolean keys.
 %    \begin{macrocode}
-\newif\ifPOE@compat\POE@compatfalse
 \newif\ifPOE@connjoin
 \newif\ifPOE@backlayer
 \newif\ifPOE@frontlayer
@@ -5414,21 +5414,6 @@
 \def\POE@Verb#1{\pst@Verb{\pst@optexpdict #1 end }}%
 %    \end{macrocode}
 %
-% Some strings which control the naming scheme of internal nodes and components.
-%
-% Default name stem for all internal nodes
-%    \begin{macrocode}
-\def\POE@str@basicname@default{@}
-%    \end{macrocode}
-% The nodes and component names are prefix with this string
-%    \begin{macrocode}
-\def\POE@str@basicname@prefix{OE@}
-%    \end{macrocode}
-% The postfix for external nodes
-%    \begin{macrocode}
-\def\POE@str@extnode@postfix{Ext}
-%    \end{macrocode}
-% 
 % \subsection{Parameter and style definitions}
 %    \begin{macrocode}
 \newpsstyle{OptComp}{}%
@@ -5540,16 +5525,20 @@
 %    \begin{macrocode}
     \edef\POE@str@basicname@default{tempNode}
     \edef\POE@str@basicname@prefix{}
-    \edef\POE@str@basicname@sep{Intern}
+    \gdef\POE@str@basicname@sep{Intern}
     \edef\POE@str@extnode@postfix{ExtNode}
   \or
     \edef\POE@str@basicname@default{@}
     \edef\POE@str@basicname@prefix{OE@}
-    \edef\POE@str@basicname@sep{-}
+    \gdef\POE@str@basicname@sep{}
     \edef\POE@str@extnode@postfix{Ext}
   \fi
 }%
-\psset[optexp]{namingscheme=new}%
+\ifPOE@compat
+  \psset[optexp]{namingscheme=old}%
+\else
+  \psset[optexp]{namingscheme=new}%
+\fi
 %    \end{macrocode}
 % Positioning
 %    \begin{macrocode}
@@ -6186,7 +6175,7 @@
     \psset[optexp]{b@sicname=\POE@str@basicname@default\the\POE@cnt}%
     \ifPOE@compat
       \psset[optexp]{extnoden@me={}}%
-      \def\POE@str@basicname@sep{}%
+      \gdef\POE@str@basicname@sep{}%
      \else
        \psset[optexp]{%
          extnoden@me=\POE@str@basicname@default\the\POE@cnt
@@ -6195,7 +6184,7 @@
   \else
     \edef\POE@key@compname{#1}%
     \ifPOE@compat
-      \def\POE@str@basicname@sep{Intern}%
+      \gdef\POE@str@basicname@sep{Intern}%
       \psset[optexp]{b@sicname=#1\POE@str@basicname@sep}%
     \else
       \psset[optexp]{b@sicname=#1}%   
@@ -6429,12 +6418,6 @@
 % \end{macro}
 % \end{macro}
 %    
-%    \begin{macrocode}
-\expandafter\ifx\csname pstoptexp@compat\endcsname\relax%
-%    \end{macrocode}
-%
-% \subsection{New connection code}
-% 
 % The keys related to the \cs{draw*} macros
 %    \begin{macrocode}
 \define@key[psset]{optexp}{beamangle}{%
@@ -6462,51 +6445,6 @@
 \define@boolkey[psset]{optexp}[POE@]{connectplanes}[true]{}%
 \define@boolkey[psset]{optexp}[POE@]{beamangleabs}[true]{}%
 \psset[optexp]{skipconn=0}%
-\def\POE@conntable{,o-o,i-i,f-f}%
-\define@key[psset]{optexp}{conn}{%
-  \edef\POE@temp{#1}%
-  \expandafter\POE@psset@@conn\POE@temp\@empty-\@empty\@nil
-  \if@pst\else
-    \PackageError{pst-optexp}{Bad connection specification: #1}%
-  \fi
-}%
-\def\POE@psset@@conn#1-#2\@empty#3\@nil{%
-  \@psttrue
-  \def\POE@next##1,#1-##2,##3\@nil{\def\POE@tempa{##2}}%
-  \expandafter\POE@next\POE@conntable,#1-#1,\@nil
-  \def\POE@tempb{#2}%
-  \expandafter\ifx\POE@tempa f
-    \drawfiber{(\oenodeRefA{})}{}%
-    \def\POE@tempa{}%
-  \fi
-  \expandafter\ifx\POE@tempb f
-    \drawfiber{}{(\oenodeRefB{})}%
-    \def\POE@tempb
-  \fi
-  \expandafter\psset[optexp]{conn@=\POE@tempa-\POE@tempb}
-}%
-\define@choicekey[psset]{optexp}{conn@}%
-  [\val\nr]{-,-i,-o,i-,i-i,i-o,o-,o-i,o-o}{%
-  \ifcase\nr\relax
-  \or% -i
-    \addtopsstyle{beaminside, skipconn=1}
-  \or% -o
-    \addtopsstyle{beaminside=false, skipconn=1}
-  \or% i-
-    \addtopsstyle{beaminside, skipconn=-1}
-  \or% i-i
-    \addtopsstyle{beaminside}
-  \or% i-o
-    \addtopsstyle{beaminside}
-  \or% o-
-    \addtopsstyle{beaminside=false, skipconn=-1}
-  \or% o-i
-    \addtopsstyle{beaminside}
-  \or% o-o
-    \addtopsstyle{beaminside=false}
-  \fi
-  \drawbeam[connectplanes]{(\oenodeRefA{})}{}{(\oenodeRefB{})}
-}
 %    \end{macrocode}
 %
 % \begin{macro}{\begin@BeamObj}
@@ -6559,6 +6497,7 @@
 %    \begin{macrocode}
 \def\drawbeam{\pst@object{drawbeam}}%
 \def\drawbeam@i{%
+  \def\POE@conntable{,a-a,b-b,A-A,B-B}%
   \begin@SingleBeamObj
   \POE@getcomps[\drawbeam@ii%
 }%
@@ -6621,6 +6560,17 @@
 % \begin{macro}{\drawbeam@ii}
 %    \begin{macrocode}
 \def\drawbeam@ii{%
+  \ifx\POE@key@conn\@empty
+    \drawbeam@iii
+  \else
+    \drawbeam@compat
+  \fi
+}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\drawbeam@iii}
+%    \begin{macrocode}
+\def\drawbeam@iii{%
   \ifx\pslinestyle\@none
     \addto@pscode{ false }%
   \else
@@ -6826,7 +6776,11 @@
 % \begin{macro}{\POE@getcomps}
 %    \begin{macrocode}
 \def\POE@getcomps#1#2{%
-  \def\POE@aftercomps{\addto@pscode{#1 \POE@comps }#2}%
+  \ifx\POE@key@conn\@empty
+    \def\POE@aftercomps{\addto@pscode{#1 \POE@comps }#2}%
+  \else
+    \def\POE@aftercomps{#2}%
+  \fi
   \def\POE@comps{}%
   \POE@@getcomps%
 }%
@@ -6856,7 +6810,7 @@
       \POE@firstcomp\space\POE@lastcomp\space GetCompRange %
     }%
   \else
-    \POE@getcomp{(\POE@str@basicname@prefix#1#2)}%
+    \POE@getcomp{(\POE@str@basicname@prefix#1#2\ifPOE@compat\POE@str@basicname@sep\fi)}%
   \fi\fi\fi\fi%
   \POE@@getcomps%
 }%
@@ -6867,12 +6821,16 @@
 %    \begin{macrocode}
 \def\POE@getplanenode(#1){%
   \pst@@getcoor{#1}%
-  \advance\POE@nodecnt by 1
-  \POE@getcomp{%
-    {\pst@coor} {0 1} (\POE@str@basicname@default N@\the\POE@nodecnt) 
-    {\tx@UserCoor} NewTempNodeComp 
-    (\POE@str@basicname@default N@\the\POE@nodecnt)
-  }%
+  \ifx\POE@key@conn\@empty
+    \advance\POE@nodecnt by 1
+    \POE@getcomp{%
+      {\pst@coor} {0 1} (\POE@str@basicname@default N@\the\POE@nodecnt) 
+      {\tx@UserCoor} NewTempNodeComp 
+      (\POE@str@basicname@default N@\the\POE@nodecnt)
+    }%
+  \else
+    \POE@getcomp{{\pst@coor} }%
+  \fi
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -6880,7 +6838,12 @@
 % \begin{macro}{\POE@getcomp}
 %    \begin{macrocode}
 \def\POE@getcomp#1{%
-   \edef\POE@comps{#1 \POE@comps}%
+  \ifx\POE@comps\@empty
+    \edef\POE@tempc{#1}%
+  \else
+    \edef\POE@tempd{#1}%
+  \fi
+  \edef\POE@comps{#1 \POE@comps}%
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -6888,6 +6851,13 @@
 % \begin{macro}{\POE@drawInternalConnections}
 %    \begin{macrocode}
 \def\POE@drawInternalConnections{%
+  \ifx\POE@key@conn\@empty
+    \POE@drawInternalConnectionsNew
+  \else
+    \POE@drawInternalConnectionsOld
+  \fi
+}%
+\def\POE@drawInternalConnectionsNew{%
   \ifPOE@beam
     \ifPOE@endbox
       \drawbeam[connectplanes]{(\oenodeRefA{})}{\POE@key@compname}
@@ -6911,183 +6881,7 @@
     \fi
   \fi
 }%
-%    \end{macrocode}
-% \end{macro}
-% 
-%    \begin{macrocode}
-\define@choicekey[psset]{optexp}{fiber}[\val\nr]{}[]{%
-   \psset[optexp]{fiberin, fiberout}%
-}
-\define@choicekey[psset]{optexp}{nofiber}[\val\nr]{}[]{%
-   \psset[optexp]{fiberin=none, fiberout=none}%
-}
-%    \end{macrocode}
-% Set default settings for the new connection code
-%    \begin{macrocode}
-\psset[optexp]{%
-        startinside=false
-        ,stopinside=false
-        ,beaminside=true
-        ,beaminsidefirst=false
-        ,beaminsidelast=false
-        ,loadbeampoints=false
-        ,savebeampoints=false
-        ,beamangle=0
-        ,beampos=\@empty
-        ,beamangleabs=false
-        ,beamwidth=0
-        ,beamdiv=\@empty
-        ,nmul=1
-        ,nadd=0
-        ,namingscheme=new
-}%
-\else
-%    \end{macrocode}
-% The old connection code for backward compatibility to version 2.x. As this is obsolete and was broken by design, there is no need to comment on this.
-%    \begin{macrocode}
-\def\optexp@nodeA{\POE@key@b@sicname 1}%
-\def\optexp@nodeB{\POE@key@b@sicname N}%
-\def\POE@str@basicname@postfix{Intern}%
-\define@key[psset]{optexp}{connjoin}{%
- \edef\POE@temp{#1}%
- \ifnum\POE@temp<0
-   \POE@connjoinfalse
- \else\ifnum\POE@temp>2
-   \POE@connjoinfalse
- \else
-   \POE@connjointrue
-   \edef\POE@key@connjoin{\POE@temp}
- \fi\fi
-}%
-\define@key[psset]{optexp}{conn}{%
-  \edef\POE@temp{#1}%
-  \expandafter\POE@psset@@conn\POE@temp\@empty-\@empty\@nil
-  \if@pst\else
-    \PackageError{pst-optexp}{Bad connection specification: #1}%
-  \fi
-}%
-\def\POE@psset@@conn#1-#2\@empty#3\@nil{%
-  \@psttrue
-  \def\POE@next##1,#1-##2,##3\@nil{\def\POE@temp{##2}}%
-  \expandafter\POE@next\POE@conntable,#1-#1,\@nil
-  \@ifundefined{POE@conn@in@\POE@temp}%
-    {\@pstfalse\def\POE@connIn{}}%
-    {\edef\POE@connIn{POE@conn@in@\POE@temp}}%
-  \@ifundefined{POE@conn@out@#2}%
-    {\@pstfalse\def\POE@connOut{}}%
-    {\def\POE@connOut{POE@conn@out@#2}}%
-}%
-\def\POE@connIn{}%
-\def\POE@connOut{}%
-\def\POE@conntable{,o-o,i-i,f-f}%
-\def\POE@conn@out@{}%
-\def\POE@conn@in@{}%
-\def\POE@conn@in@o{%
-  \psline[style=Beam](\oenodeRefA{})(\optexp@nodeA)%
-}%
-\def\POE@conn@out@o{%
-  \psline[style=Beam](\optexp@nodeB)(\oenodeRefB{})%
-}%
-\def\POE@conn@in@f{%
-  \pccurve[%
-    angleA=!\POE@dict{/N@\oenodeRefB{} /N@\oenodeRefA{} FiberAngleA},
-    angleB=!\POE@dict{/N@\oenodeRefB{} /N@\oenodeRefA{} FiberAngleB},
-    style=FiberIn](\oenodeRefA{})(\optexp@nodeA)%
-}%
-\def\POE@conn@out@f{%
-  \pccurve[%
-    angleA=!\POE@dict{/N@\oenodeRefB{} /N@\oenodeRefA{} FiberAngleA},
-    angleB=!\POE@dict{/N@\oenodeRefB{} /N@\oenodeRefA{} FiberAngleB},
-    style=FiberOut](\optexp@nodeB)(\oenodeRefB{})%
-}%
-\def\POE@conn@in@i{%
-  \def\pst@par{style=Beam}
-  \begin@OpenObj
-    \addto@pscode{%
-      [%]
-      \pst@optexpdict
-        (\POE@key@b@sicname) true GetInternalBeamNodes 
-        /N@\oenodeRefA{} @GetCenter 
-      end
-    }%
-  \psline@ii
-}%
-\def\POE@conn@out@i{%
-  \def\pst@par{style=Beam}
-  \begin@OpenObj
-    \addto@pscode{%
-      [%]
-      \pst@optexpdict
-        /N@\oenodeRefB{} @GetCenter
-        (\POE@key@b@sicname) true GetInternalBeamNodes 
-      end
-    }%
-  \psline@ii
-}%
-\def\POE@conn@in@a{%
-  /N@\optexp@nodeA\space \POE@dict{@GetCenter} %
-}%
-\def\POE@conn@in@A{%
-  (\POE@key@b@sicname) false \POE@dict{GetInternalBeamNodes} %
-}%
-\def\POE@conn@in@b{%
-  /N@\optexp@nodeB\space \POE@dict{@GetCenter} %
-}%
-\def\POE@conn@in@B{%
-  (\POE@key@b@sicname) true \POE@dict{GetInternalBeamNodes} %
-}%
-\def\POE@conn@out@a{%
-  /N@\optexp@nodeA\space \POE@dict{@GetCenter} %
-}%
-\def\POE@conn@out@A{%
-  (\POE@key@b@sicname) true \POE@dict{GetInternalBeamNodes} %
-}%
-\def\POE@conn@out@b{%
-  /N@\optexp@nodeB\space \POE@dict{@GetCenter} %
-}%
-\def\POE@conn@out@B{%
-  (\POE@key@b@sicname) false \POE@dict{GetInternalBeamNodes} %
-}%
-\def\drawbeam{%
-  \def\POE@conntable{,a-a,b-b,A-A,B-B}%
-  \begingroup
-    \psset{style=Beam}%
-    \pst@object{drawbeam}%
-}%
-\def\POE@getfirstchar#1#2\@nil{#1}%
-\def\drawbeam@i#1#2{%
-  \def\POE@tempa{\POE@getfirstchar#1\@nil}%
-  \def\POE@tempb{\POE@getfirstchar#2\@nil}%
-  \ifPOE@connjoin
-    \psset{linejoin=\POE@key@connjoin}%
-  \fi
-  \begin@OpenObj%
-  \if(\POE@tempb%)
-    \POE@getcoor#2
-    \def\POE@connOut{pst@coor}%
-  \else
-    \POE@checkcompname{#2}%
-    \edef\POE@key@b@sicnameB{#2\POE@str@basicname@postfix}%
-  \fi
-  \if(\POE@tempa%)
-    \POE@getcoor#1%
-    \def\POE@connIn{pst@coor}%
-  \else
-    \POE@checkcompname{#1}%
-    \edef\POE@key@b@sicnameA{#1\POE@str@basicname@postfix}%
-  \fi
-  \let\POE@key@b@sicname\POE@key@b@sicnameB
-  \addto@pscode{[%] 
-    \@nameuse{\POE@connOut}}%
-  \let\POE@key@b@sicname\POE@key@b@sicnameA
-  \addto@pscode{\@nameuse{\POE@connIn}}%
-  \psline@ii
-  \endgroup
-\ignorespaces}%
-\def\POE@getcoor(#1){%
-  \pst@@getcoor{#1}%
-\ignorespaces}%
-\def\POE@drawInternalConnections{%
+\def\POE@drawInternalConnectionsOld{%
   \ifPOE@endbox
     \@nameuse{\POE@connIn}
   \else
@@ -7135,22 +6929,161 @@
     \fi
   \fi
 }%
-\define@choicekey[psset]{optexp}{beam}[\val\nr]{}[]{%
-  \psset[optexp]{conn=o-i}%
-}
+%    \end{macrocode}
+% \end{macro}
+% 
+%    \begin{macrocode}
 \define@choicekey[psset]{optexp}{fiber}[\val\nr]{}[]{%
-  \psset[optexp]{conn=f-f, fiberin, fiberout}%
+  \ifPOE@compat
+    \psset[optexp]{conn=f-f}
+  \fi
+  \psset[optexp]{fiberin, fiberout}%
 }
 \define@choicekey[psset]{optexp}{nofiber}[\val\nr]{}[]{%
-  \psset[optexp]{conn=-, fiberin=none, fiberout=none}%
+   \psset[optexp]{fiberin=none, fiberout=none}%
 }
-\POE@compattrue
+%    \end{macrocode}
+% Set default settings for the new connection code
+%    \begin{macrocode}
 \psset[optexp]{%
-  conn=-
-  , connjoin=1
-  , namingscheme=old
-}
-\fi
+        startinside=false
+        ,stopinside=false
+        ,beaminside=true
+        ,beaminsidefirst=false
+        ,beaminsidelast=false
+        ,loadbeampoints=false
+        ,savebeampoints=false
+        ,beamangle=0
+        ,beampos=\@empty
+        ,beamangleabs=false
+        ,beamwidth=0
+        ,beamdiv=\@empty
+        ,nmul=1
+        ,nadd=0
+}%
+
+%    \end{macrocode}
+% The old connection code for backward compatibility to version 2.x. As this is obsolete and was broken by design, there is no need to comment on this.
+%    \begin{macrocode}
+\def\optexp@nodeA{\POE@key@b@sicname 1}%
+\def\optexp@nodeB{\POE@key@b@sicname N}%
+\define@key[psset]{optexp}{connjoin}{%
+ \edef\POE@temp{#1}%
+ \ifnum\POE@temp<0
+   \POE@connjoinfalse
+ \else\ifnum\POE@temp>2
+   \POE@connjoinfalse
+ \else
+   \POE@connjointrue
+   \edef\POE@key@connjoin{\POE@temp}
+ \fi\fi
+}%
+\def\POE@key@conn{}%
+\define@key[psset]{optexp}{conn}{%
+  \edef\POE@key@conn{#1}%
+  \expandafter\POE@psset@@conn\POE@key@conn\@empty-\@empty\@nil
+  \if@pst\else
+    \PackageError{pst-optexp}{Bad connection specification: #1}%
+  \fi
+}%
+\def\POE@psset@@conn#1-#2\@empty#3\@nil{%
+  \@psttrue
+  \def\POE@next##1,#1-##2,##3\@nil{\def\POE@temp{##2}}%
+  \expandafter\POE@next\POE@conntable,#1-#1,\@nil
+  \@ifundefined{POE@conn@in@\POE@temp}%
+    {\@pstfalse\def\POE@connIn{}}%
+    {\edef\POE@connIn{POE@conn@in@\POE@temp}}%
+  \@ifundefined{POE@conn@out@#2}%
+    {\@pstfalse\def\POE@connOut{}}%
+    {\def\POE@connOut{POE@conn@out@#2}}%
+}%
+\def\POE@connIn{}%
+\def\POE@connOut{}%
+\def\POE@conntable{,o-o,i-i,f-f}%
+\def\POE@conn@out@{\ifPOE@insideobj\else\POE@conn@out@a\fi}%
+\def\POE@conn@in@{\ifPOE@insideobj\else\POE@conn@in@a\fi}%
+\def\POE@conn@in@o{%
+  \psline[style=Beam](\oenodeRefA{})(\optexp@nodeA)%
+}%
+\def\POE@conn@out@o{%
+  \psline[style=Beam](\optexp@nodeB)(\oenodeRefB{})%
+}%
+\def\POE@conn@in@f{%
+  \pccurve[%
+    angleA=!\POE@dict{/N@\oenodeRefB{} /N@\oenodeRefA{} FiberAngleA},
+    angleB=!\POE@dict{/N@\oenodeRefB{} /N@\oenodeRefA{} FiberAngleB},
+    style=FiberIn](\oenodeRefA{})(\optexp@nodeA)%
+}%
+\def\POE@conn@out@f{%
+  \pccurve[%
+    angleA=!\POE@dict{/N@\oenodeRefB{} /N@\oenodeRefA{} FiberAngleA},
+    angleB=!\POE@dict{/N@\oenodeRefB{} /N@\oenodeRefA{} FiberAngleB},
+    style=FiberOut](\optexp@nodeB)(\oenodeRefB{})%
+}%
+\def\POE@conn@in@i{%
+  \def\pst@par{style=Beam}
+  \begin@OpenObj
+    \addto@pscode{%
+      [%]
+      \pst@optexpdict
+        (\POE@key@b@sicname) true GetInternalBeamNodesCompat
+        /N@\oenodeRefA{} @GetCenter 
+      end
+    }%
+  \psline@ii
+}%
+\def\POE@conn@out@i{%
+  \def\pst@par{style=Beam}
+  \begin@OpenObj
+    \addto@pscode{%
+      [%]
+      \pst@optexpdict
+        /N@\oenodeRefB{} @GetCenter
+        (\POE@key@b@sicname) true GetInternalBeamNodesCompat
+      end
+    }%
+  \psline@ii
+}%
+\def\POE@conn@in@a{%
+  dup xcheck not {
+    \POE@dict{1 GetInternalBeamNodeCompat}
+  } if
+  exec
+}%
+\def\POE@conn@in@A{%
+  dup xcheck not {
+    false \POE@dict{GetInternalBeamNodesCompat} %
+  } if
+  exec
+}%
+\def\POE@conn@in@b{%
+  dup xcheck not {
+    \POE@dict{(N) GetInternalBeamNodeCompat}
+  } if
+  exec
+}%
+\def\POE@conn@in@B{%
+  dup xcheck not {
+    true \POE@dict{GetInternalBeamNodesCompat} %
+  } if
+  exec
+}%
+\let\POE@conn@out@a\POE@conn@in@a
+\let\POE@conn@out@A\POE@conn@in@B
+\let\POE@conn@out@b\POE@conn@in@b
+\let\POE@conn@out@B\POE@conn@in@A
+\def\drawbeam@compat{%
+  \ifPOE@connjoin
+    \setkeys+[psset]{optexp}{linejoin=\POE@key@connjoin}%
+  \fi
+  \addto@pscode{[% ]
+    \POE@tempd\space
+    \@nameuse{\POE@connOut}
+    \POE@tempc\space
+    \@nameuse{\POE@connIn}}%
+  \psline@ii
+\ignorespaces}%
+%
 %    \end{macrocode}
 %    \begin{macrocode}
 \def\defShiftedNode(#1)(#2)#3{\nodexn{(#1) + (#2)}{#3}}%
@@ -7180,7 +7113,7 @@
 % \begin{macro}{\oenode}
 %    \begin{macrocode}
 \def\oenode#1#2{%
-  \ifx.#2.%
+  \ifx\\#2\\%
     \POE@getlastcompname
   \else
     \POE@str@basicname@prefix
@@ -7189,9 +7122,7 @@
     \fi
     #2%
   \fi
-  \ifPOE@compat
-    \POE@str@basicname@sep
-  \fi
+  \POE@str@basicname@sep
   #1%
 }%
 %    \end{macrocode}
@@ -8054,9 +7985,6 @@
   \@ifnextchar\bgroup{\fibercollimator@v}{\fibercollimator@v{}}%
 }%
 \def\fibercollimator@v#1{%
-  \ifPOE@compat
-    \addbefore@par{conn=o-f}%
-  \fi
   \addbefore@par{fiberout=both}%
   \begin@OptexpObj
     \ifPOE@backlayer
@@ -8073,20 +8001,12 @@
        \fi
     }%
     \ifPOE@backlayer
-      \ifPOE@compat
-        \@nameuse{\POE@connIn}
-      \else
-        \ifPOE@beam
-          \drawbeam{(\oenodeRefA{})}{\POE@key@compname}
-        \fi
+      \ifPOE@beam
+        \drawbeam{(\oenodeRefA{})}{\POE@key@compname}
       \fi
       \ifPOE@fiberout@
         \ifx\@empty\POE@tempc
-          \ifPOE@compat
-            \@nameuse{\POE@connOut}
-          \else
-            \drawfiber{\POE@key@compname}{(\oenodeRefB{})}
-          \fi
+          \drawfiber{\POE@key@compname}{(\oenodeRefB{})}
         \else\ifx\@empty\POE@tempd
           \psbezier[style=FiberOut](\oenodeOut{})(\POE@tempb)%
                                    (\POE@tempb)(\POE@tempc)%
@@ -8571,20 +8491,13 @@
 \def\beamsplitter@nodes{%
   \edef\@bs@wd{\POE@key@bssize\space 2.0 div }%
   \ifx\POE@key@bsstyle\POE@str@bsstyle@cube
-    \ifPOE@compat
-%    \end{macrocode}
-% the old beamsplitter had only one defined plane
-%    \begin{macrocode}
-      \newOptexpCompAmb{ {0 0} {1 0} trans {PlaneIfc} 1 }%
-    \else
-      \newOptexpCompAmb{%
-        {\@bs@wd 2 sqrt div neg dup} {-1 1} trans {PlaneIfc}
-        {\@bs@wd 2 sqrt div dup neg} {1 1} trans {PlaneIfc}
-        {\@bs@wd 2 sqrt div dup} {-1 1} trans {PlaneIfc}
-        {\@bs@wd 2 sqrt div neg dup neg} {1 1} trans {PlaneIfc} 
-        {0 0} {1 0} trans {PlaneIfc} \POE@key@n
-      }%
-    \fi
+    \newOptexpCompAmb{%
+      {\@bs@wd 2 sqrt div neg dup} {-1 1} trans {PlaneIfc}
+      {\@bs@wd 2 sqrt div dup neg} {1 1} trans {PlaneIfc}
+      {\@bs@wd 2 sqrt div dup} {-1 1} trans {PlaneIfc}
+      {\@bs@wd 2 sqrt div neg dup neg} {1 1} trans {PlaneIfc} 
+      {0 0} {1 0} trans {PlaneIfc} \POE@key@n
+    }%
   \else\ifx\POE@key@bsstyle\POE@str@bsstyle@plate
     \newOptexpCompAmb{ {0 0} {1 0} trans {PlaneIfc} 1 }%
   \fi\fi
@@ -9847,6 +9760,30 @@ tx@OptexpDict begin
 } bind def
 %    \end{macrocode}
 % \end{macro}
+%
+% \begin{macro}{GetInternalBeamNodesCompat}
+%   Equivalent to \PSvar{GetInternalBeamNodes} only that it checks if the
+%   component is ambiguous (i.e. it is a beamsplitter), in which case it returns
+%   only the center node.
+%    \begin{macrocode}
+/GetInternalBeamNodesCompat {
+  exch dup 3 1 roll (C) NodeName dup tx@NodeDict exch known {
+    @GetCenter ToVec 
+    3 1 roll pop pop
+  } {
+    pop GetInternalBeamNodes
+  } ifelse
+} bind def
+/GetInternalBeamNodeCompat {
+  exch dup 3 1 roll (C) NodeName dup tx@NodeDict exch known {
+    @GetCenter ToVec
+    3 1 roll pop pop
+  } {
+    pop NodeName @GetCenter ToVec
+  } ifelse
+} bind def
+%    \end{macrocode}
+% \end{macro}
 % 
 % \begin{macro}{InitOptexpComp}
 %   Initialize some global variables for positioning of external
@@ -10467,8 +10404,7 @@ tx@OptexpDict begin
     } ifelse
     2 copy
     ToVec /Curr ED 
-    draw skipconn 0 ge PN skipconn 1 add gt and 
-    skipconn 0 lt PN PlaneNum skipconn 1 add add lt and or and
+    draw PN skipconn 1 add gt and
     counttomark 3 roll
     /CurrCenterTmp /CurrCenter load def
     /lastBeamPointTmp /Curr load def
@@ -10665,8 +10601,7 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % \PSvar{draw} indicates if the beam to the current interface should be drawn.
 %    \begin{macrocode}
-    skipconn 0 ge PN skipconn 1 add gt and 
-    skipconn 0 lt PN PlaneNum skipconn 1 add add lt and or and /draw ED
+    PN skipconn 1 add gt and /draw ED
 %    \end{macrocode}
 % \PSvar{Mode} stores the mode (transmittive or reflective) of the current interface.
 %    \begin{macrocode}
