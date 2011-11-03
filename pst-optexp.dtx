@@ -6090,11 +6090,6 @@
 % External node
 %    \begin{macrocode}
 \define@boolkey[psset]{optexp}[POE@]{globalnoderef}[true]{}%
-\define@key[psset]{optexp}{extnoden@me}{%
-  \edef\POE@key@extnoden@me{%
-    \POE@str@basicname@prefix#1\POE@str@extnode@postfix
-  }%
-}%
 %    \end{macrocode}
 % (this part was copied and adapted from \cs{psset@@ref} from pstricks.tex)
 %    \begin{macrocode}
@@ -6171,25 +6166,9 @@
   \fi
   \edef\POE@temp{#1}%
   \ifx\POE@temp\@empty
-    \edef\POE@key@compname{\POE@str@basicname@default\the\POE@cnt}%
-    \psset[optexp]{b@sicname=\POE@str@basicname@default\the\POE@cnt}%
-    \ifPOE@compat
-      \psset[optexp]{extnoden@me={}}%
-      \gdef\POE@str@basicname@sep{}%
-     \else
-       \psset[optexp]{%
-         extnoden@me=\POE@str@basicname@default\the\POE@cnt
-       }%
-     \fi
+    \edef\POE@key@compname{\the\POE@cnt}%
   \else
     \edef\POE@key@compname{#1}%
-    \ifPOE@compat
-      \gdef\POE@str@basicname@sep{Intern}%
-      \psset[optexp]{b@sicname=#1\POE@str@basicname@sep}%
-    \else
-      \psset[optexp]{b@sicname=#1}%   
-    \fi
-    \psset[optexp]{extnoden@me=#1}%
   \fi
 %    \end{macrocode}
 % check if compname was already defined
@@ -6800,17 +6779,17 @@
   \else\ifnum9<1#1\relax
     \POE@getcomprange#1#2-\@nil
     \POE@getcomp{%
-      (\POE@str@basicname@prefix\POE@str@basicname@default) 
+      (\oenode{}{}) 
       \POE@firstcomp\space\POE@lastcomp\space GetCompRange %
     }%
   \else\ifx-#1\relax
     \POE@getcomprange#1#2-\@nil
     \POE@getcomp{%
-      (\POE@str@basicname@prefix\POE@str@basicname@default) 
+      (\oenode{}{}) 
       \POE@firstcomp\space\POE@lastcomp\space GetCompRange %
     }%
   \else
-    \POE@getcomp{(\POE@str@basicname@prefix#1#2\ifPOE@compat\POE@str@basicname@sep\fi)}%
+    \POE@getcomp{(\oenode{}{#1#2})}%
   \fi\fi\fi\fi%
   \POE@@getcomps%
 }%
@@ -6965,8 +6944,8 @@
 %    \end{macrocode}
 % The old connection code for backward compatibility to version 2.x. As this is obsolete and was broken by design, there is no need to comment on this.
 %    \begin{macrocode}
-\def\optexp@nodeA{\POE@key@b@sicname 1}%
-\def\optexp@nodeB{\POE@key@b@sicname N}%
+\def\optexp@nodeA{\oenodeIn{}}%
+\def\optexp@nodeB{\oenodeOut{}}%
 \define@key[psset]{optexp}{connjoin}{%
  \edef\POE@temp{#1}%
  \ifnum\POE@temp<0
@@ -7026,7 +7005,7 @@
     \addto@pscode{%
       [%]
       \pst@optexpdict
-        (\POE@key@b@sicname) true GetInternalBeamNodesCompat
+        (\oenode{}{}) true GetInternalBeamNodesCompat
         /N@\oenodeRefA{} @GetCenter 
       end
     }%
@@ -7039,7 +7018,7 @@
       [%]
       \pst@optexpdict
         /N@\oenodeRefB{} @GetCenter
-        (\POE@key@b@sicname) true GetInternalBeamNodesCompat
+        (\oenode{}{}) true GetInternalBeamNodesCompat
       end
     }%
   \psline@ii
@@ -7103,7 +7082,6 @@
 % \begin{macro}{\POE@getlastcompname}
 %    \begin{macrocode}
 \def\POE@getlastcompname{%
-  \POE@str@basicname@prefix
   \expandafter\POE@getlastcompname@i \POE@complist,\relax,\@nil
 }%
 \def\POE@getlastcompname@i#1,#2,#3\@nil{#1}%
@@ -7113,16 +7091,23 @@
 % \begin{macro}{\oenode}
 %    \begin{macrocode}
 \def\oenode#1#2{%
+  \POE@str@basicname@prefix%
   \ifx\\#2\\%
-    \POE@getlastcompname
-  \else
-    \POE@str@basicname@prefix
-    \ifnum9<1#2 
-      \POE@str@basicname@default
-    \fi
-    #2%
-  \fi
-  \POE@str@basicname@sep
+    \ifnum9<1\POE@getlastcompname%
+      \POE@str@basicname@default%
+      \POE@getlastcompname%
+    \else%
+      \POE@getlastcompname%
+      \POE@str@basicname@sep%
+    \fi%
+  \else%
+    \ifnum9<1#2%
+      \POE@str@basicname@default%
+      #2%
+    \else%
+      #2\POE@str@basicname@sep%
+    \fi%
+  \fi%
   #1%
 }%
 %    \end{macrocode}
@@ -7172,7 +7157,7 @@
 %    \begin{macrocode}
 \def\newOptexpComp#1{%
   \POE@Verb{%
-    [ #1 (\POE@key@b@sicname) {\tx@ScreenCoor} false NewOptexpComp
+    [ #1 (\oenode{}{}) {\tx@ScreenCoor} false NewOptexpComp
   }%
 \ignorespaces}%
 %    \end{macrocode}
@@ -7182,7 +7167,7 @@
 %    \begin{macrocode}
 \def\newOptexpCompAmb#1{%
   \POE@Verb{%
-    [ #1 (\POE@key@b@sicname) {\tx@ScreenCoor} true NewOptexpComp
+    [ #1 (\oenode{}{}) {\tx@ScreenCoor} true NewOptexpComp
   }%
 \ignorespaces}%
 %    \end{macrocode}
@@ -7305,9 +7290,8 @@
 %    \begin{macrocode}
 \def\end@OptexpObj{%
     \ifPOE@compat\else
-      \edef\POE@temp{\POE@str@basicname@default\the\POE@cnt}%
-      \ifx\POE@key@compname\POE@temp\else
-        \POE@compalias{\POE@key@compname}{\POE@temp}%
+      \ifnum9<1\POE@key@compname\else
+        \POE@compalias{\POE@key@compname}{\oenode{}{\the\POE@cnt}}%
       \fi
     \fi
   \endgroup
@@ -8054,7 +8038,8 @@
         \pnode(! \POE@dict{
           \POE@key@extnode@xref\space
           \POE@key@extnode@yref\space
-          ExtNode}){\POE@key@extnoden@me}%
+          ExtNode}){\oenodeExt{}}%
+        \POE@Verb{ tx@NodeDict begin /N@\oenodeExt{} load /N@ExtNode ED end }%
       \fi
     \fi
   }%
@@ -8116,7 +8101,7 @@
   \fi
   \ifPOE@debug@showifcnodes
     \ifPOE@backlayer
-      \POE@ifcnodes[style=IfcNodeStyle]{\POE@key@b@sicname}
+      \POE@ifcnodes[style=IfcNodeStyle]
     \fi
   \fi
 \ignorespaces}%
@@ -8142,13 +8127,13 @@
 % \begin{macro}{\POE@ifcnodes}
 %    \begin{macrocode}
 \def\POE@ifcnodes{\pst@object{POE@ifcnodes}}
-\def\POE@ifcnodes@i#1{%
+\def\POE@ifcnodes@i{%
   \begin@SpecialObj%
   \solid@star%
   \addto@pscode{
     \psk@dotsize
     \@nameuse{psds@\psk@dotstyle}
-    \POE@dict{[ (#1) false GetInternalBeamNodes %]
+    \POE@dict{[ (\oenode{}{}) false GetInternalBeamNodes %]
       counttomark 2 idiv { Dot } repeat
       pop}
     }%
