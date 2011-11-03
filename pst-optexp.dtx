@@ -5311,9 +5311,6 @@
 \RequirePackage{multido}
 \RequirePackage{pst-eucl}
 \RequirePackage{pstricks-add}
-\newif\ifPOE@compat\POE@compatfalse
-\DeclareOption{compat}{\POE@compattrue}
-\ProcessOptions\relax
 \RequirePackage{environ}
 \long\def\POE@collect#1{%
   \global\POE@oldcnt=\POE@cnt
@@ -5519,6 +5516,7 @@
 \define@boolkey[psset]{optexp}[POE@debug@]{showifcnodes}[true]{}
 \define@choicekey*[psset]{optexp}{namingscheme}%
   [\val\nr]{old,new}[new]{%
+  \edef\POE@key@namingscheme{\val}%
   \ifcase\nr\relax
 %    \end{macrocode}
 % old naming scheme
@@ -5534,11 +5532,7 @@
     \edef\POE@str@extnode@postfix{Ext}
   \fi
 }%
-\ifPOE@compat
-  \psset[optexp]{namingscheme=old}%
-\else
-  \psset[optexp]{namingscheme=new}%
-\fi
+\psset[optexp]{namingscheme=new}%
 %    \end{macrocode}
 % Positioning
 %    \begin{macrocode}
@@ -6312,14 +6306,14 @@
     \use@par
     \def\POE@tempa{#2}
     \ifx\POE@tempa\@empty
-      \edef\POE@comps{/\POE@getlastcompname\space}
+      \edef\POE@comps{/\oenode{}{}\space}
     \else
       \expandafter\POE@getnode#2\@nil
       \edef\POE@comps{\POE@temp}
     \fi
     \def\POE@tempb{#3}
     \ifx\POE@tempb\@empty
-      \edef\POE@comps{/\POE@getlastcompname\space \POE@comps}
+      \edef\POE@comps{/\oenode{}{}\space \POE@comps}
     \else
       \expandafter\POE@getnode#3\@nil
       \edef\POE@comps{\POE@temp\space \POE@comps}
@@ -6773,19 +6767,19 @@
 \def\POE@@@@getcomps#1#2\@nil{%
   \edef\POE@temp{#1}%
   \ifx\POE@temp\@empty
-    \POE@getcomp{(\POE@getlastcompname)}%
+    \POE@getcomp{(\oenode{}{})}%
   \else\ifx(#1\relax%)
     \POE@getplanenode#1#2%
   \else\ifnum9<1#1\relax
     \POE@getcomprange#1#2-\@nil
     \POE@getcomp{%
-      (\oenode{}{}) 
+      (\POE@str@basicname@prefix\POE@str@basicname@default) 
       \POE@firstcomp\space\POE@lastcomp\space GetCompRange %
     }%
   \else\ifx-#1\relax
     \POE@getcomprange#1#2-\@nil
     \POE@getcomp{%
-      (\oenode{}{}) 
+      (\POE@str@basicname@prefix\POE@str@basicname@default) 
       \POE@firstcomp\space\POE@lastcomp\space GetCompRange %
     }%
   \else
@@ -6839,23 +6833,21 @@
 \def\POE@drawInternalConnectionsNew{%
   \ifPOE@beam
     \ifPOE@endbox
-      \drawbeam[connectplanes]{(\oenodeRefA{})}{\POE@key@compname}
+      \drawbeam[connectplanes]{(\oenodeRefA{})}{}
     \else
-      \drawbeam[connectplanes]{(\oenodeRefA{})}%
-                              {\POE@key@compname}%
-                              {(\oenodeRefB{})}
+      \drawbeam[connectplanes]{(\oenodeRefA{})}{}{(\oenodeRefB{})}
     \fi
   \else
     \ifPOE@endbox
       \ifPOE@fiberin@
-        \drawfiber@{FiberIn}{(\oenodeRefA{})}{\POE@key@compname}
+        \drawfiber@{FiberIn}{(\oenodeRefA{})}{}
       \fi
     \else
       \ifPOE@fiberin@
-        \drawfiber@{FiberIn}{(\oenodeRefA{})}{\POE@key@compname}
+        \drawfiber@{FiberIn}{(\oenodeRefA{})}{}
       \fi
       \ifPOE@fiberout@
-        \drawfiber@{FiberOut}{\POE@key@compname}{(\oenodeRefB{})}
+        \drawfiber@{FiberOut}{}{(\oenodeRefB{})}
       \fi
     \fi
   \fi
@@ -6913,9 +6905,6 @@
 % 
 %    \begin{macrocode}
 \define@choicekey[psset]{optexp}{fiber}[\val\nr]{}[]{%
-  \ifPOE@compat
-    \psset[optexp]{conn=f-f}
-  \fi
   \psset[optexp]{fiberin, fiberout}%
 }
 \define@choicekey[psset]{optexp}{nofiber}[\val\nr]{}[]{%
@@ -7178,11 +7167,11 @@
 \def\POE@compalias#1#2{%
   \POE@Verb{%
     /\POE@str@basicname@prefix#1 dup currentdict exch known { 
-      load /\POE@str@basicname@prefix#2 ED 
+      load /#2 ED 
     } { 
       pop 
     } ifelse
-    (\POE@str@basicname@prefix#2) (\POE@str@basicname@prefix#1)
+    (#2) (\POE@str@basicname@prefix#1)
     tx@NodeDict begin
       1 {
         3 copy inttostr dup 
@@ -7289,11 +7278,12 @@
 % \begin{macro}{\end@OptexpObj}
 %    \begin{macrocode}
 \def\end@OptexpObj{%
-    \ifPOE@compat\else
-      \ifnum9<1\POE@key@compname\else
-        \POE@compalias{\POE@key@compname}{\oenode{}{\the\POE@cnt}}%
-      \fi
+  \ifnum9<1\POE@key@compname\else
+    \def\POE@temp{new}%
+    \ifx\POE@temp\POE@key@namingscheme
+      \POE@compalias{\POE@key@compname}{\oenode{}{\the\POE@cnt}}%
     \fi
+  \fi
   \endgroup
   \ignorespaces%
 }%
@@ -8039,7 +8029,11 @@
           \POE@key@extnode@xref\space
           \POE@key@extnode@yref\space
           ExtNode}){\oenodeExt{}}%
-        \POE@Verb{ tx@NodeDict begin /N@\oenodeExt{} load /N@ExtNode ED end }%
+        \ifnum9<1\POE@key@compname\relax
+          \POE@Verb{ tx@NodeDict begin /N@\oenodeExt{} load /N@ExtNode ED end }%
+        \else
+          \POE@Verb{ tx@NodeDict begin /N@\oenodeExt{} load /N@\POE@key@compname ExtNode ED end }%
+        \fi
       \fi
     \fi
   }%

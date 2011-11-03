@@ -6,7 +6,38 @@
 \usepackage{pst-optexp}
 \usepackage{showexpl}
 \begin{document}
-\begin{pspicture}[showgrid=true](3,2)
+\begin{pspicture}(3,3)
+  \psset{endbox, optboxwidth=0.5, optboxheight=0.5, bssize=0.5}
+  \optbox[compname=obj](0.5,0.5)(0.5,2.5){obj, 1}
+  \beamsplitter(0.5,2.5)(0.5,1)(2.5,1){2}
+  \optbox(0.5,1)(2.5,1){3}
+  % named objects are also numbered
+  \drawbeam{1-3}
+\end{pspicture}
+\end{document}
+\begin{pspicture}(2.8,3) 
+  \pentaprism[pentaprismsize=1.3](0,1.5)(1.5,1.5)(1.5,0)
+  \drawbeam[arrows=->, arrowinset=0, arrowscale=1.5]{(0,1.5)}{}{(1.5,0)}
+%  \psdot(\oenodeIn{})\uput[135](\oenodeIn{}){1}
+%  \psdot(\oenodeIfc{2}{})\uput[0](\oenodeIfc{2}{}){2}
+%  \psdot(\oenodeIfc{3}{})\uput[90](\oenodeIfc{3}{}){3}
+%  \psdot(\oenodeOut{})\uput[-45](\oenodeOut{}){N}
+\end{pspicture}
+\end{document}
+\begin{pspicture}[showgrid=true](4,6) \psset{labeloffset=0.6}
+  \addtopsstyle{Beam}{arrows=->, arrowscale=1.5}
+  \doveprism[compname=Dove1](0,0.8)(3,0.8){Dove1}
+  \drawbeam[conn=b-]{Dove1}{(3,0.8)}
+  \doveprism[compname=Dove2](0,2.3)(3,2.3){Dove2}
+  \drawbeam[conn=B-]{Dove2}{(3,2.3)}
+  \doveprism[compname=Dove3](0,3.8)(3,3.8){Dove3}
+  \drawbeam[conn=-a]{(0,3.8)}{Dove3}
+  \doveprism[compname=Dove4](0,5.3)(3,5.3){Dove4}
+  \drawbeam[conn=-A]{(0,5.3)}{Dove4}
+\end{pspicture}
+\end{document}
+
+  \begin{pspicture}[showgrid=true](3,2)
   \pnode(0,1){A}
   \pnode(3,1){B}
   \optbox[labeloffset=0.7, optboxwidth=0.5, optboxheight=1, angle=20, refractiveindex=2.3, compname=Box](A)(B){glass plate}
