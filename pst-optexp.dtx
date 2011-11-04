@@ -22,7 +22,7 @@
 %<stylefile>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<stylefile>\ProvidesPackage{pst-optexp}
 %<*stylefile>
-    [2011/10/21 v3.0alpha Optical experimental setups with PSTricks]
+    [2011/11/04 v3.0alpha Optical experimental setups with PSTricks]
 %</stylefile>
 %
 %<*driver>
@@ -100,6 +100,11 @@
   explpreset={%
     escapeinside={*}{*}, pos=l, width=-99pt, hsep=5mm, overhang=\codeoverhang,
     varwidth, vsep=\bigskipamount, rframe={}}}
+\lstset{
+  literate={ö}{{\"o}}1
+           {ä}{{\"a}}1
+           {ü}{{\"u}}1
+}
 \colorlet{sectioncolor}{DOrange}
 \addtokomafont{sectioning}{\color{sectioncolor}}
 \addtokomafont{subsection}{\Large}
@@ -1031,6 +1036,16 @@
 % \iffalse
 %<*ignore>
 % \fi
+\ifGERMAN
+\begin{LTXexample}
+\begin{pspicture}(2,2)
+  \optbox[compname=MyBox](0,1)(2,2)
+  \psdot[linecolor=red](\oenodeIn{MyBox}) % Verwende den Namen
+  \psdot[linecolor=blue](\oenodeOut{1})   % Verwende die Nummer
+  \psdot[linecolor=green](\oenodeCenter{})% Nimm die letzte Komponente
+\end{pspicture}
+\end{LTXexample}
+\fi\ifENGLISH
 \begin{LTXexample}
 \begin{pspicture}(2,2)
   \optbox[compname=MyBox](0,1)(2,2)
@@ -1039,6 +1054,7 @@
   \psdot[linecolor=green](\oenodeCenter{})  % the last component
 \end{pspicture}
 \end{LTXexample}
+\fi
 % \end{optionlist}
 % \iffalse
 %</ignore>
@@ -1573,8 +1589,19 @@
 % \iffalse
 %<*ignore>
 % \fi
+\ifGERMAN
 \begin{LTXexample}[morekeywords={[21]{addtoOptComp}}]
-\begin{pspicture}(3,4)
+\begin{pspicture}(2.5,4)
+  \psset{beam}
+  % falsch, die Strahlbreite wird auch geändert
+  \mirror[linewidth=3\pslinewidth](0,3)(2,3)(2,2)
+  % korrektes Ergebnis
+  \mirror[addtoOptComp={linewidth=3\pslinewidth}](0,1)(2,1)(2,0)
+\end{pspicture}
+\end{LTXexample}
+\fi\ifENGLISH
+\begin{LTXexample}[morekeywords={[21]{addtoOptComp}}]
+\begin{pspicture}(2.5,4)
   \psset{beam}
   % wrong, also beam width is changed
   \mirror[linewidth=3\pslinewidth](0,3)(2,3)(2,2)
@@ -1582,6 +1609,7 @@
   \mirror[addtoOptComp={linewidth=3\pslinewidth}](0,1)(2,1)(2,0)
 \end{pspicture}
 \end{LTXexample}
+\fi
 % \iffalse
 %</ignore>
 % \fi
@@ -1628,6 +1656,17 @@
 % \iffalse
 %<*ignore>
 % \fi
+\ifGERMAN
+\begin{LTXexample}[morekeywords={[21]{OptComp, OptionalStyle, optional}}]
+\begin{pspicture}(3,1.5)
+\addtopsstyle{OptComp}{linewidth=3\pslinewidth, linecolor=red}
+\newpsstyle{OptionalStyle}{linecolor=blue}
+\lens(0,1)(2,1)
+% Liniefarbe wird überschrieben, die Linienbreite nicht.
+\lens[optional](0,1)(3,1)
+\end{pspicture}
+\end{LTXexample}
+\fi\ifENGLISH
 \begin{LTXexample}[morekeywords={[21]{OptComp, OptionalStyle, optional}}]
 \begin{pspicture}(3,1.5)
 \addtopsstyle{OptComp}{linewidth=3\pslinewidth, linecolor=red}
@@ -1637,6 +1676,7 @@
 \lens[optional](0,1)(3,1)
 \end{pspicture}
 \end{LTXexample}
+\fi
 % \iffalse
 %</ignore>
 % \fi
@@ -3770,11 +3810,12 @@
 % \iffalse
 %<*ignore>
 % \fi
+\ifGERMAN
 \begin{LTXexample}
 \begin{pspicture}(3,1.5)
   \pnode(0,1){A}\pnode(1.5,1){B}
   \optbox[endbox, labeloffset=0](A)(B){1}
-  % connect an object by its automatic number
+  % Verbinde eine Komponente unter Verwendung der Nummer
   \drawbeam{(A)}{1}
 \end{pspicture}
 \end{LTXexample}
@@ -3783,10 +3824,29 @@
 \begin{pspicture}(3,2)
   \psset{endbox, labeloffset=0}
   \optbox[compname=obj](0,1)(1.5,1){obj}
-  % connect an object by its compname
+  % Verbinde eine Komponente unter Verwendung seines Namens
   \drawbeam{(0,1)}{obj}
 \end{pspicture}
 \end{LTXexample}
+\fi\ifENGLISH
+\begin{LTXexample}
+\begin{pspicture}(3,1.5)
+  \pnode(0,1){A}\pnode(1.5,1){B}
+  \optbox[endbox, labeloffset=0](A)(B){1}
+  % connect a component by its automatic number
+  \drawbeam{(A)}{1}
+\end{pspicture}
+\end{LTXexample}
+
+\begin{LTXexample}
+\begin{pspicture}(3,2)
+  \psset{endbox, labeloffset=0}
+  \optbox[compname=obj](0,1)(1.5,1){obj}
+  % connect a component by its compname
+  \drawbeam{(0,1)}{obj}
+\end{pspicture}
+\end{LTXexample}
+\fi
 % \iffalse
 %</ignore>
 % \fi
@@ -3797,15 +3857,27 @@
 % \iffalse
 %<*ignore>
 % \fi
+\ifGERMAN
 \begin{LTXexample}
 \begin{pspicture}(3,2)
   \psset{endbox, labeloffset=0}
   \optbox(0,0.5)(1.5,0.5){1}
   \optbox(0,1.5)(1.5,1.5){2}
-  % an empty argument refers to the last object
+  % Ein leeres Argument bezieht sich auf die zuletzt definierte Komponente
   \drawbeam{(0,1)}{}
 \end{pspicture}
 \end{LTXexample}
+\fi\ifENGLISH
+\begin{LTXexample}
+\begin{pspicture}(3,2)
+  \psset{endbox, labeloffset=0}
+  \optbox(0,0.5)(1.5,0.5){1}
+  \optbox(0,1.5)(1.5,1.5){2}
+  % an empty argument refers to the last defined object
+  \drawbeam{(0,1)}{}
+\end{pspicture}
+\end{LTXexample}
+\fi
 % \iffalse
 %</ignore>
 % \fi
@@ -3816,6 +3888,17 @@
 % \iffalse
 %<*ignore>
 % \fi
+\ifGERMAN
+\begin{LTXexample}
+\begin{pspicture}(3,2)
+  \psset{endbox, labeloffset=0}
+  \optbox[compname=obj](0,0.5)(1.5,0.5){obj, 1}
+  \optbox(0,1.5)(1.5,1.5){2}
+  % Benannte Komponenten werden auch nummeriert
+  \drawbeam{(0,1)}{2}
+\end{pspicture}
+\end{LTXexample}
+\fi\ifENGLISH
 \begin{LTXexample}
 \begin{pspicture}(3,2)
   \psset{endbox, labeloffset=0}
@@ -3825,6 +3908,7 @@
   \drawbeam{(0,1)}{2}
 \end{pspicture}
 \end{LTXexample}
+\fi
 % \iffalse
 %</ignore>
 % \fi
@@ -3840,7 +3924,6 @@
   \optbox[compname=obj](0.5,0.5)(0.5,2.5){obj, 1}
   \beamsplitter(0.5,2.5)(0.5,1)(2.5,1){2}
   \optbox(0.5,1)(2.5,1){3}
-  % named objects are also numbered
   \drawbeam{1-3}
 \end{pspicture}
 \end{LTXexample}
@@ -4109,6 +4192,21 @@
 % \iffalse
 %<*ignore>
 % \fi
+\ifGERMAN
+\begin{LTXexample}
+\begin{pspicture}(3,2.7)
+  \optplane(0,1)(0,1){A}
+  \lens[lens=2 2 2, abspos=2.5](0,1)(3,1)
+  \optplane(3,1)(0,1){B}
+  \drawbeam{A}{1}{B}
+  \drawbeam[beamangle=15]{A}{1}{B}
+  % Verfehlt die zweite Grenzfläche, der Strahl wird nur bis zur ersten Grenzfläche gezeichnet.
+  \drawbeam[beamangle=28]{A}{1}{B}
+  % Verfehlt schon die erste Grenzfläche, kein Strahl wird gezeichnet.
+  \drawbeam[beamangle=29]{A}{1}{B}
+\end{pspicture}
+\end{LTXexample}
+\fi\ifENGLISH
 \begin{LTXexample}
 \begin{pspicture}(3,2.7)
   \optplane(0,1)(0,1){A}
@@ -4122,6 +4220,7 @@
   \drawbeam[beamangle=29]{A}{1}{B}
 \end{pspicture}
 \end{LTXexample}
+\fi
 % \iffalse
 %</ignore>
 % \fi
@@ -5320,7 +5419,6 @@
   #1}%
 \newenvironment{optexp}{\Collect@Body\POE@collect}{}
 \@addtofilelist{pst-optexp.pro}{}%
-%
 \csname PSToptexpLoaded\endcsname
 \let\PSToptexpLoaded\endinput
 \pst@addfams{optexp}
@@ -5516,7 +5614,6 @@
 \define@boolkey[psset]{optexp}[POE@debug@]{showifcnodes}[true]{}
 \define@choicekey*[psset]{optexp}{namingscheme}%
   [\val\nr]{old,new}[new]{%
-  \edef\POE@key@namingscheme{\val}%
   \ifcase\nr\relax
 %    \end{macrocode}
 % old naming scheme
@@ -6773,7 +6870,7 @@
   \else\ifnum9<1#1\relax
     \POE@getcomprange#1#2-\@nil
     \POE@getcomp{%
-      (\POE@str@basicname@prefix\POE@str@basicname@default) 
+      (\POE@str@basicname@prefix\POE@str@basicname@default)
       \POE@firstcomp\space\POE@lastcomp\space GetCompRange %
     }%
   \else\ifx-#1\relax
@@ -7053,9 +7150,16 @@
 \ignorespaces}%
 %
 %    \end{macrocode}
+% \begin{macro}{\defShiftedNode}
 %    \begin{macrocode}
+\def\defShiftedNode(#1)(#2)#3{%
+  \pst@getcoor{#1}\pst@tempa%
+  \pst@getcoor{#2}\pst@tempb%
+  \pnode(! \pst@tempb \pst@tempa \POE@Dict{VecAdd} \tx@UserCoor){#3}%
+}%
 \def\defShiftedNode(#1)(#2)#3{\nodexn{(#1) + (#2)}{#3}}%
 %    \end{macrocode}
+% \end{macro}
 % 
 % \begin{macro}{\POE@checkcompname}
 %    \begin{macrocode}
@@ -7166,12 +7270,12 @@
 %    \begin{macrocode}
 \def\POE@compalias#1#2{%
   \POE@Verb{%
-    /\POE@str@basicname@prefix#1 dup currentdict exch known { 
+    /\oenode{}{#1} dup currentdict exch known { 
       load /#2 ED 
     } { 
       pop 
     } ifelse
-    (#2) (\POE@str@basicname@prefix#1)
+    (#2) (\oenode{}{#1})
     tx@NodeDict begin
       1 {
         3 copy inttostr dup 
@@ -7279,10 +7383,7 @@
 %    \begin{macrocode}
 \def\end@OptexpObj{%
   \ifnum9<1\POE@key@compname\else
-    \def\POE@temp{new}%
-    \ifx\POE@temp\POE@key@namingscheme
-      \POE@compalias{\POE@key@compname}{\oenode{}{\the\POE@cnt}}%
-    \fi
+    \POE@compalias{\POE@key@compname}{\oenode{}{\the\POE@cnt}}%
   \fi
   \endgroup
   \ignorespaces%
