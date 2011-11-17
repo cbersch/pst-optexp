@@ -6,6 +6,48 @@
 \usepackage{pst-optexp}
 \usepackage{showexpl}
 \begin{document}
+\begin{LTXexample}[pos=t]%, linerange={1-2, 6-7, 11-12}]
+\begin{pspicture}[showgrid=true](0,0)(12,2) 
+  \pnode(0,1){A}\pnode(3.5,1){B}
+  \lens[abspos=1](A)(B)
+  \addtopsstyle{Beam}{fillstyle=solid, fillcolor=green, opacity=0.3}
+  \drawwidebeam[beamwidth=0.5]{(A)}{}
+  \psdot(\oenodeBeamUp)\psdot(\oenodeBeamLow)
+  \uput[90](\oenodeBeamUp){\rput[rb](0,0){BeamUp}}
+  \uput[-90](\oenodeBeamLow){\rput[rt](0,0){BeamLow}}
+  \drawwidebeam[beamwidth=0.5, skipconn=1]{(A)}{}{(B)}
+  \psdot(\oenodeBeamUp)\psdot(\oenodeBeamLow)
+  \uput[90](\oenodeBeamUp){\rput[rb](0,0){BeamUp}}
+  \uput[-90](\oenodeBeamLow){\rput[rt](0,0){BeamLow}}
+\end{pspicture}
+\end{LTXexample}
+\end{document}
+\begin{pspicture}(4,3)
+  \pnode(0,0.5){A}\pnode(2,0.5){B}\pnode(4,3){C}
+  \nodexn{(C)-(1.5,0)}{C'}
+  \optgrating(A)(B)(C)
+  \addtopsstyle{Beam}{fillstyle=solid, fillcolor=green, opacity=0.3}
+  \drawwidebeam[beamwidth=0.3]{(A)}{1}
+  \psset{loadbeampoints}
+  \drawwidebeam{1}{(C)}
+  \drawwidebeam{1}{(C')}
+  \rput[rb]([Xnodesep=0.3, offset=0.2]C){0. order}
+  \rput[rb]([offset=0.2]C'){1. order}
+\end{pspicture}
+
+\begin{pspicture}(4,2) 
+  \pnode(0,1){A}\pnode(4,1){B}
+  \begin{optexp}
+  \lens[lens=0.5 0.5 0.5, abspos=0.5](A)(B)
+  \lens[lens=4 4 2, abspos=2](A)(B)
+  \addtopsstyle{Beam}{fillstyle=solid, fillcolor=green, opacity=0.3}
+  \psset{savebeampoints, loadbeampoints}
+  \drawwidebeam[beamwidth=0.2, stopinside]{(A)}{1}
+  \drawwidebeam[beamdiv=-30]{1}{2}
+  \drawwidebeam{2}{(B)}
+  \end{optexp}
+\end{pspicture}
+\end{document}
 \begin{pspicture}(3,3)
   \psset{endbox, optboxwidth=0.5, optboxheight=0.5, bssize=0.5}
   \optbox[compname=obj](0.5,0.5)(0.5,2.5){obj, 1}
