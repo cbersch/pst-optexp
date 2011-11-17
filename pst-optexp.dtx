@@ -88,7 +88,7 @@
   texcsstyle = [20]\color{DOrange}, %
   moretexcs = [20]{lens, optbox, oenode, oenodeIn, oenodeExt, oenodeOut,
     oenodeRefA, oenodeRefB, oenodeTrefA, oenodeTrefB, oenodeLabel,
-    oenodeRotref,
+    oenodeRotref, oenodeBeam, oenodeBeamUp, oenodeBeamLow,
     oenodeCenter, optplate, optretplate, pinhole, crystal,optdetector,
     optdiode, doveprism, polarization, mirror, beamsplitter, optgrating,
     optprism, rightangleprism, pentaprism, optdipole, optripole,
@@ -628,8 +628,10 @@
 %
 % \ifGERMAN
 %   \section{Über das Paket}
-%   Das Paket \LPack{pst-optexp} ist eine Sammlung optischer Komponenten zum Zeichnen optischer Versuchsaufbauten.
-% \fi
+%   \LPack{pst-optexp} ist ein PSTricks-Paket zum Skizzieren optischer
+%   Versuchsaufbauten. Dafür werden viele unterschiedliche Freistrahl- und
+%   Faseroptische Komponenten bereitgestellt.
+% \fi 
 % \ifENGLISH
 %   \section{About the package}
 %   The package \LPack{pst-optexp} is a collection of optical components
@@ -789,43 +791,104 @@
 %   stecken. Angefangen von elementaren Beispielen, bis hin zu größeren
 %   Aufbauten wird die angedachte Vorgehensweise für das Erstellen von
 %   umfassenden Experimentskizzen erläutert. Eine vollständige Referenz aller
-%   Macros und Optionen finden Sie in
+%   Macros und Optionen finden Sie in 
 %   \prettyref{sec:general}--\ref{sec:connecting}.
-
 % \fi
 % \ifENGLISH
 %   \chapter{Basic ideas}
 % \fi
+%
 % \ifGERMAN
-%   \section{Erste Schritte}
+% \section{Konzeptionsüberblick}
 % \fi
 % \ifENGLISH
-%   \section{Getting started}
+% \section{Concept overview}
 % \fi
-% \label{sec:quick}
-% \ifGERMAN 
-% In diesem einführenden Kapitel werden der typische Entwicklungsprozess
-% sowie die grundlegenden Elemente einer Versuchsskizze
-% vorgestellt. Etwas weiterführende Beispiele, die einige der besonderen
-% Stärken des \LPack{pst-optexp} Paketes demonstrieren, werden Schritt
-% für Schritt erläutert.
-% \fi 
-% 
+%
 % \ifGERMAN
 %   \subsection{Die Komponenten}
+%   Ein Versuchsaufbau besteht aus Komponenten, die miteinander verbunden
+%   werden. Eine Komponente wird anhand ihrer Referenzknoten platziert, im
+%   folgenden Beispiel wird die Linse mittig auf die Verbindungslinie zwischen
+%   den Knoten \texttt{(A)} und \texttt{(B)} gesetzt:
+%\iffalse
+%<*ignore>
+%\fi
+\begin{LTXexample}
+\begin{pspicture}[showgrid=true](3,2)
+  \pnode(0,1){A}\pnode(3,1){B}
+  \lens(A)(B)
+\end{pspicture}
+\end{LTXexample}
+%\iffalse
+%</ignore>
+%\fi 
+%
+% Diese Positionierung kann anhand von unterschiedlichen Parametern, wie
+% z.B. \Lkeyword{abspos} beinflusst werden (siehe dazu \prettyref{sec:rotshift}
+% und \prettyref{sec:positioning}).
+%\iffalse
+%<*ignore>
+%\fi
+\begin{LTXexample}
+\begin{pspicture}[showgrid=true](3,2)
+  \pnode(0,1){A}\pnode(3,1){B}
+  \lens[abspos=0.5](A)(B)
+\end{pspicture}
+\end{LTXexample}
+%\iffalse
+%</ignore>
+%\fi 
+%
+% Die Komponenten lassen sich allgemein in zwei Kategorien unterteilen: Die Freistrahl-Komponenten und die faseroptischen Komponenten. Diese unterscheiden sich nur bezüglich ihrer Verbindungsmöglichkeiten (Faserverbindungen (\prettyref{sec:intro-fiber-conn}) oder Lichtstrahlen (\prettyref{sec:intro-freeray-conn})).
 % \fi
 % \ifENGLISH
 %   \subsection{The components}
 % \fi
 %
 % \ifGERMAN
-% 
-% \fi
-% \ifGERMAN
-%   \subsection{Schritt-für-Schritt-Beispiele}
+%   \subsection{Beschriftungen}
+%   Jede Komponente hat eine optionale Beschriftung, die relativ zur Komponente platziert werden kann.
+%\iffalse
+%<*ignore>
+%\fi
+\begin{LTXexample}
+\begin{pspicture}[showgrid=true](3,2)
+  \pnode(0,1){A}\pnode(1,1){B}
+  \lens(A)(B){lens}
+  \optbox[endbox, labeloffset=0](B)(A){box}
+\end{pspicture}
+\end{LTXexample}
+%\iffalse
+%</ignore>
+%\fi 
 % \fi
 % \ifENGLISH
-%   \subsection{Step-by-step examples}
+%   \subsection{Labels}
+% \fi
+%
+% \ifGERMAN
+%   \subsection{Freistrahl-Verbindungen}
+% \fi
+% \ifENGLISH
+%   \subsection{Freeray connections}
+% \fi \label{sec:intro-freeray-conn}
+% \ifGERMAN
+% Freistrahlkomponenten können mit Lichtstrahlen verbunden werden. 
+% \fi
+%
+% \ifGERMAN
+%   \subsection{Faserverbindungen}
+% \fi
+% \ifENGLISH
+%   \subsection{Fiber connections}
+% \fi \label{sec:intro-fiber-conn}
+%
+% \ifGERMAN
+%   \section{Schritt-für-Schritt-Beispiele}
+% \fi
+% \ifENGLISH
+%   \section{Step-by-step examples}
 % \fi
 %
 % \iffalse
@@ -1513,6 +1576,47 @@
 %</ignore>
 % \fi
 % \end{ltxsyntax}
+%
+% \ifGERMAN
+% \subsection{Strahlknoten}
+% \fi
+% \ifENGLISH
+% \subsection{Beam nodes}
+% \fi\label{sec:beamnode}
+% \begin{ltxsyntax}
+%   \cmditem{oenodeBeam}
+%   \cmditem{oenodeBeamUp}
+%   \cmditem{oenodeBeamLow}
+%
+%   \ifGERMAN 
+%
+%   \fi
+%   \ifENGLISH
+%
+%   \fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[linerange={1-6, 9-10, 13-13}]
+\begin{pspicture}[showgrid=true](0,0)(3.5,2) 
+  \pnode(0,1){A}\pnode(3.5,1){B}
+  \lens[abspos=1](A)(B)
+  \addtopsstyle{Beam}{fillstyle=solid, fillcolor=green, opacity=0.3}
+  \drawwidebeam[beamwidth=0.5]{(A)}{}
+  \psdot(\oenodeBeamUp)\psdot(\oenodeBeamLow)
+  \uput[90](\oenodeBeamUp){\rput[rb](0,0){BeamUp}}
+  \uput[-90](\oenodeBeamLow){\rput[rt](0,0){BeamLow}}
+  \drawwidebeam[beamwidth=0.5, skipconn=1]{(A)}{}{(B)}
+  \psdot(\oenodeBeamUp)\psdot(\oenodeBeamLow)
+  \uput[90](\oenodeBeamUp){\rput[rb](0,0){BeamUp}}
+  \uput[-90](\oenodeBeamLow){\rput[rt](0,0){BeamLow}}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+% \end{ltxsyntax}
+%
 %
 % \ifGERMAN
 %   \chapter{Komponenten-Referenz}
@@ -4284,9 +4388,9 @@
   \nodexn{(C)-(1.5,0)}{C'}
   \optgrating(A)(B)(C)
   \addtopsstyle{Beam}{fillstyle=solid, fillcolor=green, opacity=0.3}
-  \drawwidebeam[beamwidth=0.3]{(A)}{1}{(C)}
-  \psset{savebeampoints, loadbeampoints}
   \drawwidebeam[beamwidth=0.3]{(A)}{1}
+  \psset{savebeampoints=false, loadbeampoints}
+  \drawwidebeam{1}{(C)}
   \drawwidebeam{1}{(C')}
   \rput[rb]([Xnodesep=0.3, offset=0.2]C){0. order}
   \rput[rb]([offset=0.2]C'){1. order}
@@ -4305,7 +4409,7 @@
   \lens[lens=0.5 0.5 0.5, abspos=0.5](A)(B)
   \lens[lens=4 4 2, abspos=2](A)(B)
   \addtopsstyle{Beam}{fillstyle=solid, fillcolor=green, opacity=0.3}
-  \psset{savebeampoints, loadbeampoints}
+  \psset{loadbeampoints}
   \drawwidebeam[beamwidth=0.2, stopinside]{(A)}{1}
   \drawwidebeam[beamdiv=-30]{1}{2}
   \drawwidebeam{2}{(B)}
@@ -4646,7 +4750,7 @@
    \optplate[plateheight=1.5](A)(B)
    \MOLensOut[abspos=8](A)(B)\MOLensIn[abspos=9](A)(B)
    \addtopsstyle{Beam}{n=1, fillstyle=solid, fillcolor=green, opacity=0.3}
-   \psset{savebeampoints, loadbeampoints}
+   \psset{loadbeampoints}
    \drawwidebeam[beamwidth=0.2, stopinside]{(A)}{1}
    \drawwidebeam[beamdiv=30]{1}{2}
    \drawwidebeam[stopinside]{2-4}
@@ -6266,6 +6370,8 @@
   \POE@Verb{%
     /lastBeamPointUp /lastBeamPointLow /lastBeamPoint 
     3 { currentdict exch undef } repeat 
+    /N@\oenodeBeam\space /N@\oenodeBeamUp\space /N@\oenodeBeamLow\space
+    3 { tx@NodeDict exch undef } repeat
   }%
   \gdef\POE@complist{}\global\POE@cnt=0\relax
 }%
@@ -6677,20 +6783,20 @@
     }%
     \addto@pscode{%
       currentdict /lastBeamPointTmp undef
-      loadbeampoints currentdict /lastBeamPoint known and {
-        /lastBeamPoint load /lastBeamPointTmp ED
+      loadbeampoints tx@NodeDict /N@\oenodeBeam\space known and {
+        /N@\oenodeBeam\space @GetCenter ToVec /lastBeamPointTmp ED
       } if
       TraceBeam 
     }%
     \POE@strokebeam
     \addto@pscode{%
       savebeampoints { 
-        /lastBeamPoint lastBeamPointTmp 
+        lastBeamPointTmp /N@\oenodeBeam
       } if
       savebeampoints }%
   \fi
   \end@BeamObj
-  \POE@Verb{ { ToVec def } if }%
+  \POE@Verb{ { @NewNode } if }%
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -6768,10 +6874,10 @@
         currentdict /TmpLastBeamPointLow undef 
         currentdict /TmpLastBeamPointUp undef 
         loadbeampoints
-        currentdict /lastBeamPointLow known and
-        currentdict /lastBeamPointUp known and {
-          /TmpLastBeamPointLow /lastBeamPointLow load def
-          /TmpLastBeamPointUp /lastBeamPointUp load def
+        tx@NodeDict /N@\oenodeBeamLow\space known and
+        tx@NodeDict /N@\oenodeBeamUp\space known and {
+          /N@\oenodeBeamLow\space @GetCenter ToVec /TmpLastBeamPointLow ED
+          /N@\oenodeBeamUp\space @GetCenter ToVec /TmpLastBeamPointUp ED
         } if
         FillWideBeam
       grestore pop % pop off the mark
@@ -6783,15 +6889,23 @@
   \ifx\pslinestyle\@none
     \addto@pscode{ cleartomark }%
   \else
-    \addto@pscode{ TraceWideBeam }%
+    \addto@pscode{%
+      currentdict /lastBeamPointUp undef
+      currentdict /lastBeamPointLow undef
+      loadbeampoints tx@NodeDict /N@\oenodeBeamLow\space known
+      tx@NodeDict /N@\oenodeBeamUp\space known and and {
+        /N@\oenodeBeamLow\space @GetCenter ToVec /lastBeamPointLow ED
+        /N@\oenodeBeamUp\space @GetCenter ToVec /lastBeamPointUp ED
+      } if
+      TraceWideBeam }%
     \POE@strokebeam
   \fi
   \ifx\pslinestyle\@none
     \ifx\psk@fillstyle\relax\else
       \addto@pscode{%
         savebeampoints {
-          /lastBeamPointLow TmpLastBeamPointLow
-          /lastBeamPointUp TmpLastBeamPointUp
+          TmpLastBeamPointLow /N@\oenodeBeamLow\space
+          TmpLastBeamPointUp /N@\oenodeBeamUp\space
         } if
         savebeampoints
       }%
@@ -6799,13 +6913,13 @@
   \else
     \addto@pscode{%
       savebeampoints {
-        /lastBeamPointLow dup load exec 
-        /lastBeamPointUp dup load exec 
+        lastBeamPointLow /N@\oenodeBeamLow\space
+        lastBeamPointUp /N@\oenodeBeamUp\space
       } if 
       savebeampoints }%
   \fi
   \end@BeamObj
-  \POE@Verb{ { ToVec def ToVec def } if }%
+  \POE@Verb{ { @NewNode @NewNode } if }%
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -7035,7 +7149,7 @@
         ,beaminsidefirst=false
         ,beaminsidelast=false
         ,loadbeampoints=false
-        ,savebeampoints=false
+        ,savebeampoints=true
         ,beamangle=0
         ,beampos=\@empty
         ,beamangleabs=false
@@ -7224,11 +7338,6 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\oenodeExt}
-% \begin{macro}{\oenodeIn}
-% \begin{macro}{\oenodeOut}
-% \begin{macro}{\oenodeCenter}
-% \begin{macro}{\oenodeLabel}
 %    \begin{macrocode}
 \def\oenodeExt#1{\oenode{\POE@str@extnode@postfix}{#1}}%
 \def\oenodeIn#1{\oenode{1}{#1}}%
@@ -7257,12 +7366,13 @@
       integer, 'N', or 'C'}
   \fi\fi\fi
 }%
+\def\oenodeBeam{%
+  \POE@str@basicname@prefix\POE@str@basicname@default Beam}%
+\def\oenodeBeamUp{%
+  \POE@str@basicname@prefix\POE@str@basicname@default BeamUp}%
+\def\oenodeBeamLow{%
+  \POE@str@basicname@prefix\POE@str@basicname@default BeamLow}%
 %    \end{macrocode}
-% \end{macro}
-% \end{macro}
-% \end{macro}
-% \end{macro}
-% \end{macro}
 %
 % \begin{macro}{\newOptexpComp}
 %    \begin{macrocode}
