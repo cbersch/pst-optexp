@@ -555,7 +555,7 @@
 %     ~\hfill\makebox[7cm][l]{%
 %       \bfseries\tabular[t]{@{}l@{}}\@author\endtabular}}}
 %  \rput[C](11,4){\bgImage}%
-% \end{pspicture}%
+%  \end{pspicture}%
 % \end{titlepage}}
 % \makeatother
 % 
@@ -568,7 +568,7 @@
 % \author{Christoph Bersch}
 % \date{\filedate}
 % \def\bgImage{\psset{unit=1.3}
-%\begin{pspicture}[showgrid=false](-0.2,0.1)(8.2,5.3)
+% \begin{pspicture}[showgrid=false](-0.2,0.1)(8.2,5.3)
 %   \pnode(0,3){M1}
 %   \pnode(8,3){M2}
 %   \pnode(8,0.5){In}
@@ -593,12 +593,12 @@
 %   \mirror[compshift=0.4](Pout)(Mout2)(Pout){}
 %   \optprism[n=1.85, compshift=0.15, linewidth=1.5\pslinewidth](Mout2)(Pout)(Mout){}
 %   \mirror(Pout)(Mout)(Out){}
-%  \multido{\i=0+1}{40}{^^A
-%    \pstVerb{^^A
+%  \multido{\i=0+1}{40}{%
+%    \pstVerb{%
 %       \i\space 650 400 sub 39 div mul 400 add 
 %       tx@addDict begin wavelengthToRGB end }%
 %     \drawbeam[nadd=-0.002 \i\space mul]{(In)}{3-5}{2}{1}{6-8}{(Out)}
-%  }^^A
+%  }%
 %   \newpsstyle{Beam}{linecolor=red}
 %   \backlayer{%
 %     \psline[style=Beam,ArrowInside=->, linewidth=2\pslinewidth, arrowinset=0](In)(\oenodeIn{3})(\oenodeOut{4})
@@ -1578,11 +1578,12 @@
 % \end{ltxsyntax}
 %
 % \ifGERMAN
-% \subsection{Strahlknoten}
+% \subsection{Spezielle Strahlknoten}
 % \fi
 % \ifENGLISH
-% \subsection{Beam nodes}
+% \subsection{Special beam nodes}
 % \fi\label{sec:beamnode}
+% The end points 
 % \begin{ltxsyntax}
 %   \cmditem{oenodeBeam}
 %   \cmditem{oenodeBeamUp}
@@ -1594,6 +1595,23 @@
 %   \ifENGLISH
 %
 %   \fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}%[linerange={1-6, 9-10, 13-13}]
+\begin{pspicture}[showgrid=true](0,0)(3.5,2) 
+  \pnode(0,1){A}\pnode(2,1){B}
+  \optbox[endbox](A)(B)
+  \psset{beaminsidelast=false}
+  \drawbeam[linecolor=red, beampos=0.3]{(A)}{1}
+  \psdot(\oenodeBeam)
+  \drawbeam[stopinside]{(A)}{1}
+  \psdot(\oenodeBeam)
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % \iffalse
 %<*ignore>
 % \fi
@@ -4677,11 +4695,11 @@
 % \fi
 \begin{LTXexample}[morekeywords = {[21]{optexp}}]
 \begin{pspicture}(3,4)
-  \psset{beam, fillstyle=solid, fillcolor=black}
-  \optbox(0,3.5)(3,3.5){no layers}
-  \begin{optexp}
-    \optbox(0,1.5)(3,1.5){with layers}
-  \end{optexp}
+\psset{beam, fillstyle=solid, fillcolor=black}
+\optbox(0,3.5)(3,3.5){no layers}
+\begin{optexp}
+  \optbox(0,1.5)(3,1.5){with layers}
+\end{optexp}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -4717,21 +4735,21 @@
 %<*ignore>
 % \fi
 \begin{LTXexample}[morekeywords={[21]{newpsobject}}]
+\begin{pspicture}(3,1.7)
 \newpsobject{sbn}{crystal}{%
   voltage, lamp, %
   fillstyle=solid, fillcolor=yellow!90!black
 }
-\begin{pspicture}(3,1.7)
-   \sbn[label=1.2 45, beam](0,1)(3,1){SBN:Ce}
+\sbn[label=1.2 45, beam](0,1)(3,1){SBN:Ce}
 \end{pspicture}
 \end{LTXexample}
 
 \begin{LTXexample}[morekeywords={[21]{newpsobject}}]
+\begin{pspicture}(3,1.7) 
 \newpsobject{pumpcoupler}{wdmcoupler}{%
   align=top, addtoFiberIn2={ArrowInside=->, arrowscale=2}
 }
-\begin{pspicture}(3,1.7) 
-   \pumpcoupler[label=0.5 180](0,1)(0,0)(3,1){Pumpcoupler}
+\pumpcoupler[label=0.5 180](0,1)(0,0)(3,1){Pumpcoupler}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -4742,20 +4760,20 @@
 %<*ignore>
 % \fi
 \begin{LTXexample}[pos=t, morekeywords={[21]{newpsobject}}]
+\begin{pspicture}(10,2)
 \newpsobject{MOLensIn}{lens}{lens=0.5 0.5 0.5}
 \newpsobject{MOLensOut}{lens}{lens=1.5 1.5 1.5}
-\begin{pspicture}(10,2) 
-   \pnode(0,1){A}\pnode(10,1){B}
-   \MOLensIn[abspos=1](A)(B)\MOLensOut[abspos=2](A)(B)
-   \optplate[plateheight=1.5](A)(B)
-   \MOLensOut[abspos=8](A)(B)\MOLensIn[abspos=9](A)(B)
-   \addtopsstyle{Beam}{n=1, fillstyle=solid, fillcolor=green, opacity=0.3}
-   \psset{loadbeampoints}
-   \drawwidebeam[beamwidth=0.2, stopinside]{(A)}{1}
-   \drawwidebeam[beamdiv=30]{1}{2}
-   \drawwidebeam[stopinside]{2-4}
-   \drawwidebeam[beamdiv=-30]{4}{5}
-   \drawwidebeam{5}{(B)}
+\pnode(0,1){A}\pnode(10,1){B}
+\MOLensIn[abspos=1](A)(B)\MOLensOut[abspos=2](A)(B)
+\optplate[plateheight=1.5](A)(B)
+\MOLensOut[abspos=8](A)(B)\MOLensIn[abspos=9](A)(B)
+\addtopsstyle{Beam}{n=1, fillstyle=solid, fillcolor=green, opacity=0.3}
+\psset{loadbeampoints}
+\drawwidebeam[beamwidth=0.2, stopinside]{(A)}{1}
+\drawwidebeam[beamdiv=30]{1}{2}
+\drawwidebeam[stopinside]{2-4}
+\drawwidebeam[beamdiv=-30]{4}{5}
+\drawwidebeam{5}{(B)}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -4793,15 +4811,15 @@
 %<*ignore>
 % \fi
 \begin{LTXexample}[morekeywords={[21]{newOptexpDipole}}]
+\begin{pspicture}(3.5,2.6)
 \newOptexpDipole{mydipole}{}
 \makeatletter
 \def\mydipole@comp{%
   \psaxes[arrows=->](0,0)(0,-1.1)(1.3,1.3)[$x$,90][$y$,0]
 }%
 \makeatother
-\begin{pspicture}(3.5,2.6)
-  \mydipole(0,1)(3.5,1){label}
-  \drawbeam{(0,1)}{1}{(3.5,1)}
+\mydipole(0,1)(3.5,1){label}
+\drawbeam{(0,1)}{1}{(3.5,1)}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -4812,15 +4830,15 @@
 %<*ignore>
 % \fi
 \begin{LTXexample}[morekeywords={[21]{newOptexpTripole}}]
+\begin{pspicture}(3.5,3.7)
 \newOptexpTripole{mytripole}{labelangle=-60}
 \makeatletter
 \def\mytripole@comp{%
   \psaxes[arrows=->](0,0)(-1.1,0)(1.3,1.3)[$x$,90][$y$,0]
 }%
 \makeatother
-\begin{pspicture}(3.5,3.7)
-   \mytripole(0,1)(2,1.7)(3,0){label}
-   \drawbeam{(0,1)}{1}{(3,0)}
+\mytripole(0,1)(2,1.7)(3,0){label}
+\drawbeam{(0,1)}{1}{(3,0)}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -4930,7 +4948,8 @@
 % \showdipoleifc{optbox}
 % \bigskip
 %
-% \noindent\begin{pspicture}(0, -0.5)(3,1)
+% \noindent
+% \begin{pspicture}(0, -0.5)(3,1)
 %   \pnode(0,0.5){A}\pnode(2.5,0.5){B}
 %   \optdetector(A)(B)
 %   \drawbeam{(A)}{}
@@ -4978,7 +4997,8 @@
 % \end{pspicture}%
 % \bigskip
 %
-% \noindent\begin{pspicture}(3,2.5)
+% \noindent
+% \begin{pspicture}(3,2.5)
 %   \pnode(0,1.5){A}\pnode(2.5,1.5){B}\pnode(2.5,0){C}
 %   \beamsplitter[bssize=1.2](A)(B)(C)
 %   \drawbeam{(A)}{}{(C)}
@@ -5048,7 +5068,8 @@
 % \noindent\showfdipoleifc{fibercollimator}\egroup
 % \bigskip
 %
-% \noindent\begin{pspicture}(0,-0.5)(3,1.5)
+% \noindent
+% \begin{pspicture}(0,-0.5)(3,1.5)
 %   \pnode(0,0.75){A}\pnode(3,1.5){B}\pnode(3,0){C}
 %   \wdmsplitter[couplersize=0.5, couplersep=0.2](A)(B)(C)
 %   \psdot(\oenodeIn{})\uput[135](\oenodeIn{}){1}
@@ -5254,7 +5275,7 @@
   \newpsstyle{Beam}{linecolor=red, linestyle=dashed, linewidth=1.5\pslinewidth}
   \drawbeam{LO}{BS}{L1}{Det1}
   \drawbeam[beaminsidefirst]{BS}{L2}{Det2}
-\end{optexp}
+  \end{optexp}
   \cnodeput([Xnodesep=0.5, offset=-0.5]\oenodeExt{Det1}|\oenodeExt{Det2}){M}{\rule{3mm}{1pt}}
   \nccurve[angleA=90, arrows=<-]{M}{\oenodeExt{Det1}}
   \nccurve[angleA=180, angleB=-90, arrows=<-]{M}{\oenodeExt{Det2}}
