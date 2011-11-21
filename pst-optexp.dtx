@@ -22,7 +22,7 @@
 %<stylefile>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<stylefile>\ProvidesPackage{pst-optexp}
 %<*stylefile>
-    [2011/11/04 v3.0alpha Optical experimental setups with PSTricks]
+    [2011/11/21 v3.0alpha Optical experimental setups with PSTricks]
 %</stylefile>
 %
 %<*driver>
@@ -1583,43 +1583,91 @@
 % \ifENGLISH
 % \subsection{Special beam nodes}
 % \fi\label{sec:beamnode}
-% The end points 
+%
+% \ifGERMAN
+% Die Endknoten des letzten \Lcs{drawbeam} oder \Lcs{drawwidebeam} Kommandos
+% können verwendet werden, wenn \Lkeyword{savebeampoints} auf \opt{true} gesetzt.
+% ist.
+% \fi
+% \ifENGLISH
+% The end points of the most recent \Lcs{drawbeam} or \Lcs{drawwidebeam} command can
+% be accessed if \Lkeyword{savebeampoints} is set to \opt{true}.
+% \fi
 % \begin{ltxsyntax}
 %   \cmditem{oenodeBeam}
-%   \cmditem{oenodeBeamUp}
-%   \cmditem{oenodeBeamLow}
 %
-%   \ifGERMAN 
-%
+%   \ifGERMAN
+%   Der Endknoten des letzten \Lcs{drawbeam} Kommandos.
 %   \fi
 %   \ifENGLISH
-%
+%   Access the end point of the most recent \Lcs{drawbeam} command.
 %   \fi
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}%[linerange={1-6, 9-10, 13-13}]
-\begin{pspicture}[showgrid=true](0,0)(3.5,2) 
-  \pnode(0,1){A}\pnode(2,1){B}
+\begin{LTXexample}
+\begin{pspicture}(0,0)(3,2) 
+  \pnode(0,1){A}\pnode(1.6,1){B}
   \optbox[endbox](A)(B)
-  \psset{beaminsidelast=false}
-  \drawbeam[linecolor=red, beampos=0.3]{(A)}{1}
-  \psdot(\oenodeBeam)
-  \drawbeam[stopinside]{(A)}{1}
+  \drawbeam[beaminsidelast=false]{(A)}{1}
   \psdot(\oenodeBeam)
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
 %</ignore>
 % \fi
+%
+%   \cmditem{oenodeBeamUp}
+%   \cmditem{oenodeBeamLow}
+%
+%   \ifGERMAN
+%   Der obere («upper») und untere («lower») Endknoten des letzten \Lcs{drawwidebeam} Kommandos.
+%   \fi
+%   \ifENGLISH
+%   Access the upper or lower end point of the most recent \Lcs{drawwidebeam} command.
+%   \fi
+%
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[linerange={1-6, 9-9}]
+\begin{pspicture}(0,0)(3,2) 
+  \pnode(0,1){A}\pnode(3,1){B}
+  \lens[abspos=1, lensradius=-2](A)(B)
+  \addtopsstyle{Beam}{%
+    fillstyle=solid, fillcolor=green, opacity=0.3}
+  \drawwidebeam[beamwidth=0.5]{(A)}{}{(B)}
+  \psdot(\oenodeBeamUp)\psdot(\oenodeBeamLow)
+  \uput[90](\oenodeBeamUp){\rput[rb](0,0){BeamUp}}
+  \uput[-90](\oenodeBeamLow){\rput[rt](0,0){BeamLow}}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
+% \ifGERMAN
+% Beachten Sie, dass «oben» («upper») und «unten» («lower») bezüglich der
+% Ausbreitungsrichtung des Strahls definiert ist. Ein Randstrahl der als «upper»
+% startet can zu «lower» werden, wenn er den anderen Randstrahl kreuzt. Das wird
+% in dem folgenden Beispiel erläutert:
+% \fi
+% \ifENGLISH
+% Note, that «upper» and «lower» is defined with respect to the propagation
+% direction of the beam. A marginal beam which started as «upper» can change to «lower»
+% if it crossed with the other beam. This is shown in the following example,
+% where the marginal rays exchange their roles:
+% \fi
+%
 % \iffalse
 %<*ignore>
 % \fi
 \begin{LTXexample}[linerange={1-6, 9-10, 13-13}]
-\begin{pspicture}[showgrid=true](0,0)(3.5,2) 
-  \pnode(0,1){A}\pnode(3.5,1){B}
+\begin{pspicture}(0,0)(3,2) 
+  \pnode(0,1){A}\pnode(3,1){B}
   \lens[abspos=1](A)(B)
-  \addtopsstyle{Beam}{fillstyle=solid, fillcolor=green, opacity=0.3}
+  \addtopsstyle{Beam}{%
+    fillstyle=solid, fillcolor=green, opacity=0.3}
   \drawwidebeam[beamwidth=0.5]{(A)}{}
   \psdot(\oenodeBeamUp)\psdot(\oenodeBeamLow)
   \uput[90](\oenodeBeamUp){\rput[rb](0,0){BeamUp}}
@@ -1635,6 +1683,52 @@
 % \fi
 % \end{ltxsyntax}
 %
+% \ifGERMAN
+% Die Strahlknoten können nur innerhalb der \env{pspicture}-Umgebung verwendet
+% werden, in der sie definiert wurden. Um auf bestimmte Strahlknoten von
+% außerhalb zugreifen zu können müssen diese explizit umbenannt werden:
+% \fi
+% \ifENGLISH
+% The beam nodes can be accessed only within the \env{pspicture} environment
+% they where defined in. If you want to use one of these nodes from outside, you
+% must explicitely rename them:
+% \fi
+%
+% \iffalse
+%<*ignore>
+% \fi
+\begin{lstlisting}
+\pnode(\oenodeBeam){MyBeamNode}
+\end{lstlisting}
+% \iffalse
+%</ignore>
+% \fi
+%
+% \ifGERMAN
+% Desweiteren werden die Endknoten durch \Lkeyword{stopinside}
+% beeinflusst. Siehe \prettyref{sec:custombeam} für weitere Details.
+% \fi
+% \ifENGLISH
+% The end points are also affected by \Lkeyword{stopinside}. See
+% \prettyref{sec:custombeam} for further details.
+% \fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(0,0)(3,2) 
+  \pnode(0,1){A}\pnode(1.6,1){B}
+  \optbox[endbox](A)(B)
+  \psset{beaminsidelast=false}
+  \drawbeam[linecolor=red, beampos=0.3]{(A)}{1}
+  \psdot(\oenodeBeam)
+  \drawbeam[stopinside]{(A)}{1}
+  \psdot(\oenodeBeam)
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 %
 % \ifGERMAN
 %   \chapter{Komponenten-Referenz}
