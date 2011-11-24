@@ -5682,6 +5682,7 @@
 \newif\ifPOE@thicklens
 \newif\ifPOE@usefiberstyle
 \newif\ifPOE@fiber@
+\newif\ifPOE@nofiber@
 \newif\ifPOE@fiberin@
 \newif\ifPOE@fiberin@top
 \newif\ifPOE@fiberin@bottom
@@ -6579,6 +6580,7 @@
 % These are the internal boolkeys for the fiber choices done with 'fiberin' and 'fiberout'
 %    \begin{macrocode}
 \define@boolkey[psset]{optexp}[POE@]{fiber@}[true]{}
+\define@boolkey[psset]{optexp}[POE@]{nofiber@}[true]{}
 \define@boolkey[psset]{optexp}[POE@]{fiberin@}[true]{}
 \define@boolkey[psset]{optexp}[POE@]{fiberin@top}[true]{}
 \define@boolkey[psset]{optexp}[POE@]{fiberin@bottom}[true]{}
@@ -7248,11 +7250,20 @@
 % \end{macro}
 % 
 %    \begin{macrocode}
-\define@choicekey[psset]{optexp}{fiber}[\val\nr]{}[]{%
-  \psset[optexp]{fiberin, fiberout}%
-}
+\define@choicekey*[psset]{optexp}{fiber}%
+  [\val\nr]{none,in,out,both}[both]{%
+  \ifcase\nr\relax
+    \psset[optexp]{fiber@=false, fiberin=none, fiberout=none}
+  \or
+    \psset[optexp]{fiberin, fiberout=none}
+  \or
+    \psset[optexp]{fiberin=none, fiberout}
+  \or
+    \psset[optexp]{fiberin, fiberout}
+  \fi
+}%
 \define@choicekey[psset]{optexp}{nofiber}[\val\nr]{}[]{%
-   \psset[optexp]{fiberin=none, fiberout=none}%
+   \psset[optexp]{fiberin=none, fiberout=none, nofiber@}%
 }
 %    \end{macrocode}
 % Set default settings for the new connection code
@@ -7591,6 +7602,16 @@
 %    \end{macrocode}
 % \end{macro}
 %
+% \begin{macro}{\begin@OptexpFiberObj}
+%    \begin{macrocode}
+\def\begin@OptexpFiberObj{%
+  \begin@OptexpObj
+    \ifPOE@nofiber@
+      \setkeys+[psset]{optexp}{fiber=none}%
+    \fi
+}%
+%    \end{macrocode}
+% \end{macro}
 % \begin{macro}{\begin@OptexpTripole}
 %    \begin{macrocode}
 \let\POE@disablepos\relax
@@ -7756,7 +7777,7 @@
     \expandafter\def\csname #2@i@\endcsname(##1)(##2)##3{%
       \addbefore@par{fiber, #3}%
       \addafter@par{#1}%
-      \begin@OptexpObj
+      \begin@OptexpFiberObj
         \ifPOE@backlayer
           \POE@regNodes{##1}{##2}
           \POE@globalnoderef
@@ -7825,7 +7846,7 @@
     \expandafter\def\csname #2@i@\endcsname(##1)(##2)(##3)(##4)##5{%
       \addbefore@par{fiber, #3}%
       \addafter@par{#1}%
-      \begin@OptexpObj
+      \begin@OptexpFiberObj
         \ifPOE@backlayer
           \ifx\POE@key@align\POE@str@top
             \pnode(##1){\oenodeRefA{}}
@@ -7938,7 +7959,7 @@
 }%
 \def\wdmsplitter@i@(#1)(#2)(#3)#4{%
   \addbefore@par{fiber}%
-  \begin@OptexpObj
+  \begin@OptexpFiberObj
     \ifPOE@backlayer
       \pnode(#1){\oenodeRefA{}}
       \ifx\POE@key@align\POE@str@top
@@ -7982,7 +8003,7 @@
 }%
 \def\wdmcoupler@i@(#1)(#2)(#3)#4{%
   \addbefore@par{fiber}%
-  \begin@OptexpObj
+  \begin@OptexpFiberObj
     \ifPOE@backlayer
       \pnode(#3){\oenodeRefB{}}
       \ifx\POE@key@align\POE@str@top
