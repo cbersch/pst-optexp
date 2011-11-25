@@ -7251,13 +7251,17 @@
 % 
 %    \begin{macrocode}
 \define@choicekey*[psset]{optexp}{fiber}%
-  [\val\nr]{none,in,out,both}[both]{%
+  [\val\nr]{none,in,out,top,bottom,both}[both]{%
   \ifcase\nr\relax
     \psset[optexp]{fiber@=false, fiberin=none, fiberout=none}
   \or
     \psset[optexp]{fiberin, fiberout=none}
   \or
     \psset[optexp]{fiberin=none, fiberout}
+  \or
+    \psset[optexp]{fiberin=top, fiberout=top}
+  \or
+    \psset[optexp]{fiberin=bottom, fiberout=bottom}
   \or
     \psset[optexp]{fiberin, fiberout}
   \fi
@@ -8362,7 +8366,7 @@
 % 
 % Define all fiber dipoles
 %    \begin{macrocode}
-\newOptexpFiberDipole{optfiber}{}
+\newOptexpFiberDipole{optfiber}{newOptComp={}, style=Fiber}
 \newOptexpFiberDipole{optamp}{}
 \newOptexpFiberDipole{optmzm}{}
 \newOptexpFiberDipole{optfilter}{}
@@ -9285,9 +9289,9 @@
 % 
 % \subsection{Fiber optics}
 %
-% \begin{macro}{\optfiber@ref}
+% \begin{macro}{\optfiber@nodes}
 %    \begin{macrocode}
-\def\optfiber@ref{%
+\def\optfiber@nodes{%
   \pnode(! \POE@key@fiberloopsep\space
            \POE@key@fiberloops\space 
            1 sub mul -0.5 mul 0){\oenodeIn{}}
