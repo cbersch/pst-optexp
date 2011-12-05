@@ -22,7 +22,7 @@
 %<stylefile>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<stylefile>\ProvidesPackage{pst-optexp}
 %<*stylefile>
-    [2011/11/21 v3.0alpha Optical experimental setups with PSTricks]
+    [2011/12/05 v3.0beta Optical experimental setups with PSTricks]
 %</stylefile>
 %
 %<*driver>
@@ -4629,7 +4629,7 @@
 %</ignore>
 % \fi
 %
-%   \boolitem{fiber} Some components can be used either for free-ray or
+%   \choitem[all]{fiber}{none,in,out,top,bottom,all} Some components can be used either for free-ray or
 %   fiber-optical setups (\Lcs{optbox}, \Lcs{optdetector}). The \opt{fiber}
 %   parameter enables automatic fiber connections for them.
 % \iffalse
@@ -4643,10 +4643,6 @@
 % \iffalse
 %</ignore>
 % \fi
-%
-%   \boolitem{nofiber} Do not draw any automatic fiber connection. Is equivalent
-%   to \opt{fiberin=none} and \opt{fiberout=none}.
-%
 %   \choitem[all]{fiberin}{none, top, bottom, all} Choose which input fiber
 %   connections to draw automatically. The values \opt{top} and \opt{bottom}
 %   affect only \Lcs{optcoupler} and \Lcs{wdmcoupler}.
@@ -4742,7 +4738,7 @@
 \begin{pspicture}(4,3)
   \pnode(0,0.5){A}\pnode(2,0.5){B}
   \pnode([offset=1]B){C}\pnode(A|C){D}
-  \optamp[nofiber](A)(B){EDFA}
+  \optamp[fiber=none](A)(B){EDFA}
   \optbox(C)(D){PM}
   \drawfiber[linecolor=black]{1}{2}
 \end{pspicture}
@@ -4765,8 +4761,8 @@
             addtoFiberIn1={angleA=0, ArrowInside=->},
             addtoFiberIn2={angleA=180, arrows=<-},
             abspos=0.5, compname=Cpl](A)(B)(C)(D){}
-\optfiber[nofiber, compname=Hnlf, abspos=1](C)(C|A){}
-\optamp[nofiber, abspos=2, compname=Amp](D|B)(D){}
+\optfiber[fiber=none, compname=Hnlf, abspos=1](C)(C|A){}
+\optamp[fiber=none, abspos=2, compname=Amp](D|B)(D){}
 \drawfiber{Cpl}{Hnlf}
 \drawfiber[startnode=1, stopnode=N, ncurv=1.2]{Hnlf}{Amp}
 \drawfiber{Cpl}{Amp}
@@ -6524,61 +6520,83 @@
 \psset[optexp]{compname=\@empty}
 \POE@insideobjfalse
 %    \end{macrocode}
-% Connect a component directly with its reference nodes using \cs{drawbeam}
+% Connect a component directly with its reference nodes using \cs{drawbeam}.
 %    \begin{macrocode}
 \define@boolkey[psset]{optexp}[POE@]{beam}[true]{}
+%    \end{macrocode}
+%
+% Select which fibers are drawn automatically.
+%    \begin{macrocode}
+\define@choicekey*[psset]{optexp}{fiber}%
+  [\val\nr]{none,in,out,top,bottom,all}[all]{%
+  \ifcase\nr\relax
+    \psset[optexp]{fiber@=false, nofiber@, fiberin=none, fiberout=none}
+  \or
+    \psset[optexp]{fiberin, fiberout=none}
+  \or
+    \psset[optexp]{fiberin=none, fiberout}
+  \or
+    \psset[optexp]{fiberin=top, fiberout=top}
+  \or
+    \psset[optexp]{fiberin=bottom, fiberout=bottom}
+  \or
+    \psset[optexp]{fiberin, fiberout}
+  \fi
+}%
 %    \end{macrocode}
 % Select which input fibers are drawn directly
 %    \begin{macrocode}
 \define@choicekey*[psset]{optexp}{fiberin}%
-  [\val\nr]{none,top,bottom,both}[both]{%
+  [\val\nr]{none,top,bottom,all}[all]{%
   \ifcase\nr\relax
     \psset[optexp]{%
-      fiberin@=false, fiberin@top=false, fiberin@bottom=false
+      fiberin@=false, 
+      fiberin@top=false, fiberin@bottom=false
     }
   \or
     \psset[optexp]{%
-      fiberin@=true, fiberin@top, fiberin@bottom=false, fiber@
+      fiber@, fiberin@, nofiber@=false,
+      fiberin@top, fiberin@bottom=false
     }
   \or
     \psset[optexp]{%
-      fiberin@=true, fiberin@top=false, fiberin@bottom=true, fiber@
+      fiber@, fiberin@, nofiber@=false,
+      fiberin@top=false, fiberin@bottom
     }
   \or
     \psset[optexp]{%
-      fiberin@=true, fiberin@top=true, fiberin@bottom=true, fiber@
+      fiber@, fiberin@, nofiber@=false,
+      fiberin@top, fiberin@bottom
     }
   \fi
 }%
 %    \end{macrocode}
-% Select which input fibers are drawn directly
+% Select which output fibers are drawn directly
 %    \begin{macrocode}
 \define@choicekey*[psset]{optexp}{fiberout}%
-  [\val\nr]{none,top,bottom,both}[both]{%
+  [\val\nr]{none,top,bottom,all}[all]{%
   \ifcase\nr\relax
     \psset[optexp]{%
-      fiberout@=false, fiberout@top=false, fiberout@bottom=false
+      fiberout@=false,
+      fiberout@top=false, fiberout@bottom=false
     }
   \or
     \psset[optexp]{%
-      fiber@, fiberout@=true, 
+      fiber@, fiberout@, nofiber@=false,
       fiberout@top, fiberout@bottom=false
     }
   \or
     \psset[optexp]{%
-      fiber@, fiberout@=true, 
+      fiber@, fiberout@, nofiber@=false,
       fiberout@top=false, fiberout@bottom=true
     }
   \or
     \psset[optexp]{%
-      fiber@, fiberout@=true, 
-      fiberout@top=true, fiberout@bottom=true
+      fiber@, fiberout@, nofiber@=false,
+      fiberout@top, fiberout@bottom
     }
   \fi
 }%
-%    \end{macrocode}
-% These are the internal boolkeys for the fiber choices done with 'fiberin' and 'fiberout'
-%    \begin{macrocode}
 \define@boolkey[psset]{optexp}[POE@]{fiber@}[true]{}
 \define@boolkey[psset]{optexp}[POE@]{nofiber@}[true]{}
 \define@boolkey[psset]{optexp}[POE@]{fiberin@}[true]{}
@@ -6587,7 +6605,15 @@
 \define@boolkey[psset]{optexp}[POE@]{fiberout@}[true]{}
 \define@boolkey[psset]{optexp}[POE@]{fiberout@top}[true]{}
 \define@boolkey[psset]{optexp}[POE@]{fiberout@bottom}[true]{}
+\psset[optexp]{fiber, fiber@=false}%
+%    \end{macrocode}
+% These are the internal boolkeys for the fiber choices done with 'fiberin' and 'fiberout'
+%    \begin{macrocode}
 \define@boolkey[psset]{optexp}[POE@]{relangle}[true]{}
+\psset[optexp]{relangle=false}
+%    \end{macrocode}
+% Which nodes to take for the automatic fiber connections.
+%    \begin{macrocode}
 \define@choicekey+[psset]{optexp}{startnode}%
   [\val\nr]{auto,1,2,3,4,N}%
   {\edef\POE@key@startnode{\val}}
@@ -6597,8 +6623,7 @@
    {\PackageError{pst-optexp}{Unknown stopnode '\val'}}
 \psset[optexp]{%
   startnode=auto,
-  stopnode=auto,
-  relangle=false
+  stopnode=auto
 }%
 %    \end{macrocode}
 %
@@ -7251,29 +7276,7 @@
 }%
 %    \end{macrocode}
 % \end{macro}
-% 
-%    \begin{macrocode}
-\define@choicekey*[psset]{optexp}{fiber}%
-  [\val\nr]{none,in,out,top,bottom,both}[both]{%
-  \ifcase\nr\relax
-    \psset[optexp]{fiber@=false, fiberin=none, fiberout=none}
-  \or
-    \psset[optexp]{fiberin, fiberout=none}
-  \or
-    \psset[optexp]{fiberin=none, fiberout}
-  \or
-    \psset[optexp]{fiberin=top, fiberout=top}
-  \or
-    \psset[optexp]{fiberin=bottom, fiberout=bottom}
-  \or
-    \psset[optexp]{fiberin, fiberout}
-  \fi
-}%
-\define@choicekey[psset]{optexp}{nofiber}[\val\nr]{}[]{%
-   \psset[optexp]{fiber@=false, nofiber@}%
-}
-\psset[optexp]{fiber, fiber@=false}%
-%    \end{macrocode}
+%
 % Set default settings for the new connection code
 %    \begin{macrocode}
 \psset[optexp]{%
