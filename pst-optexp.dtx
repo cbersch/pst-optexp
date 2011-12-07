@@ -6938,10 +6938,17 @@
       savebeampoints }%
   \fi
   \end@BeamObj
-  \POE@Verb{ { @NewNode } if }%
+  \POE@Verb{ { \tx@NodeScale @NewNode } if }%
 }%
 %    \end{macrocode}
 % \end{macro}
+% This fix is necessary for pst-node since version 1.21.
+%    \begin{macrocode}
+\def\tx@NodeScale{%
+  \pst@nodedict 
+    /NodeScale {\ifx\pstnodescale\@undefined  \else\pstnodescale \fi} def 
+  end }
+%    \end{macrocode}
 % 
 % \begin{macro}{\POE@strokesinglebeam}
 %    \begin{macrocode}
@@ -7061,7 +7068,7 @@
       savebeampoints }%
   \fi
   \end@BeamObj
-  \POE@Verb{ { @NewNode @NewNode } if }%
+  \POE@Verb{ { \tx@NodeScale @NewNode @NewNode } if }%
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -7515,6 +7522,7 @@
 %    \begin{macrocode}
 \def\newOptexpComp#1{%
   \POE@Verb{%
+    \tx@NodeScale
     [ #1 (\oenode{}{}) {\tx@ScreenCoor} false NewOptexpComp
   }%
 \ignorespaces}%
@@ -7525,6 +7533,7 @@
 %    \begin{macrocode}
 \def\newOptexpCompAmb#1{%
   \POE@Verb{%
+    \tx@NodeScale
     [ #1 (\oenode{}{}) {\tx@ScreenCoor} true NewOptexpComp
   }%
 \ignorespaces}%
@@ -7577,6 +7586,7 @@
   \pst@getcoor{#1}\POE@tempa% origin
   \pst@getcoor{#2}\POE@tempb% difference vector
   \POE@Verb{%
+    \tx@NodeScale
     [ {\POE@tempa} gsave STV CP T exec grestore ToVec 
     {\POE@tempb} trans {PlaneIfc} 1
     (\POE@str@basicname@prefix#3) {} false NewOptexpComp
