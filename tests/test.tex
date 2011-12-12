@@ -6,7 +6,30 @@
 \usepackage{pst-optexp}
 \usepackage{showexpl}
 \begin{document}
-\begin{LTXexample}[pos=t]%, linerange={1-2, 6-7, 11-12}]
+Czerny-Turner monochromator
+
+\begin{pspicture}[showgrid=true](0,-1)(8,4)
+\psset{linewidth=1.5\pslinewidth, mirrordepth=0.15}
+\psframe[fillstyle=solid,fillcolor=gray!90,linestyle=none](0,-1)(8.5,4)
+\addtopsstyle{OptComp}{linecolor=white, linewidth=1.5\pslinewidth}\addtopsstyle{Beam}{linewidth=1.5\pslinewidth, linecolor=white}
+\addtopsstyle{ExtendedMirror}{hatchcolor=white, hatchsep=0.5\pslinewidth}
+\pnode(0,3){A}\pnode(8,3){B}\pnode(3,1.5){C}\pnode(8,0){D}\pnode(0,0){E}%
+\psset{mirrorradius=13,  mirrorwidth=1.5, gratingwidth=1.5, mirrortype=extended, phwidth=0.07, outerheight=1.5}%
+\begin{optexp}
+\pinhole[position=0.2](A)(B)%
+\mirror(A)(B)(C)
+\optgrating[reverse, angle=15](B)(C)(D)
+\mirror(C)(D)(E)
+\pinhole[position=0.8](D)(E)
+\drawwidebeam[addtoBeam={ArrowInside=->}, beamwidth=0.2, beamdiv=0.1 8 0.2 mul atan neg]{(A)}{1-3}
+\psset{loadbeampoints, savebeampoints=false}%
+\drawwidebeam[addtoBeam={linecolor=green!60!white}]{3-5}{(E)}
+\drawwidebeam[beamangle=3, addtoBeam={linecolor=blue!60!white}]{3-6}
+\drawwidebeam[beamangle=-3, addtoBeam={linecolor=red!60!white}]{3-6}
+\end{optexp}
+\end{pspicture}
+\end{document}
+
 \begin{pspicture}[showgrid=true](0,0)(12,2) 
   \pnode(0,1){A}\pnode(3.5,1){B}
   \lens[abspos=1](A)(B)
@@ -20,8 +43,7 @@
   \uput[90](\oenodeBeamUp){\rput[rb](0,0){BeamUp}}
   \uput[-90](\oenodeBeamLow){\rput[rt](0,0){BeamLow}}
 \end{pspicture}
-\end{LTXexample}
-\end{document}
+
 \begin{pspicture}(4,3)
   \pnode(0,0.5){A}\pnode(2,0.5){B}\pnode(4,3){C}
   \nodexn{(C)-(1.5,0)}{C'}
@@ -47,7 +69,7 @@
   \drawwidebeam{2}{(B)}
   \end{optexp}
 \end{pspicture}
-\end{document}
+
 \begin{pspicture}(3,3)
   \psset{endbox, optboxwidth=0.5, optboxheight=0.5, bssize=0.5}
   \optbox[compname=obj](0.5,0.5)(0.5,2.5){obj, 1}
@@ -56,7 +78,7 @@
   % named objects are also numbered
   \drawbeam{1-3}
 \end{pspicture}
-\end{document}
+
 \begin{pspicture}(2.8,3) 
   \pentaprism[pentaprismsize=1.3](0,1.5)(1.5,1.5)(1.5,0)
   \drawbeam[arrows=->, arrowinset=0, arrowscale=1.5]{(0,1.5)}{}{(1.5,0)}
@@ -65,7 +87,7 @@
 %  \psdot(\oenodeIfc{3}{})\uput[90](\oenodeIfc{3}{}){3}
 %  \psdot(\oenodeOut{})\uput[-45](\oenodeOut{}){N}
 \end{pspicture}
-\end{document}
+
 \begin{pspicture}[showgrid=true](4,6) \psset{labeloffset=0.6}
   \addtopsstyle{Beam}{arrows=->, arrowscale=1.5}
   \doveprism[compname=Dove1](0,0.8)(3,0.8){Dove1}
@@ -77,7 +99,7 @@
   \doveprism[compname=Dove4](0,5.3)(3,5.3){Dove4}
   \drawbeam[conn=-A]{(0,5.3)}{Dove4}
 \end{pspicture}
-\end{document}
+
 
   \begin{pspicture}[showgrid=true](3,2)
   \pnode(0,1){A}
@@ -86,14 +108,14 @@
   \drawbeam[conn=-a]{(A|BoxIntern1)}{Box}
   \drawbeam[conn=B-]{Box}{(B|BoxInternN)}
 \end{pspicture}
-\end{document}
+
 \begin{pspicture}[showgrid=true](3,1.5)
   \psset{optgridlinewidth=1}
   \psset{labelangle=45, labeloffset=2}
   \optbox[abspos=3.7, label=. 90, compname=box](0,1)(3,1){box}
   \drawbeam[conn=a-a]{(0,1)}{box}
 \end{pspicture}
-\end{document}
+
 \begin{pspicture}(3,1.5)
 \addtopsstyle{OptComp}{linewidth=3\pslinewidth, linecolor=red}
 \newpsstyle{OptionalStyle}{linecolor=blue}
@@ -105,7 +127,7 @@
 \begin{pspicture}(3,2)
 \mirror[showoptdots, angle=0, beam, skipconn=-1](0,1)(1.9,1)(1.9,0)
 \end{pspicture}
-\end{document}
+
 
 \begin{pspicture}(5,5)
   \lens(0,3)(3,3)
@@ -155,8 +177,8 @@
             addtoFiberIn1={angleA=0, ArrowInside=->},
             addtoFiberIn2={angleA=180, arrows=<-},
             abspos=0.5, compname=Cpl](A)(B)(C)(D){}
-\optfiber[nofiber, compname=Hnlf, abspos=1](C)(C|A){}
-\optamp[nofiber, abspos=2, compname=Amp](D|B)(D){}
+\optfiber[fiber=none, compname=Hnlf, abspos=1](C)(C|A){}
+\optamp[fiber=none, abspos=2, compname=Amp](D|B)(D){}
 \drawfiber{Cpl}{Hnlf}
 \drawfiber[startnode=1, stopnode=N, ncurv=1.2]{Hnlf}{Amp}
 \drawfiber{Cpl}{Amp}
@@ -200,27 +222,6 @@
   \addtopsstyle{Beam}{linestyle=none, fillcolor=red, fillstyle=solid}
   \drawwidebeam[n=1, beamwidth=0.3, savebeampoints, stopinside]{(A)}{1}
   \drawwidebeam[loadbeampoints, beamangle=10]{1}{(B)}
-\end{pspicture}
-
-Czerny-Turner monochromator
-
-\begin{pspicture}[showgrid=true](0,-1)(10,5)
-\psset{linewidth=1.5\pslinewidth}
-\psframe[fillstyle=solid,fillcolor=gray!90,linestyle=none](0,-1)(9,4)
-\psset{linecolor=white}\addtopsstyle{Beam}{linecolor=white}
-\addtopsstyle{ExtendedMirror}{hatchcolor=white}
-\pnode(0,3){A}\pnode(8,3){B}\pnode(3,1.5){C}\pnode(8,0){D}\pnode(0,0){E}%
-\psset{mirrorradius=13,  mirrorwidth=1.5, gratingwidth=1.5, mirrortype=extended, phwidth=0.07, outerheight=1.5}%
-\pinhole[position=0.2](A)(B)%
-\mirror(A)(B)(C)
-\optgrating[reverse, angle=15](B)(C)(D)
-\mirror(C)(D)(E)
-\pinhole[position=0.8](D)(E)
-\drawwidebeam[beamwidth=0.2, beamdiv=0.1 8 0.2 mul atan neg, savebeampoints]{(A)}{1-3}
-\psset{loadbeampoints}%
-\drawwidebeam[addtoBeam={linecolor=green!40!white}]{3-5}{(E)}
-\drawwidebeam[beamangle=3, addtoBeam={linecolor=blue!40!white}]{3-6}
-\drawwidebeam[beamangle=-3, addtoBeam={linecolor=red!40!white}]{3-6}
 \end{pspicture}
 
 \begin{pspicture}(4,2) 

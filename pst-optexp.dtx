@@ -6661,24 +6661,33 @@
   \@ifnextchar[%]
     {\drawfiber@i}{\drawfiber@i[]}%
 }%
-\def\drawfiber@i[#1]#2#3{%
+\def\drawfiber@i[#1]#2{%
   \addafter@par{#1}%
+  \def\POE@tempe{#2}%
+  \@ifnextchar\bgroup{\drawfiber@ii}{}%
+}%
+\def\drawfiber@ii#1{%
+  \expandafter\drawfiber@iii\expandafter{\POE@tempe}{#1}%
+  \def\POE@tempe{#1}%
+  \@ifnextchar\bgroup{\drawfiber@ii}{}%
+}%
+\def\drawfiber@iii#1#2{%
   \begingroup
     \let\psk@angleA\relax
     \let\psk@angleB\relax
     \use@par
-    \def\POE@tempa{#2}
+    \def\POE@tempa{#1}
     \ifx\POE@tempa\@empty
       \edef\POE@comps{/\oenode{}{}\space}
     \else
-      \expandafter\POE@getnode#2\@nil
+      \expandafter\POE@getnode#1\@nil
       \edef\POE@comps{\POE@temp}
     \fi
-    \def\POE@tempb{#3}
+    \def\POE@tempb{#2}
     \ifx\POE@tempb\@empty
       \edef\POE@comps{/\oenode{}{}\space \POE@comps}
     \else
-      \expandafter\POE@getnode#3\@nil
+      \expandafter\POE@getnode#2\@nil
       \edef\POE@comps{\POE@temp\space \POE@comps}
     \fi   
     \ifPOE@backlayer
