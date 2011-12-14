@@ -6671,6 +6671,33 @@
   \def\POE@tempe{#1}%
   \@ifnextchar\bgroup{\drawfiber@ii}{}%
 }%
+% \begin{macro}{POE@pnode}
+%   Do some trickery to define \cs{pnode} inside \cs{pscustom}, which is
+%   required if one wants to use \cs{drawfiber} inside \cs{pscustom}.
+%    \begin{macrocode}
+\def\POE@pnode#1#2{%
+  \ifPst@custom
+%%    \code{ /currentpoint load stopped { 0 0 moveto } if }%
+%%    \code{ tx@NodeDict begin {#1 \tx@ScreenCoor 8.3021995 div exch 8.3021995 div exch neg
+%%          } false /N@#2 10 {InitPnode} /NodeScale {} def NewNode end }%
+
+    \code{%
+      gsave 
+        /currentpoint load stopped { 0 0 moveto } if 
+        1 8.3021995 div dup neg scale 
+        tx@NodeDict begin 
+          {#1 \tx@ScreenCoor } false /N@#2 10 {InitPnode} 
+          /NodeScale {} def NewNode 
+        end 
+      grestore 
+    }%
+  \else
+    \pnode(!#1){#2}
+  \fi
+}%
+%    \end{macrocode}
+% \end{macro}
+%    \begin{macrocode}
 \def\drawfiber@iii#1#2{%
   \begingroup
     \let\psk@angleA\relax
@@ -6692,28 +6719,28 @@
     \fi   
     \ifPOE@backlayer
       \ifx\POE@key@startnode\POE@str@autonode\else
-        \pnode(! /\POE@key@startnode\space \POE@comps exch pop 
-                 \POE@dict{getsubnode} \tx@UserCoor){@@A}
+        \POE@pnode{/\POE@key@startnode\space \POE@comps exch pop 
+          \POE@dict{getsubnode} \tx@UserCoor}{@@A}
       \fi
       \ifx\POE@key@stopnode\POE@str@autonode\else
-        \pnode(! /\POE@key@stopnode\space \POE@comps pop 
-                 \POE@dict{getsubnode} \tx@UserCoor){@@B}
+        \POE@pnode{/\POE@key@stopnode\space \POE@comps pop 
+                 \POE@dict{getsubnode} \tx@UserCoor}{@@B}
       \fi
       \ifx\POE@key@startnode\POE@str@autonode
         \ifx\POE@key@stopnode\POE@str@autonode
-          \pnode(! \POE@comps exch \POE@dict{NearestNode} 
-                   \tx@UserCoor){@@A}
-          \pnode(! \POE@comps \POE@dict{NearestNode} 
-                   \tx@UserCoor){@@B}
+          \POE@pnode{\POE@comps exch \POE@dict{NearestNode} 
+                   \tx@UserCoor}{@@A}
+          \POE@pnode{\POE@comps \POE@dict{NearestNode} 
+                   \tx@UserCoor}{@@B}
         \else
-          \pnode(! \POE@comps exch pop /N@@@B 
+          \POE@pnode{\POE@comps exch pop /N@@@B 
                    \POE@dict{@GetCenter ToVec NearestNode} 
-                   \tx@UserCoor){@@A}
+                   \tx@UserCoor}{@@A}
         \fi
       \else\ifx\POE@key@stopnode\POE@str@autonode
-        \pnode(! \POE@comps pop /N@@@A 
+        \POE@pnode{\POE@comps pop /N@@@A 
                  \POE@dict{@GetCenter ToVec NearestNode} 
-                 \tx@UserCoor){@@B}
+                 \tx@UserCoor}{@@B}
       \fi\fi
       \pst@getcoor{@@A}\POE@tempa
       \pst@getcoor{@@B}\POE@tempb
