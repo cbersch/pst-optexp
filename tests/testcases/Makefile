@@ -15,7 +15,7 @@
 LATEX = latex -interaction=nonstopmode
 OBJECTS=$(shell ls *.tex)
 FILELIST=$(basename $(OBJECTS))
-POE=$(shell kpsewhich pst-optexp.tex pst-optexp.pro)
+POE=$(shell kpsewhich pst-optexp.sty pst-optexp.pro)
 
 .PHONY: all clean veryclean
 
