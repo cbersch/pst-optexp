@@ -20,6 +20,8 @@ f.write(r"""\documentclass[a4paper]{scrreprt}
 \usepackage{pst-optexp}
 \usepackage{pst-tree, pst-func, pst-circ}
 \newcommand{\poeTR}[1]{\TR{\ttfamily#1}}
+\definecolor{spot}{rgb}{1,.4,.2}%
+\newpsstyle{Refline}{linecolor=gray!60}
 \newif\ifGERMAN\GERMANfalse
 \newif\ifENGLISH\ENGLISHtrue
 \begin{document}
