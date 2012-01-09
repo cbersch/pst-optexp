@@ -6706,33 +6706,6 @@
   \def\POE@tempe{#1}%
   \@ifnextchar\bgroup{\drawfiber@ii}{}%
 }%
-% \begin{macro}{POE@pnode}
-%   Do some trickery to define \cs{pnode} inside \cs{pscustom}, which is
-%   required if one wants to use \cs{drawfiber} inside \cs{pscustom}.
-%    \begin{macrocode}
-\def\POE@pnode#1#2{%
-  \ifPst@custom
-%%    \code{ /currentpoint load stopped { 0 0 moveto } if }%
-%%    \code{ tx@NodeDict begin {#1 \tx@ScreenCoor 8.3021995 div exch 8.3021995 div exch neg
-%%          } false /N@#2 10 {InitPnode} /NodeScale {} def NewNode end }%
-
-    \code{%
-      gsave 
-        /currentpoint load stopped { 0 0 moveto } if 
-        1 8.3021995 div dup neg scale 
-        tx@NodeDict begin 
-          {#1 \tx@ScreenCoor } false /N@#2 10 {InitPnode} 
-          /NodeScale {} def NewNode 
-        end 
-      grestore 
-    }%
-  \else
-    \pnode(!#1){#2}
-  \fi
-}%
-%    \end{macrocode}
-% \end{macro}
-%    \begin{macrocode}
 \def\drawfiber@iii#1#2{%
   \begingroup
     \let\psk@angleA\relax
@@ -6814,6 +6787,29 @@
   \endgroup
 }%
 %    \end{macrocode}
+% \end{macro}
+% \begin{macro}{POE@pnode}
+%   Do some trickery to define \cs{pnode} inside \cs{pscustom}, which is
+%   required if one wants to use \cs{drawfiber} inside \cs{pscustom}.
+%    \begin{macrocode}
+\def\POE@pnode#1#2{%
+  \ifPst@custom
+    \code{%
+      gsave 
+        /currentpoint load stopped { 0 0 moveto } if 
+        1 8.3021995 div dup neg scale 
+        tx@NodeDict begin 
+          {#1 \tx@ScreenCoor } false /N@#2 10 {InitPnode} 
+          /NodeScale {} def NewNode 
+        end 
+      grestore 
+    }%
+  \else
+    \pnode(!#1){#2}
+  \fi
+}%
+%    \end{macrocode}
+% \end{macro}
 % 
 % \begin{macro}{\backlayer}
 %    \begin{macrocode}
