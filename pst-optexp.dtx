@@ -131,7 +131,7 @@
 \usepackage{csquotes}
 \MakeAutoQuote{«}{»}
 \colorlet{spot}{sectioncolor}
-
+\newpsstyle{Refline}{linecolor=gray!60}
 \makeatletter
 \renewenvironment*{changelog}
   {\list{}{%
@@ -1244,7 +1244,7 @@
 \optbox(A)(B)
 \psdot(\oenodeRefA{})\uput[-90](\oenodeRefA{}){RefA}
 \psdot(\oenodeRefB{})\uput[-90](\oenodeRefB{}){RefB}
-\psline[linecolor=gray!50](\oenodeRefA{})(\oenodeRefB{})
+\psline[style=Refline](\oenodeRefA{})(\oenodeRefB{})
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -1278,7 +1278,7 @@
 \psdot(\oenodeRefB{})\uput[-90](\oenodeRefB{}){RefB}
 \psdot(\oenodeTrefA{})\uput[90](\oenodeTrefA{}){TrefA}
 \psdot(\oenodeTrefB{})\uput[90](\oenodeTrefB{}){TrefB}
-\psline[linecolor=gray!50](\oenodeTrefA{})(\oenodeTrefB{})
+\psline[style=Refline](\oenodeTrefA{})(\oenodeTrefB{})
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -1309,7 +1309,7 @@
 \pnode(0,0.5){A}\pnode(3,0.5){B}
 \optbox(A)(B)
 \psdot(\oenodeCenter{})
-\psline[linecolor=gray!50](\oenodeRefA{})(\oenodeRefB{})
+\psline[style=Refline](\oenodeRefA{})(\oenodeRefB{})
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -1329,14 +1329,14 @@
 %
 %   \ifGERMAN
 %   Auf diesen Knoten wird die Beschriftung platziert. Der Knoten ist auch
-%   verfügbar wenn keine Beschriftung angegeben wurde. Für \Lkeyword{labeloffset}\opt{=0}
+%   verfügbar wenn keine Beschriftung angegeben wurde. Für \xLkeyword{labeloffset}\nxLkeyword{labeloffset=0}
 %   ist dieser Knoten identisch mit dem Mittelpunktsknoten
 %   (\prettyref{sec:centernode}).
 %   \fi
 %   \ifENGLISH
 %   The component label is placed at this node. It is also available
 %   if no label was specified. The label node is identical with the center
-%   node for \Lkeyword{labeloffset}\opt{=0}.
+%   node for \xLkeyword{labeloffset}\nxLkeyword{labeloffset=0}.
 %   \fi
 % \iffalse
 %<*ignore>
@@ -1346,7 +1346,7 @@
 \pnode(0,1){A}\pnode(3,1){B}
 \optbox(A)(B)
 \psdot(\oenodeLabel{})
-\psline[linecolor=gray!50](\oenodeTrefA{})(\oenodeTrefB{})
+\psline[style=Refline](\oenodeTrefA{})(\oenodeTrefB{})
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -1563,12 +1563,12 @@
   \optbox[angle=20](0.5,1)(4.5,1)
   \psdot(\oenodeRefA{})\uput[-90](\oenodeRefA{}){RefA}
   \psdot(\oenodeRefB{})\uput[-90](\oenodeRefB{}){RefB}
-  \psline[linecolor=gray!50](\oenodeRefA{})(\oenodeRefB{})
+  \psline[style=Refline](\oenodeRefA{})(\oenodeRefB{})
   \psdot(\oenodeRotref{})\uput[-90](\oenodeRotref{}){Rotref}
   \optbox[angle=20, rotateref=bl](7.5,1)(11.5,1)
   \psdot(\oenodeRefA{})\uput[-90](\oenodeRefA{}){RefA}
   \psdot(\oenodeRefB{})\uput[-90](\oenodeRefB{}){RefB}
-  \psline[linecolor=gray!50](\oenodeRefA{})(\oenodeRefB{})
+  \psline[style=Refline](\oenodeRefA{})(\oenodeRefB{})
   \psdot(\oenodeRotref{})\uput[-90](\oenodeRotref{}){Rotref}
 \end{pspicture}
 \end{LTXexample}
@@ -1630,7 +1630,7 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}[linerange={1-6, 9-9}]
+\begin{LTXexample}
 \begin{pspicture}(0,0)(3,2) 
   \pnode(0,1){A}\pnode(3,1){B}
   \lens[abspos=1, lensradius=-2](A)(B)
@@ -1655,14 +1655,14 @@
 % \ifENGLISH
 % Note, that «upper» and «lower» is defined with respect to the propagation
 % direction of the beam. A marginal beam which started as «upper» can change to «lower»
-% if it crossed with the other beam. This is shown in the following example,
+% if it crosses the other marginal beam. This is shown in the following example,
 % where the marginal rays exchange their roles:
 % \fi
 %
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}[linerange={1-6, 9-10, 13-13}]
+\begin{LTXexample}
 \begin{pspicture}(0,0)(3,2) 
   \pnode(0,1){A}\pnode(3,1){B}
   \lens[abspos=1](A)(B)
@@ -1969,7 +1969,7 @@
 \begin{pspicture}(3,2)
   \pnode(0,1){A}\pnode(2.7,1){B}
   \lens[compshift=0.3](A)(B){L}
-  \psline[linecolor=gray!30](\oenodeRefA{})(\oenodeRefB{})
+  \psline[style=Refline](\oenodeRefA{})(\oenodeRefB{})
   \psdot(\oenodeRefA{})\uput[-90](\oenodeRefA{}){RefA}
   \psdot(\oenodeRefB{})\uput[-90](\oenodeRefB{}){RefB}
 \end{pspicture}
@@ -1978,7 +1978,7 @@
 \begin{pspicture}(3,2) 
   \pnode(0,1){A}\pnode(2,0){B}
   \mirror[compshift=0.3](A)(2,1)(B){mirror}
-  \psline[linecolor=gray!30](\oenodeRefA{})(\oenodeRefB{}|\oenodeRefA{})(\oenodeRefB{})
+  \psline[style=Refline](\oenodeRefA{})(\oenodeRefB{}|\oenodeRefA{})(\oenodeRefB{})
   \psdot(\oenodeRefA{})\uput[-90](\oenodeRefA{}){RefA}
   \psdot(\oenodeRefB{})\uput[180](\oenodeRefB{}){RefB}
 \end{pspicture}
@@ -2072,7 +2072,7 @@
   \optbox[beam, labeloffset=1](0,1.5)(3,0.8){label}
   \psdot[linecolor=blue](\oenodeCenter{})
   \psdot[linecolor=red](\oenodeLabel{})
-  \ncline[arrows=<->]{\oenodeCenter{}}{\oenodeLabel{}}
+  \ncline[arrows=<->, arrowinset=0, arrowscale=1.5]{\oenodeCenter{}}{\oenodeLabel{}}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -2130,7 +2130,7 @@
   }
   \backlayer{%
     \bgroup
-    \psset{linecolor=gray!40}
+    \psset{style=Refline}
     \psline(\oenodeCenter{2})([offset=-1]\oenodeCenter{2})
     \psline(\oenodeCenter{2})([Xnodesep=-1]\oenodeCenter{2})
     \psarc[arrows=<-](\oenodeCenter{2}){0.7}{180}{270}
@@ -4201,7 +4201,7 @@
   \drawbeam[beamangle=-60]{1}{2}
   \drawbeam[beamangle=-40]{1}{2}
   \drawbeam[beamangle=-20]{1}{2}
-  \psline[linecolor=gray!50, linewidth=3\pslinewidth, arrows=->, arrowinset=0, arrowscale=1.3](\oenodeOut{1})([offset=2.1]\oenodeOut{1})
+  \psline[style=Refline, linewidth=3\pslinewidth, arrows=->, arrowinset=0, arrowscale=1.3](\oenodeOut{1})([offset=2.1]\oenodeOut{1})
 \end{pspicture*}
 \end{LTXexample}
 % \iffalse
@@ -4804,18 +4804,14 @@
 % 
 % \ifGERMAN\chapter{Zusatzinformationen}\fi
 % \ifENGLISH\chapter{Additional information}\fi
-%
-% \ifGERMAN\section{Neue Komponenten}\fi
-% \ifENGLISH\section{New components}\fi
-% \label{sec:newcomp}
 % 
 % \ifGERMAN
-% \subsection{Benutzerdefinierte Version existierender Komponenten}
+% \section{Benutzerdefinierte Version existierender Komponenten}
 % \fi
 % \ifENGLISH
-% \subsection{Customized versions of existing components}
+% \section{Customized versions of existing components}
 % \fi
-% 
+% \label{sec:customcomp}
 % The easiest way to define your own components is to use the
 % \Lcs{newpsobject} macro. With this you can define a new component using
 % predefined objects with a set of options. These options serve only as
@@ -4870,7 +4866,7 @@
 %</ignore>
 % \fi
 % 
-% \subsection{Defining new objects}\label{sec:newobj}
+% \section{Defining new objects}\label{sec:newobj}
 % \nxLPack{pst-optexp} provides some high-level macros to
 % allow very convenient definition of your own custom components. 
 %
@@ -4896,7 +4892,7 @@
 % \item Support for \Lkeyword{rotateref} and \Lkeyword{extnode} (optional).
 % \end{enumerate}
 %
-% \subsubsection{The component drawing}
+% \subsection{The component drawing}
 % \iffalse
 %<*ignore>
 % \fi
@@ -4908,8 +4904,8 @@
   \psaxes[arrows=->](0,0)(0,-1.1)(1.3,1.3)[$x$,90][$y$,0]
 }%
 \makeatother
-\mydipole(0,1)(3.5,1){label}
-\drawbeam{(0,1)}{1}{(3.5,1)}
+\mydipole(0,1)(3.5,1){\color{spot}label}
+\drawbeam{(0,1)}{}{(3.5,1)}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -4927,8 +4923,8 @@
   \psaxes[arrows=->](0,0)(-1.1,0)(1.3,1.3)[$x$,90][$y$,0]
 }%
 \makeatother
-\mytripole(0,1)(2,1.7)(3,0){label}
-\drawbeam{(0,1)}{1}{(3,0)}
+\mytripole(0,1)(2,1.7)(3,0){\color{spot}label}
+\drawbeam{(0,1)}{}{(3,0)}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -4936,7 +4932,9 @@
 % \fi
 % \medskip
 %
-% \subsubsection{Layering support}
+% \subsection{Adding external node}
+%
+% \subsection{Layering support}
 %
 % To support layering, the component nodes and the drawings must be separated
 % into two macro. \nxLcs{component@nodes} contains the nodes and the Postscript
@@ -6781,15 +6779,16 @@
   \endgroup
 }%
 %    \end{macrocode}
-% \end{macro}
 % 
 % \begin{macro}{\backlayer}
-% \begin{macro}{\frontlayer}
 %    \begin{macrocode}
 \def\backlayer#1{\ifPOE@backlayer #1\fi\ignorespaces}
-\def\frontlayer#1{\ifPOE@frontlayer #1\fi\ignorespaces}
 %    \end{macrocode}
 % \end{macro}
+% \begin{macro}{\frontlayer}
+%    \begin{macrocode}
+\def\frontlayer#1{\ifPOE@frontlayer #1\fi\ignorespaces}
+%    \end{macrocode}
 % \end{macro}
 %    
 % The keys related to the \cs{draw*} macros
@@ -7246,6 +7245,10 @@
     \POE@drawInternalConnectionsOld
   \fi
 }%
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\POE@drawInternalFibers}
+%    \begin{macrocode}
 \def\POE@drawInternalFibers{%
   \ifPOE@endbox
     \ifPOE@fiberin@
@@ -7260,6 +7263,10 @@
     \fi
   \fi
 }%
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\POE@drawInternalConnectionsNew}
+%    \begin{macrocode}
 \def\POE@drawInternalConnectionsNew{%
   \ifPOE@beam
     \ifPOE@endbox
@@ -7271,6 +7278,10 @@
     \POE@drawInternalFibers
   \fi\fi
 }%
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\POE@drawInternalConnectionsOld}
+%    \begin{macrocode}
 \def\POE@drawInternalConnectionsOld{%
   \ifPOE@endbox
     \@nameuse{\POE@connIn}
@@ -7465,13 +7476,17 @@
 %
 %    \end{macrocode}
 % \begin{macro}{\defShiftedNode}
+%   This is provided only for backward compatibility, and should be replaced by
+%   \cs{nodexn}.
 %    \begin{macrocode}
 \def\defShiftedNode(#1)(#2)#3{%
+  \PackageWarning{pst-optexp}{%
+    \string\defShiftedNode\space is deprecated,\MessageBreak
+    use \string\nodexn\space(pst-node) instead.}%
   \pst@getcoor{#1}\pst@tempa%
   \pst@getcoor{#2}\pst@tempb%
-  \pnode(! \pst@tempb \pst@tempa \POE@Dict{VecAdd} \tx@UserCoor){#3}%
+  \pnode(! \pst@tempb \pst@tempa \POE@dict{VecAdd} \tx@UserCoor){#3}%
 }%
-\def\defShiftedNode(#1)(#2)#3{\nodexn{(#1) + (#2)}{#3}}%
 %    \end{macrocode}
 % \end{macro}
 % 
@@ -7520,21 +7535,80 @@
 %    \end{macrocode}
 % \end{macro}
 %
+% \begin{macro}{\oenodeExt}
+% The external node which is set with \opt{extnode}.
 %    \begin{macrocode}
 \def\oenodeExt#1{\oenode{\POE@str@extnode@postfix}{#1}}%
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\oenodeIn}
+% The first (input) node of the component.
+%    \begin{macrocode}
 \def\oenodeIn#1{\oenode{1}{#1}}%
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\oenodeOut}
+%    \begin{macrocode}
 \def\oenodeOut#1{\oenode{N}{#1}}%
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\oenodeCenter}
+%    \begin{macrocode}
 \def\oenodeCenter#1{\oenode{Center}{#1}}%
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\oenodeLabel}
+%    \begin{macrocode}
 \def\oenodeLabel#1{\oenode{Label}{#1}}%
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\oenodeRefA}
+%    \begin{macrocode}
 \def\oenodeRefA#1{\oenode{A}{#1}}%
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\oenodeRefB}
+%    \begin{macrocode}
 \def\oenodeRefB#1{\oenode{B}{#1}}%
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\oenodeRotref}
+%    \begin{macrocode}
 \def\oenodeRotref#1{\oenode{Rotref}{#1}}%
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\oenodeTrefA}
+%    \begin{macrocode}
 \def\oenodeTrefA#1{\oenode{TrefA}{#1}}%
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\oenodeTrefB}
+%    \begin{macrocode}
 \def\oenodeTrefB#1{\oenode{TrefB}{#1}}%
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\oenode@RefA}
+%    \begin{macrocode}
 \def\oenode@RefA#1{\oenode{@A}{#1}}%
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\oenode@RefB}
+%    \begin{macrocode}
 \def\oenode@RefB#1{\oenode{@B}{#1}}%
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\oenode@TrefA}
+%    \begin{macrocode}
 \def\oenode@TrefA#1{\oenode{@TrefA}{#1}}%
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\oenode@TrefB}
+%    \begin{macrocode}
 \def\oenode@TrefB#1{\oenode{@TrefB}{#1}}%
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\oenodeIfc}
+%    \begin{macrocode}
 \def\oenodeIfc#1#2{%
   \ifnum9<1#1 %
     \oenode{#1}{#2}%
@@ -7544,18 +7618,31 @@
     \oenode{#1}{#2}%
   \else
     \PackageWarning{pst-optexp}{%
-      oenodeIfc node argument must be\MessageBreak
+      \string\oenodeIfc\space node argument must be\MessageBreak
       integer, 'N', or 'C'}
   \fi\fi\fi
 }%
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\oenodeBeam}
+%    \begin{macrocode}
 \def\oenodeBeam{%
   \POE@str@basicname@prefix\POE@str@basicname@default Beam}%
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\oenodeBeamUp}
+%    \begin{macrocode}
 \def\oenodeBeamUp{%
   \POE@str@basicname@prefix\POE@str@basicname@default BeamUp}%
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\oenodeBeamLow}
+%    \begin{macrocode}
 \def\oenodeBeamLow{%
   \POE@str@basicname@prefix\POE@str@basicname@default BeamLow}%
 %    \end{macrocode}
-%
+% \end{macro}
+% 
 % \begin{macro}{\newOptexpComp}
 %    \begin{macrocode}
 \def\newOptexpComp#1{%
@@ -8002,7 +8089,8 @@
       \fi
     }{%
       \PackageWarning{pst-optexp}{%
-        Using #1@iii, please switch to the new interface system}%
+        Using #1@iii, please switch to the new\MessageBreak
+        interface system}%
       \ifPOE@backlayer
         \@nameuse{#1@iii}%
       \fi
@@ -8310,8 +8398,8 @@
 \newOptexpTripole{optgrating}{}%
 \def\optgrid{%
   \PackageWarning{pst-optexp}{%
-    \protect\optgrid\space is deprecated,\MessageBreak
-    use \protect\optgrating\space instead.}%
+    \string\optgrid\space is deprecated,\MessageBreak
+    use \string\optgrating\space instead.}%
   \optgrating%
 }%
 \newOptexpTripole[ref@angle=-135]{pentaprism}{}%
