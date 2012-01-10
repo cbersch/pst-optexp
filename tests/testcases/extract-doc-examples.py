@@ -22,6 +22,7 @@ f.write(r"""\documentclass[a4paper]{scrreprt}
 \newcommand{\poeTR}[1]{\TR{\ttfamily#1}}
 \definecolor{spot}{rgb}{1,.4,.2}%
 \newpsstyle{Refline}{linecolor=gray!60}
+\colorlet{Refline}{gray!60}
 \newif\ifGERMAN\GERMANfalse
 \newif\ifENGLISH\ENGLISHtrue
 \begin{document}

@@ -1,18 +1,14 @@
 % \iffalse meta-comment
 %
-% Copyright (C) 2007-2011 by Christoph Bersch <usenet@bersch.net>
-% -------------------------------------------------------
-% 
-% This file may be distributed and/or modified under the
-% conditions of the LaTeX Project Public License, either version 1.2
+% Copyright (C) 2007-2012 by Christoph Bersch <usenet@bersch.net>
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3
 % of this license or (at your option) any later version.
-% The latest version of this license is in:
-%
-%    http://www.latex-project.org/lppl.txt
-%
-% and version 1.2 or later is part of all distributions of LaTeX 
-% version 1999/12/01 or later.
-%
+% The latest version of this license is in
+%   http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
 % \fi
 %
 % \iffalse
@@ -22,7 +18,7 @@
 %<stylefile>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<stylefile>\ProvidesPackage{pst-optexp}
 %<*stylefile>
-    [2011/12/05 v3.0beta Optical experimental setups with PSTricks]
+    [2012/01/10 v3.0beta Optical experimental setups with PSTricks]
 %</stylefile>
 %
 %<*driver>
@@ -132,6 +128,7 @@
 \MakeAutoQuote{«}{»}
 \colorlet{spot}{sectioncolor}
 \newpsstyle{Refline}{linecolor=gray!60}
+\colorlet{Refline}{gray!60}
 \makeatletter
 \renewenvironment*{changelog}
   {\list{}{%
@@ -4398,6 +4395,7 @@
 % 
 % \ifGERMAN\section{Aufgeweitete Strahlen}\fi
 % \ifENGLISH\section{Drawing wide beams}\fi
+% \label{sec:drawwidebeam}
 % 
 % \begin{ltxsyntax}
 %   \xLcs{drawwidebeam}\cmditem{drawwidebeam}[options]{obj$_1$}{obj$_2$}{\ldots}{obj$_N$}
@@ -4420,7 +4418,12 @@
 % eintreten, falls der Strahl eine gekrümmte Grenzfläche nicht trifft, oder
 % Totalreflektion auftritt.
 % \fi
-%
+% \ifENGLISH All beam are calculated and drawn directly in Postscript, so that a
+% comprehensive error handling at compilation time is not possible. If a
+% situation arises, which is not supported by the drawing algorithm, the beam
+% path is truncated at this point. This happens when a beam misses a curved
+% interface or if total internal reflection would occur.
+% \fi
 % \iffalse
 %<*ignore>
 % \fi
@@ -4457,6 +4460,18 @@
 %</ignore>
 % \fi
 % 
+% \ifGERMAN Bei aufgeweiteten Strahlen (siehe \prettyref{sec:drawwidebeam}) kann
+% es passieren, dass einer der Randstrahlen total reflektiert würde, der andere
+% aber nicht. Da die Randstrahlen unabhängig voneinander gezeichnet werden (wie
+% zwei \Lcs{drawbeam} Aufrufe), wird einer abgeschnitten, und der andere
+% fortgeführt. Die Füllung geht nur soweit wie beide Strahlen vorhanden sind.
+% \fi
+% \ifENGLISH For wide beams (see \prettyref{sec:drawwidebeam}) it can happen
+% that only one marginal beam would be totally reflected, the other not. Because
+% the marginal beams are drawn independent of each other (like two
+% \Lcs{drawbeam} calls), one is continued and the other is truncated. The filled
+% beam is drawn only where both beams are present.
+% \fi
 % \iffalse
 %<*ignore>
 % \fi
@@ -4465,7 +4480,8 @@
   \pnode(0,2){A}\optplane(A)(0,1){A}
   \pnode(4,0){B}\optplane(3,0)(0,1){B}
   \optprism[n=1.8](A)([Xnodesep=2]A)(B)
-  \addtopsstyle{Beam}{fillcolor=red, fillstyle=solid, opacity=0.3}
+  \addtopsstyle{Beam}{%
+    fillcolor=green, fillstyle=solid, opacity=0.3}
   \drawwidebeam[beamdiv=5]{A}{2}{B}
 \end{pspicture}
 \end{LTXexample}
@@ -4473,33 +4489,88 @@
 %</ignore>
 % \fi
 % 
-% \section{Custom beams}\label{sec:custombeam}
+% \ifGERMAN\section{Angepasste Strahlen}\fi
+% \ifENGLISH\section{Custom beams}\fi
+% \label{sec:custombeam}
 %
-% \ifGERMAN
-%
-% Im Prinzip können alle Strahlengänge mit passenden Wahl des Brechungsindex und
-% der Komponentenparameter (z.B. der Linsenkrümmung) realisiert werden, dass
-% kann aber sehr aufwändig werden. Die Endpunkte eines Strahls als Anfangspunkt genutzt werden.
+% \ifGERMAN 
+% Im Prinzip können alle Strahlengänge mit passender Wahl des Brechungsindex und
+% der Komponentenparameter (z.B. der Linsenkrümmung) realisiert werden, was
+% jedoch sehr aufwendig werden kann.  Um das zu vereinfachen, besteht die
+% Möglichkeit die Endpunkte eines Strahls als Anfangspunkte für den nächsten
+% Strahl zu nutzen, so dass man abschnittsweise die Divergenz und die
+% Ausbreitungsrichtung definieren kann.
 % \fi
 % \begin{optionlist}
 %   \boolitem[true]{savebeampoints}
+%   \ifGERMAN Speichert die Endpunkte jedes \nxLcs{draw*beam} Makros,
+%   vorangegangene Punkte werden überschrieben. \Lcs{drawbeam} und
+%   \Lcs{drawwidebeam} werden getrennt behandelt.
+%   \fi
+%   \ifENGLISH Saves the end points of each \nxLcs{draw*beam} macro, previous
+%   points are overwritten. \Lcs{drawbeam} and \Lcs{drawwidebeam} are treated
+%   separately.
+%   \fi
+%
 %   \boolitem[false]{loadbeampoints}
-%   \intitem[0]{skipconn}
+%   \ifGERMAN Verwende die Endpunkte des letzten Strahls als Startpunkte.\fi
+%   \ifENGLISH Use the end points of the last beam as starting points for the next beam.\fi
 % \end{optionlist}
 %
-% Als Beispiel nehmen wir ein Teleskop, die Strahldivergenz am Eingang und am
-% Ausgang ist Null. Anstatt die Linsenparameter und den Brechungsindex genau
-% einzustellen, zeichnen wir einfach die drei Strahlenteile mit den
-% entsprechenden Parametern. 
+% \ifGERMAN Als Beispiel nehmen wir ein Teleskop, die Strahldivergenz am Eingang
+% und am Ausgang ist Null. Anstatt die Linsenparameter und den Brechungsindex
+% genau einzustellen, so dass die Ausgangsdivergenz Null ist, zeichnen wir
+% einfach die drei Strahlenteile mit den gewünschten Divergenzen, und verwenden
+% die Endpunkte des jeweils vorangegangenen Strahls als neue Ausgangspunkte. 
+% \fi
+% \ifENGLISH As example we consider a telescope which has zero divergence at the
+% input and output. Usually we would need to tweak the refractive index and the
+% lens parameters to get an output beam with no divergence. Instead, we draw the
+% three beam parts separately using the end points of the previous beams as new
+% starting points and specifying the divergence for each beam part
+% explicitely.
+% \fi
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}[morekeywords={[21]{savebeampoints, loadbeampoints}}, linerange={1-9,12-12}]
+\begin{LTXexample}[morekeywords={[21]{savebeampoints, loadbeampoints}}]
+\begin{pspicture}(4,2) 
+  \pnode(0,1){A}\pnode(4,1){B}
+  \begin{optexp}
+  \lens[lens=0.5 0.5 0.5, abspos=0.5](A)(B)
+  \lens[lens=4 4 2, abspos=2](A)(B)
+  \addtopsstyle{Beam}{%
+    fillstyle=solid, fillcolor=green, opacity=0.3}
+  \psset{loadbeampoints}
+  \drawwidebeam[beamwidth=0.2, stopinside]{(A)}{1}
+  \drawwidebeam[beamdiv=-30]{1}{2}
+  \drawwidebeam{2}{(B)}
+  \end{optexp}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
+% \ifGERMAN Als weiteres Beispiel betrachten wir die Beugung an einem Gittern in
+% die nullte und erste Beugungsordnung. Zuerst wird der Strahl von dem Eingang
+% bis zum Gitter gezeichnet, die Endpunkte dieses Strahls werden nun für die
+% Strahlen in beide Beugungsordnungen verwendet.
+% \fi
+% \ifENGLISH The next example show diffraction from a grating in the zeroth and
+% first diffraction order. First we draw the beam to the grating, its end points
+% are used for the beams into both diffraction orders.
+% \fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[morekeywords={[21]{savebeampoints, loadbeampoints}}, linerange={1-10,13-13}]
 \begin{pspicture}(4,3)
   \pnode(0,0.5){A}\pnode(2,0.5){B}\pnode(4,3){C}
   \nodexn{(C)-(1.5,0)}{C'}
   \optgrating(A)(B)(C)
-  \addtopsstyle{Beam}{fillstyle=solid, fillcolor=green, opacity=0.3}
+  \addtopsstyle{Beam}{%
+    fillstyle=solid, fillcolor=green, opacity=0.3}
   \drawwidebeam[beamwidth=0.3]{(A)}{1}
   \psset{savebeampoints=false, loadbeampoints}
   \drawwidebeam{1}{(C)}
@@ -4511,33 +4582,17 @@
 % \iffalse
 %</ignore>
 % \fi
-% \iffalse
-%<*ignore>
-% \fi
-\begin{LTXexample}[morekeywords={[21]{savebeampoints, loadbeampoints}}]
-\begin{pspicture}(4,2) 
-  \pnode(0,1){A}\pnode(4,1){B}
-  \begin{optexp}
-  \lens[lens=0.5 0.5 0.5, abspos=0.5](A)(B)
-  \lens[lens=4 4 2, abspos=2](A)(B)
-  \addtopsstyle{Beam}{fillstyle=solid, fillcolor=green, opacity=0.3}
-  \psset{loadbeampoints}
-  \drawwidebeam[beamwidth=0.2, stopinside]{(A)}{1}
-  \drawwidebeam[beamdiv=-30]{1}{2}
-  \drawwidebeam{2}{(B)}
-  \end{optexp}
-\end{pspicture}
-\end{LTXexample}
-% \iffalse
-%</ignore>
-% \fi
+%
 % \begin{optionlist}
-% \boolitem[false]{startinside}
-% 
-% \boolitem[false]{stopinside}
+%   \intitem[0]{skipconn}
+%   \boolitem[false]{startinside}
+%   
+%   \boolitem[false]{stopinside}
 % \end{optionlist}
 %
-% \section{Drawing fibers}\label{sec:drawfiber}
+% \ifGERMAN\section{Faserverbindungen}\fi
+% \ifENGLISH\section{Drawing fibers}\fi
+% \label{sec:drawfiber}
 % 
 % Fiber-optical components are automatically connected to the reference
 % nodes. The style of all fiber connections can be configured
@@ -4617,12 +4672,13 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}[morekeywords={[21]{addtoFiberOut}}]
+\begin{LTXexample}[morekeywords={[21]{addtoFiberOut1}}]
 \begin{pspicture}(3,2)
-   \newpsobject{tapcoupler}{wdmsplitter}{%
-     align=bottom, addtoFiberOut1={arrows=->, arrowscale=1.2, arrowinset=0}
-   }
-   \tapcoupler(0,0.5)(3,1.5)(3,0.5){99/1}
+  \newpsobject{tapcoupler}{wdmsplitter}{%
+    align=bottom, 
+    addtoFiberOut1={arrows=->, arrowscale=1.2, arrowinset=0}
+  }
+  \tapcoupler(0,0.5)(3,1.5)(3,0.5){99/1}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -4690,66 +4746,99 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}[pos=t, linerange={1,2,9-11}]
+\begin{LTXexample}[pos=t, linerange={1-2,10-12}]
 \begin{pspicture}(-1,0)(7,2.4)
-  \optbox[fiber, angle=20, rotateref=bl](0,1)(6,1){}
+  \optbox[fiber, angle=20, rotateref=bl](0,1)(6,1)
   \psdot(\oenodeRefA{})\uput[180](\oenodeRefA{}){RefA}%
   \psdot(\oenodeRefB{})\uput[0](\oenodeRefB{}){RefB}%
   \psdot(\oenodeRotref{})\uput[-90](\oenodeRotref{}){Rotref}%
   \psdot(\oenodeTrefA{})\uput[180](\oenodeTrefA{}){TrefA}%
   \psdot(\oenodeTrefB{})\uput[0](\oenodeTrefB{}){TrefB}%
-  \uput{0.5}[180](\oenodeTrefB{}){\textcolor{black!30}{reference line}}%
-  \psset{linecolor=black!30, linestyle=dashed}
+  \uput{0.5}[180](\oenodeTrefB{}){\textcolor{Refline}{reference line}}%
+  \psset{style=Refline, linestyle=dashed}
   \psline(\oenodeTrefA{})(\oenodeTrefB{})
   \psline(\oenodeRefA{})(\oenodeRefB{})
-  \end{pspicture}
+\end{pspicture}
 \end{LTXexample}
 % \iffalse
 %</ignore>
 % \fi
+%
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}[pos=t, explpreset={linerange={1,2,9-11}}]
+\begin{LTXexample}[pos=t, linerange={1-2,10-12}]
 \begin{pspicture}(-1,-0.1)(7,3.2)
-  \optbox[fiber, angle=-30, rotateref=t, compshift=0.5](0,1)(6,1){}
+  \optbox[fiber, angle=-30, rotateref=t, compshift=0.5](0,1)(6,1)
   \psdot(\oenodeRefA{})\uput[180](\oenodeRefA{}){RefA}%
   \psdot(\oenodeRefB{})\uput[0](\oenodeRefB{}){RefB}%
   \psdot(\oenodeRotref{})\uput[60](\oenodeRotref{}){Rotref}%
   \psdot(\oenodeTrefA{})\uput[180](\oenodeTrefA{}){TrefA}%
   \psdot(\oenodeTrefB{})\uput[0](\oenodeTrefB{}){TrefB}%
-  \uput{0.5}[180](\oenodeTrefB{}){\textcolor{black!30}{reference line}}%
-  \psset{linecolor=black!30, linestyle=dashed}
+  \uput{0.5}[180](\oenodeTrefB{}){\textcolor{Refline}{reference line}}%
+  \psset{linecolor=Refline, linestyle=dashed}
   \psline(\oenodeTrefA{})(\oenodeTrefB{})
   \psline(\oenodeRefA{})(\oenodeRefB{})
-  \end{pspicture}
-\end{LTXexample}
-% \iffalse
-%</ignore>
-% \fi
-% 
-% \begin{optionlist}
-%   \boolitem{relangle}
-%   \choitem{startnode}{auto, 1, 2, 3, 4, N}
-% \iffalse
-%<*ignore>
-% \fi
-\begin{LTXexample}
-\begin{pspicture}(4,3)
-  \pnode(0,0.5){A}\pnode(2,0.5){B}
-  \pnode([offset=1]B){C}\pnode(A|C){D}
-  \optamp[fiber=none](A)(B){EDFA}
-  \optbox(C)(D){PM}
-  \drawfiber[linecolor=black]{1}{2}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
 %</ignore>
 % \fi
 % 
-% \choitem{stopnode}{auto, 1, 2, 3, 4, N}
-% \end{optionlist}
-% 
+% \ifGERMAN Für die Verbindungen mit \Lcs{drawfiber} werden für üblicherweise
+% die Knoten genommen, die sich am nächsten sind. Das passt häufig, aber nicht
+% immer.
+% \fi
+% \ifENGLISH The connections with \Lcs{drawfiber} are drawn usually between the
+% two nodes which are closest to each other. This fits most of the time, but not
+% always.
+% \fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(3,2)
+  \pnode(-0.5,1){A}\pnode(1.5,1){B}\pnode(3.5,1){C}
+  \psset{label=0, optboxwidth=1}
+  \optbox(A)(B){Box1}\optbox(B)(C){Box2}
+  \drawfiber{1}{2}
+\end{pspicture}
+\end{LTXexample}
+
+\begin{LTXexample}
+\begin{pspicture}(3,2)
+  \pnode(0,0.5){A}\pnode(3,0.5){B}
+  \pnode([offset=1]B){C}\pnode(A|C){D}
+  \psset{label=0}
+  \optbox(A)(B){Box1}\optbox(C)(D){Box2}
+  \drawfiber{1}{2}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+% \begin{optionlist}
+%   \choitem[auto]{startnode}{auto, 1, 2, 3, 4, N}
+%   \choitem[auto]{stopnode}{auto, 1, 2, 3, 4, N}
+%   \ifGERMAN Hiermit können die Start- und Stopknoten explizit gewählt werden.\fi
+%   \ifENGLISH Choose the start and stop node explicitely.\fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(2,2)
+  \pnode(0,0.5){A}\pnode(2,0.5){B}
+  \pnode([offset=1]B){C}\pnode(A|C){D}
+  \psset{label=0}
+  \optbox(A)(B){Box1}\optbox(C)(D){Box2}
+  \drawfiber[startnode=1]{1}{2}
+  \drawfiber[startnode=N, linecolor=black]{1}{2}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
 % \iffalse
 %<*ignore>
 % \fi
@@ -4764,13 +4853,16 @@
 \optfiber[fiber=none, compname=Hnlf, abspos=1](C)(C|A){}
 \optamp[fiber=none, abspos=2, compname=Amp](D|B)(D){}
 \drawfiber{Cpl}{Hnlf}
-\drawfiber[startnode=1, stopnode=N, ncurv=1.2]{Hnlf}{Amp}
+\drawfiber[startnode=1, ncurv=1.2]{Hnlf}{Amp}
 \drawfiber{Cpl}{Amp}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
 %</ignore>
 % \fi
+%
+%   \boolitem{relangle}
+% \end{optionlist}
 %
 %
 % \ifGERMAN\section{Zeichenebenen}\fi
@@ -11964,7 +12056,7 @@ tx@OptexpDict begin
       [ exch false GetInternalNodeNames ] 
       { @GetCenter ToVec
         CompA NearestNodeTmp 
-        exch dup mindist gt mindist 0 ge and { 
+        exch dup mindist ge mindist 0 ge and { 
           pop pop 
         }{ 
           /mindist ED /minnodeA ED 
