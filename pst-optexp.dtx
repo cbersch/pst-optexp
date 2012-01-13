@@ -66,6 +66,7 @@
   language=[LaTeX]TeX, identifierstyle=\color{colIdentifier}, %
   keywordstyle=\color{colKeys}, %
   keywordstyle = [21]\color{DOrange}, %
+  keywordstyle = [22]\color{DOrange}, %
   stringstyle=\color{colString}, %
   commentstyle=\color{colComments}, %
   float=hbp,%
@@ -93,6 +94,7 @@
     optcoupler, wdmcoupler, wdmsplitter, drawbeam, drawwidebeam,
     drawfiber, frontlayer, backlayer, newOptexpDipole,
     newOptexpTripole, newOptexpFiberDipole}, %
+  morekeywords = [22] {optexp},
   explpreset={%
     escapeinside={*}{*}, pos=l, width=-99pt, hsep=5mm, overhang=\codeoverhang,
     varwidth, vsep=\bigskipamount, rframe={}}}
@@ -5287,13 +5289,13 @@
 % \iffalse
 %<*ignore>
 % \fi
+\begin{LTXexample}[pos=t]
 \begin{pspicture}(10,2)
-\psset{optboxwidth=1.2}
+\newpsobject{mybox}{optbox}{endbox, label=0, optboxwidth=1.2}
 \addtopsstyle{Beam}{linewidth=2\pslinewidth}
 \pnode(1,1){Start}\pnode(9,1){CCD}
 \begin{optexp}
-\optbox[endbox, labeloffset=0](CCD)(Start){Laser}
-\optbox[endbox,labeloffset=0](Start)(CCD){CCD}
+\mybox(CCD)(Start){Laser}\mybox(Start)(CCD){CCD}
 \polarization[poltype=perp,abspos=0.5](Start)(CCD)
 \optretplate[abspos=1](Start)(CCD){$\nicefrac{\lambda}{2}$}
 \lens[lens=0.4 0.4 0.5,abspos=2](Start)(CCD){$L_1$}
@@ -5305,13 +5307,15 @@
 \drawbeam{1}{2}
 \end{optexp}
 \end{pspicture}
+\end{LTXexample}
 \bigskip
 
+\begin{LTXexample}[pos=t]
 \begin{pspicture}(10,2)
-\psset{optboxwidth=1.2}
+\newpsobject{mybox}{optbox}{endbox, label=0, optboxwidth=1.2}
 \pnode(1,1){Start}\pnode(9,1){CCD}
 \begin{optexp}
-\optbox[endbox, labeloffset=0](CCD)(Start){Laser}
+\mybox(CCD)(Start){Laser}
 \polarization[poltype=perp,abspos=0.5](Start)(CCD)
 \optretplate[abspos=1](Start)(CCD){$\nicefrac{\lambda}{2}$}
 \lens[lens=0.4 0.4 0.5,abspos=2](Start)(CCD){$L_1$}
@@ -5319,8 +5323,7 @@
 \lens[abspos=4](Start)(CCD){$L_2$}
 \optplate[abspos=6,platelinewidth=3\pslinewidth](Start)(CCD){SLM}
 \optplate[abspos=6.5,labelangle=180](Start)(CCD){PF}
-\lens[abspos=7](Start)(CCD){$L_3$}
-\optbox[endbox,labeloffset=0](Start)(CCD){CCD}
+\lens[abspos=7](Start)(CCD){$L_3$}\mybox(Start)(CCD){CCD}
 \polarization[abspos=6.7](Start)(CCD)
 \psset{loadbeampoints}
 \addtopsstyle{Beam}{fillstyle=solid,fillcolor=green, opacity=0.3}
@@ -5330,131 +5333,129 @@
 \drawwidebeam[beamdiv=-15]{9-10}
 \end{optexp}
 \end{pspicture}
+\end{LTXexample}
 \bigskip
 
-\begin{pspicture}(-4,-1)(3,3)
-\psset{labeloffset=0.5}
-\pnode(-2,0){LOut}
-\pnode(0,0){Grat}
-\pnode(4;45){Out}
-\pnode(2.5;70){Mvar}
+\begin{LTXexample}[pos=t]
+\begin{pspicture}(-4.2,-1)(3,3)
+\pnode(-2,0){LOut}\pnode(0,0){Grat}\pnode(4;45){Out}\pnode(2.5;70){Mvar}
 \newpsstyle{Beam}{linewidth=2\pslinewidth, linecolor=red!90!black}
 \begin{optexp}
-  \optbox[optboxwidth=2, labeloffset=0, endbox](Grat)(LOut){diode laser}
+  \optbox[optboxwidth=2.2, labeloffset=0, endbox](Grat)(LOut){diode laser}
   \mirror[variable](Grat)(Mvar)(Grat){M$_\mathrm{var}$}
-  \optretplate[position=0.3, labeloffset=0.8]%
-    (LOut)(Grat){$\nicefrac{\lambda}{4}$}
+  \optretplate[position=0.3](LOut)(Grat){$\nicefrac{\lambda}{4}$}
   \optgrating(LOut)(Grat)(Out){grating}
   \drawbeam[arrows=->]{1}{3}{4}{(Out)}
   \drawbeam{2}{4}
 \end{optexp}
 \rput[l](-3,2){Littman setup}
 \end{pspicture}
+\end{LTXexample}
 \bigskip
 
+\begin{LTXexample}[pos=t]
 \begin{pspicture}(8.5,1.9)
-    \pnode(1.4,1.3){Laser}\pnode(7.6,1.3){Diode}
-    \optbox[endbox,labeloffset=0](Diode)(Laser){Laser}%
-    \optbox[abspos=4, optboxwidth=1, optboxheight=0.6, 
-            labeloffset=1, compname=PC, angle=-10, 
-            rotateref=l, n=3](Laser)(Diode){Photonic Crystal}
-    \optdetector[dettype=diode](\oenodeOut{PC})(Diode|\oenodeOut{PC}){PD}
-    \nodexn{(\oenodeIn{PC}) + (2;170)}{Angle1}
-    \psline[linestyle=dashed](\oenodeIn{PC})(Angle1)
-    \psarc{<->}(\oenodeIn{PC}){1.3}{330}{30}
-    \psarc[arcsep=1pt]{<->}(\oenodeIn{PC}){2}{170}{180}
-    \uput{2.1}[175](\oenodeIn{PC}){\small $\varphi$}
-    \drawbeam{-}
+\pnode(1.4,1.3){Laser}\pnode(7.6,1.3){Diode}
+\optbox[endbox, labeloffset=0](Diode)(Laser){Laser}%
+\optbox[abspos=4, optbox=1 0.6, labeloffset=1, n=3,
+        compname=PC, angle=-10, rotateref=l](Laser)(Diode){Photonic Crystal}
+\optdetector[dettype=diode](\oenodeOut{PC})(Diode|\oenodeOut{PC}){PD}
+\nodexn{(\oenodeIn{PC}) + (2;170)}{Angle1}
+\psline[linestyle=dashed](\oenodeIn{PC})(Angle1)
+\psarc{<->}(\oenodeIn{PC}){1.3}{330}{30}
+\psarc[arcsep=1pt]{<->}(\oenodeIn{PC}){2}{170}{180}
+\uput{2.1}[175](\oenodeIn{PC}){\small $\varphi$}
+\drawbeam{-}
 \end{pspicture}
-\bigskip
+\end{LTXexample}
 
+\begin{LTXexample}[pos=t]
 \begin{pspicture}(6.4,3.2)
-  \addtopsstyle{Fiber}{linecolor=red}\psset{fiber=none}
-  \pnode(2.3,2.3){Lin}
-  \pnode([Xnodesep=3.5]Lin){Det}
-  \optbox[label=-0.2, endbox, compname=L, extnode=b](Det)(Lin){%
-    \psGauss[yunit=0.03,sigma=0.03]{-0.5}{0.5}}
-  \optbox[label=0, optboxwidth=1, compname=EAM, extnode=b, abspos=1.2](Lin)(Det){EAM}
-  \optfiber[labeloffset=0.3, abspos=2.5](Lin)(Det){fibre}
-  \optdetector(Lin)(Det){OSA}
-  \pnode([Xnodesep=-1,offset=-1]\oenodeExt{L}){Osc}
-  \pnode(\oenodeExt{L}|Osc){PSin}\pnode(\oenodeExt{EAM}|Osc){PSout}
-  \oscillator[output=right](Osc){10\,GHz}{}
-  \phaseshifter[arrowscale=1.5, inputarrow, labeloffset=-0.7](PSin)(PSout){$\tau$}
-  \drawfiber{1}{2}{3}{4}
-  \psset{arrows=->, arrowinset=0, arrowscale=1.5}
-  \wire(PSin)(\oenodeExt{L})
-  \wire(PSout)(\oenodeExt{EAM})
+\addtopsstyle{Fiber}{linecolor=red}\psset{fiber=none}
+\pnode(2.3,2.3){Lin}\pnode([Xnodesep=4.5]Lin){Det}
+\optbox[label=-0.2, endbox, compname=L, extnode=b](Det)(Lin){%
+  \psGauss[yunit=0.03,sigma=0.03]{-0.5}{0.5}}
+\optbox[label=0, compname=EAM, extnode=b, abspos=1.5](Lin)(Det){EAM}
+\optfiber[labeloffset=0.3, abspos=3.2](Lin)(Det){fibre}
+\optdetector(Lin)(Det){OSA}
+\pnode([Xnodesep=-1,offset=-1]\oenodeExt{L}){Osc}
+\pnode(\oenodeExt{L}|Osc){PSin}\pnode(\oenodeExt{EAM}|Osc){PSout}
+\oscillator[output=right](Osc){10\,GHz}{}
+\phaseshifter[arrowscale=1.5, inputarrow, labeloffset=-0.7](PSin)(PSout){$\tau$}
+\drawfiber{1}{2}{3}{4}
+\psset{arrows=->, arrowinset=0, arrowscale=1.5}
+\wire(PSin)(\oenodeExt{L})\wire(PSout)(\oenodeExt{EAM})
 \end{pspicture}
-\bigskip
+\end{LTXexample}
 
+\begin{LTXexample}[pos=t]
+\begin{pspicture}(0.4,0.6)(8.2,4)
+\pnode(2,3){Laser}\pnode(2,1){PwMeter}\pnode(6,3){CplTop}\pnode(6,1){CplBot}
+\psset{arrowscale=1.5, arrowinset=0}
+\optbox[endbox, optbox=1.6 1, labeloffset=0]([Xnodesep=0.1]Laser)(Laser){%
+  \begin{tabular}{@{}c@{}}Nd:YAG\\[-0.4ex]cw laser\end{tabular}}
+\optcoupler[addtoFiberIn1={ArrowInside=->}, addtoFiberIn2={ArrowInside=-<},
+            labeloffset=0.4](Laser)(PwMeter)(CplTop)(CplBot){WDM}
+\optfiber[addtoFiberOut={ncurv=1, angleB=0}, addtoFiberIn={ncurv=1, angleA=0}, 
+          compshift=-1, label=0.2 . l](CplBot)(CplTop){fiber}
+\optdetector[dettype=diode]([Xnodesep=0.1]PwMeter)(PwMeter){power meter}
+\end{pspicture}
+\end{LTXexample}
+
+\begin{LTXexample}[pos=t]
 \begin{pspicture}(0.9,0.9)(10.4,5.9)
-  \psset{arrowscale=1.5, arrowinset=0}
-  \pnode(2,5){PC1in}\pnode(4,5){PC1out}\pnode(6,5){PC2in}
-  \pnode(8,5){PC2out}\pnode(2,2){CplSig}\pnode(5,2){CplIn}
-  \pnode(2,1){CplOut}\pnode(10,4.5){Pump}\pnode(8,2){PumpSig}
-  \optisolator[compshift=0.8, addtoFiberIn={angleA=180}, 
-                 addtoFiberOut={angleB=180}, label=0.5 . l]%
-                 (CplSig)(PC1in){isolator}
-  \polcontrol[addtoFiberIn={arrows=|-}](PC1in)(PC1out){}
-  \optfiberpolarizer[labeloffset=0.6](PC1out)(PC2in){polarizer}
-  \polcontrol[addtoFiberOut={arrows=-|}](PC2in)(PC2out){}
-  \wdmsplitter[labeloffset=0.3, align=bottom, addtoFiberIn={arrows=|-}, 
-                 addtoFiberOut1={arrows=->}, addtoFiberOut2={arrows=-|}]%
-                 (CplIn)(CplOut)(CplSig){95/5}
-  \wdmcoupler[addtoFiberIn1={ArrowInside=->}, addtoFiberIn2={angleA=0}, 
-                addtoFiberOut={angleB=0,arrows=-|}, ncurv=0.9, 
-                align=bottom, compshift=0.8](Pump)(PC2out)(PumpSig){Pump}
-  \optbox[endbox, label=0 . . relative]([offset=-0.1]Pump)(Pump){980~nm}
-  \optfiber[fiberloops=2, labeloffset=0.4](CplIn)(PumpSig){Er$^+$-doped}
+\psset{arrowscale=1.5, arrowinset=0}
+\pnode(2,5){PC1in}\pnode(4,5){PC1out}\pnode(6,5){PC2in}
+\pnode(8,5){PC2out}\pnode(2,2){CplSig}\pnode(5,2){CplIn}
+\pnode(2,1){CplOut}\pnode(10,4.5){Pump}\pnode(8,2){PumpSig}
+\optisolator[compshift=0.8, addtoFiberIn={angleA=180}, 
+             addtoFiberOut={angleB=180}, label=0.5 . l]%
+             (CplSig)(PC1in){isolator}
+\polcontrol[addtoFiberIn={arrows=|-}](PC1in)(PC1out){}
+\optfiberpolarizer[labeloffset=0.6](PC1out)(PC2in){polarizer}
+\polcontrol[addtoFiberOut={arrows=-|}](PC2in)(PC2out){}
+\wdmsplitter[labeloffset=0.3, align=bottom, addtoFiberIn={arrows=|-}, 
+             addtoFiberOut1={arrows=->}, addtoFiberOut2={arrows=-|}]%
+             (CplIn)(CplOut)(CplSig){95/5}
+\wdmcoupler[addtoFiberIn1={ArrowInside=->}, addtoFiberIn2={angleA=0}, 
+            addtoFiberOut={angleB=0,arrows=-|}, ncurv=0.9, 
+            align=bottom, compshift=0.8](Pump)(PC2out)(PumpSig){pump}
+\optbox[endbox, label=0 . . relative]([offset=-0.1]Pump)(Pump){980~nm}
+\optfiber[fiberloops=2, labeloffset=0.4](CplIn)(PumpSig){Er$^+$-doped}
 \end{pspicture}
+\end{LTXexample}
 \bigskip
 
-\begin{pspicture}(0.4,0.1)(8.2,3.5)
-  \pnode(2,3){Laser}\pnode(2,1){PwMeter}
-  \pnode(6,3){CplTop}\pnode(6,1){CplBot}
-  \psset{arrowscale=1.5, arrowinset=0}
-  \optbox[endbox, optboxheight=1, optboxwidth=1.6, labeloffset=0]([Xnodesep=0.1]Laser)(Laser){%
-    \begin{tabular}{@{}c@{}}Nd:YAG\\cw laser\end{tabular}}
-  \optcoupler[addtoFiberIn1={ArrowInside=->},
-              addtoFiberIn2={ArrowInside=-<},
-              labeloffset=0.4]%
-              (Laser)(PwMeter)(CplTop)(CplBot){WDM}
-  \optfiber[addtoFiberOut={ncurv=1, angleB=0},
-            addtoFiberIn={ncurv=1, angleA=0}, 
-            compshift=-1,
-            label=0.2 . l](CplBot)(CplTop){Fiber}
-  \optdetector[labelangle=180, dettype=diode]([Xnodesep=0.1]PwMeter)(PwMeter){power meter}
-\end{pspicture}
-\bigskip
-
+\begin{LTXexample}[pos=t]
 \begin{pspicture}(1,1.2)(6.2,5)
-  \pnode(1,4){SigIn}
-  \pnode(3,4){BS}
-  \pnode(3,5){LO}
-  \pnode(5,4){Det1}
-  \pnode(3,2){Det2}
-  \begin{optexp}
+\pnode(1,4){SigIn}\pnode(3,4){BS}\pnode(3,5){LO}
+\pnode(5,4){Det1}\pnode(3,2){Det2}
+\begin{optexp}
   \optplane(LO)(1,0){LO}
   \beamsplitter[compname=BS](SigIn)(BS)(Det2)
-  \lens[abspos=0.5, compname=L2, n=2.1](Det2)(BS)
-  \lens[abspos=0.5, compname=L1, n=2.1](Det1)(BS)
+  \lens[abspos=0.5, compname=L2, n=2.1](Det2)(BS){$L_2$}
+  \lens[abspos=0.5, compname=L1, n=2.1](Det1)(BS){$L_1$}
   \optdetector[compname=Det1, extnode=c](BS)(Det1){PD1}
   \optdetector[compname=Det2, extnode=c](BS)(Det2){PD2}
-  \addtopsstyle{Beam}{beamwidth=0.2, fillstyle=solid, fillcolor=green, opacity=0.2}
+  \addtopsstyle{Beam}{beamwidth=0.2, fillstyle=solid, 
+                        fillcolor=green, opacity=0.2}
   \drawwidebeam{(SigIn)}{BS}{L2}{Det2}
   \drawwidebeam[beaminsidefirst]{BS}{L1}{Det1}
   \newpsstyle{Beam}{linecolor=red, linestyle=dashed, linewidth=1.5\pslinewidth}
   \drawbeam{LO}{BS}{L1}{Det1}
   \drawbeam[beaminsidefirst]{BS}{L2}{Det2}
-  \end{optexp}
-  \cnodeput([Xnodesep=0.5, offset=-0.5]\oenodeExt{Det1}|\oenodeExt{Det2}){M}{\rule{3mm}{1pt}}
-  \nccurve[angleA=90, arrows=<-]{M}{\oenodeExt{Det1}}
-  \nccurve[angleA=180, angleB=-90, arrows=<-]{M}{\oenodeExt{Det2}}
+\end{optexp}
+\cnodeput([Xnodesep=0.5, offset=-0.5]\oenodeExt{Det1}|\oenodeExt{Det2})%
+           {M}{\rule{3mm}{1pt}}
+\psset{arrows=<-, arrowscale=1.5, arrowinset=0}
+\nccurve[angleA=90]{M}{\oenodeExt{Det1}}
+\nccurve[angleA=180, angleB=-90]{M}{\oenodeExt{Det2}}
 \end{pspicture}
+\end{LTXexample}
 \bigskip
 
-\begin{pspicture}[showgrid](-0.2,0)(9,5)
+\begin{LTXexample}[pos=t]
+\begin{pspicture}(-0.2,0)(9,5)
 \makeatletter
 \def\LCLV@nodes{%
   \newOptexpComp{ {-0.12 0} {0 1} trans {PlaneIfc}
@@ -5467,108 +5468,111 @@
 \makeatother
 \newOptexpDipole{LCLV}{}\psset{lens=1.2 0 1.2, n=1.72}
 \addtopsstyle{Beam}{fillstyle=solid, fillcolor=green, opacity=0.3}
-\pnode(2.4,1){BS1}\pnode([offset=3]BS1){M1}\pnode([Xnodesep=5.5]M1){PP}\pnode(PP|BS1){BS2}
+\pnode(2.4,1){BS1}\pnode([offset=3]BS1){M1}
+\pnode([Xnodesep=5.5]M1){PP}\pnode(PP|BS1){BS2}
 \begin{optexp}
-\optbox[labeloffset=0, endbox, optboxwidth=1.6](BS1)([Xnodesep=-1]BS1){Nd:YAG}
-\beamsplitter[compname=BS](BS2)(BS1)(M1){BS}
-\LCLV[position=0.2, compname=LCLV](BS1)(BS2){LCLV}
-\optretplate(BS1)(M1){P}
-\mirror(BS1)(M1)(PP){M}
-\lens[position=0.2](M1)(PP){L}
-\pinhole(M1)(PP){}
-\lens[position=0.2](PP)(M1){L}
-\pentaprism(M1)(PP)(BS2){PP}
-\beamsplitter(PP)(BS2)(BS1){BS}
-\doveprism[compname=Dove, position=0.27, n=2.3](BS2)(BS1){Dove}
-\lens[n=2.5](BS2)(BS1){L}
-\drawwidebeam[beamwidth=0.3]{1-3}
-\drawwidebeam[loadbeampoints]{3}{2}{4-}{3}
+  \optbox[labeloffset=0, endbox, optboxwidth=1.6](BS1)([Xnodesep=-1]BS1){Nd:YAG}
+  \beamsplitter[compname=BS](BS2)(BS1)(M1){BS}
+  \LCLV[position=0.2, compname=LCLV](BS1)(BS2){LCLV}
+  \optretplate(BS1)(M1){P}
+  \mirror(BS1)(M1)(PP){M}
+  \lens[position=0.2](M1)(PP){L}
+  \pinhole(M1)(PP){}
+  \lens[position=0.2](PP)(M1){L}
+  \pentaprism(M1)(PP)(BS2){PP}
+  \beamsplitter(PP)(BS2)(BS1){BS}
+  \doveprism[compname=Dove, position=0.27, n=2.3](BS2)(BS1){Dove}
+  \lens[n=2.5](BS2)(BS1){L}
+  \drawwidebeam[beamwidth=0.3]{1-3}
+  \drawwidebeam[loadbeampoints]{3}{2}{4-}{3}
 \end{optexp}
 \end{pspicture}
-\bigskip
+\end{LTXexample}
 
+\begin{LTXexample}[pos=t]
 \begin{pspicture}(0,-0.4)(8.6,6)
-  \pnode(1.5,5){Laser}\pnode(4,5){PBS}\pnode(6.5,5){PBS2}
-  \pnode(6.5,5.7){piezo}\pnode(4,2){BSFwd}\pnode(6.5,2){BSBwd}
-  \pnode(2,2){BS4f}\pnode(2,0.5){M4f3}\pnode(8,2){M4f1}
-  \pnode(8,0.5){M4f2}\pnode(1,2){CCD}
-  \psset{mirrorwidth=0.6, plateheight=0.7, outerheight=0.7, labeloffset=0.7, labelstyle=\scriptsize, lens=1.2 1.2 0.8, bssize=0.5} 
-  \optbox[endbox,optboxwidth=1.5, optboxheight=0.7,labeloffset=0]% 
-     (PBS)(Laser){\parbox{1.5cm}{\centering Nd:YAG\\ 532\,nm}}
-  \lens[lensheight=0.5, position=0.2](Laser)(PBS){MO}
-  \pinhole[position=0.3,labelangle=180](Laser)(PBS){PH}
-  \lens[position=0.5](Laser)(PBS){L}
-  \optretplate[position=0.8](Laser)(PBS){$\nicefrac{\lambda}{2}$}
-  \beamsplitter(Laser)(PBS)(BSFwd){PBS}
-  \optretplate[position=0.4](PBS)(BSFwd){$\nicefrac{\lambda}{2}$}
-  \polarization(PBS)(BSFwd)\polarization(PBS2)(BSBwd)
-  \lens[position=0.8](PBS)(BSFwd){L}
-  \optretplate(PBS)(PBS2){$\nicefrac{\lambda}{2}$}
-  \beamsplitter(PBS)(PBS2)(piezo){PBS}
-  \optretplate[abspos=0.5](PBS2)(piezo){$\nicefrac{\lambda}{4}$}
-  \mirror[mirrortype=piezo,labelangle=90](PBS2)(piezo)(PBS2){PZ}
-  \lens[position=0.8,labelangle=180](PBS2)(BSBwd){L}
-  \crystal[crystalwidth=1, crystalheight=0.5, voltage, lamp, fillstyle=solid, fillcolor=yellow!90!black, labeloffset=0.8](BSFwd)(BSBwd){SBN:Ce}
-  \beamsplitter(PBS)(BSFwd)(BSBwd){BS}
-  \beamsplitter[labelangle=-90](PBS2)(BSBwd)(BSFwd){BS}
-  \mirror(BSBwd)(M4f1)(M4f2){M}\mirror(M4f1)(M4f2)(M4f3){M}
-  \lens[labelangle=180](M4f2)(M4f3){L}\mirror(M4f2)(M4f3)(BS4f){M}
-  \beamsplitter(M4f3)(BS4f)(CCD){BS}\optbox[endbox,labeloffset=0, optboxwidth=1](BS4f)(CCD){CCD}
-  \lens[abspos=0.7](BS4f)(BSFwd){L}\lens[abspos=0.7](BSBwd)(M4f1){L}
-  \addtopsstyle{Beam}{linewidth=2\pslinewidth}
-  \drawbeam{1-6}{11-14}{13}{12}{15}{18}{16}{17}{25}{23}{24}
-  \drawbeam[beaminsidefirst]{6}{7}{10}{17}{16}{18}{26}{19-24}
+\pnode(1.5,5){Laser}\pnode(4,5){PBS}\pnode(6.5,5){PBS2}
+\pnode(6.5,5.7){piezo}\pnode(4,2){BSFwd}\pnode(6.5,2){BSBwd}
+\pnode(2,2){BS4f}\pnode(2,0.5){M4f3}\pnode(8,2){M4f1}
+\pnode(8,0.5){M4f2}\pnode(1,2){CCD}
+\psset{mirrorwidth=0.6, plateheight=0.7, outerheight=0.7, labeloffset=0.7, labelstyle=\scriptsize, lens=1.2 1.2 0.8, bssize=0.5} 
+\optbox[endbox, optbox=1.5 0.7,labeloffset=0]% 
+   (PBS)(Laser){\parbox{1.5cm}{\centering Nd:YAG\\ 532\,nm}}
+\lens[lensheight=0.5, position=0.2](Laser)(PBS){MO}
+\pinhole[position=0.3,labelangle=180](Laser)(PBS){PH}
+\lens[position=0.5](Laser)(PBS){L}
+\optretplate[position=0.8](Laser)(PBS){$\nicefrac{\lambda}{2}$}
+\beamsplitter(Laser)(PBS)(BSFwd){PBS}
+\optretplate[position=0.4](PBS)(BSFwd){$\nicefrac{\lambda}{2}$}
+\polarization(PBS)(BSFwd)\polarization(PBS2)(BSBwd)
+\lens[position=0.8](PBS)(BSFwd){L}
+\optretplate(PBS)(PBS2){$\nicefrac{\lambda}{2}$}
+\beamsplitter(PBS)(PBS2)(piezo){PBS}
+\optretplate[abspos=0.5](PBS2)(piezo){$\nicefrac{\lambda}{4}$}
+\mirror[mirrortype=piezo,labelangle=90](PBS2)(piezo)(PBS2){PZ}
+\lens[position=0.8,labelangle=180](PBS2)(BSBwd){L}
+\crystal[crystalwidth=1, crystalheight=0.5, voltage, lamp, fillstyle=solid, fillcolor=yellow!90!black, labeloffset=0.8](BSFwd)(BSBwd){SBN:Ce}
+\beamsplitter(PBS)(BSFwd)(BSBwd){BS}
+\beamsplitter[labelangle=-90](PBS2)(BSBwd)(BSFwd){BS}
+\mirror(BSBwd)(M4f1)(M4f2){M}\mirror(M4f1)(M4f2)(M4f3){M}
+\lens[labelangle=180](M4f2)(M4f3){L}\mirror(M4f2)(M4f3)(BS4f){M}
+\beamsplitter(M4f3)(BS4f)(CCD){BS}
+\optbox[endbox,labeloffset=0, optboxwidth=1](BS4f)(CCD){CCD}
+\lens[abspos=0.7](BS4f)(BSFwd){L}\lens[abspos=0.7](BSBwd)(M4f1){L}
+\addtopsstyle{Beam}{linewidth=2\pslinewidth}
+\drawbeam{1-6}{11-14}{13}{12}{15}{18}{16}{17}{25}{23}{24}
+\drawbeam[beaminsidefirst]{6}{7}{10}{17}{16}{18}{26}{19-24}
 \end{pspicture}
-\bigskip
+\end{LTXexample}
 
-\bgroup
-\psset{unit=0.8cm,labelstyle=\footnotesize}
-\begin{pspicture}(0.5,4)(13.2,10.5)
-  \addtopsstyle{Fiber}{linecolor=red!90!black}\psset{usefiberstyle, optboxwidth=1}
-  \pnode(2,10){LD}\pnode([Xnodesep=5.5]LD){CPLin1}
-  \pnode([offset=-2]CPLin1){CPLin2}\pnode([Xnodesep=1.5]CPLin1){CPLout1}
-  \pnode([Xnodesep=1.5]CPLin2){CPLout2}
-  \optbox[endbox, labeloffset=0, fiber]([Xnodesep=0.1]LD)(LD){LD}
-  \optmzm([Xnodesep=0.1]LD)([Xnodesep=1.5]LD){MZM}
-  \optamp([Xnodesep=1.5]LD)([Xnodesep=2.5]LD){EDFA}
-  \optfilter([Xnodesep=2.5]LD)([Xnodesep=3.5]LD){BPF}
-  \optswitch([Xnodesep=3.5]LD)([Xnodesep=4.5]LD){SW}
-  \polcontrol([Xnodesep=4.5]LD)(CPLin1){}
-  \optcoupler[couplertype=none](CPLin1)(CPLin2)(CPLout1)(CPLout2){}
-  \optamp(CPLout1)([Xnodesep=1.5]CPLout1){EDFA}
-  \optfilter([Xnodesep=1.5]CPLout1)([Xnodesep=3]CPLout1){BPF}
-  \pnode([Xnodesep=2]CPLout2){LoopRU}\pnode([offset=-3.5]LoopRU){LoopRL}
-  \pnode([Xnodesep=-5]CPLin2){LoopLU}\pnode([offset=-3.5]LoopLU){LoopLL}
-  \optamp(CPLout2)(LoopRU){EDFA}
-  \psline[linearc=1,style=Fiber](LoopRU)([Xnodesep=1]LoopRU)([Xnodesep=1,offset=-2]LoopRU)
-  \psline[linearc=1,style=Fiber]([Xnodesep=1,offset=1.5]LoopRL)%
-                                ([Xnodesep=1]LoopRL)(LoopRL)
-  \optfiber[labelalign=b, labeloffset=-1, position=0.8]([Xnodesep=-2]LoopRL)(LoopRL){\begin{tabular}{c}conventional\\fibre 89.8~km\end{tabular}}
-  \optamp([Xnodesep=-2]LoopRL)([Xnodesep=-3]LoopRL){EDFA}
-  \optfilter([Xnodesep=-3]LoopRL)([Xnodesep=-4.5]LoopRL){BPF}
-  \optfiber[fiberloops=1, labeloffset=-1, labelalign=b]([Xnodesep=-7]LoopRL)([Xnodesep=-4.5]LoopRL){DCF 16.2~km}
-  \optamp([Xnodesep=1.5]LoopLL)(LoopLL){EDFA}
-  \psline[style=Fiber,linearc=1](LoopLL)([Xnodesep=-1]LoopLL)%
-                                ([Xnodesep=-1,offset=3.5]LoopLL)(LoopLU)
-  \optfilter(LoopLU)([Xnodesep=1.5]LoopLU){BPF}
-  \optswitch([Xnodesep=1.5]LoopLU)([Xnodesep=3.5]LoopLU){SW}
-  \polcontrol([Xnodesep=3.5]LoopLU)(CPLin2){}
+\begin{LTXexample}[pos=t]
+\begin{pspicture}(13,5.5)
+\psset{usefiberstyle, optboxwidth=1, labelstyle=\footnotesize, fiber=none}
+\pnode(1,5){LD}\pnode([Xnodesep=5.5]LD){CPLin1}
+\pnode([offset=-2]CPLin1){CPLin2}\pnode([Xnodesep=2.5]CPLin1){CPLout1}
+\pnode([Xnodesep=2.5]CPLin2){CPLout2}\pnode([Xnodesep=3]CPLout1){RX}
+\optbox[endbox, labeloffset=0](CPLin1)(LD){LD}
+\optmzm[abspos=0.8](LD)(CPLin1){MZM}
+\optamp[abspos=2](LD)(CPLin1){EDFA}
+\optfilter[abspos=3](LD)(CPLin1){BPF}
+\optswitch[abspos=4](LD)(CPLin1){SW}
+\polcontrol[abspos=5, fiber=out](LD)(CPLin1)
+\drawfiber{1}{2}{3}{4}{5}{6}
+\optcoupler[couplertype=none, fiber](CPLin1)(CPLin2)(CPLout1)(CPLout2)
+\optamp[abspos=0.8, fiber=in](CPLout1)(RX){EDFA}
+\optfilter[abspos=2](CPLout1)(RX){BPF}
+\optbox[endbox](CPLout1)(RX){RX}
+\drawfiber{8}{9}{10}
+\pnode([Xnodesep=-0.5]LD|CPLin2){TL}\pnode(RX|TL){TR}
+\pnode([offset=-2.5]TR){BR}\pnode(TL|BR){BL}
+\optamp[fiber=in](CPLout2)(TR){EDFA}
+\optfiber[label=0.3 . t, position=0.85](BL)(BR){SSMF 89.8~km}
+\psline[style=Fiber, linearc=1](\oenodeOut{11})(TR)(BR)(\oenodeOut{12})
+\optamp[position=0.3](BR)(BL){EDFA}
+\optfilter[position=0.55, labelangle=180](BL)(BR){BPF}
+\optfiber[fiberloops=1, label=0.3 . t, position=0.35](BL)(BR){DCF 16.2~km}
+\optamp[position=0.85](BR)(BL){EDFA}
+\optfilter[position=0.2](TL)(CPLin2){BPF}
+\optswitch(TL)(CPLin2){SW}
+\polcontrol[position=0.8, fiber=out](TL)(CPLin2)
+\drawfiber{12}{13}{14}{15}{16}\drawfiber{17}{18}{19}
+\psline[style=Fiber, linearc=1](\oenodeOut{16})(BL)(TL)(\oenodeIn{17})
 \end{pspicture}
-\egroup
-\bigskip
+\end{LTXexample}
 
-\begin{pspicture}(0.6,0)(12, 4)
+\begin{LTXexample}[pos=t]
+\begin{pspicture}(12, 4)
   \psset{labeloffset=0.3}
-  \pnode(2,2){In}\pnode(12, 2){Ref}
+  \pnode(1.6,2){In}\pnode(12, 2){Ref}
   \optplane(Ref)(0,1){RefPlane}
-  \addtopsstyle{Beam}{linecolor=blue, beamdiv=10, beaminside=false, fillstyle=solid, fillcolor=red, opacity=0.3, linestyle=none}
+  \addtopsstyle{Beam}{linestyle=none, beamdiv=10, beaminside=false, fillstyle=solid, fillcolor=red, opacity=0.3}
   \multido{\i=1+1, \ii=165+10}{4}{%
     \rput(Ref){\pnode(6;\ii){A\i}}
-    \optbox[optboxwidth=0.5, optboxheight=0.5, endbox, compname=Box\i, extnode=l](Ref)(A\i)
+    \optbox[optbox=0.5 0.5, endbox, compname=Box\i, extnode=l](Ref)(A\i)
     \lens[lens=0 -0.6 0.6, abspos=0.5, compname=L\i](A\i)(Ref)
     \lens[lens=1.2 1.2 0.8, abspos=1.1, n=1.65, compname=LC\i](A\i)(Ref)
     \drawwidebeam{Box\i}{L\i}{LC\i}{RefPlane}
-  }
+  }%
   \psset{fiber=none}
   \optcoupler[abspos=1](In)(In)(Ref)(Ref)
   \wdmsplitter[abspos=2.5, compshift=1](In)(Ref)(Ref)
@@ -5580,28 +5584,31 @@
   \drawfiber{17}{13}{15}{Box3}
   \drawfiber{15}{Box4}
 \end{pspicture}
+\end{LTXexample}
 \bigskip
 
+\begin{LTXexample}[pos=t]
 \begin{pspicture}(0,-1)(8,4)
-\psset{linewidth=1.5\pslinewidth, mirrordepth=0.15}
 \psframe[fillstyle=solid,fillcolor=gray!90,linestyle=none](0,-1)(8.5,4)
-\addtopsstyle{OptComp}{linecolor=white, linewidth=1.5\pslinewidth}\addtopsstyle{Beam}{linewidth=1.5\pslinewidth, linecolor=white}
+\addtopsstyle{OptComp}{linecolor=white}\newpsstyle{Beam}{}
 \addtopsstyle{ExtendedMirror}{hatchcolor=white, hatchsep=0.5\pslinewidth}
 \pnode(0,3){A}\pnode(8,3){B}\pnode(3,1.5){C}\pnode(8,0){D}\pnode(0,0){E}%
-\psset{mirrorradius=13,  mirrorwidth=1.5, gratingwidth=1.5, mirrortype=extended, phwidth=0.07, outerheight=1.5}%
+\psset{linewidth=1.5\pslinewidth, mirrorradius=13,  mirrorwidth=1.5, mirrordepth=0.15, gratingwidth=1.5, mirrortype=extended, phwidth=0.07, outerheight=1.5}%
 \begin{optexp}
-\pinhole[position=0.2](A)(B)%
-\mirror(A)(B)(C)
-\optgrating[reverse, angle=15](B)(C)(D)
-\mirror(C)(D)(E)
-\pinhole[position=0.8](D)(E)
-\drawwidebeam[addtoBeam={ArrowInside=->}, beamwidth=0.2, beamdiv=0.1 8 0.2 mul atan neg]{(A)}{1-3}
-\psset{loadbeampoints, savebeampoints=false}%
-\drawwidebeam[addtoBeam={linecolor=green!60!white}]{3-5}{(E)}
-\drawwidebeam[beamangle=3, addtoBeam={linecolor=blue!60!white}]{3-6}
-\drawwidebeam[beamangle=-3, addtoBeam={linecolor=red!60!white}]{3-6}
+  \pinhole[position=0.2](A)(B)%
+  \mirror(A)(B)(C)
+  \optgrating[reverse, angle=15](B)(C)(D)
+  \mirror(C)(D)(E)
+  \pinhole[position=0.8](D)(E)
+  \drawwidebeam[ArrowInside=->, beamwidth=0.2, linecolor=white,
+                  beamdiv=0.1 8 0.2 mul atan neg]{(A)}{1-3}
+  \psset{loadbeampoints, savebeampoints=false}%
+  \drawwidebeam[linecolor=green!60!white]{3-5}{(E)}
+  \drawwidebeam[beamangle=3, linecolor=blue!60!white]{3-6}
+  \drawwidebeam[beamangle=-3, linecolor=red!60!white]{3-6}
 \end{optexp}
 \end{pspicture}
+\end{LTXexample}
 % \iffalse
 %</ignore>
 % \fi
@@ -6186,7 +6193,21 @@
 \define@key[psset]{optexp}{optboxheight}{%
   \pst@checknum{#1}\POE@key@optboxheight
 }
+\define@key[psset]{optexp}{optbox}{%
+  \pst@expandafter\POE@psset@@optbox{#1} {} {} {}\@nil
+}%
+\def\POE@psset@@optbox#1 #2 #3\@nil{%
+  \edef\POE@temp{#1}%
+  \ifx\POE@temp\@empty\else
+     \psset[optexp]{optboxwidth=#1}%
+  \fi
+  \edef\POE@temp{#2}%
+  \ifx\POE@temp\@empty\else
+     \psset[optexp]{optboxheight=#2}%
+  \fi
+}%
 \define@boolkey[psset]{optexp}[POE@]{endbox}[true]{}
+
 \psset[optexp]{%
   optboxwidth=1.4,
   optboxheight=0.8
