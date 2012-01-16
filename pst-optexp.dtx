@@ -18,7 +18,7 @@
 %<stylefile>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<stylefile>\ProvidesPackage{pst-optexp}
 %<*stylefile>
-    [2012/01/10 v3.0beta Optical experimental setups with PSTricks]
+    [2012/01/16 v3.0beta Optical experimental setups with PSTricks]
 %</stylefile>
 %
 %<*driver>
@@ -539,8 +539,8 @@
 % }%
 %
 % \makeatletter
-% \renewcommand\maketitle{%
-% \thispagestyle{empty}%
+% \renewcommand\maketitle{^^A
+% \thispagestyle{empty}^^A
 % \begin{titlepage}
 % \begin{pspicture}(1.6in,0.685in)(10,21.7)
 %   \psframe[fillstyle=solid,linecolor=lightgray,fillcolor=lightgray,linestyle=solid](0,-5.75)(21.5,10)
@@ -551,10 +551,10 @@
 %   \rput[lb](3,7.6){\parbox{13cm}{\sffamily\@date}}
 %   \rput[lb](3,-2.6){\parbox[b]{17cm}{\sffamily\RaggedRight 
 %     ~\hfill\makebox[7cm][l]{\ifGERMAN Paketautor:\fi\ifENGLISH Package author:\fi}\\
-%     ~\hfill\makebox[7cm][l]{%
+%     ~\hfill\makebox[7cm][l]{^^A
 %       \bfseries\tabular[t]{@{}l@{}}\@author\endtabular}}}
-%  \rput[C](11,4){\bgImage}%
-%  \end{pspicture}%
+%  \rput[C](11,4){\bgImage}
+%  \end{pspicture}^^A
 % \end{titlepage}}
 % \makeatother
 % 
@@ -567,7 +567,7 @@
 % \author{Christoph Bersch}
 % \date{\filedate}
 % \def\bgImage{\psset{unit=1.3}
-% \begin{pspicture}[showgrid=false](-0.2,0.1)(8.2,5.3)
+% \begin{pspicture}(-0.2,0.1)(8.2,5.3)
 %   \pnode(0,3){M1}
 %   \pnode(8,3){M2}
 %   \pnode(8,0.5){In}
@@ -578,38 +578,38 @@
 %   \pnode(1.5,3){Pout}
 %   \pnode(3.5,3){Mout2}
 %   \pnode(0,0.5){Out}
-%   \definecolor[ps]{bl}{rgb}{tx@addDict begin Red Green Blue end}%
+%   \definecolor[ps]{bl}{rgb}{tx@addDict begin Red Green Blue end}
 %   \addtopsstyle{Beam}{linecolor=bl, linejoin=1}
 %   \psset{mirrortype=extended, mirrordepth=0.15}
-%   \newpsstyle{ExtendedMirror}{linestyle=none, hatchwidth=0.5\pslinewidth, hatchsep=1.2\pslinewidth,%
-%                 fillstyle=hlines}%
+%   \newpsstyle{ExtendedMirror}{linestyle=none, hatchwidth=0.5\pslinewidth, hatchsep=1.2\pslinewidth,
+%                 fillstyle=hlines}
 %   \begin{optexp}
-%   \mirror[mirrorwidth=4, mirrorradius=10.4](M2)(M1)(M2){}
-%   \mirror[mirrorwidth=4, mirrorradius=10.4](M1)(M2)(M1){}
-%   \mirror(In)(Min)(Pin){}
-%   \optprism[n=1.85, addtoOptComp={linewidth=1.5\pslinewidth}](Min)(Pin)(Min2){}
-%   \mirror[compshift=-0.4](Pin)(Min2)(Pin){}
-%   \mirror[compshift=0.4](Pout)(Mout2)(Pout){}
-%   \optprism[n=1.85, compshift=0.15, linewidth=1.5\pslinewidth](Mout2)(Pout)(Mout){}
-%   \mirror(Pout)(Mout)(Out){}
-%  \multido{\i=0+1}{40}{%
-%    \pstVerb{%
+%   \mirror[mirrorwidth=4, mirrorradius=10.4](M2)(M1)(M2)
+%   \mirror[mirrorwidth=4, mirrorradius=10.4](M1)(M2)(M1)
+%   \mirror(In)(Min)(Pin)
+%   \optprism[n=1.85, addtoOptComp={linewidth=1.5\pslinewidth}](Min)(Pin)(Min2)
+%   \mirror[compshift=-0.4](Pin)(Min2)(Pin)
+%   \mirror[compshift=0.4](Pout)(Mout2)(Pout)
+%   \optprism[n=1.85, linewidth=1.5\pslinewidth](Mout2)(Pout)(Mout)
+%   \mirror(Pout)(Mout)(Out)
+%   \multido{\i=0+1}{40}{^^A
+%     \pstVerb{^^A
 %       \i\space 650 400 sub 39 div mul 400 add 
-%       tx@addDict begin wavelengthToRGB end }%
+%       tx@addDict begin wavelengthToRGB end }^^A
 %     \drawbeam[nadd=-0.002 \i\space mul]{(In)}{3-5}{2}{1}{6-8}{(Out)}
-%  }%
+%   }^^A
 %   \newpsstyle{Beam}{linecolor=red}
-%   \backlayer{%
+%   \backlayer{^^A
 %     \psline[style=Beam,ArrowInside=->, linewidth=2\pslinewidth, arrowinset=0](In)(\oenodeIn{3})(\oenodeOut{4})
 %   }
-%   \drawbeam[beamangle=0.29,beampos=0.1, arrows=<-, linewidth=2\pslinewidth, arrowinset=0]{([Xnodesep=-0.2]Out)}{8}{7}
+%   \drawbeam[beamangle=0.29,beampos=-0.04, arrows=<-, linewidth=2\pslinewidth, arrowinset=0]{([Xnodesep=-0.2]Out)}{8}{7}
 % \end{optexp}
-% \rput(4,4.5){%
+% \rput(4,4.5){^^A
 %   \psframe[fillstyle=solid,fillcolor=gray!70](-0.1, -0.6)(0.1, 0.7)
-%   \multido{\r=-0.5+0.1}{12}{%
+%   \multido{\r=-0.5+0.1}{12}{^^A
 %     \psline[linewidth=0.5\pslinewidth](-0.1,\r)(0.1,\r)
-%   }%
-% }%
+%   }^^A
+% }
 % \end{pspicture}}
 %
 % \maketitle
@@ -1413,9 +1413,9 @@
 %
 % In dem folgenden Beispiel ist der externe Knoten immer «oben rechts» platziert
 % unabhängig von der relativen Anordnung der Referenzknoten
-% (\Lkeyword{globalnoderef}\opt{=true}). In dem darauffolgenden Beispiel ist die
+% (\opt{globalnoderef=true}\xLkeyword{globalnoderef}). In dem darauffolgenden Beispiel ist die
 % Positionierung relativ zur Verbindung zwischen Eingangs- und
-% Ausgangsreferenzknoten (\Lkeyword{globalnoderef}\opt{=false}).
+% Ausgangsreferenzknoten (\opt{globalnoderef=false}\xLkeyword{globalnoderef}).
 % \fi
 % \ifENGLISH 
 % The definition of «top» (\opt{t}) and the other \Lkeyword{extnode} refstring
@@ -1423,9 +1423,9 @@
 %
 % In the next example the external node is always placed «top right»,
 % independent of the actual ordering of the reference nodes
-% (\Lkeyword{globalnoderef}\opt{=true}). In the following example the position is relative
+% (\opt{globalnoderef=true}\xLkeyword{globalnoderef}). In the following example the position is relative
 % to the connection from input to output reference node
-% (\Lkeyword{globalnoderef}\opt{=false}).
+% (\opt{globalnoderef=false}\xLkeyword{globalnoderef}).
 % \fi
 % \iffalse
 %<*ignore>
@@ -1788,8 +1788,7 @@
 % \begin{optionlist}
 % \styleitem{OptComp} 
 % \vspace*{-\itemsep}
-% \item[\smash{\begin{tabular}[t]{@{}r}\opt{newOptComp}\\\opt{addtoOptComp}\end{tabular}}]
-% \xLkeyword{newOptComp}\xLkeyword{addtoOptComp}
+% \item[\smash{\begin{tabular}[t]{@{}r}\Lkeyword{newOptComp}\\\Lkeyword{addtoOptComp}\end{tabular}}]
 % \ifGERMAN
 % Bestimmt das Aussehen aller optischen Komponenten. Die üblichen Parameter, wie
 % z.B. \opt{linestyle}, würden auch die Verbindungen beeinflussen, die mit der
@@ -1840,7 +1839,7 @@
 % \nxLkeyword{OptionalStyle} angewendet wird.
 % \fi
 % \ifENGLISH
-% Mark an object as optional by applying the \opt{OptionalStyle} style.
+% Mark an object as optional by applying the \Lstyle{OptionalStyle} style.
 % \fi
 %
 % \styleitem{OptionalStyle} 
@@ -2285,10 +2284,10 @@
 % 
 % \numitem[1]{lensradiusright} 
 % \ifGERMAN
-% Dasgleiche wie \opt{lensradiusleft}, nur für die rechte Grenzfläche.
+% Dasgleiche wie \Lkeyword{lensradiusleft}, nur für die rechte Grenzfläche.
 % \fi
 % \ifENGLISH
-% Same as \opt{lensradiusleft} but for the right surface.
+% Same as \Lkeyword{lensradiusleft} but for the right surface.
 % \fi
 % \iffalse
 %<*ignore>
@@ -2327,14 +2326,14 @@
 % \ifGERMAN
 % Üblicherweise werden nur die Höhe und die beiden Radien für die
 % Konstuktion der Linse verwendet. Die Mittenbreite wird automatisch
-% ermittelt. Wenn \opt{lenswidth} auf einen Wert größer Null gesetzt wird,
+% ermittelt. Wenn \nxLkeyword{lenswidth} auf einen Wert größer Null gesetzt wird,
 % wird diese Breite verwendet. Das ist nur sinnvoll, wenn dicke Linsen
 % gezeichnet werden sollen, da es andernfalls für zu kleine Werte zu unschönen
 % Ergebnissen führt.
 % \fi
 % \ifENGLISH
 % Usually only the height and the two radii are used to construct the lens and
-% the width is calculated from these parameters. If \opt{lenswidth} is greater
+% the width is calculated from these parameters. If \nxLkeyword{lenswidth} is greater
 % than zero, this width is used instead. This is only useful if you want to draw
 % thick lenses and it can have ugly results if the lens width is choosen too
 % small.
@@ -2602,6 +2601,14 @@
 % \numitem[0.8]{optboxheight}
 % \ifGERMAN Die Höhe der Box.\fi\ifENGLISH The height of the box.\fi
 %
+% \optitem{optbox}{\prm{width} \prm{height}}
+% \ifGERMAN Die Breite und Höhe der Box, äquivalent zum Aufrufen von
+% \nxLkeyword{optboxwidth} und \nxLkeyword{optboxheight}.
+% \fi
+% \ifENGLISH The width and height of the box, is equivalent to calling both
+% \nxLkeyword{optboxwidth} and \nxLkeyword{optboxheight}.
+% \fi
+%
 % \boolitem[false]{endbox}
 % \ifGERMAN 
 % Setzt die Box ans Ende der Referenzlinie. Mit \Lkeyword{abspos} oder
@@ -2757,8 +2764,8 @@
 % \optitem[0.7\nxLcs{pslinewidth}]{pollinewidth}{\prm{num} or \prm{dimen}}
 %   \ifGERMAN \linewidthexplanation{des Polarisationszeichens}{Polarisationszeichen}\fi
 %   \ifENGLISH \linewidthexplanation{polarisation sign}{polarisation signs}\fi
-% \ifGERMAN Dieser Parameter ist seit 3.0 veraltet, verwenden Sie stattdessen den \opt{Polarization}-Stil.\fi
-% \ifENGLISH This parameter is deprecated since 3.0, please use the \opt{Polarization} style instead.\fi
+% \ifGERMAN Dieser Parameter ist seit 3.0 veraltet, verwenden Sie stattdessen den \Lstyle{Polarization}-Stil.\fi
+% \ifENGLISH This parameter is deprecated since 3.0, please use the \Lstyle{Polarization} style instead.\fi
 %
 % \choitem[parallel]{poltype}{parallel, perp, misc, lcirc, rcirc}
 % \ifGERMAN Dieser Parameter wählt die Polarizationsart aus.\fi
@@ -4688,7 +4695,7 @@
 % \fi
 %
 %   \choitem[all]{fiber}{none,in,out,top,bottom,all} Some components can be used either for free-ray or
-%   fiber-optical setups (\Lcs{optbox}, \Lcs{optdetector}). The \opt{fiber}
+%   fiber-optical setups (\Lcs{optbox}, \Lcs{optdetector}). The \nxLkeyword{fiber}
 %   parameter enables automatic fiber connections for them.
 % \iffalse
 %<*ignore>
@@ -5777,8 +5784,11 @@
 \RequirePackage{pstricks-add}
 \RequirePackage{environ}
 \long\def\POE@collect#1{%
+  \psset[optexp]{optexpenv}
   \global\POE@oldcnt=\POE@cnt
-  \psset[optexp]{optexpenv, backlayer=true, frontlayer=false}#1%
+  \bgroup
+    \psset[optexp]{backlayer=true, frontlayer=false}#1%
+  \egroup
   \gdef\POE@complist{}\global\POE@cnt=\POE@oldcnt\relax
   \psset[optexp]{backlayer=false, frontlayer=true}%
   #1}%
