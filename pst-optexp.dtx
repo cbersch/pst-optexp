@@ -471,8 +471,9 @@
 % \iflanguage{english}{\ENGLISHtrue}{\ENGLISHfalse}
 %
 % \ifGERMAN
-%   \newrefformat{sec}{Kap.\,\ref{#1}}
-%   \newrefformat{l}{Zeile\,\ref{#1}}
+%   \newrefformat{chap}{Kap.~\ref{#1}}
+%   \newrefformat{sec}{Kap.~\ref{#1}}
+%   \newrefformat{l}{Zeile~\ref{#1}}
 %   \newindex[Quelltextindex]{idx}
 %   \newindex[Dokumentationsindex]{doc}
 %   \newcommand{\POEindexPackage}{Paket}
@@ -486,6 +487,7 @@
 %   \newcommand{\POEindexFiberMultipoles}{Fasermultipol}
 % \fi
 % \ifENGLISH
+%   \newrefformat{chap}{Sec.~\ref{#1}}
 %   \newrefformat{sec}{Sec.~\ref{#1}} 
 %   \newrefformat{l}{Line~\ref{#1}}
 %   \newindex[Code index]{idx}
@@ -787,13 +789,13 @@
 % \fi
 % \ifENGLISH
 %   \chapter{Basic ideas}
-% \fi\label{sec:basics}
+% \fi\label{chap:basics}
 %
 % \ifGERMAN Dieses Kapitel zeigt die grundlegenden Ideen, die in diesem Paket
 % stecken. Angefangen von elementaren Beispielen, bis hin zu größeren Aufbauten
 % wird die angedachte Vorgehensweise für das Erstellen von umfassenden
 % Experimentskizzen erläutert. Eine vollständige Referenz aller Macros und
-% Optionen finden Sie in \prettyref{sec:general}--\ref{sec:connecting}.
+% Optionen finden Sie in \prettyref{chap:generalparam}--\ref{chap:custom}.
 %
 % Ein Versuchsaufbau besteht aus Komponenten, die anhand ihrer Referenzknoten
 % positioniert, verschoben und gedreht werden können und optional eine
@@ -968,7 +970,7 @@
 % werden können. Dies erleichtert die Nachverfolgung des Strahlenganges.
 % 
 % Alle Komponenten und Strahlen wurden zusätzlich in eine
-% \Lkeyword{optexp}-Umgebung gekapselt. Innerhalb dieser werden alle
+% \Lenv{optexp}-Umgebung gekapselt. Innerhalb dieser werden alle
 % Lichtstrahlen hinter die Komponenten gelegt, sodass diese nicht
 % verdeckt werden.
 % \fi
@@ -1040,17 +1042,18 @@
 %
 % \ifGERMAN\chapter{Allgemeine Komponentenparameter}\fi
 % \ifENGLISH\chapter{General component parameters}\fi
-% 
+% \label{chap:generalparam}
+%
 % This chapter contains detailed information about all components and related
 % options. It is divided into three parts:
 % \begin{itemize}
-% \item Section \ref{sec:generalparam} introduces all parameters which are
+% \item Chapter \ref{chap:generalparam} introduces all parameters which are
 %   generic to most of the components.
-% \item Section \ref{sec:freeraycomp} explains in detail all free-ray
+% \item Chapter \ref{chap:freeraycomp} explains in detail all free-ray
 %   components, reflective and transmittive. The free-ray components
 %   differ from the fiber-optical ones with respect to their ray-tracing
 %   capabilities, but they can also be connected with fibers.
-% \item Section \ref{sec:fibercomp} describes all fiber-optical
+% \item Chapter \ref{chap:fibercomp} describes all fiber-optical
 %   components, which can be used with fiber connections only. They must
 %   not obey any refraction or reflection law.
 % \end{itemize}
@@ -1091,7 +1094,11 @@
 % \begin{optionlist}
 % \styleitem{OptComp} 
 % \vspace*{-\itemsep}
-% \item[\smash{\begin{tabular}[t]{@{}r}\Lkeyword{newOptComp}\\\Lkeyword{addtoOptComp}\end{tabular}}]
+% \item[\smash{%
+% \begin{tabular}[t]{@{}r}
+%   \Lkeyword{newOptComp}\label{prm:newOptComp}\\
+%   \Lkeyword{addtoOptComp}\label{prm:addtoOptComp}
+% \end{tabular}}]
 % \ifGERMAN
 % Bestimmt das Aussehen aller optischen Komponenten. Die üblichen Parameter, wie
 % z.B. \opt{linestyle}, würden auch die Verbindungen beeinflussen, die mit der
@@ -1525,7 +1532,7 @@
 % 
 % \ifGERMAN\chapter{Freistrahl-Komponenten}\fi
 % \ifENGLISH\chapter{Free-ray components}\fi
-% \label{sec:freeraycomp}
+% \label{chap:freeraycomp}
 %
 % \ifGERMAN\section{Linse}\fi
 % \ifENGLISH\section{Lens}\fi
@@ -2446,11 +2453,11 @@
 % \ifGERMAN
 % Das Prisma wird immer symmetrisch bezüglich der \prm{in} und \prm{out}
 % Knoten ausgerichtet. Für asymmetrischen Strahlengang siehe
-% \prettyref{sec:connecting}.
+% \prettyref{chap:connecting}.
 % \fi
 % \ifENGLISH
 % The prism is always placed symmetric between \prm{in} and \prm{out}
-% nodes. For asymmetric beam traces see \prettyref{sec:connecting}.
+% nodes. For asymmetric beam traces see \prettyref{chap:connecting}.
 % \fi
 %
 % \begin{optionlist}
@@ -2547,7 +2554,7 @@
 % 
 % \ifGERMAN\chapter{Faseroptische Komponenten}\fi
 % \ifENGLISH\chapter{Fiber-optical components}\fi
-% \label{sec:fibercomp}
+% \label{chap:fibercomp}
 % 
 % \begin{optionlist}
 %   \boolitem{usefiberstyle} For some components it might me nice to highlight
@@ -2980,7 +2987,8 @@
 % \fi
 % 
 % \ifGERMAN\section{Faserkoppler}\fi
-% \ifENGLISH\section{Fiber coupler}\fi\label{sec:coupler}
+% \ifENGLISH\section{Fiber coupler}\fi
+% \label{sec:coupler}
 %
 % \ifGERMAN\subsection{\texorpdfstring{\mathversion{bold}$2\times 2$}{2x2}-Koppler}\fi
 % \ifENGLISH\subsection{\texorpdfstring{\mathversion{bold}$2\times 2$}{2x2} coupler}\fi
@@ -3868,7 +3876,8 @@
 %
 %
 % \ifGERMAN\chapter{Verbinden von Komponenten}\fi
-% \ifENGLISH\chapter{Connecting components}\fi\label{sec:connecting}
+% \ifENGLISH\chapter{Connecting components}\fi
+% \label{chap:connecting}
 % 
 % \ifGERMAN 
 % Das \nxLPack{pst-optexp}-Paket stellt unterschiedlichen Methoden bereit,
@@ -4026,7 +4035,7 @@
 % 
 % \begin{ltxsyntax}
 %   \xLcs{drawbeam}\cmditem{drawbeam}[options]{obj$_1$}{obj$_2$}{\ldots}{obj$_N$}
-%   \xLcs{drawwidebeam}\cmditem{drawwidebeam}[options]{obj$_1$}{obj$_2$}{\ldots}{obj$_N$}
+%   \xLcs{drawwidebeam}\cmditem*{drawwidebeam}[options]{obj$_1$}{obj$_2$}{\ldots}{obj$_N$}
 % \end{ltxsyntax}
 % The package provides two macros for connecting objects with beams. Most
 % parameters are valid for both, those which are specified for wide beams
@@ -4477,7 +4486,7 @@
 %
 % \subsection{Automatic fiber connections}\label{sec:drawfiber-auto}
 %
-% All fiber-optical components described in \prettyref{sec:fibercomp} are
+% All fiber-optical components described in \prettyref{chap:fibercomp} are
 % connected automatically to their reference nodes with \Lcs{pccurve}. The
 % styles of the fiber connections can be configured independently by the
 % styles shown in \prettyref{fig:fiberstyles}.
@@ -4742,7 +4751,7 @@
 % \ifENGLISH\section{Layers}\fi
 %
 % \begin{ltxsyntax}
-%   \envitem{optexp}
+%   \envitem{optexp}\label{env:optexp}
 % \end{ltxsyntax}
 %
 % \iffalse
@@ -4769,7 +4778,7 @@
 % 
 % \ifGERMAN\chapter{Benutzerdefinierte Komponenten}\fi
 % \ifENGLISH\chapter{Custom components}\fi
-% \label{sec:custom}
+% \label{chap:custom}
 %
 % \ifGERMAN
 % Das \LPack{pst-optexp} Paket stellt zwei Makros zur Verfügung um
@@ -5600,14 +5609,14 @@
 %   \end{release}
 %
 %   \begin{release}{2.0}{2008-07-27}
-%     \item Added fiber-optical components\see{sec:fibercomp}
+%     \item Added fiber-optical components\see{chap:fibercomp}
 %     \item Added component \cs{optdiode}\see{cmd:optdiode}
 %     \item Added component \cs{pentaprism}\see{cmd:pentaprism}
 %     \item Added component \cs{rightangleprism}\see{cmd:rightangleprism}
 %     \item Added component \cs{doveprism}\see{cmd:doveprism}
 %     \item Added component \cs{optprism}\see{cmd:optprism}
 %     \item Added \cs{drawbeam}\see{sec:drawbeam}
-%     \item Added component connections (options \opt{fiber}, \opt{conn} and \opt{beam})\see{sec:connecting}
+%     \item Added component connections (options \opt{fiber}, \opt{conn} and \opt{beam})\see{chap:connecting}
 %     \item Added option \opt{compname}\see{sec:namingobj}
 %     \item Added option \opt{extnode}\see{sec:extnode}
 %     \item Deprecated \cs{detector}\see{cmd:optdetector}
