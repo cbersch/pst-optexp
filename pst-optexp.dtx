@@ -574,8 +574,8 @@
 %   \pnode(6.5,0.5){Min}
 %   \pnode(6.5,3){Pin}
 %   \pnode(4.5,3){Min2}
-%   \pnode(1.5, 0.5){Mout}
-%   \pnode(1.5,3){Pout}
+%   \pnode(1.3, 0.5){Mout}
+%   \pnode(1.3,3){Pout}
 %   \pnode(3.5,3){Mout2}
 %   \pnode(0,0.5){Out}
 %   \definecolor[ps]{bl}{rgb}{tx@addDict begin Red Green Blue end}
@@ -584,7 +584,7 @@
 %   \newpsstyle{ExtendedMirror}{linestyle=none, hatchwidth=0.5\pslinewidth, hatchsep=1.2\pslinewidth,
 %                 fillstyle=hlines}
 %   \begin{optexp}
-%   \mirror[mirrorwidth=4, mirrorradius=10.4](M2)(M1)(M2)
+%   \mirror[mirrorwidth=4, mirrorradius=11.](M2)(M1)(M2)
 %   \mirror[mirrorwidth=4, mirrorradius=10.4](M1)(M2)(M1)
 %   \mirror(In)(Min)(Pin)
 %   \optprism[n=1.85, addtoOptComp={linewidth=1.5\pslinewidth}](Min)(Pin)(Min2)
@@ -596,13 +596,11 @@
 %     \pstVerb{^^A
 %       \i\space 650 400 sub 39 div mul 400 add 
 %       tx@addDict begin wavelengthToRGB end }^^A
-%     \drawbeam[nadd=-0.002 \i\space mul]{(In)}{3-5}{2}{1}{6-8}{(Out)}
+%     \drawbeam[nadd=-0.002 \i\space mul, beaminsidelast]{(In)}{3-5}{2}{1}{6-7}
 %   }^^A
 %   \newpsstyle{Beam}{linecolor=red}
-%   \backlayer{^^A
-%     \psline[style=Beam,ArrowInside=->, linewidth=2\pslinewidth, arrowinset=0](In)(\oenodeIn{3})(\oenodeOut{4})
-%   }
-%   \drawbeam[beamangle=0.29,beampos=-0.04, arrows=<-, linewidth=2\pslinewidth, arrowinset=0]{([Xnodesep=-0.2]Out)}{8}{7}
+%   \backlayer{\psline[style=Beam,ArrowInside=->, linewidth=2\pslinewidth, arrowinset=0](In)(\oenodeIn{3})(\oenodeOut{4})}
+%   \drawbeam[linewidth=2\pslinewidth, arrows=->, arrowinset=0, beamangle=-90, beamangleabs]{(\oenodeBeam)}{8}{(Out)}  
 % \end{optexp}
 % \rput(4,4.5){^^A
 %   \psframe[fillstyle=solid,fillcolor=gray!70](-0.1, -0.6)(0.1, 0.7)
@@ -785,24 +783,31 @@
 % \fi
 %
 % \ifGERMAN
-%   \chapter{Grundlegende Ideen}
-%   Dieses Kapitel zeigt die grundlegenden Ideen, die in diesem Paket
-%   stecken. Angefangen von elementaren Beispielen, bis hin zu größeren
-%   Aufbauten wird die angedachte Vorgehensweise für das Erstellen von
-%   umfassenden Experimentskizzen erläutert. Eine vollständige Referenz aller
-%   Macros und Optionen finden Sie in 
-%   \prettyref{sec:general}--\ref{sec:connecting}.
+% \chapter{Grundlegende Ideen}
 % \fi
 % \ifENGLISH
 %   \chapter{Basic ideas}
-% \fi
+% \fi\label{sec:basics}
 %
-% \ifGERMAN
-%   \section{Die Komponenten}
-%   Ein Versuchsaufbau besteht aus Komponenten, die miteinander verbunden
-%   werden. Eine Komponente wird anhand ihrer Referenzknoten platziert, im
-%   folgenden Beispiel wird die Linse mittig auf die Verbindungslinie zwischen
-%   den Knoten \texttt{(A)} und \texttt{(B)} gesetzt:
+% \ifGERMAN Dieses Kapitel zeigt die grundlegenden Ideen, die in diesem Paket
+% stecken. Angefangen von elementaren Beispielen, bis hin zu größeren Aufbauten
+% wird die angedachte Vorgehensweise für das Erstellen von umfassenden
+% Experimentskizzen erläutert. Eine vollständige Referenz aller Macros und
+% Optionen finden Sie in \prettyref{sec:general}--\ref{sec:connecting}.
+%
+% Ein Versuchsaufbau besteht aus Komponenten, die anhand ihrer Referenzknoten
+% positioniert, verschoben und gedreht werden können und optional eine
+% Beschriftung erhalten. Anschließen werden die Komponenten mit Lichtstrahlen
+% oder Fasern verbunden.\fi
+%
+% \ifGERMAN\section{Die Komponenten}\fi
+% \ifENGLISH\section{The components}\fi
+%
+% \ifGERMAN Eine Komponente wird anhand der Knoten, die bei ihrere Definition
+% angegeben werden, --- den Referenzknoten ---, platziert. Im folgenden Beispiel
+% wird die Linse mittig auf die Verbindungslinie zwischen den Knoten
+% \prm{A} und \prm{B} gesetzt: 
+% \fi
 %\iffalse
 %<*ignore>
 %\fi
@@ -815,10 +820,10 @@
 %\iffalse
 %</ignore>
 %\fi 
-%
+% \ifGERMAN
 % Diese Positionierung kann anhand von unterschiedlichen Parametern, wie
 % z.B. \Lkeyword{abspos} beinflusst werden (siehe dazu \prettyref{sec:rotshift}
-% und \prettyref{sec:positioning}).
+% und \prettyref{sec:positioning}). \fi
 %\iffalse
 %<*ignore>
 %\fi
@@ -831,16 +836,19 @@
 %\iffalse
 %</ignore>
 %\fi 
-%
-% Die Komponenten lassen sich allgemein in zwei Kategorien unterteilen: Die Freistrahl-Komponenten und die faseroptischen Komponenten. Diese unterscheiden sich nur bezüglich ihrer Verbindungsmöglichkeiten (Faserverbindungen (\prettyref{sec:intro-fiber-conn}) oder Lichtstrahlen (\prettyref{sec:intro-freeray-conn})).
+% \ifGERMAN Die Komponenten lassen sich allgemein in zwei Kategorien
+% unterteilen: Die Freistrahl-Komponenten und die faseroptischen
+% Komponenten. Diese unterscheiden sich nur bezüglich ihrer
+% Verbindungsmöglichkeiten (Faserverbindungen (\prettyref{sec:intro-fiber-conn})
+% oder Lichtstrahlen (\prettyref{sec:intro-freeray-conn})).
 % \fi
-% \ifENGLISH
-%   \subsection{The components}
-% \fi
 %
-% \ifGERMAN
-%   \subsection{Beschriftungen}
-%   Jede Komponente hat eine optionale Beschriftung, die relativ zur Komponente platziert werden kann.
+% \ifGERMAN\section{Beschriftungen}\fi
+% \ifENGLISH\section{Labels}\fi
+%
+% \ifGERMAN Jede Komponente hat eine optionale Beschriftung, die relativ zur
+% Komponente platziert werden kann. 
+% \fi
 %\iffalse
 %<*ignore>
 %\fi
@@ -854,34 +862,21 @@
 %\iffalse
 %</ignore>
 %\fi 
-% \fi
-% \ifENGLISH
-%   \subsection{Labels}
-% \fi
 %
-% \ifGERMAN
-%   \subsection{Freistrahl-Verbindungen}
-% \fi
-% \ifENGLISH
-%   \subsection{Freeray connections}
-% \fi \label{sec:intro-freeray-conn}
+% \ifGERMAN\section{Freistrahl-Verbindungen}\fi
+% \ifENGLISH\section{Free-ray connections}\fi
+% \label{sec:intro-freeray-conn}
+%
 % \ifGERMAN
 % Freistrahlkomponenten können mit Lichtstrahlen verbunden werden. 
 % \fi
 %
-% \ifGERMAN
-%   \subsection{Faserverbindungen}
-% \fi
-% \ifENGLISH
-%   \subsection{Fiber connections}
-% \fi \label{sec:intro-fiber-conn}
+% \ifGERMAN\section{Faserverbindungen}\fi
+% \ifENGLISH\section{Fiber connections}\fi
+% \label{sec:intro-fiber-conn}
 %
-% \ifGERMAN
-%   \section{Schritt-für-Schritt-Beispiele}
-% \fi
-% \ifENGLISH
-%   \section{Step-by-step examples}
-% \fi
+% \ifGERMAN\section{Schritt-für-Schritt-Beispiele}\fi
+% \ifENGLISH\section{Step-by-step examples}\fi
 %
 % \iffalse
 %<*ignore>
@@ -1041,693 +1036,10 @@
 % \iffalse
 %</ignore>
 % \fi
-% 
-% \chapter{Concept and general behavior}\label{sec:general}
-% 
-% This section introduces into the basic concepts of the package design and
-% explains the parameters and commands which are supported by most optical
-% objects.
-% 
-% \subsection{Concept}
-% 
-% The objects provided by \LPack{pst-optexp} can be differentiated into
-% two different categories: free-ray and fiber-optical objects.
-% 
-% The free-ray units are subdivided in two different kinds: dipoles which
-% require two reference points for alignment and do not alter the
-% direction of passing light beams (e.g. lenses and retardation plates)
-% and tripoles which work in reflection and require three reference points
-% (mirrors, gratings, beamsplitters etc.).
-% 
-% For free-ray setups one usually has a few straight light paths in which
-% several different objects are to be arranged. In this case it is very
-% convenient to define only two nodes for each light path. The objects are
-% placed on this light path using the different positioning parameters
-% (see \prettyref{sec:positioning}) of the package. After having arranged
-% everything, the beams themselves are drawn (see \prettyref{sec:connecting}).
-% 
-% The fiber-optical objects can be classified as dipoles, tripoles and quadrupoles
-% which have a corresponding number of fiber connections. Their handling differs
-% in some aspects from the free-ray objects. The fiber optics are directly
-% connected to the reference nodes. Every input and output fiber can be flexibly
-% customized for each object (see \prettyref{sec:styles}). Positioning of the
-% fiber dipoles is handled equivalently to the free-ray dipoles. Tripoles and
-% quadrupoles can be found only as different coupler types. Their positioning
-% mechanisms are a bit more involved and explained in the respective section
-% (\prettyref{sec:coupler}).
-% 
-% Some hybrid dipoles (optbox, detector etc.) can be used both as
-% fiber-optical or free-ray elements. 
-% 
-% \subsection{Using psstyles}\label{sec:styles}
 %
-% \subsection{Object names}\label{sec:namingobj}
-% All objects of a \nxLPack{pst-optexp} sketch are numbered
-% automatically in increasing order by their definition in the code. The
-% objects as well as their special nodes can be accessed via this
-% number.
-% 
-% \begin{optionlist}
-%   \valitem{compname}{string} Assigns a name to an object, which can
-%   then be referenced both by this name and by its number. The
-%   parameter can be assigned only directly within a
-%   \nxLPack{pst-optexp} object and should be unique within one
-%   \nxLkeyword{pspicture} environment.
-% \iffalse
-%<*ignore>
-% \fi
-\ifGERMAN
-\begin{LTXexample}
-\begin{pspicture}(2,2)
-  \optbox[compname=MyBox](0,1)(2,2)
-  \psdot[linecolor=red](\oenodeIn{MyBox}) % Verwende den Namen
-  \psdot[linecolor=blue](\oenodeOut{1})   % Verwende die Nummer
-  \psdot[linecolor=green](\oenodeCenter{})% Nimm die letzte Komponente
-\end{pspicture}
-\end{LTXexample}
-\fi\ifENGLISH
-\begin{LTXexample}
-\begin{pspicture}(2,2)
-  \optbox[compname=MyBox](0,1)(2,2)
-  \psdot[linecolor=red](\oenodeIn{MyBox})% use the compname
-  \psdot[linecolor=blue](\oenodeOut{1})  % use the number
-  \psdot[linecolor=green](\oenodeCenter{})  % the last component
-\end{pspicture}
-\end{LTXexample}
-\fi
-% \end{optionlist}
-% \iffalse
-%</ignore>
-% \fi
 %
-% \ifGERMAN
-% \subsection{Spezielle Komponentenknoten}
-% \fi
-% \ifENGLISH
-% \subsection{Special component nodes}
-% \fi\label{sec:objnodes}
-% 
-% \ifGERMAN
-% Jedes \nxLPack{pst-optexp} Objekt stellt mehrere spezielle Knoten zur
-% Verfügung, die mit dessen Geometrie und Positionierung zusammenhängen. Diese
-% Knoten stehen für weitere Verwendung zur Verfügung.
-%
-% Sie sollten immer die dafür vorgesehenen Makros verwenden um auf die
-% Knotennamen zuzugreifen.
-% \fi
-% \ifENGLISH
-% Every \nxLPack{pst-optexp} object of an experimental setup provides
-% several special nodes which are related to its geometry and
-% positioning. They can be accessed and used for related positioning and
-% drawing.
-%
-% You should always use the dedicated macros to access these node names.
-% \fi
-% \begin{ltxsyntax}
-%   \cmditem{oenode}{node}{name} 
-%
-% \ifGERMAN
-% Das ist das grundlegende Makro mit dem auf die Knotennamen einer Komponente
-% zugegriffen werden kann. Das erste Argument \prm{node} ist der Bezeichner des
-% angeforderten Knotens. Das zweite Argument \prm{name} ist der Name der
-% Komponente (gemäß \prettyref{sec:namingobj}). Ist dieses leer so wird das
-% zuletzt definierte Objekt verwendet.
-%
-% Für viele der Knoten wird ein eigenes Makro bereitgestellt, das Sie dann auch
-% verwenden sollten, da sich die Namenskonventionen ändern könnten. Die Makros
-% stellen sicher, dass Sie immer die passenden Knotennamen erhalten. Daher sind
-% die verfügbaren Bezeichner auch nicht aufgelistet.
-% \fi
-% \ifENGLISH
-% This is the basic command to access any node associated with a certain
-% object. The first argument \prm{node} is the identifier of the requested
-% node. The second argument \prm{name} is the name of the target object
-% (according to \prettyref{sec:namingobj}). If it is left empty, the last
-% defined component is used.
-%
-% For most special nodes an appropriate macro is provided, which you are
-% strongly advised to use, because the naming conventions may change. Using the
-% macros makes sure, that you always get the correct node names. Therefore, the
-% available identifiers are not listed explicitely.
-% \fi
-% \end{ltxsyntax}
-%
-% \begin{optionlist}
-%   \boolitem[false]{showoptdots} 
-%   \ifGERMAN 
-%   Markiert einige der speziellen Komponentenknoten: die schwarzen Punkte sind
-%   die normalen und die schwarzen Kreuze die transformierten Referenzknoten
-%   (\prettyref{sec:refnode}), der rote Punkt ist der Mittelpunktknoten
-%   (\prettyref{sec:centernode}) und das rote Kreuz der Beschriftungsknoten
-%   (\prettyref{sec:labelnode}).
-%   \fi
-%   \ifENGLISH 
-%   Draw some special component nodes for debugging: The black points are the
-%   normal and the black crosses are the transformed reference nodes
-%   (\prettyref{sec:refnode}), the red point is the center node
-%   (\prettyref{sec:centernode}), and the red cross is the label node
-%   (\prettyref{sec:labelnode}).
-%   \fi
-% \iffalse
-%<*ignore>
-% \fi
-\begin{LTXexample}
-\begin{pspicture}(3,2)
-\mirror[showoptdots, angle=10, beam](0,1)(1.9,1)(1.9,0)
-\end{pspicture}
-\end{LTXexample}
-% \iffalse
-%</ignore>
-% \fi
-% \end{optionlist}
-% 
-% \ifGERMAN\subsubsection{Referenzknoten}\fi
-% \ifENGLISH\subsubsection{Reference nodes}\fi
-% \label{sec:refnode}
-%
-% \begin{ltxsyntax}
-%   \cmditem{oenodeRefA}{obj}
-%   \cmditem{oenodeRefB}{obj}
-%
-%  \ifGERMAN
-%  Die Eingangs- und Ausgangs-Referenzknoten.
-%
-%  Das sind die ursprünglichen Knoten, die für die Positionierung der Komponente
-%  benutzt wurden, \nxLcs{oenodeRefA} ist der erste und \nxLcs{oenodeRefB} der
-%  letzte Knoten. Lediglich bei den Faserkoppler (\prettyref{sec:coupler}) hängt
-%  die Zuordnung von dem \Lkeyword{align} Parameter ab.
-%  Eine vollständige Liste finden Sie in \prettyref{sec:overview-refnode}.
-%  \fi
-%  \ifENGLISH
-%  The input and output reference nodes.
-%
-%  These are the original nodes which were used for the component positioning.
-%  \nxLcs{oenodeRefA} is the first node and \nxLcs{oenodeRefB} the last
-%  node. Only for the couplers (\prettyref{sec:coupler}) it depends on the
-%  \Lkeyword{align} parameter. For a complete list of possible reference nodes, see
-%  \prettyref{sec:overview-refnode}.
-%  \fi
-% \iffalse
-%<*ignore>
-% \fi
-\begin{LTXexample}[pos=t, linerange={1-5, 7-7}]
-\begin{pspicture}(5,1)
-\pnode(0.5,0.5){A}\pnode(4.5,0.5){B}
-\optbox(A)(B)
-\psdot(\oenodeRefA{})\uput[-90](\oenodeRefA{}){RefA}
-\psdot(\oenodeRefB{})\uput[-90](\oenodeRefB{}){RefB}
-\psline[style=Refline](\oenodeRefA{})(\oenodeRefB{})
-\end{pspicture}
-\end{LTXexample}
-% \iffalse
-%</ignore>
-% \fi
-%
-%   \cmditem{oenodeTrefA}{obj}
-%   \cmditem{oenodeTrefB}{obj}
-%
-%   \ifGERMAN
-%   Die transformierten Eingangs- und Ausgangs-Referenzknoten.
-%
-%   Das sind die Referenzknoten nachdem sie zusammen mit der Komponente gemäß
-%   der \Lkeyword{compshift} und \Lkeyword{angle} Parameter transformiert wurden.
-%   \fi
-%   \ifENGLISH
-%   The transformed input and output reference nodes.
-%
-%   These are the input and output reference nodes which are transformed
-%   together with the component according to the \Lkeyword{compshift} and
-%   \Lkeyword{angle} parameters.
-%   \fi
-% \iffalse
-%<*ignore>
-% \fi
-\begin{LTXexample}[pos=t, linerange={1-7,9-9}]
-\begin{pspicture}(5,1.8)
-\pnode(0.5,0.5){A}\pnode(4.5,0.5){B}
-\optbox[compshift=0.5, angle=10](A)(B)
-\psdot(\oenodeRefA{})\uput[-90](\oenodeRefA{}){RefA}
-\psdot(\oenodeRefB{})\uput[-90](\oenodeRefB{}){RefB}
-\psdot(\oenodeTrefA{})\uput[90](\oenodeTrefA{}){TrefA}
-\psdot(\oenodeTrefB{})\uput[90](\oenodeTrefB{}){TrefB}
-\psline[style=Refline](\oenodeTrefA{})(\oenodeTrefB{})
-\end{pspicture}
-\end{LTXexample}
-% \iffalse
-%</ignore>
-% \fi
-% \end{ltxsyntax}
-%
-% \ifGERMAN
-% \subsubsection{Mittelpunktknoten}
-% \fi
-% \ifENGLISH
-% \subsubsection{Center node}
-% \fi\label{sec:centernode}
-% \begin{ltxsyntax}
-%   \cmditem{oenodeCenter}{obj}
-% 
-% \ifGERMAN
-% Dieser Knoten liegt, bis auf wenige Ausnahmen, im Mittelpunkt der Komponente.
-% \fi
-% \ifENGLISH
-% This node lays, except for a few components, in the center of the component.
-% \fi
-% \iffalse
-%<*ignore>
-% \fi
-\begin{LTXexample}[linerange={1-4, 6-6}]
-\begin{pspicture}(3,1)
-\pnode(0,0.5){A}\pnode(3,0.5){B}
-\optbox(A)(B)
-\psdot(\oenodeCenter{})
-\psline[style=Refline](\oenodeRefA{})(\oenodeRefB{})
-\end{pspicture}
-\end{LTXexample}
-% \iffalse
-%</ignore>
-% \fi
-% \end{ltxsyntax}
-% 
-% \ifGERMAN
-% \subsubsection{Beschriftungsknoten}
-% \fi
-% \ifENGLISH
-% \subsubsection{Label node}
-% \fi\label{sec:labelnode}
-%
-% \begin{ltxsyntax}
-%   \cmditem{oenodeLabel}{obj}
-%
-%   \ifGERMAN
-%   Auf diesen Knoten wird die Beschriftung platziert. Der Knoten ist auch
-%   verfügbar wenn keine Beschriftung angegeben wurde. Für \xLkeyword{labeloffset}\nxLkeyword{labeloffset=0}
-%   ist dieser Knoten identisch mit dem Mittelpunktsknoten
-%   (\prettyref{sec:centernode}).
-%   \fi
-%   \ifENGLISH
-%   The component label is placed at this node. It is also available
-%   if no label was specified. The label node is identical with the center
-%   node for \xLkeyword{labeloffset}\nxLkeyword{labeloffset=0}.
-%   \fi
-% \iffalse
-%<*ignore>
-% \fi
-\begin{LTXexample}[linerange={1-4,6-6}]
-\begin{pspicture}(3,1.5)
-\pnode(0,1){A}\pnode(3,1){B}
-\optbox(A)(B)
-\psdot(\oenodeLabel{})
-\psline[style=Refline](\oenodeTrefA{})(\oenodeTrefB{})
-\end{pspicture}
-\end{LTXexample}
-% \iffalse
-%</ignore>
-% \fi
-% \end{ltxsyntax}
-%
-% \ifGERMAN
-% \subsubsection{Externe Knoten}
-% \fi
-% \ifENGLISH
-% \subsubsection{External nodes}
-% \fi\label{sec:extnode}
-%
-% \begin{ltxsyntax}
-%   \cmditem{oenodeExt}{obj}
-%
-% \ifGERMAN
-% Ein externer Knoten kann an unterschiedliche Positionen entlang des
-% Komponentenrandes gesetzt werden. Dieser wird nur für den externen Zugriff
-% definiert, und beineinflusst in keiner Weise die Komponente.
-% \fi
-% \ifENGLISH
-% An external node can be placed at different positions along the component
-% boundary. It gets defined only for external usage and does not affect the
-% component in any way.
-% \fi
-% \end{ltxsyntax}
-% \begin{optionlist}
-% \valitem{extnode}{refstring}
-% \ifGERMAN
-% Bestimmt die Positionierung des externen Knotens. \refstringexplanation Nicht
-% jede Komponente unterstützt alle möglichen Kombinationen, die möglichen
-% Positionen jeder Komponente sind in \prettyref{sec:overview-extnode}
-% zusammengefasst.
-% \fi
-% \ifENGLISH
-% Set the position of the external node. \refstringexplanation Not all
-% components support any possible combination. The allowed positions of each
-% component are listed in \prettyref{sec:overview-extnode}.
-% \fi
-%
-% \begin{pspicture}(6,2.5) 
-%   \addtopsstyle{Beam}{beaminside=false, arrows=->, arrowinset=0, arrowscale=1.5}
-%    \psset{optboxheight=1.5, optboxwidth=2.5}\ttfamily
-%    \pnode(0,1.25){A}\pnode(6,1.25){B}
-%    \optbox[beam, extnode=tl](A)(B)
-%    \psdot(\oenodeExt{})\uput[135](\oenodeExt{}){tl}
-%    \backlayer{%
-%      \optbox[extnode=t](A)(B)\psdot(\oenodeExt{})\uput[90](\oenodeExt{}){t}
-%      \optbox[extnode=tr](A)(B)\psdot(\oenodeExt{})\uput[90](\oenodeExt{}){tr}
-%      \optbox[extnode=r](A)(B)\psdot(\oenodeExt{})\uput[45](\oenodeExt{}){r}
-%      \optbox[extnode=br](A)(B)\psdot(\oenodeExt{})\uput[-90](\oenodeExt{}){br}
-%      \optbox[extnode=b](A)(B)\psdot(\oenodeExt{})\uput[-90](\oenodeExt{}){b}
-%      \optbox[extnode=bl](A)(B)\psdot(\oenodeExt{})\uput[-90](\oenodeExt{}){bl}
-%      \optbox[extnode=l](A)(B)\psdot(\oenodeExt{})\uput[135](\oenodeExt{}){l}
-%      \optbox[extnode=c](A)(B)\psdot(\oenodeExt{})\uput[180](\oenodeExt{}){c}
-%    }
-% \end{pspicture}
-%
-% \boolitem[true]{globalnoderef}
-% \ifGERMAN
-% Die Bezeichnung von «oben» (\opt{t}) den anderen Positionierungsparametern von
-% \Lkeyword{extnode} können global oder relativ zur Komponente betrachtet werden.
-%
-% In dem folgenden Beispiel ist der externe Knoten immer «oben rechts» platziert
-% unabhängig von der relativen Anordnung der Referenzknoten
-% (\opt{globalnoderef=true}\xLkeyword{globalnoderef}). In dem darauffolgenden Beispiel ist die
-% Positionierung relativ zur Verbindung zwischen Eingangs- und
-% Ausgangsreferenzknoten (\opt{globalnoderef=false}\xLkeyword{globalnoderef}).
-% \fi
-% \ifENGLISH 
-% The definition of «top» (\opt{t}) and the other \Lkeyword{extnode} refstring
-% parameters can be global or relative to the component.
-%
-% In the next example the external node is always placed «top right»,
-% independent of the actual ordering of the reference nodes
-% (\opt{globalnoderef=true}\xLkeyword{globalnoderef}). In the following example the position is relative
-% to the connection from input to output reference node
-% (\opt{globalnoderef=false}\xLkeyword{globalnoderef}).
-% \fi
-% \iffalse
-%<*ignore>
-% \fi
-\begin{LTXexample}
-\begin{pspicture}(-2,-2)(2,2)
-  \psset{extnode=tr, endbox, optboxwidth=1, optboxheight=0.6, dotscale=1.5}
-  \multido{\i=0+45}{8}{%
-    \optbox[label=0 . . relative](0,0)(1;\i){\i}
-    \psdot(\oenodeExt{})
-  }
-\end{pspicture}
-\end{LTXexample}
-\begin{LTXexample}
-\begin{pspicture}(-2,-2)(2,2)
-  \psset{globalnoderef=false, extnode=tr, endbox, optboxwidth=1, optboxheight=0.6, dotscale=1.5}
-  \multido{\i=0+45}{8}{%
-    \optbox[label=0 . . relative](0,0)(1;\i){\i}
-    \psdot(\oenodeExt{})
-  }%
-\end{pspicture}
-\end{LTXexample}
-% \iffalse
-%</ignore>
-% \fi
-% \end{optionlist}
-%
-% \ifGERMAN
-% \subsubsection{Grenzflächenknoten}
-% \fi
-% \ifENGLISH
-% \subsubsection{Interface nodes}
-% \fi\label{sec:ifcnode}
-% \begin{ltxsyntax}
-%   \cmditem{oenodeIfc}{num}{obj}
-%   \cmditem{oenodeIn}{obj}
-%   \cmditem{oenodeOut}{obj}
-%   
-%   \ifGERMAN
-%   Der Grenzflächenknoten \prm{num}, wobei \prm{num} eine Ganzzahl zwischen
-%   \opt{1} und \opt{N} ist. Der letzte Knoten ist immer \opt{N}. Der Knoten
-%   \prm{1} ist Eingangsknoten, und sollte immer über \nxLcs{oenodeIn}
-%   angesprochen werden. Der Knoten \opt{N} ist der Ausgangsknoten und sollte
-%   immer über \nxLcs{oenodeOut} angesprochen werden.
-%
-%   «Eingang» und «Ausgang» können nur anhand einer relativen Orientierung
-%   definiert werden. Per Definition ist der Eingangsknoten derjenige zu dem ein
-%   Lichtstrahl ausgehend vom Eingangsreferenzknoten \Lcs{oenodeRefB}
-%   verläuft. Analog dazu ist die Definition der Ausgangsknotens. Diese
-%   Bezeichnung kann nur für die Faserkoppler (\ref{sec:coupler}) und
-%   Strahlteiler (\ref{cmd:beamsplitter}) nicht angewendet werden.
-%
-%   \nxLcs{oenodeIn} ist äquivalent zu \nxLcs{oenodeIfc\{1\}} und
-%   \nxLcs{oenodeOut} ist äquivalent zu \nxLcs{oenodeIfc\{N\}}. Die Eingangs-
-%   und Ausgangsknoten sollten über die explizit bereitgestellten Makros
-%   angesprochen werden, \nxLcs{oenodeIfc} sollte nur für die weiteren
-%   Grenzflächenknoten, sofern vorhanden, verwendet werden.
-%   \fi
-%   \ifENGLISH
-%   The interface node \prm{num}, where the number is in the range \opt{1\ldots
-%     N}. The last node is always defined as \opt{N}. The interface node \prm{1}
-%   is the input node, and should always be accessed via \nxLcs{oenodeIn}, the
-%   interface node \prm{N} is the output node and should be accessed via
-%   \nxLcs{oenodeOut}.
-%
-%   Here, «input» and «output» can define only relative orientations. The input
-%   node is by definition the node to which a beam coming from the input
-%   reference node (\Lcs{oenodeRefA}) is connected to. Accordingly is the
-%   definition of the output node. This definition breaks down only for the
-%   fiber couplers (\ref{sec:coupler}) and beamsplitter
-%   (\ref{cmd:beamsplitter}).
-%
-%   \nxLcs{oenodeIn} is equivalent to \nxLcs{oenodeIfc\{1\}} and
-%   \nxLcs{oenodeOut} is equivalent to \nxLcs{oenodeIfc\{N\}}. You should use
-%   the \nxLcs{oenodeIfc} macro only to access the nodes which are not the input
-%   and output nodes as for those explicit macros are provided.
-%   \fi
-% \end{ltxsyntax}
-% \iffalse
-%<*ignore>
-% \fi
-\begin{LTXexample}
-\begin{pspicture}(2.8,3) 
-  \pentaprism[pentaprismsize=1.3](0,1.5)(1.5,1.5)(1.5,0)
-  \drawbeam[arrows=->, arrowinset=0, arrowscale=1.5]{(0,1.5)}{}{(1.5,0)}
-  \psdot(\oenodeIn{})\uput[135](\oenodeIn{}){1}
-  \psdot(\oenodeIfc{2}{})\uput[0](\oenodeIfc{2}{}){2}
-  \psdot(\oenodeIfc{3}{})\uput[90](\oenodeIfc{3}{}){3}
-  \psdot(\oenodeOut{})\uput[-45](\oenodeOut{}){N}
-\end{pspicture}
-\end{LTXexample}
-% \iffalse
-%</ignore>
-% \fi
-%
-% \ifGERMAN
-% In \prettyref{sec:overview-ifcnode} finden Sie eine vollständige Liste aller
-% Komponenten mit ihren Grenzflächenknoten.
-% \fi
-% \ifENGLISH
-% See \prettyref{sec:overview-ifcnode} for a complete list of all
-% components with their interface nodes.
-% \fi
-%
-% \ifGERMAN
-% \subsubsection{Referenzknoten für die Rotation}
-% \fi
-% \ifENGLISH
-% \subsubsection{Rotation reference node}
-% \fi\label{sec:rotrefnode}
-% \begin{ltxsyntax}
-%   \cmditem{oenodeRotref}{obj}
-%
-%   \ifGERMAN 
-%   Der Referenzknoten um den eine Komponente mit \Lkeyword{angle} gedreht
-%   wird. Die Position des Knotens wird mit dem \Lkeyword{rotateref} Parameter
-%   definiert und kann dieselben Werte annehmen wie der externe Knoten
-%   (\prettyref{sec:extnode}). Eine vollständige Liste der möglichen Positionen
-%   finden Sie in \prettyref{sec:overview-extnode}.
-%   \fi
-%   \ifENGLISH
-%   The node around which a component is rotated by \Lkeyword{angle}. The
-%   position of the node is specified with the \Lkeyword{rotateref}
-%   parameter. The position which can be defined are equal to those of the
-%   external nodes (\prettyref{sec:extnode}). See
-%   \prettyref{sec:overview-extnode} for possible rotation reference nodes of
-%   all components.
-%   \fi
-% \iffalse
-%<*ignore>
-% \fi
-\begin{LTXexample}[pos=t, linerange={1-2, 6-7, 11-12}]
-\begin{pspicture}(0,0.1)(12,1.8) 
-  \optbox[angle=20](0.5,1)(4.5,1)
-  \psdot(\oenodeRefA{})\uput[-90](\oenodeRefA{}){RefA}
-  \psdot(\oenodeRefB{})\uput[-90](\oenodeRefB{}){RefB}
-  \psline[style=Refline](\oenodeRefA{})(\oenodeRefB{})
-  \psdot(\oenodeRotref{})\uput[-90](\oenodeRotref{}){Rotref}
-  \optbox[angle=20, rotateref=bl](7.5,1)(11.5,1)
-  \psdot(\oenodeRefA{})\uput[-90](\oenodeRefA{}){RefA}
-  \psdot(\oenodeRefB{})\uput[-90](\oenodeRefB{}){RefB}
-  \psline[style=Refline](\oenodeRefA{})(\oenodeRefB{})
-  \psdot(\oenodeRotref{})\uput[-90](\oenodeRotref{}){Rotref}
-\end{pspicture}
-\end{LTXexample}
-% \iffalse
-%</ignore>
-% \fi
-% \end{ltxsyntax}
-%
-% \ifGERMAN
-% \subsection{Spezielle Strahlknoten}
-% \fi
-% \ifENGLISH
-% \subsection{Special beam nodes}
-% \fi\label{sec:beamnode}
-%
-% \ifGERMAN
-% Die Endknoten des letzten \Lcs{drawbeam} oder \Lcs{drawwidebeam} Kommandos
-% können verwendet werden, wenn \Lkeyword{savebeampoints} auf \opt{true} gesetzt.
-% ist.
-% \fi
-% \ifENGLISH
-% The end points of the most recent \Lcs{drawbeam} or \Lcs{drawwidebeam} command can
-% be accessed if \Lkeyword{savebeampoints} is set to \opt{true}.
-% \fi
-% \begin{ltxsyntax}
-%   \cmditem{oenodeBeam}
-%
-%   \ifGERMAN
-%   Der Endknoten des letzten \Lcs{drawbeam} Kommandos.
-%   \fi
-%   \ifENGLISH
-%   Access the end point of the most recent \Lcs{drawbeam} command.
-%   \fi
-% \iffalse
-%<*ignore>
-% \fi
-\begin{LTXexample}
-\begin{pspicture}(0,0)(3,2) 
-  \pnode(0,1){A}\pnode(1.6,1){B}
-  \optbox[endbox](A)(B)
-  \drawbeam[beaminsidelast=false]{(A)}{1}
-  \psdot(\oenodeBeam)
-\end{pspicture}
-\end{LTXexample}
-% \iffalse
-%</ignore>
-% \fi
-%
-%   \cmditem{oenodeBeamUp}
-%   \cmditem{oenodeBeamLow}
-%
-%   \ifGERMAN
-%   Der obere («upper») und untere («lower») Endknoten des letzten \Lcs{drawwidebeam} Kommandos.
-%   \fi
-%   \ifENGLISH
-%   Access the upper or lower end point of the most recent \Lcs{drawwidebeam} command.
-%   \fi
-%
-% \iffalse
-%<*ignore>
-% \fi
-\begin{LTXexample}
-\begin{pspicture}(0,0)(3,2) 
-  \pnode(0,1){A}\pnode(3,1){B}
-  \lens[abspos=1, lensradius=-2](A)(B)
-  \addtopsstyle{Beam}{%
-    fillstyle=solid, fillcolor=green, opacity=0.3}
-  \drawwidebeam[beamwidth=0.5]{(A)}{}{(B)}
-  \psdot(\oenodeBeamUp)\psdot(\oenodeBeamLow)
-  \uput[90](\oenodeBeamUp){\rput[rb](0,0){BeamUp}}
-  \uput[-90](\oenodeBeamLow){\rput[rt](0,0){BeamLow}}
-\end{pspicture}
-\end{LTXexample}
-% \iffalse
-%</ignore>
-% \fi
-%
-% \ifGERMAN
-% Beachten Sie, dass «oben» («upper») und «unten» («lower») bezüglich der
-% Ausbreitungsrichtung des Strahls definiert ist. Ein Randstrahl der als «upper»
-% startet can zu «lower» werden, wenn er den anderen Randstrahl kreuzt. Das wird
-% in dem folgenden Beispiel erläutert:
-% \fi
-% \ifENGLISH
-% Note, that «upper» and «lower» is defined with respect to the propagation
-% direction of the beam. A marginal beam which started as «upper» can change to «lower»
-% if it crosses the other marginal beam. This is shown in the following example,
-% where the marginal rays exchange their roles:
-% \fi
-%
-% \iffalse
-%<*ignore>
-% \fi
-\begin{LTXexample}
-\begin{pspicture}(0,0)(3,2) 
-  \pnode(0,1){A}\pnode(3,1){B}
-  \lens[abspos=1](A)(B)
-  \addtopsstyle{Beam}{%
-    fillstyle=solid, fillcolor=green, opacity=0.3}
-  \drawwidebeam[beamwidth=0.5]{(A)}{}
-  \psdot(\oenodeBeamUp)\psdot(\oenodeBeamLow)
-  \uput[90](\oenodeBeamUp){\rput[rb](0,0){BeamUp}}
-  \uput[-90](\oenodeBeamLow){\rput[rt](0,0){BeamLow}}
-  \drawwidebeam[beamwidth=0.5, skipconn=1]{(A)}{}{(B)}
-  \psdot(\oenodeBeamUp)\psdot(\oenodeBeamLow)
-  \uput[90](\oenodeBeamUp){\rput[rb](0,0){BeamUp}}
-  \uput[-90](\oenodeBeamLow){\rput[rt](0,0){BeamLow}}
-\end{pspicture}
-\end{LTXexample}
-% \iffalse
-%</ignore>
-% \fi
-% \end{ltxsyntax}
-%
-% \ifGERMAN
-% Die Strahlknoten können nur innerhalb der \env{pspicture}-Umgebung verwendet
-% werden, in der sie definiert wurden. Um auf bestimmte Strahlknoten von
-% außerhalb zugreifen zu können müssen diese explizit umbenannt werden:
-% \fi
-% \ifENGLISH
-% The beam nodes can be accessed only within the \env{pspicture} environment
-% they where defined in. If you want to use one of these nodes from outside, you
-% must explicitely rename them:
-% \fi
-%
-% \iffalse
-%<*ignore>
-% \fi
-\begin{lstlisting}
-\pnode(\oenodeBeam){MyBeamNode}
-\end{lstlisting}
-% \iffalse
-%</ignore>
-% \fi
-%
-% \ifGERMAN
-% Desweiteren werden die Endknoten durch \Lkeyword{stopinside}
-% beeinflusst. Siehe \prettyref{sec:custombeam} für weitere Details.
-% \fi
-% \ifENGLISH
-% The end points are also affected by \Lkeyword{stopinside}. See
-% \prettyref{sec:custombeam} for further details.
-% \fi
-% \iffalse
-%<*ignore>
-% \fi
-\begin{LTXexample}
-\begin{pspicture}(0,0)(3,2) 
-  \pnode(0,1){A}\pnode(1.6,1){B}
-  \optbox[endbox](A)(B)
-  \psset{beaminsidelast=false}
-  \drawbeam[linecolor=red, beampos=0.3]{(A)}{1}
-  \psdot(\oenodeBeam)
-  \drawbeam[stopinside]{(A)}{1}
-  \psdot(\oenodeBeam)
-\end{pspicture}
-\end{LTXexample}
-% \iffalse
-%</ignore>
-% \fi
-%
-% \ifGERMAN
-%   \chapter{Komponenten-Referenz}
-% \fi
-% \ifENGLISH
-%   \chapter{Component reference}
-% \fi
+% \ifGERMAN\chapter{Allgemeine Komponentenparameter}\fi
+% \ifENGLISH\chapter{General component parameters}\fi
 % 
 % This chapter contains detailed information about all components and related
 % options. It is divided into three parts:
@@ -1772,11 +1084,9 @@
 % \end{minipage}
 %
 % \newpage
-% \section{General parameters}\label{sec:generalparam}
-% 
-% Some general parameters which can be used for all objects.
+% \section{Using psstyles}\label{sec:styles}
 %
-% \subsection{Component appearance}\label{sec:appearance}
+% \section{Component appearance}\label{sec:appearance}
 %
 % \begin{optionlist}
 % \styleitem{OptComp} 
@@ -1895,12 +1205,10 @@
 %
 % \end{optionlist}
 %
-% \ifGERMAN
-%   \subsection{Drehen und Verschieben}
-% \fi
-% \ifENGLISH
-%   \subsection{Rotating and shifting}
-% \fi\label{sec:rotshift}
+% \ifGERMAN\section{Drehen und Verschieben}\fi
+% \ifENGLISH\section{Rotating and shifting}\fi
+% \label{sec:rotshift}
+%
 % \ifGERMAN
 % Alle Komponenten können versetzt und um verschiedene Bezugspunkte
 % gedreht werden. Beachten Sie, dass mit den Komponenten auch die
@@ -1979,12 +1287,10 @@
 % \fi
 % \end{optionlist}
 %
-% \ifGERMAN
-%   \subsection{Positionierung}
-% \fi
-% \ifENGLISH
-%   \subsection{Positioning}
-% \fi\label{sec:positioning}
+% \ifGERMAN\section{Positionierung}\fi
+% \ifENGLISH\section{Positioning}\fi
+% \label{sec:positioning}
+%
 % \ifGERMAN
 % Alle Komponenten außer den Freistrahl-Dreipolen können zwischen ihren
 % beiden Referenzknoten (\Lcs{oenodeRefA} und \Lcs{oenodeRefB})
@@ -2039,17 +1345,16 @@
 % \end{optionlist}
 % 
 % 
-% \ifGERMAN
-%   \subsection{Beschriftungen}
-%   Alle Komponenten können mit einer Beschriftung versehen werden,
-%   deren Position und Ausrichtung genau angepasst werden kann.
-% \fi
-% \ifENGLISH
-%   \subsection{Labels}
-%   All components may have a label, which position and alignment can be
-%   adjusted precisely.
-% \fi
+% \ifGERMAN\section{Beschriftungen}\fi
+% \ifENGLISH\section{Labels}\fi
 % \label{sec:labels}
+%
+% \ifGERMAN Alle Komponenten können mit einer Beschriftung versehen werden,
+% deren Position und Ausrichtung genau angepasst werden kann. 
+% \fi
+% \ifENGLISH All components may have a label, which position and alignment can
+% be adjusted precisely. 
+% \fi 
 %
 % \begin{optionlist}
 % \numitem[0.8]{labeloffset}
@@ -2218,20 +1523,12 @@
 % \ifENGLISH This is an alias for \opt{label=0 . . relative}\fi
 % \end{optionlist}
 % 
-% \ifGERMAN
-%   \section{Freistrahl-Komponenten}
-% \fi
-% \ifENGLISH
-%   \section{Free-ray objects}
-% \fi
+% \ifGERMAN\chapter{Freistrahl-Komponenten}\fi
+% \ifENGLISH\chapter{Free-ray components}\fi
 % \label{sec:freeraycomp}
 %
-% \ifGERMAN
-%   \subsection{Linse}
-% \fi
-% \ifENGLISH
-%   \subsection{Lens}
-% \fi
+% \ifGERMAN\section{Linse}\fi
+% \ifENGLISH\section{Lens}\fi
 % \label{sec:lens}
 %
 % \begin{ltxsyntax}
@@ -2366,12 +1663,8 @@
 % \fi
 % \end{optionlist}
 % 
-% \ifGERMAN
-%   \subsection{Optisches Pl\"attchen}
-% \fi
-% \ifENGLISH
-%   \subsection{Optical plate}
-% \fi
+% \ifGERMAN\section{Optisches Pl\"attchen}\fi
+% \ifENGLISH\section{Optical plate}\fi
 % 
 % \begin{ltxsyntax}
 % \dipoledesc{optplate}
@@ -2396,12 +1689,9 @@
 %   \ifENGLISH \linewidthexplanation{plate}{plates}\fi
 % \end{optionlist}
 % 
-% \ifGERMAN
-%   \subsection{Verzögerungsplättchen}
-% \fi
-% \ifENGLISH
-%   \subsection{Retardation plate}
-% \fi
+% \ifGERMAN\section{Verzögerungsplättchen}\fi
+% \ifENGLISH\section{Retardation plate}\fi
+%
 % \begin{ltxsyntax}
 % \dipoledesc{optretplate}
 % \iffalse
@@ -2422,7 +1712,8 @@
 % \numitem[0.1]{platewidth} \ifGERMAN Die Breite des Plättchens.\fi\ifENGLISH The width of the plate.\fi
 % \end{optionlist}
 % 
-% \subsection{Pinhole}
+% \ifGERMAN\section{Lochblende}\fi
+% \ifENGLISH\section{Pinhole}\fi
 % 
 % \begin{ltxsyntax}
 % \dipoledesc{pinhole}
@@ -2470,7 +1761,9 @@
 % \fi
 % \end{optionlist}
 % 
-% \subsection{Crystal}
+% \ifGERMAN\section{Kristall}\fi
+% \ifENGLISH\section{Crystal}\fi
+%
 % \begin{ltxsyntax}
 % \dipoledesc{crystal}
 % \iffalse
@@ -2570,7 +1863,8 @@
 % 
 % \medskip
 % 
-% \subsection{Box}\label{sec:box}
+% \ifGERMAN\section{Box}\fi
+% \ifENGLISH\section{Box}\fi
 % 
 % \begin{ltxsyntax}
 % \dipoledesc{optbox}
@@ -2625,8 +1919,8 @@
 % \fi
 % \end{optionlist}
 % 
-% \ifGERMAN\subsection{Detektor}\fi
-% \ifENGLISH\subsection{Detector}\fi
+% \ifGERMAN\section{Detektor}\fi
+% \ifENGLISH\section{Detector}\fi
 % 
 % \begin{ltxsyntax}
 % \dipoledesc{optdetector}
@@ -2672,8 +1966,8 @@
 % \fi
 % \end{optionlist}
 % 
-% \ifGERMAN\subsection{Optische Diode}\fi
-% \ifENGLISH\subsection{Optical diode}\fi
+% \ifGERMAN\section{Optische Diode}\fi
+% \ifENGLISH\section{Optical diode}\fi
 %
 % \begin{ltxsyntax}
 % \dipoledesc{optdiode}
@@ -2699,8 +1993,8 @@
 % \fi
 % \end{optionlist}
 % 
-% \ifGERMAN\subsection{Doveprisma}\fi
-% \ifENGLISH\subsection{Dove prism}\fi
+% \ifGERMAN\section{Doveprisma}\fi
+% \ifENGLISH\section{Dove prism}\fi
 % 
 % \begin{ltxsyntax}
 % \dipoledesc{doveprism}
@@ -2730,8 +2024,8 @@
 %   \fi
 % \end{optionlist}
 % 
-% \ifGERMAN\subsection{Polarisation}\fi
-% \ifENGLISH\subsection{Polarization}\fi
+% \ifGERMAN\section{Polarisation}\fi
+% \ifENGLISH\section{Polarization}\fi
 %
 % \begin{ltxsyntax}
 % \dipoledesc{polarization}
@@ -2786,8 +2080,8 @@
 % \styleitem{Polarization}
 % \end{optionlist}
 % 
-% \ifGERMAN\subsection{Spiegel}\fi
-% \ifENGLISH\subsection{Mirror}\fi
+% \ifGERMAN\section{Spiegel}\fi
+% \ifENGLISH\section{Mirror}\fi
 % 
 % \begin{ltxsyntax}
 % \tripoledesc{mirror}
@@ -2968,8 +2262,8 @@
 % \fi
 % \end{optionlist}
 % 
-% \ifGERMAN\subsection{Strahlteiler}\fi
-% \ifENGLISH\subsection{Beamsplitter}\fi
+% \ifGERMAN\section{Strahlteiler}\fi
+% \ifENGLISH\section{Beamsplitter}\fi
 %
 % \begin{ltxsyntax}
 % \tripoledesc{beamsplitter}
@@ -3022,8 +2316,8 @@
 % \fi
 % \end{optionlist}
 % 
-% \ifGERMAN\subsection{Optisches Gitter}\fi
-% \ifENGLISH\subsection{Optical grating}\fi
+% \ifGERMAN\section{Optisches Gitter}\fi
+% \ifENGLISH\section{Optical grating}\fi
 % 
 % \begin{ltxsyntax}
 % \tripoledesc{optgrating}
@@ -3132,8 +2426,8 @@
 % \ifENGLISH \linewidthexplanation{grating}{gratings}\fi
 % \end{optionlist}
 % 
-% \ifGERMAN\subsection{Prisma}\fi
-% \ifENGLISH\subsection{Prism}\fi
+% \ifGERMAN\section{Prisma}\fi
+% \ifENGLISH\section{Prism}\fi
 % 
 % \begin{ltxsyntax}
 % \tripoledesc{optprism}
@@ -3179,8 +2473,8 @@
 % \fi
 % \end{optionlist}
 % 
-% \ifGERMAN\subsection{Umkehrprisma}\fi
-% \ifENGLISH\subsection{Right-angle prism}\fi
+% \ifGERMAN\section{Umkehrprisma}\fi
+% \ifENGLISH\section{Right-angle prism}\fi
 % 
 % \begin{ltxsyntax}
 % \tripoledesc{rightangleprism}
@@ -3226,8 +2520,8 @@
 % \ifENGLISH The length of the input plane.\fi
 % \end{optionlist}
 % 
-% \ifGERMAN\subsection{Pentaprisma}\fi
-% \ifENGLISH\subsection{Penta prism}\fi
+% \ifGERMAN\section{Pentaprisma}\fi
+% \ifENGLISH\section{Penta prism}\fi
 % 
 % \begin{ltxsyntax}
 % \tripoledesc{pentaprism}
@@ -3250,59 +2544,9 @@
 %   \ifENGLISH The length of the input and output plane.\fi
 % \end{optionlist}
 % 
-% \ifGERMAN\subsection{Benutzerdefinierte Komponenten}\fi
-% \ifENGLISH\subsection{Custom components}\fi
-% \label{sec:custom}
-%
-% \ifGERMAN
-% Das \LPack{pst-optexp} Paket stellt zwei Makros zur Verfügung um
-% eigene Komponenten zu zeichnen. Diese können z.B. aus Bildern oder
-% eigenen Zeichnungen bestehen.
-% \fi
-% \ifENGLISH
-% The \nxLPack{pst-optexp} package provides two commands which can use
-% anything as optical components. This includes e.g. external images or
-% your own drawings.
-% \fi
 % 
-% \begin{ltxsyntax}
-%   \dipoledesc{optdipole}
-% \iffalse
-%<*ignore>
-% \fi
-\begin{LTXexample}
-\begin{pspicture}(3,3)
-  \optdipole[labeloffset=1, beam](0,2)(3,1){%
-    \rput(0,0){\rule{0.5cm}{1cm}}%
-  }{label}
-\end{pspicture}
-\end{LTXexample}
-% \iffalse
-%</ignore>
-% \fi
-% 
-% \tripoledesc{opttripole}
-% \iffalse
-%<*ignore>
-% \fi
-\begin{LTXexample}
-\begin{pspicture}(3,3)
-  \opttripole[beam](3,1.5)(1.5,2)(0,0){%
-    \rput[b](0,0){text}%
-  }{label}
-\end{pspicture}
-\end{LTXexample}
-% \iffalse
-%</ignore>
-% \fi
-% \end{ltxsyntax}
-%
-% If you want to use a custom component more often, you should define
-% it as a new component. For details on how to define your own components see
-% \prettyref{sec:newobj}.
-% 
-% \ifGERMAN\section{Faseroptische Komponenten}\fi
-% \ifENGLISH\section{Fiber-optical components}\fi
+% \ifGERMAN\chapter{Faseroptische Komponenten}\fi
+% \ifENGLISH\chapter{Fiber-optical components}\fi
 % \label{sec:fibercomp}
 % 
 % \begin{optionlist}
@@ -3313,8 +2557,8 @@
 %   which would be highlighted.
 % \end{optionlist}
 %
-% \ifGERMAN\subsection{Optische Faser}\fi
-% \ifENGLISH\subsection{Optical fiber}\fi
+% \ifGERMAN\section{Optische Faser}\fi
+% \ifENGLISH\section{Optical fiber}\fi
 % 
 % \begin{ltxsyntax}
 % \fiberdipoledesc{optfiber}
@@ -3381,8 +2625,8 @@
 % \fi
 % \end{optionlist}
 % 
-% \ifGERMAN\subsection{Optischer Verstärker}\fi
-% \ifENGLISH\subsection{Optical amplifier}\fi
+% \ifGERMAN\section{Optischer Verstärker}\fi
+% \ifENGLISH\section{Optical amplifier}\fi
 %
 % \begin{ltxsyntax}
 % \fiberdipoledesc{optamp}
@@ -3403,8 +2647,8 @@
 % \numitem[0.8]{optampsize} \sizeexplanation{\ifGERMAN des Verstärkers\fi\ifENGLISH amplifier\fi}
 % \end{optionlist}
 % 
-% \ifGERMAN\subsection{Mach-Zehnder-Modulator}\fi
-% \ifENGLISH\subsection{Mach-Zehnder modulator}\fi
+% \ifGERMAN\section{Mach-Zehnder-Modulator}\fi
+% \ifENGLISH\section{Mach-Zehnder modulator}\fi
 % 
 % \begin{ltxsyntax}
 % \fiberdipoledesc{optmzm}
@@ -3425,8 +2669,8 @@
 % \numitem[0.8]{optmzmsize} \sizeexplanation{\ifGERMAN des Modulators\fi\ifENGLISH modulator\fi}
 % \end{optionlist}
 % 
-% \ifGERMAN\subsection{Optischer Filter}\fi
-% \ifENGLISH\subsection{Optical filter}\fi
+% \ifGERMAN\section{Optischer Filter}\fi
+% \ifENGLISH\section{Optical filter}\fi
 %
 % \begin{ltxsyntax}
 % \fiberdipoledesc{optfilter}
@@ -3486,8 +2730,8 @@
 % \fi
 % \end{optionlist}
 % 
-% \ifGERMAN\subsection{Polarisationssteller}\fi
-% \ifENGLISH\subsection{Polarization controller}\fi
+% \ifGERMAN\section{Polarisationssteller}\fi
+% \ifENGLISH\section{Polarization controller}\fi
 % 
 % \begin{ltxsyntax}
 % \fiberdipoledesc{polcontrol}
@@ -3510,7 +2754,8 @@
 % \ifENGLISH The radius of the polarization controller circles.\fi
 % \end{optionlist}
 % 
-% \subsection{Isolator}
+% \ifGERMAN\section{Isolator}\fi
+% \ifENGLISH\section{Isolator}\fi
 % 
 % \begin{ltxsyntax}
 % \fiberdipoledesc{optisolator}
@@ -3554,8 +2799,8 @@
 % \fi
 % \end{optionlist}
 % 
-% \ifGERMAN\subsection{Optischer Schalter}\fi
-% \ifENGLISH\subsection{Optical switch}\fi
+% \ifGERMAN\section{Optischer Schalter}\fi
+% \ifENGLISH\section{Optical switch}\fi
 % 
 % \begin{ltxsyntax}
 % \fiberdipoledesc{optswitch}
@@ -3593,8 +2838,8 @@
 % \fi
 % \end{optionlist}
 % 
-% \ifGERMAN\subsection{Faserverzögerungstrecke}\fi
-% \ifENGLISH\subsection{Fiber delay line}\fi
+% \ifGERMAN\section{Faserverzögerungstrecke}\fi
+% \ifENGLISH\section{Fiber delay line}\fi
 % 
 % \begin{ltxsyntax}
 % \fiberdipoledesc{fiberdelayline}
@@ -3639,8 +2884,8 @@
 % \fi
 % \end{optionlist}
 % 
-% \ifGERMAN\subsection{Polarisator}\fi
-% \ifENGLISH\subsection{Polarizer}\fi
+% \ifGERMAN\section{Polarisator}\fi
+% \ifENGLISH\section{Polarizer}\fi
 % 
 % \begin{ltxsyntax}
 % \fiberdipoledesc{optfiberpolarizer}
@@ -3661,8 +2906,8 @@
 %   \numitem[0.6]{fiberpolsize} \sizeexplanation{\ifGERMAN des Polarisators\fi\ifENGLISH polarizer\fi}
 % \end{optionlist}
 % 
-% \ifGERMAN\subsection{Faserkollimator}\fi
-% \ifENGLISH\subsection{Fiber collimator}\fi
+% \ifGERMAN\section{Faserkollimator}\fi
+% \ifENGLISH\section{Fiber collimator}\fi
 % 
 % \begin{ltxsyntax}
 % \xLdipole{fibercollimator}\cmditem{fibercollimator}(in)(A)(B)(out){label}%
@@ -3734,11 +2979,11 @@
 %</ignore>
 % \fi
 % 
-% \ifGERMAN\subsection{Faserkoppler}\fi
-% \ifENGLISH\subsection{Fiber coupler}\fi\label{sec:coupler}
+% \ifGERMAN\section{Faserkoppler}\fi
+% \ifENGLISH\section{Fiber coupler}\fi\label{sec:coupler}
 %
-% \ifGERMAN\subsubsection{\texorpdfstring{\mathversion{bold}$2\times 2$}{2x2}-Koppler}\fi
-% \ifENGLISH\subsubsection{\texorpdfstring{\mathversion{bold}$2\times 2$}{2x2} coupler}\fi
+% \ifGERMAN\subsection{\texorpdfstring{\mathversion{bold}$2\times 2$}{2x2}-Koppler}\fi
+% \ifENGLISH\subsection{\texorpdfstring{\mathversion{bold}$2\times 2$}{2x2} coupler}\fi
 %
 % \begin{ltxsyntax}
 % \xLfmultipole{optcoupler}%
@@ -3815,8 +3060,8 @@
 % \fi
 % \end{optionlist}
 % 
-% \ifGERMAN\subsubsection{WDM-Koppler}\fi
-% \ifENGLISH\subsubsection{WDM coupler}\fi
+% \ifGERMAN\subsection{WDM-Koppler}\fi
+% \ifENGLISH\subsection{WDM coupler}\fi
 %
 % \begin{ltxsyntax}
 % \xLfmultipole{wdmcoupler}%
@@ -3890,8 +3135,8 @@
 % \fi
 % \end{optionlist}
 % 
-% \ifGERMAN\subsubsection{WDM-Teiler}\fi
-% \ifENGLISH\subsubsection{WDM splitter}\fi
+% \ifGERMAN\subsection{WDM-Teiler}\fi
+% \ifENGLISH\subsection{WDM splitter}\fi
 %
 % \begin{ltxsyntax}
 % \xLfmultipole{wdmcoupler}%
@@ -3963,8 +3208,8 @@
 % \fi
 % \end{optionlist}
 % 
-% \ifGERMAN\subsubsection{Eingangs- und Ausgangsknoten}\fi
-% \ifENGLISH\subsubsection{Input and output nodes}\fi
+% \ifGERMAN\subsection{Eingangs- und Ausgangsknoten}\fi
+% \ifENGLISH\subsection{Input and output nodes}\fi
 % \label{sec:coupler-nodes}
 %
 % \ifGERMAN
@@ -3996,6 +3241,632 @@
 % \end{pspicture}
 % \end{center}
 % 
+%
+%
+% \ifGERMAN\chapter{Spezielle Knoten}\fi
+% \ifENGLISH\chapter{Special nodes}\fi
+% \label{sec:objnodes}
+% 
+% \ifGERMAN
+% Jedes \nxLPack{pst-optexp} Objekt stellt mehrere spezielle Knoten zur
+% Verfügung, die mit dessen Geometrie und Positionierung zusammenhängen. Diese
+% Knoten stehen für weitere Verwendung zur Verfügung.
+%
+% Sie sollten immer die dafür vorgesehenen Makros verwenden um auf die
+% Knotennamen zuzugreifen.
+% \fi
+% \ifENGLISH
+% Every \nxLPack{pst-optexp} object of an experimental setup provides
+% several special nodes which are related to its geometry and
+% positioning. They can be accessed and used for related positioning and
+% drawing.
+%
+% You should always use the dedicated macros to access these node names.
+% \fi
+% \begin{ltxsyntax}
+%   \cmditem{oenode}{node}{name} 
+%
+% \ifGERMAN
+% Das ist das grundlegende Makro mit dem auf die Knotennamen einer Komponente
+% zugegriffen werden kann. Das erste Argument \prm{node} ist der Bezeichner des
+% angeforderten Knotens. Das zweite Argument \prm{name} ist der Name der
+% Komponente (gemäß \prettyref{sec:namingobj}). Ist dieses leer so wird das
+% zuletzt definierte Objekt verwendet.
+%
+% Für viele der Knoten wird ein eigenes Makro bereitgestellt, das Sie dann auch
+% verwenden sollten, da sich die Namenskonventionen ändern könnten. Die Makros
+% stellen sicher, dass Sie immer die passenden Knotennamen erhalten. Daher sind
+% die verfügbaren Bezeichner auch nicht aufgelistet.
+% \fi
+% \ifENGLISH
+% This is the basic command to access any node associated with a certain
+% object. The first argument \prm{node} is the identifier of the requested
+% node. The second argument \prm{name} is the name of the target object
+% (according to \prettyref{sec:namingobj}). If it is left empty, the last
+% defined component is used.
+%
+% For most special nodes an appropriate macro is provided, which you are
+% strongly advised to use, because the naming conventions may change. Using the
+% macros makes sure, that you always get the correct node names. Therefore, the
+% available identifiers are not listed explicitely.
+% \fi
+% \end{ltxsyntax}
+%
+% \begin{optionlist}
+%   \boolitem[false]{showoptdots} 
+%   \ifGERMAN 
+%   Markiert einige der speziellen Komponentenknoten: die schwarzen Punkte sind
+%   die normalen und die schwarzen Kreuze die transformierten Referenzknoten
+%   (\prettyref{sec:refnode}), der rote Punkt ist der Mittelpunktknoten
+%   (\prettyref{sec:centernode}) und das rote Kreuz der Beschriftungsknoten
+%   (\prettyref{sec:labelnode}).
+%   \fi
+%   \ifENGLISH 
+%   Draw some special component nodes for debugging: The black points are the
+%   normal and the black crosses are the transformed reference nodes
+%   (\prettyref{sec:refnode}), the red point is the center node
+%   (\prettyref{sec:centernode}), and the red cross is the label node
+%   (\prettyref{sec:labelnode}).
+%   \fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(3,2)
+\mirror[showoptdots, angle=10, beam](0,1)(1.9,1)(1.9,0)
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+% \end{optionlist}
+%
+% \section{Component identifiers}\label{sec:namingobj}
+% All objects of a \nxLPack{pst-optexp} sketch are numbered
+% automatically in increasing order by their definition in the code. The
+% objects as well as their special nodes can be accessed via this
+% number.
+% 
+% \begin{optionlist}
+%   \valitem{compname}{string} Assigns a name to an object, which can
+%   then be referenced both by this name and by its number. The
+%   parameter can be assigned only directly within a
+%   \nxLPack{pst-optexp} object and should be unique within one
+%   \nxLkeyword{pspicture} environment.
+% \iffalse
+%<*ignore>
+% \fi
+\ifGERMAN
+\begin{LTXexample}
+\begin{pspicture}(2,2)
+  \optbox[compname=MyBox](0,1)(2,2)
+  \psdot[linecolor=red](\oenodeIn{MyBox}) % Verwende den Namen
+  \psdot[linecolor=blue](\oenodeOut{1})   % Verwende die Nummer
+  \psdot[linecolor=green](\oenodeCenter{})% Nimm die letzte Komponente
+\end{pspicture}
+\end{LTXexample}
+\fi\ifENGLISH
+\begin{LTXexample}
+\begin{pspicture}(2,2)
+  \optbox[compname=MyBox](0,1)(2,2)
+  \psdot[linecolor=red](\oenodeIn{MyBox})% use the compname
+  \psdot[linecolor=blue](\oenodeOut{1})  % use the number
+  \psdot[linecolor=green](\oenodeCenter{})  % the last component
+\end{pspicture}
+\end{LTXexample}
+\fi
+% \end{optionlist}
+% \iffalse
+%</ignore>
+% \fi
+% 
+% \ifGERMAN\section{Referenzknoten}\fi
+% \ifENGLISH\section{Reference nodes}\fi
+% \label{sec:refnode}
+%
+% \begin{ltxsyntax}
+%   \cmditem{oenodeRefA}{obj}
+%   \cmditem{oenodeRefB}{obj}
+%
+%  \ifGERMAN
+%  Die Eingangs- und Ausgangs-Referenzknoten.
+%
+%  Das sind die ursprünglichen Knoten, die für die Positionierung der Komponente
+%  benutzt wurden, \nxLcs{oenodeRefA} ist der erste und \nxLcs{oenodeRefB} der
+%  letzte Knoten. Lediglich bei den Faserkoppler (\prettyref{sec:coupler}) hängt
+%  die Zuordnung von dem \Lkeyword{align} Parameter ab.
+%  Eine vollständige Liste finden Sie in \prettyref{sec:overview-refnode}.
+%  \fi
+%  \ifENGLISH
+%  The input and output reference nodes.
+%
+%  These are the original nodes which were used for the component positioning.
+%  \nxLcs{oenodeRefA} is the first node and \nxLcs{oenodeRefB} the last
+%  node. Only for the couplers (\prettyref{sec:coupler}) it depends on the
+%  \Lkeyword{align} parameter. For a complete list of possible reference nodes, see
+%  \prettyref{sec:overview-refnode}.
+%  \fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[pos=t, linerange={1-5, 7-7}]
+\begin{pspicture}(5,1)
+\pnode(0.5,0.5){A}\pnode(4.5,0.5){B}
+\optbox(A)(B)
+\psdot(\oenodeRefA{})\uput[-90](\oenodeRefA{}){RefA}
+\psdot(\oenodeRefB{})\uput[-90](\oenodeRefB{}){RefB}
+\psline[style=Refline](\oenodeRefA{})(\oenodeRefB{})
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
+%   \cmditem{oenodeTrefA}{obj}
+%   \cmditem{oenodeTrefB}{obj}
+%
+%   \ifGERMAN
+%   Die transformierten Eingangs- und Ausgangs-Referenzknoten.
+%
+%   Das sind die Referenzknoten nachdem sie zusammen mit der Komponente gemäß
+%   der \Lkeyword{compshift} und \Lkeyword{angle} Parameter transformiert wurden.
+%   \fi
+%   \ifENGLISH
+%   The transformed input and output reference nodes.
+%
+%   These are the input and output reference nodes which are transformed
+%   together with the component according to the \Lkeyword{compshift} and
+%   \Lkeyword{angle} parameters.
+%   \fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[pos=t, linerange={1-7,9-9}]
+\begin{pspicture}(5,1.8)
+\pnode(0.5,0.5){A}\pnode(4.5,0.5){B}
+\optbox[compshift=0.5, angle=10](A)(B)
+\psdot(\oenodeRefA{})\uput[-90](\oenodeRefA{}){RefA}
+\psdot(\oenodeRefB{})\uput[-90](\oenodeRefB{}){RefB}
+\psdot(\oenodeTrefA{})\uput[90](\oenodeTrefA{}){TrefA}
+\psdot(\oenodeTrefB{})\uput[90](\oenodeTrefB{}){TrefB}
+\psline[style=Refline](\oenodeTrefA{})(\oenodeTrefB{})
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+% \end{ltxsyntax}
+%
+% \ifGERMAN\section{Mittelpunktknoten}\fi
+% \ifENGLISH\section{Center node}\fi
+% \label{sec:centernode}
+%
+% \begin{ltxsyntax}
+%   \cmditem{oenodeCenter}{obj}
+% 
+% \ifGERMAN
+% Dieser Knoten liegt, bis auf wenige Ausnahmen, im Mittelpunkt der Komponente.
+% \fi
+% \ifENGLISH
+% This node lays, except for a few components, in the center of the component.
+% \fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[linerange={1-4, 6-6}]
+\begin{pspicture}(3,1)
+\pnode(0,0.5){A}\pnode(3,0.5){B}
+\optbox(A)(B)
+\psdot(\oenodeCenter{})
+\psline[style=Refline](\oenodeRefA{})(\oenodeRefB{})
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+% \end{ltxsyntax}
+% 
+% \ifGERMAN\section{Beschriftungsknoten}\fi
+% \ifENGLISH\section{Label node}\fi
+% \label{sec:labelnode}
+%
+% \begin{ltxsyntax}
+%   \cmditem{oenodeLabel}{obj}
+%
+%   \ifGERMAN
+%   Auf diesen Knoten wird die Beschriftung platziert. Der Knoten ist auch
+%   verfügbar wenn keine Beschriftung angegeben wurde. Für \xLkeyword{labeloffset}\nxLkeyword{labeloffset=0}
+%   ist dieser Knoten identisch mit dem Mittelpunktsknoten
+%   (\prettyref{sec:centernode}).
+%   \fi
+%   \ifENGLISH
+%   The component label is placed at this node. It is also available
+%   if no label was specified. The label node is identical with the center
+%   node for \xLkeyword{labeloffset}\nxLkeyword{labeloffset=0}.
+%   \fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[linerange={1-4,6-6}]
+\begin{pspicture}(3,1.5)
+\pnode(0,1){A}\pnode(3,1){B}
+\optbox(A)(B)
+\psdot(\oenodeLabel{})
+\psline[style=Refline](\oenodeTrefA{})(\oenodeTrefB{})
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+% \end{ltxsyntax}
+%
+% \ifGERMAN\section{Externe Knoten}\fi
+% \ifENGLISH\section{External nodes}\fi
+% \label{sec:extnode}
+%
+% \begin{ltxsyntax}
+%   \cmditem{oenodeExt}{obj}
+%
+% \ifGERMAN
+% Ein externer Knoten kann an unterschiedliche Positionen entlang des
+% Komponentenrandes gesetzt werden. Dieser wird nur für den externen Zugriff
+% definiert, und beineinflusst in keiner Weise die Komponente.
+% \fi
+% \ifENGLISH
+% An external node can be placed at different positions along the component
+% boundary. It gets defined only for external usage and does not affect the
+% component in any way.
+% \fi
+% \end{ltxsyntax}
+% \begin{optionlist}
+% \valitem{extnode}{refstring}
+% \ifGERMAN
+% Bestimmt die Positionierung des externen Knotens. \refstringexplanation Nicht
+% jede Komponente unterstützt alle möglichen Kombinationen, die möglichen
+% Positionen jeder Komponente sind in \prettyref{sec:overview-extnode}
+% zusammengefasst.
+% \fi
+% \ifENGLISH
+% Set the position of the external node. \refstringexplanation Not all
+% components support any possible combination. The allowed positions of each
+% component are listed in \prettyref{sec:overview-extnode}.
+% \fi
+%
+% \begin{pspicture}(6,2.5) 
+%   \addtopsstyle{Beam}{beaminside=false, arrows=->, arrowinset=0, arrowscale=1.5}
+%    \psset{optboxheight=1.5, optboxwidth=2.5}\ttfamily
+%    \pnode(0,1.25){A}\pnode(6,1.25){B}
+%    \optbox[beam, extnode=tl](A)(B)
+%    \psdot(\oenodeExt{})\uput[135](\oenodeExt{}){tl}
+%    \backlayer{%
+%      \optbox[extnode=t](A)(B)\psdot(\oenodeExt{})\uput[90](\oenodeExt{}){t}
+%      \optbox[extnode=tr](A)(B)\psdot(\oenodeExt{})\uput[90](\oenodeExt{}){tr}
+%      \optbox[extnode=r](A)(B)\psdot(\oenodeExt{})\uput[45](\oenodeExt{}){r}
+%      \optbox[extnode=br](A)(B)\psdot(\oenodeExt{})\uput[-90](\oenodeExt{}){br}
+%      \optbox[extnode=b](A)(B)\psdot(\oenodeExt{})\uput[-90](\oenodeExt{}){b}
+%      \optbox[extnode=bl](A)(B)\psdot(\oenodeExt{})\uput[-90](\oenodeExt{}){bl}
+%      \optbox[extnode=l](A)(B)\psdot(\oenodeExt{})\uput[135](\oenodeExt{}){l}
+%      \optbox[extnode=c](A)(B)\psdot(\oenodeExt{})\uput[180](\oenodeExt{}){c}
+%    }
+% \end{pspicture}
+%
+% \boolitem[true]{globalnoderef}
+% \ifGERMAN
+% Die Bezeichnung von «oben» (\opt{t}) den anderen Positionierungsparametern von
+% \Lkeyword{extnode} können global oder relativ zur Komponente betrachtet werden.
+%
+% In dem folgenden Beispiel ist der externe Knoten immer «oben rechts» platziert
+% unabhängig von der relativen Anordnung der Referenzknoten
+% (\opt{globalnoderef=true}\xLkeyword{globalnoderef}). In dem darauffolgenden Beispiel ist die
+% Positionierung relativ zur Verbindung zwischen Eingangs- und
+% Ausgangsreferenzknoten (\opt{globalnoderef=false}\xLkeyword{globalnoderef}).
+% \fi
+% \ifENGLISH 
+% The definition of «top» (\opt{t}) and the other \Lkeyword{extnode} refstring
+% parameters can be global or relative to the component.
+%
+% In the next example the external node is always placed «top right»,
+% independent of the actual ordering of the reference nodes
+% (\opt{globalnoderef=true}\xLkeyword{globalnoderef}). In the following example the position is relative
+% to the connection from input to output reference node
+% (\opt{globalnoderef=false}\xLkeyword{globalnoderef}).
+% \fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(-2,-2)(2,2)
+  \psset{extnode=tr, endbox, optboxwidth=1, optboxheight=0.6, dotscale=1.5}
+  \multido{\i=0+45}{8}{%
+    \optbox[label=0 . . relative](0,0)(1;\i){\i}
+    \psdot(\oenodeExt{})
+  }
+\end{pspicture}
+\end{LTXexample}
+\begin{LTXexample}
+\begin{pspicture}(-2,-2)(2,2)
+  \psset{globalnoderef=false, extnode=tr, endbox, optboxwidth=1, optboxheight=0.6, dotscale=1.5}
+  \multido{\i=0+45}{8}{%
+    \optbox[label=0 . . relative](0,0)(1;\i){\i}
+    \psdot(\oenodeExt{})
+  }%
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+% \end{optionlist}
+%
+% \ifGERMAN\section{Grenzflächenknoten}\fi
+% \ifENGLISH\section{Interface nodes}\fi
+% \label{sec:ifcnode}
+%
+% \begin{ltxsyntax}
+%   \cmditem{oenodeIfc}{num}{obj}
+%   \cmditem{oenodeIn}{obj}
+%   \cmditem{oenodeOut}{obj}
+%   
+%   \ifGERMAN
+%   Der Grenzflächenknoten \prm{num}, wobei \prm{num} eine Ganzzahl zwischen
+%   \opt{1} und \opt{N} ist. Der letzte Knoten ist immer \opt{N}. Der Knoten
+%   \prm{1} ist Eingangsknoten, und sollte immer über \nxLcs{oenodeIn}
+%   angesprochen werden. Der Knoten \opt{N} ist der Ausgangsknoten und sollte
+%   immer über \nxLcs{oenodeOut} angesprochen werden.
+%
+%   «Eingang» und «Ausgang» können nur anhand einer relativen Orientierung
+%   definiert werden. Per Definition ist der Eingangsknoten derjenige zu dem ein
+%   Lichtstrahl ausgehend vom Eingangsreferenzknoten \Lcs{oenodeRefB}
+%   verläuft. Analog dazu ist die Definition der Ausgangsknotens. Diese
+%   Bezeichnung kann nur für die Faserkoppler (\ref{sec:coupler}) und
+%   Strahlteiler (\ref{cmd:beamsplitter}) nicht angewendet werden.
+%
+%   \nxLcs{oenodeIn} ist äquivalent zu \nxLcs{oenodeIfc\{1\}} und
+%   \nxLcs{oenodeOut} ist äquivalent zu \nxLcs{oenodeIfc\{N\}}. Die Eingangs-
+%   und Ausgangsknoten sollten über die explizit bereitgestellten Makros
+%   angesprochen werden, \nxLcs{oenodeIfc} sollte nur für die weiteren
+%   Grenzflächenknoten, sofern vorhanden, verwendet werden.
+%   \fi
+%   \ifENGLISH
+%   The interface node \prm{num}, where the number is in the range \opt{1\ldots
+%     N}. The last node is always defined as \opt{N}. The interface node \prm{1}
+%   is the input node, and should always be accessed via \nxLcs{oenodeIn}, the
+%   interface node \prm{N} is the output node and should be accessed via
+%   \nxLcs{oenodeOut}.
+%
+%   Here, «input» and «output» can define only relative orientations. The input
+%   node is by definition the node to which a beam coming from the input
+%   reference node (\Lcs{oenodeRefA}) is connected to. Accordingly is the
+%   definition of the output node. This definition breaks down only for the
+%   fiber couplers (\ref{sec:coupler}) and beamsplitter
+%   (\ref{cmd:beamsplitter}).
+%
+%   \nxLcs{oenodeIn} is equivalent to \nxLcs{oenodeIfc\{1\}} and
+%   \nxLcs{oenodeOut} is equivalent to \nxLcs{oenodeIfc\{N\}}. You should use
+%   the \nxLcs{oenodeIfc} macro only to access the nodes which are not the input
+%   and output nodes as for those explicit macros are provided.
+%   \fi
+% \end{ltxsyntax}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(2.8,3) 
+  \pentaprism[pentaprismsize=1.3](0,1.5)(1.5,1.5)(1.5,0)
+  \drawbeam[arrows=->, arrowinset=0, arrowscale=1.5]{(0,1.5)}{}{(1.5,0)}
+  \psdot(\oenodeIn{})\uput[135](\oenodeIn{}){1}
+  \psdot(\oenodeIfc{2}{})\uput[0](\oenodeIfc{2}{}){2}
+  \psdot(\oenodeIfc{3}{})\uput[90](\oenodeIfc{3}{}){3}
+  \psdot(\oenodeOut{})\uput[-45](\oenodeOut{}){N}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
+% \ifGERMAN
+% In \prettyref{sec:overview-ifcnode} finden Sie eine vollständige Liste aller
+% Komponenten mit ihren Grenzflächenknoten.
+% \fi
+% \ifENGLISH
+% See \prettyref{sec:overview-ifcnode} for a complete list of all
+% components with their interface nodes.
+% \fi
+%
+% \ifGERMAN\section{Referenzknoten für die Rotation}\fi
+% \ifENGLISH\section{Rotation reference node}\fi
+% \label{sec:rotrefnode}
+%
+% \begin{ltxsyntax}
+%   \cmditem{oenodeRotref}{obj}
+%
+%   \ifGERMAN 
+%   Der Referenzknoten um den eine Komponente mit \Lkeyword{angle} gedreht
+%   wird. Die Position des Knotens wird mit dem \Lkeyword{rotateref} Parameter
+%   definiert und kann dieselben Werte annehmen wie der externe Knoten
+%   (\prettyref{sec:extnode}). Eine vollständige Liste der möglichen Positionen
+%   finden Sie in \prettyref{sec:overview-extnode}.
+%   \fi
+%   \ifENGLISH
+%   The node around which a component is rotated by \Lkeyword{angle}. The
+%   position of the node is specified with the \Lkeyword{rotateref}
+%   parameter. The position which can be defined are equal to those of the
+%   external nodes (\prettyref{sec:extnode}). See
+%   \prettyref{sec:overview-extnode} for possible rotation reference nodes of
+%   all components.
+%   \fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[pos=t, linerange={1-2, 6-7, 11-12}]
+\begin{pspicture}(0,0.1)(12,1.8) 
+  \optbox[angle=20](0.5,1)(4.5,1)
+  \psdot(\oenodeRefA{})\uput[-90](\oenodeRefA{}){RefA}
+  \psdot(\oenodeRefB{})\uput[-90](\oenodeRefB{}){RefB}
+  \psline[style=Refline](\oenodeRefA{})(\oenodeRefB{})
+  \psdot(\oenodeRotref{})\uput[-90](\oenodeRotref{}){Rotref}
+  \optbox[angle=20, rotateref=bl](7.5,1)(11.5,1)
+  \psdot(\oenodeRefA{})\uput[-90](\oenodeRefA{}){RefA}
+  \psdot(\oenodeRefB{})\uput[-90](\oenodeRefB{}){RefB}
+  \psline[style=Refline](\oenodeRefA{})(\oenodeRefB{})
+  \psdot(\oenodeRotref{})\uput[-90](\oenodeRotref{}){Rotref}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+% \end{ltxsyntax}
+%
+% \ifGERMAN\section{Strahlknoten}\fi
+% \ifENGLISH\section{Beam nodes}\fi
+% \label{sec:beamnode}
+%
+% \ifGERMAN
+% Die Endknoten des letzten \Lcs{drawbeam} oder \Lcs{drawwidebeam} Kommandos
+% können verwendet werden, wenn \Lkeyword{savebeampoints} auf \opt{true} gesetzt.
+% ist.
+% \fi
+% \ifENGLISH
+% The end points of the most recent \Lcs{drawbeam} or \Lcs{drawwidebeam} command can
+% be accessed if \Lkeyword{savebeampoints} is set to \opt{true}.
+% \fi
+% \begin{ltxsyntax}
+%   \cmditem{oenodeBeam}
+%
+%   \ifGERMAN
+%   Der Endknoten des letzten \Lcs{drawbeam} Kommandos.
+%   \fi
+%   \ifENGLISH
+%   Access the end point of the most recent \Lcs{drawbeam} command.
+%   \fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(0,0)(3,2) 
+  \pnode(0,1){A}\pnode(1.6,1){B}
+  \optbox[endbox](A)(B)
+  \drawbeam[beaminsidelast=false]{(A)}{1}
+  \psdot(\oenodeBeam)
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
+%   \cmditem{oenodeBeamUp}
+%   \cmditem{oenodeBeamLow}
+%
+%   \ifGERMAN
+%   Der obere («upper») und untere («lower») Endknoten des letzten \Lcs{drawwidebeam} Kommandos.
+%   \fi
+%   \ifENGLISH
+%   Access the upper or lower end point of the most recent \Lcs{drawwidebeam} command.
+%   \fi
+%
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(0,0)(3,2) 
+  \pnode(0,1){A}\pnode(3,1){B}
+  \lens[abspos=1, lensradius=-2](A)(B)
+  \addtopsstyle{Beam}{%
+    fillstyle=solid, fillcolor=green, opacity=0.3}
+  \drawwidebeam[beamwidth=0.5]{(A)}{}{(B)}
+  \psdot(\oenodeBeamUp)\psdot(\oenodeBeamLow)
+  \uput[90](\oenodeBeamUp){\rput[rb](0,0){BeamUp}}
+  \uput[-90](\oenodeBeamLow){\rput[rt](0,0){BeamLow}}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
+% \ifGERMAN
+% Beachten Sie, dass «oben» («upper») und «unten» («lower») bezüglich der
+% Ausbreitungsrichtung des Strahls definiert ist. Ein Randstrahl der als «upper»
+% startet can zu «lower» werden, wenn er den anderen Randstrahl kreuzt. Das wird
+% in dem folgenden Beispiel erläutert:
+% \fi
+% \ifENGLISH
+% Note, that «upper» and «lower» is defined with respect to the propagation
+% direction of the beam. A marginal beam which started as «upper» can change to «lower»
+% if it crosses the other marginal beam. This is shown in the following example,
+% where the marginal rays exchange their roles:
+% \fi
+%
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(0,0)(3,2) 
+  \pnode(0,1){A}\pnode(3,1){B}
+  \lens[abspos=1](A)(B)
+  \addtopsstyle{Beam}{%
+    fillstyle=solid, fillcolor=green, opacity=0.3}
+  \drawwidebeam[beamwidth=0.5]{(A)}{}
+  \psdot(\oenodeBeamUp)\psdot(\oenodeBeamLow)
+  \uput[90](\oenodeBeamUp){\rput[rb](0,0){BeamUp}}
+  \uput[-90](\oenodeBeamLow){\rput[rt](0,0){BeamLow}}
+  \drawwidebeam[beamwidth=0.5, skipconn=1]{(A)}{}{(B)}
+  \psdot(\oenodeBeamUp)\psdot(\oenodeBeamLow)
+  \uput[90](\oenodeBeamUp){\rput[rb](0,0){BeamUp}}
+  \uput[-90](\oenodeBeamLow){\rput[rt](0,0){BeamLow}}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+% \end{ltxsyntax}
+%
+% \ifGERMAN
+% Die Strahlknoten können nur innerhalb der \env{pspicture}-Umgebung verwendet
+% werden, in der sie definiert wurden. Um auf bestimmte Strahlknoten von
+% außerhalb zugreifen zu können müssen diese explizit umbenannt werden:
+% \fi
+% \ifENGLISH
+% The beam nodes can be accessed only within the \env{pspicture} environment
+% they where defined in. If you want to use one of these nodes from outside, you
+% must explicitely rename them:
+% \fi
+%
+% \iffalse
+%<*ignore>
+% \fi
+\begin{lstlisting}
+\pnode(\oenodeBeam){MyBeamNode}
+\end{lstlisting}
+% \iffalse
+%</ignore>
+% \fi
+%
+% \ifGERMAN
+% Desweiteren werden die Endknoten durch \Lkeyword{stopinside}
+% beeinflusst. Siehe \prettyref{sec:custombeam} für weitere Details.
+% \fi
+% \ifENGLISH
+% The end points are also affected by \Lkeyword{stopinside}. See
+% \prettyref{sec:custombeam} for further details.
+% \fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(0,0)(3,2) 
+  \pnode(0,1){A}\pnode(1.6,1){B}
+  \optbox[endbox](A)(B)
+  \psset{beaminsidelast=false}
+  \drawbeam[linecolor=red, beampos=0.3]{(A)}{1}
+  \psdot(\oenodeBeam)
+  \drawbeam[stopinside]{(A)}{1}
+  \psdot(\oenodeBeam)
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
+%
 % \ifGERMAN\chapter{Verbinden von Komponenten}\fi
 % \ifENGLISH\chapter{Connecting components}\fi\label{sec:connecting}
 % 
@@ -4896,9 +4767,57 @@
 % \end{ltxsyntax}
 % 
 % 
-% \ifGERMAN\chapter{Zusatzinformationen}\fi
-% \ifENGLISH\chapter{Additional information}\fi
+% \ifGERMAN\chapter{Benutzerdefinierte Komponenten}\fi
+% \ifENGLISH\chapter{Custom components}\fi
+% \label{sec:custom}
+%
+% \ifGERMAN
+% Das \LPack{pst-optexp} Paket stellt zwei Makros zur Verfügung um
+% eigene Komponenten zu zeichnen. Diese können z.B. aus Bildern oder
+% eigenen Zeichnungen bestehen.
+% \fi
+% \ifENGLISH
+% The \nxLPack{pst-optexp} package provides two commands which can use
+% anything as optical components. This includes e.g. external images or
+% your own drawings.
+% \fi
 % 
+% \begin{ltxsyntax}
+%   \dipoledesc{optdipole}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(3,3)
+  \optdipole[labeloffset=1, beam](0,2)(3,1){%
+    \rput(0,0){\rule{0.5cm}{1cm}}%
+  }{label}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+% 
+% \tripoledesc{opttripole}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(3,3)
+  \opttripole[beam](3,1.5)(1.5,2)(0,0){%
+    \rput[b](0,0){text}%
+  }{label}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+% \end{ltxsyntax}
+%
+% If you want to use a custom component more often, you should define
+% it as a new component. For details on how to define your own components see
+% \prettyref{sec:newobj}.
+%
 % \ifGERMAN
 % \section{Benutzerdefinierte Version existierender Komponenten}
 % \fi
@@ -5034,6 +4953,9 @@
 % into two macro. \nxLcs{component@nodes} contains the nodes and the Postscript
 % definition of the component interfaces. \nxLcs{component@comp} hold only the drawings.
 %
+%
+% \ifGERMAN\chapter{Zusatzinformationen}\fi
+% \ifENGLISH\chapter{Additional information}\fi
 %
 % \section{Internal component structure}
 % 

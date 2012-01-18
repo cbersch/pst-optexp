@@ -6,6 +6,11 @@
 \usepackage{pst-optexp}
 \usepackage{showexpl}
 \begin{document}
+\begin{pspicture}[showgrid](5,5)
+  \pnode(0,3){A}\pnode(3,3){B}\pnode(3,0){C}
+  \mirror[mirrortype=extended, compshift=-0.5](A)(B)(C)
+\end{pspicture}
+
 \begin{pspicture}[showgrid](-0.2,0.1)(8.2,5.3)
   \pnode(0,3){M1}
   \pnode(8,3){M2}
@@ -13,8 +18,8 @@
   \pnode(6.5,0.5){Min}
   \pnode(6.5,3){Pin}
   \pnode(4.5,3){Min2}
-  \pnode(1.5, 0.5){Mout}
-  \pnode(1.5,3){Pout}
+  \pnode(1.3, 0.5){Mout}
+  \pnode(1.3,3){Pout}
   \pnode(3.5,3){Mout2}
   \pnode(0,0.5){Out}
   \definecolor[ps]{bl}{rgb}{tx@addDict begin Red Green Blue end}
@@ -23,7 +28,7 @@
   \newpsstyle{ExtendedMirror}{linestyle=none, hatchwidth=0.5\pslinewidth, hatchsep=1.2\pslinewidth,
                 fillstyle=hlines}
   \begin{optexp}
-  \mirror[mirrorwidth=4, mirrorradius=10.4](M2)(M1)(M2)
+  \mirror[mirrorwidth=4, mirrorradius=11.](M2)(M1)(M2)
   \mirror[mirrorwidth=4, mirrorradius=10.4](M1)(M2)(M1)
   \mirror(In)(Min)(Pin)
   \optprism[n=1.85, addtoOptComp={linewidth=1.5\pslinewidth}](Min)(Pin)(Min2)
@@ -35,13 +40,11 @@
     \pstVerb{%
       \i\space 650 400 sub 39 div mul 400 add 
       tx@addDict begin wavelengthToRGB end }%
-    \drawbeam[nadd=-0.002 \i\space mul]{(In)}{3-5}{2}{1}{6-8}{(Out)}
+    \drawbeam[nadd=-0.002 \i\space mul, beaminsidelast]{(In)}{3-5}{2}{1}{6-7}
   }%
   \newpsstyle{Beam}{linecolor=red}
-  \backlayer{%
-    \psline[style=Beam,ArrowInside=->, linewidth=2\pslinewidth, arrowinset=0](In)(\oenodeIn{3})(\oenodeOut{4})
-  }
-  \drawbeam[beamangle=0.29,beampos=-0.04, arrows=<-, linewidth=2\pslinewidth, arrowinset=0]{([Xnodesep=-0.2]Out)}{8}{7}
+  \backlayer{\psline[style=Beam,ArrowInside=->, linewidth=2\pslinewidth, arrowinset=0](In)(\oenodeIn{3})(\oenodeOut{4})}
+  \drawbeam[linewidth=2\pslinewidth, arrows=->, arrowinset=0, beamangle=-90, beamangleabs]{(\oenodeBeam)}{8}{(Out)}  
 \end{optexp}
 \rput(4,4.5){%
   \psframe[fillstyle=solid,fillcolor=gray!70](-0.1, -0.6)(0.1, 0.7)
@@ -50,7 +53,7 @@
   }%
 }
 \end{pspicture}
-\end{document}
+
 \begin{pspicture}(4,3)
   \pnode(0,0.5){A}\pnode(2,0.5){B}
   \pnode([offset=1]B){C}\pnode(A|C){D}
