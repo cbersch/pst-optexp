@@ -350,6 +350,14 @@
 \def\LPack#1{\texttt{#1}\docindex{#1=\texttt{#1}}\docindex{\POEindexPackage!#1=\texttt{#1}}}
 \def\nxLPack#1{\texttt{#1}}
 
+\def\Lenv{\@ifstar{\Lenv@nobm}{\Lenv@bm}}
+\def\Lenv@nobm#1{\nxLenv{#1}\xLenv{#1}}
+\def\Lenv@bm#1{\hyperref[env:#1]{\Lenv@nobm{#1}}}
+\def\xLenv#1{\docindex{#1=\texttt{#1}}\docindex{\POEindexEnv!#1=\texttt{#1}}}
+\def\nxLenv#1{\texttt{#1}}
+\let\orig@ltd@envitem\ltd@envitem
+\def\ltd@envitem#1{\orig@ltd@envitem{#1}\label{env:#1}\xLenv{#1}}
+
 \def\Lkeyword{\@ifstar{\Lkeyword@nobm}{\Lkeyword@bm}}
 \def\Lkeyword@nobm#1{\texttt{#1}\xLkeyword{#1}}
 \def\Lkeyword@bm#1{\hyperref[prm:#1]{\Lkeyword@nobm{#1}}}
@@ -479,6 +487,7 @@
 %   \newcommand{\POEindexPackage}{Paket}
 %   \newcommand{\POEindexMacro}{Makro}
 %   \newcommand{\POEindexKeyword}{Schlüsselwort}
+%   \newcommand{\POEindexEnv}{Umgebung}
 %   \newcommand{\POEindexOption}{Option}
 %   \newcommand{\POEindexStyle}{Stil}
 %   \newcommand{\POEindexDipoles}{Zweipol}
@@ -495,6 +504,7 @@
 %   \newcommand{\POEindexPackage}{Package}
 %   \newcommand{\POEindexMacro}{Macro}
 %   \newcommand{\POEindexKeyword}{Keyword}
+%   \newcommand{\POEindexEnv}{Environment}
 %   \newcommand{\POEindexOption}{Option} 
 %   \newcommand{\POEindexStyle}{Style}
 %   \newcommand{\POEindexDipoles}{Dipoles}
@@ -879,6 +889,34 @@
 %
 % \ifGERMAN\section{Schritt-für-Schritt-Beispiele}\fi
 % \ifENGLISH\section{Step-by-step examples}\fi
+%
+% \iffalse
+%<*ignore>
+% \fi
+% \begingroup
+% \catcode`\*=13
+% \def*{}%
+\begin{pspicture}[showgrid=true](5,2)
+\pnode(1.4,1){A}\pnode(4.5,1){B}
+\psset{fiber=none}
+\optbox[endbox, labeloffset=0](B)(A){laser}
+\polcontrol[abspos=0.6](A)(B){PC}
+\optmzm[abspos=1.9](A)(B){MZM}
+\optdetector(A)(B){PD}
+\drawfiber{1}{2}{3}{4}
+\end{pspicture}
+
+\begin{pspicture}[showgrid=true](5,2)
+\pnode(1.4,1){A}\pnode(2.6,1){B}\pnode(4,1){C}\pnode(4.5,1){D}
+\optbox[endbox, labeloffset=0](B)(A){laser}
+\polcontrol(A)(B){PC}
+\optmzm(B)(C){MZM}
+\optdetector[fiber](C)(D){PD}
+\end{pspicture}
+% \endgroup
+% \iffalse
+%</ignore>
+% \fi 
 %
 % \iffalse
 %<*ignore>
@@ -3340,7 +3378,7 @@
 %   then be referenced both by this name and by its number. The
 %   parameter can be assigned only directly within a
 %   \nxLPack{pst-optexp} object and should be unique within one
-%   \nxLkeyword{pspicture} environment.
+%   \Lenv*{pspicture} environment.
 % \iffalse
 %<*ignore>
 % \fi
@@ -3828,12 +3866,12 @@
 % \end{ltxsyntax}
 %
 % \ifGERMAN
-% Die Strahlknoten können nur innerhalb der \env{pspicture}-Umgebung verwendet
+% Die Strahlknoten können nur innerhalb der \Lenv*{pspicture}-Umgebung verwendet
 % werden, in der sie definiert wurden. Um auf bestimmte Strahlknoten von
 % außerhalb zugreifen zu können müssen diese explizit umbenannt werden:
 % \fi
 % \ifENGLISH
-% The beam nodes can be accessed only within the \env{pspicture} environment
+% The beam nodes can be accessed only within the \Lenv*{pspicture} environment
 % they where defined in. If you want to use one of these nodes from outside, you
 % must explicitely rename them:
 % \fi
@@ -4751,7 +4789,7 @@
 % \ifENGLISH\section{Layers}\fi
 %
 % \begin{ltxsyntax}
-%   \envitem{optexp}\label{env:optexp}
+%   \envitem{optexp}
 % \end{ltxsyntax}
 %
 % \iffalse
@@ -5695,8 +5733,7 @@
 %
 % \appendix
 %
-% \chapter{Implementation}
-% \section{The \LaTeX/\TeX\ implementation}
+% \chapter{The \LaTeX/\TeX\ implementation}
 %<*stylefile>
 %    \begin{macrocode}
 \RequirePackage{pstricks}
@@ -9670,16 +9707,34 @@
 %    \end{macrocode}
 % \end{macro}
 % 
+% \begin{macro}{\polcontrol@nodes}
+%    \begin{macrocode}
+\def\polcontrol@nodes{%
+  \edef\@sz{\POE@key@polcontrolsize\space}%
+  \pnode(!\@sz -2 mul 0){\oenodeIn{}}
+  \pnode(!\@sz 2 mul 0){\oenodeOut{}}  
+}%
+%    \end{macrocode}
+% \end{macro}
+%
 % \begin{macro}{\polcontrol@comp}
 %    \begin{macrocode}
 \def\polcontrol@comp{%
-   \edef\@sz{\POE@key@polcontrolsize\space}%
-   \ifPOE@usefiberstyle
+  \edef\@sz{\POE@key@polcontrolsize\space}%
+  \ifPOE@optexpenv
+    \psline[style=Fiber](\oenodeIn{})(\oenodeOut{})
+  \fi
+  \bgroup
+    \ifPOE@usefiberstyle
       \psset{style=Fiber}%
-   \fi
-   \multips(! -2 \@sz mul \@sz)(! 2 \@sz mul 0){3}{%
-     \pscircle(0,0){\POE@key@polcontrolsize}%
-   }%
+    \fi
+    \multips(! -2 \@sz mul \@sz)(! 2 \@sz mul 0){3}{%
+      \pscircle(0,0){\POE@key@polcontrolsize}%
+    }%
+  \egroup
+  \ifPOE@optexpenv\else
+    \psline[style=Fiber](\oenodeIn{})(\oenodeOut{})
+  \fi  
 \ignorespaces}%
 %    \end{macrocode}
 % \end{macro}
@@ -10031,7 +10086,7 @@
 %
 %</stylefile> 
 %
-% \section{The Postscript header file}
+% \chapter{The Postscript header file}
 % \makeatletter
 %% Copied this definition from doc.sty and changed it not to add a
 %% backslash to the Postscript procedure name in the index.

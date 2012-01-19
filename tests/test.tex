@@ -6,6 +6,27 @@
 \usepackage{pst-optexp}
 \usepackage{showexpl}
 \begin{document}
+
+\begin{pspicture}[showgrid=true](5,2)
+\pnode(1.4,1){A}\pnode(4.5,1){B}
+\psset{fiber=none}
+\optbox[endbox, labeloffset=0](B)(A){laser}
+\polcontrol[abspos=0.6](A)(B){PC}
+\optmzm[abspos=1.9](A)(B){MZM}
+\optdetector(A)(B){PD}
+\drawfiber{1}{2}{3}{4}
+\end{pspicture}
+\bigskip
+
+\begin{pspicture}[showgrid=true](5,2)
+\pnode(1.4,1){A}\pnode(2.6,1){B}\pnode(4,1){C}\pnode(4.5,1){D}
+\optbox[endbox, labeloffset=0](B)(A){laser}
+\polcontrol(A)(B){PC}
+\optmzm(B)(C){MZM}
+\optdetector[fiber](C)(D){PD}
+\end{pspicture}
+\bigskip
+
 \begin{pspicture}[showgrid](5,5)
   \pnode(0,3){A}\pnode(3,3){B}\pnode(3,0){C}
   \mirror[mirrortype=extended, compshift=-0.5](A)(B)(C)
