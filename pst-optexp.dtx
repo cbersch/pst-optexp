@@ -5735,6 +5735,7 @@
 %
 % \chapter{The \LaTeX/\TeX\ implementation}
 %<*stylefile>
+% \section{Requirements}
 %    \begin{macrocode}
 \RequirePackage{pstricks}
 \RequirePackage{pst-xkey}
@@ -5744,26 +5745,44 @@
 \RequirePackage{pst-eucl}
 \RequirePackage{pstricks-add}
 \RequirePackage{environ}
-\long\def\POE@collect#1{%
-  \psset[optexp]{optexpenv}
-  \global\POE@oldcnt=\POE@cnt
-  \bgroup
-    \psset[optexp]{backlayer=true, frontlayer=false}#1%
-  \egroup
-  \gdef\POE@complist{}\global\POE@cnt=\POE@oldcnt\relax
-  \psset[optexp]{backlayer=false, frontlayer=true}%
-  #1}%
-\newenvironment{optexp}{\Collect@Body\POE@collect}{}
+%    \end{macrocode}
+% Add the Postscript header file.
+%    \begin{macrocode}
 \@addtofilelist{pst-optexp.pro}{}%
-\csname PSToptexpLoaded\endcsname
-\let\PSToptexpLoaded\endinput
 \pst@addfams{optexp}
 \pstheader{pst-optexp.pro}
+%    \end{macrocode}
+% This holds a comma-separated list of all component names which are defined in
+% a \nxLenv{pspicture} environment. This list is cleared when leaving the
+% \nxLenv{pspicture}.
+%    \begin{macrocode}
+\gdef\POE@complist{}%
+\g@addto@macro{\endpspicture}{%
+%    \end{macrocode}
+% Undefine the last beam nodes at the end of the \nxLenv{pspicture}.
+%    \begin{macrocode}
+  \POE@Verb{%
+    /lastBeamPointUp /lastBeamPointLow /lastBeamPoint 
+    3 { currentdict exch undef } repeat 
+    /N@\oenodeBeam\space /N@\oenodeBeamUp\space /N@\oenodeBeamLow\space
+    3 { tx@NodeDict exch undef } repeat
+  }%
+%    \end{macrocode}
+% Reset the component list.
+%    \begin{macrocode}
+  \gdef\POE@complist{}\global\POE@cnt=0\relax
+}%
+%    \end{macrocode}
+% Some convenience definitions.
+%    \begin{macrocode}
 \def\pst@optexpdict{tx@OptexpDict begin }
 \def\POE@dict#1{\pst@optexpdict #1 end}
 \SpecialCoor
 %    \end{macrocode}
-% IFs for the boolean keys.
+% \section{Basic definitions}
+%
+% \subsection{IFs for the boolean keys}
+% See respective key definitions for explanation.
 %    \begin{macrocode}
 \newif\ifPOE@connjoin
 \newif\ifPOE@backlayer
@@ -5798,19 +5817,25 @@
 \newif\ifPOE@beamangleabs
 \newif\ifPOE@beaminside
 \newif\ifPOE@connectplanes
-\newif\ifPOE@insideobj\POE@insideobjfalse
 \newif\ifPOE@globalnoderef
 %    \end{macrocode}
-% count the components in a pspicture environment
+% This is to check if \nxLkeyword{compname} is set inside or outside of a component. For this no boolean key is provided.
+%    \begin{macrocode}
+\newif\ifPOE@insideobj\POE@insideobjfalse
+%    \end{macrocode}
+% \subsection{Counters}
+% Count the components in one \nxLenv{pspicture} environment.
 %    \begin{macrocode}
 \newcount\POE@cnt
 \newcount\POE@oldcnt
 %    \end{macrocode}
-% count the temporal planes which are created for connections to nodes
+% Count the temporal planes which are created for connections to nodes.
 %    \begin{macrocode}
 \newcount\POE@nodecnt
 %    \end{macrocode}
-% Fixed strings for choicekeys.
+% \subsection{Fixed strings}
+% These are all the fixed strings which are used as possible values for
+% choicekeys.
 %    \begin{macrocode}
 \def\POE@str@pol@polperp{perp}
 \def\POE@str@pol@polparallel{parallel}
@@ -5846,7 +5871,9 @@
 \def\POE@Verb#1{\pst@Verb{\pst@optexpdict #1 end }}%
 %    \end{macrocode}
 %
-% \subsection{Parameter and style definitions}
+% \section{Parameter and style definitions}
+% The parameters and styles are commented quiet well in the user documentation,
+% here you will find only additional comments about technical peculiarities.
 %    \begin{macrocode}
 \newpsstyle{OptComp}{}%
 \define@key[psset]{optexp}{newOptComp}{%
@@ -5855,14 +5882,8 @@
 \define@key[psset]{optexp}{addtoOptComp}{%
   \addtopsstyle{OptComp}{#1}%
 }
-%    \end{macrocode}
-% 
-%    \begin{macrocode}
 \newpsstyle{OptionalStyle}{linestyle=dashed,dash=1.5pt 1pt}%
 \newpsstyle{IfcNodeStyle}{linecolor=blue}%
-%    \end{macrocode}
-% Style for beams drawn with \cs{drawbeam} and \cs{drawwidebeam}
-%    \begin{macrocode}
 \newpsstyle{Beam}{linecolor=green!90!black,
                   linewidth=\pslinewidth, linejoin=1}%
 \define@key[psset]{optexp}{newBeam}{%
@@ -5943,32 +5964,14 @@
 \newpsstyle{VariableCoupler}{arrowinset=0, arrows=->}
 %    \end{macrocode}
 %
-% General parameters
+% \subsection{General parameters}
 %    \begin{macrocode}
 \define@boolkey[psset]{optexp}[POE@component@]{optional}[true]{}
 \define@boolkey[psset]{optexp}[POE@]{usefiberstyle}[true]{}
 \define@boolkey[psset]{optexp}[POE@debug@]{showoptdots}[true]{}
 \define@boolkey[psset]{optexp}[POE@debug@]{showifcnodes}[true]{}
-\define@choicekey*[psset]{optexp}{namingscheme}%
-  [\val\nr]{old,new}[new]{%
-  \ifcase\nr\relax
 %    \end{macrocode}
-% old naming scheme
-%    \begin{macrocode}
-    \edef\POE@str@basicname@default{tempNode}
-    \edef\POE@str@basicname@prefix{}
-    \gdef\POE@str@basicname@sep{Intern}
-    \edef\POE@str@extnode@postfix{ExtNode}
-  \or
-    \edef\POE@str@basicname@default{@}
-    \edef\POE@str@basicname@prefix{OE@}
-    \gdef\POE@str@basicname@sep{}
-    \edef\POE@str@extnode@postfix{Ext}
-  \fi
-}%
-\psset[optexp]{namingscheme=new}%
-%    \end{macrocode}
-% Positioning
+% The positioning parameters.
 %    \begin{macrocode}
 \define@key[psset]{optexp}{position}{%
   \edef\POE@key@position{#1}%
@@ -5994,9 +5997,9 @@
 \define@boolkey[psset]{optexp}[POE@]{backlayer}[true]{}
 \define@boolkey[psset]{optexp}[POE@]{frontlayer}[true]{}
 \define@boolkey[psset]{optexp}[POE@]{optexpenv}[true]{}
-\psset[optexp]{backlayer, frontlayer, optexpenv=false}%
+\psset[optexp]{backlayer, frontlayer}%
 %    \end{macrocode}
-% Label
+% Labels
 %    \begin{macrocode}
 \define@key[psset]{optexp}{labelangle}{%
   \pst@checknum{#1}\POE@key@labelangle
@@ -6049,7 +6052,7 @@
   \fi
 }%
 %    \end{macrocode}
-% for internal use only! Set the reference angle for the \opt{labelangle} parameter.
+% This is for internal use only, it sets the reference angle for the \opt{labelangle} parameter and can be different for some components.
 %    \begin{macrocode}
 \define@key[psset]{optexp}{ref@angle}{%
   \pst@checknum{#1}\POE@key@labelrefangle
@@ -6062,6 +6065,130 @@
   labelref=relgrav,
   ref@angle=0
 }%
+%    \end{macrocode}
+% External node
+%    \begin{macrocode}
+\define@boolkey[psset]{optexp}[POE@]{globalnoderef}[true]{}%
+%    \end{macrocode}
+% This part was copied and adapted from \cs{psset@@ref} from pstricks.tex
+%    \begin{macrocode}
+\define@key[psset]{optexp}{extnode}{%
+   \edef\POE@key@extnode{#1}%
+   \ifx\@empty\POE@key@extnode\else
+      \pst@expandafter\POE@psset@@extnode{#1}\@empty,,\@nil
+   \fi
+}%
+\def\POE@key@extnode@xref{0}%
+\def\POE@key@extnode@yref{0}%
+\def\POE@psset@@extnode#1#2,#3,#4\@nil{%
+  \def\POE@key@extnode@xref{0}%
+  \def\POE@key@extnode@yref{0}%
+  \ifx\@empty#3\@empty
+    \@nameuse{POE@getref@#1}%
+    \@nameuse{POE@getref@#2}%
+  \else
+    \pst@checknum{#1#2}\POE@key@extnode@xref%
+    \pst@checknum{#3}\POE@key@extnode@yref%
+  \fi}%
+\def\POE@getref@c{}%
+\def\POE@getref@t{\def\POE@key@extnode@yref{1}}%
+\def\POE@getref@b{\def\POE@key@extnode@yref{-1}}%
+\def\POE@getref@l{\def\POE@key@extnode@xref{-1}}%
+\def\POE@getref@r{\def\POE@key@extnode@xref{1}}%
+\psset[optexp]{%
+  extnode=\@empty, 
+  globalnoderef=true
+}%
+%    \end{macrocode}
+% Set the rotation reference point. For this to work properly, the components
+% must define a proper \cs{component@ref} macro which sets the origin and
+% sizes. See below for detailed information.
+%    \begin{macrocode}
+\define@key[psset]{optexp}{rotateref}{%
+   \def\POE@temp{#1}%
+   \ifx\@empty\POE@temp\else
+      \pst@expandafter\POE@psset@@rotateref{#1}\@empty,,\@nil
+   \fi
+}%
+\def\POE@key@rotate@xref{0}%
+\def\POE@key@rotate@yref{0}%
+\def\POE@psset@@rotateref#1#2,#3,#4\@nil{%
+  \def\POE@key@rotate@xref{0}%
+  \def\POE@key@rotate@yref{0}%
+  \ifx\@empty#3\@empty
+    \@nameuse{POE@getref@rotate@#1}%
+    \@nameuse{POE@getref@rotate@#2}%
+  \else
+    \pst@checknum{#1#2}\POE@key@rotate@xref%
+    \pst@checknum{#3}\POE@key@rotate@yref%
+  \fi}%
+\def\POE@getref@rotate@c{}%
+\def\POE@getref@rotate@t{\def\POE@key@rotate@yref{1}}%
+\def\POE@getref@rotate@b{\def\POE@key@rotate@yref{-1}}%
+\def\POE@getref@rotate@l{\def\POE@key@rotate@xref{-1}}%
+\def\POE@getref@rotate@r{\def\POE@key@rotate@xref{1}}%
+\psset[optexp]{rotateref=c}%
+%    \end{macrocode}
+% Naming parameters.
+%    \begin{macrocode}
+\define@choicekey*[psset]{optexp}{namingscheme}%
+  [\val\nr]{old,new}[new]{%
+  \ifcase\nr\relax
+%    \end{macrocode}
+% Use the old naming scheme which was used in version 2.x.
+%    \begin{macrocode}
+    \edef\POE@str@basicname@default{tempNode}
+    \edef\POE@str@basicname@prefix{}
+    \gdef\POE@str@basicname@sep{Intern}
+    \edef\POE@str@extnode@postfix{ExtNode}
+  \or
+    \edef\POE@str@basicname@default{@}
+    \edef\POE@str@basicname@prefix{OE@}
+    \gdef\POE@str@basicname@sep{}
+    \edef\POE@str@extnode@postfix{Ext}
+  \fi
+}%
+\psset[optexp]{namingscheme=new}%
+\define@key[psset]{optexp}{b@sicname}{%
+  \edef\POE@key@b@sicname{\POE@str@basicname@prefix#1}%
+}%
+\define@key[psset]{optexp}{compname}{%
+  \ifPOE@insideobj\else
+    \PackageError{pst-optexp}{compname allowed only inside an object}
+  \fi
+  \edef\POE@temp{#1}%
+  \ifx\POE@temp\@empty
+    \edef\POE@key@compname{\the\POE@cnt}%
+  \else
+    \edef\POE@key@compname{#1}%
+  \fi
+%    \end{macrocode}
+% check if compname was already defined.
+%    \begin{macrocode}
+  \@expandtwoargs\in@{,\POE@key@compname,}{,\POE@complist,}%
+  \ifin@
+    \PackageWarning{pst-optexp}{%
+      ^^Jcompname '\POE@key@compname' already used,\MessageBreak
+      previous nodes will be overwritten!^^J
+    }%
+  \else
+%    \end{macrocode}
+%
+% Use definition of \cs{XKV@addtolist@x} with an \cs{xdef} instead of \cs{edef} in order to keep the bookkeeping global.
+%    \begin{macrocode}
+    \xdef\POE@complist{%
+      \POE@key@compname\ifx\POE@complist\@empty\else,\fi\POE@complist
+    }%
+  \fi
+}%
+\POE@insideobjtrue
+\psset[optexp]{compname=\@empty}
+\POE@insideobjfalse
+%    \end{macrocode}
+%
+% \subsection{Free-ray component parameters}
+% Lens
+%    \begin{macrocode}
 \define@key[psset]{optexp}{lensheight}{%
   \pst@checknum{#1}\POE@key@lensheight
 }
@@ -6178,7 +6305,6 @@
   \fi
 }%
 \define@boolkey[psset]{optexp}[POE@]{endbox}[true]{}
-
 \psset[optexp]{%
   optboxwidth=1.4,
   optboxheight=0.8
@@ -6197,7 +6323,7 @@
   platelinewidth=2\pslinewidth
 }%
 %    \end{macrocode}
-% Optical Retardation Plate
+% Optical retardation plate, the height is the same as for \cs{optplate}.
 %    \begin{macrocode}
 \define@key[psset]{optexp}{platewidth}{%
   \pst@checknum{#1}\POE@key@platewidth
@@ -6228,6 +6354,9 @@
     Parameter pollinewidth is deprecated, \MessageBreak
     use style Polarization.}%
 }%
+%    \end{macrocode}
+% This is defined manually, to avoid printing the warning inside the key definition above.
+%    \begin{macrocode}
 \def\POE@key@pollinewidth{0.7\pslinewidth}%
 \newpsstyle{Polarization}{%
   linestyle=solid, linewidth=\POE@key@pollinewidth, 
@@ -6236,20 +6365,21 @@
 \define@choicekey+[psset]{optexp}{poltype}%
   [\val\nr]{parallel,misc,perp,rcirc,lcirc}%
   {\edef\POE@key@poltype{#1}}
-  {\PackageError{pst-optexp}{Unknown poltype '\val'}}
+  {\PackageError{pst-optexp}{Unknown poltype '\val'}%
+}
 \psset[optexp]{%
   poltype=parallel,
   polsize=0.6
 }%
 %    \end{macrocode}
-% Optical Diode
+% Optical diode
 %    \begin{macrocode}
 \define@key[psset]{optexp}{optdiodesize}{%
   \pst@checknum{#1}\POE@key@optdiodesize
 }
 \psset[optexp]{optdiodesize=0.8}%
 %    \end{macrocode}
-% Dove Prism
+% Dove prism
 %    \begin{macrocode}
 \define@key[psset]{optexp}{doveprismsize}{%
   \pst@checknum{#1}\POE@key@doveprismsize
@@ -6293,11 +6423,12 @@
   mirrordepth=0.1,
   mirrorradius=0,
   mirrortype=plain,
-  mirrorlinewidth=2\pslinewidth,
-  variable=false
+  mirrorlinewidth=2\pslinewidth
 }%
 %    \end{macrocode}
 % Grating
+%
+% These are the old \opt{optgrid*} parameters, which have been deprecated.
 %    \begin{macrocode}
 \define@key[psset]{optexp}{optgridcount}{%
   \pst@checknum{#1}\POE@key@gratingcount
@@ -6336,6 +6467,9 @@
     Parameter optgridlinewidth is deprecated,\MessageBreak
     use gratinglinewidth instead.}%
 }%
+%    \end{macrocode}
+% These are the new grating parameters.
+%    \begin{macrocode}
 \define@key[psset]{optexp}{gratingcount}{%
   \pst@checknum{#1}\POE@key@gratingcount
 }
@@ -6363,37 +6497,16 @@
   gratingdepth=0.075,
   gratingtype=blazed,
   gratinglinewidth=0.7\pslinewidth,
-  reverse=false
-}%
-\define@key[psset]{optexp}{refractiveindex}{%
-  \pst@checknum{#1}\POE@key@n%
-  \PackageWarning{pst-optexp}{%
-    Option 'refractiveindex' is deprecated,\MessageBreak
-    use 'n' instead}%
-}%
-\define@key[psset]{optexp}{n}{%
-  \pst@checknum{#1}\POE@key@n
-}
-\define@key[psset]{optexp}{nmul}{%
-  \edef\POE@key@nmul{#1}%
-}
-\define@key[psset]{optexp}{nadd}{%
-  \edef\POE@key@nadd{#1}%
-}
-\psset[optexp]{%
-  n=1.5,
-  nmul=1,
-  nadd=0
 }%
 %    \end{macrocode}
-% Penta Prism
+% Penta prism
 %    \begin{macrocode}
 \define@key[psset]{optexp}{pentaprismsize}{%
   \pst@checknum{#1}\POE@key@pentaprismsize
 }
 \psset[optexp]{pentaprismsize=0.7}
 %    \end{macrocode}
-% Right-Angle Prism
+% Right-angle prism
 %    \begin{macrocode}
 \define@key[psset]{optexp}{raprismsize}{%
   \pst@checknum{#1}\POE@key@raprismsize
@@ -6413,6 +6526,7 @@
   prismangle=60
 }%
 %    \end{macrocode}
+% \subsection{Parameters of fiber-optical components}
 % Fiber
 %    \begin{macrocode}
 \define@key[psset]{optexp}{fiberloops}{%
@@ -6529,119 +6643,74 @@
   couplertype=elliptic
 }%
 %    \end{macrocode}
-% External node
-%    \begin{macrocode}
-\define@boolkey[psset]{optexp}[POE@]{globalnoderef}[true]{}%
-%    \end{macrocode}
-% (this part was copied and adapted from \cs{psset@@ref} from pstricks.tex)
-%    \begin{macrocode}
-\define@key[psset]{optexp}{extnode}{%
-   \edef\POE@key@extnode{#1}%
-   \ifx\@empty\POE@key@extnode\else
-      \pst@expandafter\POE@psset@@extnode{#1}\@empty,,\@nil
-   \fi
-}%
-\psset[optexp]{%
-  extnode=\@empty, 
-  globalnoderef=true
-}%
-\def\POE@key@extnode@xref{0}%
-\def\POE@key@extnode@yref{0}%
-\def\POE@psset@@extnode#1#2,#3,#4\@nil{%
-  \def\POE@key@extnode@xref{0}%
-  \def\POE@key@extnode@yref{0}%
-  \ifx\@empty#3\@empty
-    \@nameuse{POE@getref@#1}%
-    \@nameuse{POE@getref@#2}%
-  \else
-    \pst@checknum{#1#2}\POE@key@extnode@xref%
-    \pst@checknum{#3}\POE@key@extnode@yref%
-  \fi}%
-\def\POE@getref@c{}%
-\def\POE@getref@t{\def\POE@key@extnode@yref{1}}%
-\def\POE@getref@b{\def\POE@key@extnode@yref{-1}}%
-\def\POE@getref@l{\def\POE@key@extnode@xref{-1}}%
-\def\POE@getref@r{\def\POE@key@extnode@xref{1}}%
-\define@key[psset]{optexp}{rotateref}{%
-   \def\POE@temp{#1}%
-   \ifx\@empty\POE@temp\else
-      \pst@expandafter\POE@psset@@rotateref{#1}\@empty,,\@nil
-   \fi
-}%
-\def\POE@key@rotate@xref{0}%
-\def\POE@key@rotate@yref{0}%
-\def\POE@psset@@rotateref#1#2,#3,#4\@nil{%
-  \def\POE@key@rotate@xref{0}%
-  \def\POE@key@rotate@yref{0}%
-  \ifx\@empty#3\@empty
-    \@nameuse{POE@getref@rotate@#1}%
-    \@nameuse{POE@getref@rotate@#2}%
-  \else
-    \pst@checknum{#1#2}\POE@key@rotate@xref%
-    \pst@checknum{#3}\POE@key@rotate@yref%
-  \fi}%
-\def\POE@getref@rotate@c{}%
-\def\POE@getref@rotate@t{\def\POE@key@rotate@yref{1}}%
-\def\POE@getref@rotate@b{\def\POE@key@rotate@yref{-1}}%
-\def\POE@getref@rotate@l{\def\POE@key@rotate@xref{-1}}%
-\def\POE@getref@rotate@r{\def\POE@key@rotate@xref{1}}%
-\psset[optexp]{rotateref=c}%
-%    \end{macrocode}
-%    \begin{macrocode}
-\define@key[psset]{optexp}{b@sicname}{%
-  \edef\POE@key@b@sicname{\POE@str@basicname@prefix#1}%
-}%
-%    \end{macrocode}
-% List with all component names define until now. Is kept for a single pspicture environment
-%    \begin{macrocode}
-\gdef\POE@complist{}%
-\g@addto@macro{\endpspicture}{%
-  \POE@Verb{%
-    /lastBeamPointUp /lastBeamPointLow /lastBeamPoint 
-    3 { currentdict exch undef } repeat 
-    /N@\oenodeBeam\space /N@\oenodeBeamUp\space /N@\oenodeBeamLow\space
-    3 { tx@NodeDict exch undef } repeat
-  }%
-  \gdef\POE@complist{}\global\POE@cnt=0\relax
-}%
-\define@key[psset]{optexp}{compname}{%
-  \ifPOE@insideobj\else
-    \PackageError{pst-optexp}{compname allowed only inside an object}
-  \fi
-  \edef\POE@temp{#1}%
-  \ifx\POE@temp\@empty
-    \edef\POE@key@compname{\the\POE@cnt}%
-  \else
-    \edef\POE@key@compname{#1}%
-  \fi
-%    \end{macrocode}
-% check if compname was already defined
-%    \begin{macrocode}
-  \@expandtwoargs\in@{,\POE@key@compname,}{,\POE@complist,}%
-  \ifin@
-    \PackageWarning{pst-optexp}{%
-      ^^Jcompname '\POE@key@compname' already used,\MessageBreak
-      previous nodes will be overwritten!^^J
-    }%
-  \else
-%    \end{macrocode}
+% \subsection{Beam-connection parameters}
+% The keys related to the \cs{draw*} macros.
 %
-% Use definition of \cs{XKV@addtolist@x} with an \cs{xdef} instead of \cs{edef} in order to keep the bookkeeping global
-%    \begin{macrocode}
-    \xdef\POE@complist{%
-      \POE@key@compname\ifx\POE@complist\@empty\else,\fi\POE@complist
-    }%
-  \fi
-}%
-\POE@insideobjtrue
-\psset[optexp]{compname=\@empty}
-\POE@insideobjfalse
-%    \end{macrocode}
 % Connect a component directly with its reference nodes using \cs{drawbeam}.
 %    \begin{macrocode}
 \define@boolkey[psset]{optexp}[POE@]{beam}[true]{}
 %    \end{macrocode}
+%    \begin{macrocode}
+\define@key[psset]{optexp}{refractiveindex}{%
+  \pst@checknum{#1}\POE@key@n%
+  \PackageWarning{pst-optexp}{%
+    Option 'refractiveindex' is deprecated,\MessageBreak
+    use 'n' instead}%
+}%
+\define@key[psset]{optexp}{n}{%
+  \pst@checknum{#1}\POE@key@n
+}
+\define@key[psset]{optexp}{nmul}{%
+  \edef\POE@key@nmul{#1}%
+}
+\define@key[psset]{optexp}{nadd}{%
+  \edef\POE@key@nadd{#1}%
+}
+\define@key[psset]{optexp}{beamangle}{%
+  \edef\POE@key@beamangle{#1}%
+}%
+\define@key[psset]{optexp}{beampos}{%
+  \edef\POE@key@beampos{#1}%
+}%
+\define@key[psset]{optexp}{beamdiv}{%
+  \edef\POE@key@beamdiv{#1}%
+}%
+\define@key[psset]{optexp}{beamwidth}{%
+  \edef\POE@key@beamwidth{#1}%
+}%
+\define@boolkey[psset]{optexp}[POE@]{startinside}[true]{}%
+\define@boolkey[psset]{optexp}[POE@]{stopinside}[true]{}%
+\define@boolkey[psset]{optexp}[POE@]{beaminsidefirst}[true]{}%
+\define@boolkey[psset]{optexp}[POE@]{beaminsidelast}[true]{}%
+\define@boolkey[psset]{optexp}[POE@]{savebeampoints}[true]{}%
+\define@boolkey[psset]{optexp}[POE@]{loadbeampoints}[true]{}%
+\define@key[psset]{optexp}{skipconn}{%
+  \pst@checknum{#1}\POE@key@skipconn
+}%
+\define@boolkey[psset]{optexp}[POE@]{beaminside}[true]{}%
+\define@boolkey[psset]{optexp}[POE@]{connectplanes}[true]{}%
+\define@boolkey[psset]{optexp}[POE@]{beamangleabs}[true]{}%
+\psset[optexp]{%
+  startinside=false
+  ,stopinside=false
+  ,beaminside=true
+  ,beaminsidefirst=false
+  ,beaminsidelast=false
+  ,loadbeampoints=false
+  ,savebeampoints=true
+  ,beamangle=0
+  ,beampos=\@empty
+  ,beamangleabs=false
+  ,beamwidth=0
+  ,beamdiv=\@empty
+  ,n=1.5
+  ,nmul=1
+  ,nadd=0
+  ,skipconn=0
+}%
+%    \end{macrocode}
 %
+% \subsection{Fiber-connection parameters}
 % Select which fibers are drawn automatically.
 %    \begin{macrocode}
 \define@choicekey*[psset]{optexp}{fiber}%
@@ -6744,6 +6813,32 @@
 }%
 %    \end{macrocode}
 %
+% \section{Layering}
+%    \begin{macrocode}
+\newenvironment{optexp}{\Collect@Body\POE@collect}{}
+\long\def\POE@collect#1{%
+  \psset[optexp]{optexpenv}
+  \global\POE@oldcnt=\POE@cnt
+  \bgroup
+    \psset[optexp]{backlayer=true, frontlayer=false}#1%
+  \egroup
+  \gdef\POE@complist{}\global\POE@cnt=\POE@oldcnt\relax
+  \psset[optexp]{backlayer=false, frontlayer=true}%
+  #1}%
+%    \end{macrocode}
+% \begin{macro}{\backlayer}
+%    \begin{macrocode}
+\def\backlayer#1{\ifPOE@backlayer #1\fi\ignorespaces}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\frontlayer}
+%    \begin{macrocode}
+\def\frontlayer#1{\ifPOE@frontlayer #1\fi\ignorespaces}
+%    \end{macrocode}
+% \end{macro}
+%
+% \section{Connection code}
+% \subsection{drawfiber}
 % \begin{macro}{\POE@getnode}
 %    \begin{macrocode}
 \def\POE@getnode#1#2\@nil{%
@@ -6895,45 +6990,7 @@
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}{\backlayer}
-%    \begin{macrocode}
-\def\backlayer#1{\ifPOE@backlayer #1\fi\ignorespaces}
-%    \end{macrocode}
-% \end{macro}
-% \begin{macro}{\frontlayer}
-%    \begin{macrocode}
-\def\frontlayer#1{\ifPOE@frontlayer #1\fi\ignorespaces}
-%    \end{macrocode}
-% \end{macro}
-%    
-% The keys related to the \cs{draw*} macros
-%    \begin{macrocode}
-\define@key[psset]{optexp}{beamangle}{%
-  \edef\POE@key@beamangle{#1}%
-}%
-\define@key[psset]{optexp}{beampos}{%
-  \edef\POE@key@beampos{#1}%
-}%
-\define@key[psset]{optexp}{beamdiv}{%
-  \edef\POE@key@beamdiv{#1}%
-}%
-\define@key[psset]{optexp}{beamwidth}{%
-  \edef\POE@key@beamwidth{#1}%
-}%
-\define@boolkey[psset]{optexp}[POE@]{startinside}[true]{}%
-\define@boolkey[psset]{optexp}[POE@]{stopinside}[true]{}%
-\define@boolkey[psset]{optexp}[POE@]{beaminsidefirst}[true]{}%
-\define@boolkey[psset]{optexp}[POE@]{beaminsidelast}[true]{}%
-\define@boolkey[psset]{optexp}[POE@]{savebeampoints}[true]{}%
-\define@boolkey[psset]{optexp}[POE@]{loadbeampoints}[true]{}%
-\define@key[psset]{optexp}{skipconn}{%
-  \pst@checknum{#1}\POE@key@skipconn
-}%
-\define@boolkey[psset]{optexp}[POE@]{beaminside}[true]{}%
-\define@boolkey[psset]{optexp}[POE@]{connectplanes}[true]{}%
-\define@boolkey[psset]{optexp}[POE@]{beamangleabs}[true]{}%
-\psset[optexp]{skipconn=0}%
-%    \end{macrocode}
+% \subsection{drawbeam}
 %
 % \begin{macro}{\begin@BeamObj}
 %    \begin{macrocode}
@@ -7351,6 +7408,8 @@
 %    \end{macrocode}
 % \end{macro}
 % 
+% \subsection{Automatic connections}
+%
 % \begin{macro}{\POE@drawInternalConnections}
 %    \begin{macrocode}
 \def\POE@drawInternalConnections{%
@@ -7448,27 +7507,10 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% Set default settings for the new connection code
-%    \begin{macrocode}
-\psset[optexp]{%
-        startinside=false
-        ,stopinside=false
-        ,beaminside=true
-        ,beaminsidefirst=false
-        ,beaminsidelast=false
-        ,loadbeampoints=false
-        ,savebeampoints=true
-        ,beamangle=0
-        ,beampos=\@empty
-        ,beamangleabs=false
-        ,beamwidth=0
-        ,beamdiv=\@empty
-        ,nmul=1
-        ,nadd=0
-}%
-
-%    \end{macrocode}
-% The old connection code for backward compatibility to version 2.x. As this is obsolete and was broken by design, there is no need to comment on this.
+% \subsection{Old connection code}
+%
+% The old connection code for backward compatibility to version 2.x. As this is
+% obsolete and was broken by design, there is no need to comment on this.
 %    \begin{macrocode}
 \def\optexp@nodeA{\oenodeIn{}}%
 \def\optexp@nodeB{\oenodeOut{}}%
@@ -7590,6 +7632,9 @@
 \ignorespaces}%
 %
 %    \end{macrocode}
+%
+% \section{General purpose macros}
+%
 % \begin{macro}{\defShiftedNode}
 %   This is provided only for backward compatibility, and should be replaced by
 %   \cs{nodexn}.
@@ -7604,7 +7649,8 @@
 }%
 %    \end{macrocode}
 % \end{macro}
-% 
+%
+% \section{Accessing component nodes} 
 % \begin{macro}{\POE@checkcompname}
 %    \begin{macrocode}
 \def\POE@checkcompname#1{%
@@ -7758,6 +7804,8 @@
 %    \end{macrocode}
 % \end{macro}
 % 
+% \section{Components}
+%
 % \begin{macro}{\newOptexpComp}
 %    \begin{macrocode}
 \def\newOptexpComp#1{%
@@ -8802,6 +8850,10 @@
 %    \end{macrocode}
 % \end{macro}
 % 
+% \subsection{Free-ray components}
+%
+% \subsubsection{mirror}
+%
 % \begin{macro}{\mirror@ref}
 %    \begin{macrocode}
 \def\mirror@ref{%
@@ -8925,6 +8977,8 @@
 %    \end{macrocode}
 % \end{macro}
 % 
+% \subsubsection{lens}
+%
 % \begin{macro}{\lens@ref}
 %    \begin{macrocode}
 \def\lens@ref{%
@@ -9063,6 +9117,8 @@
 %    \end{macrocode}
 % \end{macro}
 % 
+% \subsubsection{pinhole}
+%
 % \begin{macro}{\pinhole@ref}
 %    \begin{macrocode}
 \def\pinhole@ref{%
@@ -9099,6 +9155,8 @@
 %    \end{macrocode}
 % \end{macro}
 % 
+% \subsubsection{beamsplitter}
+%
 % \begin{macro}{\beamsplitter@nodes}
 %    \begin{macrocode}
 \def\beamsplitter@nodes{%
@@ -9135,6 +9193,8 @@
 %    \end{macrocode}
 % \end{macro}
 % 
+% \subsubsection{crystal}
+%
 % \begin{macro}{\crystal@ref}
 %    \begin{macrocode}
 \def\crystal@ref{%
@@ -9203,6 +9263,8 @@
 %    \end{macrocode}
 % \end{macro}
 % 
+% \subsubsection{polarization}
+%
 % \begin{macro}{\polarization@comp}
 %    \begin{macrocode}
 \def\polarization@comp{%
@@ -9232,6 +9294,8 @@
 %    \end{macrocode}
 % \end{macro}
 % 
+% \subsubsection{optgrating}
+%
 % \begin{macro}{\optgrating@ref}
 %    \begin{macrocode}
 \def\optgrating@ref{%
@@ -9279,6 +9343,8 @@
 %    \end{macrocode}
 % \end{macro}
 % 
+% \subsubsection{optbox}
+%
 % \begin{macro}{\optbox@ref}
 %    \begin{macrocode}
 \def\optbox@ref{%
@@ -9307,6 +9373,8 @@
 %    \end{macrocode}
 % \end{macro}
 % 
+% \subsubsection{optplate}
+%
 % \begin{macro}{\optplate@ref}
 %    \begin{macrocode}
 \def\optplate@ref{%
@@ -9323,6 +9391,8 @@
 \ignorespaces}%
 %    \end{macrocode}
 % \end{macro}
+%
+% \subsubsection{optdetector}
 %
 % \begin{macro}{\optdetector@ref}
 %    \begin{macrocode}
@@ -9380,6 +9450,8 @@
 %    \end{macrocode}
 % \end{macro}
 % 
+% \subsubsection{optretplate}
+%
 % \begin{macro}{\optretplate@ref}
 %    \begin{macrocode}
 \def\optretplate@ref{%
@@ -9402,6 +9474,8 @@
 %    \end{macrocode}
 % \end{macro}
 % 
+% \subsubsection{optdiode}
+%
 % \begin{macro}{\optdiode@ref}
 %    \begin{macrocode}
 \def\optdiode@ref{%
@@ -9426,6 +9500,8 @@
 %    \end{macrocode}
 % \end{macro}
 % 
+% \subsubsection{doveprism}
+%
 % \begin{macro}{\doveprism@nodes}
 %    \begin{macrocode}
 \def\doveprism@nodes{%
@@ -9452,6 +9528,8 @@
 %    \end{macrocode}
 % \end{macro}
 % 
+% \subsubsection{pentaprism}
+%
 % \begin{macro}{\pentaprism@nodes}
 %    \begin{macrocode}
 \def\pentaprism@nodes{%
@@ -9490,6 +9568,8 @@
 %    \end{macrocode}
 % \end{macro}
 % 
+% \subsubsection{optprism}
+%
 % \begin{macro}{\optprism@nodes}
 %    \begin{macrocode}
 \def\optprism@nodes{%
@@ -9524,6 +9604,8 @@
 %    \end{macrocode}
 % \end{macro}
 % 
+% \subsubsection{rightangleprism}
+%
 % \begin{macro}{\rightangleprism@nodes}
 %    \begin{macrocode}
 \def\rightangleprism@nodes{%
@@ -9552,7 +9634,9 @@
 %    \end{macrocode}
 % \end{macro}
 % 
-% \subsection{Fiber optics}
+% \subsection{Fiber components}
+%
+% \subsubsection{optfiber}
 %
 % \begin{macro}{\optfiber@nodes}
 %    \begin{macrocode}
@@ -9581,6 +9665,8 @@
 \ignorespaces}%
 %    \end{macrocode}
 % \end{macro}
+% 
+% \subsubsection{optmzm}
 %
 % \begin{macro}{\optmzm@ref}
 %    \begin{macrocode}
@@ -9612,7 +9698,9 @@
 \ignorespaces}%
 %    \end{macrocode}
 % \end{macro}
-% 
+%
+% \subsubsection{optfilter} 
+%
 % \begin{macro}{\optfilter@ref}
 %    \begin{macrocode}
 \def\optfilter@ref{%
@@ -9685,7 +9773,9 @@
 \ignorespaces}%
 %    \end{macrocode}
 % \end{macro}
-% 
+%
+%\subsubsection{optamp}
+%
 % \begin{macro}{\optamp@nodes}
 %    \begin{macrocode}
 \def\optamp@nodes{%
@@ -9705,8 +9795,10 @@
   \pspolygon(! \@xl 0)(! \@xl neg \@sz)(! \@xl neg \@sz neg)
 \ignorespaces}%
 %    \end{macrocode}
-% \end{macro}
-% 
+% \end{macro} 
+%
+%\subsubsection{polcontrol}
+%
 % \begin{macro}{\polcontrol@nodes}
 %    \begin{macrocode}
 \def\polcontrol@nodes{%
@@ -9739,6 +9831,8 @@
 %    \end{macrocode}
 % \end{macro}
 % 
+% \subsubsection{optisolator}
+%
 % \begin{macro}{\optisolator@ref}
 %    \begin{macrocode}
 \def\optisolator@ref{%
@@ -9761,6 +9855,7 @@
 %    \end{macrocode}
 % \end{macro}
 % 
+% \subsubsection{optfiberpolarizer}
 % \begin{macro}{\optfiberpolarizer@ref}
 %    \begin{macrocode}
 \def\optfiberpolarizer@ref{%
@@ -9782,6 +9877,8 @@
 %    \end{macrocode}
 % \end{macro}
 % 
+% \subsubsection{optswitch}
+%
 % \begin{macro}{\optswitch@ref}
 %    \begin{macrocode}
 \def\optswitch@ref{%
@@ -9826,6 +9923,8 @@
 %    \end{macrocode}
 % \end{macro}
 %
+% \subsubsection{fiberdelayline}
+%
 % \begin{macro}{\fiberdelayline@ref}
 %    \begin{macrocode}
 \def\fiberdelayline@ref{%
@@ -9849,6 +9948,7 @@
 %    \end{macrocode}
 % \end{macro}
 % 
+% \subsubsection{optcoupler}
 % \begin{macro}{\optcoupler@nodes}
 %    \begin{macrocode}
 \def\optcoupler@nodes{%
@@ -9917,6 +10017,7 @@
 %    \end{macrocode}
 % \end{macro}
 % 
+% \subsubsection{wdmcoupler}
 % \begin{macro}{\wdmcoupler@nodes}
 %    \begin{macrocode}
 \def\wdmcoupler@nodes{%
@@ -9949,7 +10050,7 @@
 }%
 %    \end{macrocode}
 % \end{macro}
-% 
+%
 % \begin{macro}{\wdmcoupler@comp}
 %    \begin{macrocode}
 \def\wdmcoupler@comp{%
@@ -9991,6 +10092,7 @@
 %    \end{macrocode}
 % \end{macro}
 % 
+% \subsubsection{wdmsplitter}
 % \begin{macro}{\wdmsplitter@nodes}
 %    \begin{macrocode}
 \def\wdmsplitter@nodes{%
@@ -10062,7 +10164,8 @@
 }%
 %    \end{macrocode}
 % \end{macro}
-% 
+%
+% \subsubsection{fibercollimator}
 % \begin{macro}{\fibercollimator@nodes}
 %    \begin{macrocode}
 \def\fibercollimator@nodes{%
