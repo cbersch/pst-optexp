@@ -3,10 +3,136 @@
 \usepackage[T1]{fontenc}
 \usepackage[ngerman]{babel}
 \usepackage{lmodern}
+\usepackage{bera}
+\usepackage{marvosym}
 \usepackage{pst-optexp}
 \usepackage{showexpl}
+\makeatletter\renewcommand*\SX@Info{}\makeatother
+\definecolor{DOrange}{rgb}{1,.4,.2}%
+\definecolor{colKeys}{rgb}{0,0,0}
+\definecolor{colIdentifier}{rgb}{0,0,0}
+\colorlet{colComments}{green!60!black}
+\definecolor{colString}{rgb}{0,0.5,0} 
+\newlength{\codeoverhang}
+\setlength{\codeoverhang}{0.5\marginparwidth+0.5\marginparsep}
+\lstset{%
+  language=[LaTeX]TeX, identifierstyle=\color{colIdentifier}, %
+  keywordstyle=\color{colKeys}, %
+  keywordstyle = [21]\color{DOrange}, %
+  keywordstyle = [22]\color{DOrange}, %
+  stringstyle=\color{colString}, %
+  commentstyle=\color{colComments}, %
+  float=hbp,%
+  basicstyle=\ttfamily\small, %
+  columns=flexible, %
+  tabsize=4, %
+  extendedchars=true, %
+  showspaces=false, %
+  showstringspaces=false, %
+  breaklines=true, %
+  breakautoindent=true, %
+  captionpos=b, %
+  xleftmargin=1em, %
+  prebreak = {\raisebox{-1ex}[\ht\strutbox]{\kern0.5ex \Large\Righttorque}},
+  rulecolor=\color{black!20}, %
+  texcsstyle = [20]\color{DOrange}, %
+  moretexcs = [20]{lens, optbox, oenode, oenodeIn, oenodeExt, oenodeOut,
+    oenodeRefA, oenodeRefB, oenodeTrefA, oenodeTrefB, oenodeLabel,
+    oenodeRotref, oenodeBeam, oenodeBeamUp, oenodeBeamLow,
+    oenodeCenter, optplate, optretplate, pinhole, crystal,optdetector,
+    optdiode, doveprism, polarization, mirror, beamsplitter, optgrating,
+    optprism, rightangleprism, pentaprism, optdipole, optripole,
+    optfiber, optamp, optmzm, optfilter, polcontrol, optisolator,
+    optswitch, fiberdelayline, optfiberpolarizer, fibercollimator,
+    optcoupler, wdmcoupler, wdmsplitter, drawbeam, drawwidebeam,
+    drawfiber, frontlayer, backlayer, newOptexpDipole,
+    newOptexpTripole, newOptexpFiberDipole}, %
+  morekeywords = [22] {optexp},
+  explpreset={%
+    escapeinside={*}{*},
+    pos=l, width=-99pt, hsep=5mm, overhang=\codeoverhang,
+    varwidth, vsep=\bigskipamount, rframe={}}}
+\lstset{
+  literate={ö}{{\"o}}1
+           {ä}{{\"a}}1
+           {ü}{{\"u}}1
+}
+\newcommand\Lkeyword[1]{\texttt{#1}}
+\makeatletter
+\providecommand\ON{%
+  \gdef\lst@alloverstyle##1{\textcolor{black!30}{\strut##1}%
+}}
+\providecommand\OFF{\xdef\lst@alloverstyle##1{##1}}
+\makeatother
 \begin{document}
+Im Folgenden wird ein sehr einfacher Aufbau mit einer konkaven und einer konvexen Linse schrittweise erläutert.
 
+Zuerst werden die Referenzknoten definiert, die für die Ausrichtung der
+Komponenten verwendet werden. Zur besseren Übersicht werden beide Knoten
+gekennzeichnet, ein Koordinatengitter dient desweiteren der Orientierung.
+
+Die erste Linse soll konkav gekrümmte Grenzflächen haben. Mit \Lkeyword{lensradius} werden die Krümmungen der rechten und linken Fläche auf denselben Wert gesetzt, ein negativer Wert ergibt eine konkave Krümmung. Bei K
+
+\begingroup
+\catcode`\*=13
+\def*{}%
+\begin{LTXexample}
+*\ON*\begin{pspicture}[showgrid](5,2)
+  \pnode(0,1){In}\pnode(3.5,1){Out}\psdot(In)\psdot(Out)*\OFF*
+  \lens[lensradius=-0.7, abspos=1](In)(Out){concave}
+*\ON*\end{pspicture}*\OFF*
+\end{LTXexample}
+\endgroup
+
+\begingroup
+\catcode`\*=13
+\def*{}%
+\begin{LTXexample}
+*\ON*\begin{pspicture}[showgrid](5,2)
+  \pnode(0,1){In}\pnode(3.5,1){Out}\psdot(In)\psdot(Out)
+  \lens[lensradius=-0.7, abspos=1](In)(Out){concave}*\OFF*
+  \lens[lensradius=2.3, lensheight=1.3, abspos=2.6](In)(Out){convex}
+*\ON*\end{pspicture}*\OFF*
+\end{LTXexample}
+\endgroup
+
+\begingroup
+\catcode`\*=13
+\def*{}%
+\begin{LTXexample}
+*\ON*\begin{pspicture}[showgrid](5,2)
+  \pnode(0,1){In}\pnode(3.5,1){Out}\psdot(In)\psdot(Out)
+  \lens[lensradius=-0.7, abspos=1](In)(Out){concave}
+  \lens[lensradius=2.3, lensheight=1.3, abspos=2.6](In)(Out){convex}*\OFF*
+  \optbox[endbox, labeloffset=0](In)(Out){CCD}
+*\ON*\end{pspicture}*\OFF*
+\end{LTXexample}
+\endgroup
+
+\begingroup
+\catcode`\*=13
+\def*{}%
+\begin{LTXexample}
+*\ON*\begin{pspicture}(5,2)
+  \pnode(0,1){In}\pnode(3.5,1){Out}
+  \lens[lensradius=-0.7, abspos=1](In)(Out){concave}
+  \lens[lensradius=2.3, lensheight=1.3, abspos=2.6](In)(Out){convex}
+  \optbox[endbox, labeloffset=0](In)(Out){CCD}*\OFF*
+  \drawwidebeam[beamwidth=0.2]{(In)}{1}{2}{3}
+*\ON*\end{pspicture}*\OFF*
+\end{LTXexample}
+\endgroup
+
+
+\end{document}
+\begin{lstlisting}
+§\ON§\begin{pspicture}[showgrid](5,5)§\OFF§
+  \lens(0,1)(5,1)
+  §\ON§\drawwidebeam[startinside, beamwidth=0.2, beamdiv=-10]{}{(5,1)}
+\end{pspicture}§\OFF§
+\end{lstlisting}
+
+\end{document}
 \begin{pspicture}[showgrid=true](5,2)
 \pnode(1.4,1){A}\pnode(4.5,1){B}
 \psset{fiber=none}

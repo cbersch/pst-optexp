@@ -28,7 +28,7 @@
 \usepackage[utf8]{inputenc} 
 \usepackage[T1]{fontenc}
 \usepackage{lmodern} 
-\usepackage{amsfonts, amsmath, marvosym} 
+\usepackage{amsmath, marvosym} 
 \usepackage{bera}
 \providecommand*\mainlang{}
 \usepackage[ngerman, english,\mainlang]{babel} 
@@ -6217,19 +6217,28 @@
 \def\POE@psset@@lens#1 #2 #3 #4 #5\@nil{%
   \edef\POE@temp{#4}%
   \ifx\POE@temp\@empty\else
-     \psset[optexp]{lenswidth=#4}%
+    \expandafter\ifx\POE@temp.\else
+      \psset[optexp]{lenswidth=#4}%
+    \fi
   \fi
   \edef\POE@temp{#3}%
   \ifx\POE@temp\@empty\else
-     \psset[optexp]{lensheight=#3}
+    \expandafter\ifx\POE@temp.\else
+      \psset[optexp]{lensheight=#3}
+    \fi
   \fi
   \edef\POE@temp{#2}%
   \ifx\POE@temp\@empty
      \psset[optexp]{lensradiusright=#1}%
   \else
-     \psset[optexp]{lensradiusright=#2}%
+    \expandafter\ifx\POE@temp.\else
+      \psset[optexp]{lensradiusright=#2}%
+    \fi
   \fi
-  \psset[optexp]{lensradiusleft=#1}%
+  \edef\POE@temp{#1}%
+  \expandafter\ifx\POE@temp.\else
+    \psset[optexp]{lensradiusleft=#1}%
+  \fi
 }%
 \psset[optexp]{%
   lenswidth=0,
@@ -8991,36 +9000,46 @@
 %    \begin{macrocode}
 \def\lens@nodes{%
   \edef\@th{0}% 
+  \def\@wd{\POE@key@lenswidth\space 2 div }%
+  \def\@ht{\POE@key@lensheight\space 2 div }%
+  \def\@rL{\POE@key@lensradiusleft }%
+  \def\@rR{\POE@key@lensradiusright }%
   \ifdim\POE@key@lensradiusleft pt=0pt\else
     \edef\@th{%
       \ifPOE@thicklens 
-        \POE@key@lenswidth\space 2 div 
-      \else 
-        \POE@key@lensradiusleft\space
-        \POE@key@lensheight\space 2 div capHeight 
+        \@wd
+      \else
+        \ifdim\POE@key@lensradiusleft pt<0pt
+          \@ht 0.15 mul
+        \else
+          \@rL \@ht capHeight
+        \fi
       \fi
-    }%     
+    \space}%     
   \fi
   \ifdim\POE@key@lensradiusright pt=0pt\else
     \edef\@th{%
       \@th\space
       \ifPOE@thicklens 
-        \POE@key@lenswidth\space 2 div
-      \else 
-        \POE@key@lensradiusright\space
-        \POE@key@lensheight\space 2 div capHeight 
+        \@wd
+      \else
+        \ifdim\POE@key@lensradiusright pt<0pt
+          \@ht 0.15 mul
+        \else
+          \@rR \@ht capHeight
+        \fi
       \fi
       \space add
-    }%
+    \space}%
   \fi
   \newOptexpComp{%
-    {\@th\space -2 div 0} 
+    {\@th -2 div 0} 
     \ifdim\POE@key@lensradiusleft pt=0pt 
       {0 1} trans {PlaneIfc}
     \else 
       {\POE@key@lensradiusleft\space 0} trans {CurvedIfc}
     \fi
-    {\@th\space 2 div 0} 
+    {\@th 2 div 0} 
     \ifdim\POE@key@lensradiusright pt=0pt
       {0 1} trans {PlaneIfc}
     \else
@@ -9037,7 +9056,7 @@
 \def\lens@comp{%
   \addbefore@par{linejoin=1}%
   \begin@ClosedObj
-  \addto@pscode{\pst@optexpdict /@th 0 def }%
+  \addto@pscode{\pst@optexpdict }%
   \def\@th{0}%
   \def\@wd{\POE@key@lenswidth\space\pst@number\psxunit mul 2 div }%
   \def\@ht{\POE@key@lensheight\space\pst@number\psyunit mul 2 div }%
@@ -9046,32 +9065,31 @@
   \ifdim\POE@key@lensradiusleft pt=0pt\else
     \edef\@th{%
       \ifPOE@thicklens
-        \POE@key@lenswidth\space 2 div 
+        \@wd
       \else
-        \POE@key@lensradiusleft\space
-        \POE@key@lensheight\space 2 div capHeight
+        \ifdim\POE@key@lensradiusleft pt<0pt
+          \@ht 0.15 mul
+        \else
+          \@rL \@ht capHeight
+        \fi
       \fi
-    }%
-    \addto@pscode{%
-      /@th \ifPOE@thicklens \@wd \else \@rL \@ht capHeight \fi def
-      \@ht \@rL leftCurvedIfc
-    }%
+    \space}%
+    \addto@pscode{ \@ht \@rL leftCurvedIfc }%
   \fi
   \ifdim\POE@key@lensradiusright pt=0pt\else
     \edef\@th{%
       \@th\space
       \ifPOE@thicklens 
-        \POE@key@lenswidth\space 2 div
+        \@wd
       \else
-        \POE@key@lensradiusright\space
-        \POE@key@lensheight\space 2 div capHeight 
+        \ifdim\POE@key@lensradiusright pt<0pt
+          \@ht 0.15 mul
+        \else
+          \@rR \@ht capHeight
+        \fi
       \fi\space add
-    }%
-    \addto@pscode{%
-      /@th @th \ifPOE@thicklens \@wd \else \@rR \@ht capHeight \fi 
-      add def
-      \@ht \@rR rightCurvedIfc
-    }%
+    \space}%
+    \addto@pscode{ \@ht \@rR rightCurvedIfc }%
   \fi
 %    \end{macrocode}
 % Check some special cases:
@@ -9081,9 +9099,9 @@
   \ifdim\POE@key@lensradiusleft pt=0pt
     \ifdim\POE@key@lensradiusright pt=0pt\else
       \addto@pscode{%
-        @th 2 div sub neg 5 1 roll
-        @th 2 div neg \@ht neg moveto ArcR
-        @th 2 div neg \@ht lineto
+        \@th 2 div sub neg 5 1 roll
+        \@th 2 div neg \@ht neg moveto ArcR
+        \@th 2 div neg \@ht lineto
       }%
     \fi
   \fi
@@ -9093,9 +9111,9 @@
   \ifdim\POE@key@lensradiusright pt=0pt
     \ifdim\POE@key@lensradiusleft pt=0pt\else
       \addto@pscode{%
-        @th 2 div sub 5 1 roll
-        @th 2 div \@ht moveto ArcL
-        @th 2 div \@ht neg lineto
+        \@th 2 div sub 5 1 roll
+        \@th 2 div \@ht moveto ArcL
+        \@th 2 div \@ht neg lineto
       }%
     \fi
   \fi
@@ -9105,7 +9123,7 @@
   \ifdim\POE@key@lensradiusright pt=0pt\else
     \ifdim\POE@key@lensradiusleft pt=0pt\else
       \addto@pscode{%
-        @th 2 div dup
+        \@th 2 div dup
         7 1 roll sub neg 5 1 roll
         ArcR sub 5 1 roll ArcL
       }%
