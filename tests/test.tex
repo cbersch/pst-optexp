@@ -1,4 +1,4 @@
-\documentclass{scrartcl}
+\documentclass[a4paper, DIV=9, oneside, toc=index]{scrreprt}
 \usepackage[latin1]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage[ngerman]{babel}
@@ -7,12 +7,13 @@
 \usepackage{marvosym}
 \usepackage{pst-optexp}
 \usepackage{showexpl}
+\usepackage{ltxdockit}
 \makeatletter\renewcommand*\SX@Info{}\makeatother
-\definecolor{DOrange}{rgb}{1,.4,.2}%
 \definecolor{colKeys}{rgb}{0,0,0}
 \definecolor{colIdentifier}{rgb}{0,0,0}
 \colorlet{colComments}{green!60!black}
 \definecolor{colString}{rgb}{0,0.5,0} 
+\definecolor{DOrange}{rgb}{1,.4,.2}%
 \newlength{\codeoverhang}
 \setlength{\codeoverhang}{0.5\marginparwidth+0.5\marginparsep}
 \lstset{%
@@ -60,7 +61,7 @@
 \newcommand\Lkeyword[1]{\texttt{#1}}
 \makeatletter
 \providecommand\ON{%
-  \gdef\lst@alloverstyle##1{\textcolor{black!30}{\strut##1}%
+  \gdef\lst@alloverstyle##1{\textcolor{black!50}{\strut##1}%
 }}
 \providecommand\OFF{\xdef\lst@alloverstyle##1{##1}}
 \makeatother
@@ -78,8 +79,10 @@ Die erste Linse soll konkav gekrümmte Grenzflächen haben. Mit \Lkeyword{lensradi
 \def*{}%
 \begin{LTXexample}
 *\ON*\begin{pspicture}[showgrid](5,2)
-  \pnode(0,1){In}\pnode(3.5,1){Out}\psdot(In)\psdot(Out)*\OFF*
-  \lens[lensradius=-0.7, abspos=1](In)(Out){concave}
+  \pnode(0,1){In}\pnode(3.5,1){Out}
+  \psdot(In)\psdot(Out)*\OFF*
+  \lens[lensradius=-0.7,
+          abspos=1](In)(Out){concave}
 *\ON*\end{pspicture}*\OFF*
 \end{LTXexample}
 \endgroup
@@ -89,9 +92,12 @@ Die erste Linse soll konkav gekrümmte Grenzflächen haben. Mit \Lkeyword{lensradi
 \def*{}%
 \begin{LTXexample}
 *\ON*\begin{pspicture}[showgrid](5,2)
-  \pnode(0,1){In}\pnode(3.5,1){Out}\psdot(In)\psdot(Out)
-  \lens[lensradius=-0.7, abspos=1](In)(Out){concave}*\OFF*
-  \lens[lensradius=2.3, lensheight=1.3, abspos=2.6](In)(Out){convex}
+  \pnode(0,1){In}\pnode(3.5,1){Out}
+  \psdot(In)\psdot(Out)
+  \lens[lensradius=-0.7, 
+          abspos=1](In)(Out){concave}*\OFF*
+  \lens[lensradius=2.3, lensheight=1.3, 
+          abspos=2.6](In)(Out){convex}
 *\ON*\end{pspicture}*\OFF*
 \end{LTXexample}
 \endgroup
@@ -101,9 +107,12 @@ Die erste Linse soll konkav gekrümmte Grenzflächen haben. Mit \Lkeyword{lensradi
 \def*{}%
 \begin{LTXexample}
 *\ON*\begin{pspicture}[showgrid](5,2)
-  \pnode(0,1){In}\pnode(3.5,1){Out}\psdot(In)\psdot(Out)
-  \lens[lensradius=-0.7, abspos=1](In)(Out){concave}
-  \lens[lensradius=2.3, lensheight=1.3, abspos=2.6](In)(Out){convex}*\OFF*
+  \pnode(0,1){In}\pnode(3.5,1){Out}
+  \psdot(In)\psdot(Out)
+  \lens[lensradius=-0.7,
+          abspos=1](In)(Out){concave}
+  \lens[lensradius=2.3, lensheight=1.3, 
+          abspos=2.6](In)(Out){convex}*\OFF*
   \optbox[endbox, labeloffset=0](In)(Out){CCD}
 *\ON*\end{pspicture}*\OFF*
 \end{LTXexample}
@@ -115,11 +124,31 @@ Die erste Linse soll konkav gekrümmte Grenzflächen haben. Mit \Lkeyword{lensradi
 \begin{LTXexample}
 *\ON*\begin{pspicture}(5,2)
   \pnode(0,1){In}\pnode(3.5,1){Out}
-  \lens[lensradius=-0.7, abspos=1](In)(Out){concave}
-  \lens[lensradius=2.3, lensheight=1.3, abspos=2.6](In)(Out){convex}
+  \lens[lensradius=-0.7, 
+          abspos=1](In)(Out){concave}
+  \lens[lensradius=2.3, lensheight=1.3, 
+          abspos=2.6](In)(Out){convex}
   \optbox[endbox, labeloffset=0](In)(Out){CCD}*\OFF*
   \drawwidebeam[beamwidth=0.2]{(In)}{1}{2}{3}
 *\ON*\end{pspicture}*\OFF*
+\end{LTXexample}
+\endgroup
+
+\begingroup
+\catcode`\*=13
+\def*{}%
+\begin{LTXexample}
+*\ON*\begin{pspicture}(5,2)
+  \pnode(0,1){In}\pnode(3.5,1){Out}
+  \lens[lensradius=-0.7, 
+          abspos=1](In)(Out){concave}
+  \lens[lensradius=2.3, lensheight=1.3, 
+          abspos=2.6](In)(Out){convex}
+  \optbox[endbox, labeloffset=0](In)(Out){CCD}*\OFF*
+  \addtopsstyle{Beam}{fillstyle=solid, 
+    fillcolor=green, opacity=0.2}
+  *\ON*\drawwidebeam[beamwidth=0.2]{(In)}{1}{2}{3}
+\end{pspicture}*\OFF*
 \end{LTXexample}
 \endgroup
 
