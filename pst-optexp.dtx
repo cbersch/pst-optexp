@@ -18,7 +18,7 @@
 %<stylefile>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<stylefile>\ProvidesPackage{pst-optexp}
 %<*stylefile>
-    [2012/01/16 v3.0beta Optical experimental setups with PSTricks]
+    [2012/01/27 v3.0beta Optical experimental setups with PSTricks]
 %</stylefile>
 %
 %<*driver>
@@ -997,6 +997,50 @@
 % \begingroup
 % \catcode`\*=13
 % \def*{}%
+\begin{LTXexample}
+*\ON*\begin{pspicture}[showgrid=true](5,2)
+\pnode(0.8,1){A}\pnode(3,1){B}\pnode(4.2,1.5){C}
+\pnode(4.2,0.5){D}\psdot(A)\psdot(B)\psdot(C)\psdot(D)*\OFF*
+\psset{optboxwidth=0.8}
+\optbox[endbox, labeloffset=0](B)(A){LD}
+*\ON*\end{pspicture}*\OFF*
+\end{LTXexample}
+
+\begin{LTXexample}
+*\ON*\begin{pspicture}[showgrid=true](5,2)
+\pnode(0.8,1){A}\pnode(3,1){B}\pnode(4.2,1.5){C}
+\pnode(4.2,0.5){D}\psdot(A)\psdot(B)\psdot(C)\psdot(D)
+\psset{optboxwidth=0.8}
+\optbox[endbox, labeloffset=0](B)(A){LD}*\OFF*
+\optmzm(A)(B){MZM}
+*\ON*\end{pspicture}*\OFF*
+\end{LTXexample}
+
+\begin{LTXexample}
+*\ON*\begin{pspicture}[showgrid=true](5,2)
+\pnode(0.8,1){A}\pnode(3,1){B}\pnode(4.2,1.5){C}
+\pnode(4.2,0.5){D}\psdot(A)\psdot(B)\psdot(C)\psdot(D)
+\psset{optboxwidth=0.8}
+\optbox[endbox, labeloffset=0](B)(A){LD}
+\optmzm(A)(B){MZM}*\OFF*
+\wdmsplitter(B)(C)(D){50\%}
+*\ON*\end{pspicture}*\OFF*
+\end{LTXexample}
+
+\begin{LTXexample}
+*\ON*\begin{pspicture}[showgrid=true](5,2)
+\pnode(0.8,1){A}\pnode(3,1){B}\pnode(4.2,1.5){C}
+\pnode(4.2,0.5){D}\psdot(A)\psdot(B)\psdot(C)\psdot(D)
+\psset{optboxwidth=0.8}
+\optbox[endbox, labeloffset=0](B)(A){LD}
+\optmzm(A)(B){MZM}
+\wdmsplitter(B)(C)(D){50\%}*\OFF*
+\optbox[endbox, labeloffset=0](A|C)(C){PW}
+\optdetector[dettype=diode](A|D)(D){PD}
+*\ON*\end{pspicture}*\OFF*
+\end{LTXexample}
+
+\begin{LTXexample}
 \begin{pspicture}[showgrid=true](5,2)
 \pnode(1.4,1){A}\pnode(4.5,1){B}
 \psset{fiber=none}
@@ -1006,14 +1050,7 @@
 \optdetector(A)(B){PD}
 \drawfiber{1}{2}{3}{4}
 \end{pspicture}
-
-\begin{pspicture}[showgrid=true](5,2)
-\pnode(1.4,1){A}\pnode(2.6,1){B}\pnode(4,1){C}\pnode(4.5,1){D}
-\optbox[endbox, labeloffset=0](B)(A){laser}
-\polcontrol(A)(B){PC}
-\optmzm(B)(C){MZM}
-\optdetector[fiber](C)(D){PD}
-\end{pspicture}
+\end{LTXexample}
 % \endgroup
 % \iffalse
 %</ignore>
