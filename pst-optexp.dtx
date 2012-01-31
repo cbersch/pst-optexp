@@ -35,7 +35,11 @@
 \usepackage{prettyref}
 \usepackage[dvipsnames,x11names,svgnames]{xcolor} 
 \usepackage{array,booktabs,tabularx} 
-\usepackage{ragged2e} 
+\usepackage{ragged2e, calc}
+\newlength{\POEcaptionmargin}
+\usepackage[labelfont={bf, color=DOrange}, singlelinecheck=false, justification=raggedright]{caption} 
+\DeclareCaptionFormat{poe}{\setlength{\POEcaptionmargin}{\widthof{#1}}\hspace*{-\POEcaptionmargin}#1\par}
+\captionsetup{format=poe}
 \usepackage{nicefrac}
 \usepackage{pst-func} 
 \usepackage{pst-optexp} 
@@ -79,7 +83,7 @@
   showstringspaces=false, %
   breaklines=true, %
   breakautoindent=true, %
-  captionpos=b, %
+  captionpos=t, %
   xleftmargin=1em, %
   prebreak = {\raisebox{-1ex}[\ht\strutbox]{\kern0.5ex \Large\Righttorque}},
   rulecolor=\color{black!20}, %
@@ -501,6 +505,7 @@
 %   \newcommand{\POEindexTripoles}{Dreipol}
 %   \newcommand{\POEindexFiberDipoles}{Faserzweipol}
 %   \newcommand{\POEindexFiberMultipoles}{Fasermultipol}
+%   \renewcommand*\lstlistingname{Beispiel}
 % \fi
 % \ifENGLISH
 %   \newrefformat{chap}{Sec.~\ref{#1}}
@@ -518,6 +523,7 @@
 %   \newcommand{\POEindexTripoles}{Tripoles}
 %   \newcommand{\POEindexFiberDipoles}{Fiber dipoles}
 %   \newcommand{\POEindexFiberMultipoles}{Fiber multipoles}
+%   \renewcommand*\lstlistingname{Example}
 % \fi
 %
 % \newcommand*{\sizeexplanation}[2][1.6]{% 
@@ -5355,11 +5361,11 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}[pos=t]
-\begin{pspicture}(10,2)
+\begin{LTXexample}[pos=t, caption={caption}]
+\begin{pspicture}(10.4,1.7)
 \newpsobject{mybox}{optbox}{endbox, label=0, optboxwidth=1.2}
 \addtopsstyle{Beam}{linewidth=2\pslinewidth}
-\pnode(1,1){Start}\pnode(9,1){CCD}
+\pnode(1.2,1){Start}\pnode(9.2,1){CCD}
 \begin{optexp}
 \mybox(CCD)(Start){Laser}\mybox(Start)(CCD){CCD}
 \polarization[poltype=perp,abspos=0.5](Start)(CCD)
@@ -5376,10 +5382,10 @@
 \end{LTXexample}
 \bigskip
 
-\begin{LTXexample}[pos=t]
-\begin{pspicture}(10,2)
+\begin{LTXexample}[pos=t, caption={caption}]
+\begin{pspicture}(10.4,1.7)
 \newpsobject{mybox}{optbox}{endbox, label=0, optboxwidth=1.2}
-\pnode(1,1){Start}\pnode(9,1){CCD}
+\pnode(1.2,1){Start}\pnode(9.2,1){CCD}
 \begin{optexp}
 \mybox(CCD)(Start){Laser}
 \polarization[poltype=perp,abspos=0.5](Start)(CCD)
@@ -5402,7 +5408,7 @@
 \end{LTXexample}
 \bigskip
 
-\begin{LTXexample}[pos=t]
+\begin{LTXexample}[pos=t, caption={caption}]
 \begin{pspicture}(-4.2,-1)(3,3)
 \pnode(-2,0){LOut}\pnode(0,0){Grat}\pnode(4;45){Out}\pnode(2.5;70){Mvar}
 \newpsstyle{Beam}{linewidth=2\pslinewidth, linecolor=red!90!black}
@@ -5419,7 +5425,7 @@
 \end{LTXexample}
 \bigskip
 
-\begin{LTXexample}[pos=t]
+\begin{LTXexample}[pos=t, caption={caption}]
 \begin{pspicture}(8.5,1.9)
 \pnode(1.4,1.3){Laser}\pnode(7.6,1.3){Diode}
 \optbox[endbox, labeloffset=0](Diode)(Laser){Laser}%
@@ -5435,7 +5441,44 @@
 \end{pspicture}
 \end{LTXexample}
 
-\begin{LTXexample}[pos=t]
+%^^A An idea from <http://arxiv.org/abs/1112.5270>
+\enlargethispage{3cm}
+\begin{LTXexample}[pos=t, caption={caption}]
+\newOptexpTripole{reflslm}{}
+\makeatletter
+\def\reflslm@comp{%
+  \psframe[fillstyle=solid,fillcolor=gray!50](-0.3,0)(0.3,0.2)
+  \psline(-0.3,0.1)(-0.5,0.1)(-0.5,0.5)(0.5,0.5)(0.5,0.1)(0.3,0.1)}%
+\makeatother
+\begin{pspicture}(0.3,0.6)(5.5,7.8)
+\pnode(2,7){L}\pnode(2,5.8){Pbs}\pnode([Xnodesep=1]Pbs){Blk1}\pnode(2,2.3){Bs}
+\pnode([Xnodesep=-1]Bs){Blk2}\pnode([Xnodesep=3.5]Bs){Out}\pnode(2,1.3){Slm}
+\begin{optexp}
+  \optbox[endbox, innerlabel, optbox=1.2 0.6](Pbs)(L){Laser}
+  \psset{labelalign=r, mirrortype=extended}
+  \newpsstyle{ExtendedMirror}{fillstyle=solid, fillcolor=black}
+  \optretplate[position=0.4](L)(Pbs){HWP}
+  \beamsplitter[labelangle=-90](L)(Pbs)(Blk1){PBS}
+  \mirror[label=. -90 c](Pbs)(Blk1)(Pbs){B}
+  \lens[abspos=0.8, lens=0.7 0.7 0.7, n=2](Pbs)(Bs){MO}
+  \pinhole[phwidth=0.15, abspos=1.2](Pbs)(Bs){PH}
+  \lens[abspos=2.6, lensradius=1.4](Pbs)(Bs){L}
+  \psset{labelalign=c}
+  \beamsplitter[labelangle=-135](Pbs)(Bs)(Blk2){BS}
+  \mirror[labeloffset=0.4](Bs)(Blk2)(Bs){B}
+  \lens[abspos=1, lensradius=1.4](Bs)(Out){L}
+  \lens[abspos=2.8, lens=0.7 0.7 0.7, n=2](Bs)(Out){L}
+  \reflslm(Bs)(Slm)(Bs){SLM}
+  \addtopsstyle{Beam}{linestyle=none, fillstyle=solid, fillcolor=green!70!black}
+  \drawwidebeam[beamwidth=0.1]{1-4}
+  \drawwidebeam[beamwidth=0.1, beaminsidefirst, beaminsidelast]{3}{5-8}
+  \psset{savebeampoints=false, loadbeampoints}
+  \drawwidebeam{8-11}{(Out)}\drawwidebeam[beaminsidefirst]{8}{12}
+\end{optexp}
+\end{pspicture}
+\end{LTXexample}
+
+\begin{LTXexample}[pos=t, caption={caption}]
 \begin{pspicture}(6.4,3.2)
 \addtopsstyle{Fiber}{linecolor=red}\psset{fiber=none}
 \pnode(2.3,2.3){Lin}\pnode([Xnodesep=4.5]Lin){Det}
@@ -5454,7 +5497,8 @@
 \end{pspicture}
 \end{LTXexample}
 
-\begin{LTXexample}[pos=t]
+\enlargethispage{1cm}
+\begin{LTXexample}[pos=t, caption={caption}]
 \begin{pspicture}(0.4,0.6)(8.2,4)
 \pnode(2,3){Laser}\pnode(2,1){PwMeter}\pnode(6,3){CplTop}\pnode(6,1){CplBot}
 \psset{arrowscale=1.5, arrowinset=0}
@@ -5468,7 +5512,7 @@
 \end{pspicture}
 \end{LTXexample}
 
-\begin{LTXexample}[pos=t]
+\begin{LTXexample}[pos=t, caption={caption}]
 \begin{pspicture}(0.9,0.9)(10.4,5.9)
 \psset{arrowscale=1.5, arrowinset=0}
 \pnode(2,5){PC1in}\pnode(4,5){PC1out}\pnode(6,5){PC2in}
@@ -5492,7 +5536,7 @@
 \end{LTXexample}
 \bigskip
 
-\begin{LTXexample}[pos=t]
+\begin{LTXexample}[pos=t, caption={caption}]
 \begin{pspicture}(1,1.2)(6.2,5)
 \pnode(1,4){SigIn}\pnode(3,4){BS}\pnode(3,5){LO}
 \pnode(5,4){Det1}\pnode(3,2){Det2}
@@ -5520,7 +5564,7 @@
 \end{LTXexample}
 \bigskip
 
-\begin{LTXexample}[pos=t]
+\begin{LTXexample}[pos=t, caption={caption}]
 \begin{pspicture}(-0.2,0)(9,5)
 \makeatletter
 \def\LCLV@nodes{%
@@ -5555,12 +5599,12 @@
 \end{pspicture}
 \end{LTXexample}
 
-\begin{LTXexample}[pos=t]
-\begin{pspicture}(0,-0.4)(8.6,6)
-\pnode(1.5,5){Laser}\pnode(4,5){PBS}\pnode(6.5,5){PBS2}
-\pnode(6.5,5.7){piezo}\pnode(4,2){BSFwd}\pnode(6.5,2){BSBwd}
-\pnode(2,2){BS4f}\pnode(2,0.5){M4f3}\pnode(8,2){M4f1}
-\pnode(8,0.5){M4f2}\pnode(1,2){CCD}
+\enlargethispage{1cm}
+\begin{LTXexample}[pos=t, caption={caption}]
+\begin{pspicture}(0,-0.2)(8.6,5.6)
+\pnode(1.5,5){Laser}\pnode(4,5){PBS}\pnode(6.5,5){PBS2}\pnode(6.5,5.7){piezo}
+\pnode(4,2){BSFwd}\pnode(6.5,2){BSBwd}\pnode(2,2){BS4f}\pnode(2,0.5){M4f3}
+\pnode(8,2){M4f1}\pnode(8,0.5){M4f2}\pnode(1,2){CCD}
 \psset{mirrorwidth=0.6, plateheight=0.7, outerheight=0.7, labeloffset=0.7, labelstyle=\scriptsize, lens=1.2 1.2 0.8, bssize=0.5} 
 \optbox[endbox, optbox=1.5 0.7,labeloffset=0]% 
    (PBS)(Laser){\parbox{1.5cm}{\centering Nd:YAG\\ 532\,nm}}
@@ -5591,7 +5635,9 @@
 \end{pspicture}
 \end{LTXexample}
 
-\begin{LTXexample}[pos=t]
+\bgroup
+\psset{unit=0.9}
+\begin{LTXexample}[pos=t, caption={caption}]
 \begin{pspicture}(13,5.5)
 \psset{usefiberstyle, optboxwidth=1, labelstyle=\footnotesize, fiber=none}
 \pnode(1,5){LD}\pnode([Xnodesep=5.5]LD){CPLin1}
@@ -5625,16 +5671,19 @@
 \psline[style=Fiber, linearc=1](\oenodeOut{16})(BL)(TL)(\oenodeIn{17})
 \end{pspicture}
 \end{LTXexample}
+\egroup
 
-\begin{LTXexample}[pos=t]
+\begin{LTXexample}[pos=t, caption={caption}]
 \begin{pspicture}(12, 4)
   \psset{labeloffset=0.3}
   \pnode(1.6,2){In}\pnode(12, 2){Ref}
-  \optplane(Ref)(0,1){RefPlane}
-  \addtopsstyle{Beam}{linestyle=none, beamdiv=10, beaminside=false, fillstyle=solid, fillcolor=red, opacity=0.3}
+  \optplate[linestyle=dashed, plateheight=3, 
+              position=1, compname=RefPlane](In)(Ref)
+  \addtopsstyle{Beam}{linestyle=none, beamdiv=10, beaminside=false, 
+                        fillstyle=solid, fillcolor=red, opacity=0.3}
   \multido{\i=1+1, \ii=165+10}{4}{%
     \rput(Ref){\pnode(6;\ii){A\i}}
-    \optbox[optbox=0.5 0.5, endbox, compname=Box\i, extnode=l](Ref)(A\i)
+    \optbox[optbox=0.5 0.3, endbox, compname=Box\i, extnode=l](Ref)(A\i)
     \lens[lens=0 -0.6 0.6, abspos=0.5, compname=L\i](A\i)(Ref)
     \lens[lens=1.2 1.2 0.8, abspos=1.1, n=1.65, compname=LC\i](A\i)(Ref)
     \drawwidebeam{Box\i}{L\i}{LC\i}{RefPlane}
@@ -5645,15 +5694,15 @@
   \wdmsplitter[abspos=2.5, compshift=-1](In)(Ref)(Ref)
   \optbox[compshift=-1, endbox, label=0](Ref)(In){Laser1}
   \optbox[compshift=1, endbox, label=0](Ref)(In){Laser2}
-  \drawfiber{16}{13}{14}{Box1}
-  \drawfiber{14}{Box2}
-  \drawfiber{17}{13}{15}{Box3}
-  \drawfiber{15}{Box4}
+  \drawfiber{17}{14}{15}{Box1}
+  \drawfiber{15}{Box2}
+  \drawfiber{18}{14}{16}{Box3}
+  \drawfiber{16}{Box4}
 \end{pspicture}
 \end{LTXexample}
 \bigskip
 
-\begin{LTXexample}[pos=t]
+\begin{LTXexample}[pos=t, caption={caption}]
 \begin{pspicture}(0,-1)(8,4)
 \psframe[fillstyle=solid,fillcolor=gray!90,linestyle=none](0,-1)(8.5,4)
 \addtopsstyle{OptComp}{linecolor=white}\newpsstyle{Beam}{}

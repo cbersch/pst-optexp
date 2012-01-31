@@ -66,15 +66,41 @@
 \providecommand\OFF{\xdef\lst@alloverstyle##1{##1}}
 \makeatother
 \begin{document}
-\begin{pspicture}[showgrid=true](4.8,2)
-\pnode(0.8,1){A}\pnode(4,1){B}
-\psset{optboxwidth=0.8, fiber=none}
-\optbox[endbox, labeloffset=0](B)(A){LD}
-\optmzm[abspos=0.95](A)(B){MZM}
-\wdmsplitter[abspos=2.1](A)(B)(B){50\%}
-\optbox[endbox, labeloffset=0, compshift=0.5](A)(B){PW}
-\optdetector[dettype=diode, compshift=-0.5](A)(B){PD}
-\drawfiber{1}{2}{3}{4}\drawfiber{3}{5}
+\makeatletter
+\newOptexpTripole{reflslm}{}
+\def\reflslm@comp{%
+  \psframe[fillstyle=solid,fillcolor=gray!50](-0.3,0)(0.3,0.2)
+  \psline(-0.3,0.1)(-0.5,0.1)(-0.5,0.5)(0.5,0.5)(0.5,0.1)(0.3,0.1)
+}%
+\makeatother
+\begin{pspicture}(0.3,0.1)(5.5,8)
+\pnode(2,7){L}\pnode(2,5.5){Pbs}\pnode([Xnodesep=1]Pbs){Blk1}
+\pnode(2,2){Bs}\pnode([Xnodesep=-1]Bs){Blk2}
+\pnode([Xnodesep=3.5]Bs){Out}\pnode(2,1){Slm}
+\begin{optexp}
+\optbox[endbox, innerlabel, optboxheight=1](Pbs)(L){\begin{tabular}{@{}c@{}}Laser\\532\,nm\end{tabular}}
+\psset{labelalign=r}
+\optretplate(L)(Pbs){HWP}
+\beamsplitter[labelangle=-90](L)(Pbs)(Blk1){PBS}
+\psset{mirrortype=extended}
+\newpsstyle{ExtendedMirror}{fillstyle=solid, fillcolor=black}
+\mirror[label=. -90 c](Pbs)(Blk1)(Pbs){B}
+\lens[abspos=0.8, lens=0.7 0.7 0.7, n=2](Pbs)(Bs){MO}
+\pinhole[phwidth=0.15, abspos=1.2](Pbs)(Bs){PH}
+\lens[abspos=2.6, lensradius=1.4](Pbs)(Bs){L}
+\psset{labelalign=c}
+\beamsplitter[labelangle=-135](Pbs)(Bs)(Blk2){BS}
+\mirror[labeloffset=0.4](Bs)(Blk2)(Bs){B}
+\lens[abspos=1, lensradius=1.4](Bs)(Out){L}
+\lens[abspos=2.8, lens=0.7 0.7 0.7, n=2](Bs)(Out){L}
+\reflslm(Bs)(Slm)(Bs){SLM}
+\addtopsstyle{Beam}{linestyle=none, fillstyle=solid, fillcolor=green!70!black}
+\drawwidebeam[beamwidth=0.1]{1-4}
+\drawwidebeam[beamwidth=0.1, beaminsidefirst, beaminsidelast]{3}{5-8}
+\psset{savebeampoints=false, loadbeampoints}
+\drawwidebeam{8-11}{(Out)}
+\drawwidebeam[beaminsidefirst]{8}{12}
+\end{optexp}
 \end{pspicture}
 \end{document}
 Im Folgenden wird ein sehr einfacher Aufbau mit einer konkaven und einer konvexen Linse schrittweise erläutert.
