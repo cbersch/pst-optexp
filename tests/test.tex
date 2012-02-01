@@ -66,6 +66,35 @@
 \providecommand\OFF{\xdef\lst@alloverstyle##1{##1}}
 \makeatother
 \begin{document}
+\begin{LTXexample}[pos=t, caption={caption}]
+\begin{pspicture}(1,1.2)(6.2,5)
+\pnode(1,4){SigIn}\pnode(3,4){BS}\pnode(3,5){LO}
+\pnode(5,4){Det1}\pnode(3,2){Det2}
+\begin{optexp}
+  \optplane[compname=LO](LO)(1,0)
+  \beamsplitter[compname=BS](SigIn)(BS)(Det2)
+  \lens[abspos=0.5, compname=L2, n=2.1](Det2)(BS){$L_2$}
+  \lens[abspos=0.5, compname=L1, n=2.1](Det1)(BS){$L_1$}
+  \optdetector[compname=Det1, extnode=c](BS)(Det1){PD1}
+  \optdetector[compname=Det2, extnode=c](BS)(Det2){PD2}
+  \addtopsstyle{Beam}{beamwidth=0.2, fillstyle=solid, 
+                        fillcolor=green, opacity=0.2}
+  \drawwidebeam{(SigIn)}{BS}{L2}{Det2}
+  \drawwidebeam[beaminsidefirst]{BS}{L1}{Det1}
+  \newpsstyle{Beam}{linecolor=red, linestyle=dashed, linewidth=1.5\pslinewidth}
+  \drawbeam{LO}{BS}{L1}{Det1}
+  \drawbeam[beaminsidefirst]{BS}{L2}{Det2}
+\end{optexp}
+\cnodeput([Xnodesep=0.5, offset=-0.5]\oenodeExt{Det1}|\oenodeExt{Det2})%
+           {M}{\rule{3mm}{1pt}}
+\psset{arrows=<-, arrowscale=1.5, arrowinset=0}
+\nccurve[angleA=90]{M}{\oenodeExt{Det1}}
+\nccurve[angleA=180, angleB=-90]{M}{\oenodeExt{Det2}}
+\end{pspicture}
+\end{LTXexample}
+\end{document}
+
+
 \makeatletter
 \newOptexpTripole{reflslm}{}
 \def\reflslm@comp{%
@@ -102,7 +131,7 @@
 \drawwidebeam[beaminsidefirst]{8}{12}
 \end{optexp}
 \end{pspicture}
-\end{document}
+
 Im Folgenden wird ein sehr einfacher Aufbau mit einer konkaven und einer konvexen Linse schrittweise erläutert.
 
 Zuerst werden die Referenzknoten definiert, die für die Ausrichtung der
@@ -190,7 +219,6 @@ Die erste Linse soll konkav gekrümmte Grenzflächen haben. Mit \Lkeyword{lensradi
 \endgroup
 
 
-\end{document}
 \begin{lstlisting}
 §\ON§\begin{pspicture}[showgrid](5,5)§\OFF§
   \lens(0,1)(5,1)
@@ -198,7 +226,6 @@ Die erste Linse soll konkav gekrümmte Grenzflächen haben. Mit \Lkeyword{lensradi
 \end{pspicture}§\OFF§
 \end{lstlisting}
 
-\end{document}
 \begin{pspicture}[showgrid=true](5,2)
 \pnode(1.4,1){A}\pnode(4.5,1){B}
 \psset{fiber=none}
@@ -461,17 +488,17 @@ Czerny-Turner monochromator
 \end{pspicture}
 
 \begin{pspicture}(3,2.5)
-  \pnode(0,2){A}\optplane(A)(0,1){A}
-  \pnode(4,0){B}\optplane(3,0)(0,1){B}
+  \pnode(0,2){A}\optplane[compname=A](A)(0,1)
+  \pnode(4,0){B}\optplane[compname=B](3,0)(0,1)
   \optprism[n=1.8](A)([Xnodesep=2]A)(B)
   \addtopsstyle{Beam}{fillcolor=red, fillstyle=solid, opacity=0.3}
-  \drawwidebeam[beamdiv=5]{A}{2}{B}
+  \drawwidebeam[beamdiv=5]{A}{3}{B}
 \end{pspicture}
 
 \begin{pspicture}(3,2.7)
-  \optplane(0,1)(0,1){A}
   \lens[lens=2 2 2, abspos=2.5](0,1)(3,1)
-  \optplane(3,1)(0,1){B}
+  \optplane[compname=A](0,1)(0,1)
+  \optplane[compname=B](3,1)(0,1)
   \drawbeam{A}{1}{B}
   \drawbeam[beamangle=15]{A}{1}{B}
   \drawbeam[beamangle=28]{A}{1}{B}
@@ -603,7 +630,7 @@ Czerny-Turner monochromator
 
 \begin{pspicture}[showgrid=true](5,3)
   \lens[n=2.0, lens=3 3 3](0,1)(5,1)
-  \optplane(0,1)(0,1){AA}
+  \optplane[compname=AA](0,1)(0,1)
   \drawbeam[beampos=0.5]{AA}{1}{(5,2)}
 \end{pspicture}
 \end{document}
