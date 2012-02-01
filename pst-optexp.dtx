@@ -37,7 +37,7 @@
 \usepackage{array,booktabs,tabularx} 
 \usepackage{ragged2e, calc}
 \newlength{\POEcaptionmargin}
-\usepackage[labelfont={bf, color=DOrange}, singlelinecheck=false, justification=raggedright]{caption} 
+\usepackage[labelfont={small, color=DOrange}, singlelinecheck=false, justification=raggedright]{caption} 
 \DeclareCaptionFormat{poe}{\setlength{\POEcaptionmargin}{\widthof{#1}+5pt}\hspace*{-\POEcaptionmargin}#1\par}
 \captionsetup{format=poe}
 \usepackage{nicefrac}
@@ -47,8 +47,11 @@
 \usepackage[makeindex]{splitidx} 
 \usepackage{etoolbox}
 \usepackage{hypdoc} 
-\hypersetup{colorlinks=true, urlcolor=black,
-  linkcolor=pdflinkcolor, breaklinks,
+\hypersetup{%
+  colorlinks=true, 
+  urlcolor=black,
+  linkcolor=pdflinkcolor, 
+  breaklinks,
   linktocpage=true} 
 \usepackage{breakurl}
 \definecolor{DOrange}{rgb}{1,.4,.2}%
@@ -585,9 +588,11 @@
 % 
 % \ifGERMAN
 %   \title{\texttt{pst-optexp}\\ Optische Versuchsaufbauten\\[0.5ex] \small \fileversion}
+%   \hypersetup{pdftitle={Optische Versuchsaufbauten}}
 % \fi
 % \ifENGLISH
 %   \title{\texttt{pst-optexp}\\ Drawing optical experimental setups\\[0.5ex] \small \fileversion}
+%   \hypersetup{pdftitle={Optical experimental setups}}
 % \fi
 % \author{Christoph Bersch}
 % \date{\filedate}
@@ -1070,7 +1075,7 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}[hsep=8mm, numbers=left, numberstyle=\footnotesize]
+\begin{LTXexample}[hsep=8mm, numbers=left, numberstyle=\footnotesize, caption={caption}]
 \begin{pspicture}(3.2,5)
   \pnode(0,3){In}\pnode(1,3){BS}\pnode(3,3){M1}*\label{l:ex2-nodes1}*
   \pnode(1,5){M2}\pnode(1,1){PD}*\label{l:ex2-nodes2}*
@@ -1123,7 +1128,7 @@
 % \begingroup
 % \catcode`\*=13
 % \def*{}%
-\begin{LTXexample}[pos=t, vsep=10mm, numbers=left, numberstyle=\footnotesize]
+\begin{LTXexample}[pos=t, vsep=10mm, numbers=left, numberstyle=\footnotesize, caption={caption}]
 \begin{pspicture}(-0.2,-0.3)(7.7,2.4)
   \pnode(1,1){Laser}\pnode(3,1){PcOut}*\label{l:ex3-nodes1}*
   \pnode(4.5,1){MzmOut}\pnode(6.5,1){Osa}
@@ -1162,14 +1167,14 @@
 % \begingroup
 % \catcode`\*=13
 % \def*{}%
-\begin{LTXexample}[numbers=left, numberstyle=\footnotesize]
+\begin{LTXexample}[numbers=left, numberstyle=\footnotesize, caption={caption}]
 \begin{pspicture}(0.5,0)(2.2,4)
   \pnode(0,1){In}\pnode(1,1){BS}\pnode(2,1){G}\pnode(1,4){Out}
   \beamsplitter(G)(BS)(Out)
   \optgrating(BS)(G)(BS)
   \lens[lens=2 2 1.5, compshift=0.1, n=2.25](BS)(Out)
   \pinhole[phwidth=0.05, innerheight=0.05, position=0.8, compshift=0.18](BS)(Out)
-  \optplane(Out)(1, 0){Out}
+  \optplane[compname=Out](Out)(1, 0)
   \addtopsstyle{Beam}{linestyle=none, beamwidth=0.2, fillstyle=solid}
   \drawwidebeam[fillcolor=red!25!white]{(In)}{1}{2}{1}{3}{4}
   \drawwidebeam[fillcolor=red!50!white, beamangle=-5]{2}{1}{3}{4}{Out}
@@ -4283,7 +4288,7 @@
 \begin{pspicture}(3,3)
   \pnode(0,1.5){A}\pnode(3,1.5){B}
   \lens[lens=4 4 3, n=2, abspos=0.3](A)(B)
-  \optplane(B)(0,1){Plane}
+  \optplane[compname=Plane](B)(0,1)
   \psset{beampos=0.6}
   \drawbeam[linecolor=red]{(A)}{1}{Plane}
   \drawbeam[linecolor=yellow, nadd=0.5]{(A)}{1}{Plane}
@@ -4453,9 +4458,9 @@
 \ifGERMAN
 \begin{LTXexample}
 \begin{pspicture}(3,2.7)
-  \optplane(0,1)(0,1){A}
   \lens[lens=2 2 2, abspos=2.5](0,1)(3,1)
-  \optplane(3,1)(0,1){B}
+  \optplane[compname=A](0,1)(0,1)
+  \optplane[compname=B](3,1)(0,1)
   \drawbeam{A}{1}{B}
   \drawbeam[beamangle=15]{A}{1}{B}
   % Verfehlt die zweite Grenzfläche, der Strahl wird nur bis zur ersten Grenzfläche gezeichnet.
@@ -4467,9 +4472,9 @@
 \fi\ifENGLISH
 \begin{LTXexample}
 \begin{pspicture}(3,2.7)
-  \optplane(0,1)(0,1){A}
   \lens[lens=2 2 2, abspos=2.5](0,1)(3,1)
-  \optplane(3,1)(0,1){B}
+  \optplane[compname=A](0,1)(0,1)
+  \optplane[compname=B](3,1)(0,1)
   \drawbeam{A}{1}{B}
   \drawbeam[beamangle=15]{A}{1}{B}
   % misses the second interface, draw only until the first interface
@@ -4500,12 +4505,12 @@
 % \fi
 \begin{LTXexample}
 \begin{pspicture}(3,2.5)
-  \pnode(0,2){A}\optplane(A)(0,1){A}
-  \pnode(4,0){B}\optplane(3,0)(0,1){B}
+  \pnode(0,2){A}\optplane[compname=A](A)(0,1)
+  \pnode(4,0){B}\optplane[compname=B](3,0)(0,1)
   \optprism[n=1.8](A)([Xnodesep=2]A)(B)
   \addtopsstyle{Beam}{%
     fillcolor=green, fillstyle=solid, opacity=0.3}
-  \drawwidebeam[beamdiv=5]{A}{2}{B}
+  \drawwidebeam[beamdiv=5]{A}{3}{B}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -5541,7 +5546,7 @@
 \pnode(1,4){SigIn}\pnode(3,4){BS}\pnode(3,5){LO}
 \pnode(5,4){Det1}\pnode(3,2){Det2}
 \begin{optexp}
-  \optplane(LO)(1,0){LO}
+  \optplane[compname=LO](LO)(1,0)
   \beamsplitter[compname=BS](SigIn)(BS)(Det2)
   \lens[abspos=0.5, compname=L2, n=2.1](Det2)(BS){$L_2$}
   \lens[abspos=0.5, compname=L1, n=2.1](Det1)(BS){$L_1$}
@@ -7953,32 +7958,44 @@
 % 
 % \section{Components}
 %
-% \begin{macro}{\newOptexpComp}
+% \begin{macro}{\newOptexpComp@}
 %    \begin{macrocode}
-\def\newOptexpComp#1{%
+\def\newOptexpComp@#1#2{%
   \POE@Verb{%
     \tx@NodeScale
-    [ #1 (\oenode{}{}) {\tx@ScreenCoor} false NewOptexpComp
+    [ #1 (\oenode{}{}) {\tx@ScreenCoor} #2 NewOptexpComp
   }%
 \ignorespaces}%
 %    \end{macrocode}
 % \end{macro}
 % 
+% \begin{macro}{\newOptexpComp}
+%    \begin{macrocode}
+\def\newOptexpComp#1{%
+  \newOptexpComp@{#1}{false}%
+\ignorespaces}%
+%    \end{macrocode}
+% \end{macro}
+%
 % \begin{macro}{\newOptexpCompAmb}
 %    \begin{macrocode}
 \def\newOptexpCompAmb#1{%
-  \POE@Verb{%
-    \tx@NodeScale
-    [ #1 (\oenode{}{}) {\tx@ScreenCoor} true NewOptexpComp
-  }%
+  \newOptexpComp@{#1}{true}%
 \ignorespaces}%
 %    \end{macrocode}
 % \end{macro}
 %
 % \begin{macro}{\POE@compalias}
+%   Components which have a \opt{compname} assigned, must also be available by
+%   their component number. Here, all necessary informations (nodes, component
+%   dictionary) are referenced such that any information is accessible via
+%   numeber or name.
 %    \begin{macrocode}
 \def\POE@compalias#1#2{%
   \POE@Verb{%
+%    \end{macrocode}
+% Copy the component dictionary
+%    \begin{macrocode}
     /\oenode{}{#1} dup currentdict exch known { 
       load /#2 ED 
     } { 
@@ -7986,6 +8003,9 @@
     } ifelse
     (#2) (\oenode{}{#1})
     tx@NodeDict begin
+%    \end{macrocode}
+% Copy all interface nodes of the component.
+%    \begin{macrocode}
       1 {
         3 copy inttostr dup 
         3 1 roll 2 copy NodeName
@@ -7998,6 +8018,10 @@
           pop exit
         } ifelse
       } loop
+%    \end{macrocode}
+% Copy all other nodes associated with the component (reference nodes, center
+% node, label node etc).
+%    \begin{macrocode}
       [ (A) (B) (@A) (@B) (Center) (Label) (Rotref) 
         (TrefA) (TrefB) (@TrefA) (@TrefB) (Ext)
       counttomark {
@@ -8016,16 +8040,19 @@
 % \end{macro}
 % 
 % \begin{macro}{\optplane}
+%   Define an invisible plane which is used only for ray tracing. The first node
+%   is the origin, the second one is the difference vector.
 %    \begin{macrocode}
-\def\optplane(#1)(#2)#3{%
-  \pst@getcoor{#1}\POE@tempa% origin
-  \pst@getcoor{#2}\POE@tempb% difference vector
-  \POE@Verb{%
-    \tx@NodeScale
-    [ {\POE@tempa} gsave STV CP T exec grestore ToVec 
-    {\POE@tempb} trans {PlaneIfc} 1
-    (\POE@str@basicname@prefix#3) {} false NewOptexpComp
-  }%
+\def\optplane{%
+  \@ifnextchar[%]
+    {\optplane@i}{\optplane@i[]}%
+}%
+\def\optplane@i[#1](#2)(#3){%
+  \pst@getcoor{#2}\POE@tempa% origin
+  \pst@getcoor{#3}\POE@tempb% difference vector
+  \optplate[#1, linestyle=none]%
+    (! \POE@tempa \POE@tempb neg exch \POE@dict{VecAdd} \tx@UserCoor)%
+    (! \POE@tempa \POE@tempb exch neg \POE@dict{VecAdd} \tx@UserCoor)%
 \ignorespaces}%
 %    \end{macrocode}
 % \end{macro}
@@ -8316,12 +8343,12 @@
             \pst@getcoor{##1}\POE@tempa%
             \pst@getcoor{##2}\POE@tempb%
             \pnode(!\POE@tempa \POE@tempb 
-                    \POE@dict{VecAdd 0.5 VecMul}
+                    \POE@dict{VecAdd 0.5 VecScale}
                     \tx@UserCoor){\oenodeRefA{}}
             \pst@getcoor{##3}\POE@tempa%
             \pst@getcoor{##4}\POE@tempb%
             \pnode(!\POE@tempa \POE@tempb 
-                    \POE@dict{VecAdd 0.5 VecMul}
+                    \POE@dict{VecAdd 0.5 VecScale}
                     \tx@UserCoor){\oenodeRefB{}}
          \fi\fi
        \fi
@@ -8430,7 +8457,7 @@
          \pst@getcoor{#2}\POE@tempa%
          \pst@getcoor{#3}\POE@tempb%
          \pnode(!\POE@tempa \POE@tempb 
-                 \POE@dict{VecAdd 0.5 VecMul}
+                 \POE@dict{VecAdd 0.5 VecScale}
                  \tx@UserCoor){\oenodeRefB{}}
       \fi\fi
     \fi
@@ -8475,7 +8502,7 @@
          \pst@getcoor{#1}\POE@tempa%
          \pst@getcoor{#2}\POE@tempb%
          \pnode(!\POE@tempa \POE@tempb 
-                 \POE@dict{VecAdd 0.5 VecMul}
+                 \POE@dict{VecAdd 0.5 VecScale}
                  \tx@UserCoor){\oenodeRefA{}}
       \fi\fi
     \fi
@@ -11993,13 +12020,13 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}{VecMul}
+% \begin{macro}{VecScale}
 % Scale a vector by a factor \PSvar{fac}.
 % \begin{pssyntax}
-%   \PSvar{Xa Ya fac} \PSop{VecMul} \PSvar{fac}$\cdot$\PSvar{Xa} \PSvar{fac}$\cdot$\PSvar{Ya}
+%   \PSvar{Xa Ya fac} \PSop{VecScale} \PSvar{fac}$\cdot$\PSvar{Xa} \PSvar{fac}$\cdot$\PSvar{Ya}
 % \end{pssyntax}
 %    \begin{macrocode}
-/VecMul {
+/VecScale {
   dup 4 -1 roll mul 3 1 roll mul
 } bind def
 %    \end{macrocode}
@@ -12485,9 +12512,9 @@ tx@OptexpDict begin
 % be separated by $10^{-7}$ times the maximum coordinate value.
 %    \begin{macrocode}
     8 -2 roll 2 copy abs exch abs max 2e-7 mul 3 1 roll 5 2 roll 
-    VecMul VecAdd ToVec 7 -1 roll @NewNode
+    VecScale VecAdd ToVec 7 -1 roll @NewNode
     4 2 roll 2 copy abs exch abs max -2e-7 mul 3 1 roll 5 2 roll 
-    VecMul VecAdd ToVec exch @NewNode
+    VecScale VecAdd ToVec exch @NewNode
   } {
     8 { pop } repeat
   } ifelse
