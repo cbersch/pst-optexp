@@ -82,10 +82,10 @@ arch-tds : Changes
 	cp pst-optexp.sty tds/tex/latex/pst-optexp/
 	cp pst-optexp.pro tds/dvips/pst-optexp/
 	cp Changes pst-optexp.pdf pst-optexp-DE.pdf \
-          README tds/doc/latex/pst-optexp/
+          README pst-optexp.ist tds/doc/latex/pst-optexp/
 	cp pst-optexp.dtx pst-optexp.ins \
 	  tds/source/latex/pst-optexp/
-	cd tds ; zip -r ../$(ARCHNAME_TDS).zip tex doc source
+	cd tds ; zip -r ../$(ARCHNAME_TDS).zip tex doc source dvips
 	rm -rf tds
 
 ctan : dist arch-tds
