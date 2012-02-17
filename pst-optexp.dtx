@@ -2732,13 +2732,23 @@
 % \ifGERMAN\chapter{Faseroptische Komponenten}\fi
 % \ifENGLISH\chapter{Fiber-optical components}\fi
 % \label{chap:fibercomp}
-% 
+% \psset{usefiberstyle}
 % \begin{optionlist}
-%   \boolitem{usefiberstyle} For some components it might me nice to highlight
+%   \boolitem{usefiberstyle} 
+%   \ifGERMAN
+%   Bei manchen Komponenten kann es vorteilhaft sein interne Faserteile
+%   hervorzuheben. Mit diesem Parameter werden z.B. die durchlässigen Teile
+%   eines Filter angezeigt und mit dem \Lstyle{Fiber}-Stil gezeichnet. In der
+%   Dokumentation ist dieses Verhalten angeschaltet um zu verdeutlichen, welche
+%   Teile hervorgehoben werden.
+%   \fi
+%   \ifENGLISH
+%   For some components it can me nice to highlight
 %   some internals. If \Lkeyword{usefiberstyle} is enabled, for examples the
-%   passing parts of the optical filter are drawn with the \styleshape{Fiber}
+%   passing parts of the optical filter are drawn with the \Lstyle{Fiber}
 %   style. In the documentation this parameter is enabled to show the parts
 %   which would be highlighted.
+%   \fi
 % \end{optionlist}
 %
 % \ifGERMAN\section{Optische Faser}\fi
@@ -2828,7 +2838,15 @@
 % \end{ltxsyntax}
 % 
 % \begin{optionlist}
-% \numitem[0.8]{optampsize} \sizeexplanation{\ifGERMAN des Verstärkers\fi\ifENGLISH amplifier\fi}
+% \numitem[0.8]{optampsize} 
+% \ifGERMAN 
+% Die Höhe bzw. die Seitenlänge des Verstärkers. Um das Verhältnis zwischen Höhe
+% und Breite zu ändern, verwenden Sie \opt{xunit} und \opt{yunit}.
+% \fi
+% \ifENGLISH
+% The height and side length of the amplifier. To change the relation of width
+% and height, use \opt{xunit} and \opt{yunit}.
+% \fi
 % \end{optionlist}
 % 
 % \ifGERMAN\section{Mach-Zehnder-Modulator}\fi
@@ -2912,6 +2930,24 @@
 % \iffalse
 %</ignore>
 % \fi
+%
+% \styleitem{FilterInt}
+% \ifGERMAN Beinflusst das Aussehen der internel Filterlinien.\fi
+% \ifENGLISH Changes the style of the interal filter lines.\fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(3,1.5)
+  \newpsstyle{OptComp}{linewidth=2\pslinewidth}
+  \optfilter(0,1)(1.5,1)
+  \newpsstyle{FilterInt}{linewidth=0.5\pslinewidth}
+  \optfilter(1.5,1)(3,1)
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % \end{optionlist}
 % 
 % \ifGERMAN\section{Polarisationssteller}\fi
@@ -2936,6 +2972,20 @@
 % \numitem[0.15]{polcontrolsize} 
 % \ifGERMAN Der Radius der Polarisationssteller-Kreise.\fi
 % \ifENGLISH The radius of the polarization controller circles.\fi
+% \choitem[linear]{polcontroltype}{linear, triangle}
+% \ifGERMAN Der Typ des Polarisationsstellers.\fi
+% \ifENGLISH The type of the polarization controller.\fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(3,1.5)
+  \polcontrol[polcontroltype=triangle](0,1)(3,1){PC}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % \end{optionlist}
 % 
 % \ifGERMAN\section{Isolator}\fi
@@ -3108,10 +3158,19 @@
 % \fi
 % \end{ltxsyntax}
 % \begin{optionlist}
-% \numitem[0.3]{fibercolsize} \sizeexplanation{\ifGERMAN des Kollimators\fi\ifENGLISH collimator\fi}
+% \numitem[0.3]{fibercolsize}
+% \ifGERMAN
+% Die Höhe bzw. Seitenlänge des Kollimators. Mit dem \opt{xunit} oder
+% \opt{yunit} Parameter kann das Verhältnis zwischen Höhe und Breite geändert
+% werden.
+% \fi
+% \ifENGLISH
+% The height and side length of the collimator. Use the \opt{xunit} or
+% \opt{yunit} parameter to change this relation.
+% \fi
 % \end{optionlist}
 % \ifGERMAN
-% Der Fasekollimator kann mit zwei, drei oder vier Punkten verwendet
+% Der Faserkollimator kann mit zwei, drei oder vier Punkten verwendet
 % werden. Bei zwei Punkten wird der Kollimator wie jeder andere Zweipol
 % zwischen \prm{in} und \prm{out} Knoten platziert. Bei drei Punkten
 % wird eine \Lcs{psbezier} Kurve gezeichnet, wobei der mittlere Punkt
@@ -3141,7 +3200,7 @@
 % \medskip
 %
 % \ifGERMAN
-% Bei vier Konten wird eine \Lcs{psbezier} Kurve mit allen vier Knoten
+% Bei vier Knoten wird eine \Lcs{psbezier} Kurve mit allen vier Knoten
 % gezeichnet. Die Positionierungsparameter (see
 % \prettyref{sec:positioning}) können verwendet werden um den Kollimator
 % zwischen dem \prm{in} und \prm{A} Knoten auszurichten.
@@ -3205,7 +3264,7 @@
 % \fi
 % 
 % \choitem[elliptic]{couplertype}{none, elliptic, rectangular, crossswitch}
-% \ifGERMAN Wähle zwischen unterschiedlichen Kopplertypen.\fi
+% \ifGERMAN Wählt zwischen unterschiedlichen Kopplertypen.\fi
 % \ifENGLISH Select between different coupler types.\fi
 % \iffalse
 %<*ignore>
@@ -3283,7 +3342,7 @@
 % \fi
 % 
 % \choitem*[elliptic]{couplertype}{none, elliptic, rectangular}
-% \ifGERMAN Wähle zwischen unterschiedlichen Kopplertypen.\fi
+% \ifGERMAN Wählt zwischen unterschiedlichen Kopplertypen.\fi
 % \ifENGLISH Select between different coupler types.\fi
 % \iffalse
 %<*ignore>
@@ -3357,7 +3416,7 @@
 % \fi
 % 
 % \choitem*[elliptic]{couplertype}{none, elliptic, rectangular}
-% \ifGERMAN Wähle zwischen unterschiedlichen Kopplertypen.\fi
+% \ifGERMAN Wählt zwischen unterschiedlichen Kopplertypen.\fi
 % \ifENGLISH Select between different coupler types.\fi
 % \iffalse
 %<*ignore>
@@ -3425,8 +3484,7 @@
 % \psdot(\oenodeIfc{N}{})\uput[-90](\oenodeIfc{N}{}){N}
 % \end{pspicture}
 % \end{center}
-% 
-%
+% \psset{usefiberstyle=false}
 %
 % \ifGERMAN\chapter{Spezielle Knoten}\fi
 % \ifENGLISH\chapter{Special nodes}\fi
@@ -6041,6 +6099,8 @@
 \def\POE@str@couplertype@elliptic{elliptic}
 \def\POE@str@couplertype@rectangular{rectangular}
 \def\POE@str@couplertype@crossswitch{crossswitch}
+\def\POE@str@polcontroltype@linear{linear}
+\def\POE@str@polcontroltype@triangle{triangle}
 \def\POE@str@top{top}
 \def\POE@str@bottom{bottom}
 \def\POE@str@center{center}
@@ -6748,8 +6808,9 @@
 }
 \define@choicekey+[psset]{optexp}{filtertype}[\val\nr]%
    {bandstop,bandpass,lowpass,highpass}%
-   {\edef\POE@key@filtertype{#1}}%
+   {\def\POE@key@filtertype{#1}}%
    {\PackageError{pst-optexp}{Unknown filtertype '\val'}}
+\newpsstyle{FilterInt}{}
 \psset[optexp]{%
   filtersize=0.8,
   filtertype=bandpass
@@ -6760,7 +6821,14 @@
 \define@key[psset]{optexp}{polcontrolsize}{%
   \pst@checknum{#1}\POE@key@polcontrolsize
 }
-\psset[optexp]{polcontrolsize=0.15}%
+\define@choicekey+[psset]{optexp}{polcontroltype}[\val\nr]%
+   {linear,triangle}%
+   {\def\POE@key@polcontroltype{#1}}%
+   {\PackageError{pst-optexp}{Unknown polcontroltype '\val'}}
+\psset[optexp]{%
+  polcontrolsize=0.15,
+  polcontroltype=linear
+}%
 %    \end{macrocode}
 % Optical amplifier
 %    \begin{macrocode}
@@ -8128,8 +8196,7 @@
   \begin@OptexpObj
     \ifPOE@nofiber@\else
       \setkeys+[psset]{optexp}{fiber@}%
-    \fi
-}%
+    \fi}%
 %    \end{macrocode}
 % \end{macro}
 % \begin{macro}{\begin@OptexpTripole}
@@ -8851,7 +8918,7 @@
   \@ifnextchar\bgroup{\fibercollimator@v}{\fibercollimator@v{}}%
 }%
 \def\fibercollimator@v#1{%
-  \begin@OptexpObj
+  \begin@OptexpFiberObj
     \ifPOE@backlayer
       \POE@regNodes{\POE@tempa}{\POE@tempb}%
       \POE@globalnoderef
@@ -9931,57 +9998,60 @@
       90 add cos 0.2 \@sz mul mul}%
   }%
   \psframe[dimen=outer](! \@sz neg dup)(! \@sz dup)
-  \ifx\POE@key@filtertype\POE@str@filtertype@bandpass
-    \psline(! -0.3 \@sz mul -0.65 \@sz mul)%
-           (! 0.3 \@sz mul -0.35 \@sz mul)%
-    \psline(! -0.3 \@sz mul 0.35 \@sz mul)%
-           (! 0.3 \@sz mul 0.65 \@sz mul)%
-    \rput(! 0 -0.5 \@sz mul){\filter@curve}
-    \rput(0, 0){%
-      \ifPOE@usefiberstyle
-        \psset{style=Fiber}
-      \fi
-      \filter@curve}
-    \rput(! 0 0.5 \@sz mul){\filter@curve}
-  \else\ifx\POE@key@filtertype\POE@str@filtertype@bandstop
-    \psline(! -0.3 \@sz mul -0.15 \@sz mul)%
-           (! 0.3 \@sz mul 0.15 \@sz mul)%
-    \rput(! 0 -0.5 \@sz mul){%
-      \ifPOE@usefiberstyle
-        \psset{style=Fiber}
-      \fi
-      \filter@curve}
-      \rput(0, 0){\filter@curve}
+  \bgroup
+  \psset{style=FilterInt}%
+    \ifx\POE@key@filtertype\POE@str@filtertype@bandpass
+      \psline(! -0.3 \@sz mul -0.65 \@sz mul)%
+             (! 0.3 \@sz mul -0.35 \@sz mul)%
+      \psline(! -0.3 \@sz mul 0.35 \@sz mul)%
+             (! 0.3 \@sz mul 0.65 \@sz mul)%
+      \rput(! 0 -0.5 \@sz mul){\filter@curve}
+      \rput(0, 0){%
+        \ifPOE@usefiberstyle
+          \psset{style=Fiber}
+        \fi
+        \filter@curve}
+      \rput(! 0 0.5 \@sz mul){\filter@curve}
+    \else\ifx\POE@key@filtertype\POE@str@filtertype@bandstop
+      \psline(! -0.3 \@sz mul -0.15 \@sz mul)%
+             (! 0.3 \@sz mul 0.15 \@sz mul)%
+      \rput(! 0 -0.5 \@sz mul){%
+        \ifPOE@usefiberstyle
+          \psset{style=Fiber}
+        \fi
+        \filter@curve}
+        \rput(0, 0){\filter@curve}
+        \rput(! 0 0.5 \@sz mul){%
+          \ifPOE@usefiberstyle
+            \psset{style=Fiber}
+          \fi
+          \filter@curve}
+    \else\ifx\POE@key@filtertype\POE@str@filtertype@lowpass
+      \psline(! -0.3 \@sz mul -0.15 \@sz mul)%
+             (! 0.3 \@sz mul 0.15 \@sz mul)%
+      \psline(! -0.3 \@sz mul 0.35 \@sz mul)%
+             (! 0.3 \@sz mul 0.65 \@sz mul)%
+      \rput(! 0 -0.5 \@sz mul){%
+        \ifPOE@usefiberstyle
+          \psset{style=Fiber}
+        \fi
+        \filter@curve}
+        \rput(0, 0){\filter@curve}
+        \rput(! 0 0.5 \@sz mul){\filter@curve}
+    \else\ifx\POE@key@filtertype\POE@str@filtertype@highpass
+      \psline(! -0.3 \@sz mul -0.15 \@sz mul)%
+             (! 0.3 \@sz mul 0.15 \@sz mul)%
+      \psline(! -0.3 \@sz mul -0.65 \@sz mul)%
+             (! 0.3 \@sz mul -0.35 \@sz mul)%
       \rput(! 0 0.5 \@sz mul){%
         \ifPOE@usefiberstyle
           \psset{style=Fiber}
         \fi
         \filter@curve}
-  \else\ifx\POE@key@filtertype\POE@str@filtertype@lowpass
-    \psline(! -0.3 \@sz mul -0.15 \@sz mul)%
-           (! 0.3 \@sz mul 0.15 \@sz mul)%
-    \psline(! -0.3 \@sz mul 0.35 \@sz mul)%
-           (! 0.3 \@sz mul 0.65 \@sz mul)%
-    \rput(! 0 -0.5 \@sz mul){%
-      \ifPOE@usefiberstyle
-        \psset{style=Fiber}
-      \fi
-      \filter@curve}
-      \rput(0, 0){\filter@curve}
-      \rput(! 0 0.5 \@sz mul){\filter@curve}
-  \else\ifx\POE@key@filtertype\POE@str@filtertype@highpass
-    \psline(! -0.3 \@sz mul -0.15 \@sz mul)%
-           (! 0.3 \@sz mul 0.15 \@sz mul)%
-    \psline(! -0.3 \@sz mul -0.65 \@sz mul)%
-           (! 0.3 \@sz mul -0.35 \@sz mul)%
-    \rput(! 0 0.5 \@sz mul){%
-      \ifPOE@usefiberstyle
-        \psset{style=Fiber}
-      \fi
-      \filter@curve}
-      \rput(0, 0){\filter@curve}
-      \rput(! 0 -0.5 \@sz mul){\filter@curve}
+        \rput(0, 0){\filter@curve}
+        \rput(! 0 -0.5 \@sz mul){\filter@curve}
   \fi\fi\fi\fi
+  \egroup
 \ignorespaces}%
 %    \end{macrocode}
 % \end{macro}
@@ -10014,9 +10084,13 @@
 % \begin{macro}{\polcontrol@nodes}
 %    \begin{macrocode}
 \def\polcontrol@nodes{%
-  \edef\@sz{\POE@key@polcontrolsize\space}%
-  \pnode(!\@sz -2 mul 0){\oenodeIn{}}
-  \pnode(!\@sz 2 mul 0){\oenodeOut{}}  
+  \ifx\POE@key@polcontroltype\POE@str@polcontroltype@linear
+    \def\@sz{\POE@key@polcontrolsize\space 2 mul\space}%
+  \else
+    \def\@sz{\POE@key@polcontrolsize\space 1.5 mul\space}%
+  \fi
+  \pnode(!\@sz neg 0){\oenodeIn{}}
+  \pnode(!\@sz 0){\oenodeOut{}}  
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -10032,9 +10106,15 @@
     \ifPOE@usefiberstyle
       \psset{style=Fiber}%
     \fi
-    \multips(! -2 \@sz mul \@sz)(! 2 \@sz mul 0){3}{%
-      \pscircle(0,0){\POE@key@polcontrolsize}%
-    }%
+    \ifx\POE@key@polcontroltype\POE@str@polcontroltype@linear
+      \multips(! -2 \@sz mul \@sz)(! 2 \@sz mul 0){3}{%
+        \pscircle(0,0){\POE@key@polcontrolsize}%
+      }%
+    \else
+      \pscircle(! -1.5 \@sz mul \@sz neg){\POE@key@polcontrolsize}
+      \pscircle(! 0 \@sz){\POE@key@polcontrolsize}%
+      \pscircle(! 1.5 \@sz mul \@sz neg){\POE@key@polcontrolsize}
+    \fi
   \egroup
   \ifPOE@optexpenv\else
     \psline[style=Fiber](\oenodeIn{})(\oenodeOut{})
