@@ -45,7 +45,6 @@
 \usepackage{pst-optexp} 
 \usepackage{pst-circ}
 \usepackage[makeindex]{splitidx} 
-\usepackage{etoolbox}
 \usepackage{hypdoc} 
 \hypersetup{%
   colorlinks=true, 
@@ -57,13 +56,14 @@
 \definecolor{DOrange}{rgb}{1,.4,.2}%
 \colorlet{pdflinkcolor}{DOrange}
 \usepackage{pst-tree}
-\newcommand{\poeTR}[1]{\TR{\ttfamily\color{DOrange}#1}}
-\newcommand{\exsection}[1]{\subsection*{#1}\addcontentsline{toc}{subsection}{#1}}
-\usepackage{showexpl} 
+\usepackage{showexpl}
+\makeatletter\renewcommand*\SX@Info{}\makeatother
+\usepackage{etoolbox}
 \undef{\cs}
 \undef{\cmd}
 \usepackage{ltxdockit}
-\makeatletter\renewcommand*\SX@Info{}\makeatother
+\newcommand{\poeTR}[1]{\TR{\ttfamily\color{DOrange}#1}}
+\newcommand{\exsection}[1]{\subsection*{#1}\addcontentsline{toc}{subsection}{#1}}
 \definecolor{colKeys}{rgb}{0,0,0}
 \definecolor{colIdentifier}{rgb}{0,0,0}
 \colorlet{colComments}{green!60!black}
@@ -132,20 +132,23 @@
 \setheadsepline{.4pt}[\color{DOrange}]
 \setheadwidth[0pt]{text}
 \setfootwidth[0pt]{text}
-%%
+%
 \makeatletter
 \renewcommand*\l@section{\bprot@dottedtocline{1}{1.5em}{3.0em}}
 \renewcommand*\l@subsection{\bprot@dottedtocline{2}{3.8em}{4.0em}}
 \newrobustcmd*{\fnurl}[1][]{\hyper@normalise\ltd@fnurl{#1}}
 \def\ltd@fnurl#1#2{\footnote{#1\hyper@linkurl{\Hurl{#2}}{#2}}}
 \makeatother
-%%
+%
 \usepackage{csquotes}
 \MakeAutoQuote{«}{»}
+% spot is used in ltxdockit.sty
 \colorlet{spot}{sectioncolor}
 \newpsstyle{Refline}{linecolor=gray!60}
 \colorlet{Refline}{gray!60}
 \makeatletter
+% is identical to the changelog definition in ltxdockit.sty, but 
+% does also set \parsep to 0pt.
 \renewenvironment*{changelog}
   {\list{}{%
      \setlength{\leftmargin}{0pt}%
@@ -176,7 +179,7 @@
      \hfill\makebox[3em][l]{\ref{##1}}}}
   {\endlist}
 \makeatother
-
+% Fonts definitions used in ltxdockit.sty
 \renewcommand*{\verbatimfont}{\ttfamily}
 \renewcommand*{\displayverbfont}{\ttfamily}
 \renewcommand*{\marglistfont}{\spotcolor\sffamily\small}
@@ -188,8 +191,8 @@
 \renewcommand*{\changeloglabelfont}{\spotcolor\sffamily\bfseries}
 
 \makeatletter
-%% an idea from GL to provide links inside the listings to the pst-optexp commands: 
-%% <https://groups.google.com/groups/search?as_umsgid=4d89ee49%240%2418590%24426a74cc%40news.free.fr>
+% an idea from GL to provide links inside the listings to the pst-optexp commands: 
+% <https://groups.google.com/groups/search?as_umsgid=4d89ee49%240%2418590%24426a74cc%40news.free.fr>
 \providerobustcmd*\ifrefundefined [1]{%
   \begingroup%
     \csname @safe@activestrue\endcsname%
@@ -216,7 +219,7 @@
 }% \hyperlistings
 \let\lsthk@OutputBox\lsthk@OutputBox@H@@k
 \makeatother
-\DeclareRobustCommand\lsb{{\normalfont\ttfamily[}}
+
 \makeatletter
 \def\ltd@optionlist{%
   \let\optitem\POE@optitem
@@ -382,7 +385,9 @@
 \def\Loption#1{\texttt{#1}\xLoption{#1}}
 \def\nxLoption#1{\texttt{#1}}
 
-\def\Lstyle#1{\texttt{#1}\xLstyle{#1}}
+\def\Lstyle{\@ifstar{\Lstyle@nobm}{\Lstyle@bm}}
+\def\Lstyle@nobm#1{\texttt{#1}\xLstyle{#1}}
+\def\Lstyle@bm#1{\hyperref[prm:#1]{\Lstyle@nobm{#1}}}
 \def\xLstyle#1{\docindex{#1=\texttt{#1}}\docindex{\POEindexStyle!#1=\texttt{#1}}}
 \def\nxLstyle#1{\texttt{#1}}
 
@@ -540,7 +545,7 @@
 %     height. Use the \opt{xunit} or \opt{yunit} parameter to change this
 %     relation.
 %   \fi
-% }%
+% }
 % \newcommand{\refstringexplanation}{%
 %   \ifGERMAN
 %   Analog zum Referenzpunkt von \nxLcs{rput}, kann jede Kombination von
@@ -564,7 +569,12 @@
 % generic \opt{linewidth} option. But this parameter allows setting
 % globally the linewidth of all #2.
 % \fi
-% }%
+% }
+%
+% \newcommand*{\deprecatedmsg}[2][3.0]{%
+% \ifGERMAN Dieser Parameter ist seit Version #2 veraltet, verwenden Sie stattdessen #1. \fi
+% \ifENGLISH This parameter is deprecated since versio #2, use #1 instead.\fi
+% }
 %
 % \makeatletter
 % \renewcommand\maketitle{^^A
@@ -1758,7 +1768,7 @@
 % \fi
 \begin{LTXexample}[morekeywords={[21]{lensradius}}]
 \begin{pspicture}(3,1.5)
-  \lens[lensradius=-2, beam](0,1)(3,1){L1}
+  \lens[lensradius=-2, beam](0,1)(3,1)
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -1768,17 +1778,17 @@
 % \numitem[0]{lenswidth}
 % \ifGERMAN
 % Üblicherweise werden nur die Höhe und die beiden Radien für die
-% Konstuktion der Linse verwendet. Die Mittenbreite wird automatisch
-% ermittelt. Wenn \nxLkeyword{lenswidth} auf einen Wert größer Null gesetzt wird,
+% Konstruktion der Linse verwendet, die Mittenbreite wird automatisch
+% berechnet. Wenn \nxLkeyword{lenswidth} auf einen Wert größer Null gesetzt wird,
 % wird diese Breite verwendet. Das ist nur sinnvoll, wenn dicke Linsen
 % gezeichnet werden sollen, da es andernfalls für zu kleine Werte zu unschönen
 % Ergebnissen führt.
 % \fi
 % \ifENGLISH
-% Usually only the height and the two radii are used to construct the lens and
-% the width is calculated from these parameters. If \nxLkeyword{lenswidth} is greater
+% Usually only the height and the two radii are used to construct the lens,
+% the width is calculated automatically. For \nxLkeyword{lenswidth} greater
 % than zero, this width is used instead. This is only useful if you want to draw
-% thick lenses and it can have ugly results if the lens width is choosen too
+% thick lenses and it can give ugly results if the value is choosen too
 % small.
 % \fi
 % \iffalse
@@ -1787,7 +1797,7 @@
 \begin{LTXexample}[morekeywords={[21]{lenswidth}}]
 \begin{pspicture}(3,2)
   \lens[lenswidth=0.5, beam](0,1)(2,1){thicklens}
-  \lens[lenswidth=0.1, beam](2,1)(3,1){}
+  \lens[lenswidth=0.1, beam](2,1)(3,1)
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -1796,7 +1806,7 @@
 % \optitem{lens}{\prm{radiusleft} [\prm{radiusright} [\prm{height} [\prm{width}]]]}
 % \ifGERMAN
 % Eine Option zum gleichzeitigen Setzen mehrerer Linsenparameter. Es müssen
-% nicht alle Werte gesetzt werden, die übrigen bleiben unverändert.
+% nicht alle Werte gesetzt werden, die übrigen bleiben unverändert. 
 % \fi
 % \ifENGLISH
 % A convenience option to specify all lens parameters with a single option.
@@ -1958,6 +1968,7 @@
 % \fi
 \begin{LTXexample}[morekeywords={[21]{voltage, caxisinv}}]
 \begin{pspicture}(0,0.5)(3,1.6)
+\newpsstyle{CrystalCaxis}{arrowscale=1.2, arrowinset=0}
 \crystal[voltage, caxisinv, beam](0,1)(3,1)
 \end{pspicture}
 \end{LTXexample}
@@ -1966,8 +1977,8 @@
 % \fi
 %
 % \boolitem[false]{voltage}
-% \ifGERMAN Zeichne einen Spannungsangschluss und ein Erdungszeichen.\fi
-% \ifENGLISH Draw a voltage connection and a ground sign.\fi
+% \ifGERMAN Zeichnet einen Spannungsanschluss und ein Erdungszeichen.\fi
+% \ifENGLISH Draw a voltage connection and a ground symbol.\fi
 % \iffalse
 %<*ignore>
 % \fi
@@ -1983,6 +1994,15 @@
 % \boolitem[false]{lamp}
 % \ifGERMAN Zeichne eine Lampe neben den Kristall.\fi
 % \ifENGLISH Draw a lamp near the crystal.\fi
+%
+% \numitem{lampscale}
+% \ifGERMAN Skalierung der Lampe.\fi
+% \ifENGLISH Scaling of the lamp.\fi
+% \deprecatedmsg{\Lstyle{CrystalLamp}}
+%
+% \styleitem{CrystalLamp}
+% \ifGERMAN Der Stil für die Lampe.\fi
+% \ifENGLISH The style of the crysal lamp.\fi
 % \iffalse
 %<*ignore>
 % \fi
@@ -1994,10 +2014,6 @@
 % \iffalse
 %</ignore>
 % \fi
-%
-% \numitem[0.3]{lampscale}
-% \ifGERMAN Skalierung der Lampe.\fi
-% \ifENGLISH Scale for the lamp.\fi
 % \end{optionlist}
 %
 % \iffalse
@@ -2042,21 +2058,22 @@
 % \ifGERMAN Die Höhe der Box.\fi\ifENGLISH The height of the box.\fi
 %
 % \optitem{optbox}{\prm{width} \prm{height}}
-% \ifGERMAN Die Breite und Höhe der Box, äquivalent zum Aufrufen von
-% \nxLkeyword{optboxwidth} und \nxLkeyword{optboxheight}.
+% \ifGERMAN Die Breite und Höhe der Box, äquivalent zum Aufruf von
+% \Lkeyword{optboxwidth} und \Lkeyword{optboxheight}.
 % \fi
 % \ifENGLISH The width and height of the box, is equivalent to calling both
-% \nxLkeyword{optboxwidth} and \nxLkeyword{optboxheight}.
+% \Lkeyword{optboxwidth} and \Lkeyword{optboxheight}.
 % \fi
 %
 % \boolitem[false]{endbox}
 % \ifGERMAN 
 % Setzt die Box ans Ende der Referenzlinie. Mit \Lkeyword{abspos} oder
-% \Lkeyword{position} wäre das im Allgemeinen recht schwierig.
-% \fi
+% \Lkeyword{position} wäre das auch möglich aber im Allgemeinen schwieriger und
+% unflexibler, da die Breite der Box mit berücksichtigt werden müsste.  \fi
 % \ifENGLISH
 % Place the box at the end of the reference line. With \Lkeyword{abspos} or
-% \Lkeyword{position} this is in general not so easy to achieve.
+% \Lkeyword{position} this is also possible, but in general more difficult and
+% unflexible, because you must take into account the box size.
 % \fi
 % \iffalse
 %<*ignore>
@@ -2204,8 +2221,7 @@
 % \optitem[0.7\nxLcs{pslinewidth}]{pollinewidth}{\prm{num} or \prm{dimen}}
 %   \ifGERMAN \linewidthexplanation{des Polarisationszeichens}{Polarisationszeichen}\fi
 %   \ifENGLISH \linewidthexplanation{polarisation sign}{polarisation signs}\fi
-% \ifGERMAN Dieser Parameter ist seit 3.0 veraltet, verwenden Sie stattdessen den \Lstyle{Polarization}-Stil.\fi
-% \ifENGLISH This parameter is deprecated since 3.0, please use the \Lstyle{Polarization} style instead.\fi
+% \deprecatedmsg{\Lstyle{Polarization}}
 %
 % \choitem[parallel]{poltype}{parallel, perp, misc, lcirc, rcirc}
 % \ifGERMAN Dieser Parameter wählt die Polarizationsart aus.\fi
@@ -2231,6 +2247,8 @@
 %</ignore>
 % \fi
 % \styleitem{Polarization}
+% \ifGERMAN Bestimmt das Aussehen der Polarisationssymbole.\fi
+% \ifENGLISH Affects the style of the polarisation symbols.\fi
 % \end{optionlist}
 % 
 % \ifGERMAN\section{Spiegel}\fi
@@ -2293,14 +2311,14 @@
 % 
 % \choitem[normal]{mirrortype}{normal, piezo, extended}
 % \ifGERMAN
-%   Diese Parameter wählt die Spiegelart aus. Beachte, dass der
-%   Anschlussdraht für den Piezospiegel nicht gezeichnet wird, wenn
+%   Diese Parameter wählt die Spiegelart aus. Beachten Sie, dass der
+%   Anschlussdraht für den Piezospiegel nicht gezeichnet wird, falls
 %   \Lkeyword{extnode} verwendet wird.
 % \fi
 % \ifENGLISH
-% The \nxLkeyword{mirrortype} selects between different types of
-% mirrors. Note, when using \Lkeyword{extnode} with a piezo mirror, the
-% default piece of wire is omitted.
+% The \nxLkeyword{mirrortype} selects between different types of mirrors. Note,
+% that the default piece of wire is omitted when using \Lkeyword{extnode} with a
+% piezo mirror.
 % \fi
 % 
 % \iffalse
@@ -2324,8 +2342,8 @@
 % \fi
 % 
 % \styleitem{ExtendedMirror} 
-% \ifGERMAN Der Stil für den «extended» Spiegel.\fi
-% \ifENGLISH The style for the extended mirror.\fi
+% \ifGERMAN Der Stil für den \opt{extended} Spiegel.\fi
+% \ifENGLISH The style for the \opt{extended} mirror.\fi
 % \iffalse
 %<*ignore>
 % \fi
@@ -2344,12 +2362,12 @@
 % 
 % \styleitem{PiezoMirror} 
 % \ifGERMAN 
-% Der Stil für den «piezo» Spiegel. Dieser kann auch dazu verwendet
-% werden, die Größe des Piezos zu verändern, wie die Beispiele zeigen.
+% Der Stil für den \opt{piezo} Spiegel. Dieser kann auch dazu verwendet
+% werden, die Größe des Piezos zu verändern, wie in dem folgenden Beispiel zu sehen ist.
 % \fi
 % \ifENGLISH
-% This style defines the appearance of the piezo mirror. This can also
-% be used to change the size of piezo part, as shown in the examples.
+% This style defines the appearance of the \opt{piezo} mirror. This can also
+% be used to change the size of piezo part, as the example shows.
 % \fi
 % \iffalse
 %<*ignore>
@@ -2367,7 +2385,7 @@
 % 
 % \boolitem[false]{variable}
 % \ifGERMAN
-% Zeichnet einen verstellbaren Spiegel, der mit zwei zusätzlichen,
+% Zeichnet einen verstellbaren Spiegel, der mit zwei zusätzlichen
 % gekrümmten Pfeilen an beiden Seiten angedeutet wird.
 % \fi
 % \ifENGLISH
@@ -2396,10 +2414,10 @@
 % 
 % \numitem[0.1]{mirrordepth} 
 % \ifGERMAN
-%   Die Tiefe eines breiten Spiegels.
+%   Die Gesamttiefe eines breiten Spiegels.
 % \fi
 % \ifENGLISH
-%   The depth of an extended mirror.
+%   The total depth of an extended mirror.
 % \fi
 % \iffalse
 %<*ignore>
@@ -2439,14 +2457,14 @@
 %   Die Größe des Strahlteilers.
 % \fi
 % \ifENGLISH
-%   The beamplitter size.
+%   The beamsplitter size.
 % \fi
 %  
 % \choitem[cube]{bsstyle}{cube, plate} 
 % \ifGERMAN
-% Wähle zwischen zwei Strahlteilertypen: einem Strahlteilerwürfel
+% Wählt zwischen zwei Strahlteilertypen: einem Strahlteilerwürfel
 % (\opt{cube}) und einem halbdurchlässigen Spiegel
-% (\opt{plate}). Beachte, dass trotz des gleichen Aussehens der
+% (\opt{plate}). Beachten Sie, dass trotz des gleichen Aussehens der
 % halbdurchlässige Spiegel eine anderes Verhalten beim Strahlzeichnen
 % als der gewöhnliche Spiegel hat.
 % \fi
@@ -2454,7 +2472,7 @@
 % Selects between two types of beamsplitters: the beamsplitter cube
 % (\opt{cube}) and the semitransparent mirror (\opt{plate}).  Note, that
 % despite the same look, the \opt{plate} beamsplitter behaves
-% differently for beam drawing.
+% differently for beam drawing than a mirror.
 % \fi
 % \iffalse
 %<*ignore>
@@ -2537,7 +2555,7 @@
 % 
 % \choitem[blazed]{gratingtype}{blazed, binary} 
 % \ifGERMAN 
-%   Wähle zwischen einem binären Gitter (\opt{binary}) und einem Blazegitter (\opt{blazed}).
+%   Wählt zwischen einem binären Gitter (\opt{binary}) und einem Blazegitter (\opt{blazed}).
 % \fi
 % \ifENGLISH
 %   Select between a \opt{binary} and a \opt{blazed} grating.
@@ -2577,6 +2595,19 @@
 % \optitem[0.7\nxLcs{pslinewidth}]{gratinglinewidth}{\prm{num} or \prm{dimen}} 
 % \ifGERMAN \linewidthexplanation{des Gitters}{Gitter}\fi
 % \ifENGLISH \linewidthexplanation{grating}{gratings}\fi
+%
+% \item[\smash{%
+%   \begin{tabular}[t]{@{}r}
+%     \Lkeyword{gridwidth}\\
+%     \Lkeyword{gridheight}\\
+%     \Lkeyword{griddepth}\\
+%     \Lkeyword{gridcount}\\
+%     \Lkeyword{gridtype}\\
+%     \Lkeyword{gridlinewidth}
+%   \end{tabular}}]^^A
+% \ifGERMAN Diese Parameter wurden in die entsprechenden \opt{grating*} Parameter umbenannt und seit Version 3.0 veraltet.\fi
+% \ifENGLISH These parameters were renamed to the respective \opt{grating*} parameters and are deprecated since version 3.0.\fi
+% \vspace*{2cm}
 % \end{optionlist}
 % 
 % \ifGERMAN\section{Prisma}\fi
@@ -2660,7 +2691,7 @@
 \begin{LTXexample}
 \begin{pspicture}(3,2)
   \psdot(1.8,1.2)
-  \rightangleprism[beam](0,1.5)(1.8,1.2)(0,0.5){RA}
+  \rightangleprism[beam](0,1.25)(1.8,1.2)(0,0.75){RA}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -5783,6 +5814,7 @@
 %   \item Deprecated option \opt{refractiveindex}\see{sec:drawbeam}
 %   \item Renamed option \opt{refractiveindex} to \opt{n}\see{sec:drawbeam}
 %   \item Deprecated option \opt{conn}\see{sec:drawbeam}
+%   \item Deprecated option \opt{lampscale}\see{cmd:crystal}
 %   \end{release}
 %   \begin{release}{2.1}{2009-11-05}
 %   \item Added component \cs{optfiberpolarizer}\see{cmd:optfiberpolarizer}
@@ -6111,6 +6143,7 @@
   linestyle=dashed, dash=2pt 2pt, linewidth=0.7\pslinewidth, 
   arrowinset=0, arrows=->
 }
+\newpsstyle{CrystalLamp}{linewidth=0.6\pslinewidth}
 \newpsstyle{FdlArrow}{arrowinset=0, arrows=->}
 \newpsstyle{VariableCoupler}{arrowinset=0, arrows=->}
 %    \end{macrocode}
@@ -6435,12 +6468,16 @@
 \define@boolkey[psset]{optexp}[POE@]{lamp}[true]{}
 \define@key[psset]{optexp}{lampscale}{%
   \pst@checknum{#1}\POE@key@lampscale
+  \pst@divide{\POE@key@lampscale pt}{0.3pt}{\POE@key@lampscale}
+  \addtopsstyle{CrystalLamp}{unit=\POE@key@lampscale}
+  \PackageWarning{pst-optexp}{%
+    Parameter lampscale is deprecated, \MessageBreak
+    use style CrystalLamp.}%
 }
 \psset[optexp]{%
   crystalwidth=1.4,
   crystalheight=0.6,
-  caxislength=0.6,
-  lampscale=0.3
+  caxislength=0.6
 }%
 %    \end{macrocode}
 % Box
@@ -9405,8 +9442,9 @@
            (! \@wd 4 div 3 mul neg 0.15 add \@ht neg 0.2 sub)%
   \fi
   \ifPOE@lamp
-    \rput{180}(! \@wd \@ht 1.4 \POE@key@lampscale\space mul add){%
-      \crystal@lamp
+    \rput(! \@wd \@ht){%
+      \psset{style=CrystalLamp}%
+      \rput(0, 0.4){\crystal@lamp}%
     }%
   \fi
   \ifdim\POE@key@caxislength pt>0pt
@@ -9426,21 +9464,13 @@
 % \begin{macro}{\crystal@lamp}
 %    \begin{macrocode}
 \def\crystal@lamp{%
-  \psset{linewidth=0.6\pslinewidth}
-  \edef\@sz{\POE@key@lampscale\space}%
-  \pscurve[fillstyle=none](! -0.05 \@sz mul 0)%
-          (! -0.1 \@sz mul 0.15 \@sz mul)%
-          (! -0.2 \@sz mul 0.25 \@sz mul)%
-          (! -0.25 \@sz mul 0.5 \@sz mul)%
-          (! 0 0.7 \@sz mul)%
-          (! 0.25 \@sz mul 0.5 \@sz mul)%
-          (! 0.2 \@sz mul 0.25 \@sz mul)%
-          (! 0.1 \@sz mul 0.15 \@sz mul)%
-          (! 0.05 \@sz mul 0)
-  \multido{\i=-210+40}{7}{%
-    \rput{\i}(! 0 0.45 \@sz mul){%
-      \psline(! -0.35 \@sz mul 0)(! -0.6 \@sz mul 0)
-    }
+  \pscurve[fillstyle=none](-0.015, 0)(-0.03, -0.045)(-0.06, -0.075)%
+          (-0.075, -0.15)(0, -0.21)(0.075, -0.15)(0.06, -0.075)%
+          (0.03, -0.045)(0.015, 0)
+  \multido{\i=-30+40}{7}{%
+    \rput{\i}(0, -0.135){%
+      \psline(-0.105, 0)(-0.18, 0)
+    }%
   }%
 \ignorespaces}%
 %    \end{macrocode}
