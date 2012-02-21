@@ -5054,12 +5054,13 @@
 \begin{pspicture}(2.1,3)
 \pnode(0,0){A}\pnode(2,0){B}
 \pnode(0.3,3){C}\pnode(1.7,3){D}
-\optcoupler[fiberout=none,
+\psset{fiber=none}
+\optcoupler[fiberin,
             addtoFiberIn1={angleA=0, ArrowInside=->},
             addtoFiberIn2={angleA=180, arrows=<-},
             abspos=0.5, compname=Cpl](A)(B)(C)(D){}
-\optfiber[fiber=none, compname=Hnlf, abspos=1](C)(C|A){}
-\optamp[fiber=none, abspos=2, compname=Amp](D|B)(D){}
+\optfiber[compname=Hnlf, abspos=1](C)(C|A){}
+\optamp[abspos=2, compname=Amp](D|B)(D){}
 \drawfiber{Cpl}{Hnlf}
 \drawfiber[startnode=1, ncurv=1.2]{Hnlf}{Amp}
 \drawfiber{Cpl}{Amp}
@@ -6112,7 +6113,7 @@
 %    \end{macrocode}
 % \section{Basic definitions}
 %
-% \subsection{IFs for the boolean keys}
+% \subsection{Ifs for the boolean keys}
 % See respective key definitions for explanation.
 %    \begin{macrocode}
 \newif\ifPOE@connjoin
@@ -7066,12 +7067,26 @@
 %    \end{macrocode}
 %
 % \subsection{Fiber-connection parameters}
-% Select which fibers are drawn automatically.
+% Select which fibers are drawn automatically. The parameters \opt{fiber},
+% \opt{fiberin} and \opt{fiberout} do not only select which fibers are drawn,
+% but do also enable fiber connecting for the free-ray components. So you should
+% use these switches only locally, or they must be followed by a
+% \opt{fiber@=false}. (Need to rethink this part\ldots).
 %    \begin{macrocode}
+\define@choicekey*[psset]{optexp}{fiberconn}%
+  [\val\nr]{none,preset,all}[preset]{%
+  \ifcase\nr\relax
+    \psset[optexp]{fiber@=false, nofiber@}
+  \or
+    \psset[optexp]{fiber@=false, nofiber@=false}
+  \or
+    \psset[optexp]{fiber@, nofiber@=false}
+  \fi
+}
 \define@choicekey*[psset]{optexp}{fiber}%
   [\val\nr]{none,in,out,top,bottom,all}[all]{%
   \ifcase\nr\relax
-    \psset[optexp]{fiber@=false, nofiber@, fiberin=none, fiberout=none}
+    \psset[optexp]{fiberin=none, fiberout=none}
   \or
     \psset[optexp]{fiberin, fiberout=none}
   \or
@@ -7085,59 +7100,55 @@
   \fi
 }%
 %    \end{macrocode}
-% Select which input fibers are drawn directly
+% Select which input fibers are drawn directly.
 %    \begin{macrocode}
 \define@choicekey*[psset]{optexp}{fiberin}%
   [\val\nr]{none,top,bottom,all}[all]{%
   \ifcase\nr\relax
     \psset[optexp]{%
-      fiberin@=false, 
-      fiberin@top=false, fiberin@bottom=false
+      fiberin@=false, fiberin@top=false, fiberin@bottom=false
     }
   \or
     \psset[optexp]{%
-      fiber@, fiberin@, nofiber@=false,
-      fiberin@top, fiberin@bottom=false
+      fiberin@, fiberin@top, fiberin@bottom=false
     }
   \or
     \psset[optexp]{%
-      fiber@, fiberin@, nofiber@=false,
-      fiberin@top=false, fiberin@bottom
+      fiberin@, fiberin@top=false, fiberin@bottom
     }
   \or
     \psset[optexp]{%
-      fiber@, fiberin@, nofiber@=false,
-      fiberin@top, fiberin@bottom
+      fiberin@, fiberin@top, fiberin@bottom
     }
   \fi
 }%
 %    \end{macrocode}
-% Select which output fibers are drawn directly
+% Select which output fibers are drawn directly.
 %    \begin{macrocode}
 \define@choicekey*[psset]{optexp}{fiberout}%
   [\val\nr]{none,top,bottom,all}[all]{%
   \ifcase\nr\relax
     \psset[optexp]{%
-      fiberout@=false,
-      fiberout@top=false, fiberout@bottom=false
+      fiberout@=false, fiberout@top=false, fiberout@bottom=false
     }
   \or
     \psset[optexp]{%
-      fiber@, fiberout@, nofiber@=false,
-      fiberout@top, fiberout@bottom=false
+      fiberout@, fiberout@top, fiberout@bottom=false
     }
   \or
     \psset[optexp]{%
-      fiber@, fiberout@, nofiber@=false,
-      fiberout@top=false, fiberout@bottom=true
+      fiberout@, fiberout@top=false, fiberout@bottom=true
     }
   \or
     \psset[optexp]{%
-      fiber@, fiberout@, nofiber@=false,
-      fiberout@top, fiberout@bottom
+      fiberout@, fiberout@top, fiberout@bottom
     }
   \fi
 }%
+%    \end{macrocode}
+% These are the internal boolkeys for the fiber choices done with \opt{fiberin},
+% \opt{fiberout} and \opt{fiber}. Do not use them directly.
+%    \begin{macrocode}
 \define@boolkey[psset]{optexp}[POE@]{fiber@}[true]{}
 \define@boolkey[psset]{optexp}[POE@]{nofiber@}[true]{}
 \define@boolkey[psset]{optexp}[POE@]{fiberin@}[true]{}
