@@ -4592,12 +4592,17 @@
 % \boolitem[false]{beam}
 % \ifGERMAN Kann als Option für jede Komponente verwendet werden, ist äquivalent zu\fi
 % \ifENGLISH Can be used as option for every component, is equivalent to the statement\fi
-% \begin{lstlisting}
-% \drawbeam[connectplanes]{\oenodeRefA{Comp}}{Comp}{\oenodeRefB{Comp}}
+% \begin{lstlisting}[gobble=2]
+% \drawbeam[connectplanes]{(\oenodeRefA{})}{}{(\oenodeRefB{})}
 % \end{lstlisting}
+% \ifENGLISH which draws a beam from one reference node via the component to the
+% other reference node.\fi 
+% \ifGERMAN womit ein Strahl vom ersten Referenzknoten über die Komponente zum
+% zweiten Referenzknoten gezeichnet wird.\fi
 %
 % \valitem{conn}{string}
-% \ifGERMAN Diese Option wird nur aus Kompatibilitätsgründen noch bereitgestellt und wird aus zukünftigen Versionen entfernt.\fi
+% \ifGERMAN Diese Option wird nur aus Kompatibilitätsgründen noch bereitgestellt
+% und wird aus zukünftigen Versionen entfernt.\fi
 % \ifENGLISH This option is maintained for backward compatibility only and will be removed in future versions.\fi
 % \end{optionlist}
 % 
@@ -4893,7 +4898,7 @@
 %</ignore>
 % \fi
 %
-%   \choitem[all]{fiber}{none,in,out,top,bottom,all} Some components can be used either for free-ray or
+%   \choitem[all]{fiber}{none,all,\prm{refstring}} Some components can be used either for free-ray or
 %   fiber-optical setups (\Lcs{optbox}, \Lcs{optdetector}). The \nxLkeyword{fiber}
 %   parameter enables automatic fiber connections for them.
 % \iffalse
@@ -4907,30 +4912,16 @@
 % \iffalse
 %</ignore>
 % \fi
-%   \choitem[all]{fiberin}{none, top, bottom, all} Choose which input fiber
-%   connections to draw automatically. The values \opt{top} and \opt{bottom}
-%   affect only \Lcs{optcoupler} and \Lcs{wdmcoupler}.
-% \iffalse
-%<*ignore>
-% \fi
-\begin{LTXexample}[morekeywords={[21]{fiberin}}]
-\begin{pspicture}(3,2)
-  \optcoupler[fiberin=top](0,2)(0,0)(3,2)(3,0){}
-\end{pspicture}
-\end{LTXexample}
-% \iffalse
-%</ignore>
-% \fi
 %
-%   \choitem[all]{fiberout}{none, top, bottom, all} Choose which output fiber
+%   \choitem[all]{fiber*}{none, all, \prm{refstring}} Choose which output fiber
 %   connections to draw automatically. The values \opt{top} and \opt{bottom}
 %   affect only \Lcs{optcoupler} and \Lcs{wdmsplitter}.
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}[morekeywords={[21]{fiberout}}]
+\begin{LTXexample}[morekeywords={[21]{fiber}}]
 \begin{pspicture}(3,2)
-  \wdmsplitter[fiberout=bottom](0,1)(3,2)(3,0){}
+  \wdmsplitter[fiber=br](0,1)(3,2)(3,0){}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -5055,7 +5046,7 @@
 \pnode(0,0){A}\pnode(2,0){B}
 \pnode(0.3,3){C}\pnode(1.7,3){D}
 \psset{fiber=none}
-\optcoupler[fiberin,
+\optcoupler[fiber=l,
             addtoFiberIn1={angleA=0, ArrowInside=->},
             addtoFiberIn2={angleA=180, arrows=<-},
             abspos=0.5, compname=Cpl](A)(B)(C)(D){}
@@ -6424,7 +6415,8 @@
   \else
     \pst@checknum{#1#2}\POE@key@extnode@xref%
     \pst@checknum{#3}\POE@key@extnode@yref%
-  \fi}%
+  \fi
+}%
 \def\POE@getref@c{}%
 \def\POE@getref@t{\def\POE@key@extnode@yref{1}}%
 \def\POE@getref@b{\def\POE@key@extnode@yref{-1}}%
@@ -7083,68 +7075,52 @@
     \psset[optexp]{fiber@, nofiber@=false}
   \fi
 }
-\define@choicekey*[psset]{optexp}{fiber}%
-  [\val\nr]{none,in,out,top,bottom,all}[all]{%
+\define@key[psset]{optexp}{fiber*}[all]{%
+  \psset[optexp]{fiber=#1, fiberconn=preset}%
+}%
+\define@choicekey*+[psset]{optexp}{fiber}%
+  [\val\nr]{false,none,true,all}[all]{%
   \ifcase\nr\relax
-    \psset[optexp]{fiberin=none, fiberout=none}
+    \POE@getfiber@none
   \or
-    \psset[optexp]{fiberin, fiberout=none}
+    \POE@getfiber@none
   \or
-    \psset[optexp]{fiberin=none, fiberout}
+    \POE@getfiber@all
   \or
-    \psset[optexp]{fiberin=top, fiberout=top}
-  \or
-    \psset[optexp]{fiberin=bottom, fiberout=bottom}
-  \or
-    \psset[optexp]{fiberin, fiberout}
+    \POE@getfiber@all
+  \fi
+}{%
+  \ifx\@empty\val
+    \POE@getfiber@none
+  \else
+    \pst@expandafter\POE@psset@@fiber{#1}\@empty,,\@nil
   \fi
 }%
-%    \end{macrocode}
-% Select which input fibers are drawn directly.
-%    \begin{macrocode}
-\define@choicekey*[psset]{optexp}{fiberin}%
-  [\val\nr]{none,top,bottom,all}[all]{%
-  \ifcase\nr\relax
-    \psset[optexp]{%
-      fiberin@=false, fiberin@top=false, fiberin@bottom=false
-    }
-  \or
-    \psset[optexp]{%
-      fiberin@, fiberin@top, fiberin@bottom=false
-    }
-  \or
-    \psset[optexp]{%
-      fiberin@, fiberin@top=false, fiberin@bottom
-    }
-  \or
-    \psset[optexp]{%
-      fiberin@, fiberin@top, fiberin@bottom
-    }
+\def\POE@psset@@fiber#1#2,#3,#4\@nil{%
+  \POE@getfiber@all
+  \ifx\@empty#3\@empty
+    \@nameuse{POE@getfiber@#1}%
+    \@nameuse{POE@getfiber@#2}%
   \fi
 }%
-%    \end{macrocode}
-% Select which output fibers are drawn directly.
-%    \begin{macrocode}
-\define@choicekey*[psset]{optexp}{fiberout}%
-  [\val\nr]{none,top,bottom,all}[all]{%
-  \ifcase\nr\relax
-    \psset[optexp]{%
-      fiberout@=false, fiberout@top=false, fiberout@bottom=false
-    }
-  \or
-    \psset[optexp]{%
-      fiberout@, fiberout@top, fiberout@bottom=false
-    }
-  \or
-    \psset[optexp]{%
-      fiberout@, fiberout@top=false, fiberout@bottom=true
-    }
-  \or
-    \psset[optexp]{%
-      fiberout@, fiberout@top, fiberout@bottom
-    }
-  \fi
+\def\POE@getfiber@none{%
+  \psset[optexp]{%
+    fiber@=false, fiberconn=none,
+  }%
 }%
+\def\POE@getfiber@all{%
+  \psset[optexp]{%
+    fiberconn=all,
+    fiber@, fiberin@, fiberout@,
+    fiberin@top, fiberin@bottom, 
+    fiberout@top, fiberout@bottom}%
+}%
+\def\POE@getfiber@t{\psset[optexp]{fiberin@bottom=false, fiberout@bottom=false}}%
+\def\POE@getfiber@b{\psset[optexp]{fiberin@top=false, fiberout@top=false}}%
+\def\POE@getfiber@l{\psset[optexp]{fiberout@=false}}%
+\def\POE@getfiber@r{\psset[optexp]{fiberin@=false}}%
+\let\POE@getfiber@i\POE@getfiber@l
+\let\POE@getfiber@o\POE@getfiber@r
 %    \end{macrocode}
 % These are the internal boolkeys for the fiber choices done with \opt{fiberin},
 % \opt{fiberout} and \opt{fiber}. Do not use them directly.
@@ -8564,21 +8540,25 @@
            (2) (N) (\oenode{}{}) CorrectDipoleNodes 
          }%
          \ifPOE@fiber@
-           \ifPOE@fiberin@top
-             \drawfiber@{FiberIn1}[stopnode=1]{(##1)}%
-                                              {\POE@key@compname}
+           \ifPOE@fiberin@
+             \ifPOE@fiberin@top
+               \drawfiber@{FiberIn1}[stopnode=1]{(##1)}%
+                                                {\POE@key@compname}
+             \fi
+             \ifPOE@fiberin@bottom
+               \drawfiber@{FiberIn2}[stopnode=2]{(##2)}%
+                                                {\POE@key@compname}
+             \fi
            \fi
-           \ifPOE@fiberin@bottom
-             \drawfiber@{FiberIn2}[stopnode=2]{(##2)}%
-                                              {\POE@key@compname}
-           \fi
-           \ifPOE@fiberout@top
-             \drawfiber@{FiberOut}[startnode=3]{\POE@key@compname}%
-                                               {(##3)}
-           \fi
-           \ifPOE@fiberout@bottom
-             \drawfiber@{FiberOut2}[startnode=N]{\POE@key@compname}%
-                                                {(##4)}
+           \ifPOE@fiberout@
+             \ifPOE@fiberout@top
+               \drawfiber@{FiberOut}[startnode=3]{\POE@key@compname}%
+                                                 {(##3)}
+             \fi
+             \ifPOE@fiberout@bottom
+               \drawfiber@{FiberOut2}[startnode=N]{\POE@key@compname}%
+                                                  {(##4)}
+             \fi
            \fi
          \fi
        \fi
@@ -8673,11 +8653,13 @@
         \ifPOE@fiberin@
           \drawfiber@{FiberIn}[stopnode=1]{(#1)}{\POE@key@compname}
         \fi
-        \ifPOE@fiberout@top
-          \drawfiber@{FiberOut1}[startnode=2]{\POE@key@compname}{(#2)}
-        \fi
-        \ifPOE@fiberout@bottom
-          \drawfiber@{FiberOut2}[startnode=N]{\POE@key@compname}{(#3)}
+        \ifPOE@fiberout@
+          \ifPOE@fiberout@top
+            \drawfiber@{FiberOut1}[startnode=2]{\POE@key@compname}{(#2)}
+          \fi
+          \ifPOE@fiberout@bottom
+            \drawfiber@{FiberOut2}[startnode=N]{\POE@key@compname}{(#3)}
+          \fi
         \fi
       \fi
     \fi
@@ -8718,11 +8700,13 @@
         \ifPOE@fiberout@
           \drawfiber@{FiberOut}[startnode=N]{\POE@key@compname}{(#3)}
         \fi
-        \ifPOE@fiberin@top
-          \drawfiber@{FiberIn1}[stopnode=1]{(#1)}{\POE@key@compname}
-        \fi 
-        \ifPOE@fiberin@bottom
-          \drawfiber@{FiberIn2}[stopnode=2]{(#2)}{\POE@key@compname}
+        \ifPOE@fiberin@
+          \ifPOE@fiberin@top
+            \drawfiber@{FiberIn1}[stopnode=1]{(#1)}{\POE@key@compname}
+          \fi 
+          \ifPOE@fiberin@bottom
+            \drawfiber@{FiberIn2}[stopnode=2]{(#2)}{\POE@key@compname}
+          \fi
         \fi
       \fi
     \fi
