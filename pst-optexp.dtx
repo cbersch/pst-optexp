@@ -25,7 +25,7 @@
 \documentclass[a4paper, DIV=9, oneside, toc=index]{scrreprt}
 \usepackage{doc}
 \setcounter{IndexColumns}{2}
-\usepackage[utf8]{inputenc} 
+\usepackage[latin1]{inputenc} 
 \usepackage[T1]{fontenc}
 \usepackage{lmodern} 
 \usepackage{amsmath, marvosym} 
@@ -105,11 +105,13 @@
   morekeywords = [22] {optexp},
   explpreset={%
     escapeinside={*}{*}, pos=l, width=-99pt, hsep=5mm, overhang=\codeoverhang,
-    varwidth, vsep=\bigskipamount, rframe={}}}
-\lstset{
-  literate={Ã¶}{{\"o}}1
-           {Ã¤}{{\"a}}1
-           {Ã¼}{{\"u}}1
+    varwidth, vsep=\bigskipamount, rframe={}},
+  literate={ö}{{\"o}}1
+           {ä}{{\"a}}1
+           {ü}{{\"u}}1
+           {Ö}{{\"O}}1
+           {Ä}{{\"A}}1
+           {Ü}{{\"U}}1
 }
 \makeatletter
 \providecommand\ON{%
@@ -141,7 +143,7 @@
 \makeatother
 %
 \usepackage{csquotes}
-\MakeAutoQuote{Â«}{Â»}
+\MakeAutoQuote{«}{»}
 % spot is used in ltxdockit.sty
 \colorlet{spot}{sectioncolor}
 \newpsstyle{Refline}{linecolor=gray!60}
@@ -218,12 +220,21 @@
     \egroup%
 }% \hyperlistings
 \let\lsthk@OutputBox\lsthk@OutputBox@H@@k
-\makeatother
 
-\makeatletter
+\newenvironment*{stylelist}
+  {\list{}{%
+     \setlength{\labelwidth}{\marglistwidth}%
+     \setlength{\labelsep}{\marglistsep}%
+     \setlength{\leftmargin}{0pt}%
+     \renewcommand*{\makelabel}[1]{\hss\optionlistfont##1}}%
+   \def\styleitem##1{%
+     \item[{##1}]%
+     \label{prm:##1}%
+     \prm{psstyle}\par}}%
+  {\endlist}
+
 \def\ltd@optionlist{%
   \let\optitem\POE@optitem
-  \let\styleitem\POE@styleitem
   \let\valitem\POE@valitem
   \let\choitem\POE@choitem
   \let\boolitem\POE@boolitem
@@ -242,17 +253,6 @@
   \ifblank{#1}
     {\ltd@option{#2}{#2}{#3}{}}
     {\ltd@option{#2}{#2}{#3}{\ltd@textverb{#1}}}}%
-
-\def\POE@styleitem{%
-  \@ifstar
-    {\boolfalse{@tempswa}\POE@styleitem@i}
-    {\booltrue{@tempswa}\POE@styleitem@i}}
-\newcommand*{\POE@styleitem@i}[2][]{%
-  \ifbool{@tempswa}{\label{prm:#2}}{}%
-  \xLstyle{#2}%
-  \ifblank{#1}
-    {\ltd@option{#2}{#2}{\prm{psstyle}}{}}
-    {\ltd@option{#2}{#2}{\prm{psstyle}}{\ltd@textverb{#1}}}}%
 
 \def\POE@valitem{%
   \@ifstar
@@ -502,7 +502,7 @@
 %   \newindex[Dokumentationsindex]{doc}
 %   \newcommand{\POEindexPackage}{Paket}
 %   \newcommand{\POEindexMacro}{Makro}
-%   \newcommand{\POEindexKeyword}{SchlÃ¼sselwort}
+%   \newcommand{\POEindexKeyword}{Schlüsselwort}
 %   \newcommand{\POEindexEnv}{Umgebung}
 %   \newcommand{\POEindexOption}{Option}
 %   \newcommand{\POEindexStyle}{Stil}
@@ -533,9 +533,9 @@
 %
 % \newcommand*{\sizeexplanation}[2][1.6]{% 
 %   \ifGERMAN 
-%     Die HÃ¶he #2, die Breite ist \opt{#1} mal die HÃ¶he. Mit
-%     dem \opt{xunit} oder \opt{yunit} Parameter kann dieses VerhÃ¤ltnis
-%     geÃ¤ndert werden.
+%     Die Höhe #2, die Breite ist \opt{#1} mal die Höhe. Mit
+%     dem \opt{xunit} oder \opt{yunit} Parameter kann dieses Verhältnis
+%     geändert werden.
 %   \fi
 %   \ifENGLISH
 %     The height of the #2, the width is \opt{#1} times the
@@ -557,7 +557,7 @@
 %
 % \newcommand*{\linewidthexplanation}[2]{% 
 % \ifGERMAN
-% Die Linienbreite #1. Diese kÃ¶nnte ebenfalls Ã¼ber den
+% Die Linienbreite #1. Diese könnte ebenfalls über den
 % \opt{linewidth} Parameter gesetzt werden. Mit diesem Parameter kann
 % aber die Linienbreite aller #2 global eingestellt werden.
 % \fi
@@ -654,16 +654,16 @@
 % \clearpage
 % 
 % \ifGERMAN
-%   \chapter{EinfÃ¼hrung}
+%   \chapter{Einführung}
 % \fi
 % \ifENGLISH
 %   \chapter{Introduction}
 % \fi
 %
 % \ifGERMAN
-%   \section{Ãœber das Paket}
+%   \section{Über das Paket}
 %   \LPack{pst-optexp} ist ein PSTricks-Paket zum Skizzieren optischer
-%   Versuchsaufbauten. DafÃ¼r werden viele unterschiedliche Freistrahl- und
+%   Versuchsaufbauten. Dafür werden viele unterschiedliche Freistrahl- und
 %   Faseroptische Komponenten bereitgestellt.
 % \fi 
 % \ifENGLISH
@@ -678,7 +678,7 @@
 %
 % \ifGERMAN
 %   \section{Anforderungen}
-%   \LPack{pst-optexp} Version 3.0 benÃ¶tigt \LaTeX{} und aktuelle Versionen der
+%   \LPack{pst-optexp} Version 3.0 benötigt \LaTeX{} und aktuelle Versionen der
 %   Pakete \LPack{pst-node}, \LPack{pstricks-add}, \LPack{multido},
 %   \LPack{pst-eucl} und \LPack{environ}.
 %
@@ -703,7 +703,7 @@
 %   \section{Verbreitung und Installation}
 %   Dieses Paket ist auf
 %   CTAN\fnurl{http://mirror.ctan.org/graphics/pstricks/contrib/pst-optexp}
-%   erhÃ¤ltlich und in \TeX Live and MiK\TeX{} enthalten.
+%   erhältlich und in \TeX Live and MiK\TeX{} enthalten.
 % 
 %   Das \LPack{pst-optexp} Paket umfasst die zwei Hauptdateien
 %   \texttt{pst-optexp.ins} und \texttt{pst-optexp.dtx}. Durch Aufrufen
@@ -717,11 +717,11 @@
 %   lokalen \TeX-Baums ist.
 % 
 %   Vergessen Sie nicht \texttt{texhash} aufzurufen um den Baum zu
-%   aktualisieren. MiK\TeX{}-Benutzer mÃ¼ssen die Dateinamen-Datenbank
+%   aktualisieren. MiK\TeX{}-Benutzer müssen die Dateinamen-Datenbank
 %   (FNDB) aktualisieren.
 % 
 %   Detailliertere Information finden Sie in der Dokumentation Ihrer
-%   \LaTeX-Distribution Ã¼ber die Installation in den lokalen
+%   \LaTeX-Distribution über die Installation in den lokalen
 %   \TeX{}-Baum.
 % \fi
 % \ifENGLISH
@@ -749,7 +749,7 @@
 % \ifGERMAN\section{Lizenz}\fi
 % \ifENGLISH\section{License}\fi
 % \ifGERMAN
-% Es wird die Erlaubnis gewÃ¤hrt, dieses Dokument zu kopieren, zu verteilen
+% Es wird die Erlaubnis gewährt, dieses Dokument zu kopieren, zu verteilen
 % und\slash oder zu modifizieren, unter den Bestimmungen der \LaTeX{} Project
 % Public License, Version
 % 1.3.\fnurl{http://www.ctan.org/tex-archive/macros/latex/base/lppl.txt}. Dieses
@@ -764,26 +764,26 @@
 % \fi
 %
 % \ifGERMAN
-%   \section{AbwÃ¤rtskompatibilitÃ¤t}
+%   \section{Abwärtskompatibilität}
 % \fi
 % \ifENGLISH
 %   \section{Backward compatibility}
 % \fi 
 % \ifGERMAN Version 3.0 hat erhebliche fortgeschrittenere
-%   FunktionalitÃ¤t hinzugefÃ¼gt, die es zu schwierig machte zur
-%   VorgÃ¤ngerversion 2.1 vollstÃ¤ndig abwÃ¤rtskompatibel zu
+%   Funktionalität hinzugefügt, die es zu schwierig machte zur
+%   Vorgängerversion 2.1 vollständig abwärtskompatibel zu
 %   bleiben. Insbesondere war die Funktionsweise des \Lcs{drawbeam}
 %   Makros grundlegend falsch konzipiert, so dass ein Wechsel zur neuen
-%   FunktionalitÃ¤t so schnell wie mÃ¶glich erfolgen musste.
+%   Funktionalität so schnell wie möglich erfolgen musste.
 %
 % \begin{optionlist}
 %   \optitem[new]{namingscheme}{old, new} In Version 2.x musste
-%   spezielle Komponentenknoten Ã¼ber ihren expliziten Namen angesprochen
-%   werden. Wenn Sie nur das alte Namensschema benÃ¶tigen, da Sie direkt
-%   auf die Knoten zugegriffen haben, so genÃ¼gt es
+%   spezielle Komponentenknoten über ihren expliziten Namen angesprochen
+%   werden. Wenn Sie nur das alte Namensschema benötigen, da Sie direkt
+%   auf die Knoten zugegriffen haben, so genügt es
 %   \nxLkeyword{namingscheme=old} zu verwenden, die Paketoption
-%   \nxLoption{compat} wird dann nicht benÃ¶tigt. Seit Version 3.0 werden
-%   Makros fÃ¼r den Zugriff auf die Komponentenknoten bereitgestellt, so
+%   \nxLoption{compat} wird dann nicht benötigt. Seit Version 3.0 werden
+%   Makros für den Zugriff auf die Komponentenknoten bereitgestellt, so
 %   dass das eigentlichen Namensschema unerheblich ist.
 % \end{optionlist}
 % \fi
@@ -803,6 +803,39 @@
 %   so that the actual naming scheme does not matter.
 % \end{optionlist}
 % \fi
+%
+% \section{Notation}\label{sec:notation}
+% \ifGERMAN
+% \fi
+% \ifENGLISH
+% Often the parameter types are self-explanatory, but in some cases a clear
+% distinction is needed, e.g. between \prm{num} and
+% \prm{psnum}. Table~\ref{tab:paramref} explains some commonly used names.
+%
+% Parts in the parameter types which are indicated by square brackets are optional.
+% \fi
+%
+% \vspace*{\floatsep}
+% \noindent\begin{minipage}{\textwidth}\centering
+% \begin{tabularx}{0.9\linewidth}{>{\itshape}lX} \toprule
+%   Name & \ifENGLISH description\fi\ifGERMAN Beschreibung\fi\\ \midrule
+%   num & \ifENGLISH float number\fi\ifGERMAN Gleitkommazahl\fi \\ 
+%   psnum & \ifENGLISH Postscript code which evaluates to a number\fi
+%           \ifGERMAN Postscript-Kode der zu einer Zahl auswertet\fi\\
+%   int & \ifENGLISH integer number\fi\ifGERMAN Ganzzahl\fi\\ 
+%   dimen & \ifENGLISH dimension\fi\ifGERMAN Länge\fi\\
+%   psstyle & \ifENGLISH custom graphics parameter configuration defined with \Lcs{newpsstyle}\fi
+%             \ifGERMAN Benutzerdefinierte Parameterkonfiguration definiert mit \Lcs{newpsstyle}\fi\\
+%   refstring & \refstringexplanation\\ \bottomrule
+% \end{tabularx}
+% \ifGERMAN
+% \captionof{table}{Parametertypen die in den Parameterdefinitionen verwendet werden.}
+% \fi
+% \ifENGLISH
+% \captionof{table}{Parameter types used in the parameter reference.}
+% \fi
+% \label{tab:paramref}
+% \end{minipage}
 % 
 % \ifGERMAN
 %   \section{Danksagung}
@@ -813,7 +846,7 @@
 % \ifGERMAN\fi
 % \ifENGLISH
 % I thank all the people of the PSTricks mailinglist for the continuous help,
-% especially Herbert Vo\ss. Thanks also to Christine RÃ¶mer, which convinced my
+% especially Herbert Vo\ss. Thanks also to Christine Römer, which convinced my
 % with her article in the german DTK to provide a german translation of the
 % documentation, and Philipp Lehman, whose documentation style of the biblatex
 % package is wonderful.
@@ -827,14 +860,14 @@
 % \fi\label{chap:basics}
 %
 % \ifGERMAN Dieses Kapitel zeigt die grundlegenden Ideen, die in diesem Paket
-% stecken. Angefangen von elementaren Beispielen, bis hin zu grÃ¶ÃŸeren Aufbauten
-% wird die angedachte Vorgehensweise fÃ¼r das Erstellen von umfassenden
-% Experimentskizzen erlÃ¤utert. Eine vollstÃ¤ndige Referenz aller Macros und
+% stecken. Angefangen von elementaren Beispielen, bis hin zu größeren Aufbauten
+% wird die angedachte Vorgehensweise für das Erstellen von umfassenden
+% Experimentskizzen erläutert. Eine vollständige Referenz aller Macros und
 % Optionen finden Sie in \prettyref{chap:generalparam}--\ref{chap:custom}.
 %
 % Ein Versuchsaufbau besteht aus Komponenten, die anhand ihrer Referenzknoten
-% positioniert, verschoben und gedreht werden kÃ¶nnen und optional eine
-% Beschriftung erhalten. AnschlieÃŸen werden die Komponenten mit Lichtstrahlen
+% positioniert, verschoben und gedreht werden können und optional eine
+% Beschriftung erhalten. Anschließen werden die Komponenten mit Lichtstrahlen
 % oder Fasern verbunden.\fi
 %
 % \ifGERMAN\section{Die Komponenten}\fi
@@ -875,8 +908,8 @@
 %\fi 
 % \ifGERMAN Die Komponenten lassen sich allgemein in zwei Kategorien
 % unterteilen: Die Freistrahl-Komponenten und die faseroptischen
-% Komponenten. Diese unterscheiden sich nur bezÃ¼glich ihrer
-% VerbindungsmÃ¶glichkeiten (Faserverbindungen (\prettyref{sec:intro-fiber-conn})
+% Komponenten. Diese unterscheiden sich nur bezüglich ihrer
+% Verbindungsmöglichkeiten (Faserverbindungen (\prettyref{sec:intro-fiber-conn})
 % oder Lichtstrahlen (\prettyref{sec:intro-freeray-conn})).
 % \fi
 %
@@ -905,26 +938,26 @@
 % \label{sec:intro-freeray-conn}
 %
 % \ifGERMAN
-% Freistrahlkomponenten kÃ¶nnen mit Lichtstrahlen verbunden werden. 
+% Freistrahlkomponenten können mit Lichtstrahlen verbunden werden. 
 % \fi
 %
 % \ifGERMAN\section{Faserverbindungen}\fi
 % \ifENGLISH\section{Fiber connections}\fi
 % \label{sec:intro-fiber-conn}
 %
-% \ifGERMAN\section{Schritt-fÃ¼r-Schritt-Beispiele}\fi
+% \ifGERMAN\section{Schritt-für-Schritt-Beispiele}\fi
 % \ifENGLISH\section{Step-by-step examples}\fi
 % \exsection{Beispiel 1}
 % \ifGERMAN Im Folgenden wird ein sehr einfacher Aufbau mit einer konkaven und
-% einer konvexen Linse schrittweise erlÃ¤utert.
+% einer konvexen Linse schrittweise erläutert.
 %
-% Zuerst werden die Referenzknoten definiert, die fÃ¼r die Ausrichtung der
-% Komponenten verwendet werden. Zur besseren Ãœbersicht werden beide Knoten
+% Zuerst werden die Referenzknoten definiert, die für die Ausrichtung der
+% Komponenten verwendet werden. Zur besseren Übersicht werden beide Knoten
 % gekennzeichnet, ein Koordinatengitter dient desweiteren der Orientierung.
 %
-% Die erste Linse soll konkav gekrÃ¼mmte GrenzflÃ¤chen haben. Mit
-% \Lkeyword{lensradius} werden die KrÃ¼mmungen der rechten und linken FlÃ¤che auf
-% denselben Wert gesetzt, ein negativer Wert ergibt eine konkave KrÃ¼mmung. Bei K
+% Die erste Linse soll konkav gekrümmte Grenzflächen haben. Mit
+% \Lkeyword{lensradius} werden die Krümmungen der rechten und linken Fläche auf
+% denselben Wert gesetzt, ein negativer Wert ergibt eine konkave Krümmung. Bei K
 % \fi
 % \iffalse
 %<*ignore>
@@ -1112,17 +1145,17 @@
 % (\prettyref{l:ex2-nodes1}--\ref{l:ex2-nodes2}). Nun werden ein paar
 % Einstellungen gesetzt (\prettyref{l:ex2-set}): das Aussehen der
 % Spiegel, des Strahlteilers und des Detektors. Nun werden der Reihe
-% nach alle Komponenten platziert, die reflektierenden benÃ¶tigen drei
+% nach alle Komponenten platziert, die reflektierenden benötigen drei
 % Referenzknoten, den Eingangsknoten, den Knoten an dem die
-% reflektierende GrenzflÃ¤che ist und den Ausgangsknoten. Nun wird noch
+% reflektierende Grenzfläche ist und den Ausgangsknoten. Nun wird noch
 % das Aussehen des Lichtstrahls definiert (\prettyref{l:ex2-style}) und
 % der Strahl gezeichnet (\prettyref{l:ex2-beam}). 
 %
 % Diese Mal haben wir den Komponenten Namen gegeben (\Lkeyword{compname}) die
 % beim Raytracing anstatt der automatisch vergebenen Nummern verwendet
-% werden kÃ¶nnen. Dies erleichtert die Nachverfolgung des Strahlenganges.
+% werden können. Dies erleichtert die Nachverfolgung des Strahlenganges.
 % 
-% Alle Komponenten und Strahlen wurden zusÃ¤tzlich in eine
+% Alle Komponenten und Strahlen wurden zusätzlich in eine
 % \Lenv{optexp}-Umgebung gekapselt. Innerhalb dieser werden alle
 % Lichtstrahlen hinter die Komponenten gelegt, sodass diese nicht
 % verdeckt werden.
@@ -1157,13 +1190,13 @@
 % \ifGERMAN
 % Das dritte Beispiel zeigt eine einfache Skizze mit faseroptischen Komponenten.
 %
-% BezÃ¼glich der Positionierung verhalten diese sich identisch zu den
+% Bezüglich der Positionierung verhalten diese sich identisch zu den
 % vorher gezeigten Freistrahl-Komponenten, aber die Verbindung mit
-% Â«FasernÂ» wird anders gehandhabt. Ãœblicherweise werden die Komponenten
+% «Fasern» wird anders gehandhabt. Üblicherweise werden die Komponenten
 % direkt mit den verwendeten Referenzknoten verbunden. 
 %
 % Die Referenzknoten werden in
-% \prettyref{l:ex3-nodes1}--\ref{l:ex3-nodes2} definiert, anschlieÃŸend
+% \prettyref{l:ex3-nodes1}--\ref{l:ex3-nodes2} definiert, anschließend
 % allgemeine Einstellungen festgelegt (\prettyref{l:ex3-set}).
 % \fi
 % \ifENGLISH\fi
@@ -1197,67 +1230,26 @@
 % \ifENGLISH\chapter{General component parameters}\fi
 % \label{chap:generalparam}
 %
-% This chapter contains detailed information about all components and related
-% options. It is divided into three parts:
+% This chapter introduces parameters and concepts which are generic to all
+% components.
 % \begin{itemize}
-% \item Chapter \ref{chap:generalparam} introduces all parameters which are
-%   generic to most of the components.
-% \item Chapter \ref{chap:freeraycomp} explains in detail all free-ray
-%   components, reflective and transmittive. The free-ray components
-%   differ from the fiber-optical ones with respect to their ray-tracing
-%   capabilities, but they can also be connected with fibers.
-% \item Chapter \ref{chap:fibercomp} describes all fiber-optical
-%   components, which can be used with fiber connections only. They must
-%   not obey any refraction or reflection law.
+% \item \prettyref{sec:styles} describes how psstyles, defined with
+%   \Lcs{newpsstyle}, are used to control the appearance of the components.
+% \item \prettyref{sec:appearance} explains in detail 
 % \end{itemize}
 %
-% Often the parameter types are self-explanatory, but in some cases a clear
-% distinction is needed, e.g. between \prm{num} and
-% \prm{psnum}. Table~\ref{tab:paramref} explains some commonly used names.
-%
-% Parts in the parameter types which are indicated by square brackets are optional.
-%
-% \vspace*{\floatsep}
-% \noindent\begin{minipage}{\textwidth}\centering
-% \begin{tabularx}{0.9\linewidth}{>{\itshape}lX} \toprule
-%   Name & \ifENGLISH description\fi\ifGERMAN Beschreibung\fi\\ \midrule
-%   num & \ifENGLISH float number\fi\ifGERMAN Gleitkommazahl\fi \\ 
-%   int & \ifENGLISH integer number\fi\ifGERMAN Ganzzahl\fi\\ 
-%   dimen & \ifENGLISH dimension\fi\ifGERMAN LÃ¤nge\fi\\
-%   psstyle & \ifENGLISH custom graphics parameter configuration defined with \Lcs{newpsstyle}\fi
-%             \ifGERMAN Benutzer-definierte Parameterkonfiguration definiert mit \Lcs{newpsstyle}\fi\\
-%   psnum & \ifENGLISH Postscript code that evaluates to a number\fi
-%           \ifGERMAN Postscript-Kode der zu einer Zahl auswertet\fi\\
-%   refstring & \refstringexplanation\\ \bottomrule
-% \end{tabularx}
-% \ifGERMAN
-% \captionof{table}{Parametertypen die in den Parameterdefinitionen verwendet werden.}
-% \fi
-% \ifENGLISH
-% \captionof{table}{Parameter types used in the parameter reference.}
-% \fi
-% \label{tab:paramref}
-% \end{minipage}
-%
-% \newpage
 % \section{Using psstyles}\label{sec:styles}
 %
 % \section{Component appearance}\label{sec:appearance}
 %
-% \begin{optionlist}
+% \begin{stylelist}
 % \styleitem{OptComp} 
-% \vspace*{-\itemsep}
-% \item[\smash{%
-% \begin{tabular}[t]{@{}r}
-%   \Lkeyword{newOptComp}\label{prm:newOptComp}\\
-%   \Lkeyword{addtoOptComp}\label{prm:addtoOptComp}
-% \end{tabular}}]
 % \ifGERMAN
-% Bestimmt das Aussehen aller optischen Komponenten. Die Ã¼blichen Parameter, wie
-% z.B. \opt{linestyle}, wÃ¼rden auch die Verbindungen beeinflussen, die mit der
+% Bestimmt das Aussehen aller optischen Komponenten. Die üblichen Parameter, wie
+% z.B. \opt{linestyle}, würden auch die Verbindungen beeinflussen, die mit der
 % Komponente zusammen gezeichnet werden (\Lkeyword{beam}, \Lkeyword{fiber}
 % usw.). Mit \nxLkeyword{newOptComp} und \nxLkeyword{addtoOptComp} kann der Stil
-% fÃ¼r einzelne Kompoenenten oder zusammen mit \nxLcs{newpsobject} im optionalen
+% für einzelne Kompoenenten oder zusammen mit \nxLcs{newpsobject} im optionalen
 % Argument verwendet werden.
 % \fi
 % \ifENGLISH
@@ -1275,10 +1267,11 @@
 \begin{LTXexample}[morekeywords={[21]{addtoOptComp}}]
 \begin{pspicture}(2.5,4)
   \psset{beam}
-  % falsch, die Strahlbreite wird auch geÃ¤ndert
+  % falsch, die Strahlbreite wird auch geändert
   \mirror[linewidth=3\pslinewidth](0,3)(2,3)(2,2)
   % korrektes Ergebnis
-  \mirror[addtoOptComp={linewidth=3\pslinewidth}](0,1)(2,1)(2,0)
+  \addtopsstyle{OptComp}{linewidth=3\pslinewidth}
+  \mirror(0,1)(2,1)(2,0)
 \end{pspicture}
 \end{LTXexample}
 \fi\ifENGLISH
@@ -1288,26 +1281,18 @@
   % wrong, also beam width is changed
   \mirror[linewidth=3\pslinewidth](0,3)(2,3)(2,2)
   % correct result
-  \mirror[addtoOptComp={linewidth=3\pslinewidth}](0,1)(2,1)(2,0)
+  \addtopsstyle{OptComp}{linewidth=3\pslinewidth}
+  \mirror(0,1)(2,1)(2,0)
 \end{pspicture}
 \end{LTXexample}
 \fi
 % \iffalse
 %</ignore>
 % \fi
-% 
-% \boolitem[false]{optional}
-% \ifGERMAN
-% Markiert eine Komponente als optional indem der Stil
-% \nxLkeyword{OptionalStyle} angewendet wird.
-% \fi
-% \ifENGLISH
-% Mark an object as optional by applying the \Lstyle{OptionalStyle} style.
-% \fi
 %
 % \styleitem{OptionalStyle} 
 % \ifGERMAN
-% Der Stil wird zusÃ¤tzlich zu \nxLkeyword{OptComp} auf Komponenten angewendet,
+% Der Stil wird zusätzlich zu \nxLkeyword{OptComp} auf Komponenten angewendet,
 % die als \nxLkeyword{optional} markiert sind.
 % \fi
 % \ifENGLISH
@@ -1328,7 +1313,7 @@
 % 
 % \ifGERMAN
 % \nxLkeyword{OptionalStyle} wird nach \nxLkeyword{OptComp} angewendet, so dass
-% einzelne Einstellungen Ã¼berschrieben werden kÃ¶nnen.
+% einzelne Einstellungen überschrieben werden können.
 % \fi
 % \ifENGLISH
 % \nxLkeyword{OptionalStyle} is applied after \nxLkeyword{OptComp} so that it
@@ -1344,7 +1329,7 @@
 \addtopsstyle{OptComp}{linewidth=3\pslinewidth, linecolor=red}
 \newpsstyle{OptionalStyle}{linecolor=blue}
 \lens(0,1)(2,1)
-% Liniefarbe wird Ã¼berschrieben, die Linienbreite nicht.
+% Liniefarbe wird überschrieben, die Linienbreite nicht.
 \lens[optional](0,1)(3,1)
 \end{pspicture}
 \end{LTXexample}
@@ -1363,17 +1348,68 @@
 %</ignore>
 % \fi
 %
-% \end{optionlist}
+% \end{stylelist}
 %
+% \begin{optionlist}
+% \valitem{addtoOptComp}{list} 
+% \ifGERMAN Der vorhandene \Lstyle{OptComp}-Stil wird lokal um die Parameter in
+% \prm{list} erweitert, \prm{list} muss mit geschweiften Klammern gekapselt
+% werden. \fi
+% \ifENGLISH The \Lstyle{OptComp} style is extended by locally adding the parameters contained in \prm{list}. The
+% \prm{list} must be surrounded by curly braces.\fi
+%
+% \valitem{newOptComp}{list}
+% \ifGERMAN Analog zu \Lkeyword{addtoOptComp}, nur wird der
+% \Lstyle{OptComp}-Stil mit denen neuen Parametern überschrieben.\fi
+% \ifENGLISH Analogous to \Lkeyword{addtoOptComp}, but an existing
+% \Lstyle{OptComp} style is overwritten with the new parameter set.\fi
+%% \iffalse
+%<*ignore>
+% \fi
+\ifGERMAN
+\begin{LTXexample}[morekeywords={[21]{addtoOptComp,newOptComp}}]
+\begin{pspicture}(3,1.5)
+  \psset{beam}
+  \newpsstyle{OptComp}{linewidth=3\pslinewidth}
+  \mirror[addtoOptComp={linestyle=dotted}](0.5,0)(0.5,1)(1.5,1)
+  % Überschreibt linewidth-Einstellungen
+  \mirror[newOptComp={linestyle=dotted}](1.5,1)(2.5,1)(2.5,0)
+\end{pspicture}
+\end{LTXexample}
+\fi\ifENGLISH
+\begin{LTXexample}[morekeywords={[21]{addtoOptComp,newOptComp}}]
+\begin{pspicture}(3,1.5)
+  \psset{beam}
+  \newpsstyle{OptComp}{linewidth=3\pslinewidth}
+  \mirror[addtoOptComp={linestyle=dotted}](0.5,0)(0.5,1)(1.5,1)
+  % overwrites the linewidth settings
+  \mirror[newOptComp={linestyle=dotted}](1.5,1)(2.5,1)(2.5,0)
+\end{pspicture}
+\end{LTXexample}
+\fi
+% \iffalse
+%</ignore>
+% \fi
+%
+% \boolitem[false]{optional}
+% \ifGERMAN
+% Markiert eine Komponente als optional indem der Stil
+% \nxLkeyword{OptionalStyle} angewendet wird.
+% \fi
+% \ifENGLISH
+% Mark an object as optional by applying the \Lstyle{OptionalStyle} style.
+% \fi
+% \end{optionlist}
+% 
 % \ifGERMAN\section{Drehen und Verschieben}\fi
 % \ifENGLISH\section{Rotating and shifting}\fi
 % \label{sec:rotshift}
 %
 % \ifGERMAN
-% Alle Komponenten kÃ¶nnen versetzt und um verschiedene Bezugspunkte
+% Alle Komponenten können versetzt und um verschiedene Bezugspunkte
 % gedreht werden. Beachten Sie, dass mit den Komponenten auch die
-% GrenzflÃ¤chenknoten transformiert werden. Die transformierten
-% Referenzknoten sind als eigene Knoten verfÃ¼gbar (siehe
+% Grenzflächenknoten transformiert werden. Die transformierten
+% Referenzknoten sind als eigene Knoten verfügbar (siehe
 % \prettyref{sec:refnode}).
 % \fi
 % \ifENGLISH
@@ -1394,9 +1430,9 @@
 %
 % \valitem[c]{rotateref}{refstring}
 % \ifGERMAN
-% Setzt den Bezugspunkt fÃ¼r die Drehung der Komponente. Bitte lesen Sie
-% \prettyref{sec:rotrefnode} fÃ¼r eine genauere Beschreibung und entnehmen Sie
-% \prettyref{sec:overview-extnode} die mÃ¶glichen Bezugspunkte fÃ¼r alle
+% Setzt den Bezugspunkt für die Drehung der Komponente. Bitte lesen Sie
+% \prettyref{sec:rotrefnode} für eine genauere Beschreibung und entnehmen Sie
+% \prettyref{sec:overview-extnode} die möglichen Bezugspunkte für alle
 % Komponenten.
 % \fi
 % \ifENGLISH
@@ -1452,7 +1488,7 @@
 % \label{sec:positioning}
 %
 % \ifGERMAN
-% Alle Komponenten auÃŸer den Freistrahl-Dreipolen kÃ¶nnen zwischen ihren
+% Alle Komponenten außer den Freistrahl-Dreipolen können zwischen ihren
 % beiden Referenzknoten (\Lcs{oenodeRefA} und \Lcs{oenodeRefB})
 % positioniert werden.
 % \fi
@@ -1464,7 +1500,7 @@
 %   \numitem{position} 
 %   \ifGERMAN 
 %   Setzt die relative Position eines Objektes zwischen seinen beiden
-%   Referenzknoten. Ist Ã¤quivalent zum \Lkeyword*{npos} Parameter von
+%   Referenzknoten. Ist äquivalent zum \Lkeyword*{npos} Parameter von
 %   \Lcs{ncput} (eine Zahl im Intervall $[0,1]$).
 %   \fi
 %   \ifENGLISH
@@ -1509,7 +1545,7 @@
 % \ifENGLISH\section{Labels}\fi
 % \label{sec:labels}
 %
-% \ifGERMAN Alle Komponenten kÃ¶nnen mit einer Beschriftung versehen werden,
+% \ifGERMAN Alle Komponenten können mit einer Beschriftung versehen werden,
 % deren Position und Ausrichtung genau angepasst werden kann. 
 % \fi
 % \ifENGLISH All components may have a label, which position and alignment can
@@ -1518,7 +1554,7 @@
 %
 % \begin{optionlist}
 % \numitem[0.8]{labeloffset}
-% \ifGERMAN Der Abstand des Referenzknotens fÃ¼r die Beschriftung zum Zentrum der Komponente.\fi
+% \ifGERMAN Der Abstand des Referenzknotens für die Beschriftung zum Zentrum der Komponente.\fi
 % \ifENGLISH The offset of the label reference node from the component center.\fi
 % \iffalse
 %<*ignore>
@@ -1540,7 +1576,7 @@
 % \ifENGLISH The textstyle that is used to typeset the label.\fi
 % 
 % \valitem[c]{labelalign}{refstring}
-% \ifGERMAN Definiert die Ausrichtung der Beschriftung bezÃ¼glich des vorgesehenen Referenzknotens.\fi
+% \ifGERMAN Definiert die Ausrichtung der Beschriftung bezüglich des vorgesehenen Referenzknotens.\fi
 % \ifENGLISH Defines the alignment of the label relative to the reference node.\fi
 % \iffalse
 %<*ignore>
@@ -1559,7 +1595,7 @@
 % \numitem[0]{labelangle}
 % \ifGERMAN
 % Der Rotationswinkel des Referenzknotens um das Zentrum. Der Nullpunkt
-% hÃ¤ngt sowohl von dem jeweiligen Komponententypen und dem
+% hängt sowohl von dem jeweiligen Komponententypen und dem
 % Referenzsystem ab (siehe \nxLkeyword{labelref}).
 % \fi
 % \ifENGLISH
@@ -1604,9 +1640,9 @@
 % 
 % \choitem[relgrav]{labelref}{relative, relgrav, global}
 % \ifGERMAN
-% WÃ¤hlt das Bezugssystem fÃ¼r \nxLkeyword{labelangle} und die Orientierung der
+% Wählt das Bezugssystem für \nxLkeyword{labelangle} und die Orientierung der
 % Beschriftung. Das genaue Verhalten kann am besten mit den drei folgenden
-% Beispielen erlÃ¤utert werden.
+% Beispielen erläutert werden.
 % \fi
 % \ifENGLISH
 % Set the reference coordinate system for the \nxLkeyword{labelangle} and the
@@ -1650,10 +1686,10 @@
 % \optitem{label}{\prm{offset}[ \prm{angle}[ \prm{ref string}[ \prm{labelref}]]]}
 % \ifGERMAN
 % Diese Option erlaubt die kompakte Definition mehrerer
-% Beschriftungsparameter. Es kÃ¶nnen bis zu vier Leerzeichen-getrennte
-% Argumente Ã¼bergeben werden (\nxLkeyword{labeloffset},
+% Beschriftungsparameter. Es können bis zu vier Leerzeichen-getrennte
+% Argumente übergeben werden (\nxLkeyword{labeloffset},
 % \nxLkeyword{labelangle}, \nxLkeyword{labelalign} und
-% \nxLkeyword{labelref}). Mit einem Punkt kann eine Option Ã¼bersprungen
+% \nxLkeyword{labelref}). Mit einem Punkt kann eine Option übersprungen
 % werden.
 % \fi
 % \ifENGLISH
@@ -1679,7 +1715,7 @@
 %</ignore>
 % \fi
 % \boolitem{innerlabel}
-% \ifGERMAN Das ist ein Alias fÃ¼r \opt{label=0 . . relative}\fi
+% \ifGERMAN Das ist ein Alias für \opt{label=0 . . relative}\fi
 % \ifENGLISH This is an alias for \opt{label=0 . . relative}\fi
 % \end{optionlist}
 % 
@@ -1707,7 +1743,7 @@
 % \end{ltxsyntax}
 % \begin{optionlist}
 % \numitem[1]{lensheight} 
-% \ifGERMAN Setzt die HÃ¶he der Linse.\fi
+% \ifGERMAN Setzt die Höhe der Linse.\fi
 % \ifENGLISH Set the height of the lens.\fi
 % \iffalse
 %<*ignore>
@@ -1723,9 +1759,9 @@
 % \fi
 % \numitem[1]{lensradiusleft} 
 % \ifGERMAN
-% Setzt den Radius der linken LinsengrenzflÃ¤che. Ein positiver Wert \prm{num}
-% ist fÃ¼r eine konvexe, ein negativer fÃ¼r eine konkave KrÃ¼mmung. Null ergibt
-% eine ebene FlÃ¤che.
+% Setzt den Radius der linken Linsengrenzfläche. Ein positiver Wert \prm{num}
+% ist für eine konvexe, ein negativer für eine konkave Krümmung. Null ergibt
+% eine ebene Fläche.
 % \fi
 % \ifENGLISH
 % Set the left radius of the lens. A positive \prm{num} is for convex, a
@@ -1734,7 +1770,7 @@
 % 
 % \numitem[1]{lensradiusright} 
 % \ifGERMAN
-% Dasgleiche wie \Lkeyword{lensradiusleft}, nur fÃ¼r die rechte GrenzflÃ¤che.
+% Dasgleiche wie \Lkeyword{lensradiusleft}, nur für die rechte Grenzfläche.
 % \fi
 % \ifENGLISH
 % Same as \Lkeyword{lensradiusleft} but for the right surface.
@@ -1755,7 +1791,7 @@
 % 
 % \numitem{lensradius} 
 % \ifGERMAN
-%   Setzt beide KrÃ¼mmungen auf denselben Wert.
+%   Setzt beide Krümmungen auf denselben Wert.
 % \fi
 % \ifENGLISH
 %   Set both curvatures to the same value.
@@ -1774,12 +1810,12 @@
 %
 % \numitem[0]{lenswidth}
 % \ifGERMAN
-% Ãœblicherweise werden nur die HÃ¶he und die beiden Radien fÃ¼r die
+% Üblicherweise werden nur die Höhe und die beiden Radien für die
 % Konstruktion der Linse verwendet, die Mittenbreite wird automatisch
-% berechnet. Wenn \nxLkeyword{lenswidth} auf einen Wert grÃ¶ÃŸer Null gesetzt wird,
+% berechnet. Wenn \nxLkeyword{lenswidth} auf einen Wert größer Null gesetzt wird,
 % wird diese Breite verwendet. Das ist nur sinnvoll, wenn dicke Linsen
-% gezeichnet werden sollen, da es andernfalls fÃ¼r zu kleine Werte zu unschÃ¶nen
-% Ergebnissen fÃ¼hrt.
+% gezeichnet werden sollen, da es andernfalls für zu kleine Werte zu unschönen
+% Ergebnissen führt.
 % \fi
 % \ifENGLISH
 % Usually only the height and the two radii are used to construct the lens,
@@ -1802,8 +1838,8 @@
 % \fi
 % \optitem{lens}{\prm{radiusleft} [\prm{radiusright} [\prm{height} [\prm{width}]]]}
 % \ifGERMAN
-% Eine Option zum gleichzeitigen Setzen mehrerer Linsenparameter. Es mÃ¼ssen
-% nicht alle Werte gesetzt werden, die Ã¼brigen bleiben unverÃ¤ndert. 
+% Eine Option zum gleichzeitigen Setzen mehrerer Linsenparameter. Es müssen
+% nicht alle Werte gesetzt werden, die übrigen bleiben unverändert. 
 % \fi
 % \ifENGLISH
 % A convenience option to specify all lens parameters with a single option.
@@ -1842,14 +1878,14 @@
 % \end{ltxsyntax}
 % \begin{optionlist}
 %   \numitem[1]{plateheight} 
-%   \ifGERMAN Die HÃ¶he des PlÃ¤ttchens.\fi\ifENGLISH The height of the plate.\fi
+%   \ifGERMAN Die Höhe des Plättchens.\fi\ifENGLISH The height of the plate.\fi
 % 
 %   \optitem[2\nxLcs{pslinewidth}]{platelinewidth}{\prm{num} or \prm{dimen}} 
-%   \ifGERMAN \linewidthexplanation{des PlÃ¤ttchens}{PlÃ¤ttchen}\fi
+%   \ifGERMAN \linewidthexplanation{des Plättchens}{Plättchen}\fi
 %   \ifENGLISH \linewidthexplanation{plate}{plates}\fi
 % \end{optionlist}
 % 
-% \ifGERMAN\section{VerzÃ¶gerungsplÃ¤ttchen}\fi
+% \ifGERMAN\section{Verzögerungsplättchen}\fi
 % \ifENGLISH\section{Retardation plate}\fi
 %
 % \begin{ltxsyntax}
@@ -1868,8 +1904,8 @@
 % \end{ltxsyntax}
 % 
 % \begin{optionlist}
-% \numitem*[1]{plateheight} \ifGERMAN Die HÃ¶he des PlÃ¤ttchens.\fi\ifENGLISH The height of the plate.\fi
-% \numitem[0.1]{platewidth} \ifGERMAN Die Breite des PlÃ¤ttchens.\fi\ifENGLISH The width of the plate.\fi
+% \numitem*[1]{plateheight} \ifGERMAN Die Höhe des Plättchens.\fi\ifENGLISH The height of the plate.\fi
+% \numitem[0.1]{platewidth} \ifGERMAN Die Breite des Plättchens.\fi\ifENGLISH The width of the plate.\fi
 % \end{optionlist}
 % 
 % \ifGERMAN\section{Lochblende}\fi
@@ -1891,8 +1927,8 @@
 % \end{ltxsyntax}
 % 
 % \begin{optionlist}
-% \numitem[1]{outerheight} \ifGERMAN Die HÃ¶he der Lochblende.\fi\ifENGLISH The height of the pinhole.\fi
-% \numitem[0.1]{innerheight} \ifGERMAN Die HÃ¶he des Lochs.\fi\ifENGLISH The height of the hole.\fi
+% \numitem[1]{outerheight} \ifGERMAN Die Höhe der Lochblende.\fi\ifENGLISH The height of the pinhole.\fi
+% \numitem[0.1]{innerheight} \ifGERMAN Die Höhe des Lochs.\fi\ifENGLISH The height of the hole.\fi
 % \optitem[2\nxLcs{pslinewidth}]{phlinewidth}{\prm{num} or \prm{dimen}}
 % \ifGERMAN \linewidthexplanation{der Lochblende}{Lochblende}\fi
 % \ifENGLISH \linewidthexplanation{pinhole}{pinholes}\fi
@@ -1945,33 +1981,16 @@
 % \ifENGLISH The width of the crystal.\fi
 %
 % \numitem[0.6]{crystalheight}
-% \ifGERMAN Die HÃ¶he des Kristalls.\fi
+% \ifGERMAN Die Höhe des Kristalls.\fi
 % \ifENGLISH The height of the crystal.\fi
 %
 % \numitem[0.6]{caxislength}
-% \ifGERMAN Die LÃ¤nge des Pfeils fÃ¼r die $c$-Achse, wird weggelassen falls die LÃ¤nge \opt{0} ist.\fi
+% \ifGERMAN Die Länge des Pfeils für die $c$-Achse, wird weggelassen falls die Länge \opt{0} ist.\fi
 % \ifENGLISH The length of the $c$-axis, is dropped when set to \opt{0}.\fi
 %
 % \boolitem[false]{caxisinv}
 % \ifGERMAN Invertiert die Richtung der $c$-Achse.\fi
 % \ifENGLISH Invert the direction of the $c$-axis.\fi
-%
-% \styleitem{CrystalCaxis}
-% \ifGERMAN Der Stil fÃ¼r die $c$-Achse inklusive der Pfeilart.\fi
-% \ifENGLISH The style of the $c$-axis including the arrow type.\fi
-%
-% \iffalse
-%<*ignore>
-% \fi
-\begin{LTXexample}[morekeywords={[21]{voltage, caxisinv}}]
-\begin{pspicture}(0,0.5)(3,1.6)
-\addtopsstyle{CrystalCaxis}{linecolor=red}
-\crystal[beam](0,1)(3,1)
-\end{pspicture}
-\end{LTXexample}
-% \iffalse
-%</ignore>
-% \fi
 %
 % \boolitem[false]{voltage}
 % \ifGERMAN Zeichnet einen Spannungsanschluss und ein Erdungszeichen.\fi
@@ -1996,9 +2015,27 @@
 % \ifGERMAN Skalierung der Lampe.\fi
 % \ifENGLISH Scaling of the lamp.\fi
 % \deprecatedmsg{\Lstyle{CrystalLamp}}
+% \end{optionlist}
+%
+% \begin{stylelist}
+% \styleitem{CrystalCaxis}
+% \ifGERMAN Der Stil für die $c$-Achse inklusive der Pfeilart.\fi
+% \ifENGLISH The style of the $c$-axis including the arrow type.\fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[morekeywords={[21]{voltage, caxisinv}}]
+\begin{pspicture}(0,0.5)(3,1.6)
+\addtopsstyle{CrystalCaxis}{linecolor=red}
+\crystal[beam](0,1)(3,1)
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 %
 % \styleitem{CrystalLamp}
-% \ifGERMAN Der Stil fÃ¼r die Lampe.\fi
+% \ifGERMAN Der Stil für die Lampe.\fi
 % \ifENGLISH The style of the crysal lamp.\fi
 % \iffalse
 %<*ignore>
@@ -2011,7 +2048,7 @@
 % \iffalse
 %</ignore>
 % \fi
-% \end{optionlist}
+% \end{stylelist}
 %
 % \iffalse
 %<*ignore>
@@ -2052,10 +2089,10 @@
 % \ifGERMAN Die Breite der Box.\fi\ifENGLISH The width of the box.\fi
 %
 % \numitem[0.8]{optboxheight}
-% \ifGERMAN Die HÃ¶he der Box.\fi\ifENGLISH The height of the box.\fi
+% \ifGERMAN Die Höhe der Box.\fi\ifENGLISH The height of the box.\fi
 %
 % \optitem{optbox}{\prm{width} \prm{height}}
-% \ifGERMAN Die Breite und HÃ¶he der Box, Ã¤quivalent zum Aufruf von
+% \ifGERMAN Die Breite und Höhe der Box, äquivalent zum Aufruf von
 % \Lkeyword{optboxwidth} und \Lkeyword{optboxheight}.
 % \fi
 % \ifENGLISH The width and height of the box, is equivalent to calling both
@@ -2065,8 +2102,8 @@
 % \boolitem[false]{endbox}
 % \ifGERMAN 
 % Setzt die Box ans Ende der Referenzlinie. Mit \Lkeyword{abspos} oder
-% \Lkeyword{position} wÃ¤re das auch mÃ¶glich aber im Allgemeinen schwieriger und
-% unflexibler, da die Breite der Box mit berÃ¼cksichtigt werden mÃ¼sste.  \fi
+% \Lkeyword{position} wäre das auch möglich aber im Allgemeinen schwieriger und
+% unflexibler, da die Breite der Box mit berücksichtigt werden müsste.  \fi
 % \ifENGLISH
 % Place the box at the end of the reference line. With \Lkeyword{abspos} or
 % \Lkeyword{position} this is also possible, but in general more difficult and
@@ -2107,7 +2144,7 @@
 % \begin{optionlist}
 %   \numitem[0.8]{detsize} 
 %   \ifGERMAN 
-%   Das ist die SeitenlÃ¤nge (\opt{diode}) bzw. der Durchmesser (\opt{round}) des Detektors.
+%   Das ist die Seitenlänge (\opt{diode}) bzw. der Durchmesser (\opt{round}) des Detektors.
 %   \fi
 %   \ifENGLISH 
 %   This is the side length (\opt{diode}) or the diameter \opt{round} of the detector.
@@ -2153,7 +2190,7 @@
 % \begin{optionlist}
 % \numitem[0.8]{optdiodesize}
 % \ifGERMAN 
-% Die SeitenlÃ¤nge der optischen Diode.
+% Die Seitenlänge der optischen Diode.
 % \fi
 % \ifENGLISH
 % The side length of the optical diode.
@@ -2181,8 +2218,8 @@
 % \begin{optionlist}
 %   \numitem[0.6]{doveprismsize} 
 %   \ifGERMAN
-%   Die HÃ¶he des Prismas, die Gesamtbreite ist das dreifache und die Winkel an
-%   der Eingangs- und AusgangsflÃ¤che betragen 45\textdegree.
+%   Die Höhe des Prismas, die Gesamtbreite ist das dreifache und die Winkel an
+%   der Eingangs- und Ausgangsfläche betragen 45\textdegree.
 %   \fi
 %   \ifENGLISH
 %    The height of the prism, the total width is set to
@@ -2210,8 +2247,8 @@
 % \end{ltxsyntax}
 % \begin{optionlist}
 % \numitem[0.6]{polsize}
-% \ifGERMAN Die GrÃ¶ÃŸe des Polarisationszeichens, der Kreis fÃ¼r \opt{perp} und
-% \opt{polmisc} ist halb so groÃŸ.\fi
+% \ifGERMAN Die Größe des Polarisationszeichens, der Kreis für \opt{perp} und
+% \opt{polmisc} ist halb so groß.\fi
 % \ifENGLISH The size of the polarization symbol, the circle for \opt{perp} and
 % \opt{polmisc} is half of this.\fi
 %
@@ -2221,7 +2258,7 @@
 % \deprecatedmsg{\Lstyle{Polarization}}
 %
 % \choitem[parallel]{poltype}{parallel, perp, misc, lcirc, rcirc}
-% \ifGERMAN Dieser Parameter wÃ¤hlt die Polarizationsart aus.\fi
+% \ifGERMAN Dieser Parameter wählt die Polarizationsart aus.\fi
 % \ifENGLISH This parameter choses the polarization type.\fi
 % \iffalse
 %<*ignore>
@@ -2243,10 +2280,13 @@
 % \iffalse
 %</ignore>
 % \fi
+% \end{optionlist}
+%
+% \begin{stylelist}
 % \styleitem{Polarization}
 % \ifGERMAN Bestimmt das Aussehen der Polarisationssymbole.\fi
 % \ifENGLISH Affects the style of the polarisation symbols.\fi
-% \end{optionlist}
+% \end{stylelist}
 % 
 % \ifGERMAN\section{Spiegel}\fi
 % \ifENGLISH\section{Mirror}\fi
@@ -2281,7 +2321,7 @@
 %
 % \numitem[0]{mirrorradius} 
 % \ifGERMAN
-% Diese Parameter setzt die KrÃ¼mmung des Spiegels. Null ergibt einen
+% Diese Parameter setzt die Krümmung des Spiegels. Null ergibt einen
 % ebenen, ein negativer Radius einen konvexen und ein positiver Radius
 % einen konkaven Spiegel.
 % \fi
@@ -2308,8 +2348,8 @@
 % 
 % \choitem[normal]{mirrortype}{normal, piezo, extended}
 % \ifGERMAN
-%   Diese Parameter wÃ¤hlt die Spiegelart aus. Beachten Sie, dass der
-%   Anschlussdraht fÃ¼r den Piezospiegel nicht gezeichnet wird, falls
+%   Diese Parameter wählt die Spiegelart aus. Beachten Sie, dass der
+%   Anschlussdraht für den Piezospiegel nicht gezeichnet wird, falls
 %   \Lkeyword{extnode} verwendet wird.
 % \fi
 % \ifENGLISH
@@ -2338,75 +2378,14 @@
 %</ignore>
 % \fi
 % 
-% \styleitem{ExtendedMirror} 
-% \ifGERMAN Der Stil fÃ¼r den \opt{extended} Spiegel.\fi
-% \ifENGLISH The style for the \opt{extended} mirror.\fi
-% \iffalse
-%<*ignore>
-% \fi
-\begin{LTXexample}
-\begin{pspicture}(3,2)
-  \newpsstyle{ExtendedMirror}{fillstyle=solid, 
-                                fillcolor=gray!50,
-                                linestyle=none}
-  \mirror[mirrortype=extended,
-            beam](0,0)(1.8,1.5)(0,2){ext}
-\end{pspicture}
-\end{LTXexample}
-% \iffalse
-%</ignore>
-% \fi
-% 
-% \styleitem{PiezoMirror} 
-% \ifGERMAN 
-% Der Stil fÃ¼r den \opt{piezo} Spiegel. Dieser kann auch dazu verwendet
-% werden, die GrÃ¶ÃŸe des Piezos zu verÃ¤ndern, wie in dem folgenden Beispiel zu sehen ist.
-% \fi
-% \ifENGLISH
-% This style defines the appearance of the \opt{piezo} mirror. This can also
-% be used to change the size of piezo part, as the example shows.
-% \fi
-% \iffalse
-%<*ignore>
-% \fi
-\begin{LTXexample}
-\begin{pspicture}(3,2)
-  \addtopsstyle{PiezoMirror}{xunit=2}
-  \mirror[mirrortype=piezo,
-            beam](0,0)(1.8,1.5)(0,2){piezo}
-\end{pspicture}
-\end{LTXexample}
-% \iffalse
-%</ignore>
-% \fi
-% 
 % \boolitem[false]{variable}
 % \ifGERMAN
-% Zeichnet einen verstellbaren Spiegel, der mit zwei zusÃ¤tzlichen
-% gekrÃ¼mmten Pfeilen an beiden Seiten angedeutet wird.
+% Zeichnet einen verstellbaren Spiegel, der mit zwei zusätzlichen
+% gekrümmten Pfeilen an beiden Seiten angedeutet wird.
 % \fi
 % \ifENGLISH
 % Draw an adjustable mirror which has two additional curved arrows on
 % both sides.
-% \fi
-%
-% \styleitem{VariableMirror} 
-% \ifGERMAN
-%   Der Stil der Pfeiles des verstellbaren Spiegels.
-% \fi
-% \ifENGLISH
-% The style of the arrows of the variable mirror.
-% \fi
-% \iffalse
-%<*ignore>
-% \fi
-\begin{LTXexample}
-\begin{pspicture}(3,2)
-  \mirror[beam, variable](0,0)(1.8,1.5)(0,2){var}
-\end{pspicture}
-\end{LTXexample}
-% \iffalse
-%</ignore>
 % \fi
 % 
 % \numitem[0.1]{mirrordepth} 
@@ -2429,6 +2408,69 @@
 %</ignore>
 % \fi
 % \end{optionlist}
+%
+% \begin{stylelist}
+% \styleitem{ExtendedMirror} 
+% \ifGERMAN Der Stil für den \opt{extended} Spiegel.\fi
+% \ifENGLISH The style for the \opt{extended} mirror.\fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(3,2)
+  \newpsstyle{ExtendedMirror}{fillstyle=solid, 
+                                fillcolor=gray!50,
+                                linestyle=none}
+  \mirror[mirrortype=extended,
+            beam](0,0)(1.8,1.5)(0,2){ext}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+% 
+% \styleitem{PiezoMirror} 
+% \ifGERMAN 
+% Der Stil für den \opt{piezo} Spiegel. Dieser kann auch dazu verwendet
+% werden, die Größe des Piezos zu verändern, wie in dem folgenden Beispiel zu sehen ist.
+% \fi
+% \ifENGLISH
+% This style defines the appearance of the \opt{piezo} mirror. This can also
+% be used to change the size of piezo part, as the example shows.
+% \fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(3,2)
+  \addtopsstyle{PiezoMirror}{xunit=2}
+  \mirror[mirrortype=piezo,
+            beam](0,0)(1.8,1.5)(0,2){piezo}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
+% \styleitem{VariableMirror} 
+% \ifGERMAN
+%   Der Stil der Pfeiles des verstellbaren Spiegels.
+% \fi
+% \ifENGLISH
+% The style of the arrows of the variable mirror.
+% \fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(3,2)
+  \mirror[beam, variable](0,0)(1.8,1.5)(0,2){var}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+% \end{stylelist}
 % 
 % \ifGERMAN\section{Strahlteiler}\fi
 % \ifENGLISH\section{Beamsplitter}\fi
@@ -2451,7 +2493,7 @@
 % \begin{optionlist}
 % \numitem[0.8]{bssize}
 % \ifGERMAN
-%   Die GrÃ¶ÃŸe des Strahlteilers.
+%   Die Größe des Strahlteilers.
 % \fi
 % \ifENGLISH
 %   The beamsplitter size.
@@ -2459,11 +2501,11 @@
 %  
 % \choitem[cube]{bsstyle}{cube, plate} 
 % \ifGERMAN
-% WÃ¤hlt zwischen zwei Strahlteilertypen: einem StrahlteilerwÃ¼rfel
-% (\opt{cube}) und einem halbdurchlÃ¤ssigen Spiegel
+% Wählt zwischen zwei Strahlteilertypen: einem Strahlteilerwürfel
+% (\opt{cube}) und einem halbdurchlässigen Spiegel
 % (\opt{plate}). Beachten Sie, dass trotz des gleichen Aussehens der
-% halbdurchlÃ¤ssige Spiegel eine anderes Verhalten beim Strahlzeichnen
-% als der gewÃ¶hnliche Spiegel hat.
+% halbdurchlässige Spiegel eine anderes Verhalten beim Strahlzeichnen
+% als der gewöhnliche Spiegel hat.
 % \fi
 % \ifENGLISH
 % Selects between two types of beamsplitters: the beamsplitter cube
@@ -2507,12 +2549,12 @@
 % \ifENGLISH The width of the grating.\fi
 % 
 % \numitem[0.15]{gratingheight} 
-% \ifGERMAN Die GesamthÃ¶he des Gitters.\fi
+% \ifGERMAN Die Gesamthöhe des Gitters.\fi
 % \ifENGLISH The total height of the grating.\fi
 % 
 % \numitem[0.075]{gratingdepth}
 % \ifGERMAN 
-% Die absolute Modulationstiefe der Gitterstruktur. Die GesamthÃ¶he wird
+% Die absolute Modulationstiefe der Gitterstruktur. Die Gesamthöhe wird
 % an diesen Wert angepasst falls sie kleiner als die Modulationtiefe ist, 
 % andernfalls wird sie nicht beinflusst.
 % \fi
@@ -2552,7 +2594,7 @@
 % 
 % \choitem[blazed]{gratingtype}{blazed, binary} 
 % \ifGERMAN 
-%   WÃ¤hlt zwischen einem binÃ¤ren Gitter (\opt{binary}) und einem Blazegitter (\opt{blazed}).
+%   Wählt zwischen einem binären Gitter (\opt{binary}) und einem Blazegitter (\opt{blazed}).
 % \fi
 % \ifENGLISH
 %   Select between a \opt{binary} and a \opt{blazed} grating.
@@ -2592,20 +2634,22 @@
 % \optitem[0.7\nxLcs{pslinewidth}]{gratinglinewidth}{\prm{num} or \prm{dimen}} 
 % \ifGERMAN \linewidthexplanation{des Gitters}{Gitter}\fi
 % \ifENGLISH \linewidthexplanation{grating}{gratings}\fi
+% \end{optionlist}
 %
+% \begin{stylelist}
 % \item[\smash{%
-%   \begin{tabular}[t]{@{}r}
-%     \Lkeyword{gridwidth}\\
-%     \Lkeyword{gridheight}\\
-%     \Lkeyword{griddepth}\\
-%     \Lkeyword{gridcount}\\
-%     \Lkeyword{gridtype}\\
-%     \Lkeyword{gridlinewidth}
+%   \begin{tabular}[t]{@{}r@{}}
+%     \Lkeyword{optgridwidth}\\
+%     \Lkeyword{optgridheight}\\
+%     \Lkeyword{optgriddepth}\\
+%     \Lkeyword{optgridcount}\\
+%     \Lkeyword{optgridtype}\\
+%     \Lkeyword{optgridlinewidth}
 %   \end{tabular}}]^^A
 % \ifGERMAN Diese Parameter wurden in die entsprechenden \opt{grating*} Parameter umbenannt und seit Version 3.0 veraltet.\fi
 % \ifENGLISH These parameters were renamed to the respective \opt{grating*} parameters and are deprecated since version 3.0.\fi
 % \vspace*{2cm}
-% \end{optionlist}
+% \end{stylelist}
 % 
 % \ifGERMAN\section{Prisma}\fi
 % \ifENGLISH\section{Prism}\fi
@@ -2625,8 +2669,8 @@
 % \fi
 % \end{ltxsyntax}
 % \ifGERMAN
-% Das Prisma wird immer symmetrisch bezÃ¼glich der \prm{in} und \prm{out}
-% Knoten ausgerichtet. FÃ¼r asymmetrischen Strahlengang siehe
+% Das Prisma wird immer symmetrisch bezüglich der \prm{in} und \prm{out}
+% Knoten ausgerichtet. Für asymmetrischen Strahlengang siehe
 % \prettyref{chap:connecting}.
 % \fi
 % \ifENGLISH
@@ -2636,7 +2680,7 @@
 %
 % \begin{optionlist}
 % \numitem[1]{prismsize} 
-% \ifGERMAN Die HÃ¶he des Prismas.\fi
+% \ifGERMAN Die Höhe des Prismas.\fi
 % \ifENGLISH The height of the prism.\fi
 % \numitem[60]{prismangle}
 % \ifGERMAN Der obere Winkel des Prismas.\fi
@@ -2697,7 +2741,7 @@
 % 
 % \begin{optionlist}
 % \numitem[1.5]{raprismsize}
-% \ifGERMAN Die LÃ¤nge der EingangsflÃ¤che.\fi
+% \ifGERMAN Die Länge der Eingangsfläche.\fi
 % \ifENGLISH The length of the input plane.\fi
 % \end{optionlist}
 % 
@@ -2721,7 +2765,7 @@
 % 
 % \begin{optionlist}
 %   \numitem[0.7]{pentaprismsize} 
-%   \ifGERMAN Die LÃ¤nge der Eingangs- und AusgangsflÃ¤che.\fi
+%   \ifGERMAN Die Länge der Eingangs- und Ausgangsfläche.\fi
 %   \ifENGLISH The length of the input and output plane.\fi
 % \end{optionlist}
 % 
@@ -2734,7 +2778,7 @@
 %   \boolitem{usefiberstyle} 
 %   \ifGERMAN
 %   Bei manchen Komponenten kann es vorteilhaft sein interne Faserteile
-%   hervorzuheben. Mit diesem Parameter werden z.B. die durchlÃ¤ssigen Teile
+%   hervorzuheben. Mit diesem Parameter werden z.B. die durchlässigen Teile
 %   eines Filter angezeigt und mit dem \Lstyle{Fiber}-Stil gezeichnet. In der
 %   Dokumentation ist dieses Verhalten angeschaltet um zu verdeutlichen, welche
 %   Teile hervorgehoben werden.
@@ -2816,7 +2860,7 @@
 % \fi
 % \end{optionlist}
 % 
-% \ifGERMAN\section{Optischer VerstÃ¤rker}\fi
+% \ifGERMAN\section{Optischer Verstärker}\fi
 % \ifENGLISH\section{Optical amplifier}\fi
 %
 % \begin{ltxsyntax}
@@ -2837,8 +2881,8 @@
 % \begin{optionlist}
 % \numitem[0.8]{optampsize} 
 % \ifGERMAN 
-% Die HÃ¶he bzw. die SeitenlÃ¤nge des VerstÃ¤rkers. Um das VerhÃ¤ltnis zwischen HÃ¶he
-% und Breite zu Ã¤ndern, verwenden Sie \opt{xunit} und \opt{yunit}.
+% Die Höhe bzw. die Seitenlänge des Verstärkers. Um das Verhältnis zwischen Höhe
+% und Breite zu ändern, verwenden Sie \opt{xunit} und \opt{yunit}.
 % \fi
 % \ifENGLISH
 % The height and side length of the amplifier. To change the relation of width
@@ -2888,11 +2932,11 @@
 % 
 % \begin{optionlist}
 % \numitem[0.8]{filtersize}
-% \ifGERMAN Die GrÃ¶ÃŸe des Filters.\fi
+% \ifGERMAN Die Größe des Filters.\fi
 % \ifENGLISH The size of the filter.\fi
 %
 % \choitem[bandpass]{filtertype}{bandpass, bandstop, lowpass, highpass}
-% \ifGERMAN WÃ¤hle zwischen unterschiedlichen Filtertypen.\fi
+% \ifGERMAN Wähle zwischen unterschiedlichen Filtertypen.\fi
 % \ifENGLISH Select between different filter types.\fi
 % \iffalse
 %<*ignore>
@@ -2927,7 +2971,9 @@
 % \iffalse
 %</ignore>
 % \fi
+% \end{optionlist}
 %
+% \begin{stylelist}
 % \styleitem{FilterInt}
 % \ifGERMAN Beinflusst das Aussehen der internel Filterlinien.\fi
 % \ifENGLISH Changes the style of the interal filter lines.\fi
@@ -2945,7 +2991,7 @@
 % \iffalse
 %</ignore>
 % \fi
-% \end{optionlist}
+% \end{stylelist}
 % 
 % \ifGERMAN\section{Polarisationssteller}\fi
 % \ifENGLISH\section{Polarization controller}\fi
@@ -3005,11 +3051,13 @@
 % 
 % \begin{optionlist}
 %   \numitem[0.6]{isolatorsize} \sizeexplanation{\ifGERMAN des Isolators\fi\ifENGLISH isolator\fi}
+% \end{optionlist}
 %
+% \begin{stylelist}
 % \styleitem{IsolatorArrow} 
 % \ifGERMAN 
-% Der Stil fÃ¼r den Isolatorpfeil. Das kann insbesondere nÃ¼tzlich sein um
-% die LÃ¤nge des Pfeils zu verÃ¤ndern. 
+% Der Stil für den Isolatorpfeil. Das kann insbesondere nützlich sein um
+% die Länge des Pfeils zu verändern. 
 % \fi
 % \ifENGLISH 
 % The style of the isolator arrow. This can be especially useful to
@@ -3028,7 +3076,7 @@
 % \iffalse
 %</ignore>
 % \fi
-% \end{optionlist}
+% \end{stylelist}
 % 
 % \ifGERMAN\section{Optischer Schalter}\fi
 % \ifENGLISH\section{Optical switch}\fi
@@ -3050,11 +3098,11 @@
 % 
 % \begin{optionlist}
 % \numitem[0.8]{switchsize}
-% \ifGERMAN Die GrÃ¶ÃŸe des Schalters.\fi
+% \ifGERMAN Die Größe des Schalters.\fi
 % \ifENGLISH The size of the switch.\fi
 %
 % \choitem[opened]{switchstyle}{opened, closed} 
-% \ifGERMAN Der Zustand des Schalters kann geschlossen (\opt{closed}) oder geÃ¶ffnet (\opt{opened}) sein. \fi
+% \ifGERMAN Der Zustand des Schalters kann geschlossen (\opt{closed}) oder geöffnet (\opt{opened}) sein. \fi
 % \ifENGLISH Indicate the switch as \opt{opened} or \opt{closed}.\fi
 % \iffalse
 %<*ignore>
@@ -3069,7 +3117,7 @@
 % \fi
 % \end{optionlist}
 % 
-% \ifGERMAN\section{FaserverzÃ¶gerungstrecke}\fi
+% \ifGERMAN\section{Faserverzögerungstrecke}\fi
 % \ifENGLISH\section{Fiber delay line}\fi
 % 
 % \begin{ltxsyntax}
@@ -3088,12 +3136,14 @@
 % \end{ltxsyntax}
 % 
 % \begin{optionlist}
-% \numitem[0.6]{fdlsize} \sizeexplanation{\ifGERMAN der VerzÃ¶gerungsstrecke\fi\ifENGLISH delay line\fi}
+% \numitem[0.6]{fdlsize} \sizeexplanation{\ifGERMAN der Verzögerungsstrecke\fi\ifENGLISH delay line\fi}
+% \end{optionlist}
 %
+% \begin{stylelist}
 % \styleitem{FdlArrow} 
 % \ifGERMAN 
-% Der Stil fÃ¼r den Pfeil. Das kann insbesonders nÃ¼tzlich sein um die
-% LÃ¤nge des Pfeils zu verÃ¤ndern, die bei geÃ¤nderter GrÃ¶ÃŸe nicht mehr
+% Der Stil für den Pfeil. Das kann insbesonders nützlich sein um die
+% Länge des Pfeils zu verändern, die bei geänderter Größe nicht mehr
 % passend sein kann, oder um den Pfeil zu spiegeln.
 % \fi
 % \ifENGLISH 
@@ -3113,7 +3163,7 @@
 % \iffalse
 %</ignore>
 % \fi
-% \end{optionlist}
+% \end{stylelist}
 % 
 % \ifGERMAN\section{Polarisator}\fi
 % \ifENGLISH\section{Polarizer}\fi
@@ -3157,8 +3207,8 @@
 % \begin{optionlist}
 % \numitem[0.3]{fibercolsize}
 % \ifGERMAN
-% Die HÃ¶he bzw. SeitenlÃ¤nge des Kollimators. Mit dem \opt{xunit} oder
-% \opt{yunit} Parameter kann das VerhÃ¤ltnis zwischen HÃ¶he und Breite geÃ¤ndert
+% Die Höhe bzw. Seitenlänge des Kollimators. Mit dem \opt{xunit} oder
+% \opt{yunit} Parameter kann das Verhältnis zwischen Höhe und Breite geändert
 % werden.
 % \fi
 % \ifENGLISH
@@ -3172,7 +3222,7 @@
 % zwischen \prm{in} und \prm{out} Knoten platziert. Bei drei Punkten
 % wird eine \Lcs{psbezier} Kurve gezeichnet, wobei der mittlere Punkt
 % doppelt verwendet wird. Die Positionierungsparameter (see
-% \prettyref{sec:positioning}) kÃ¶nnen verwendet werden um den Kollimator
+% \prettyref{sec:positioning}) können verwendet werden um den Kollimator
 % zwischen dem \prm{in} und \prm{A} Knoten auszurichten.
 % \fi
 % \ifENGLISH
@@ -3199,7 +3249,7 @@
 % \ifGERMAN
 % Bei vier Knoten wird eine \Lcs{psbezier} Kurve mit allen vier Knoten
 % gezeichnet. Die Positionierungsparameter (see
-% \prettyref{sec:positioning}) kÃ¶nnen verwendet werden um den Kollimator
+% \prettyref{sec:positioning}) können verwendet werden um den Kollimator
 % zwischen dem \prm{in} und \prm{A} Knoten auszurichten.
 % \fi
 % \ifENGLISH
@@ -3260,7 +3310,7 @@
 % \fi
 % 
 % \choitem[elliptic]{couplertype}{none, elliptic, rectangular, crossswitch}
-% \ifGERMAN WÃ¤hlt zwischen unterschiedlichen Kopplertypen.\fi
+% \ifGERMAN Wählt zwischen unterschiedlichen Kopplertypen.\fi
 % \ifENGLISH Select between different coupler types.\fi
 % \iffalse
 %<*ignore>
@@ -3281,7 +3331,7 @@
 % \fi
 % 
 % \choitem[center]{align}{top, bottom, center}
-% \ifGERMAN Die Ausrichtung des Kopplers bezÃ¼glich der Referenzknoten.\fi
+% \ifGERMAN Die Ausrichtung des Kopplers bezüglich der Referenzknoten.\fi
 % \ifENGLISH The alignment of the coupler with respect to the reference nodes.\fi
 % \iffalse
 %<*ignore>
@@ -3337,7 +3387,7 @@
 % \fi
 % 
 % \choitem*[elliptic]{couplertype}{none, elliptic, rectangular}
-% \ifGERMAN WÃ¤hlt zwischen unterschiedlichen Kopplertypen.\fi
+% \ifGERMAN Wählt zwischen unterschiedlichen Kopplertypen.\fi
 % \ifENGLISH Select between different coupler types.\fi
 % \iffalse
 %<*ignore>
@@ -3355,7 +3405,7 @@
 % \fi
 % 
 % \choitem*[center]{align}{top, bottom, center}
-% \ifGERMAN Die Ausrichtung des Kopplers bezÃ¼glich der Referenzknoten.\fi
+% \ifGERMAN Die Ausrichtung des Kopplers bezüglich der Referenzknoten.\fi
 % \ifENGLISH The alignment of the coupler with respect to the reference nodes.\fi
 % \iffalse
 %<*ignore>
@@ -3410,7 +3460,7 @@
 % \fi
 % 
 % \choitem*[elliptic]{couplertype}{none, elliptic, rectangular}
-% \ifGERMAN WÃ¤hlt zwischen unterschiedlichen Kopplertypen.\fi
+% \ifGERMAN Wählt zwischen unterschiedlichen Kopplertypen.\fi
 % \ifENGLISH Select between different coupler types.\fi
 % \iffalse
 %<*ignore>
@@ -3428,7 +3478,7 @@
 % \fi
 % 
 % \choitem*[center]{align}{top, bottom, center}
-% \ifGERMAN Die Ausrichtung des Kopplers bezÃ¼glich der Referenzknoten.\fi
+% \ifGERMAN Die Ausrichtung des Kopplers bezüglich der Referenzknoten.\fi
 % \ifENGLISH The alignment of the coupler with respect to the reference nodes.\fi
 % \iffalse
 %<*ignore>
@@ -3452,7 +3502,7 @@
 %
 % \ifGERMAN
 % Die Definition der Eingangs- und Ausgangsknoten aus \prettyref{sec:ifcnode}
-% ist fÃ¼r die Koppler nicht gÃ¼ltig. Hier werden die Knoten einfach von \opt{1} (links
+% ist für die Koppler nicht gültig. Hier werden die Knoten einfach von \opt{1} (links
 % oben) bis \opt{N} (rechts unten) durchnummeriert.
 % \fi
 % \ifENGLISH
@@ -3485,8 +3535,8 @@
 % \label{sec:coupler-refnodes}
 %
 % \ifGERMAN
-% Die Definition der Referenzknoten aus \prettyref{sec:refnode} ist fÃ¼r Koppler
-% nicht gÃ¼ltig und hÃ¤ngt von dem \Lkeyword{align} Parameter ab.
+% Die Definition der Referenzknoten aus \prettyref{sec:refnode} ist für Koppler
+% nicht gültig und hängt von dem \Lkeyword{align} Parameter ab.
 % \fi
 % \ifENGLISH
 % The definition of reference nodes from \prettyref{sec:refnode} is not
@@ -3517,10 +3567,10 @@
 % 
 % \ifGERMAN
 % Jedes \nxLPack{pst-optexp} Objekt stellt mehrere spezielle Knoten zur
-% VerfÃ¼gung, die mit dessen Geometrie und Positionierung zusammenhÃ¤ngen. Diese
-% Knoten stehen fÃ¼r weitere Verwendung zur VerfÃ¼gung.
+% Verfügung, die mit dessen Geometrie und Positionierung zusammenhängen. Diese
+% Knoten stehen für weitere Verwendung zur Verfügung.
 %
-% Sie sollten immer die dafÃ¼r vorgesehenen Makros verwenden um auf die
+% Sie sollten immer die dafür vorgesehenen Makros verwenden um auf die
 % Knotennamen zuzugreifen.
 % \fi
 % \ifENGLISH
@@ -3538,13 +3588,13 @@
 % Das ist das grundlegende Makro mit dem auf die Knotennamen einer Komponente
 % zugegriffen werden kann. Das erste Argument \prm{node} ist der Bezeichner des
 % angeforderten Knotens. Das zweite Argument \prm{name} ist der Name der
-% Komponente (gemÃ¤ÃŸ \prettyref{sec:namingobj}). Ist dieses leer so wird das
+% Komponente (gemäß \prettyref{sec:namingobj}). Ist dieses leer so wird das
 % zuletzt definierte Objekt verwendet.
 %
-% FÃ¼r viele der Knoten wird ein eigenes Makro bereitgestellt, das Sie dann auch
-% verwenden sollten, da sich die Namenskonventionen Ã¤ndern kÃ¶nnten. Die Makros
+% Für viele der Knoten wird ein eigenes Makro bereitgestellt, das Sie dann auch
+% verwenden sollten, da sich die Namenskonventionen ändern könnten. Die Makros
 % stellen sicher, dass Sie immer die passenden Knotennamen erhalten. Daher sind
-% die verfÃ¼gbaren Bezeichner auch nicht aufgelistet.
+% die verfügbaren Bezeichner auch nicht aufgelistet.
 % \fi
 % \ifENGLISH
 % This is the basic command to access any node associated with a certain
@@ -3594,9 +3644,9 @@
 % \label{sec:namingobj}
 %
 % \ifGERMAN
-% Alle Komponenten einer Aufbauskizze werden in aufsteigender gemÃ¤ÃŸ ihrer
-% Definition im Code nummeriert. Die Komponenten und deren Spezialknoten kÃ¶nnen
-% immer Ã¼ber diese Nummer referenziert werden.
+% Alle Komponenten einer Aufbauskizze werden in aufsteigender gemäß ihrer
+% Definition im Code nummeriert. Die Komponenten und deren Spezialknoten können
+% immer über diese Nummer referenziert werden.
 % \fi
 % \ifENGLISH
 % All objects of an setup drawing are numbered automatically in increasing order
@@ -3608,7 +3658,7 @@
 %   \valitem{compname}{string} 
 %   \ifGERMAN
 %   Weist einer Komponente einen Bezeichner zu. Die Komponente kann nun sowohl
-%   Ã¼ber diesen Bezeichner als auch Ã¼ber die zugewiesene Nummer referenziert
+%   über diesen Bezeichner als auch über die zugewiesene Nummer referenziert
 %   werden. Dieser Parameter kann nur innerhalb einer \nxLPack{pst-optexp}
 %   Komponente verwendet werden uns sollte. Der Bezeichner sollte innerhalb
 %   einer \Lenv*{pspicture}-Umgebung eindeutig sein.
@@ -3657,10 +3707,10 @@
 %  \ifGERMAN
 %  Die Eingangs- und Ausgangs-Referenzknoten.
 %
-%  Das sind die ursprÃ¼nglichen Knoten, die fÃ¼r die Positionierung der Komponente
+%  Das sind die ursprünglichen Knoten, die für die Positionierung der Komponente
 %  benutzt wurden, \nxLcs{oenodeRefA} ist der erste und \nxLcs{oenodeRefB} der
-%  letzte Knoten. Diese Zuordnung ist lediglich fÃ¼r die Faserkoppler nicht
-%  gÃ¼ltig, siehe hierzu \prettyref{sec:coupler-refnodes}.
+%  letzte Knoten. Diese Zuordnung ist lediglich für die Faserkoppler nicht
+%  gültig, siehe hierzu \prettyref{sec:coupler-refnodes}.
 %  \fi
 %  \ifENGLISH
 %  The input and output reference nodes.
@@ -3691,7 +3741,7 @@
 %   \ifGERMAN
 %   Die transformierten Eingangs- und Ausgangs-Referenzknoten.
 %
-%   Das sind die Referenzknoten nachdem sie zusammen mit der Komponente gemÃ¤ÃŸ
+%   Das sind die Referenzknoten nachdem sie zusammen mit der Komponente gemäß
 %   der \Lkeyword{compshift} und \Lkeyword{angle} Parameter transformiert wurden.
 %   \fi
 %   \ifENGLISH
@@ -3762,7 +3812,7 @@
 %
 %   \ifGERMAN
 %   Auf diesen Knoten wird die Beschriftung platziert. Der Knoten ist auch
-%   verfÃ¼gbar wenn keine Beschriftung angegeben wurde. FÃ¼r
+%   verfügbar wenn keine Beschriftung angegeben wurde. Für
 %   \xLkeyword{labeloffset}\nxLkeyword{labeloffset=0} ist dieser Knoten
 %   identisch mit dem Mittelpunktsknoten (\prettyref{sec:centernode}).
 %   \fi
@@ -3796,7 +3846,7 @@
 %
 % \ifGERMAN
 % Ein externer Knoten kann an unterschiedliche Positionen entlang des
-% Komponentenrandes gesetzt werden. Dieser wird nur fÃ¼r den externen Zugriff
+% Komponentenrandes gesetzt werden. Dieser wird nur für den externen Zugriff
 % definiert, und beeinflusst in keiner Weise die Komponente.
 % \fi
 % \ifENGLISH
@@ -3809,7 +3859,7 @@
 % \valitem{extnode}{refstring}
 % \ifGERMAN
 % Bestimmt die Position des externen Knotens. \refstringexplanation Nicht
-% jede Komponente unterstÃ¼tzt alle mÃ¶glichen Kombinationen, die mÃ¶glichen
+% jede Komponente unterstützt alle möglichen Kombinationen, die möglichen
 % Positionen jeder Komponente sind in \prettyref{sec:overview-extnode}
 % zusammengefasst.
 % \fi
@@ -3839,18 +3889,18 @@
 %
 % \boolitem[true]{globalnoderef}
 % \ifGERMAN
-% Die Bezeichnung von Â«obenÂ» (\opt{t}) und den anderen Positionierungsparametern von
-% \Lkeyword{extnode} kÃ¶nnen global oder relativ zur Komponente betrachtet werden.
+% Die Bezeichnung von «oben» (\opt{t}) und den anderen Positionierungsparametern von
+% \Lkeyword{extnode} können global oder relativ zur Komponente betrachtet werden.
 %
-% In dem folgenden Beispiel ist der externe Knoten immer Â«oben rechtsÂ» (\opt{tr}) platziert,
-% unabhÃ¤ngig von der Reihenfolge der Referenzknoten
+% In dem folgenden Beispiel ist der externe Knoten immer «oben rechts» (\opt{tr}) platziert,
+% unabhängig von der Reihenfolge der Referenzknoten
 % (\opt{globalnoderef=true}\xLkeyword{globalnoderef}).
 % \fi
 % \ifENGLISH 
-% The definition of Â«topÂ» (\opt{t}) and the other \Lkeyword{extnode} refstring
+% The definition of «top» (\opt{t}) and the other \Lkeyword{extnode} refstring
 % parameters can be global or relative to the component.
 %
-% In the next example the external node is always placed Â«top rightÂ»,
+% In the next example the external node is always placed «top right»,
 % independent of the actual order of the reference nodes
 % (\opt{globalnoderef=true}\xLkeyword{globalnoderef}). 
 % \fi
@@ -3899,14 +3949,14 @@
 % \fi
 % \end{optionlist}
 %
-% \ifGERMAN\section{GrenzflÃ¤chenknoten}\fi
+% \ifGERMAN\section{Grenzflächenknoten}\fi
 % \ifENGLISH\section{Interface nodes}\fi
 % \label{sec:ifcnode}
 %
 % \begin{ltxsyntax}
 %   \cmditem{oenodeIfc}{num}{name}
 %   \ifGERMAN
-%   Der GrenzflÃ¤chenknoten \prm{num}, wobei \prm{num} eine Ganzzahl zwischen
+%   Der Grenzflächenknoten \prm{num}, wobei \prm{num} eine Ganzzahl zwischen
 %   \opt{1} und \opt{N} ist. Der letzte Knoten ist immer \opt{N}.
 %   \fi
 %   \ifENGLISH
@@ -3916,7 +3966,7 @@
 %
 %   \cmditem{oenodeIn}{name}
 %   \ifGERMAN
-%   Der Knoten \prm{1} ist der Eingangsknoten, und sollte immer Ã¼ber
+%   Der Knoten \prm{1} ist der Eingangsknoten, und sollte immer über
 %   \nxLcs{oenodeIn} angesprochen werden.
 %   \fi
 %   \ifENGLISH
@@ -3927,7 +3977,7 @@
 %   \cmditem{oenodeOut}{name}
 %   \ifGERMAN
 %   Der Knoten \opt{N} ist der Ausgangsknoten und sollte
-%   immer Ã¼ber \nxLcs{oenodeOut} angesprochen werden.
+%   immer über \nxLcs{oenodeOut} angesprochen werden.
 %   \fi
 %   \ifENGLISH
 %   The interface node \prm{N} is the output node and should be accessed via
@@ -3935,21 +3985,21 @@
 %   \fi
 %
 %   \ifGERMAN
-%   Â«EingangÂ» und Â«AusgangÂ» kÃ¶nnen nur anhand einer relativen Orientierung
+%   «Eingang» und «Ausgang» können nur anhand einer relativen Orientierung
 %   definiert werden. Per Definition ist der Eingangsknoten derjenige zu dem ein
 %   Lichtstrahl ausgehend vom Referenzknoten \Lcs{oenodeRefA}
-%   verlÃ¤uft. Analog dazu ist die Definition ds Ausgangsknotens. Diese
-%   Bezeichnung kann nur fÃ¼r Faserkoppler (siehe \prettyref{sec:coupler-nodes}) und
+%   verläuft. Analog dazu ist die Definition ds Ausgangsknotens. Diese
+%   Bezeichnung kann nur für Faserkoppler (siehe \prettyref{sec:coupler-nodes}) und
 %   Strahlteiler (\ref{cmd:beamsplitter}) nicht angewendet werden.
 %
-%   \nxLcs{oenodeIn} ist Ã¤quivalent zu \nxLcs{oenodeIfc\{1\}} und
-%   \nxLcs{oenodeOut} ist Ã¤quivalent zu \nxLcs{oenodeIfc\{N\}}. Die Eingangs-
-%   und Ausgangsknoten sollten Ã¼ber die explizit bereitgestellten Makros
-%   angesprochen werden, \nxLcs{oenodeIfc} sollte nur fÃ¼r die weiteren
-%   GrenzflÃ¤chenknoten, sofern vorhanden, verwendet werden.
+%   \nxLcs{oenodeIn} ist äquivalent zu \nxLcs{oenodeIfc\{1\}} und
+%   \nxLcs{oenodeOut} ist äquivalent zu \nxLcs{oenodeIfc\{N\}}. Die Eingangs-
+%   und Ausgangsknoten sollten über die explizit bereitgestellten Makros
+%   angesprochen werden, \nxLcs{oenodeIfc} sollte nur für die weiteren
+%   Grenzflächenknoten, sofern vorhanden, verwendet werden.
 %   \fi
 %   \ifENGLISH
-%   Â«InputÂ» and Â«outputÂ» can define only relative orientations. The input node
+%   «Input» and «output» can define only relative orientations. The input node
 %   is by definition the node to which a beam coming from the reference node
 %   \Lcs{oenodeRefA} is connected to. Correspondingly is the definition of the
 %   output node. This definition breaks down only for fiber couplers (see
@@ -3979,15 +4029,15 @@
 % \fi
 %
 % \ifGERMAN
-% In \prettyref{sec:overview-ifcnode} finden Sie eine vollstÃ¤ndige Liste aller
-% Komponenten mit ihren GrenzflÃ¤chenknoten.
+% In \prettyref{sec:overview-ifcnode} finden Sie eine vollständige Liste aller
+% Komponenten mit ihren Grenzflächenknoten.
 % \fi
 % \ifENGLISH
 % See \prettyref{sec:overview-ifcnode} for a complete list of all
 % components with their interface nodes.
 % \fi
 %
-% \ifGERMAN\section{Referenzknoten fÃ¼r die Rotation}\fi
+% \ifGERMAN\section{Referenzknoten für die Rotation}\fi
 % \ifENGLISH\section{Rotation reference node}\fi
 % \label{sec:rotrefnode}
 %
@@ -3998,7 +4048,7 @@
 %   Der Referenzknoten um den eine Komponente mit \Lkeyword{angle} gedreht
 %   wird. Die Position des Knotens wird mit dem \Lkeyword{rotateref} Parameter
 %   definiert und kann dieselben Werte annehmen wie der externe Knoten
-%   (\prettyref{sec:extnode}). Eine vollstÃ¤ndige Liste der mÃ¶glichen Positionen
+%   (\prettyref{sec:extnode}). Eine vollständige Liste der möglichen Positionen
 %   finden Sie in \prettyref{sec:overview-extnode}.
 %   \fi
 %   \ifENGLISH
@@ -4036,7 +4086,7 @@
 %
 % \ifGERMAN
 % Die Endknoten des letzten \Lcs{drawbeam} oder \Lcs{drawwidebeam} Kommandos
-% kÃ¶nnen verwendet werden, wenn \Lkeyword{savebeampoints} auf \opt{true} gesetzt.
+% können verwendet werden, wenn \Lkeyword{savebeampoints} auf \opt{true} gesetzt.
 % ist.
 % \fi
 % \ifENGLISH
@@ -4071,7 +4121,7 @@
 %   \cmditem{oenodeBeamLow}
 %
 %   \ifGERMAN
-%   Der obere (Â«upperÂ») und untere (Â«lowerÂ») Endknoten des letzten \Lcs{drawwidebeam} Kommandos.
+%   Der obere («upper») und untere («lower») Endknoten des letzten \Lcs{drawwidebeam} Kommandos.
 %   \fi
 %   \ifENGLISH
 %   Access the upper or lower end point of the most recent \Lcs{drawwidebeam} command.
@@ -4097,14 +4147,14 @@
 % \fi
 %
 % \ifGERMAN
-% Beachten Sie, dass Â«obenÂ» (Â«upperÂ») und Â«untenÂ» (Â«lowerÂ») bezÃ¼glich der
-% Ausbreitungsrichtung des Strahls definiert ist. Ein Randstrahl der als Â«upperÂ»
-% startet can zu Â«lowerÂ» werden, wenn er den anderen Randstrahl kreuzt. Das wird
-% in dem folgenden Beispiel erlÃ¤utert:
+% Beachten Sie, dass «oben» («upper») und «unten» («lower») bezüglich der
+% Ausbreitungsrichtung des Strahls definiert ist. Ein Randstrahl der als «upper»
+% startet can zu «lower» werden, wenn er den anderen Randstrahl kreuzt. Das wird
+% in dem folgenden Beispiel erläutert:
 % \fi
 % \ifENGLISH
-% Note, that Â«upperÂ» and Â«lowerÂ» is defined with respect to the propagation
-% direction of the beam. A marginal beam which started as Â«upperÂ» can change to Â«lowerÂ»
+% Note, that «upper» and «lower» is defined with respect to the propagation
+% direction of the beam. A marginal beam which started as «upper» can change to «lower»
 % if it crosses the other marginal beam. This is shown in the following example,
 % where the marginal rays exchange their roles:
 % \fi
@@ -4134,9 +4184,9 @@
 % \end{ltxsyntax}
 %
 % \ifGERMAN
-% Die Strahlknoten kÃ¶nnen nur innerhalb der \Lenv*{pspicture}-Umgebung verwendet
+% Die Strahlknoten können nur innerhalb der \Lenv*{pspicture}-Umgebung verwendet
 % werden, in der sie definiert wurden. Um auf bestimmte Strahlknoten von
-% auÃŸerhalb zugreifen zu kÃ¶nnen mÃ¼ssen diese vorher explizit umdefiniert werden:
+% außerhalb zugreifen zu können müssen diese vorher explizit umdefiniert werden:
 % \fi
 % \ifENGLISH
 % The beam nodes can be accessed only within the \Lenv*{pspicture} environment
@@ -4157,7 +4207,7 @@
 % \pagebreak
 % \ifGERMAN
 % Desweiteren werden die Endknoten durch \Lkeyword{stopinside}
-% beeinflusst. Siehe \prettyref{sec:custombeam} fÃ¼r weitere Details.
+% beeinflusst. Siehe \prettyref{sec:custombeam} für weitere Details.
 % \fi
 % \ifENGLISH
 % The end points are also affected by \Lkeyword{stopinside}. See
@@ -4191,13 +4241,13 @@
 % Komponenten vollautomatisch oder manuell mit Fasern oder Lichtstrahlen zu
 % verbinden.
 % \begin{itemize}
-% \item In \prettyref{sec:accessobj} wird beschrieben wie Komponenten und Knoten fÃ¼r Verbindungen angesprochen werden.
+% \item In \prettyref{sec:accessobj} wird beschrieben wie Komponenten und Knoten für Verbindungen angesprochen werden.
 % \item \prettyref{sec:drawbeam} beschreibt Strahlverbindungen im Allgemeinen und das Verhalten von Einzelstrahlen.
 % \item \prettyref{sec:drawwidebeam} erweitert die Beschreibung von Strahlverbindungen aus \prettyref{sec:drawbeam} auf ausgedehnte Strahlen.
-% \item In \prettyref{sec:error-handling} wird gezeigt, wie fehlerhafte Strahlverbindungen (verfehlen von GrenzflÃ¤chen) gehandhabt wird).
-% \item \prettyref{sec:custombeam} erlÃ¤utert, wie stÃ¼ckweise definierte StrahlengÃ¤nge einfach realisiert werden kÃ¶nnen.
-% \item \prettyref{sec:drawfiber} enthÃ¤lt alle Informationen zu manuellen und automatischen Faserverbindungen.
-% \item \prettyref{sec:layers} erklÃ¤rt das Konzept der Â«frontÂ» und Â«backÂ»-Ebene.
+% \item In \prettyref{sec:error-handling} wird gezeigt, wie fehlerhafte Strahlverbindungen (verfehlen von Grenzflächen) gehandhabt wird).
+% \item \prettyref{sec:custombeam} erläutert, wie stückweise definierte Strahlengänge einfach realisiert werden können.
+% \item \prettyref{sec:drawfiber} enthält alle Informationen zu manuellen und automatischen Faserverbindungen.
+% \item \prettyref{sec:layers} erklärt das Konzept der «front» und «back»-Ebene.
 % \end{itemize}
 % \fi
 % \ifENGLISH
@@ -4411,7 +4461,7 @@
 % \ifGERMAN
 % Der Anfangswinkel des Strahls. Dieser ist relativ zu der Verbindung von der
 % ersten zur zweiten Komponente, mit \Lkeyword{beamangleabs} kann dieser auf
-% globale Werte geÃ¤ndert werden.
+% globale Werte geändert werden.
 % \fi
 % \ifENGLISH
 % This is the start angle of the beam. It is relative to the connection between the first
@@ -4495,9 +4545,9 @@
 % \fi
 % \psnumitem[1]{nmul} 
 % \ifGERMAN
-% Analog zu \nxLkeyword{nadd}, nur dass der ursprÃ¼ngliche Brechungsindex mit
+% Analog zu \nxLkeyword{nadd}, nur dass der ursprüngliche Brechungsindex mit
 % diesem Faktor multipliziert wird. Wenn \nxLkeyword{nadd} und \nxLkeyword{nmul}
-% zusammen verwendet werden, wird zuerst die Multiplikation durchgefÃ¼hrt:
+% zusammen verwendet werden, wird zuerst die Multiplikation durchgeführt:
 % $n_\mathrm{neu} = n_\mathrm{alt}\times n_\mathrm{mul} + n_\mathrm{add}$.
 % \fi
 % \ifENGLISH
@@ -4584,19 +4634,19 @@
 % \fi
 %
 % \boolitem[false]{beam}
-% \ifGERMAN Kann als Option fÃ¼r jede Komponente verwendet werden, ist Ã¤quivalent zu\fi
+% \ifGERMAN Kann als Option für jede Komponente verwendet werden, ist äquivalent zu\fi
 % \ifENGLISH Can be used as option for every component, is equivalent to the statement\fi
 % \begin{lstlisting}[gobble=2]
 % \drawbeam[connectplanes]{(\oenodeRefA{})}{}{(\oenodeRefB{})}
 % \end{lstlisting}
 % \ifENGLISH which draws a beam from one reference node via the component to the
 % other reference node.\fi 
-% \ifGERMAN womit ein Strahl vom ersten Referenzknoten Ã¼ber die Komponente zum
+% \ifGERMAN womit ein Strahl vom ersten Referenzknoten über die Komponente zum
 % zweiten Referenzknoten gezeichnet wird.\fi
 %
 % \valitem{conn}{string}
-% \ifGERMAN Diese Option wird nur aus KompatibilitÃ¤tsgrÃ¼nden noch bereitgestellt
-% und wird aus zukÃ¼nftigen Versionen entfernt.\fi
+% \ifGERMAN Diese Option wird nur aus Kompatibilitätsgründen noch bereitgestellt
+% und wird aus zukünftigen Versionen entfernt.\fi
 % \ifENGLISH This option is maintained for backward compatibility only and will be removed in future versions.\fi
 % \end{optionlist}
 % 
@@ -4619,10 +4669,10 @@
 %
 % \ifGERMAN
 % Da alle Strahlen direkt mit Postscript berechnet und gezeichnet werden, ist
-% eine umfassende Fehlerbehandlung zur Zeit der Kompilation nicht mÃ¶glich. Um
+% eine umfassende Fehlerbehandlung zur Zeit der Kompilation nicht möglich. Um
 % jedoch trotzdem fehlerfreie Bilder zu bekommen, wird der Strahlengang
-% abgebrochen, sobald eine Situation eintritt, die nicht unterstÃ¼tzt wird. Das kann
-% eintreten, falls der Strahl eine gekrÃ¼mmte GrenzflÃ¤che nicht trifft, oder
+% abgebrochen, sobald eine Situation eintritt, die nicht unterstützt wird. Das kann
+% eintreten, falls der Strahl eine gekrümmte Grenzfläche nicht trifft, oder
 % Totalreflektion auftritt.
 % \fi
 % \ifENGLISH All beam are calculated and drawn directly in Postscript, so that a
@@ -4642,9 +4692,9 @@
   \optplane[compname=B](3,1)(0,1)
   \drawbeam{A}{1}{B}
   \drawbeam[beamangle=15]{A}{1}{B}
-  % Verfehlt die zweite GrenzflÃ¤che, der Strahl wird nur bis zur ersten GrenzflÃ¤che gezeichnet.
+  % Verfehlt die zweite Grenzfläche, der Strahl wird nur bis zur ersten Grenzfläche gezeichnet.
   \drawbeam[beamangle=28]{A}{1}{B}
-  % Verfehlt schon die erste GrenzflÃ¤che, kein Strahl wird gezeichnet.
+  % Verfehlt schon die erste Grenzfläche, kein Strahl wird gezeichnet.
   \drawbeam[beamangle=29]{A}{1}{B}
 \end{pspicture}
 \end{LTXexample}
@@ -4668,10 +4718,10 @@
 % \fi
 % 
 % \ifGERMAN Bei aufgeweiteten Strahlen (siehe \prettyref{sec:drawwidebeam}) kann
-% es passieren, dass einer der Randstrahlen total reflektiert wÃ¼rde, der andere
-% aber nicht. Da die Randstrahlen unabhÃ¤ngig voneinander gezeichnet werden (wie
+% es passieren, dass einer der Randstrahlen total reflektiert würde, der andere
+% aber nicht. Da die Randstrahlen unabhängig voneinander gezeichnet werden (wie
 % zwei \Lcs{drawbeam} Aufrufe), wird einer abgeschnitten, und der andere
-% fortgefÃ¼hrt. Die FÃ¼llung geht nur soweit wie beide Strahlen vorhanden sind.
+% fortgeführt. Die Füllung geht nur soweit wie beide Strahlen vorhanden sind.
 % \fi
 % \ifENGLISH For wide beams (see \prettyref{sec:drawwidebeam}) it can happen
 % that only one marginal beam would be totally reflected, the other not. Because
@@ -4701,17 +4751,17 @@
 % \label{sec:custombeam}
 %
 % \ifGERMAN 
-% Im Prinzip kÃ¶nnen alle StrahlengÃ¤nge mit passender Wahl des Brechungsindex und
-% der Komponentenparameter (z.B. der LinsenkrÃ¼mmung) realisiert werden, was
+% Im Prinzip können alle Strahlengänge mit passender Wahl des Brechungsindex und
+% der Komponentenparameter (z.B. der Linsenkrümmung) realisiert werden, was
 % jedoch sehr aufwendig werden kann.  Um das zu vereinfachen, besteht die
-% MÃ¶glichkeit die Endpunkte eines Strahls als Anfangspunkte fÃ¼r den nÃ¤chsten
+% Möglichkeit die Endpunkte eines Strahls als Anfangspunkte für den nächsten
 % Strahl zu nutzen, so dass man abschnittsweise die Divergenz und die
 % Ausbreitungsrichtung definieren kann.
 % \fi
 % \begin{optionlist}
 %   \boolitem[true]{savebeampoints}
 %   \ifGERMAN Speichert die Endpunkte jedes \nxLcs{draw*beam} Makros,
-%   vorangegangene Punkte werden Ã¼berschrieben. \Lcs{drawbeam} und
+%   vorangegangene Punkte werden überschrieben. \Lcs{drawbeam} und
 %   \Lcs{drawwidebeam} werden getrennt behandelt.
 %   \fi
 %   \ifENGLISH Saves the end points of each \nxLcs{draw*beam} macro, previous
@@ -4727,7 +4777,7 @@
 % \ifGERMAN Als Beispiel nehmen wir ein Teleskop, die Strahldivergenz am Eingang
 % und am Ausgang ist Null. Anstatt die Linsenparameter und den Brechungsindex
 % genau einzustellen, so dass die Ausgangsdivergenz Null ist, zeichnen wir
-% einfach die drei Strahlenteile mit den gewÃ¼nschten Divergenzen, und verwenden
+% einfach die drei Strahlenteile mit den gewünschten Divergenzen, und verwenden
 % die Endpunkte des jeweils vorangegangenen Strahls als neue Ausgangspunkte. 
 % \fi
 % \ifENGLISH As example we consider a telescope which has zero divergence at the
@@ -4761,7 +4811,7 @@
 %
 % \ifGERMAN Als weiteres Beispiel betrachten wir die Beugung an einem Gittern in
 % die nullte und erste Beugungsordnung. Zuerst wird der Strahl von dem Eingang
-% bis zum Gitter gezeichnet, die Endpunkte dieses Strahls werden nun fÃ¼r die
+% bis zum Gitter gezeichnet, die Endpunkte dieses Strahls werden nun für die
 % Strahlen in beide Beugungsordnungen verwendet.
 % \fi
 % \ifENGLISH The next example show diffraction from a grating in the zeroth and
@@ -4846,9 +4896,9 @@
 % }%
 % \end{pspicture}
 % \ifGERMAN
-% \caption{Vererbungsdiagramm der PS-Stile fÃ¼r die automatischen
+% \caption{Vererbungsdiagramm der PS-Stile für die automatischen
 %   Faserverbindungen. Sie sollten diese Stile mit \protect\Lcs{addtopsstyle}
-%   Ã¤ndern um die Vererbungslinie beizubehalten.}%
+%   ändern um die Vererbungslinie beizubehalten.}%
 % \fi
 % \ifENGLISH
 % \caption{Inheritance diagram for the psstyles used for the automatic fiber
@@ -4862,8 +4912,8 @@
 % \xLstyle{FiberOut2}\label{prm:FiberOut2}%
 % \end{figure}
 %
-% \begin{optionlist}
-% \item[\smash{\begin{tabular}[t]{@{}r}\opt{new}\prm{style}\\\opt{addto}\prm{style}\end{tabular}}]
+% \begin{stylelist}
+% \item[\smash{\begin{tabular}[t]{@{}r@{}}\opt{new}\prm{style}\\\opt{addto}\prm{style}\end{tabular}}]
 %   \xLkeyword{newFiber}\xLkeyword{addtoFiber}
 %   \xLkeyword{newFiberIn}\xLkeyword{addtoFiberIn}
 %   \xLkeyword{newFiberIn1}\xLkeyword{addtoFiberIn1}
@@ -4891,7 +4941,9 @@
 % \iffalse
 %</ignore>
 % \fi
+% \end{stylelist}
 %
+% \begin{optionlist}
 %   \choitem[all]{fiber}{none,all,\prm{refstring}} Some components can be used either for free-ray or
 %   fiber-optical setups (\Lcs{optbox}, \Lcs{optdetector}). The \nxLkeyword{fiber}
 %   parameter enables automatic fiber connections for them.
@@ -4978,8 +5030,8 @@
 %</ignore>
 % \fi
 % 
-% \ifGERMAN FÃ¼r die Verbindungen mit \Lcs{drawfiber} werden fÃ¼r Ã¼blicherweise
-% die Knoten genommen, die sich am nÃ¤chsten sind. Das passt hÃ¤ufig, aber nicht
+% \ifGERMAN Für die Verbindungen mit \Lcs{drawfiber} werden für üblicherweise
+% die Knoten genommen, die sich am nächsten sind. Das passt häufig, aber nicht
 % immer.
 % \fi
 % \ifENGLISH The connections with \Lcs{drawfiber} are drawn usually between the
@@ -5013,7 +5065,7 @@
 % \begin{optionlist}
 %   \choitem[auto]{startnode}{auto, 1, 2, 3, 4, N}
 %   \choitem[auto]{stopnode}{auto, 1, 2, 3, 4, N}
-%   \ifGERMAN Hiermit kÃ¶nnen die Start- und Stopknoten explizit gewÃ¤hlt werden.\fi
+%   \ifGERMAN Hiermit können die Start- und Stopknoten explizit gewählt werden.\fi
 %   \ifENGLISH Choose the start and stop node explicitely.\fi
 % \iffalse
 %<*ignore>
@@ -5094,8 +5146,8 @@
 % \label{chap:custom}
 %
 % \ifGERMAN
-% Das \LPack{pst-optexp} Paket stellt zwei Makros zur VerfÃ¼gung um
-% eigene Komponenten zu zeichnen. Diese kÃ¶nnen z.B. aus Bildern oder
+% Das \LPack{pst-optexp} Paket stellt zwei Makros zur Verfügung um
+% eigene Komponenten zu zeichnen. Diese können z.B. aus Bildern oder
 % eigenen Zeichnungen bestehen.
 % \fi
 % \ifENGLISH
@@ -5286,8 +5338,10 @@
 % 
 % \begin{optionlist}
 % \boolitem[false]{showifcnodes}
-% \styleitem{IfcNodeStyle}
 % \end{optionlist}
+% \begin{stylelist}
+% \styleitem{IfcNodeStyle}
+% \end{stylelist}
 % Every component type consists internally of interfaces which are defined by a
 % node on the optical axis, a plane vector or a curvature radius, and by its
 % optical characteristic (reflective or transmittive). The interface nodes can be
@@ -5339,7 +5393,7 @@
 %
 % \subsection{Interface nodes}\label{sec:overview-ifcnode}
 % Here, all available components and their interface nodes are listed. If
-% a node is labeled as Â«1, NÂ», it means that both nodes are equal.
+% a node is labeled as «1, N», it means that both nodes are equal.
 % \bgroup \psset{unit=1.2}
 % \subsubsection*{Free-ray components}
 % \addtopsstyle{Beam}{arrows=->, arrowinset=0, arrowscale=1.5}
@@ -5902,17 +5956,17 @@
 % \chapter*{Versionsgeschichte}
 % \addcontentsline{toc}{chapter}{Versionsgeschichte}
 %
-% Diese Versionsgeschichte ist eine Liste von Ã„nderungen, die fÃ¼r den Nutzer des
-% Pakets von Bedeutung sind. Ã„nderungen, die eher technischer Natur sind und fÃ¼r
+% Diese Versionsgeschichte ist eine Liste von Änderungen, die für den Nutzer des
+% Pakets von Bedeutung sind. Änderungen, die eher technischer Natur sind und für
 % den Nutzer des Pakets nicht relevant sind und das Verhalten des Pakets nicht
-% Ã¤ndern, werden nicht aufgefÃ¼hrt. Wenn ein Eintrag der Versionsgeschichte ein
+% ändern, werden nicht aufgeführt. Wenn ein Eintrag der Versionsgeschichte ein
 % Feature als \emph{improved} oder \emph{extended} bekannt gibt, so bedeutet dies,
 % dass eine Modifikation die Syntax und das Verhalten des Pakets nicht
-% beeinflusst, oder das es fÃ¼r Ã¤ltere Versionen kompatibel ist. EintrÃ¤ge, die
+% beeinflusst, oder das es für ältere Versionen kompatibel ist. Einträge, die
 % als \emph{modified}, \emph{renamed}, oder \emph{removed} deklariert sind,
 % verlangen besondere Aufmerksamkeit. Diese bedeuten, dass eine Modifikation
-% Ã„nderungen in bereits existierenden Stilen oder Dokumenten mit sich zieht. Die
-% Zahlen an der rechten Seite stehen fÃ¼r die relevante Stelle dieser
+% Änderungen in bereits existierenden Stilen oder Dokumenten mit sich zieht. Die
+% Zahlen an der rechten Seite stehen für die relevante Stelle dieser
 % Dokumentation.
 % \fi
 % \ifENGLISH
@@ -10683,7 +10737,7 @@ tx@OptexpDict begin
     /Y@B YG cy c@tmp div sub def
 %    \end{macrocode}
 % chirality:
-% test the order of the input points as a input angle $> 90$Â°
+% test the order of the input points as a input angle $> 90$°
 % doesn't really make sense.
 % So if chir $<= 0$ exchange the calculated coordinates of 
 % A and B and otherwise leave it as is
@@ -10738,7 +10792,7 @@ tx@OptexpDict begin
 % \end{macro}
 % 
 % \begin{macro}{rightCurvedIfc}
-%   Analogous to \PSname{leftCurvedIfc} for Â«rightÂ» interfaces, defines
+%   Analogous to \PSname{leftCurvedIfc} for «right» interfaces, defines
 %   \PSname{ArcR} for later use.
 % \begin{pssyntax}
 %   \PSvar{h R2} \PSop{leftCurvedIfc} \PSvar{y |R2| alpha\textunderscore bottom
@@ -10989,7 +11043,7 @@ tx@OptexpDict begin
 %   reflective or transmittive. You should use the predefined variable
 %   \PSname{refl} and \PSname{trans} for this.
 % \psargitem{\PSstring{CompName}} The name of the component we are in.
-% \psargitem{\PSstring{Name}} The name of the new interface. It is prefixed by Â«P@Â».
+% \psargitem{\PSstring{Name}} The name of the new interface. It is prefixed by «P@».
 % \psargitem{\PSproc{\ldots Ifc}} Contain the actual procedure to define the
 %   concrete interface type, can be \PSproc{PlaneIfc} or
 %   \PSproc{CurvedIfc}.
@@ -12421,7 +12475,7 @@ tx@OptexpDict begin
     5 1 roll @ABDist
     gt {
 %    \end{macrocode}
-% Â«dist from first pointÂ» $>$ Â«dist from second pointÂ», take second point.
+% «dist from first point» $>$ «dist from second point», take second point.
 %    \begin{macrocode}
       4 2 roll
     } if pop pop
