@@ -1789,12 +1789,14 @@
 %</ignore>
 % \fi
 % 
-% \numitem{lensradius} 
+% \optitem{lensradius}{\prm{left} \prm{right}}
 % \ifGERMAN
-%   Setzt beide Krümmungen auf denselben Wert.
+% Setzt die linke und rechte Linsenkrümmung. Wird nur ein Wert angegeben, so
+% wird dieser für beide Krümmungen verwendet.
 % \fi
 % \ifENGLISH
-%   Set both curvatures to the same value.
+% Set the left and right lens curvatures. If only a single value is given, it is
+% used for both curvatures.
 % \fi
 % \iffalse
 %<*ignore>
@@ -1850,7 +1852,7 @@
 \begin{LTXexample}[morekeywords={[21]{lens}}]
 \begin{pspicture}(3,1.5)
   \lens[lens=1](0,1)(1,1){L1}
-  \lens[lens=-2 1, beam](0,1)(3,1){L2}
+  \lens[lensradius=-2 1, beam](0,1)(3,1){L2}
   \lens[lens=1 -0.5 0.7](2,1)(3,1){L3}
 \end{pspicture}
 \end{LTXexample}
@@ -2091,12 +2093,14 @@
 % \numitem[0.8]{optboxheight}
 % \ifGERMAN Die Höhe der Box.\fi\ifENGLISH The height of the box.\fi
 %
-% \optitem{optbox}{\prm{width} \prm{height}}
+% \optitem{optbox}{\prm{width}[ \prm{height}]}
 % \ifGERMAN Die Breite und Höhe der Box, äquivalent zum Aufruf von
-% \Lkeyword{optboxwidth} und \Lkeyword{optboxheight}.
+% \Lkeyword{optboxwidth} und \Lkeyword{optboxheight}. Wird nur ein Wert
+% angegeben, dann wird dieser für Breite und Höhe verwendet.
 % \fi
 % \ifENGLISH The width and height of the box, is equivalent to calling both
-% \Lkeyword{optboxwidth} and \Lkeyword{optboxheight}.
+% \Lkeyword{optboxwidth} and \Lkeyword{optboxheight}. If only a single value is
+% given it is used for both width and height.
 % \fi
 %
 % \boolitem[false]{endbox}
@@ -6581,9 +6585,18 @@
 }
 \define@boolkey[psset]{optexp}[POE@]{thicklens}[true]{}
 \define@key[psset]{optexp}{lensradius}{%
+  \pst@expandafter\POE@psset@@lensradius{#1} {} {} {}\@nil
+}%
+\def\POE@psset@@lensradius#1 #2 #3\@nil{%
   \edef\POE@temp{#1}%
   \ifx\POE@temp\@empty\else
-    \psset[optexp]{lensradiusleft=#1, lensradiusright=#1}%
+    \psset[optexp]{lensradiusleft=#1}%
+  \fi
+  \edef\POE@temp{#2}%
+  \ifx\POE@temp\@empty
+    \psset[optexp]{lensradiusright=#1}%
+  \else
+    \psset[optexp]{lensradiusright=#2}%
   \fi
 }%
 \define@key[psset]{optexp}{lens}{%
@@ -6685,11 +6698,13 @@
 \def\POE@psset@@optbox#1 #2 #3\@nil{%
   \edef\POE@temp{#1}%
   \ifx\POE@temp\@empty\else
-     \psset[optexp]{optboxwidth=#1}%
+    \psset[optexp]{optboxwidth=#1}%
   \fi
   \edef\POE@temp{#2}%
-  \ifx\POE@temp\@empty\else
-     \psset[optexp]{optboxheight=#2}%
+  \ifx\POE@temp\@empty
+    \psset[optexp]{optboxheight=#1}%
+  \else
+    \psset[optexp]{optboxheight=#2}%
   \fi
 }%
 \define@boolkey[psset]{optexp}[POE@]{endbox}[true]{}
