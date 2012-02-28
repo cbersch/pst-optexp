@@ -2916,87 +2916,6 @@
 % \numitem[0.8]{optmzmsize} \sizeexplanation{\ifGERMAN des Modulators\fi\ifENGLISH modulator\fi}
 % \end{optionlist}
 % 
-% \ifGERMAN\section{Optischer Filter}\fi
-% \ifENGLISH\section{Optical filter}\fi
-%
-% \begin{ltxsyntax}
-% \fiberdipoledesc{optfilter}
-% \iffalse
-%<*ignore>
-% \fi
-\begin{LTXexample}
-\begin{pspicture}(3,1.5)
-  \optfilter(0,1)(3,1){bandpass}
-\end{pspicture}
-\end{LTXexample}
-% \iffalse
-%</ignore>
-% \fi
-% \end{ltxsyntax}
-% 
-% \begin{optionlist}
-% \numitem[0.8]{filtersize}
-% \ifGERMAN Die Größe des Filters.\fi
-% \ifENGLISH The size of the filter.\fi
-%
-% \choitem[bandpass]{filtertype}{bandpass, bandstop, lowpass, highpass}
-% \ifGERMAN Wähle zwischen unterschiedlichen Filtertypen.\fi
-% \ifENGLISH Select between different filter types.\fi
-% \iffalse
-%<*ignore>
-% \fi
-\begin{LTXexample}
-\begin{pspicture}(3,1.5)
-  \optfilter[filtertype=bandstop](0,1)(3,1){bandstop}
-\end{pspicture}
-\end{LTXexample}
-% \iffalse
-%</ignore>
-% \fi
-% \iffalse
-%<*ignore>
-% \fi
-\begin{LTXexample}
-\begin{pspicture}(3,1.5)
-  \optfilter[filtertype=lowpass](0,1)(3,1){lowpass}
-\end{pspicture}
-\end{LTXexample}
-% \iffalse
-%</ignore>
-% \fi
-% \iffalse
-%<*ignore>
-% \fi
-\begin{LTXexample}
-\begin{pspicture}(3,1.5)
-  \optfilter[filtertype=highpass](0,1)(3,1){highpass}
-\end{pspicture}
-\end{LTXexample}
-% \iffalse
-%</ignore>
-% \fi
-% \end{optionlist}
-%
-% \begin{stylelist}
-% \styleitem{FilterInt}
-% \ifGERMAN Beinflusst das Aussehen der internel Filterlinien.\fi
-% \ifENGLISH Changes the style of the interal filter lines.\fi
-% \iffalse
-%<*ignore>
-% \fi
-\begin{LTXexample}
-\begin{pspicture}(3,1.5)
-  \newpsstyle{OptComp}{linewidth=2\pslinewidth}
-  \optfilter(0,1)(1.5,1)
-  \newpsstyle{FilterInt}{linewidth=0.5\pslinewidth}
-  \optfilter(1.5,1)(3,1)
-\end{pspicture}
-\end{LTXexample}
-% \iffalse
-%</ignore>
-% \fi
-% \end{stylelist}
-% 
 % \ifGERMAN\section{Polarisationssteller}\fi
 % \ifENGLISH\section{Polarization controller}\fi
 % 
@@ -3191,17 +3110,19 @@
 %   \numitem[0.6]{fiberpolsize} \sizeexplanation{\ifGERMAN des Polarisators\fi\ifENGLISH polarizer\fi}
 % \end{optionlist}
 % 
-% \ifGERMAN\section{Faserkollimator}\fi
-% \ifENGLISH\section{Fiber collimator}\fi
-% 
+%
+% \ifGERMAN\section{Optischer Zirkulator}\fi
+% \ifENGLISH\section{Optical circulator}\fi
+%
 % \begin{ltxsyntax}
-% \xLdipole{fibercollimator}\cmditem{fibercollimator}(in)(A)(B)(out){label}%
+% \xLfmultipole{optcirculator}%
+% \cmditem{optcirculator}(left)(bottom)(right){label}%
 % \iffalse
 %<*ignore>
 % \fi
 \begin{LTXexample}
 \begin{pspicture}(3,1.5)
-  \fibercollimator[beam](0,1)(3,1){FC}
+  \optcirculator(0,1)(1.5,0)(3,1){Circulator}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -3209,70 +3130,21 @@
 % \fi
 % \end{ltxsyntax}
 % \begin{optionlist}
-% \numitem[0.3]{fibercolsize}
-% \ifGERMAN
-% Die Höhe bzw. Seitenlänge des Kollimators. Mit dem \opt{xunit} oder
-% \opt{yunit} Parameter kann das Verhältnis zwischen Höhe und Breite geändert
-% werden.
+% \numitem[0.8]{optcircsize}
+% \numitem[0.3]{optcircarrowradius} 
+% \iffalse
+%<*ignore>
 % \fi
-% \ifENGLISH
-% The height and side length of the collimator. Use the \opt{xunit} or
-% \opt{yunit} parameter to change this relation.
+\begin{LTXexample}[morekeywords={[21]{}}]
+\begin{pspicture}(3,1.5)
+
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
 % \fi
 % \end{optionlist}
-% \ifGERMAN
-% Der Faserkollimator kann mit zwei, drei oder vier Punkten verwendet
-% werden. Bei zwei Punkten wird der Kollimator wie jeder andere Zweipol
-% zwischen \prm{in} und \prm{out} Knoten platziert. Bei drei Punkten
-% wird eine \Lcs{psbezier} Kurve gezeichnet, wobei der mittlere Punkt
-% doppelt verwendet wird. Die Positionierungsparameter (see
-% \prettyref{sec:positioning}) können verwendet werden um den Kollimator
-% zwischen dem \prm{in} und \prm{A} Knoten auszurichten.
-% \fi
-% \ifENGLISH
-% The \nxLcs{fibercollimator} can be used with two, three or four
-% points. With two points, the collimator is placed like any other
-% dipole component between \prm{in} and \prm{out} node. For three nodes,
-% the fiber is drawn as \Lcs{psbezier} curve for which the central node
-% \prm{A} is used twice. Positioning parameters can be used to shift the
-% object between \prm{in} and \prm{A} nodes.
-% \fi
-% \iffalse
-%<*ignore>
-% \fi
-\begin{LTXexample}
-\begin{pspicture}(3,2)
-   \fibercollimator[beam](0,1)(2,1)(3,2){FC}
-\end{pspicture}
-\end{LTXexample}
-% \iffalse
-%</ignore>
-% \fi
-% \medskip
 %
-% \ifGERMAN
-% Bei vier Knoten wird eine \Lcs{psbezier} Kurve mit allen vier Knoten
-% gezeichnet. Die Positionierungsparameter (see
-% \prettyref{sec:positioning}) können verwendet werden um den Kollimator
-% zwischen dem \prm{in} und \prm{A} Knoten auszurichten.
-% \fi
-% \ifENGLISH
-% For four nodes, the fiber is drawn as \Lcs{psbezier} curve with the
-% specified nodes. Positioning parameters can be used to shift the
-% object between \prm{in} and \prm{A} nodes.
-% \fi
-% \iffalse
-%<*ignore>
-% \fi
-\begin{LTXexample}
-\begin{pspicture}(3,2)
-   \fibercollimator[beam](0,1)(2,1)(3,1)(3,2){FC}
-\end{pspicture}
-\end{LTXexample}
-% \iffalse
-%</ignore>
-% \fi
-% 
 % \ifGERMAN\section{Faserkoppler}\fi
 % \ifENGLISH\section{Fiber coupler}\fi
 % \label{sec:coupler}
@@ -3564,6 +3436,196 @@
 % \end{pspicture}
 % \end{center}
 % \psset{usefiberstyle=false}
+%
+% \ifGERMAN\chapter{Hybridkomponenten}\fi
+% \ifENGLISH\chapter{Hybrid components}\fi
+% \label{sec:hybridcomp}
+%
+% \ifGERMAN Dieses Kapitel beschreibt die Komponenten, die sowohl für
+% Freistrahl- als auch Faseroptik zu verwenden sind. Der optische Filter kann
+% auch für Freistrahl verwendet werden, wird mit den Voreinstellungen aber als
+% Faserkomponente gehandhabt. Der Faserkollimator hat nur eine Faser, die andere
+% Verbindung ist Freistrahl.\fi
+%
+% \ifGERMAN\section{Optischer Filter}\fi
+% \ifENGLISH\section{Optical filter}\fi
+%
+% \begin{ltxsyntax}
+% \fiberdipoledesc{optfilter}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(3,1.5)
+  \optfilter(0,1)(3,1){bandpass}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+% \end{ltxsyntax}
+% 
+% \begin{optionlist}
+% \numitem[0.8]{filtersize}
+% \ifGERMAN Die Größe des Filters.\fi
+% \ifENGLISH The size of the filter.\fi
+%
+% \choitem[bandpass]{filtertype}{bandpass, bandstop, lowpass, highpass}
+% \ifGERMAN Wähle zwischen unterschiedlichen Filtertypen.\fi
+% \ifENGLISH Select between different filter types.\fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(3,1.5)
+  \optfilter[filtertype=bandstop](0,1)(3,1){bandstop}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(3,1.5)
+  \optfilter[filtertype=lowpass](0,1)(3,1){lowpass}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(3,1.5)
+  \optfilter[filtertype=highpass](0,1)(3,1){highpass}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+% \end{optionlist}
+%
+% \begin{stylelist}
+% \styleitem{FilterInt}
+% \ifGERMAN Beinflusst das Aussehen der internen Filterlinien.\fi
+% \ifENGLISH Changes the style of the internal filter lines.\fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(3,1.5)
+  \newpsstyle{OptComp}{linewidth=2\pslinewidth}
+  \optfilter(0,1)(1.5,1)
+  \newpsstyle{FilterInt}{linewidth=0.5\pslinewidth}
+  \optfilter(1.5,1)(3,1)
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+% \end{stylelist}
+%
+% Verwendung als Freistrahlkomponenten:
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(3,1.5)
+  \optfilter[fiber=none](0,1)(3,1)
+  \addtopsstyle{Beam}{beaminside=false, beamwidth=0.3,
+      fillstyle=solid, fillcolor=green, opacity=0.2}
+  \drawwidebeam{(0,1)}{}{(3,1)}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
+%
+% \ifGERMAN\section{Faserkollimator}\fi
+% \ifENGLISH\section{Fiber collimator}\fi
+% 
+% \begin{ltxsyntax}
+% \xLdipole{fibercollimator}\cmditem{fibercollimator}(in)(A)(B)(out){label}%
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(3,1.5)
+  \fibercollimator[beam](0,1)(3,1){FC}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+% \end{ltxsyntax}
+% \begin{optionlist}
+% \numitem[0.3]{fibercolsize}
+% \ifGERMAN
+% Die Höhe bzw. Seitenlänge des Kollimators. Mit dem \opt{xunit} oder
+% \opt{yunit} Parameter kann das Verhältnis zwischen Höhe und Breite geändert
+% werden.
+% \fi
+% \ifENGLISH
+% The height and side length of the collimator. Use the \opt{xunit} or
+% \opt{yunit} parameter to change this relation.
+% \fi
+% \end{optionlist}
+% \ifGERMAN
+% Der Faserkollimator kann mit zwei, drei oder vier Punkten verwendet
+% werden. Bei zwei Punkten wird der Kollimator wie jeder andere Zweipol
+% zwischen \prm{in} und \prm{out} Knoten platziert. Bei drei Punkten
+% wird eine \Lcs{psbezier} Kurve gezeichnet, wobei der mittlere Punkt
+% doppelt verwendet wird. Die Positionierungsparameter (see
+% \prettyref{sec:positioning}) können verwendet werden um den Kollimator
+% zwischen dem \prm{in} und \prm{A} Knoten auszurichten.
+% \fi
+% \ifENGLISH
+% The \nxLcs{fibercollimator} can be used with two, three or four
+% points. With two points, the collimator is placed like any other
+% dipole component between \prm{in} and \prm{out} node. For three nodes,
+% the fiber is drawn as \Lcs{psbezier} curve for which the central node
+% \prm{A} is used twice. Positioning parameters can be used to shift the
+% object between \prm{in} and \prm{A} nodes.
+% \fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(3,2)
+   \fibercollimator[beam](0,1)(2,1)(3,2){FC}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+% \medskip
+%
+% \ifGERMAN
+% Bei vier Knoten wird eine \Lcs{psbezier} Kurve mit allen vier Knoten
+% gezeichnet. Die Positionierungsparameter (see
+% \prettyref{sec:positioning}) können verwendet werden um den Kollimator
+% zwischen dem \prm{in} und \prm{A} Knoten auszurichten.
+% \fi
+% \ifENGLISH
+% For four nodes, the fiber is drawn as \Lcs{psbezier} curve with the
+% specified nodes. Positioning parameters can be used to shift the
+% object between \prm{in} and \prm{A} nodes.
+% \fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(3,2)
+   \fibercollimator[beam](0,1)(2,1)(3,1)(3,2){FC}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 %
 % \ifGERMAN\chapter{Spezielle Knoten}\fi
 % \ifENGLISH\chapter{Special nodes}\fi
@@ -7032,6 +7094,18 @@
 }
 \psset[optexp]{fibercolsize=0.3}%
 %    \end{macrocode}
+% Optical Circulator
+%    \begin{macrocode}
+\define@key[psset]{optexp}{optcircsize}{%
+  \pst@checknum{#1}\POE@key@optcircsize
+}%
+\define@key[psset]{optexp}{optcircarrowradius}{%
+  \pst@checknum{#1}\POE@key@optcircarrowradius
+}%
+\psset[optexp]{optcircsize=0.8, optcircarrowradius=0.3}%
+\newpsstyle{OptCircArrow}{}
+%    \end{macrocode}
+%
 % Coupler
 %    \begin{macrocode}
 \define@key[psset]{optexp}{couplersize}{%
@@ -8356,19 +8430,25 @@
     \let\POE@key@abspos\@empty
     \let\POE@key@position\@empty
   }%
+  \POE@positionrefnodes
+}%
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\POE@positionrefnodes}
+%    \begin{macrocode}
+\def\POE@positionrefnodes{%
   \edef\POE@refnodeA{\oenode@RefA{}}%
   \edef\POE@refnodeB{\oenode@RefB{}}%
   \edef\POE@trefnodeA{\oenode@TrefA{}}%
   \edef\POE@trefnodeB{\oenode@TrefB{}}%
-  \def\POE@transformnodes{
+  \def\POE@transformnodes{%
     \POE@transformnode{\oenodeRefA{}}{\oenodeTrefA{}}%
     \POE@transformnode{\oenodeRefB{}}{\oenodeTrefB{}}%
     \POE@transformnode{\oenode@RefA{}}{\oenode@TrefA{}}%
     \POE@transformnode{\oenode@RefB{}}{\oenode@TrefB{}}%
   }%
 }%
-%    \end{macrocode}
-% \end{macro}
 %
 % \begin{macro}{\end@OptexpObj}
 %    \begin{macrocode}
@@ -8778,6 +8858,55 @@
 \fiberdipole@iimacro{wdmcoupler}%
 %    \end{macrocode}
 % \end{macro}
+% \begin{macro}{\optcirculator}
+%    \begin{macrocode}
+\def\optcirculator{\pst@object{optcirculator}}%
+\def\optcirculator@i(#1)(#2)(#3){%
+  \@ifnextchar\bgroup%
+    {\optcirculator@i@(#1)(#2)(#3)}%
+    {\optcirculator@i@(#1)(#2)(#3){}}%
+}%
+\def\optcirculator@i@(#1)(#2)(#3)#4{%
+  \begin@OptexpFiberObj
+    \ifPOE@backlayer
+      \POE@regNodes{#1}{#3}
+      \ifx\POE@key@position\@empty
+        \ifx\POE@key@abspos\@empty
+          \POE@positionrefnodes
+          \pst@getcoor{#1}\POE@tempa%
+          \pst@getcoor{#2}\POE@tempb%
+          \pst@getcoor{#3}\POE@tempc%
+          \pnode(! \POE@dict{%
+            \POE@tempa \tx@UserCoor 2 copy 2 copy 
+            \POE@tempc \tx@UserCoor 4 2 roll @ABVect
+            2 copy 2 copy 10 4 roll
+            \POE@tempb \tx@UserCoor 6 -2 roll @ABVect
+            4 2 roll tx@EcldDict begin Project end VecAdd
+            2 copy 6 -2 roll -0.5 VecScale VecAdd
+          }){\oenode@RefA{}}%
+          \pnode(! \POE@dict{4 2 roll 0.5 VecScale VecAdd}){\oenode@RefB{}}%
+        \fi
+      \fi
+    \fi
+    \POE@drawcomponent[optcirculator]{#4}\optcirculator@ii
+    \ifPOE@backlayer
+      \ifPOE@fiber@
+        \ifPOE@fiberin@
+          \drawfiber@{FiberIn}[stopnode=1]{(#1)}{\POE@key@compname}
+        \fi
+        \ifPOE@fiberout@
+          \ifPOE@fiberout@top
+            \drawfiber@{FiberOut1}[startnode=N]{\POE@key@compname}{(#3)}
+          \fi
+          \ifPOE@fiberout@bottom
+            \drawfiber@{FiberOut2}[startnode=2, angleA=90, angleB=90, relangle]{\POE@key@compname}{(#2)}
+          \fi
+        \fi
+      \fi
+    \fi
+  \end@OptexpObj
+}%
+\fiberdipole@iimacro{optcirculator}%
 % 
 % \begin{macro}{\POE@calcNodes}
 %   Some of the components need three points to be positioned. 
@@ -10133,6 +10262,7 @@
 \def\optfilter@ref{%
   \POE@Verb{\POE@key@filtersize\space 0.5 mul dup /@@y ED /@@x ED }%
 }%
+\let\optfilter@nodes\dipole@nodes
 %    \end{macrocode}
 % \end{macro}
 %
@@ -10605,6 +10735,28 @@
 %    \end{macrocode}
 % \end{macro}
 %
+% \subsubsection{optcirculator}
+% \begin{macro}{\optcirculator@nodes}
+%    \begin{macrocode}
+\def\optcirculator@nodes{%
+  \edef\@sz{\POE@key@optcircsize\space 0.5 mul }%
+  \pnode(! \@sz neg 0){\oenode{1}{}}
+  \pnode(! 0 \@sz neg){\oenode{2}{}}
+  \pnode(! \@sz 0){\oenode{N}{}}
+}%
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\optcirculator@comp}
+%    \begin{macrocode}
+\def\optcirculator@comp{%
+  \edef\@sz{\POE@key@optcircsize\space 0.5 mul }%
+  \pscircle(0,0){! \@sz}
+  \psarc[style=OptCircArrow, arrows=->](0,0){!\POE@key@optcircarrowradius}{-150}{-30}
+}%
+%    \end{macrocode}
+% \end{macro}
+% 
 % \subsubsection{fibercollimator}
 % \begin{macro}{\fibercollimator@nodes}
 %    \begin{macrocode}
