@@ -6270,6 +6270,9 @@
 %    \begin{macrocode}
 \newcount\POE@nodecnt
 %    \end{macrocode}
+%    \begin{macrocode}
+\newdimen\POE@dim
+%    \end{macrocode}
 % \subsection{Fixed strings}
 % These are all the fixed strings which are used as possible values for
 % choicekeys.
@@ -7106,6 +7109,35 @@
 \newpsstyle{OptCircArrow}{}
 %    \end{macrocode}
 %
+% Fiberbox
+%    \begin{macrocode}
+\define@key[psset]{optexp}{fiberboxheight}{%
+  \pst@checknum{#1}\POE@key@fiberboxheight
+}%
+\define@key[psset]{optexp}{fiberboxwidth}{%
+  \pst@checknum{#1}\POE@key@fiberboxwidth
+}%
+\define@key[psset]{optexp}{fiberboxincount}{%
+  \def\POE@key@fiberboxincount{#1}%
+}%
+\define@key[psset]{optexp}{fiberboxoutcount}{%
+  \def\POE@key@fiberboxoutcount{#1}%
+}%
+\define@key[psset]{optexp}{fiberboxinsep}{%
+  \pst@checknum{#1}\POE@key@fiberboxinsep
+}%
+\define@key[psset]{optexp}{fiberboxoutsep}{%
+  \pst@checknum{#1}\POE@key@fiberboxoutsep
+}%
+\psset[optexp]{%
+  fiberboxwidth=0.8,
+  fiberboxincount=1,
+  fiberboxoutcount=2,
+  fiberboxinsep=0.4,
+  fiberboxoutsep=0.4
+}%
+\let\POE@key@fiberboxheight\@empty
+%    \end{macrocode}
 % Coupler
 %    \begin{macrocode}
 \define@key[psset]{optexp}{couplersize}{%
@@ -9243,6 +9275,7 @@
 \newOptexpFiberDipole{optfiberpolarizer}{}
 \newOptexpFiberDipole{optswitch}{}
 \newOptexpFiberDipole{fiberdelayline}{}
+\newOptexpFiberDipole{fiberbox}{fiber=none}
 %    \end{macrocode}
 % Define all fiber quadrupoles
 %    \begin{macrocode}
@@ -10518,6 +10551,51 @@
 %    \end{macrocode}
 % \end{macro}
 % 
+% \subsubsection{fiberbox}
+% \begin{macro}{\fiberbox@nodes}
+%    \begin{macrocode}
+\def\fiberbox@nodes{%
+  \def\@wd{\POE@key@fiberboxwidth\space 0.5 mul }%
+  \multido{\i=1+1}{\POE@key@fiberboxincount}{%
+    \pnode(! \@wd neg \POE@key@fiberboxincount\space 1 sub 
+             0.5 mul \i\space sub 1 add 
+             \POE@key@fiberboxinsep\space mul){\oenode{\i}{}}%
+  }%
+  \pst@cntp=\POE@key@fiberboxincount
+  \advance\pst@cntp by 1
+  \multido{\i=\pst@cntp+1}{\POE@key@fiberboxoutcount}{%
+    \pnode(! \@wd \POE@key@fiberboxoutcount\space 1 sub 
+             0.5 mul \i\space sub \the\pst@cntp\space add 
+             \POE@key@fiberboxoutsep\space mul){\oenode{\i}{}}%
+  }%
+  \POE@Verb{%
+    tx@NodeDict begin
+    (\oenode{}{}) 
+    \POE@key@fiberboxincount\space
+    \POE@key@fiberboxoutcount\space add cvi NodeName
+    load /N@\oenodeOut{} ED
+    end
+  }%
+}%
+\def\fiberbox@comp{%
+  \def\@wd{\POE@key@fiberboxwidth\space 0.5 mul }%
+  \def\@ht{%
+    \ifx\POE@key@fiberboxheight\@empty
+      \POE@key@fiberboxincount\space
+      \POE@key@fiberboxinsep\space mul
+      \POE@key@fiberboxoutcount\space
+      \POE@key@fiberboxoutsep\space mul
+      max 
+    \else
+      \POE@key@fiberboxheight\space
+    \fi
+    0.5 mul  
+  }%
+  \psframe(!\@wd neg \@ht neg)(!\@wd \@ht)
+}%
+%    \end{macrocode}
+% \end{macro}
+%
 % \subsubsection{optcoupler}
 % \begin{macro}{\optcoupler@nodes}
 %    \begin{macrocode}
