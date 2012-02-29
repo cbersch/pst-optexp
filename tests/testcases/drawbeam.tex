@@ -125,7 +125,7 @@
     \pstVerb{\i\space 650 580 sub 3 div mul 580 add tx@addDict begin wavelengthToRGB end }%
     \drawbeam[beampos=0 0.6, nmul=1.2 \i\space 0.05 mul sub]{(A)}{1}{(B)}
   }%
-  \optplane(5, 1.5)(-1,1){Plane}
+  \optplane[compname=Plane](5, 1.5)(-1,1)
   \multido{\i=0+1}{4}{%
     \pstVerb{\i\space 650 580 sub 3 div mul 580 add tx@addDict begin wavelengthToRGB end }%
     \drawbeam[beampos=0 -0.6, nmul=1.2 \i\space 0.05 mul sub]{(A)}{1}{Plane}
@@ -155,7 +155,7 @@
   \lens(A)(B){}
   \mirror(A)(B)(C){}
   \optplate[position=1](B)(C){}
-  \drawbeam[connectplanes, beampos=0 0.2]{1}{2}{3}{(C)}
+  \drawbeam[raytrace=false, beampos=0 0.2]{1}{2}{3}{(C)}
 \end{pspicture}
 \end{LTXexample}
 
@@ -183,10 +183,10 @@
   \beamsplitter[n=1.5, compname=BS](A)(C)(B){}
   \optplate[position=0](B)(C){}
   \addtopsstyle{Beam}{linejoin=2}
-  \drawbeam[connectplanes]{1}{BS}{3}
+  \drawbeam[raytrace=false]{1}{BS}{3}
   \addtopsstyle{Beam}{linecolor=red, linestyle=dashed}
   \rput(\oenodeLabel{BS}){\pnode(2;10){D}}
-  \drawbeam[connectplanes]{1}{BS}{(D)}
+  \drawbeam[raytrace=false]{1}{BS}{(D)}
 \end{pspicture}
 \end{LTXexample}
 \bigskip
@@ -215,10 +215,10 @@
   \beamsplitter[bsstyle=plate, compname=BS](A)(C)(B){}
   \optplate[position=0](B)(C){}
   \addtopsstyle{Beam}{linejoin=2}
-  \drawbeam[connectplanes]{1}{BS}{3}
+  \drawbeam[raytrace=false]{1}{BS}{3}
   \addtopsstyle{Beam}{linecolor=red, linestyle=dashed}
   \rput(\oenodeLabel{BS}){\pnode(2;10){D}}
-  \drawbeam[connectplanes]{1}{BS}{(D)}
+  \drawbeam[raytrace=false]{1}{BS}{(D)}
 \end{pspicture}
 \end{LTXexample}
 
@@ -240,12 +240,12 @@
 \end{pspicture}
 \end{LTXexample}
 
-\subsection{connectplanes}
+\subsection{raytrace=false}
 \begin{pspicture}(5,2)
   \pnode(0.5,1){A}
   \pnode(4.5,1){B}
   \doveprism(A)(B){}
-  \addtopsstyle{Beam}{connectplanes}
+  \addtopsstyle{Beam}{raytrace=false}
   \drawbeam[linecolor=red, beampos=0 -0.1]{(A)}{1}{(B)}
   \drawbeam[linecolor=black]{(A)}{1}{(B)}
   \drawbeam[beampos=0 0.1]{(A)}{1}{(B)}
@@ -254,7 +254,7 @@
   \pnode(0.5,1){A}
   \pnode(4.5,1){B}
   \doveprism(A)(B){}
-  \addtopsstyle{Beam}{connectplanes}
+  \addtopsstyle{Beam}{raytrace=false}
   \drawbeam[linecolor=red, beampos=0 -0.1, beamangle=-2.3]{(A)}{1}{(B)}
   \drawbeam[linecolor=black]{(A)}{1}{(B)}
   \drawbeam[beampos=0 0.1, beamangle=2.3]{(A)}{1}{(B)}
@@ -263,25 +263,25 @@
 \begin{pspicture}(5,2)
   \pnode(0.5,1){A}
   \pnode(4.5,1){B}
-  \doveprism(A)(B){}
-  \addtopsstyle{Beam}{connectplanes, fillstyle=solid, fillcolor=red}
+  \doveprism(A)(B)
+  \addtopsstyle{Beam}{raytrace=false, fillstyle=solid, fillcolor=red}
   \drawwidebeam[beamwidth=0.1]{(A)}{1}{(B)}
 \end{pspicture}
 
 \begin{pspicture}(5,2)
   \pnode(0.5,1){A}
   \pnode(4.5,1){B}
-  \doveprism(A)(B){}
-  \addtopsstyle{Beam}{connectplanes, fillstyle=solid, fillcolor=red}
+  \doveprism(A)(B)
+  \addtopsstyle{Beam}{raytrace=false, fillstyle=solid, fillcolor=red}
   \drawwidebeam[beamdiv=3, beamwidth=0.1]{(A)}{1}{(B)}
 \end{pspicture}
-
+\end{document}
 \begin{pspicture}(5,4)
   \pnode(0.5,3){A}
   \pnode(3, 3){B}
   \pnode(3.5,0){C}
   \pentaprism(A)(B)(C){}
-  \addtopsstyle{Beam}{connectplanes, fillstyle=solid, fillcolor=red}
+  \addtopsstyle{Beam}{raytrace=false, fillstyle=solid, fillcolor=red}
   \drawwidebeam[beamwidth=0.1]{(A)}{1}{(C)}
 \end{pspicture}
 \begin{pspicture}(5,4)
@@ -289,7 +289,7 @@
   \pnode(3, 3){B}
   \pnode(3.5,0){C}
   \pentaprism(A)(B)(C){}
-  \addtopsstyle{Beam}{connectplanes, fillstyle=solid, fillcolor=red}
+  \addtopsstyle{Beam}{raytrace=false, fillstyle=solid, fillcolor=red}
   \drawwidebeam[beamdiv=3, beamwidth=0.1]{(A)}{1}{(C)}
 \end{pspicture}
 
@@ -298,7 +298,7 @@
   \pnode(3, 2){B}
   \pnode(5,1){C}
   \optprism(A)(B)(C){}
-  \addtopsstyle{Beam}{connectplanes, fillstyle=solid, fillcolor=red}
+  \addtopsstyle{Beam}{raytrace=false, fillstyle=solid, fillcolor=red}
   \drawwidebeam[beamwidth=0.1]{(A)}{1}{(C)}
 \end{pspicture}
 \begin{pspicture}(5,3)
@@ -306,7 +306,7 @@
   \pnode(3, 2){B}
   \pnode(5,1){C}
   \optprism(A)(B)(C){}
-  \addtopsstyle{Beam}{connectplanes, fillstyle=solid, fillcolor=red, opacity=0.2}
+  \addtopsstyle{Beam}{raytrace=false, fillstyle=solid, fillcolor=red, opacity=0.2}
   \drawwidebeam[beamdiv=3, beamwidth=0.1]{(A)}{1}{(C)}
 \end{pspicture}
 
@@ -331,7 +331,7 @@
 \begin{pspicture}[showgrid=true](12, 4)
   \psset{labeloffset=0.3}
   \pnode(12, 2){Ref}
-  \optplane(Ref)(0,1){RefPlane}
+  \optplane[compname=RefPlane](Ref)(0,1)
   \addtopsstyle{Beam}{linecolor=blue, beamdiv=10, beaminside=false, fillstyle=solid, fillcolor=red, opacity=0.3, linestyle=none}
   \multido{\i=1+1, \ii=165+10}{4}{%
     \rput(Ref){\pnode(6;\ii){A\i}}
@@ -353,7 +353,7 @@
   \pnode([Xnodesep=-2]BottomCpl){Laser2}
   \optbox[endbox, label=0](TopCpl)(Laser1){Laser1}
   \optbox[endbox, label=0](BottomCpl)(Laser2){Laser2}
-  \optcoupler[compname=Cpl, fiberout=none](Laser1)(Laser2)(TopCpl)(BottomCpl){50/50}
+  \optcoupler[compname=Cpl, fiber=i](Laser1)(Laser2)(TopCpl)(BottomCpl){50/50}
 %  \drawfiber{Cpl}{TopCpl}
 %  \drawfiber{Cpl}{BottomCpl}
 \end{pspicture}
