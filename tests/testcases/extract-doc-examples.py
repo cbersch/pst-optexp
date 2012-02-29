@@ -9,7 +9,7 @@ g = pat.findall(data)
 
 f = open("doc-examples.tex", "w")
 f.write(r"""\documentclass[a4paper]{scrreprt}
-\usepackage[utf8]{inputenc} 
+\usepackage[latin1]{inputenc} 
 \usepackage[T1]{fontenc}
 \usepackage{lmodern} 
 \usepackage{amsfonts, amsmath, marvosym} 
@@ -20,6 +20,7 @@ f.write(r"""\documentclass[a4paper]{scrreprt}
 \usepackage{pst-optexp}
 \usepackage{pst-tree, pst-func, pst-circ}
 \newcommand{\poeTR}[1]{\TR{\ttfamily#1}}
+\newcommand{\opt}[1]{\texttt{#1}}
 \definecolor{spot}{rgb}{1,.4,.2}%
 \newpsstyle{Refline}{linecolor=gray!60}
 \colorlet{Refline}{gray!60}
@@ -30,7 +31,7 @@ f.write(r"""\documentclass[a4paper]{scrreprt}
 
 for m in g:
     if re.match(m[0] + r"\\end{pspicture}", m[3]) and m[2].find('#') == -1:
-        main = (m[2] + m[3]).replace(m[0], '')
+        main = (m[2] + m[3]).replace(m[0], '').replace('^^A', '%').replace('*\\ON*', '').replace('*\\OFF*', '')
         main = re.sub(r"\*\\label{[^}]*}\*", "", main)
         f.write(m[1] + main + "\n\n")
 

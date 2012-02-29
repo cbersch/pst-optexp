@@ -26,7 +26,7 @@ all: $(addsuffix .pdf, $(FILELIST))
 connectall.tex: connectall.py $(POE)
 	./connectall.py
 
-doc-examples.tex: ../../pst-optexp.dtx $(POE)
+doc-examples.tex: ../../pst-optexp.dtx extract-doc-examples.py $(POE)
 	./extract-doc-examples.py
 
 %.pdf: %.ps
