@@ -4,7 +4,7 @@ import re
 with open("../../pst-optexp.dtx") as f:
     data = ''.join(f.readlines())
     
-pat = re.compile('(?P<comm>(?:%\s*)?)(\\\\begin{pspicture}[^\n]*\n)((?:(?P=comm)[^\n]*\n)*?)((?P=comm)\s*\\\\end{pspicture})', re.S)
+pat = re.compile('(?P<comm>(?:%\s*)?)(?:\\*\\\\ON\\*)?(\\\\begin{pspicture}[^\n]*\n)((?:(?P=comm)[^\n]*\n)*?)((?P=comm)\s*\\\\end{pspicture})', re.S)
 g = pat.findall(data)
 
 f = open("doc-examples.tex", "w")

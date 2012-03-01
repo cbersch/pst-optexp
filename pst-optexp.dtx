@@ -973,8 +973,8 @@
 \begingroup
 \catcode`\*=13
 \def*{}%
-\begin{LTXexample}*\ON*
-\begin{pspicture}[showgrid](5,2)
+\begin{LTXexample}
+*\ON*\begin{pspicture}[showgrid](5,2)
   \pnode(0,1){In}\pnode(3.5,1){Out}
   \psdot(In)\psdot(Out)*\OFF*
   \lens[lensradius=-0.7,
@@ -1001,8 +1001,8 @@
 \begingroup
 \catcode`\*=13
 \def*{}%
-\begin{LTXexample}*\ON*
-\begin{pspicture}[showgrid](5,2)
+\begin{LTXexample}
+*\ON*\begin{pspicture}[showgrid](5,2)
   \pnode(0,1){In}\pnode(3.5,1){Out}
   \psdot(In)\psdot(Out)
   \lens[lensradius=-0.7, 
@@ -1032,8 +1032,8 @@
 \begingroup
 \catcode`\*=13
 \def*{}%
-\begin{LTXexample}*\ON*
-\begin{pspicture}[showgrid](5,2)
+\begin{LTXexample}
+*\ON*\begin{pspicture}[showgrid](5,2)
   \pnode(0,1){In}\pnode(3.5,1){Out}
   \psdot(In)\psdot(Out)
   \lens[lensradius=-0.7,
@@ -1064,8 +1064,8 @@
 \begingroup
 \catcode`\*=13
 \def*{}%
-\begin{LTXexample}*\ON*
-\begin{pspicture}(5,2)
+\begin{LTXexample}
+*\ON*\begin{pspicture}(5,2)
   \pnode(0,1){In}\pnode(3.5,1){Out}
   \lens[lensradius=-0.7, 
           abspos=1](In)(Out){concave}
@@ -1094,8 +1094,8 @@
 \begingroup
 \catcode`\*=13
 \def*{}%
-\begin{LTXexample}*\ON*
-\begin{pspicture}(5,2)
+\begin{LTXexample}
+*\ON*\begin{pspicture}(5,2)
   \pnode(0,1){In}\pnode(3.5,1){Out}
   \lens[lensradius=-0.7, 
           abspos=1](In)(Out){concave}
@@ -1143,8 +1143,8 @@
 % \begingroup
 % \catcode`\*=13
 % \def*{}%
-\begin{LTXexample}*\ON*
-\begin{pspicture}[showgrid=true](4.7,2)
+\begin{LTXexample}
+*\ON*\begin{pspicture}[showgrid=true](4.7,2)
   \pnode(0.7,1){A}\pnode(1,1){B}\psdot(A)\psdot(B)
   \pnode(2.8,1){C}\pnode(4,1.5){D}\psdot(C)\psdot(D)
   \pnode(4,0.5){E}\psdot(E)*\OFF*
@@ -1166,8 +1166,8 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}*\ON*
-\begin{pspicture}[showgrid=true](4.7,2)
+\begin{LTXexample}
+*\ON*\begin{pspicture}[showgrid=true](4.7,2)
   \pnode(0.7,1){A}\pnode(1,1){B}\psdot(A)\psdot(B)
   \pnode(2.8,1){C}\pnode(4,1.5){D}\psdot(C)\psdot(D)
   \pnode(4,0.5){E}\psdot(E)*\OFF*
@@ -1191,8 +1191,8 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}*\ON*
-\begin{pspicture}[showgrid=true](4.7,2)
+\begin{LTXexample}
+*\ON*\begin{pspicture}[showgrid=true](4.7,2)
   \pnode(0.7,1){A}\pnode(1,1){B}\psdot(A)\psdot(B)
   \pnode(2.8,1){C}\pnode(4,1.5){D}\psdot(C)\psdot(D)
   \pnode(4,0.5){E}\psdot(E)*\OFF*
@@ -1223,8 +1223,8 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}*\ON*
-\begin{pspicture}(4.7,2)
+\begin{LTXexample}
+*\ON*\begin{pspicture}(4.7,2)
   \pnode(0.7,1){A}\pnode(1,1){B}\psdot(A)\psdot(B)
   \pnode(2.8,1){C}\pnode(4,1.5){D}\psdot(C)\psdot(D)
   \pnode(4,0.5){E}\psdot(E)*\OFF*
@@ -5384,7 +5384,9 @@
 %</ignore>
 % \fi
 %
-%   \boolitem{relangle}
+%   \numitem[0]{fiberangleA}
+%   \numitem[0]{fiberangleB}
+%   \choitem[tref]{fiberangle}{ref,tref,center,abs}
 % \end{optionlist}
 %
 %
@@ -6521,6 +6523,10 @@
 \def\POE@str@bsstyle@cube{cube}
 \def\POE@str@bsstyle@plate{plate}
 \def\POE@str@autonode{auto}
+\def\POE@str@fiberangle@ref{ref}
+\def\POE@str@fiberangle@tref{tref}
+\def\POE@str@fiberangle@center{center}
+\def\POE@str@fiberangle@abs{abs}
 \def\POE@Verb#1{\pst@Verb{\pst@optexpdict #1 end }}%
 %    \end{macrocode}
 %
@@ -7515,11 +7521,21 @@
 \define@boolkey[psset]{optexp}[POE@]{fiberout@top}[true]{}
 \define@boolkey[psset]{optexp}[POE@]{fiberout@bottom}[true]{}
 \psset[optexp]{fiber, fiber@=false}%
-%    \end{macrocode}
-% These are the internal boolkeys for the fiber choices done with 'fiberin' and 'fiberout'
-%    \begin{macrocode}
-\define@boolkey[psset]{optexp}[POE@]{relangle}[true]{}
-\psset[optexp]{relangle=false}
+\define@key[psset]{optexp}{fiberangleA}{%
+  \pst@checknum{#1}\POE@key@fiberangleA
+}%
+\define@key[psset]{optexp}{fiberangleB}{%
+  \pst@checknum{#1}\POE@key@fiberangleB
+}%
+\define@choicekey+[psset]{optexp}{fiberangle}%
+  [\val\nr]{ref,tref,center,abs}%
+  {\edef\POE@key@fiberangle{\val}}%
+  {\PackageError{pst-optexp}{Unknown fiberangle '\val'}}%  
+\psset[optexp]{%
+  fiberangleA=0,
+  fiberangleB=0,
+  fiberangle=tref
+}%
 %    \end{macrocode}
 % Which nodes to take for the automatic fiber connections.
 %    \begin{macrocode}
@@ -7646,36 +7662,30 @@
       \fi\fi
       \pst@getcoor{@@A}\POE@tempa
       \pst@getcoor{@@B}\POE@tempb
+%    \end{macrocode}
+% This is for backward compatibility. In version 2.x angleA and angleB could be
+% used to control the absolute fiber angles.
+%    \begin{macrocode}
       \ifx\psk@angleA\relax
-        \psset{%
-          angleA=! \POE@dict{%
-            \POE@tempb \POE@tempa \POE@comps exch RelFiberAngle
-          }%
-        }%
-      \else
-        \ifPOE@relangle
-          \psset{%
-            angleA=! \POE@dict{%
-              \POE@tempb \POE@tempa \POE@comps exch RelFiberAngle
-            } %
-            \psk@angleA\space add
+        \ifx\POE@key@fiberangle\POE@str@fiberangle@abs
+          \psset{angleA=\POE@key@fiberangleA}%
+        \else
+          \psset{angleA=! \POE@dict{%
+            \POE@tempb \POE@tempa \POE@comps exch /\POE@key@fiberangle\space RelFiberAngle
+            \POE@key@fiberangleA\space add}
           }%
         \fi
       \fi
       \ifx\psk@angleB\relax
-        \psset{%
-          angleB=! \POE@dict{%
-            \POE@tempa \POE@tempb \POE@comps RelFiberAngle
-          }
-        }%
-      \else
-        \ifPOE@relangle
-          \psset{%
-            angleB=! \POE@dict{%
-              \POE@tempa \POE@tempb \POE@comps RelFiberAngle
-            } \psk@angleB\space add 
+        \ifx\POE@key@fiberangle\POE@str@fiberangle@abs
+          \psset{angleB=\POE@key@fiberangleB}%
+        \else
+          \psset{angleB=! \POE@dict{%
+            \POE@tempa \POE@tempb \POE@comps /\POE@key@fiberangle\space RelFiberAngle
+            \POE@key@fiberangleB\space add}
           }%
-      \fi\fi
+        \fi
+      \fi
       \nccurve{@@A}{@@B}
     \fi
   \endgroup
@@ -9143,7 +9153,7 @@
             \drawfiber@{FiberOut1}[startnode=N]{\POE@key@compname}{(#3)}
           \fi
           \ifPOE@fiberout@bottom
-            \drawfiber@{FiberOut2}[startnode=2, angleA=90, angleB=90, relangle]{\POE@key@compname}{(#2)}
+            \drawfiber@{FiberOut2}[startnode=2, fiberangle=center]{\POE@key@compname}{(#2)}
           \fi
         \fi
       \fi
@@ -11998,7 +12008,7 @@ tx@OptexpDict begin
     /correct ED
     12 -1 roll /CurrCenter ED
     5 1 roll % curved? X0 Y0 X_in Y_in
-    connectifc PrevCorrect and PN 2 ge and {
+    connectifc PrevCorrect PN 2 gt and PN 2 eq or and {
       CurrVec CurrCenter CurrCenterTmp PrevMode 
       currentdict /relAngle known 
       { relAngle } { 0 } ifelse connectInterfaces
@@ -12256,7 +12266,7 @@ tx@OptexpDict begin
 % Calculate new upper vector and intersection point
 %    \begin{macrocode}
     CurrUp CurrVecUp
-    connectifc PrevCorrect PN 2 ge and and {
+    connectifc PrevCorrect PN 2 gt and PN 2 eq or and {
       CurrVecUp CurrPCenter CurrPCenterTmp PrevMode 
       currentdict /relAngleUp known { relAngleUp } { 0 } ifelse 
       connectInterfaces /relAngleUp ED
@@ -12275,10 +12285,10 @@ tx@OptexpDict begin
 % Calculate new lower vector and intersection point
 %    \begin{macrocode}
     CurrLow CurrVecLow
-    connectifc PrevCorrect PN 2 ge and and {
+    connectifc PrevCorrect PN 2 gt and PN 2 eq or and  {
       CurrVecLow CurrPCenter CurrPCenterTmp PrevMode 
       currentdict /relAngleLow known { relAngleLow } { 0 } ifelse 
-      connectifc /relAngleLow ED
+      connectInterfaces /relAngleLow ED
     } if
     2 copy ToVec /OldVecLow ED
     curved { CurvedInterface } { PlainInterface } ifelse
@@ -13075,9 +13085,12 @@ tx@OptexpDict begin
 % \begin{macro}{RelFiberAngle}
 % Calculate start angle of \cs{nccurve} from CompA to CompB
 %
-% $@@X_B$ $@@Y_B$ $@@X_A$ $@@Y_A$ A B $\quad\longmapsto\quad$ angleA
+% \begin{pssyntax}
+%   \PSvar{Xb Yb Xa Ya A B} \PSname{angleproc} \PSop{RelFiberAngle} \PSvar{angle}
+% \end{pssyntax}
 %    \begin{macrocode}
 /RelFiberAngle {
+  nametostr (RelFiberAngle@) exch strcat cvn load /angleproc ED
   dup xcheck not { nametostr } if /CompB ED
   dup xcheck not { nametostr } if /CompA ED
   /CompA load xcheck {
@@ -13088,31 +13101,78 @@ tx@OptexpDict begin
       @ABVect exch atan
     } {
 %    \end{macrocode}
-% B is a component, and A is a node: the angle at node A is calculated through the reference nodes of component B
+% B is a component, and A is a node: the angle at node A is calculated through component B
 %    \begin{macrocode}
-      4 copy @ABVect 6 2 roll pop pop
-      CompB dup dup (Center) NodeName @GetCenter 
-      6 -2 roll 4 2 roll @ABVect 4 2 roll
-      (A) NodeName exch (B) NodeName
-      @GetCenter 3 -1 roll @GetCenter @ABVect 2 copy exch atan
+      4 copy @ABVect 6 2 roll pop pop 2 copy
+%    \end{macrocode}
+% on stack: Xb-Xa Yb-Ya Xb Yb Xb Yb
+%    \begin{macrocode}
+      CompB (Center) NodeName @GetCenter 
+%    \end{macrocode}
+% on stack: Xb-Xa Yb-Ya Xb Yb Xb Yb Xbc Ybc
+%    \begin{macrocode}
+      4 2 roll @ABVect 4 2 roll
+      CompB angleproc 2 copy exch atan
       7 3 roll 2 copy 9 -2 roll
       SProd 0 gt 5 1 roll SProd 0 gt xor { 180 add } if
     } ifelse
   } {
 %    \end{macrocode}
 % A is a component, B is insignificant
+%
+% discard coordinates of B
 %    \begin{macrocode}
-    4 2 roll pop pop
-    CompA dup dup (Center) NodeName @GetCenter 
-    6 -2 roll @ABVect 4 2 roll
-    (TrefA) NodeName exch (TrefB) NodeName
-    @GetCenter 3 -1 roll @GetCenter @ABVect 2 copy exch atan
+    4 2 roll pop pop 2 copy
+    CompA (Center) NodeName @GetCenter 
+    4 2 roll @ABVect 4 2 roll
+%    \end{macrocode}
+% on stack: Xac-Xa Yac-Xa Xa Ya
+%    \begin{macrocode}
+    CompA angleproc 2 copy exch atan
+%    \end{macrocode}
+% Xac-Xa Yac-Ya XaB-XaA YaB-YaA angleTrefline
+%    \begin{macrocode}
     5 1 roll SProd 0 gt { 180 add } if
   } ifelse
 } bind def
 %    \end{macrocode}
 % \end{macro}
 % 
+% \begin{macro}{/RelFiberAngle@ref}
+% \begin{pssyntax}
+%   \PSvar{Xa Ya CompA} \PSop{RelFiberAngle@ref} \PSvar{dX dY}
+% \end{pssyntax}
+%    \begin{macrocode}
+/RelFiberAngle@ref {
+  3 1 roll pop pop
+  dup (A) NodeName exch (B) NodeName
+  @GetCenter 3 -1 roll @GetCenter @ABVect 
+} bind def
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{/RelFiberAngle@tref}
+% Same as \PSname{RelFiberAngle@ref} but uses the transformed reference nodes.
+% \begin{pssyntax}
+%   \PSvar{Xa Ya CompA} \PSop{RelFiberAngle@ref} \PSvar{dX dY}
+% \end{pssyntax}
+%    \begin{macrocode}
+/RelFiberAngle@tref {
+  3 1 roll pop pop
+  dup (TrefA) NodeName exch (TrefB) NodeName
+  @GetCenter 3 -1 roll @GetCenter @ABVect 
+} bind def
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{/RelFiberAngle@center}
+%    \begin{macrocode}
+/RelFiberAngle@center {
+  (Center) NodeName @GetCenter 4 2 roll @ABVect
+} bind def
+%    \end{macrocode}
+% \end{macro}
+%
 % \begin{macro}{getsubnode}
 % subname node/name  -> coordinates
 %    \begin{macrocode}
@@ -13131,7 +13191,7 @@ tx@OptexpDict begin
 %   \begin{pssyntax}
 %     \PSproc{vec}
 %   \end{pssyntax}
-% Vec Vec Center CenterTemp mode relangle
+% InVec Center CenterTmp PrevMode relangle
 %    \begin{macrocode}
 /connectInterfaces {
   /relAngleTmp ED
