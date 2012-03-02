@@ -33,7 +33,7 @@ connectall.tex: connectall.py $(POE)
 	dvips -q $< 2>&1 >/dev/null
 
 %.dvi: %.tex $(POE)
-	$(LATEX) $< #2>&1 >/dev/null 
+	$(LATEX) $< 2>&1 >/dev/null 
 	rm -f $*.aux $*.log
 
 clean: clean
