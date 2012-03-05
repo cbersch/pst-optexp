@@ -85,6 +85,7 @@
   showstringspaces=false, %
   breaklines=true, %
   breakautoindent=true, %
+  breakatwhitespace=true, %
   captionpos=t, %
   xleftmargin=1em, %
   prebreak = {\raisebox{-1ex}[\ht\strutbox]{\kern0.5ex \Large\Righttorque}},
@@ -518,6 +519,7 @@
 %   \newrefformat{chap}{Kap.~\ref{#1}}
 %   \newrefformat{sec}{Kap.~\ref{#1}}
 %   \newrefformat{l}{Zeile~\ref{#1}}
+%   \newrefformat{ex}{Bsp.~\ref{#1}}
 %   \newindex[Quelltextindex]{idx}
 %   \newindex[Dokumentationsindex]{doc}
 %   \newcommand{\POEindexPackage}{Paket}
@@ -536,6 +538,7 @@
 %   \newrefformat{chap}{Sec.~\ref{#1}}
 %   \newrefformat{sec}{Sec.~\ref{#1}} 
 %   \newrefformat{l}{Line~\ref{#1}}
+%   \newrefformat{ex}{Ex.~\ref{#1}}
 %   \newindex[Code index]{idx}
 %   \newindex[Documentation index]{doc}
 %   \newcommand{\POEindexPackage}{Package}
@@ -1190,7 +1193,7 @@
 *\ON*\begin{pspicture}[showgrid=true](4.7,2)
   \pnode(0.7,1){A}\pnode(1,1){B}\psdot(A)\psdot(B)
   \pnode(2.8,1){C}\pnode(4,1.5){D}\psdot(C)\psdot(D)
-  \pnode(4,0.5){E}\psdot(E)*\OFF*
+  \pnode(4,0.5){E}\psdot(E)
   \psset{optboxwidth=0.7, labelstyle=\scriptsize}
   \optbox[endbox, label=0, fiber](B)(A){LD}*\OFF*
   \optmzm(B)(C)*\ON*
@@ -1215,9 +1218,9 @@
 *\ON*\begin{pspicture}[showgrid=true](4.7,2)
   \pnode(0.7,1){A}\pnode(1,1){B}\psdot(A)\psdot(B)
   \pnode(2.8,1){C}\pnode(4,1.5){D}\psdot(C)\psdot(D)
-  \pnode(4,0.5){E}\psdot(E)*\OFF*
+  \pnode(4,0.5){E}\psdot(E)
   \psset{optboxwidth=0.7, labelstyle=\scriptsize}
-  \optbox[endbox, label=0, fiber](B)(A){LD}*\OFF*
+  \optbox[endbox, label=0, fiber](B)(A){LD}
   \optmzm(B)(C)*\OFF*
   \wdmsplitter[abspos=0.3, label=0.4](C)(D)(E){50\%}*\ON*
 \end{pspicture}*\OFF*
@@ -1243,14 +1246,14 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}[style=example]
+\begin{LTXexample}[style=example, caption={caption}]
 *\ON*\begin{pspicture}(4.7,2)
   \pnode(0.7,1){A}\pnode(1,1){B}\psdot(A)\psdot(B)
   \pnode(2.8,1){C}\pnode(4,1.5){D}\psdot(C)\psdot(D)
-  \pnode(4,0.5){E}\psdot(E)*\OFF*
+  \pnode(4,0.5){E}\psdot(E)
   \psset{optboxwidth=0.7, labelstyle=\scriptsize}
-  \optbox[endbox, label=0, fiber](B)(A){LD}*\OFF*
-  \optmzm(B)(C)*\OFF*
+  \optbox[endbox, label=0, fiber](B)(A){LD}
+  \optmzm(B)(C)
   \wdmsplitter[abspos=0.3, label=0.4](C)(D)(E){50\%}*\OFF*
   \optbox[endbox, label=0](A|D)(D){OSA}
   \optdetector(A|E)(E){PD}*\ON*
@@ -1286,13 +1289,13 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}
+\begin{LTXexample}[caption={caption}]
 \begin{pspicture}(4.9,2)
   \pnode(0.7,1){A}\pnode(4,1){B}
   \psset{optboxwidth=0.7, labelstyle=\scriptsize,
     fiber=none}
   \optbox[endbox, labeloffset=0](B)(A){LD}
-  \optmzm[abspos=1.1](A)(B){MZM}
+  \optmzm[abspos=1.1](A)(B)
   \wdmsplitter[abspos=2.25, label=0.4](A)(B)(B){50\%}
   \optbox[endbox,label=0, compshift=0.5](A)(B){OSA}
   \optdetector[compshift=-0.5](A)(B){PD}
@@ -1320,7 +1323,7 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}[style=example, hsep=8mm, numbers=left, numberstyle=\footnotesize, breakatwhitespace]
+\begin{LTXexample}[style=example, hsep=8mm, numbers=left, numberstyle=\footnotesize, caption={caption}]
 \begin{pspicture}(3.2,5)
   \pnode(0,3){In}\pnode(1,3){BS}\pnode(3,3){M1}*\label{l:ex2-nodes1}*
   \pnode(1,5){M2}\pnode(1,1){PD}*\label{l:ex2-nodes2}*
@@ -1381,14 +1384,14 @@
 \begin{LTXexample}[style=example, numbers=left, numberstyle=\footnotesize, caption={caption}]
 \begin{pspicture}(0.5,0)(2.2,4)
   \pnode(0,1){In}\pnode(1,1){BS}\pnode(2,1){G}\pnode(1,4){Out}
-  \beamsplitter(G)(BS)(Out)
-  \optgrating(BS)(G)(BS)
-  \lens[lens=2 2 1.5, compshift=0.1, n=2.25](BS)(Out)
-  \pinhole[phwidth=0.05, innerheight=0.05, position=0.8, compshift=0.18](BS)(Out)
+  \beamsplitter[compname=Bs](G)(BS)(Out)
+  \optgrating[compname=G](BS)(G)(BS)
+  \lens[lens=2 2 1.5, compshift=0.1, n=2.25, compname=L](BS)(Out)
+  \pinhole[phwidth=0.05, innerheight=0.05, position=0.8, compshift=0.18, compname=Ph](BS)(Out)
   \optplane[compname=Out](Out)(1, 0)
   \addtopsstyle{Beam}{linestyle=none, beamwidth=0.2, fillstyle=solid}
-  \drawwidebeam[fillcolor=red!25!white]{(In)}{1}{2}{1}{3}{4}
-  \drawwidebeam[fillcolor=red!50!white, beamangle=-5]{2}{1}{3}{4}{Out}
+  \drawwidebeam[fillcolor=red!25!white]{(In)}{Bs}{G}{Bs}{L}{Ph}
+  \drawwidebeam[fillcolor=red!50!white, beamangle=-5]{G}{Bs}{L}{Ph}{Out}
 \end{pspicture}
 \end{LTXexample}
 % \endgroup
@@ -2874,12 +2877,12 @@
 % \begin{stylelist}
 % \item[\smash{%
 %   \begin{tabular}[t]{@{}r@{}}
-%     \Lkeyword{optgridwidth}\\
-%     \Lkeyword{optgridheight}\\
-%     \Lkeyword{optgriddepth}\\
-%     \Lkeyword{optgridcount}\\
-%     \Lkeyword{optgridtype}\\
-%     \Lkeyword{optgridlinewidth}
+%     \Lkeyword*{optgridwidth}\\
+%     \Lkeyword*{optgridheight}\\
+%     \Lkeyword*{optgriddepth}\\
+%     \Lkeyword*{optgridcount}\\
+%     \Lkeyword*{optgridtype}\\
+%     \Lkeyword*{optgridlinewidth}
 %   \end{tabular}}]^^A
 % \ifGERMAN Diese Parameter wurden in die entsprechenden \opt{grating*} Parameter umbenannt und seit Version 3.0 veraltet.\fi
 % \ifENGLISH These parameters were renamed to the respective \opt{grating*} parameters and are deprecated since version 3.0.\fi
@@ -5440,6 +5443,27 @@
 %   \end{valuelist}
 %
 %   \valitem[curve]{fiberstyle}{string}
+%   \ifGERMAN
+%   \fi
+%   \ifENGLISH 
+%   Select the type of node connection \nxLcs{nc}\prm{string} which is use by
+%   \Lcs{drawfiber}, see \LPack{pst-node} documentation for possible values. \prettyref{ex:transmission-loop} shows another use case.
+%   \fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(3,3)
+  \pnode(1, 0.5){A}\pnode(2.5,0.5){B}\pnode(2.5,2){C}
+  \psset{fiber=none, optbox=1 0.6, innerlabel}
+  \optbox[endbox](B)(A){start}
+  \optbox[endbox](B)(C){stop}
+  \drawfiber[fiberstyle=diag, linearc=0.5]{1}{2}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % \end{optionlist}
 %
 %
@@ -6232,7 +6256,7 @@
 
 \bgroup
 \psset{unit=0.9}
-\begin{LTXexample}[pos=t, caption={caption}]
+\begin{LTXexample}[pos=t, caption={caption}, label=ex:transmission-loop]
 \begin{pspicture}(13,5.5)
 \psset{usefiberstyle, optboxwidth=1, labelstyle=\footnotesize, fiber=none}
 \pnode(1,5){LD}\pnode([Xnodesep=5.5]LD){CPLin1}
@@ -6252,9 +6276,9 @@
 \drawfiber{8}{9}{10}
 \pnode([Xnodesep=-0.5]LD|CPLin2){TL}\pnode(RX|TL){TR}
 \pnode([offset=-2.5]TR){BR}\pnode(TL|BR){BL}
-\optamp[fiber=in](CPLout2)(TR){EDFA}
+\optamp[fiber=i](CPLout2)(TR){EDFA}
 \optfiber[label=0.3 . t, position=0.85](BL)(BR){SSMF 89.8~km}
-\psline[style=Fiber, linearc=1](\oenodeOut{11})(TR)(BR)(\oenodeOut{12})
+\drawfiber[fiberstyle=angle, arm=1.2, linearc=0.5, startnode=N]{11}{12}
 \optamp[position=0.3](BR)(BL){EDFA}
 \optfilter[position=0.55, labelangle=180](BL)(BR){BPF}
 \optfiber[fiberloops=1, label=0.3 . t, position=0.35](BL)(BR){DCF 16.2~km}
@@ -6263,7 +6287,7 @@
 \optswitch(TL)(CPLin2){SW}
 \polcontrol[position=0.8, fiber=out](TL)(CPLin2)
 \drawfiber{12}{13}{14}{15}{16}\drawfiber{17}{18}{19}
-\psline[style=Fiber, linearc=1](\oenodeOut{16})(BL)(TL)(\oenodeIn{17})
+\drawfiber[fiberstyle=angle, arm=0.5, linearc=0.5, stopnode=1]{16}{17}
 \end{pspicture}
 \end{LTXexample}
 \egroup
@@ -6323,9 +6347,47 @@
 %</ignore>
 % \fi
 %
+% \makeatletter
+% \bgroup
+% \newcommand*{\index@preamble}{}
+% \let\index@preamble=\relax
+% \renewcommand{\setindexpreamble}[1]{\def\index@preamble{#1}}
+% \renewcommand*{\idx@heading}{%
+%   \twocolumn[\idx@@heading{\indexname}]%
+%   \@mkboth{\indexname}{\indexname}%
+% }
+% \renewenvironment{theindex}{%
+%   \if@twocolumn
+%     \@restonecolfalse
+%   \else
+%     \@restonecoltrue
+%   \fi
+%   \columnseprule \z@
+%   \columnsep 35\p@
+%   \idx@heading%
+%   \index@preamble\par\nobreak
+%   \thispagestyle{\indexpagestyle}\parindent\z@
+%   \setlength{\parskip}{\z@ \@plus .3\p@}%
+%   \setlength{\parfillskip}{\z@ \@plus 1fil}%
+%   \let\item\@idxitem
+% }{%
+%   \if@restonecol\onecolumn\else\clearpage\fi
+% }
+% \renewcommand*\@idxitem{\par\hangindent 40\p@}
+% \renewcommand*\subitem{\@idxitem \hspace*{20\p@}}
+% \renewcommand*\subsubitem{\@idxitem \hspace*{30\p@}}
+% \renewcommand*\indexspace{%
+%   \par \vskip 10\p@ \@plus5\p@ \@minus3\p@\relax
+% }
+% \renewcommand*\indexname{Index}
+% \printindex[doc]
+% \egroup
+% \makeatother
+%
+% \appendix
+%
 % \ifGERMAN
-% \chapter*{Versionsgeschichte}
-% \addcontentsline{toc}{chapter}{Versionsgeschichte}
+% \chapter{Versionsgeschichte}
 %
 % Diese Versionsgeschichte ist eine Liste von Änderungen, die für den Nutzer des
 % Pakets von Bedeutung sind. Änderungen, die eher technischer Natur sind und für
@@ -6341,8 +6403,7 @@
 % Dokumentation.
 % \fi
 % \ifENGLISH
-% \chapter*{Revision history}
-% \addcontentsline{toc}{chapter}{Revision history}
+% \chapter{Revision history}
 %
 % This revision history is a list of changes relevant to users of this
 % package. Changes of a more technical nature which do not affect the user
@@ -6433,47 +6494,8 @@
 %   \end{release}
 % \end{changelog}
 %
-%
-% \makeatletter
-% \bgroup
-% \newcommand*{\index@preamble}{}
-% \let\index@preamble=\relax
-% \renewcommand{\setindexpreamble}[1]{\def\index@preamble{#1}}
-% \renewcommand*{\idx@heading}{%
-%   \twocolumn[\idx@@heading{\indexname}]%
-%   \@mkboth{\indexname}{\indexname}%
-% }
-% \renewenvironment{theindex}{%
-%   \if@twocolumn
-%     \@restonecolfalse
-%   \else
-%     \@restonecoltrue
-%   \fi
-%   \columnseprule \z@
-%   \columnsep 35\p@
-%   \idx@heading%
-%   \index@preamble\par\nobreak
-%   \thispagestyle{\indexpagestyle}\parindent\z@
-%   \setlength{\parskip}{\z@ \@plus .3\p@}%
-%   \setlength{\parfillskip}{\z@ \@plus 1fil}%
-%   \let\item\@idxitem
-% }{%
-%   \if@restonecol\onecolumn\else\clearpage\fi
-% }
-% \renewcommand*\@idxitem{\par\hangindent 40\p@}
-% \renewcommand*\subitem{\@idxitem \hspace*{20\p@}}
-% \renewcommand*\subsubitem{\@idxitem \hspace*{30\p@}}
-% \renewcommand*\indexspace{%
-%   \par \vskip 10\p@ \@plus5\p@ \@minus3\p@\relax
-% }
-% \renewcommand*\indexname{Index}
-% \printindex[doc]
-% \egroup
-% \makeatother
-%
 % \StopEventually{}
 %
-% \appendix
 %
 % \chapter{The \LaTeX/\TeX\ implementation}
 %<*stylefile>
@@ -6765,12 +6787,12 @@
 \define@key[psset]{optexp}{labelref}{%
   \edef\POE@key@labelref{#1}%
 }
-\define@choicekey*[psset]{optexp}{innerlabel}%
-  [\val\nr]{true,false}[true]{%
-  \ifcase\nr\relax
-    \psset[optexp]{labeloffset=0, labelref=relative}%
-  \fi
-}%
+\define@choicekey*+[psset]{optexp}{innerlabel}%
+  [\val\nr]{true,false}[true]%
+  {\ifcase\nr\relax
+     \psset[optexp]{labeloffset=0, labelref=relative}%
+   \fi}
+  {\PackageError{pst-optexp}{Unknown value '\val' for innerlabel}}%
 \define@key[psset]{optexp}{label}{%
   \pst@expandafter\POE@psset@@label{#1} {} {} {} {} {}\@nil
 }%
@@ -8765,8 +8787,8 @@
     \POE@Verb{InitOptexpComp }%
     \use@par
 %    \end{macrocode}
-% Usually the shift refers to the y-direction, shifting in x-direction
-% is done by 'abspos' or 'position'
+% The \opt{compshift} refers to the $y$-direction, shifting in $x$-direction
+% is done by \opt{abspos} or \opt{position}
 %    \begin{macrocode}
     \let\POE@key@comp@Yshift\POE@key@compshift%
     \def\POE@key@comp@Xshift{0}%
@@ -9426,29 +9448,44 @@
 %    \begin{macrocode}  
 \def\POE@putlabel#1{%
   \def\POE@temp{#1}%
+%    \end{macrocode}
+% Put the label only if it is not empty.
+%    \begin{macrocode}
   \ifx\POE@temp\@empty\else
+%    \end{macrocode}
+% For global positioning, the label is placed in global coordinate system with
+% respect to the center node.
+%    \begin{macrocode}
   \ifx\POE@key@labelref\POE@str@labelref@global
     \nput[labelsep=\POE@key@labeloffset]%
       {\POE@key@labelangle}%
       {\oenodeCenter{}}%
-      {\rput[\POE@key@labelalign](0,0){\POE@key@labelstyle #1}}%
+      {\pnode(0,0){\oenodeLabel{}}%
+       \rput[\POE@key@labelalign](0,0){\POE@key@labelstyle #1}}%
+%    \end{macrocode}
+% Rotate the label node together with the component, but do not rotate the label
+% text itself.
+%    \begin{macrocode}
   \else\ifx\POE@key@labelref\POE@str@labelref@relgrav
     \rput[\POE@key@labelalign](\oenodeLabel{}){%
       \POE@key@labelstyle #1}%
+%    \end{macrocode}
+% Rotate label node and label text with the component.
+%    \begin{macrocode}
   \else\ifx\POE@key@labelref\POE@str@labelref@relative
     \begingroup
 %    \end{macrocode}
 % Redefine InitNC only for positioning of the label with labelref=relative
 %    \begin{macrocode}
     \pst@def{InitNC}< % kindly contributed by Herbert Voss
-      /b ED /a ED % second and first node
+      /b ED /a ED
       /NodeSepTypeB ED /NodeSepTypeA ED
       /NodeSepB ED /NodeSepA ED
       /OffsetB ED /OffsetA ED
       tx@NodeDict a known tx@NodeDict b known and dup {
         /NodeA a load def /NodeB b load def
-        NodeA GetCenter NodeB GetCenter % xA yA xB yB
-        4 copy exch 4 -1 roll 2 copy gt % yA yB xB xA
+        NodeA GetCenter NodeB GetCenter
+        4 copy exch 4 -1 roll 2 copy gt
           { pop pop pop pop /yB ED /xB ED /yA ED /xA ED }
           { eq 3 1 roll lt and 
               { /yB ED /xB ED /yA ED /xA ED} 
@@ -9460,7 +9497,7 @@
         \ifx\POE@key@abspos\@empty
           \ncput[nrot=:U,npos=]{\POE@putlabelrelative{#1}}%
         \else
-          \nlput[nrot=:U](\POE@refnodeA)(\POE@refnodeB){\POE@key@abspos}{\POE@putlabelrelative{#1}}%
+          \nlput[nrot=:U](\POE@trefnodeA)(\POE@trefnodeB){\POE@key@abspos}{\POE@putlabelrelative{#1}}%
         \fi
       \else
         \ncput[nrot=:U, npos=\POE@key@position]{\POE@putlabelrelative{#1}}%
@@ -9674,11 +9711,11 @@
       \psset{style=OptionalStyle}%
     \fi
 %    \end{macrocode}
-% if parameter 'position' is given, use it for 'npos'
+% If parameter \opt{position} is given, use it for \opt{npos}.
 %    \begin{macrocode}
     \ifx\POE@key@position\@empty
 %    \end{macrocode}
-% then check if absolute positioning is wanted
+% Then check if absolute positioning with \opt{abspos} is wanted.
 %    \begin{macrocode}
       \ifx\POE@key@abspos\@empty
         \ncput[nrot=:U,npos=]{\POE@putcomp{#1}{\@@comp}}%
@@ -9720,6 +9757,9 @@
 % \end{macro}
 % 
 % \begin{macro}{POE@transformnode}
+%   Transform node \opt{\#1} according to the positioning parameters
+%   (\opt{compshift}, \opt{position}, and \opt{abspos}) with respect to the
+%   rotation reference node and define it as \opt{\#2}.
 %    \begin{macrocode}
 \def\POE@transformnode#1#2{%
   \pnode(!
@@ -11211,8 +11251,8 @@
 %
 % \chapter{The Postscript header file}
 % \makeatletter
-%% Copied this definition from doc.sty and changed it not to add a
-%% backslash to the Postscript procedure name in the index.
+%^^A Copied this definition from doc.sty and changed it not to add a
+%^^A backslash to the Postscript procedure name in the index.
 % \def\SpecialIndex@#1#2{%
 %    \@SpecialIndexHelper@#1\@nil
 %    \def\@tempb{ }%
