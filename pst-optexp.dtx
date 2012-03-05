@@ -98,8 +98,8 @@
     optprism, rightangleprism, pentaprism, optdipole, optripole,
     optfiber, optamp, optmzm, optfilter, polcontrol, optisolator,
     optswitch, fiberdelayline, optfiberpolarizer, fibercollimator,
-    optcoupler, wdmcoupler, wdmsplitter, drawbeam, drawwidebeam,
-    drawfiber, frontlayer, backlayer, newOptexpDipole,
+    optcoupler, wdmcoupler, wdmsplitter, optcirculator, drawbeam, 
+    drawwidebeam, drawfiber, frontlayer, backlayer, newOptexpDipole,
     newOptexpTripole, newOptexpFiberDipole}, %
   morekeywords = [22] {optexp},
   explpreset={%
@@ -230,10 +230,7 @@
      \setlength{\labelsep}{\marglistsep}%
      \setlength{\leftmargin}{0pt}%
      \renewcommand*{\makelabel}[1]{\hss\optionlistfont##1}}%
-   \def\styleitem##1{%
-     \item[{##1}]%
-     \label{prm:##1}%
-     \prm{psstyle}\par}}%
+     \let\styleitem\POE@styleitem}%
   {\endlist}
 
 \def\ltd@optionlist{%
@@ -245,6 +242,26 @@
   \let\numitem\POE@numitem
   \let\psnumitem\POE@psnumitem
   \let\poeitem\ltd@item}
+
+\def\POE@styleitem{%
+  \@ifnextchar[%]
+    {\POE@styleitem@i}
+    {\POE@styleitem@i[]}
+}
+\def\POE@styleitem@i[#1]#2{%
+  \item[{#2}]%
+  \label{prm:#2}%
+  \begingroup\raggedright
+  \@tempdima=\dimexpr\linewidth
+  \ifblank{#1}
+    {}
+    {\settowidth\@tempdimb{default: \ltd@textverb{#1}}%
+     \@tempdima=\dimexpr\@tempdima-\@tempdimb-2em\relax}%
+  \parbox[t]{\@tempdima}{\raggedright \prm{psstyle}}%
+  \ifblank{#1}
+    {}
+    {\hfill default:~\ltd@textverb{#1}}
+  \par\endgroup}
 
 \def\POE@optitem{%
   \@ifstar
@@ -640,7 +657,7 @@
 %   }^^A
 %   \newpsstyle{Beam}{linecolor=red}
 %   \backlayer{\psline[style=Beam,ArrowInside=->, linewidth=2\pslinewidth, arrowinset=0](In)(\oenodeIn{3})(\oenodeOut{4})}
-%   \drawbeam[linewidth=2\pslinewidth, arrows=->, arrowinset=0, beamangle=-90, beamref=absolute]{(\oenodeBeam)}{8}{(Out)}  
+%   \drawbeam[linewidth=2\pslinewidth, arrows=->, arrowinset=0, beamangle=-90, beamalign=absolute]{(\oenodeBeam)}{8}{(Out)}  
 % \end{optexp}
 % \rput(4,4.5){^^A
 %   \psframe[fillstyle=solid,fillcolor=gray!70](-0.1, -0.6)(0.1, 0.7)
@@ -2670,7 +2687,7 @@
 %</ignore>
 % \fi
 %
-% \styleitem{VariableMirror} 
+% \styleitem[  linewidth=0.8\cs{pslinewidth}, arrowinset=0, arrowscale=0.8, arrows=<->]{VariableMirror} 
 % \ifGERMAN
 %   Der Stil der Pfeiles des verstellbaren Spiegels.
 % \fi
@@ -3335,7 +3352,10 @@
 %<*ignore>
 % \fi
 \begin{LTXexample}
-\begin{pspicture}(3,1.5)
+\begin{pspicture}(3,2)
+  \addtopsstyle{Fiber}{arrows=->}
+  \addtopsstyle{FiberOut1}{linecolor=blue}
+  \addtopsstyle{FiberOut2}{linecolor=green!80!black}
   \optcirculator(0,1)(1.5,0)(3,1){Circulator}
 \end{pspicture}
 \end{LTXexample}
@@ -3345,20 +3365,38 @@
 % \end{ltxsyntax}
 % \begin{optionlist}
 % \numitem[0.8]{optcircsize}
-% \numitem[0.3]{optcircarrowradius} 
+% \numitem[-150]{optcircangleA}
+% \numitem[-30]{optcircangleB}
+% \optitem{optcircangle}{\prm{num} \prm{num}}
 % \iffalse
 %<*ignore>
 % \fi
 \begin{LTXexample}[morekeywords={[21]{}}]
 \begin{pspicture}(3,1.5)
-
+  \optcirculator[optcircangle=0 -90](0,1)(1.5,0)(3,1)
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
 %</ignore>
 % \fi
 % \end{optionlist}
-%
+% 
+% \begin{stylelist}
+% \styleitem[unit=0.8, arrows=->]{OptCircArrow}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[morekeywords={[21]{}}]
+\begin{pspicture}(3,1.5)
+  \newpsstyle{OptCircArrow}{unit=0.7, arrows=<-, arrowinset=0}
+  \optcirculator[optcircangle=0 -90](0,1)(1.5,0)(3,1)
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+% \end{stylelist}
+% 
 % \ifGERMAN\section{Faserkoppler}\fi
 % \ifENGLISH\section{Fiber coupler}\fi
 % \label{sec:coupler}
@@ -4740,12 +4778,12 @@
 % \psnumitem[0]{beamangle}
 % \ifGERMAN
 % Der Anfangswinkel des Strahls. Dieser ist relativ zu der Verbindung von der
-% ersten zur zweiten Komponente, mit \Lkeyword{beamref} kann dieser auf
+% ersten zur zweiten Komponente, mit \Lkeyword{beamalign} kann dieser auf
 % globale Werte geändert werden.
 % \fi
 % \ifENGLISH
 % This is the start angle of the beam. It is relative to the connection between the first
-% two components, use \Lkeyword{beamref} to change this.
+% two components, use \Lkeyword{beamalign} to change this.
 % \fi
 % \iffalse
 %<*ignore>
@@ -4767,7 +4805,7 @@
 %</ignore>
 % \fi
 % 
-% \choitem[relative]{beamref}{relative, absolute}
+% \choitem[relative]{beamalign}{relative, absolute}
 % 
 % \boolitem[true]{raytrace}
 % 
@@ -5389,7 +5427,7 @@
 %
 %   \numitem[0]{fiberangleA}
 %   \numitem[0]{fiberangleB}
-%   \choitem[tref]{fiberref}{relative,center,absolute}
+%   \choitem[tref]{fiberalign}{relative,center,absolute}
 %   Set the reference for the fiber angles.
 %   \begin{valuelist}
 %   \item[relative] The fiber angles are relative to the transformed reference
@@ -7370,11 +7408,33 @@
 \define@key[psset]{optexp}{optcircsize}{%
   \pst@checknum{#1}\POE@key@optcircsize
 }%
-\define@key[psset]{optexp}{optcircarrowradius}{%
-  \pst@checknum{#1}\POE@key@optcircarrowradius
+\define@key[psset]{optexp}{optcircangleA}{%
+  \pst@checknum{#1}\POE@key@optcircangleA
 }%
-\psset[optexp]{optcircsize=0.8, optcircarrowradius=0.3}%
-\newpsstyle{OptCircArrow}{unit=0.8}
+\define@key[psset]{optexp}{optcircangleB}{%
+  \pst@checknum{#1}\POE@key@optcircangleB
+}%
+\define@key[psset]{optexp}{optcircangle}{%
+  \pst@expandafter\POE@psset@@optcircangle{#1} {} {} {}\@nil
+}%
+\def\POE@psset@@optcircangle#1 #2 #3\@nil{%
+  \edef\POE@tempA{#1}%
+  \edef\POE@tempB{#2}%
+  \ifx\POE@tempA\@empty
+    \PackageError{pst-optexp}{optcircangle requires two numbers}%
+  \else
+    \ifx\POE@tempB\@empty
+      \PackageError{pst-optexp}{optcircangle requires two numbers}%
+    \else
+      \psset[optexp]{optcircangleA=#1, optcircangleB=#2}%
+    \fi
+  \fi
+}%
+\psset[optexp]{%
+  optcircsize=0.8, 
+  optcircangle=-150 -30
+}%
+\newpsstyle{OptCircArrow}{unit=0.8, arrows=->}
 %    \end{macrocode}
 %
 % Fiberbox
@@ -7474,10 +7534,10 @@
 }%
 \define@boolkey[psset]{optexp}[POE@]{beaminside}[true]{}%
 \define@boolkey[psset]{optexp}[POE@]{raytrace}[true]{}%
-\define@choicekey+[psset]{optexp}{beamref}%
+\define@choicekey+[psset]{optexp}{beamalign}%
   [\val\nr]{relative,absolute}%
-  {\edef\POE@key@beamref{#1}}%
-  {\PackageError{pst-optexp}{Unknown beamref '\val'}}
+  {\edef\POE@key@beamalign{#1}}%
+  {\PackageError{pst-optexp}{Unknown beamalign '\val'}}
 \psset[optexp]{%
   raytrace=true
   ,startinside=false
@@ -7489,7 +7549,7 @@
   ,savebeampoints=true
   ,beamangle=0
   ,beampos=\@empty
-  ,beamref=relative
+  ,beamalign=relative
   ,beamwidth=0
   ,beamdiv=\@empty
   ,n=1.5
@@ -7581,10 +7641,10 @@
 \define@key[psset]{optexp}{fiberangleB}{%
   \pst@checknum{#1}\POE@key@fiberangleB
 }%
-\define@choicekey+[psset]{optexp}{fiberref}%
-  [\val\nr]{ref,tref,center,abs}%
-  {\edef\POE@key@fiberref{\val}}%
-  {\PackageError{pst-optexp}{Unknown fiberref '\val'}}%  
+\define@choicekey+[psset]{optexp}{fiberalign}%
+  [\val\nr]{relative,center,absolute}%
+  {\edef\POE@key@fiberalign{\val}}%
+  {\PackageError{pst-optexp}{Unknown fiberalign '\val'}}%  
 \define@key[psset]{optexp}{fiberstyle}{%
   \@ifundefined{nc#1}%
     {\PackageError{pst-optexp}{Unknown fiberstyle '#1'}}%
@@ -7592,7 +7652,7 @@
 \psset[optexp]{%
   fiberangleA=0,
   fiberangleB=0,
-  fiberref=tref,
+  fiberalign=relative,
   fiberstyle=curve
 }%
 %    \end{macrocode}
@@ -7726,21 +7786,21 @@
 % used to control the absolute fiber angles.
 %    \begin{macrocode}
       \ifx\psk@angleA\relax
-        \ifx\POE@key@fiberref\POE@str@fiberref@abs
+        \ifx\POE@key@fiberalign\POE@str@fiberalign@abs
           \psset{angleA=\POE@key@fiberangleA}%
         \else
           \psset{angleA=! \POE@dict{%
-            \POE@tempb \POE@tempa \POE@comps exch /\POE@key@fiberref\space RelFiberAngle
+            \POE@tempb \POE@tempa \POE@comps exch \POE@key@fiberalign\space RelFiberAngle
             \POE@key@fiberangleA\space add}
           }%
         \fi
       \fi
       \ifx\psk@angleB\relax
-        \ifx\POE@key@fiberref\POE@str@fiberref@abs
+        \ifx\POE@key@fiberalign\POE@str@fiberalign@abs
           \psset{angleB=\POE@key@fiberangleB}%
         \else
           \psset{angleB=! \POE@dict{%
-            \POE@tempa \POE@tempb \POE@comps /\POE@key@fiberref\space RelFiberAngle
+            \POE@tempa \POE@tempb \POE@comps \POE@key@fiberalign\space RelFiberAngle
             \POE@key@fiberangleB\space add}
           }%
         \fi
@@ -7791,11 +7851,11 @@
      /startinside \ifPOE@startinside true \else false \fi def
      /stopinside \ifPOE@stopinside true \else false \fi def
      /connectifc \ifPOE@raytrace false \else true \fi def
-     /beamangleabs 
-       \ifx\POE@key@beamref\POE@str@absolute\space 
-         true 
+     /beamalign 
+       \ifx\POE@key@beamalign\POE@str@absolute\space 
+         absolute
        \else 
-         false 
+         relative
        \fi def
      /skipconn \POE@key@skipconn\space def
   }%
@@ -9185,6 +9245,7 @@
     {\optcirculator@i@(#1)(#2)(#3){}}%
 }%
 \def\optcirculator@i@(#1)(#2)(#3)#4{%
+  \addafter@par{ref@angle=180}%
   \begin@OptexpFiberObj
     \ifPOE@backlayer
       \POE@regNodes{#1}{#3}
@@ -9217,7 +9278,7 @@
             \drawfiber@{FiberOut1}[startnode=N]{\POE@key@compname}{(#3)}
           \fi
           \ifPOE@fiberout@bottom
-            \drawfiber@{FiberOut2}[startnode=2, fiberref=center]{\POE@key@compname}{(#2)}
+            \drawfiber@{FiberOut2}[startnode=2, fiberalign=center]{\POE@key@compname}{(#2)}
           \fi
         \fi
       \fi
@@ -11116,7 +11177,10 @@
 \def\optcirculator@comp{%
   \edef\@sz{\POE@key@optcircsize\space 0.5 mul }%
   \pscircle(0,0){! \@sz}
-  \psarc[style=OptCircArrow, arrows=->](0,0){! \POE@key@optcircsize\space 0.5 mul}{-150}{-30}
+  \psarc[style=OptCircArrow](0,0)%
+    {! \POE@key@optcircsize\space 0.5 mul}%
+    {\POE@key@optcircangleA}%
+    {\POE@key@optcircangleB}
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -11604,6 +11668,7 @@ tx@OptexpDict begin
 % 
 % Define some constants.
 %    \begin{macrocode}
+/relative 0 def /absolute 1 def /center 2 def
 /refl 0 def /trans 1 def
 /desc 0 def /asc 1 def /amb 2 def
 /missed 0 def /tir 1 def /ok 2 def
@@ -12023,7 +12088,7 @@ tx@OptexpDict begin
   counttomark /N ED
   PrearrangePlanes
   PushAllPlanesOnStack
-  beamangleabs not {
+  beamalign relative eq {
     2 copy /InVec load TransformInVec
   } {
     /InVec load
@@ -12247,7 +12312,7 @@ tx@OptexpDict begin
 % If the \opt{beamangle} is not absolute, use the connection between the first
 % two planes as reference and transform the input vectors accordingly.
 %    \begin{macrocode}
-  beamangleabs not {
+  beamalign relative eq {
     2 copy /InvecLow load TransformInVec /CurrVecLow ED
     2 copy /InvecUp load TransformInVec /CurrVecUp ED
   } {
@@ -13150,11 +13215,11 @@ tx@OptexpDict begin
 % Calculate start angle of \cs{nccurve} from CompA to CompB
 %
 % \begin{pssyntax}
-%   \PSvar{Xb Yb Xa Ya A B} \PSname{angleproc} \PSop{RelFiberAngle} \PSvar{angle}
+%   \PSvar{Xb Yb Xa Ya A B} \PSvar{fiberalign} \PSop{RelFiberAngle} \PSvar{angle}
 % \end{pssyntax}
 %    \begin{macrocode}
 /RelFiberAngle {
-  nametostr (RelFiberAngle@) exch strcat cvn load /angleproc ED
+  /fiberalign ED
   dup xcheck not { nametostr } if /CompB ED
   dup xcheck not { nametostr } if /CompA ED
   /CompA load xcheck {
@@ -13176,7 +13241,9 @@ tx@OptexpDict begin
 % on stack: Xb-Xa Yb-Ya Xb Yb Xb Yb Xbc Ybc
 %    \begin{macrocode}
       4 2 roll @ABVect 4 2 roll
-      CompB angleproc 2 copy exch atan
+      CompB 
+      fiberalign center eq { RelFiberAngle@center }{ RelFiberAngle@ref } ifelse
+      2 copy exch atan
       7 3 roll 2 copy 9 -2 roll
       SProd 0 gt 5 1 roll SProd 0 gt xor { 180 add } if
     } ifelse
@@ -13192,7 +13259,8 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % on stack: Xac-Xa Yac-Xa Xa Ya
 %    \begin{macrocode}
-    CompA angleproc 2 copy exch atan
+    CompA fiberalign center eq { RelFiberAngle@center }{ RelFiberAngle@tref } ifelse
+    2 copy exch atan
 %    \end{macrocode}
 % Xac-Xa Yac-Ya XaB-XaA YaB-YaA angleTrefline
 %    \begin{macrocode}
