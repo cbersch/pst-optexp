@@ -66,6 +66,51 @@
 \providecommand\OFF{\xdef\lst@alloverstyle##1{##1}}
 \makeatother
 \begin{document}
+\begin{pspicture}[showgrid=true](3,3)
+  \optbox[labelref=global, showoptdots](0,1)(3,1){label}
+\end{pspicture}
+\end{document}
+\begin{pspicture}(3,3)
+  \pnode(1, 0.5){A}\pnode(2.5,0.5){B}\pnode(2.5,2){C}
+  \psset{fiber=none, optbox=1 0.6, label=0 . . relative}
+  \optbox[endbox](B)(A){start}
+  \optbox[endbox](B)(C){stop}
+  \drawfiber[fiberstyle=diag, linearc=0.5]{1}{2}
+\end{pspicture}
+\end{document}
+\begin{pspicture}(13,5.5)
+\psset{usefiberstyle, optboxwidth=1, labelstyle=\footnotesize, fiber=none}
+\pnode(1,5){LD}\pnode([Xnodesep=5.5]LD){CPLin1}
+\pnode([offset=-2]CPLin1){CPLin2}\pnode([Xnodesep=2.5]CPLin1){CPLout1}
+\pnode([Xnodesep=2.5]CPLin2){CPLout2}\pnode([Xnodesep=3]CPLout1){RX}
+\optbox[endbox, labeloffset=0](CPLin1)(LD){LD}
+\optmzm[abspos=0.8](LD)(CPLin1){MZM}
+\optamp[abspos=2](LD)(CPLin1){EDFA}
+\optfilter[abspos=3](LD)(CPLin1){BPF}
+\optswitch[abspos=4](LD)(CPLin1){SW}
+\polcontrol[abspos=5, fiber=out](LD)(CPLin1)
+\drawfiber{1}{2}{3}{4}{5}{6}
+\optcoupler[couplertype=none, fiber](CPLin1)(CPLin2)(CPLout1)(CPLout2)
+\optamp[abspos=0.8, fiber=in](CPLout1)(RX){EDFA}
+\optfilter[abspos=2](CPLout1)(RX){BPF}
+\optbox[endbox](CPLout1)(RX){RX}
+\drawfiber{8}{9}{10}
+\pnode([Xnodesep=-0.5]LD|CPLin2){TL}\pnode(RX|TL){TR}
+\pnode([offset=-2.5]TR){BR}\pnode(TL|BR){BL}
+\optamp[fiber=i](CPLout2)(TR){EDFA}
+\optfiber[label=0.3 . t, position=0.85](BL)(BR){SSMF 89.8~km}
+\drawfiber[fiberstyle=angle, arm=1.2, linearc=0.5, startnode=N]{11}{12}
+\optamp[position=0.3](BR)(BL){EDFA}
+\optfilter[position=0.55, labelangle=180](BL)(BR){BPF}
+\optfiber[fiberloops=1, label=0.3 . t, position=0.35](BL)(BR){DCF 16.2~km}
+\optamp[position=0.85](BR)(BL){EDFA}
+\optfilter[position=0.2](TL)(CPLin2){BPF}
+\optswitch(TL)(CPLin2){SW}
+\polcontrol[position=0.8, fiber=out](TL)(CPLin2)
+\drawfiber{12}{13}{14}{15}{16}\drawfiber{17}{18}{19}
+\drawfiber[fiberstyle=angle, arm=0.5, linearc=0.5, stopnode=1]{16}{17}
+\end{pspicture}
+
 \begin{pspicture}[showgrid](3,3)
   \addtopsstyle{Fiber}{arrows=->, linecolor=DOrange}
   \newpsstyle{OptCircArrow}{unit=0.7, arrowinset=0}
