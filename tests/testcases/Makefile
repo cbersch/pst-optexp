@@ -1,33 +1,25 @@
-### Makefile ---  
-
-## Author: cbersch@ioip0136
-## Version: $Id: Makefile,v 0.0 2008/09/12 10:20:31 cbersch Exp $
-## Keywords: 
-## X-URL: 
-#
-# This Makefile compiles TeX files containing
-# TeXtoEPS environments to eps with automatically adjusted
-# bounding box and then to pdf
-# 
-# When using target 'all', all .tex files in the directory are
-# compiled
-#
 LATEX = latex -interaction=nonstopmode
 OBJECTS=$(shell ls *.tex)
 FILELIST=$(basename $(OBJECTS))
 POE=$(shell kpsewhich pst-optexp.sty pst-optexp.pro)
+GENTEX=connectall doc-examples testcases
+TESTCASE_HEADER=header
 
-.PHONY: all clean veryclean
+.PHONY: all veryclean
 
-.SECONDARY: $(addsuffix .ps, $(FILELIST))
+.INTERMEDIATE: $(addsuffix .tex, $(GENTEX)) $(addsuffix .tmp, $(FILELIST))
 
-all: $(addsuffix .pdf, $(FILELIST))
+all: $(addsuffix .pdf, $(FILELIST) $(GENTEX))
 
 connectall.tex: connectall.py $(POE)
 	./connectall.py
 
-doc-examples.tex: ../../pst-optexp.dtx extract-doc-examples.py $(POE)
-	./extract-doc-examples.py
+doc-examples.tex: ../../pst-optexp.dtx doc-examples.py $(POE)
+	./doc-examples.py
+
+testcases.tex: $(addsuffix .tex, $(filter-out $(GENTEX) $(TESTCASE_HEADER), $(FILELIST)))
+	@{ $(foreach file, $(basename $^), 
+		echo "\bgroup\section{$(file)}\input{$(file)}\egroup";) } > $@
 
 %.pdf: %.ps
 	ps2pdf $<
@@ -36,11 +28,9 @@ doc-examples.tex: ../../pst-optexp.dtx extract-doc-examples.py $(POE)
 	dvips -q $< 2>&1 >/dev/null
 
 %.dvi: %.tex $(POE)
-	$(LATEX) $< 2>&1 >/dev/null 
+	$(LATEX) -jobname=$* '\input{header}\input{$<}\end{document}' 2>&1 >/dev/null 
 	rm -f $*.aux $*.log
 
-clean: clean
-	$(RM) $(addsuffix .ps, $(FILELIST)) \
-	      $(addsuffix .pdf, $(FILELIST))
-
-### Makefile ends here
+veryclean: 
+	$(RM) $(addsuffix .pdf, $(FILELIST)) \
+	      $(addsuffix .ps, $(FILELIST))

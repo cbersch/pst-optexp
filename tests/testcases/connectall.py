@@ -50,19 +50,19 @@ def dipole_testcases(dipole, options, i):
     widebeam = "\\drawwidebeam[%s]{(A)}{D%dC%d}{(B)}\n"
 
     testcase = "\\subsection{Drawing single beams}\n"
-    testcase += "\\begin{pspicture}[showgrid=true](14,5)\\newpsstyle{Beam}{beamInside=false}\n"
+    testcase += "\\begin{pspicture}[showgrid=true](14,5)\\newpsstyle{Beam}{beaminside=false}\n"
     testcase += device % (0, 0, 0, 0, dipole, options, i, 1)
-    testcase += beam % ("startpos=0.1, linecolor=red", i, 1)
-    testcase += beam % ("startpos=0, linecolor=black", i, 1)
-    testcase += beam % ("startpos=-0.1, linecolor=green", i, 1)
+    testcase += beam % ("beampos=0.1, linecolor=red", i, 1)
+    testcase += beam % ("beampos=0, linecolor=black", i, 1)
+    testcase += beam % ("beampos=-0.1, linecolor=green", i, 1)
     testcase += device % (0, 1.5, 0, 1.5, dipole, options, i, 2) 
-    testcase += beam % ("startpos=0.1, beamangle=-3, linecolor=red", i, 2)
-    testcase += beam % ("startpos=0, beamangle=-3, linecolor=black", i, 2)
-    testcase += beam % ("startpos=-0.1, beamangle=-3, linecolor=green", i, 2)
+    testcase += beam % ("beampos=0.1, beamangle=-3, linecolor=red", i, 2)
+    testcase += beam % ("beampos=0, beamangle=-3, linecolor=black", i, 2)
+    testcase += beam % ("beampos=-0.1, beamangle=-3, linecolor=green", i, 2)
     testcase += device % (0, 3, 0, 3, dipole, options, i, 3)
-    testcase += beam % ("startpos=0.1, beamangle=3, linecolor=red", i, 3)
-    testcase += beam % ("startpos=0, beamangle=3, linecolor=black", i, 3)
-    testcase += beam % ("startpos=-0.1, beamangle=3, linecolor=green", i, 3)
+    testcase += beam % ("beampos=0.1, beamangle=3, linecolor=red", i, 3)
+    testcase += beam % ("beampos=0, beamangle=3, linecolor=black", i, 3)
+    testcase += beam % ("beampos=-0.1, beamangle=3, linecolor=green", i, 3)
     testcase += r"\end{pspicture}" + "\n\\vspace{1cm}\n\n"
 
     testcase += "\\subsection{Drawing wide beams}\n"

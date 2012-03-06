@@ -1,7 +1,3 @@
-\documentclass[DIV9]{scrartcl}
-\usepackage{pst-optexp}
-\usepackage{bera}
-\begin{document}
 \psset{unit=1.2}
 \section*{Dipoles}
 \addtopsstyle{Beam}{arrows=->, arrowinset=0, arrowscale=1.5}
@@ -46,15 +42,6 @@
       \csname #1\endcsname[extnode=b](A)(B)
       \psdot(\oenodeExt{})\uput[180](\oenodeExt{}){\ttfamily\footnotesize b}
     }
-    \rput[bl](0,-0.4){\ttfamily\textbackslash #1}
-  \end{pspicture}
-}%
-\newcommand{\showdipoleoneifc}[1]{%
-  \begin{pspicture}(0,-0.5)(3,1) 
-    \pnode(0,0.5){A}\pnode(3,0.5){B}
-    \csname #1\endcsname(A)(B)
-    \drawbeam{(A)}{}{(B)}
-    \psdot(\oenodeIn{})\uput[-135](\oenodeIn{}){1, N}
     \rput[bl](0,-0.4){\ttfamily\textbackslash #1}
   \end{pspicture}
 }%
@@ -153,7 +140,7 @@
 \end{pspicture}%
 
 \section*{Fiber dipoles}
-\newcommand{\showfdipoleifc}[1]{%
+\newcommand{\showfdipoleref}[1]{%
   \begin{pspicture}(0,-0.5)(3,1) 
     \pnode(0,0.5){A}\pnode(3,0.5){B}
     \csname #1\endcsname(A)(B)
@@ -163,28 +150,28 @@
   \end{pspicture}%
 }%
 \addtopsstyle{Fiber}{ArrowInside=->, ArrowInsidePos=0.6, arrowscale=1.5, arrowinset=0, linecolor=red}
-\showfdipoleifc{optfiber}\hspace{\fill}%
-\showfdipoleifc{optamp}\hspace{\fill}%
-\showfdipoleifc{optmzm}%
+\showfdipoleref{optfiber}\hspace{\fill}%
+\showfdipoleref{optamp}\hspace{\fill}%
+\showfdipoleref{optmzm}%
 \bigskip
 
-\noindent\showfdipoleifc{optfilter}\hspace{\fill}%
+\noindent\showfdipoleref{optfilter}\hspace{\fill}%
 \begin{pspicture}(0,-0.5)(3,1)
   \pnode(0,0.5){A}\pnode(3,0.5){B}
   \polcontrol(A)(B)
   \psdot(\oenodeIn{})\uput[-90](\oenodeIn{}){1, N}
   \rput[bl](0,-0.4){\ttfamily\textbackslash polcontrol}
 \end{pspicture}\hspace{\fill}%
-\showfdipoleifc{optisolator}%
+\showfdipoleref{optisolator}%
 \bigskip
 
-\noindent\showfdipoleifc{optswitch}\hspace{\fill}%
-\showfdipoleifc{fiberdelayline}\hspace{\fill}%
-\showfdipoleifc{optfiberpolarizer}%
+\noindent\showfdipoleref{optswitch}\hspace{\fill}%
+\showfdipoleref{fiberdelayline}\hspace{\fill}%
+\showfdipoleref{optfiberpolarizer}%
 \bigskip
 
 \bgroup\psset{beam}
-\noindent\showfdipoleifc{fibercollimator}\egroup
+\noindent\showfdipoleref{fibercollimator}\egroup
 \bigskip
 
 \noindent\begin{pspicture}(0,-0.5)(3,1.5)
@@ -214,4 +201,3 @@
   \psdot(\oenodeOut{})\uput[-90](\oenodeOut{}){N}
   \rput[bl](0,-0.4){\ttfamily\textbackslash optcoupler}
 \end{pspicture}%
-\end{document}
