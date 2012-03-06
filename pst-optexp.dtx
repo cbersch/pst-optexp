@@ -9383,6 +9383,34 @@
 }%
 %    \end{macrocode}
 % \end{macro}
+%
+% \begin{macro}{\POE@nlput}
+%    \begin{macrocode}
+\def\POE@nlput{\pst@object{POE@nlput}}
+\def\POE@nlput@i(#1)(#2)#3#4{%
+  \begin@SpecialObj
+  \POE@LDNode(#1)(#2){#3}{temp@lnput}
+  \pcline[linestyle=none](#1)(temp@lnput)%
+  \ncput[npos=1]{#4}%
+  \end@SpecialObj}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\POE@LDNode}
+%    \begin{macrocode}
+\def\POE@LDNode(#1)(#2)#3#4{%  
+  \pst@getcoor{#1}\pst@tempA%
+  \pst@getcoor{#2}\pst@tempB%
+  \pnode(!%
+    \pst@tempA \tx@UserCoor /YA ED /XA ED
+    \pst@tempB \tx@UserCoor /YB ED /XB ED
+    /dx XB XA sub def
+    /dy YB YA sub def
+    /angle dy dx Atan def
+    XA #3 angle cos mul add YA #3 angle sin mul add ){#4}%
+}
+%    \end{macrocode}
+% \end{macro}
 % 
 % \begin{macro}{\POE@putlabelrelative}
 % Used to put the label for labelref=relative
@@ -9399,22 +9427,21 @@
 %   Place the component in argument \#1 and define a new node
 %   \oenodeLabel{} for positioning of the label.
 %    \begin{macrocode}
-\def\POE@putcomp#1#2{%
-  \@ifundefined{#1@ref}{}{\@nameuse{#1@ref}}%
+\def\POE@putcomp#1{%
    \rput(! \POE@key@comp@Xshift\space\POE@key@comp@Yshift){%
      \pnode(! \POE@dict{
        \POE@key@rotate@xref\space
        \POE@key@rotate@yref\space
        ExtNode}){\oenodeRotref{}}%
      \ifdim\POE@key@angle pt=0pt
-        #2%
+        #1%
         \POE@pnode@shiftedrot(0,\POE@key@labeloffset)%
                              {\oenodeCenter{}}%
                              {\oenodeLabel{}}%
                              {\POE@key@labelangle}%
      \else
         \psrotate(\oenodeRotref{}){\POE@key@angle}{%
-          #2%
+          #1%
           \POE@pnode@shiftedrot(0,\POE@key@labeloffset)%
                                {\oenodeCenter{}}%
                                {\oenodeLabel{}}%
@@ -9466,7 +9493,7 @@
 %    \end{macrocode}
 % Rotate label node and label text with the component.
 %    \begin{macrocode}
-  \else\ifx\POE@key@labelref\POE@str@labelref@relative
+  \else\ifx\POE@key@labelref\POE@str@relative
     \begingroup
 %    \end{macrocode}
 % Redefine InitNC only for positioning of the label with labelref=relative
@@ -9491,7 +9518,7 @@
         \ifx\POE@key@abspos\@empty
           \ncput[nrot=:U,npos=]{\POE@putlabelrelative{#1}}%
         \else
-          \nlput[nrot=:U](\POE@trefnodeA)(\POE@trefnodeB){\POE@key@abspos}{\POE@putlabelrelative{#1}}%
+          \POE@nlput[nrot=:U](\POE@trefnodeA)(\POE@trefnodeB){\POE@key@abspos}{\POE@putlabelrelative{#1}}%
         \fi
       \else
         \ncput[nrot=:U, npos=\POE@key@position]{\POE@putlabelrelative{#1}}%
@@ -9685,11 +9712,9 @@
       \fi
     \fi
   }%
+  \@ifundefined{#1@ref}{}{\@nameuse{#1@ref}}%
   \ifPOE@endbox%
-    \ifx\POE@key@labeloffset\@empty
-      \psset[optexp]{labeloffset=0}%
-    \fi
-    \psset[optexp]{position=1}%
+    \psset[optexp]{abspos={\POE@dict{ /N@\POE@refnodeA\space @GetCenter \tx@UserCoor /N@\POE@refnodeB\space @GetCenter \tx@UserCoor @ABDist @@x0 @@x add add }}}%
   \fi%
   \POE@disablepos
   \ncline[linestyle=none,fillstyle=none,npos=]{\POE@refnodeA}{\POE@refnodeB}%
@@ -9712,12 +9737,12 @@
 % Then check if absolute positioning with \opt{abspos} is wanted.
 %    \begin{macrocode}
       \ifx\POE@key@abspos\@empty
-        \ncput[nrot=:U,npos=]{\POE@putcomp{#1}{\@@comp}}%
+        \ncput[nrot=:U,npos=]{\POE@putcomp{\@@comp}}%
       \else
-        \nlput[nrot=:U](\POE@refnodeA)(\POE@refnodeB){\POE@key@abspos}{\POE@putcomp{#1}{\@@comp}}%
+        \POE@nlput[nrot=:U](\POE@refnodeA)(\POE@refnodeB){\POE@key@abspos}{\POE@putcomp{\@@comp}}%
       \fi
     \else
-      \ncput[nrot=:U,npos=\POE@key@position]{\POE@putcomp{#1}{\@@comp}}%
+      \ncput[nrot=:U,npos=\POE@key@position]{\POE@putcomp{\@@comp}}%
     \fi
   \endgroup
   \ifPOE@backlayer
@@ -10323,9 +10348,6 @@
     /@@x \POE@key@optboxwidth\space 0.5 mul def
     /@@y \POE@key@optboxheight\space 0.5 mul def
   }%
-  \ifPOE@endbox
-    \POE@Verb{/@@x0 @@x def}%
-  \fi
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -10335,11 +10357,7 @@
 \def\optbox@comp{%
   \edef\@wd{\POE@key@optboxwidth\space 0.5 mul }
   \edef\@ht{\POE@key@optboxheight\space 0.5 mul }
-  \ifPOE@endbox
-    \psframe[dimen=outer](! 0 \@ht neg)(! \@wd 2 mul \@ht)
-  \else
-    \psframe[dimen=outer](! \@wd neg \@ht neg)(! \@wd \@ht)
-  \fi
+  \psframe[dimen=outer](! \@wd neg \@ht neg)(! \@wd \@ht)
 \ignorespaces}%
 %    \end{macrocode}
 % \end{macro}
@@ -10368,9 +10386,10 @@
 % \begin{macro}{\optdetector@ref}
 %    \begin{macrocode}
 \def\optdetector@ref{%
-  \POE@Verb{/@@x0 \POE@key@detsize\space 0.5 mul def}%
   \ifx\POE@key@dettype\POE@str@dettype@diode
-    \POE@Verb{ @@x0 dup /@@x ED /@@y ED}%
+    \POE@Verb{ \POE@key@detsize\space 0.5 mul dup /@@x ED /@@y ED }%
+  \else 
+    \POE@Verb{ \POE@key@detsize\space 0.5 mul dup /@@y ED 0.5 mul /@@x ED }%
   \fi
 }%
 %    \end{macrocode}
@@ -10379,12 +10398,12 @@
 % \begin{macro}{\optdetector@nodes}
 %    \begin{macrocode}
 \def\optdetector@nodes{%
-  \newOptexpComp{{ 0 0} { 0 1 } refl {PlaneIfc} 1 }%
   \ifx\POE@key@dettype\POE@str@dettype@round
-    \pnode(! \POE@key@detsize\space 0.2 mul 0){\oenodeCenter{}}%
-  \else\ifx\POE@key@dettype\POE@str@dettype@diode
-    \pnode(! \POE@key@detsize\space 0.5 mul 0){\oenodeCenter{}}
-  \fi\fi
+    \newOptexpComp{{ \POE@key@detsize\space -0.25 mul 0} { 0 1 } refl {PlaneIfc} 1 }%
+    \pnode(! \POE@key@detsize\space -0.05 mul 0){\oenodeCenter{}}%
+  \else
+    \newOptexpComp{{ \POE@key@detsize\space -0.5 mul 0} { 0 1 } refl {PlaneIfc} 1 }%
+  \fi
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -10399,22 +10418,22 @@
 % depending on the current linewidth is not possible
 %    \begin{macrocode}
          \addto@pscode{%
-           CLW 0.5 mul 0 
+           CLW 0.5 mul \POE@key@detsize\space\pst@number\psxunit mul -0.25 mul 0 
            \POE@key@detsize\space\pst@number\psrunit mul 0.5 mul 
            CLW sub -90 90 arc closepath }%
       \end@ClosedObj
    \else\ifx\POE@key@dettype\POE@str@dettype@diode
       \edef\@sz{\POE@key@detsize\space 0.5 mul }%
-      \psframe[dimen=outer](! 0 \@sz neg)(!\@sz 2 mul \@sz)
-      \pspolygon(! \@sz 0.8 mul \@sz -0.4 mul)%
-             (! \@sz 1.6 mul \@sz -0.4 mul)%
-             (! \@sz 1.2 mul \@sz 0.4 mul)%
-      \psline(! \@sz 0.8 mul \@sz 0.4 mul \getCLWH add)%
-             (! \@sz 1.6 mul \@sz 0.4 mul \getCLWH add)
+      \psframe[dimen=outer](! \@sz neg dup)(!\@sz dup)
+      \pspolygon(! \@sz -0.2 mul \@sz -0.4 mul)%
+             (! \@sz 0.6 mul \@sz -0.4 mul)%
+             (! \@sz 0.2 mul \@sz 0.4 mul)%
+      \psline(! \@sz -0.2 mul \@sz 0.4 mul \getCLWH add)%
+             (! \@sz 0.6 mul \@sz 0.4 mul \getCLWH add)
       \psset{arrows=->, arrowinset=0, arrowscale=0.8}
-      \psline(! \@sz 0.2 mul \@sz 0.3 mul)%
-             (! \@sz 0.7 mul \@sz 0.15 mul)
-      \psline(! \@sz 0.2 mul 0)(! \@sz 0.7 mul \@sz -0.15 mul)
+      \psline(! \@sz -0.8 mul \@sz 0.3 mul)%
+             (! \@sz -0.3 mul \@sz 0.15 mul)
+      \psline(! \@sz -0.8 mul 0)(! \@sz -0.3 mul \@sz -0.15 mul)
    \fi\fi
 \ignorespaces}%
 %    \end{macrocode}
