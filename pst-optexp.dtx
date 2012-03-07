@@ -5054,7 +5054,7 @@
   \optprism[n=1.8](A)([Xnodesep=2]A)(B)
   \addtopsstyle{Beam}{%
     fillcolor=green, fillstyle=solid, opacity=0.3}
-  \drawwidebeam[beamdiv=5]{A}{3}{B}
+  \drawwidebeam[beamdiv=10]{A}{3}{B}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -5115,7 +5115,7 @@
     fillstyle=solid, fillcolor=green, opacity=0.3}
   \psset{loadbeampoints}
   \drawwidebeam[beamwidth=0.2, stopinside]{(A)}{1}
-  \drawwidebeam[beamdiv=-30]{1}{2}
+  \drawwidebeam[beamdiv=-60]{1}{2}
   \drawwidebeam{2}{(B)}
   \end{optexp}
 \end{pspicture}
@@ -5632,9 +5632,9 @@
 \addtopsstyle{Beam}{n=1, fillstyle=solid, fillcolor=green, opacity=0.3}
 \psset{loadbeampoints}
 \drawwidebeam[beamwidth=0.2, stopinside]{(A)}{1}
-\drawwidebeam[beamdiv=30]{1}{2}
+\drawwidebeam[beamdiv=60]{1}{2}
 \drawwidebeam[stopinside]{2-4}
-\drawwidebeam[beamdiv=-30]{4}{5}
+\drawwidebeam[beamdiv=-60]{4}{5}
 \drawwidebeam{5}{(B)}
 \end{pspicture}
 \end{LTXexample}
@@ -6013,9 +6013,9 @@
 \psset{loadbeampoints}
 \addtopsstyle{Beam}{fillstyle=solid,fillcolor=green, opacity=0.3}
 \drawwidebeam[beamwidth=0.1, stopinside]{1}{4}
-\drawwidebeam[beamdiv=-10]{4}{6}
+\drawwidebeam[beamdiv=-20]{4}{6}
 \drawwidebeam[stopinside]{6-9}
-\drawwidebeam[beamdiv=-15]{9-10}
+\drawwidebeam[beamdiv=-30]{9-10}
 \end{optexp}
 \end{pspicture}
 \end{LTXexample}
@@ -6292,7 +6292,7 @@
   \pnode(1.6,2){In}\pnode(12, 2){Ref}
   \optplate[linestyle=dashed, plateheight=3, 
               position=1, compname=RefPlane](In)(Ref)
-  \addtopsstyle{Beam}{linestyle=none, beamdiv=10, beaminside=false, 
+  \addtopsstyle{Beam}{linestyle=none, beamdiv=20, beaminside=false, 
                         fillstyle=solid, fillcolor=red, opacity=0.3}
   \multido{\i=1+1, \ii=165+10}{4}{%
     \rput(Ref){\pnode(6;\ii){A\i}}
@@ -6329,7 +6329,7 @@
   \mirror(C)(D)(E)
   \pinhole[position=0.8](D)(E)
   \drawwidebeam[ArrowInside=->, beamwidth=0.2, linecolor=white,
-                  beamdiv=0.1 8 0.2 mul atan neg]{(A)}{1-3}
+                  beamdiv=0.1 8 0.2 mul atan neg 2 mul]{(A)}{1-3}
   \psset{loadbeampoints, savebeampoints=false}%
   \drawwidebeam[linecolor=green!60!white]{3-5}{(E)}
   \drawwidebeam[beamangle=3, linecolor=blue!60!white]{3-6}
@@ -7567,7 +7567,7 @@
   ,beampos=\@empty
   ,beamalign=relative
   ,beamwidth=0
-  ,beamdiv=\@empty
+  ,beamdiv=0
   ,n=1.5
   ,nmul=1
   ,nadd=0
@@ -8006,10 +8006,9 @@
     }%
     \POE@strokebeam
     \addto@pscode{%
-      savebeampoints { 
-        lastBeamPointTmp /N@\oenodeBeam
-      } if
-      savebeampoints }%
+      savebeampoints currentdict /lastBeamPointTmp known and dup { 
+        lastBeamPointTmp /N@\oenodeBeam\space 4 -1 roll
+      } if }%
   \fi
   \end@BeamObj
   \POE@Verb{ { \tx@NodeScale @NewNode } if }%
@@ -8049,8 +8048,7 @@
     {/nmul \POE@key@nmul\space def
      /nadd \POE@key@nadd\space def
      /nforce \POE@key@n\space def
-     /beamdiv \ifx\POE@key@beamdiv\@empty 0 \else 
-                  \POE@key@beamdiv\fi\space def
+     /beamdiv \POE@key@beamdiv\space def
     } %
   }%
 %    \end{macrocode}
@@ -8058,9 +8056,7 @@
 %    \begin{macrocode}
   \addto@pscode{%
     \POE@key@beamangle\space dup
-    \ifx\POE@key@beamdiv\@empty\else 
-      \POE@key@beamdiv\space dup 4 -1 roll add 3 1 roll sub
-    \fi
+    \POE@key@beamdiv\space 0.5 mul dup 4 -1 roll add 3 1 roll sub
   }%
 %    \end{macrocode}
 % the start positions
@@ -8126,20 +8122,25 @@
   \ifx\pslinestyle\@none
     \ifx\psk@fillstyle\relax\else
       \addto@pscode{%
-        savebeampoints {
+        savebeampoints
+        currentdict /TmpLastBeamPointLow known and
+        currentdict /TmpLastBeamPointUp known and dup {
           TmpLastBeamPointLow /N@\oenodeBeamLow\space
           TmpLastBeamPointUp /N@\oenodeBeamUp\space
+          7 -1 roll
         } if
-        savebeampoints
       }%
     \fi
   \else
     \addto@pscode{%
-      savebeampoints {
+      savebeampoints 
+      currentdict /lastBeamPointLow known and
+      currentdict /lastBeamPointUp known and dup {
         lastBeamPointLow /N@\oenodeBeamLow\space
         lastBeamPointUp /N@\oenodeBeamUp\space
+        7 -1 roll
       } if 
-      savebeampoints }%
+    }%
   \fi
   \end@BeamObj
   \POE@Verb{ { \tx@NodeScale @NewNode @NewNode } if }%
@@ -12242,11 +12243,11 @@ tx@OptexpDict begin
 % [ CompN ... Comp1 \PSproc{options} \PSproc{start point} \PSproc{input vector}
 %    \begin{macrocode}
 /Drawbeam {
-  counttomark 3 eq {
+  counttomark 3 le {
 %    \end{macrocode}
-% first ray misses the next interface
+% first ray misses the next interface or is even parallel to the input interface.
 %    \begin{macrocode}
-    pop pop pop pop
+    cleartomark
   }{
 %    \end{macrocode}
 % Go to start point
@@ -12261,7 +12262,7 @@ tx@OptexpDict begin
     } for
     {CP 4 2 roll ArrowB lineto pop pop } {moveto} ifelse
 %    \end{macrocode}
-% remove [
+% remove the mark
 %    \begin{macrocode}
     pop
   } ifelse
@@ -12297,7 +12298,8 @@ tx@OptexpDict begin
     /lastBeamPointLow load /lastBeamPointTmp ED
   } if
   TraceBeam
-  savebeampoints {
+  savebeampoints 
+  currentdict /lastBeamPointTmp known and {
     /lastBeamPointTmp load /lastBeamPointLow ED
     /lastVec load /lastVecLow ED
   } if
@@ -12307,9 +12309,14 @@ tx@OptexpDict begin
   } if
   counttomark 1 add dup numComp 4 add add exch roll
   TraceBeam
-  savebeampoints {
+  savebeampoints 
+  currentdict /lastBeamPointTmp known and {
     /lastBeamPointTmp load /lastBeamPointUp ED
     /lastVec load /lastVecUp ED
+  } if
+  savebeampoints
+  currentdict /lastBeamPointUp known and
+  currentdict /lastBeamPointLow known and {
     lastBeamPointUp lastBeamPointLow @ABVect 
     lastVecUp lastVecLow 3 -1 roll add 3 1 roll add exch
     4 -1 roll mul 3 1 roll mul sub 0 gt {
