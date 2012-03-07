@@ -31,25 +31,16 @@ tripoles=("mirror",
           "rightangleprism",
           "optprism")
 
-document=r"""\documentclass{scrartcl}
-\usepackage[latin1]{inputenc}
-\usepackage[T1]{fontenc}
-\usepackage[ngerman]{babel}
-\usepackage{lmodern}
-\usepackage{textcomp}
-\usepackage{pst-optexp}
-\title{Automatically generated testcases for all device macros provided by pst-optexp and connections of them}
-\begin{document}
-\maketitle
+document=r"""\section{Automatically generated testcases for all device macros provided by pst-optexp and connections of them}
 """
 
 def dipole_testcases(dipole, options, i):
-    start = "\\section{%s with options %s}\n" % (dipole, options)
+    start = "\\subsection{%s with options %s}\n" % (dipole, options)
     device = "\\pnode(! 0 %f add 0.5 %f add){A}\n\\pnode(! 4 %f add 0.5 %f add){B}\n\\%s[%s, compname=D%dC%d](A)(B)\n"
     beam = "\\drawbeam[%s]{(A)}{D%dC%d}{(B)}\n"
     widebeam = "\\drawwidebeam[%s]{(A)}{D%dC%d}{(B)}\n"
 
-    testcase = "\\subsection{Drawing single beams}\n"
+    testcase = "\\subsubsection{Drawing single beams}\n"
     testcase += "\\begin{pspicture}[showgrid=true](14,5)\\newpsstyle{Beam}{beaminside=false}\n"
     testcase += device % (0, 0, 0, 0, dipole, options, i, 1)
     testcase += beam % ("beampos=0.1, linecolor=red", i, 1)
@@ -65,12 +56,12 @@ def dipole_testcases(dipole, options, i):
     testcase += beam % ("beampos=-0.1, beamangle=3, linecolor=green", i, 3)
     testcase += r"\end{pspicture}" + "\n\\vspace{1cm}\n\n"
 
-    testcase += "\\subsection{Drawing wide beams}\n"
+    testcase += "\\subsubsection{Drawing wide beams}\n"
     testcase += r"\begin{pspicture}[showgrid=true](14,6)\newpsstyle{Beam}{fillstyle=solid, fillcolor=red, opacity=0.2}"
     testcase += (device % (0, 0, 0, 0, dipole, options, i, 4)) + (widebeam % ("beamwidth=0.1", i, 4))
     testcase += (device % (0, 1.5, 0, 1.5, dipole, options, i, 5)) + (widebeam % ("beamangle=3, beamwidth=0.1", i, 5))
     testcase += (device % (0, 3, 0, 3, dipole, options, i, 6)) + (widebeam % ("beamangle=-3, beamwidth=0.1", i, 6))
-    testcase += (device % (0, 4.5, 0, 4.5, dipole, options, i, 7)) + (widebeam % ("beamwidth=0.1, beamdiv=5", i, 7))
+    testcase += (device % (0, 4.5, 0, 4.5, dipole, options, i, 7)) + (widebeam % ("beamwidth=0.1, beamdiv=10", i, 7))
     testcase += r"\end{pspicture}" + "\n\\vspace{1cm}\n\n"
     return start + testcase
 
@@ -84,8 +75,6 @@ for d in dipoles:
         dipole = d
     document += dipole_testcases(dipole, opt, i)
     i += 1
-
-document += r"\end{document}"
 
 f = open("connectall.tex", "w")
 print >> f, document
