@@ -2412,7 +2412,7 @@
 % \fi
 \begin{LTXexample}[morekeywords={[21]{optdiode}}] 
 \begin{pspicture}(3,2)
-   \optdiode[beam, beaminside=false](0,1)(3,1){Diode}
+   \optdiode[beam](0,1)(3,1){Diode}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -3784,7 +3784,7 @@
 \begin{LTXexample}
 \begin{pspicture}(3,1.5)
   \optfilter[fiber=none](0,1)(3,1)
-  \addtopsstyle{Beam}{beaminside=false, beamwidth=0.3,
+  \addtopsstyle{Beam}{beamwidth=0.3,
       fillstyle=solid, fillcolor=green, opacity=0.2}
   \drawwidebeam{(0,1)}{}{(3,1)}
 \end{pspicture}
@@ -8677,7 +8677,9 @@
 \def\newOptexpComp@#1#2{%
   \POE@Verb{%
     \tx@NodeScale
-    [ #1 (\oenode{}{}) {\tx@ScreenCoor} #2 NewOptexpComp
+    [ #1 #2 \ifPOE@beaminside true \else false \fi
+      (\oenode{}{}) {\tx@ScreenCoor} 
+      NewOptexpComp
   }%
 \ignorespaces}%
 %    \end{macrocode}
@@ -9543,7 +9545,7 @@
 \newOptexpDipole{optplate}{}%
 \newOptexpDipole{optretplate}{}%
 \newOptexpDipole[endbox]{optdetector}{}%
-\newOptexpDipole{optdiode}{}%
+\newOptexpDipole{optdiode}{beaminside=false}%
 \newOptexpDipole{doveprism}{}%
 %    \end{macrocode}
 % 
@@ -9675,7 +9677,7 @@
 \newOptexpFiberDipole{optfiber}{newOptComp={}}
 \newOptexpFiberDipole{optamp}{}
 \newOptexpFiberDipole{optmzm}{}
-\newOptexpFiberDipole{optfilter}{}
+\newOptexpFiberDipole{optfilter}{beaminside=false}
 \newOptexpFiberDipole{polcontrol}{}
 \newOptexpFiberDipole{optisolator}{}
 \newOptexpFiberDipole{optfiberpolarizer}{}
@@ -10390,7 +10392,7 @@
   \ifx\POE@key@dettype\POE@str@dettype@diode
     \POE@Verb{ \POE@key@detsize\space 0.5 mul dup /@@x ED /@@y ED }%
   \else 
-    \POE@Verb{ \POE@key@detsize\space 0.5 mul dup /@@y ED 0.5 mul /@@x ED }%
+    \POE@Verb{ \POE@key@detsize\space 0.25 /@@x0 ED }%
   \fi
 }%
 %    \end{macrocode}
@@ -11631,6 +11633,7 @@ tx@OptexpDict begin
   dup cvn
   6 dict dup 3 1 roll def begin
     /ambiguous false def
+    /beaminside false def
     /name ED
     /correct false def
 %    \end{macrocode}
@@ -11779,16 +11782,16 @@ tx@OptexpDict begin
 %
 % \begin{pssyntax}
 %   \PSvar{[} \PSproc{x y} \PSproc{dx dy | rx ry} \PSvar{type}
-%   \PSproc{\ldots Ifc} \PSvar{\ldots{} n correct?} \PSstring{CompName}
-%   \PSproc{scaling} \PSvar{amb?} \PSop{NewOptexpComp}
+%   \PSproc{\ldots Ifc} \PSvar{\ldots{} n correct? amb? beaminside?} 
+%   \PSstring{CompName} \PSproc{scaling} \PSop{NewOptexpComp}
 % \end{pssyntax}
 %    \begin{macrocode}
 /NewOptexpComp {
-  3 1 roll /sc ED 
-  dup cvn
+  /sc ED dup cvn
   gsave
-  11 dict dup 3 1 roll def begin
+  12 dict dup 3 1 roll def begin
   /name ED
+  /beaminside ED
   /ambiguous ED
   dup type /booleantype eq not { false } if /correct ED
   tx@Dict begin
@@ -12729,8 +12732,9 @@ tx@OptexpDict begin
       } {
         beaminside
       } ifelse
-    } ifelse /drawinside ED
-    load dup /ambiguous get {
+    } ifelse 
+    exch load dup dup /beaminside get 4 -1 roll and /drawinside ED
+    /ambiguous get {
       /name get drawinside [ 3 1 roll ]
       counttomark 1 roll pop
     } {
