@@ -251,7 +251,7 @@
   \ifblank{#1}
     {}
     {\settowidth\@tempdimb{default: \ltd@textverb{#1}}%
-     \@tempdima=\dimexpr\@tempdima-\@tempdimb-2em\relax}%
+     \@tempdima=\dimexpr\@tempdima-\@tempdimb-4em\relax}%
   \parbox[t]{\@tempdima}{\raggedright \prm{psstyle}}%
   \ifblank{#1}
     {}
@@ -2684,7 +2684,7 @@
 %</ignore>
 % \fi
 %
-% \styleitem[  linewidth=0.8\cs{pslinewidth}, arrowinset=0, arrowscale=0.8, arrows=<->]{VariableMirror} 
+% \styleitem{VariableMirror} 
 % \ifGERMAN
 %   Der Stil der Pfeiles des verstellbaren Spiegels.
 % \fi
@@ -4973,6 +4973,20 @@
 \end{LTXexample}
 % \iffalse
 %</ignore>
+% \fi
+%
+% \boolitem[true]{allowbeaminside}
+% \ifGERMAN
+% Damit kann bestimmt werden, ob der Strahlengang innerhalb einer Komponente
+% gezeichnet werden darf. Dieser Parameter wirkt nur auf Komponenten und
+% überschreibt, falls auf \opt{false} gesetzt, jegliche Strahleinstellungen mit
+% \Lkeyword{beaminside}, \Lkeyword{beaminsidefirst} und
+% \Lkeyword{beaminsidelast}. Damit kann der Strahlengang in einzelnen
+% Komponenten unterdrückt werden, für die es keinen Sinn macht
+% (z.B. \Lcs{optfilter} und \Lcs{optdiode}, was sonst nicht möglich ist. 
+% \fi
+% \ifENGLISH
+% Draw the internal beams in all components except for the first and last one.
 % \fi
 %
 % \boolitem[false]{beam}
@@ -7575,11 +7589,12 @@
 \define@boolkey[psset]{optexp}[POE@]{beaminsidelast}[true]{}%
 \define@boolkey[psset]{optexp}[POE@]{savebeampoints}[true]{}%
 \define@boolkey[psset]{optexp}[POE@]{loadbeampoints}[true]{}%
+\define@boolkey[psset]{optexp}[POE@]{beaminside}[true]{}%
+\define@boolkey[psset]{optexp}[POE@]{allowbeaminside}[true]{}%
+\define@boolkey[psset]{optexp}[POE@]{raytrace}[true]{}%
 \define@key[psset]{optexp}{skipconn}{%
   \pst@checknum{#1}\POE@key@skipconn
 }%
-\define@boolkey[psset]{optexp}[POE@]{beaminside}[true]{}%
-\define@boolkey[psset]{optexp}[POE@]{raytrace}[true]{}%
 \define@choicekey+[psset]{optexp}{beamalign}%
   [\val\nr]{relative,absolute}%
   {\edef\POE@key@beamalign{#1}}%
@@ -7588,6 +7603,7 @@
   raytrace=true
   ,startinside=false
   ,stopinside=false
+  ,allowbeaminside=true
   ,beaminside=true
   ,beaminsidefirst=false
   ,beaminsidelast=false
@@ -8707,7 +8723,7 @@
 \def\newOptexpComp@#1#2{%
   \POE@Verb{%
     \tx@NodeScale
-    [ #1 #2 \ifPOE@beaminside true \else false \fi
+    [ #1 #2 \ifPOE@allowbeaminside true \else false \fi
       (\oenode{}{}) {\tx@ScreenCoor} 
       NewOptexpComp
   }%
@@ -9575,7 +9591,7 @@
 \newOptexpDipole{optplate}{}%
 \newOptexpDipole{optretplate}{}%
 \newOptexpDipole[endbox]{optdetector}{}%
-\newOptexpDipole{optdiode}{beaminside=false}%
+\newOptexpDipole{optdiode}{allowbeaminside=false}%
 \newOptexpDipole{doveprism}{}%
 %    \end{macrocode}
 % 
@@ -9707,7 +9723,7 @@
 \newOptexpFiberDipole{optfiber}{newOptComp={}}
 \newOptexpFiberDipole{optamp}{}
 \newOptexpFiberDipole{optmzm}{}
-\newOptexpFiberDipole{optfilter}{beaminside=false}
+\newOptexpFiberDipole{optfilter}{allowbeaminside=false}
 \newOptexpFiberDipole{polcontrol}{}
 \newOptexpFiberDipole{optisolator}{}
 \newOptexpFiberDipole{optfiberpolarizer}{}
@@ -11663,7 +11679,7 @@ tx@OptexpDict begin
   dup cvn
   6 dict dup 3 1 roll def begin
     /ambiguous false def
-    /beaminside false def
+    /allowbeaminside false def
     /name ED
     /correct false def
 %    \end{macrocode}
@@ -11812,7 +11828,7 @@ tx@OptexpDict begin
 %
 % \begin{pssyntax}
 %   \PSvar{[} \PSproc{x y} \PSproc{dx dy | rx ry} \PSvar{type}
-%   \PSproc{\ldots Ifc} \PSvar{\ldots{} n correct? amb? beaminside?} 
+%   \PSproc{\ldots Ifc} \PSvar{\ldots{} n correct? amb? allowbeaminside?} 
 %   \PSstring{CompName} \PSproc{scaling} \PSop{NewOptexpComp}
 % \end{pssyntax}
 %    \begin{macrocode}
@@ -11821,7 +11837,7 @@ tx@OptexpDict begin
   gsave
   12 dict dup 3 1 roll def begin
   /name ED
-  /beaminside ED
+  /allowbeaminside ED
   /ambiguous ED
   dup type /booleantype eq not { false } if /correct ED
   tx@Dict begin
@@ -12763,7 +12779,7 @@ tx@OptexpDict begin
         beaminside
       } ifelse
     } ifelse 
-    exch load dup dup /beaminside get 4 -1 roll and /drawinside ED
+    exch load dup dup /allowbeaminside get 4 -1 roll and /drawinside ED
     /ambiguous get {
       /name get drawinside [ 3 1 roll ]
       counttomark 1 roll pop
