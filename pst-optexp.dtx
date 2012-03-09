@@ -3999,7 +3999,7 @@
 % \fi
 % \ifENGLISH
 % All objects of an setup drawing are numbered automatically in increasing order
-% by their definition in the code. The objects as well as their special nodes
+% according to their definition in the code. The objects as well as their special nodes
 % can always be accessed via this number.
 % \fi
 %
@@ -4616,16 +4616,14 @@
 % \ifGERMAN\section{Zugriff auf Komponenten}\fi
 % \ifENGLISH\section{Accessing components}\fi\label{sec:accessobj}
 % 
-% The arguments of the connection macros, specified as \prm{obj$_1$},
-% \prm{obj$_2$}, \ldots \prm{obj$_N$}, can be either \nxLPack{pst-optexp} object
-% names (see \prettyref{sec:namingobj} or PSTricks nodes. To distinguish between
-% nodes and object names, the node content must be enclosed in parenthesis
-% within the brackets.
-% 
+% All macros for connections can take either \nxLPack{pst-optexp} component
+% identifier or PSTricks nodes as arguments, which are denoted with \prm{obj$_1$},
+% \prm{obj$_2$}, \ldots \prm{obj$_N$}. To distinguish between nodes and
+% components, the nodes must be enclosed in parenthesis within the brackets.
 %
-% The components are number in increasing order by their definition in the
-% source code, starting with 1.
-% 
+% For more information about component identifiers see
+% \prettyref{sec:namingobj}, the following two examples summarize the basic
+% statements:
 % \iffalse
 %<*ignore>
 % \fi
@@ -4751,103 +4749,43 @@
 % \fi
 % 
 % \section{Drawing beams}\label{sec:drawbeam}
-% 
+% The package provides several ways to connect components and nodes with beams,
+% which can be either single rays or extended beams. Most parameters have the
+% same effect on both single and extended beams, so all examples will be show
+% for extended beams only.
 % \begin{ltxsyntax}
-%   \xLcs{drawbeam}\cmditem{drawbeam}[options]{obj$_1$}{obj$_2$}{\ldots}{obj$_N$}
-%   \xLcs{drawwidebeam}\cmditem*{drawwidebeam}[options]{obj$_1$}{obj$_2$}{\ldots}{obj$_N$}
-% \end{ltxsyntax}
-% The package provides two macros for connecting objects with beams. Most
-% parameters are valid for both, those which are specified for wide beams
-% are demonstrated separately in the next section.
+%   \xLcs{drawbeam}\cmditem{drawbeam}[options]{obj$_1$}{obj$_2$}\ldots
+%   \xLcs{drawwidebeam}\cmditem*{drawwidebeam}[options]{obj$_1$}{obj$_2$}\ldots
 %
-% \begin{ltxsyntax}
-%   \xLcs{optplane}\cmditem{optplane}(center)(vec){name}
+%   These are the two macros for beam connections; they can take a variable
+%   number of arguments (minimum of two), which can be either
+%   \nxLPack{pst-optexp} component identifier or PSTricks nodes. To distinguish
+%   between nodes and components, the nodes must be enclosed in parenthesis
+%   within the brackets. For more information about component identifiers see
+%   \prettyref{sec:namingobj}.
 % \end{ltxsyntax}
-% 
+%
+% \subsection{Raytracing}
+% The beam connection macros support two «modes» of tracing the beam across the
+% optical components: one is to use refractive indices and Snell's law to
+% determine the beam path. The other mode is to connect the components only
+% regardless of their optical properties.
+%
 % \begin{optionlist}
-%   \optitem[0]{beampos}{[\prm{x}] \prm{y}} This is the start position (\prm{x},
-%   \prm{y}) of the beam at the first interface. Both values are of \prm{psnum}
-%   type. If only one number is given then the $x$-coordinate is set to \opt{0}.
-% \iffalse
-%<*ignore>
-% \fi
-\begin{LTXexample}[morekeywords = {[21]{beampos}}]
-\begin{pspicture}(4,3.8)
-  \pnode(1.5,0.5){A}\pnode(3.5,0.5){B}
-  \pnode(3.5,3.5){C} 
-  \optbox[endbox](B)(A){}
-  \psset{mirrortype=extended}
-  \mirror[mirrorradius=3](A)(B)(C){} 
-  \mirror(B)(C)(B){} 
-  \drawbeam[linecolor=red, beampos=-0.2]{1-3}
-  \drawbeam[linecolor=blue, beampos=0]{1-3}
-  \drawbeam[linecolor=green, beampos=0.2]{1-3}
-\end{pspicture}
-\end{LTXexample}
-% \iffalse
-%</ignore>
-% \fi
-% 
-% \iffalse
-%<*ignore>
-% \fi
-\begin{LTXexample}[linerange={1-7,9-9}, morekeywords = {[21]{beampos}}, explpreset={escapeinside={}}]
-\begin{pspicture*}(0,2)(3.05,6)
-  \lens[lens=8 8 8, abspos=0.6](0.5,2)(3,2)
-  \optplate[position=1, plateheight=6](0.5,2)(3,2)
-  \psset{beampos=2.1}
-  \drawbeam[beamangle=-60]{1}{2}
-  \drawbeam[beamangle=-40]{1}{2}
-  \drawbeam[beamangle=-20]{1}{2}
-  \psline[style=Refline, linewidth=3\pslinewidth, arrows=->, arrowinset=0, arrowscale=1.3](\oenodeOut{1})([offset=2.1]\oenodeOut{1})
-\end{pspicture*}
-\end{LTXexample}
-% \iffalse
-%</ignore>
-% \fi
+%   \boolitem[true]{raytrace} Choose the «tracing mode», \opt{true} mean to use
+%   the refractive index (raytracing), \opt{false} selects component connection.
+% \end{optionlist}
 %
-% \psnumitem[0]{beamangle}
-% \ifGERMAN
-% Der Anfangswinkel des Strahls. Dieser ist relativ zu der Verbindung von der
-% ersten zur zweiten Komponente, mit \Lkeyword{beamalign} kann dieser auf
-% globale Werte geändert werden.
-% \fi
-% \ifENGLISH
-% This is the start angle of the beam. It is relative to the connection between the first
-% two components, use \Lkeyword{beamalign} to change this.
-% \fi
-% \iffalse
-%<*ignore>
-% \fi
-\begin{LTXexample}[morekeywords = {[21]{beamangle}}]
-\begin{pspicture}(4,4)
-  \pnode(1.5,0.5){A}\pnode(3.5,0.5){B}
-  \pnode(3.5,3.5){C} 
-  \psset{mirrortype=extended}
-  \optbox[endbox](B)(A){}
-  \mirror(A)(B)(C){} 
-  \mirror(B)(C)(B){} 
-  \drawbeam[linecolor=red, beamangle=3]{-3}
-  \drawbeam[linecolor=blue, beamangle=0]{1-}
-  \drawbeam[linecolor=green, beamangle=-3]{-}
-\end{pspicture}
-\end{LTXexample}
-% \iffalse
-%</ignore>
-% \fi
-% 
-% \choitem[relative]{beamalign}{relative, absolute}
-% 
-% \boolitem[true]{raytrace}
-% 
+%
+% \subsection{Refractive index} 
+%
+% \begin{optionlist}
 % \psnumitem[1.5]{n}
 % \ifGERMAN 
-% Der relative Brechungsindex einer Komponente, der Hintergrund hat immer einen Index
-% von \opt{1}.
+% Setzt den Brechungsindex einer Komponente relativ zum Hintergrund.
 % \fi
 % \ifENGLISH
-% The relative refractive index of a component, the background is defined to
-% \opt{1}.
+% Sets the relative refractive index of a component with respect to the background.
 % \fi
 %
 % \psnumitem[0]{nbeam}
@@ -4919,7 +4857,7 @@
 % \iffalse
 %</ignore>
 % \fi
-% \psnumitem[1]{nmul} 
+% \psnumitem[1]{nmul}
 % \ifGERMAN
 % Analog zu \nxLkeyword{nadd}, nur dass der ursprüngliche Brechungsindex mit
 % diesem Faktor multipliziert wird. Wenn \nxLkeyword{nadd} und \nxLkeyword{nmul}
@@ -4932,6 +4870,82 @@
 % multiplication is carried out first: $n_\mathrm{new} = n_\mathrm{old}\times
 % n_\mathrm{mul} + n_\mathrm{add}$.
 % \fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[morekeywords = {[21]{beampos}}]
+\begin{pspicture}(4,3.8)
+  \pnode(1.5,0.5){A}\pnode(3.5,0.5){B}
+  \pnode(3.5,3.5){C} 
+  \optbox[endbox](B)(A){}
+  \psset{mirrortype=extended}
+  \mirror[mirrorradius=3](A)(B)(C){} 
+  \mirror(B)(C)(B){} 
+  \drawbeam[linecolor=red, beampos=-0.2]{1-3}
+  \drawbeam[linecolor=blue, beampos=0]{1-3}
+  \drawbeam[linecolor=green, beampos=0.2]{1-3}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+% 
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[linerange={1-7,9-9}, morekeywords = {[21]{beampos}}, explpreset={escapeinside={}}]
+\begin{pspicture*}(0,2)(3.05,6)
+  \lens[lens=8 8 8, abspos=0.6](0.5,2)(3,2)
+  \optplate[position=1, plateheight=6](0.5,2)(3,2)
+  \psset{beampos=2.1}
+  \drawbeam[beamangle=-60]{1}{2}
+  \drawbeam[beamangle=-40]{1}{2}
+  \drawbeam[beamangle=-20]{1}{2}
+  \psline[style=Refline, linewidth=3\pslinewidth, arrows=->, arrowinset=0, arrowscale=1.3](\oenodeOut{1})([offset=2.1]\oenodeOut{1})
+\end{pspicture*}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+% \end{optionlist}
+%
+% \subsection{Initial conditions}
+%
+% \begin{optionlist}
+%   \optitem[0]{beampos}{[\prm{x}] \prm{y}} This is the start position (\prm{x},
+%   \prm{y}) of the beam at the first interface. Both values are of \prm{psnum}
+%   type. If only one number is given then the $x$-coordinate is set to \opt{0}.
+% \psnumitem[0]{beamangle}
+% \ifGERMAN
+% Der Anfangswinkel des Strahls. Dieser ist relativ zu der Verbindung von der
+% ersten zur zweiten Komponente, mit \Lkeyword{beamalign} kann dieser auf
+% globale Werte geändert werden.
+% \fi
+% \ifENGLISH
+% This is the start angle of the beam. It is relative to the connection between the first
+% two components, use \Lkeyword{beamalign} to change this.
+% \fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[morekeywords = {[21]{beamangle}}]
+\begin{pspicture}(4,4)
+  \pnode(1.5,0.5){A}\pnode(3.5,0.5){B}
+  \pnode(3.5,3.5){C} 
+  \psset{mirrortype=extended}
+  \optbox[endbox](B)(A){}
+  \mirror(A)(B)(C){} 
+  \mirror(B)(C)(B){} 
+  \drawbeam[linecolor=red, beamangle=3]{-3}
+  \drawbeam[linecolor=blue, beamangle=0]{1-}
+  \drawbeam[linecolor=green, beamangle=-3]{-}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+% 
+% \choitem[relative]{beamalign}{relative, absolute}
 %
 % \boolitem[true]{beaminside}
 % \ifGERMAN
@@ -5039,6 +5053,9 @@
 % und wird aus zukünftigen Versionen entfernt.\fi
 % \ifENGLISH This option is maintained for backward compatibility only and will be removed in future versions.\fi
 % \end{optionlist}
+% \begin{ltxsyntax}
+%   \xLcs{optplane}\cmditem{optplane}(center)(vec){name}
+% \end{ltxsyntax}
 % 
 % \ifGERMAN\section{Aufgeweitete Strahlen}\fi
 % \ifENGLISH\section{Drawing wide beams}\fi
