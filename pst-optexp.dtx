@@ -4766,8 +4766,8 @@
 % \section{Drawing beams}\label{sec:drawbeam}
 % The package provides several ways to connect components and nodes with beams,
 % which can be either single rays or extended beams. Most parameters have the
-% same effect on both single and extended beams, so all examples will be show
-% for extended beams only.
+% same effect on both single and extended beams, so most examples will be show
+% for single beams only.
 % \begin{ltxsyntax}
 %   \xLcs{drawbeam}\cmditem{drawbeam}[options]{obj$_1$}{obj$_2$}\ldots
 %   \xLcs{drawwidebeam}\cmditem*{drawwidebeam}[options]{obj$_1$}{obj$_2$}\ldots
@@ -4781,14 +4781,31 @@
 % \end{ltxsyntax}
 %
 % \subsection{Raytracing}
-% The beam connection macros support two «modes» of tracing the beam across the
+% The beam connection macros support two modes of tracing the beam across the
 % optical components: one is to use refractive indices and Snell's law to
 % determine the beam path. The other mode is to connect the components only
 % regardless of their optical properties.
 %
 % \begin{optionlist}
 %   \boolitem[true]{raytrace} Choose the «tracing mode», \opt{true} mean to use
-%   the refractive index (raytracing), \opt{false} selects component connection.
+%   the refractive index (raytracing), \opt{false} selects component connection («connect mode»). 
+%
+% For most cases, the «tracing» mode with \Lkeyword{n}\opt{=1} is equivalent to the «connect» mode except for \Lcs{optprism} and \Lcs{doveprism}:
+%\iffalse
+%<*ignore>
+%\fi
+\begin{LTXexample}
+\begin{pspicture}(3,2)
+  \pnode(0,1.5){A}\pnode(2,1.5){B}\pnode(3,0.5){C}
+  \optprism(A)(B)(C)
+  \drawbeam[n=1, linecolor=red]{(A)}{}{(C)}
+%  \drawbeam[n=1.5, linecolor=blue]{(A)}{}{(C)}
+%  \drawbeam[raytrace=false, linecolor=black]{(A)}{}{(C)}  
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % \end{optionlist}
 %
 %
@@ -6684,6 +6701,7 @@
 \newif\ifPOE@loadbeampoints
 \newif\ifPOE@beaminside
 \newif\ifPOE@raytrace
+\newif\ifPOE@nauto
 \newif\ifPOE@globalnoderef
 %    \end{macrocode}
 % This is to check if \nxLkeyword{compname} is set inside or outside of a component. For this no boolean key is provided.
@@ -7628,17 +7646,18 @@
     Option 'refractiveindex' is deprecated,\MessageBreak
     use 'n' instead}%
 }%
+\define@boolkey[psset]{optexp}[POE@]{nauto}[true]{}%
 \define@key[psset]{optexp}{n}{%
-  \pst@checknum{#1}\POE@key@n
+  \edef\POE@key@n{#1 }%
 }
 \define@key[psset]{optexp}{nbeam}{%
-  \pst@checknum{#1}\POE@key@nbeam
+  \edef\POE@key@nbeam{#1 }%
 }
 \define@key[psset]{optexp}{nmul}{%
-  \edef\POE@key@nmul{#1}%
+  \edef\POE@key@nmul{#1 }%
 }
 \define@key[psset]{optexp}{nadd}{%
-  \edef\POE@key@nadd{#1}%
+  \edef\POE@key@nadd{#1 }%
 }
 \define@key[psset]{optexp}{beamangle}{%
   \edef\POE@key@beamangle{#1}%
@@ -7669,7 +7688,8 @@
   {\edef\POE@key@beamalign{#1}}%
   {\PackageError{pst-optexp}{Unknown beamalign '\val'}}
 \psset[optexp]{%
-  raytrace=true
+  nauto=false
+  ,raytrace=true
   ,startinside=false
   ,stopinside=false
   ,allowbeaminside=true
@@ -10616,7 +10636,13 @@
     {\POE@key@doveprismsize\space neg 0} {1 1} trans {PlaneIfc}
     {0 \POE@key@doveprismsize\space -0.5 mul} {1 0} refl {PlaneIfc}
     {\POE@key@doveprismsize\space 0} {-1 1} trans {PlaneIfc} 
-    \POE@key@n true 
+    \ifPOE@nauto
+      \pst@number\psxunit\space 1.5 mul \pst@number\psyunit\space div dup (x=) == == % x
+      dup dup mul 0.5 exch div -1 3 -1 roll div add 1 add -1 exch div 2 add sqrt 1 exch div
+    \else
+      \POE@key@n
+    \fi
+    true 
   }%
 \ignorespaces}%
 %    \end{macrocode}
