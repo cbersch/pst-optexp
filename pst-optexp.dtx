@@ -3362,9 +3362,20 @@
 % \end{ltxsyntax}
 % \begin{optionlist}
 % \numitem[0.8]{optcircsize}
+% \ifGERMAN Der Durchmesser des Zirkulators.\fi
+% \ifENGLISH The diameter of the circulator.\fi
+%
 % \numitem[-160]{optcircangleA}
+% \ifGERMAN Der Startwinkel des internen Pfeils.\fi
+% \ifGERMAN The starting angle of the internal arrow.\fi
+%
 % \numitem[-20]{optcircangleB}
+% \ifGERMAN Der Endwinkel des internen Pfeils.\fi
+% \ifGERMAN The ending angle of the internal arrow.\fi
+%
 % \optitem{optcircangle}{\prm{num} \prm{num}}
+% \ifGERMAN Kurzschreibweise um beide Winkel gleichzeitig zu setzen.\fi
+% \ifENGLISH Short notation for specifying both angles.\fi
 % \iffalse
 %<*ignore>
 % \fi
@@ -3380,6 +3391,8 @@
 % 
 % \begin{stylelist}
 % \styleitem[unit=0.7, arrows=->, arrowinset=0]{OptCircArrow}
+% \ifGERMAN Der Stil für den internen Pfeil. Damit wird sowohl die Richtung des Pfeils als auch die Größe des Bogens bestimmt.\fi
+% \ifENGLISH The style of the internal arrow. It specifies the direction of the arrow and the size of the arc.\fi
 % \iffalse
 %<*ignore>
 % \fi
@@ -3402,7 +3415,7 @@
 % \fi
 \begin{LTXexample}
 \begin{pspicture}(3,2)
-  \addtopsstyle{Fiber}{arrowscale=1.3, arrows=->, arrowinset=0, ncurv=1.5}
+  \addtopsstyle{Fiber}{arrowscale=1.3, arrows=->, arrowinset=0}
   \optcirculator(0,0.5)(1.5,0)(3,2)
 \end{pspicture}
 \end{LTXexample}
@@ -3410,11 +3423,10 @@
 %</ignore>
 % \fi
 %
-% \ifENGLISH The positioning parameters are not relative to the automatic
-% position, but refer to the reference nodes as usual. This implies, that the
-% default position in this case is not equivalent to
-% \Lkeyword{position}\opt{=0.5}.
-% \fi
+% \ifENGLISH The positioning parameters (\prettyref{sec:positioning})
+% are not relative to the automatic position, but refer to the reference
+% nodes as usual. This implies, that the default position in this case
+% is not equivalent to \Lkeyword{position}\opt{=0.5}.  \fi
 % \iffalse
 %<*ignore>
 % \fi
@@ -3702,15 +3714,15 @@
 % valid for couplers. Here, the nodes depend on the \Lkeyword{align} parameter.
 % \fi
 % \begin{center}
-% \begin{pspicture}(11,2)
+% \begin{pspicture}(12,2)
 % \psset{couplersize=0.5, couplertype=rectangular, couplersep=0.2}
 % \optcoupler(0, 2)(0,0.7)(3,2)(3,0.7)
 % \psdot(\oenodeRefA{})\uput[90](\oenodeRefA{}){RefA}
 % \psdot(\oenodeRefB{})\uput[90](\oenodeRefB{}){RefB}
-% \optcoupler[align=top](4, 2)(4,0.7)(7,2)(7,0.7)
+% \optcoupler[align=top](4.5, 2)(4.5,0.7)(7.5,2)(7.5,0.7)
 % \psdot(\oenodeRefA{})\uput[-90](\oenodeRefA{}){RefA}
 % \psdot(\oenodeRefB{})\uput[-90](\oenodeRefB{}){RefB}
-% \optcoupler[align=bottom](8, 2)(8,0.7)(11,2)(11,0.7)
+% \optcoupler[align=bottom](9, 2)(9,0.7)(12,2)(12,0.7)
 % \psdot(\oenodeRefA{})\uput[90](\oenodeRefA{}){RefA}
 % \psdot(\oenodeRefB{})\uput[90](\oenodeRefB{}){RefB}
 % \rput[b](1.5,0){\opt{align=none}}
@@ -4304,6 +4316,7 @@
 %
 % \begin{ltxsyntax}
 %   \cmditem{oenodeIfc}{num}{name}
+%
 %   \ifGERMAN
 %   Der Grenzflächenknoten \prm{num}, wobei \prm{num} eine Ganzzahl zwischen
 %   \opt{1} und \opt{N} ist. Der letzte Knoten ist immer \opt{N}.
@@ -4314,6 +4327,7 @@
 %   \fi
 %
 %   \cmditem{oenodeIn}{name}
+%
 %   \ifGERMAN
 %   Der Knoten \prm{1} ist der Eingangsknoten, und sollte immer über
 %   \nxLcs{oenodeIn} angesprochen werden.
@@ -4324,6 +4338,7 @@
 %   \fi
 %
 %   \cmditem{oenodeOut}{name}
+%
 %   \ifGERMAN
 %   Der Knoten \opt{N} ist der Ausgangsknoten und sollte
 %   immer über \nxLcs{oenodeOut} angesprochen werden.
@@ -6009,12 +6024,7 @@
 % \bigskip
 %
 % \noindent\showfdipoleifc{optfilter}\hspace{\fill}%
-% \begin{pspicture}(0,-0.5)(3,1)
-%   \pnode(0,0.5){A}\pnode(3,0.5){B}
-%   \polcontrol(A)(B)
-%   \psdot(\oenodeIn{})\uput[-90](\oenodeIn{}){1, N}
-%   \rput[bl](0,-0.4){\ttfamily\textbackslash polcontrol}
-% \end{pspicture}\hspace{\fill}%
+% \showfdipoleifc{polcontrol}\hspace{\fill}%
 % \showfdipoleifc{optisolator}%
 % \bigskip
 %
@@ -6025,6 +6035,14 @@
 %
 % \bgroup\psset{beam}
 % \noindent\showfdipoleifc{fibercollimator}\egroup
+% \begin{pspicture}(0,-0.5)(3,1.2)
+%   \pnode(0,0.7){A}\pnode(3,0.7){B}\pnode(1.5,-0.1){C}
+%   \optcirculator(A)(C)(B)
+%   \psdot(\oenodeIn{})\uput[-135](\oenodeIn{}){1}
+%   \psdot(\oenodeIfc{2}{})\uput[-135](\oenodeIfc{2}{}){2}
+%   \psdot(\oenodeOut{})\uput[-45](\oenodeOut{}){N}
+%   \rput[bl](0,-0.4){\ttfamily\textbackslash optcirculator}
+% \end{pspicture}\hspace{\fill}%
 % \bigskip
 %
 % \noindent
