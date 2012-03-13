@@ -1,0 +1,22 @@
+\begin{pspicture}(2.1,3)
+\pnode(0,0){A}\pnode(2,0){B}
+\pnode(0.3,3){C}\pnode(1.7,3){D}
+\psset{fiber=none}
+\optcoupler[fiber=l,
+            addtoFiberIn1={angleA=0, ArrowInside=->},
+            addtoFiberIn2={angleA=180, arrows=<-},
+            abspos=0.5, compname=Cpl](A)(B)(C)(D){}
+\optfiber[compname=Hnlf, abspos=1](C)(C|A){}
+\optamp[abspos=2, compname=Amp](D|B)(D){}
+\drawfiber{Cpl}{Hnlf}
+\drawfiber[startnode=1, ncurv=1.2]{Hnlf}{Amp}
+\drawfiber{Cpl}{Amp}
+\end{pspicture}
+
+\begin{pspicture}(3,3)
+  \pnode(1, 0.5){A}\pnode(2.5,0.5){B}\pnode(2.5,2){C}
+  \psset{fiber=none, optbox=1 0.6, innerlabel}
+  \optbox[endbox](B)(A){start}
+  \optbox[endbox](B)(C){stop}
+  \drawfiber[fiberstyle=diag, linearc=0.5]{1}{2}
+\end{pspicture}
