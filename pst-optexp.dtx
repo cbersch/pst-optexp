@@ -650,7 +650,7 @@
 %     \pstVerb{^^A
 %       \i\space 650 400 sub 39 div mul 400 add 
 %       tx@addDict begin wavelengthToRGB end }^^A
-%     \drawbeam[nadd=-0.002 \i\space mul, beaminsidelast]{(In)}{3-5}{2}{1}{6-7}
+%     \drawbeam[nproc={-0.002 \i\space mul add}, beaminsidelast]{(In)}{3-5}{2}{1}{6-7}
 %   }^^A
 %   \newpsstyle{Beam}{linecolor=red}
 %   \backlayer{\psline[style=Beam,ArrowInside=->, linewidth=2\pslinewidth, arrowinset=0](In)(\oenodeIn{3})(\oenodeOut{4})}
@@ -3443,19 +3443,24 @@
 % \ifGERMAN\section{Faserkoppler}\fi
 % \ifENGLISH\section{Fiber coupler}\fi
 % \label{sec:coupler}
-%
-% \ifGERMAN\subsection{\texorpdfstring{\mathversion{bold}$2\times 2$}{2x2}-Koppler}\fi
-% \ifENGLISH\subsection{\texorpdfstring{\mathversion{bold}$2\times 2$}{2x2} coupler}\fi
-%
+% 
 % \begin{ltxsyntax}
 % \xLfmultipole{optcoupler}%
-% \cmditem{optcoupler}(lefttop)(leftbottom)(righttop)(rightbottom){label}%
+% \cmditem{optcoupler}(lefttop)(leftbottom)(righttop)(rightbottom){label}
+%
+% \xLfmultipole{wdmcoupler}%
+% \cmditem{wdmcoupler}(lefttop)(leftbottom)(right){label}
+%
+% \xLfmultipole{wdmsplitter}%
+% \cmditem{wdmsplitter}(left)(righttop)(rightbottom){label}
 % \iffalse
 %<*ignore>
 % \fi
 \begin{LTXexample}
-\begin{pspicture}(3,1.5)
-  \optcoupler(0,1.5)(0,0.5)(3,1.5)(3,0.5){Coupler}
+\begin{pspicture}(3,4)
+  \optcoupler(0,4)(0,3)(3,4)(3,3){optcoupler}  
+  \wdmsplitter(0,2)(3,2.5)(3,1.5){wdmsplitter}
+  \wdmcoupler(0,1)(0,0)(3,0.5){wdmcoupler}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -3473,7 +3478,7 @@
 \begin{LTXexample}[morekeywords={[21]{couplersep}}]
 \begin{pspicture}(3,1.5)
   \optcoupler[couplersep=0]%
-               (0,1.5)(0,0.5)(3,1.5)(3,0.5){Coupler}
+               (0,1.5)(0,0.5)(3,1.5)(3,0.5){coupler}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -3481,8 +3486,12 @@
 % \fi
 % 
 % \choitem[elliptic]{couplertype}{none, elliptic, rectangular, crossswitch}
-% \ifGERMAN Wählt zwischen unterschiedlichen Kopplertypen.\fi
-% \ifENGLISH Select between different coupler types.\fi
+% \ifGERMAN Wählt zwischen unterschiedlichen Kopplertypen, \opt{crossswitch} ist
+% nur für \Lcs{optcoupler} verfügbar.
+% \fi
+% \ifENGLISH Select between different coupler types, \opt{crossswitch} is
+% available for \Lcs{optcoupler} only.
+% \fi
 % \iffalse
 %<*ignore>
 % \fi
@@ -3521,152 +3530,6 @@
 % \fi
 % \end{optionlist}
 % 
-% \ifGERMAN\subsection{WDM-Koppler}\fi
-% \ifENGLISH\subsection{WDM coupler}\fi
-%
-% \begin{ltxsyntax}
-% \xLfmultipole{wdmcoupler}%
-% \cmditem{wdmcoupler}(lefttop)(leftbottom)(right){label}%
-% \iffalse
-%<*ignore>
-% \fi
-\begin{LTXexample}
-\begin{pspicture}(3,1.5)
-  \wdmcoupler(0,1.5)(0,0.5)(3,1){WDM}
-\end{pspicture}
-\end{LTXexample}
-% \iffalse
-%</ignore>
-% \fi
-% \end{ltxsyntax}
-% 
-% \begin{optionlist}
-% \numitem*[0.2]{couplersize} \sizeexplanation[2.5]{\ifGERMAN des Kopplers\fi\ifENGLISH coupler\fi}
-% \numitem*[0.1]{couplersep}
-% \ifGERMAN Der vertikale Abstand zwischen den beiden Eingangsports.\fi
-% \ifENGLISH The vertical distance between the two input ports.\fi
-% \iffalse
-%<*ignore>
-% \fi
-\begin{LTXexample}[morekeywords={[21]{couplersep}}]
-\begin{pspicture}(3,1.5)
-  \wdmcoupler[couplersep=0](0,1.5)(0,0.5)(3,1){WDM}
-\end{pspicture}
-\end{LTXexample}
-% \iffalse
-%</ignore>
-% \fi
-% 
-% \choitem*[elliptic]{couplertype}{none, elliptic, rectangular}
-% \ifGERMAN Wählt zwischen unterschiedlichen Kopplertypen.\fi
-% \ifENGLISH Select between different coupler types.\fi
-% \iffalse
-%<*ignore>
-% \fi
-\begin{LTXexample}[morekeywords={[21]{couplertype}}]
-\begin{pspicture}(3,3)
-  \psset{labeloffset=0.5}
-  \wdmcoupler[couplertype=none](0,3)(0,2)(3,2.5)
-  \wdmcoupler[couplertype=rectangular]%
-               (0,1.5)(0,0.5)(3,1)
-\end{pspicture}
-\end{LTXexample}
-% \iffalse
-%</ignore>
-% \fi
-% 
-% \choitem*[center]{align}{top, bottom, center}
-% \ifGERMAN Die Ausrichtung des Kopplers bezüglich der Referenzknoten.\fi
-% \ifENGLISH The alignment of the coupler with respect to the reference nodes.\fi
-% \iffalse
-%<*ignore>
-% \fi
-\begin{LTXexample}[morekeywords={[21]{align}}]
-\begin{pspicture}(3,3)
-  \psset{labeloffset=0.4}
-  \wdmcoupler[align=top,
-                couplertype=none](0,3)(0,2)(3,3){top}
-  \wdmcoupler[align=bottom]
-               (0,1.5)(0,0.5)(3,0.5){bottom}
-\end{pspicture}
-\end{LTXexample}
-% \iffalse
-%</ignore>
-% \fi
-% \end{optionlist}
-% 
-% \ifGERMAN\subsection{WDM-Teiler}\fi
-% \ifENGLISH\subsection{WDM splitter}\fi
-%
-% \begin{ltxsyntax}
-% \xLfmultipole{wdmcoupler}%
-% \cmditem{wdmsplitter}(left)(righttop)(rightbottom){label}%
-% \iffalse
-%<*ignore>
-% \fi
-\begin{LTXexample}
-\begin{pspicture}(3,1.5)
-  \wdmsplitter(0,1)(3,1.5)(3,0.5){WDM}
-\end{pspicture}
-\end{LTXexample}
-% \iffalse
-%</ignore>
-% \fi
-% \end{ltxsyntax}
-% \begin{optionlist}
-% \numitem*[0.2]{couplersize} \sizeexplanation[2.5]{\ifGERMAN des Kopplers\fi\ifENGLISH coupler\fi}
-% \numitem*[0.1]{couplersep} 
-% \ifGERMAN Der vertikale Abstand zwischen den beiden Ausgangsports.\fi
-% \ifENGLISH The vertical distance between the two output ports.\fi
-% \iffalse
-%<*ignore>
-% \fi
-\begin{LTXexample}[morekeywords={[21]{couplersep}}]
-\begin{pspicture}(3,1.5)
-  \wdmsplitter[couplersep=0](0,1)(3,1.5)(3,0.5){WDM}
-\end{pspicture}
-\end{LTXexample}
-% \iffalse
-%</ignore>
-% \fi
-% 
-% \choitem*[elliptic]{couplertype}{none, elliptic, rectangular}
-% \ifGERMAN Wählt zwischen unterschiedlichen Kopplertypen.\fi
-% \ifENGLISH Select between different coupler types.\fi
-% \iffalse
-%<*ignore>
-% \fi
-\begin{LTXexample}[morekeywords={[21]{couplertype}}]
-\begin{pspicture}(3,3)
-  \psset{labeloffset=0.5}
-  \wdmsplitter[couplertype=none](0,2.5)(3,3)(3,2)
-  \wdmsplitter[couplertype=rectangular]%
-                 (0,1)(3,1.5)(3,0.5)
-\end{pspicture}
-\end{LTXexample}
-% \iffalse
-%</ignore>
-% \fi
-% 
-% \choitem*[center]{align}{top, bottom, center}
-% \ifGERMAN Die Ausrichtung des Kopplers bezüglich der Referenzknoten.\fi
-% \ifENGLISH The alignment of the coupler with respect to the reference nodes.\fi
-% \iffalse
-%<*ignore>
-% \fi
-\begin{LTXexample}[morekeywords={[21]{align}}]
-\begin{pspicture}(3,3)
-  \psset{labeloffset=0.4}
-  \wdmsplitter[align=top,
-                 couplertype=none](0,3)(3,3)(3,2){top}
-  \wdmsplitter[align=bottom](0,0.5)(3,1.5)(3,0.5){bottom}
-\end{pspicture}
-\end{LTXexample}
-% \iffalse
-%</ignore>
-% \fi
-% \end{optionlist}
-% 
 % \ifGERMAN\subsection{Eingangs- und Ausgangsknoten}\fi
 % \ifENGLISH\subsection{Input and output nodes}\fi
 % \label{sec:coupler-nodes}
@@ -3684,19 +3547,22 @@
 % \begin{center}
 % \begin{pspicture}(11,2)
 % \psset{couplersize=0.5, couplertype=rectangular, couplersep=0.2}
-% \wdmsplitter(0, 1)(3,2)(3,0)
+% \wdmsplitter(0, 1.25)(3,2)(3,0.5)
 % \psdot(\oenodeIfc{1}{})\uput[90](\oenodeIfc{1}{}){1}
 % \psdot(\oenodeIfc{2}{})\uput[90](\oenodeIfc{2}{}){2}
 % \psdot(\oenodeIfc{N}{})\uput[-90](\oenodeIfc{N}{}){N}
-% \wdmcoupler(4, 2)(4,0)(7,1)
+% \wdmcoupler(4, 2)(4,0.5)(7,1.25)
 % \psdot(\oenodeIfc{1}{})\uput[90](\oenodeIfc{1}{}){1}
 % \psdot(\oenodeIfc{2}{})\uput[-90](\oenodeIfc{2}{}){2}
 % \psdot(\oenodeIfc{N}{})\uput[90](\oenodeIfc{N}{}){N}
-% \optcoupler(8,2)(8,0)(11,2)(11,0)
+% \optcoupler(8,2)(8,0.5)(11,2)(11,0.5)
 % \psdot(\oenodeIfc{1}{})\uput[90](\oenodeIfc{1}{}){1}
 % \psdot(\oenodeIfc{2}{})\uput[-90](\oenodeIfc{2}{}){2}
 % \psdot(\oenodeIfc{3}{})\uput[90](\oenodeIfc{3}{}){3}
 % \psdot(\oenodeIfc{N}{})\uput[-90](\oenodeIfc{N}{}){N}
+% \rput[b](1.5,0){\nxLcs{wdmsplitter}}
+% \rput[b](5.5,0){\nxLcs{wdmcoupler}}
+% \rput[b](9.5,0){\nxLcs{optcoupler}}
 % \end{pspicture}
 % \end{center}
 %
@@ -3726,8 +3592,8 @@
 % \psdot(\oenodeRefA{})\uput[90](\oenodeRefA{}){RefA}
 % \psdot(\oenodeRefB{})\uput[90](\oenodeRefB{}){RefB}
 % \rput[b](1.5,0){\opt{align=none}}
-% \rput[b](5.5,0){\opt{align=top}}
-% \rput[b](9.5,0){\opt{align=bottom}}
+% \rput[b](6,0){\opt{align=top}}
+% \rput[b](10.5,0){\opt{align=bottom}}
 % \end{pspicture}
 % \end{center}
 % \psset{usefiberstyle=false}
@@ -4820,7 +4686,6 @@
 % Sets the relative refractive index of a component with respect to the background.
 % \fi
 %
-% \psnumitem[0]{nbeam}
 % \ifGERMAN 
 % Überschreibt den Brechungsindex der Komponenten (mit \Lkeyword{n} gesetzt) für
 % ganze Strahlen falls der Wert ungleich \opt{0} ist.
@@ -4832,7 +4697,7 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}[morekeywords = {[21]{nbeam, n}}]
+\begin{LTXexample}[morekeywords = {[21]{n}}]
 \begin{pspicture}(3,3)
   \pnode(0,1){A}\pnode(3,1){B}
   \optplane(A)(0,1)
@@ -4841,27 +4706,27 @@
   \optplane(B)(0,1)
   \addtopsstyle{Beam}{beampos=0.5}
   \drawbeam{-}
-  \drawbeam[linecolor=red, nbeam=2]{-}
+  \drawbeam[linecolor=red, n=2]{-}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
 %</ignore>
 % \fi
 %
-% \psnumitem[0]{nadd}
+% \valitem{nproc}{pscode}
 % \ifGERMAN \fi
 %
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}[morekeywords = {[21]{nadd, n}}]
+\begin{LTXexample}[morekeywords = {[21]{nproc, n}}]
 \begin{pspicture}(3,3)
   \pnode(0,1.5){A}\pnode(3,1.5){B}
   \lens[lens=4 4 3, n=2, abspos=0.3](A)(B)
   \optplane[compname=Plane](B)(0,1)
   \psset{beampos=0.6}
   \drawbeam[linecolor=red]{(A)}{1}{Plane}
-  \drawbeam[linecolor=yellow, nadd=0.5]{(A)}{1}{Plane}
+  \drawbeam[linecolor=yellow, nproc=0.5 add]{(A)}{1}{Plane}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -4871,7 +4736,7 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}[morekeywords = {[21]{nadd}}]
+\begin{LTXexample}[morekeywords = {[21]{nproc}}]
 \begin{pspicture}(3.8,3)
   \pnode(0,2.5){A}\pnode(1,2.5){B}\pnode(4,1){C}
   \optprism(A)(B)(C)
@@ -4882,25 +4747,12 @@
     \pstVerb{%
       \i\space 650 400 sub 19 div mul 400 add 
       tx@addDict begin wavelengthToRGB end }%
-    \drawbeam[nadd=-2e-3 \i\space mul]{(A)}{1}{(C)}
+    \drawbeam[nproc=-2e-3 \i\space mul add]{(A)}{1}{(C)}
   }%
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
 %</ignore>
-% \fi
-% \psnumitem[1]{nmul}
-% \ifGERMAN
-% Analog zu \nxLkeyword{nadd}, nur dass der ursprüngliche Brechungsindex mit
-% diesem Faktor multipliziert wird. Wenn \nxLkeyword{nadd} und \nxLkeyword{nmul}
-% zusammen verwendet werden, wird zuerst die Multiplikation durchgeführt:
-% $n_\mathrm{neu} = n_\mathrm{alt}\times n_\mathrm{mul} + n_\mathrm{add}$.
-% \fi
-% \ifENGLISH
-% Like \nxLkeyword{nadd} only that the original refractive index is multiplied
-% by this factor. If both \nxLkeyword{nadd} and \nxLkeyword{nmul} are used, the
-% multiplication is carried out first: $n_\mathrm{new} = n_\mathrm{old}\times
-% n_\mathrm{mul} + n_\mathrm{add}$.
 % \fi
 % \iffalse
 %<*ignore>
@@ -5097,9 +4949,9 @@
 %   \xLcs{drawwidebeam}\cmditem{drawwidebeam}[options]{obj$_1$}{obj$_2$}{\ldots}{obj$_N$}
 % \end{ltxsyntax}
 % \begin{optionlist}
-% \numitem[0.1]{beamwidth}
+% \psnumitem[0]{beamwidth}
 % 
-% \numitem[0]{beamdiv}
+% \psnumitem[0]{beamdiv}
 % \end{optionlist}
 %
 % \ifGERMAN\section{Fehlerbehandlung}\fi
@@ -7650,14 +7502,8 @@
 \define@key[psset]{optexp}{n}{%
   \edef\POE@key@n{#1 }%
 }
-\define@key[psset]{optexp}{nbeam}{%
-  \edef\POE@key@nbeam{#1 }%
-}
-\define@key[psset]{optexp}{nmul}{%
-  \edef\POE@key@nmul{#1 }%
-}
-\define@key[psset]{optexp}{nadd}{%
-  \edef\POE@key@nadd{#1 }%
+\define@key[psset]{optexp}{nproc}{%
+  \edef\POE@key@nproc{#1}%
 }
 \define@key[psset]{optexp}{beamangle}{%
   \edef\POE@key@beamangle{#1}%
@@ -7704,9 +7550,7 @@
   ,beamwidth=0
   ,beamdiv=0
   ,n=1.5
-  ,nbeam=0
-  ,nmul=1
-  ,nadd=0
+  ,nproc=\@empty
   ,skipconn=0
 }%
 %    \end{macrocode}
@@ -7991,6 +7835,7 @@
 % \begin{macro}{\begin@BeamObj}
 %    \begin{macrocode}
 \def\begin@BeamObj{%
+  \addbefore@par{n=\@empty}%
   \begin@SpecialObj%
   \addto@pscode{%
      \pst@optexpdict 
@@ -8120,25 +7965,24 @@
     \addto@pscode{ false }%
   \else
     \addto@pscode{%
-     {/nmul \POE@key@nmul\space def
-      /nadd \POE@key@nadd\space def
-      /nbeam \POE@key@nbeam\space def} }%
-    \ifx\POE@key@beampos\@empty
-      \addto@pscode{ {0 0} }%
-    \else
-      \addto@pscode{ [\POE@key@beampos\space counttomark 1 eq 
-                     { 0 exch } if \tx@ScreenCoor] cvx }%
-    \fi
-    \addto@pscode{%
-       \POE@key@beamangle\space
-    }%
-    \addto@pscode{%
-      currentdict /lastBeamPointTmp undef
-      loadbeampoints tx@NodeDict /N@\oenodeBeam\space known and {
-        /N@\oenodeBeam\space @GetCenter ToVec /lastBeamPointTmp ED
-      } if
-      TraceBeam 
-    }%
+     {/nproc {\POE@key@nproc} bind def
+      mark \POE@key@n\space counttomark 1 eq { /nbeam ED } if cleartomark
+     }%
+     [ \POE@key@beampos\space counttomark dup 
+     0 eq { 
+       pop 0 0 
+     } {
+       1 eq {
+         0 exch
+       } if
+     } ifelse \tx@ScreenCoor] cvx
+     \POE@key@beamangle\space
+     currentdict /lastBeamPointTmp undef
+     loadbeampoints tx@NodeDict /N@\oenodeBeam\space known and {
+       /N@\oenodeBeam\space @GetCenter ToVec /lastBeamPointTmp ED
+     } if
+     TraceBeam 
+   }%
     \POE@strokebeam
     \addto@pscode{%
       savebeampoints currentdict /lastBeamPointTmp known and dup { 
@@ -8180,10 +8024,8 @@
 \def\drawwidebeam@ii{%
   \def\pst@fill##1{ gsave ##1 grestore }%
   \addto@pscode{%
-    {/nmul \POE@key@nmul\space def
-     /nadd \POE@key@nadd\space def
-     /nbeam \POE@key@nbeam\space def
-     /beamdiv \POE@key@beamdiv\space def
+    {/nproc {\POE@key@nproc} bind def
+     mark \POE@key@n\space counttomark 1 eq { /nbeam ED } if cleartomark
     } %
   }%
 %    \end{macrocode}
@@ -8197,18 +8039,20 @@
 % the start positions
 %    \begin{macrocode}
   \addto@pscode{%
-    [
-      \ifx\POE@key@beampos\@empty 
-        0 0 
-      \else
-        \POE@key@beampos\space
-      \fi
-      counttomark 1 eq { 0 exch } if
-      \ifx\POE@key@beamwidth\@empty 
+    [ \POE@key@beampos\space counttomark dup
+      0 eq {
+        pop 0 0 
+      } {
+        1 eq {
+          0 exch 
+        } if
+      } ifelse
+      mark \POE@key@beamwidth\space counttomark 0 eq {
         0 
-      \else 
-        \POE@key@beamwidth\space 0.5 mul 
-      \fi\space
+      } {
+        0.5 mul
+      } ifelse
+      exch pop
       3 copy add \tx@ScreenCoor\space ToVec 
       5 1 roll sub \tx@ScreenCoor
     ] cvx
@@ -10637,7 +10481,7 @@
     {0 \POE@key@doveprismsize\space -0.5 mul} {1 0} refl {PlaneIfc}
     {\POE@key@doveprismsize\space 0} {-1 1} trans {PlaneIfc} 
     \ifPOE@nauto
-      \pst@number\psxunit\space 1.5 mul \pst@number\psyunit\space div dup (x=) == == % x
+      \pst@number\psxunit\space 1.5 mul \pst@number\psyunit\space div % x
       dup dup mul 0.5 exch div -1 3 -1 roll div add 1 add -1 exch div 2 add sqrt 1 exch div
     \else
       \POE@key@n
@@ -11200,10 +11044,13 @@
     \psline(! \@sz neg dup)(! \@sz dup)
     \psline(! \@sz neg \@sz)(! \@sz dup neg)
   \fi\fi\fi\fi
-  \ifPOE@variable
-    \psline[style=VariableCoupler]%
-      (!\@sz -0.5 mul \@sz neg \@yshift add)%
-      (!\@sz 0.5 mul \@sz \@yshift add)
+  \ifx\POE@key@couplertype\POE@str@couplertype@crossswitch\else
+    \ifPOE@variable
+      \def\@arrowshift{ \psk@arrowlength\space \psk@arrowsize\space CLW mul add mul \pst@number\psyunit\space div }%
+      \psline[style=VariableCoupler]%
+        (!\@sz -0.5 mul \@sz -0.8 mul \@yshift add)%
+        (!\@sz 0.5 mul \@sz 0.5 mul \@yshift add \@arrowshift add)
+    \fi
   \fi
 }%
 %    \end{macrocode}
@@ -11788,7 +11635,7 @@ tx@OptexpDict begin
       /CompMtrx CM def
     grestore
     /N 1 def
-    /n 1 def
+    /n bgIndex def
     5 dict dup dup /P@1 ED /P@N ED
     begin
       /mode trans def
@@ -11870,6 +11717,7 @@ tx@OptexpDict begin
 /refl 0 def /trans 1 def
 /desc 0 def /asc 1 def /amb 2 def
 /missed 0 def /tir 1 def /ok 2 def
+/bgIndex 0 def /realBgIndex 1 def
 %    \end{macrocode}
 % 
 % About the design:
@@ -11887,7 +11735,7 @@ tx@OptexpDict begin
 % \begin{psarglist} 
 %   \psargitem{\PSvar{n}} The basic refractive index which was set for
 %   the component. This may be overwritten with the \opt{n} option or
-%   changed by \opt{nmul} and \opt{nadd} options of the \nxLcs{drawbeam}
+%   changed by \opt{nproc} option of the \nxLcs{drawbeam}
 %   macros.  
 %
 %   \psargitem{\PSvar{CompMtrx}} The transformation matrix at time of
@@ -12147,7 +11995,7 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % only a single interface
 %    \begin{macrocode}
-    [ (C) name 1 
+    [ (C) name bgIndex 
     PN 1 eq PN PlaneNum eq or {
 %    \end{macrocode}
 % its the first or last comp
@@ -12171,13 +12019,13 @@ tx@OptexpDict begin
 % first component
 %    \begin{macrocode}
       [ (C) name
-      nbeam 0 eq { name cvn load /n get } { nbeam } ifelse
+      name GetRefIndex
       trans draw ] cvx
 %    \end{macrocode}
 % now check which is the outgoing plane
 %    \begin{macrocode}
       name /outToPlane load GetNextPlane
-      [ exch name 1 trans draw ] cvx exch
+      [ exch name bgIndex trans draw ] cvx exch
       /PlaneNumTmp PlaneNumTmp 1 add def
     } {
       CurrTmp name GetNearestPlane /nextPlane ED
@@ -12191,9 +12039,9 @@ tx@OptexpDict begin
       3 1 roll ToVec /CurrVecTmp ED
       [ nextPlane name
       connectifc {
-        1
+        bgIndex
       }{
-        nbeam 0 eq { name cvn load /n get } { nbeam } ifelse
+        name GetRefIndex
       } ifelse
 %    \end{macrocode}
 % always draw to first interface
@@ -12204,7 +12052,7 @@ tx@OptexpDict begin
 % its the last comp, just put the center plane on the stack
 %    \begin{macrocode}
         [ (C) name
-        nbeam 0 eq { name cvn load /n get } { nbeam } ifelse
+        name GetRefIndex
         trans draw ] cvx exch
         /PlaneNumTmp PlaneNumTmp 1 add def
       } {
@@ -12212,7 +12060,7 @@ tx@OptexpDict begin
 % check the mode
 %    \begin{macrocode}
         [ (C) name
-        nbeam 0 eq { name cvn load /n get } { nbeam } ifelse
+        name GetRefIndex
         CurrVecTmp (C) name GetPlaneVec NormalVec outToPlane 
         GetPlaneCenter (C) name GetPlaneCenter @ABVect SProd
         0 lt { trans } { refl } ifelse % mode
@@ -12221,7 +12069,7 @@ tx@OptexpDict begin
 % now check which is the outgoing plane
 %    \begin{macrocode}
         name /outToPlane load GetNextPlane
-        [ exch name 1 trans draw ] cvx 3 1 roll
+        [ exch name bgIndex trans draw ] cvx 3 1 roll
         /PlaneNumTmp PlaneNumTmp 2 add def
       } ifelse
     } ifelse
@@ -12270,15 +12118,14 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % preset options
 %    \begin{macrocode}
-  /nmul 1 def
-  /nadd 0 def
-  /nbeam 0 def
+  /nproc {} bind def
+  tx@OptexpDict /nbeam undef
 %    \end{macrocode}
 % execute options
 %    \begin{macrocode}
   exec
   connectifc {
-    /nbeam 1 def
+    /nbeam bgIndex def
   } if
   /startinside startinside beaminsidefirst or def
   /stopinside stopinside beaminsidelast or def
@@ -12301,7 +12148,7 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % Init the refractive index
 %    \begin{macrocode}
-  /n1 1 def
+  /n1 bgIndex def
   /PN 1 def
   { 
 %    \end{macrocode}
@@ -12490,15 +12337,14 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % preset options
 %    \begin{macrocode}
-  /nmul 1 def
-  /nadd 0 def
-  /nbeam 0 def
+  /nproc {} bind def
+  tx@OptexpDict /nbeam undef
 %    \end{macrocode}
 % execute user options
 %    \begin{macrocode}
   exec
   connectifc {
-    /nbeam 1 def
+    /nbeam bgIndex def
   } if
   /startinside startinside beaminsidefirst or def
   /stopinside stopinside beaminsidelast or def
@@ -12541,7 +12387,7 @@ tx@OptexpDict begin
 % ambiguous components is among them.
 %    \begin{macrocode}
   counttomark /PlaneNum ED 
-  /n1 1 def
+  /n1 bgIndex def
   /CurrR false def
   /PN 1 def
   {
@@ -12918,12 +12764,12 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % after the last component plane we have always air
 %    \begin{macrocode}
-            1 
+            bgIndex
           }{
 %    \end{macrocode}
 % otherwise the respective refractive index of the component
 %    \begin{macrocode}
-            nbeam 0 eq { n } {nbeam} ifelse
+            name GetRefIndex
           } ifelse
           exch dup N eq {
             pop (N)
@@ -13205,7 +13051,8 @@ tx@OptexpDict begin
 %  If it would be total internal reflection, the output vector is (0, 0).
 %    \begin{macrocode}
 /RefractVec {
-  div /n ED /Ynorm ED /Xnorm ED
+  TransformRefIndex exch TransformRefIndex exch div /n ED 
+  /Ynorm ED /Xnorm ED
   NormalizeVec /Yin ED /Xin ED 
   n abs 1 eq {
     Xin Yin
@@ -13253,7 +13100,6 @@ tx@OptexpDict begin
   2 copy /Yr ED /Xr ED 
   tx@Dict begin Pyth end /radius ED /Yp ED /Xp ED
   /X0n X0 Xp sub def /Y0n Y0 Yp sub def
-  n2 1 gt { /n2 n2 nmul mul nadd add def } if
   tx@EcldDict begin
     X0n Y0n 2 copy 2 copy Xin 3 -1 roll add Yin 3 -1 roll add
     2 copy 6 2 roll EqDr radius InterLineCircle
@@ -13305,7 +13151,6 @@ tx@OptexpDict begin
 /PlainInterface {%
   /Yin ED /Xin ED /Y0 ED /X0 ED /n2 ED /mode ED 
   /dYp ED /dXp ED /Yp ED /Xp ED
-  n2 1 gt { /n2 n2 nmul mul nadd add def } if
   Xp Yp Xp dXp add Yp dYp add X0 Y0 X0 Xin add Y0 Yin add 
   @InterLines missed eq {
     missed
@@ -13318,6 +13163,23 @@ tx@OptexpDict begin
       ReflectVec ok
     } ifelse /n1 n2 def
   } ifelse
+} bind def
+%    \end{macrocode}
+% \end{macro}
+% 
+% 
+% \begin{macro}{TransformRefIndex}
+%    \begin{macrocode}
+/TransformRefIndex {
+  dup bgIndex eq { pop realBgIndex }{ nproc } ifelse
+} bind def
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{GetRefIndex}
+%    \begin{macrocode}
+/GetRefIndex {
+  tx@OptexpDict /nbeam known { pop nbeam }{ cvn load /n get } ifelse
 } bind def
 %    \end{macrocode}
 % \end{macro}
