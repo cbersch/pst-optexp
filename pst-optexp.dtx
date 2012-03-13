@@ -8680,6 +8680,18 @@
 %    \end{macrocode}
 % \end{macro}
 %
+% \begin{macro}{\newOptexpComp@}
+%    \begin{macrocode}
+\def\newOptexpFiberComp#1{%
+  \POE@Verb{%
+    \tx@NodeScale
+    [ #1 (\oenode{}{}) {\tx@ScreenCoor}
+      NewOptexpFiberComp
+  }%
+\ignorespaces}%
+%    \end{macrocode}
+% \end{macro}
+%
 % \begin{macro}{\POE@compalias}
 %   Components which have a \opt{compname} assigned, must also be available by
 %   their component number. Here, all necessary informations (nodes, component
@@ -9818,11 +9830,7 @@
 % 
 % \begin{macro}{fiberdipole@nodes}
 %    \begin{macrocode}
-\def\fiberdipole@nodes{%
-  \pnode(! \POE@dict{@@x0 @@x sub 0}){\oenodeIn{}}
-  \pnode(! \POE@dict{@@x0 @@x add 0}){\oenodeOut{}}
-  \pnode(! \POE@dict{@@x0 @@y0}){\oenodeCenter{}}
-}%
+\let\fiberdipole@nodes\dipole@nodes
 %    \end{macrocode}
 % \end{macro}
 % 
@@ -10618,12 +10626,9 @@
 % \begin{macro}{\optfiber@nodes}
 %    \begin{macrocode}
 \def\optfiber@nodes{%
-  \pnode(! \POE@key@fiberloopsep\space
-           \POE@key@fiberloops\space 
-           1 sub mul -0.5 mul 0){\oenodeIn{}}
-  \pnode(! \POE@key@fiberloopsep\space
-           \POE@key@fiberloops\space 
-           1 sub mul 0.5 mul 0){\oenodeOut{}}
+  \newOptexpFiberComp{%
+    {\POE@key@fiberloopsep\space\POE@key@fiberloops\space 1 sub mul -0.5 mul 0}
+    {\POE@key@fiberloopsep\space\POE@key@fiberloops\space 1 sub mul 0.5 mul 0}}%
 \ignorespaces}%
 %    \end{macrocode}
 % \end{macro}
@@ -10762,8 +10767,7 @@
 \def\optamp@nodes{%
   \edef\@sz{\POE@key@optampsize\space 0.5 mul }%
   \edef\@xl{0.75 sqrt \@sz mul }%
-  \pnode(!\@xl neg 0){\oenodeIn{}}
-  \pnode(!\@xl 0){\oenodeOut{}}  
+  \newOptexpFiberComp{{\@xl neg 0} {\@xl 0}}  
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -10788,8 +10792,7 @@
   \else
     \def\@sz{\POE@key@polcontrolsize\space 1.5 mul\space}%
   \fi
-  \pnode(!\@sz neg 0){\oenodeIn{}}
-  \pnode(!\@sz 0){\oenodeOut{}}  
+  \newOptexpFiberComp{{\@sz neg 0} {\@sz 0}}%
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -10998,19 +11001,16 @@
     \def\@yshift{0 }%
   \fi\fi
   \ifx\POE@key@couplertype\POE@str@couplertype@none
-    \pnode(! \@sz -0.5 mul \@yshift \@sep add){\oenode{1}{}}
-    \pnode(! \@sz -0.5 mul \@yshift \@sep sub){\oenode{2}{}}
-    \pnode(! \@sz 0.5 mul \@yshift \@sep add){\oenode{3}{}}
-    \pnode(! \@sz 0.5 mul \@yshift \@sep sub){\oenode{N}{}}
+    \newOptexpFiberComp{ {\@sz -0.5 mul \@yshift \@sep add}
+                         {\@sz -0.5 mul \@yshift \@sep sub}
+                         {\@sz 0.5 mul \@yshift \@sep add}
+                         {\@sz 0.5 mul \@yshift \@sep sub}}
   \else
-    \pnode(! \@sz neg \getCLW 0.3 mul add 
-             \@yshift \@sep add){\oenode{1}{}}
-    \pnode(! \@sz neg \getCLW 0.3 mul add 
-             \@yshift \@sep sub){\oenode{2}{}}
-    \pnode(! \@sz \getCLW 0.3 mul sub 
-             \@yshift \@sep add){\oenode{3}{}}
-    \pnode(! \@sz \getCLW 0.3 mul sub 
-             \@yshift \@sep sub){\oenode{N}{}}
+    \newOptexpFiberComp{%
+      {\@sz neg \getCLW 0.3 mul add \@yshift \@sep add}
+      {\@sz neg \getCLW 0.3 mul add \@yshift \@sep sub}
+      {\@sz \getCLW 0.3 mul sub \@yshift \@sep add}
+      {\@sz \getCLW 0.3 mul sub \@yshift \@sep sub} }%
   \fi
   \pnode(! 0 \@yshift){\oenodeCenter{}}
 }%
@@ -11075,15 +11075,15 @@
     \def\@yshift{0 }%
   \fi\fi
   \ifx\POE@key@couplertype\POE@str@couplertype@none
-    \pnode(! \@sz -0.5 mul \@yshift \@sep add){\oenode{1}{}}
-    \pnode(! \@sz -0.5 mul \@yshift \@sep sub){\oenode{2}{}}
-    \pnode(! \@sz 0.5 mul 0){\oenode{N}{}}
+    \newOptexpFiberComp{%
+      {\@sz -0.5 mul \@yshift \@sep add}
+      {\@sz -0.5 mul \@yshift \@sep sub}
+      {\@sz 0.5 mul 0}}%
   \else
-    \pnode(! \@sz neg \getCLW 0.3 mul add 
-             \@yshift \@sep add){\oenode{1}{}}
-    \pnode(! \@sz neg \getCLW 0.3 mul add 
-             \@yshift \@sep sub){\oenode{2}{}}
-    \pnode(! \@sz \getCLW 0.3 mul sub 0){\oenode{N}{}}
+    \newOptexpFiberComp{%
+      {\@sz neg \getCLW 0.3 mul add \@yshift \@sep add}
+      {\@sz neg \getCLW 0.3 mul add \@yshift \@sep sub}
+      {\@sz \getCLW 0.3 mul sub 0}}%
   \fi
   \pnode(! 0 \@yshift){\oenodeCenter{}}
 }%
@@ -11150,15 +11150,15 @@
     \def\@yshift{0 }%
   \fi\fi
   \ifx\POE@key@couplertype\POE@str@couplertype@none
-    \pnode(! \@sz -0.5 mul 0){\oenode{1}{}}
-    \pnode(! \@sz 0.5 mul \@yshift \@sep add){\oenode{2}{}}
-    \pnode(! \@sz 0.5 mul \@yshift \@sep sub){\oenode{N}{}}
+    \newOptexpFiberComp{%
+      {\@sz -0.5 mul 0}
+      {\@sz 0.5 mul \@yshift \@sep add}
+      {\@sz 0.5 mul \@yshift \@sep sub}}
   \else
-    \pnode(! \@sz neg \getCLW 0.3 mul add 0){\oenode{1}{}}
-    \pnode(! \@sz \getCLW 0.3 mul sub 
-             \@yshift \@sep add){\oenode{2}{}}
-    \pnode(! \@sz \getCLW 0.3 mul sub 
-             \@yshift \@sep sub){\oenode{N}{}}
+    \newOptexpFiberComp{%
+      {\@sz neg \getCLW 0.3 mul add 0}
+      {\@sz \getCLW 0.3 mul sub \@yshift \@sep add}
+      {\@sz \getCLW 0.3 mul sub \@yshift \@sep sub} }
   \fi
   \pnode(! 0 \@yshift){\oenodeCenter{}}
 }%
@@ -11209,9 +11209,7 @@
 %    \begin{macrocode}
 \def\optcirculator@nodes{%
   \edef\@sz{\POE@key@optcircsize\space 0.5 mul }%
-  \pnode(! \@sz neg 0){\oenode{1}{}}
-  \pnode(! 0 \@sz neg){\oenode{2}{}}
-  \pnode(! \@sz 0){\oenode{N}{}}
+  \newOptexpFiberComp{{\@sz neg 0} {0 \@sz neg}{\@sz 0}}%
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -11235,8 +11233,8 @@
 \def\fibercollimator@nodes{%
    \def\@sz{\POE@key@fibercolsize\space 0.5 mul }%
    \pnode(!\@sz neg 0){\oenodeIn{}}
-   \newOptexpComp{ {\@sz neg 0} {0 1} trans {PlaneIfc} 1 }%
-   \pnode(!\@sz 0){\oenodeOut{}}
+   \newOptexpComp{ {\@sz neg 0} {0 1} trans {PlaneIfc} 
+                   {\@sz 0} {0 1} trans {PlaneIfc} 1 }%
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -11503,43 +11501,12 @@ tx@OptexpDict begin
 %    \begin{macrocode}
 /GetInternalNodeNames {
   /reverse ED
-  dup cvn currentdict exch known {
-%    \end{macrocode}
-% This is the safe way to do it, but it works only for free-ray
-% components which were defined by \PSvar{NewOptexpComp}.
-%    \begin{macrocode}
-    dup cvn load /N get dup
-    reverse { -1 1 } { 1 1 3 -1 roll } ifelse
-    { 2 copy eq { pop (N) } { inttostr } ifelse
-      3 -1 roll dup 4 1 roll exch NodeName 3 1 roll
-    } for
-    pop pop
-  } {
-%    \end{macrocode}
-% This is the old implementation which still must be used for fiber
-% components. This implementation was only a problem in special cases
-% for free-ray components, so this should not be an issue to keep it for
-% the fiber components.
-%    \begin{macrocode}
-    1 {
-      2 copy dup inttostr 3 -1 roll exch NodeName dup
-      tx@NodeDict exch known {
-        reverse {
-          4 1 roll pop
-        } {
-          exch 2 add 1 roll
-        } ifelse
-      } {
-        reverse {
-          pop pop pop (N) NodeName
-        } {
-          pop pop exch (N) NodeName exch 1 roll
-        } ifelse
-        exit
-      } ifelse
-      1 add
-    } loop
-  } ifelse
+  dup cvn load /N get dup
+  reverse { -1 1 } { 1 1 3 -1 roll } ifelse
+  { 2 copy eq { pop (N) } { inttostr } ifelse
+    3 -1 roll dup 4 1 roll exch NodeName 3 1 roll
+  } for
+  pop pop
 } bind def
 %    \end{macrocode}
 % \end{macro}
@@ -11714,7 +11681,7 @@ tx@OptexpDict begin
 % Define some constants.
 %    \begin{macrocode}
 /relative 0 def /absolute 1 def /center 2 def
-/refl 0 def /trans 1 def
+/refl 0 def /trans 1 def /absorb 2 def
 /desc 0 def /asc 1 def /amb 2 def
 /missed 0 def /tir 1 def /ok 2 def
 /bgIndex 0 def /realBgIndex 1 def
@@ -11817,6 +11784,45 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % \end{macro}
 %
+% \begin{macro}{NewOptexpFiberComp}
+% \begin{pssyntax}
+%   \PSvar{[} \PSvar{x y} \ldots
+%   \PSstring{CompName} \PSproc{scaling} \PSop{NewOptexpFiberComp}
+% \end{pssyntax}
+%    \begin{macrocode}
+/NewOptexpFiberComp {
+  /sc ED dup cvn
+  gsave
+  12 dict dup 3 1 roll def begin
+  /name ED
+  /allowbeaminside false def
+  /ambiguous false def
+  /correct false def
+  /n bgIndex def
+  tx@Dict begin
+    STV {CP T} stopped pop
+  end
+  /CompMtrx CM def
+  grestore
+  counttomark /N ED
+  1 N eq {
+%    \end{macrocode}
+% only a single plane is specified, create the aliases.
+%    \begin{macrocode}
+    {0 1} trans name (1) {PlaneIfc} {sc} NewCompIfc 
+    (1) (N) IfcAlias
+  }{
+    N -1 1 {
+      dup N eq { pop (N) }{inttostr} ifelse
+      {0 1} absorb name 4 -1 roll {PlaneIfc} {sc} NewCompIfc
+    } for
+  } ifelse
+  end
+  pop
+} bind def
+%    \end{macrocode}
+% \end{macro}
+%
 % \begin{macro}{IfcAlias}
 %   Create an alias of an interface. This involves creating also an
 %   alias for the associated node.  Must be called withing
@@ -11851,32 +11857,32 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}{GetPlaneCenter}
+% \begin{macro}{GetIfcCenter}
 % PlaneNumber CompName -> NodeCenter
 % or
 % \PSproc{Plane} -> NodeCenter
 %    \begin{macrocode}
-/GetPlaneCenter {
-    dup type /stringtype eq not {
-      dup xcheck not {
+/GetIfcCenter {
+  dup type /stringtype eq not {
+    dup xcheck not {
 %    \end{macrocode}
 % ambiguous
 %    \begin{macrocode}
-        0 get (C) exch
+      0 get (C) exch
+    } {
+      exec pop pop pop
+    } ifelse
+  } if
+  cvn load begin
+    IfcName load begin
+      currentdict /RX known {
+        X RX sub Y RY sub
       } {
-        exec pop pop pop
+        X Y
       } ifelse
-    } if
-    cvn load begin
-      IfcName load begin
-        currentdict /RX known {
-          X RX sub Y RY sub
-        } {
-          X Y
-        } ifelse
-        CompMtrx transform CM itransform
-      end
+      CompMtrx transform CM itransform
     end
+  end
 } bind def
 %    \end{macrocode}
 % \end{macro}
@@ -11888,8 +11894,8 @@ tx@OptexpDict begin
 %    \begin{macrocode}
 /TransformInVec {
     3 1 roll
-    GetPlaneCenter 4 2 roll
-    GetPlaneCenter 5 -2 roll
+    GetIfcCenter 4 2 roll
+    GetIfcCenter 5 -2 roll
     @ABVect
     3 -1 roll exec 2 copy 6 2 roll
     0 eq exch 0 eq and not {
@@ -11912,8 +11918,8 @@ tx@OptexpDict begin
 %    \begin{macrocode}
 /TransformStartPos {
     exec 2 copy 6 2 roll 0 eq exch 0 eq and not
-    3 1 roll GetPlaneCenter 4 2 roll
-    GetPlaneCenter 5 2 roll {
+    3 1 roll GetIfcCenter 4 2 roll
+    GetIfcCenter 5 2 roll {
       2 copy 8 2 roll
       @ABVect exch atan matrix rotate dtransform
       VecAdd
@@ -11929,12 +11935,12 @@ tx@OptexpDict begin
 % X Y CompName -> PlaneNumber
 %    \begin{macrocode}
 /GetNearestPlane {
-  3 copy 1 exch GetPlaneCenter @ABDist /dist ED /nearestPlane 1 def
+  3 copy 1 exch GetIfcCenter @ABDist /dist ED /nearestPlane 1 def
   dup cvn load /N get 2 1 3 -1 roll {
 %    \end{macrocode}
 % iterate through plane 2 to plane N of CompName 
 %    \begin{macrocode}
-    4 copy exch GetPlaneCenter @ABDist dup dist lt {
+    4 copy exch GetIfcCenter @ABDist dup dist lt {
       /dist ED /nearestPlane ED
     } {
       pop pop
@@ -12006,7 +12012,7 @@ tx@OptexpDict begin
 % somewhere in the middle, check the mode (trans or refl)
 %    \begin{macrocode}
       CurrVecTmp (C) name GetPlaneVec NormalVec outToPlane 
-      GetPlaneCenter (C) name GetPlaneCenter @ABVect SProd
+      GetIfcCenter (C) name GetIfcCenter @ABVect SProd
       0 lt { trans } { refl } ifelse % mode
     } ifelse
     true ] cvx
@@ -12033,7 +12039,7 @@ tx@OptexpDict begin
 % check if mode is trans or refl
 %    \begin{macrocode}
       CurrVecTmp nextPlane name GetPlaneVec NormalVec
-      (C) name GetPlaneCenter nextPlane name GetPlaneCenter 
+      (C) name GetIfcCenter nextPlane name GetIfcCenter 
       @ABVect 2 copy 6 2 roll SProd 
       0 lt { trans }{ refl } ifelse
       3 1 roll ToVec /CurrVecTmp ED
@@ -12062,7 +12068,7 @@ tx@OptexpDict begin
         [ (C) name
         name GetRefIndex
         CurrVecTmp (C) name GetPlaneVec NormalVec outToPlane 
-        GetPlaneCenter (C) name GetPlaneCenter @ABVect SProd
+        GetIfcCenter (C) name GetIfcCenter @ABVect SProd
         0 lt { trans } { refl } ifelse % mode
         draw ] cvx exch
 %    \end{macrocode}
@@ -12084,7 +12090,7 @@ tx@OptexpDict begin
 %    \begin{macrocode}
 /GetNextPlane {
   2 copy (C) 3 -1 roll
-  GetPlaneCenter 3 -1 roll exec GetPlaneCenter 
+  GetIfcCenter 3 -1 roll exec GetIfcCenter 
   4 2 roll 4 copy @ABVect /VecY ED /VecX ED 
   @ABDist /centerDist ED
   /sprod 1 def
@@ -12095,7 +12101,7 @@ tx@OptexpDict begin
     3 copy 3 -1 roll 2 copy
     GetPlaneVec VecX VecY 4 2 roll NormalVec 
     VecX VecY SProd dup sprod lt 5 2 roll
-    GetPlaneCenter 3 -1 roll exec GetPlaneCenter @ABDist 
+    GetIfcCenter 3 -1 roll exec GetIfcCenter @ABDist 
     centerDist lt and
     { /sprod ED /nextPlane ED } { pop pop } ifelse
   } for
@@ -12609,16 +12615,16 @@ tx@OptexpDict begin
     amb dup CompA
   } {
     CompB isAmb {
-      1 CompA GetPlaneCenter (C) CompB GetPlaneCenter @ABDist
-      (N) CompA GetPlaneCenter (C) CompB GetPlaneCenter @ABDist
+      1 CompA GetIfcCenter (C) CompB GetIfcCenter @ABDist
+      (N) CompA GetIfcCenter (C) CompB GetIfcCenter @ABDist
     } {
-      1 CompA GetPlaneCenter 
-      1 CompB GetPlaneCenter 
-      (N) CompB GetPlaneCenter 
+      1 CompA GetIfcCenter 
+      1 CompB GetIfcCenter 
+      (N) CompB GetIfcCenter 
       true OrderNodes exch pop
-      (N) CompA GetPlaneCenter 
-      1 CompB GetPlaneCenter 
-      (N) CompB GetPlaneCenter 
+      (N) CompA GetIfcCenter 
+      1 CompB GetIfcCenter 
+      (N) CompB GetIfcCenter 
       true OrderNodes exch pop
     } ifelse
     le { desc } { asc } ifelse dup CompA
@@ -12628,9 +12634,9 @@ tx@OptexpDict begin
     /i ED exch /CompB ED %
     CompB isAmb not {
       dup desc eq { 1 } { dup amb eq { (C) }{ (N) } ifelse } ifelse 
-      CompA GetPlaneCenter
-      1 CompB GetPlaneCenter
-      (N) CompB GetPlaneCenter false OrderNodes dup dup
+      CompA GetIfcCenter
+      1 CompB GetIfcCenter
+      (N) CompB GetIfcCenter false OrderNodes dup dup
 %    \end{macrocode}
 % check if we have a NodeIfc
 %    \begin{macrocode}
@@ -12666,13 +12672,13 @@ tx@OptexpDict begin
     }{ 
       desc eq { (N) }{ 1 } ifelse 
     } ifelse 
-    exch GetPlaneCenter 5 3 roll
+    exch GetIfcCenter 5 3 roll
     exch dup 3 1 roll isAmb { 
       pop (C)
     }{ 
       desc eq { 1 }{ (N) } ifelse 
     } ifelse 
-    exch GetPlaneCenter
+    exch GetIfcCenter
     @ABVect exch atan exch
     cvn load begin
       adjustRel {
@@ -13203,38 +13209,23 @@ tx@OptexpDict begin
 /NearestNodeTmp {
   exch /NodeB ED
   /dist -1 def
-  1 {% name and counter on stack
-    2 copy % name cnt name cnt 
-    NodeName dup
-    tx@NodeDict exch known {%
-      @GetCenter 2 copy
-      NodeB @ABDist % name cnt X Y dist
-      dist 0 lt {% init /dist
-        /dist ED
-        ToVec /node ED
-      } {
-        dup dist lt {
-          /dist ED
-          ToVec /node ED
-        } {
-          pop pop pop
-        } ifelse
-      } ifelse
-      1 add % increment counter
-    } {% the last node
-      pop pop (N) NodeName
-      @GetCenter 2 copy
-      NodeB @ABDist
+  dup cvn load /N get 1 1 3 -1 roll {
+    2 copy pop % name cnt name
+    GetIfcCenter 2 copy
+    NodeB @ABDist % name X Y dist
+    dist 0 lt {% init /dist
+      /dist ED
+      ToVec /node ED
+    } {
       dup dist lt {
         /dist ED
         ToVec /node ED
       } {
         pop pop pop
       } ifelse
-      exit
     } ifelse
-  } loop
-  dist /node load
+  } for
+  pop dist /node load 
 } bind def
 %    \end{macrocode}
 % \end{macro}
@@ -13504,14 +13495,16 @@ tx@OptexpDict begin
 %   \end{pssyntax}
 %    \begin{macrocode}
 /debugComp { 
-  dup (debug comp ") exch strcat ("-------------) strcat ==
+  dup (debug comp ") exch strcat ("===============) strcat ==
   cvn load { 
     dup type /dicttype eq {
       (plane----------------) == 
       { == == } forall
+      (-----------done) ==
       } { == } ifelse
       ==
   } forall
+  (================== done) ==
 } bind def
 %    \end{macrocode}
 % \end{macro}
