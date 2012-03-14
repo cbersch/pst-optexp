@@ -18,7 +18,7 @@
 %<stylefile>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<stylefile>\ProvidesPackage{pst-optexp}
 %<*stylefile>
-    [2012/03/01 v3.0beta Optical experimental setups with PSTricks]
+    [2012/03/14 v3.0beta Optical experimental setups with PSTricks]
 %</stylefile>
 %
 %<*driver>
@@ -770,14 +770,14 @@
 % Es wird die Erlaubnis gewährt, dieses Dokument zu kopieren, zu verteilen
 % und\slash oder zu modifizieren, unter den Bestimmungen der \LaTeX{} Project
 % Public License, Version
-% 1.3.\fnurl{http://www.ctan.org/tex-archive/macros/latex/base/lppl.txt}. Dieses
+% 1.3.\fnurl{http://mirror.ctan.org/macros/latex/base/lppl.txt}. Dieses
 % Paket wird vom Autor betreut (author-maintained).
 % \fi
 % \ifENGLISH
 % Permission is granted
 % to copy, distribute and\slash or modify this software under the terms of the
 % \LaTeX{} Project Public License, version
-% 1.3.\fnurl{http://www.ctan.org/tex-archive/macros/latex/base/lppl.txt} This
+% 1.3.\fnurl{http://mirror.ctan.org/macros/latex/base/lppl.txt} This
 % package is author-maintained.
 % \fi
 %
@@ -4695,6 +4695,9 @@
 % Overwrites the refractive index of components (set with \Lkeyword{n}) for
 % whole beam ray, if the value is unequal to \opt{0}.
 % \fi
+%
+% Supports algebraic expressions\fnurl{http://mirror.ctan.org/graphics/pstricks/base/doc/pst-news08.pdf}.
+%
 % \iffalse
 %<*ignore>
 % \fi
@@ -10938,26 +10941,26 @@
 %    \begin{macrocode}
 \def\fiberbox@nodes{%
   \def\@wd{\POE@key@fiberboxwidth\space 0.5 mul }%
+  \edef\POE@tempA{}%
   \multido{\i=1+1}{\POE@key@fiberboxincount}{%
-    \pnode(! \@wd neg \POE@key@fiberboxincount\space 1 sub 
-             0.5 mul \i\space sub 1 add 
-             \POE@key@fiberboxinsep\space mul){\oenode{\i}{}}%
+    \xdef\POE@tempA{%
+      \POE@tempA
+      {\@wd neg \POE@key@fiberboxincount\space 1 sub 
+      0.5 mul \i\space sub 1 add 
+      \POE@key@fiberboxinsep\space mul}
+    }%
   }%
   \pst@cntp=\POE@key@fiberboxincount
   \advance\pst@cntp by 1
   \multido{\i=\pst@cntp+1}{\POE@key@fiberboxoutcount}{%
-    \pnode(! \@wd \POE@key@fiberboxoutcount\space 1 sub 
-             0.5 mul \i\space sub \the\pst@cntp\space add 
-             \POE@key@fiberboxoutsep\space mul){\oenode{\i}{}}%
+    \xdef\POE@tempA{%
+      \POE@tempA
+      {\@wd \POE@key@fiberboxoutcount\space 1 sub 
+      0.5 mul \i\space sub \the\pst@cntp\space add 
+      \POE@key@fiberboxoutsep\space mul}
+    }%
   }%
-  \POE@Verb{%
-    tx@NodeDict begin
-    (\oenode{}{}) 
-    \POE@key@fiberboxincount\space
-    \POE@key@fiberboxoutcount\space add cvi NodeName
-    load /N@\oenodeOut{} ED
-    end
-  }%
+  \newOptexpFiberComp{\POE@tempA}%
 }%
 \def\fiberbox@comp{%
   \def\@wd{\POE@key@fiberboxwidth\space 0.5 mul }%

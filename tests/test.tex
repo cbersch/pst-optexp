@@ -66,10 +66,6 @@
 \providecommand\OFF{\xdef\lst@alloverstyle##1{##1}}
 \makeatother
 \begin{document}
-\psset{myn=*  {sqrt(1)*n\string^2}}
-\psset{myn=*{sqrt(2)*n\string^2}}
-\psset{myn=*sqrt(3)*n\string^2}
-\psset{myn=*  sqrt(4)*n\string^2}
 \begin{pspicture}(3,2)
   \pnode(0,1.5){A}\pnode(2,1.5){B}\pnode(3,0.5){C}
   \optprism(A)(B)(C)
@@ -78,11 +74,11 @@
 %  \drawbeam[n=1.5, linecolor=blue]{(A)}{}{(C)}
   \drawbeam[raytrace=false, linecolor=black]{(A)}{}{(C)}  
 \end{pspicture}
-\end{document}
+
 \begin{pspicture}[showgrid=true](3,3)
   \optbox[labelref=global, showoptdots](0,1)(3,1){label}
 \end{pspicture}
-\end{document}
+
 \begin{pspicture}(3,3)
   \pnode(1, 0.5){A}\pnode(2.5,0.5){B}\pnode(2.5,2){C}
   \psset{fiber=none, optbox=1 0.6, label=0 . . relative}
@@ -90,7 +86,7 @@
   \optbox[endbox](B)(C){stop}
   \drawfiber[fiberstyle=diag, linearc=0.5]{1}{2}
 \end{pspicture}
-\end{document}
+
 \begin{pspicture}(13,5.5)
 \psset{usefiberstyle, optboxwidth=1, labelstyle=\footnotesize, fiber=none}
 \pnode(1,5){LD}\pnode([Xnodesep=5.5]LD){CPLin1}
@@ -131,7 +127,7 @@
   \psdot(\oenodeRefA{})
   \psdot(\oenodeRefB{})
 \end{pspicture}
-\end{document}
+
 
 \begin{pspicture}(5,4)
   \pnode(0.5,3){A}
@@ -158,16 +154,17 @@
   \drawwidebeam[beamdiv=6, beamwidth=0.1]{(A)}{1}{(B)}
 \end{pspicture}
 
-\begin{pspicture}[showgrid](5,5)
+\begin{pspicture}[showgrid](4,2)
   \optbox[angle=20](0,1)(2,1)
   \optbox[angle=-20](2,1)(4,1)
-  \drawfiber[fiberangle=ref, fiberangleA=20, fiberangleB=-20]{1}{2}
+  \drawfiber[fiberangleA=20, fiberangleB=-20]{1}{2}
 \end{pspicture}
 
+\bigskip
 \begin{pspicture}[showgrid](3,3)
   \fiberbox[showifcnodes, fiberboxoutcount=3, fiberboxincount=2](0,1)(3,1)
   \drawfiber[startnode=3]{}{(3,1.5)}
-  \drawfiber{}{(3,1.5)}
+  \drawfiber[linecolor=red]{}{(3,1.5)}
 \end{pspicture}
 
 \begin{pspicture}[showgrid](3,3)
@@ -272,7 +269,8 @@
 
 \begin{pspicture}[showgrid](5,5)
   \crystal[lamp, position=-0.1](0,1)(5,1)
-  \crystal[lamp, lampscale=0.2](0,3)(5,3)
+  \newpsstyle{CrystalLamp}{unit=0.7}
+  \crystal[lamp](0,3)(5,3)
 \end{pspicture}
 \begin{LTXexample}[pos=t, caption={caption}]
 \begin{pspicture}(1,1.2)(6.2,5)
@@ -487,11 +485,11 @@ Die erste Linse soll konkav gekrümmte Grenzflächen haben. Mit \Lkeyword{lensradi
     \pstVerb{%
       \i\space 650 400 sub 39 div mul 400 add 
       tx@addDict begin wavelengthToRGB end }%
-    \drawbeam[nadd=-0.002 \i\space mul, beaminsidelast]{(In)}{3-5}{2}{1}{6-7}
+    \drawbeam[n=n -0.002 \i\space mul add, beaminsidelast]{(In)}{3-5}{2}{1}{6-7}
   }%
   \newpsstyle{Beam}{linecolor=red}
   \backlayer{\psline[style=Beam,ArrowInside=->, linewidth=2\pslinewidth, arrowinset=0](In)(\oenodeIn{3})(\oenodeOut{4})}
-  \drawbeam[linewidth=2\pslinewidth, arrows=->, arrowinset=0, beamangle=-90, beamangleabs]{(\oenodeBeam)}{8}{(Out)}  
+  \drawbeam[linewidth=2\pslinewidth, arrows=->, arrowinset=0, beamangle=-90, beamalign=absolute]{(\oenodeBeam)}{8}{(Out)}  
 \end{optexp}
 \rput(4,4.5){%
   \psframe[fillstyle=solid,fillcolor=gray!70](-0.1, -0.6)(0.1, 0.7)
@@ -606,13 +604,13 @@ Czerny-Turner monochromator
   \begin{pspicture}[showgrid=true](3,2)
   \pnode(0,1){A}
   \pnode(3,1){B}
-  \optbox[labeloffset=0.7, optboxwidth=0.5, optboxheight=1, angle=20, refractiveindex=2.3, compname=Box](A)(B){glass plate}
+  \optbox[labeloffset=0.7, optboxwidth=0.5, optboxheight=1, angle=20, n=2.3, compname=Box](A)(B){glass plate}
   \drawbeam[conn=-a]{(A|BoxIntern1)}{Box}
   \drawbeam[conn=B-]{Box}{(B|BoxInternN)}
 \end{pspicture}
 
 \begin{pspicture}[showgrid=true](3,1.5)
-  \psset{optgridlinewidth=1}
+  \psset{gratinglinewidth=1}
   \psset{labelangle=45, labeloffset=2}
   \optbox[abspos=3.7, label=. 90, compname=box](0,1)(3,1){box}
   \drawbeam[conn=a-a]{(0,1)}{box}
@@ -717,7 +715,7 @@ Czerny-Turner monochromator
   \pnode(0,1){A}
   \pnode(5,1){B}
   \lens[compshift=0.2, angle=20](A)(B)
-  \psset{beamangleabs}
+  \psset{beamalign=absolute}
   \drawbeam{(A)}{1}
   \drawbeam[n=1, beampos=0.2, savebeampoints, stopinside]{(A)}{1}
   \drawbeam[loadbeampoints, beamangle=10]{1}{(B)}
