@@ -364,6 +364,7 @@
 \makeatother
 
 \newcommand*{\PSstring}[1]{{\normalfont\small\ttfamily(#1)}}
+\newcommand*{\PSarray}[1]{{\normalfont\small\ttfamily[#1]}}
 \newcommand*{\PSname}[1]{{\normalfont\small\ttfamily/#1}}
 \newcommand*{\PSproc}[1]{{\normalfont\small\ttfamily\textbraceleft #1\textbraceright}}
 \newcommand*{\PSvar}[1]{{\normalfont\small\ttfamily #1}}
@@ -650,7 +651,7 @@
 %     \pstVerb{^^A
 %       \i\space 650 400 sub 39 div mul 400 add 
 %       tx@addDict begin wavelengthToRGB end }^^A
-%     \drawbeam[nproc={-0.002 \i\space mul add}, beaminsidelast]{(In)}{3-5}{2}{1}{6-7}
+%     \drawbeam[n={-0.002 \i\space mul n add}, beaminsidelast]{(In)}{3-5}{2}{1}{6-7}
 %   }^^A
 %   \newpsstyle{Beam}{linecolor=red}
 %   \backlayer{\psline[style=Beam,ArrowInside=->, linewidth=2\pslinewidth, arrowinset=0](In)(\oenodeIn{3})(\oenodeOut{4})}
@@ -4713,20 +4714,17 @@
 %</ignore>
 % \fi
 %
-% \valitem{nproc}{pscode}
-% \ifGERMAN \fi
-%
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}[morekeywords = {[21]{nproc, n}}]
+\begin{LTXexample}[morekeywords = {[21]{n}}]
 \begin{pspicture}(3,3)
   \pnode(0,1.5){A}\pnode(3,1.5){B}
   \lens[lens=4 4 3, n=2, abspos=0.3](A)(B)
   \optplane[compname=Plane](B)(0,1)
   \psset{beampos=0.6}
   \drawbeam[linecolor=red]{(A)}{1}{Plane}
-  \drawbeam[linecolor=yellow, nproc=0.5 add]{(A)}{1}{Plane}
+  \drawbeam[linecolor=yellow, n=*(n+0.5)]{(A)}{1}{Plane}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -4736,7 +4734,7 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}[morekeywords = {[21]{nproc}}]
+\begin{LTXexample}[morekeywords = {[21]{n}}]
 \begin{pspicture}(3.8,3)
   \pnode(0,2.5){A}\pnode(1,2.5){B}\pnode(4,1){C}
   \optprism(A)(B)(C)
@@ -4747,7 +4745,7 @@
     \pstVerb{%
       \i\space 650 400 sub 19 div mul 400 add 
       tx@addDict begin wavelengthToRGB end }%
-    \drawbeam[nproc=-2e-3 \i\space mul add]{(A)}{1}{(C)}
+    \drawbeam[n=-2e-3 \i\space mul n add]{(A)}{1}{(C)}
   }%
 \end{pspicture}
 \end{LTXexample}
@@ -7492,24 +7490,23 @@
 %    \end{macrocode}
 %    \begin{macrocode}
 \define@key[psset]{optexp}{refractiveindex}{%
-  \pst@checknum{#1}\POE@key@n%
+  \psset[optexp]{n=#1}%
   \PackageWarning{pst-optexp}{%
     Option 'refractiveindex' is deprecated,\MessageBreak
     use 'n' instead}%
 }%
 \define@key[psset]{optexp}{n}{%
-  \edef\POE@key@n{#1 }%
+  \POE@psset@@n#1\@nil
 }
-\define@key[psset]{optexp}{myn}{%
-  \POE@@psset@myn#1\@nil
-}
-\def\POE@@psset@myn#1#2\@nil{%
+\def\POE@psset@@n#1#2\@nil{%
   \ifx#1*\relax
-    \pst@Verb{(#2) AlgParser count tx@OptexpDict begin debug end pop }%
+    \POE@psset@@@n#2\@nil
+  \else
+    \edef\POE@key@n{[#1#2] }%
   \fi
 }
-\define@key[psset]{optexp}{nproc}{%
-  \edef\POE@key@nproc{#1}%
+\def\POE@psset@@@n#1#2\@nil{%
+  \edef\POE@key@n{tx@Dict begin (#1#2) AlgParser end }%
 }
 \define@key[psset]{optexp}{beamangle}{%
   \edef\POE@key@beamangle{#1}%
@@ -7555,7 +7552,6 @@
   ,beamwidth=0
   ,beamdiv=0
   ,n=1.5
-  ,nproc=\@empty
   ,skipconn=0
 }%
 %    \end{macrocode}
@@ -7840,7 +7836,7 @@
 % \begin{macro}{\begin@BeamObj}
 %    \begin{macrocode}
 \def\begin@BeamObj{%
-  \addbefore@par{n=\@empty}%
+  \addbefore@par{n=n}%
   \begin@SpecialObj%
   \addto@pscode{%
      \pst@optexpdict 
@@ -7970,9 +7966,7 @@
     \addto@pscode{ false }%
   \else
     \addto@pscode{%
-     {/nproc {\POE@key@nproc} bind def
-      [ \POE@key@n\space counttomark 1 eq { /nbeam ED } if cleartomark
-     }%
+     {/nbeam {\POE@key@n cvx exec} bind def}%
      [ \POE@key@beampos\space counttomark dup 
      0 eq { 
        pop 0 0 
@@ -8029,9 +8023,7 @@
 \def\drawwidebeam@ii{%
   \def\pst@fill##1{ gsave ##1 grestore }%
   \addto@pscode{%
-    {/nproc {\POE@key@nproc} bind def
-     mark \POE@key@n\space counttomark 1 eq { /nbeam ED } if cleartomark
-    } %
+    {/nbeam {\POE@key@n cvx exec} bind def}
   }%
 %    \end{macrocode}
 % arrange and create the input vectors
@@ -11699,10 +11691,9 @@ tx@OptexpDict begin
 % \PSvar{NewOptexpComp} creates a new dictionary that contains everything needed
 % for an optical component. It contains the following variables:
 % \begin{psarglist} 
-%   \psargitem{\PSvar{n}} The basic refractive index which was set for
-%   the component. This may be overwritten with the \opt{n} option or
-%   changed by \opt{nproc} option of the \nxLcs{drawbeam}
-%   macros.  
+%   \psargitem{\PSvar{n}} The basic refractive index which was set for the
+%   component. This may be overwritten with the \opt{n} option of the
+%   \nxLcs{drawbeam} macros.
 %
 %   \psargitem{\PSvar{CompMtrx}} The transformation matrix at time of
 %   the component definition. The method is the same as for the
@@ -11737,7 +11728,7 @@ tx@OptexpDict begin
 %
 % \begin{pssyntax}
 %   \PSvar{[} \PSproc{x y} \PSproc{dx dy | rx ry} \PSvar{type}
-%   \PSproc{\ldots Ifc} \PSvar{\ldots{} n correct? amb? allowbeaminside?} 
+%   \PSproc{\ldots Ifc} \PSvar{\ldots{} [n] correct? amb? allowbeaminside?} 
 %   \PSstring{CompName} \PSproc{scaling} \PSop{NewOptexpComp}
 % \end{pssyntax}
 %    \begin{macrocode}
@@ -11754,7 +11745,8 @@ tx@OptexpDict begin
   end
   /CompMtrx CM def
   grestore
-  counttomark dup 4 idiv dup /N ED 4 mul eq { 1 } if /n ED
+  counttomark dup 4 idiv dup /N ED 4 mul eq { 1 } if 
+  cvx 1 EvalRefIndex /n ED
   1 N eq {
 %    \end{macrocode}
 % only a single plane is specified, create the aliases.
@@ -12121,11 +12113,6 @@ tx@OptexpDict begin
     false 
   } ifelse def
 %    \end{macrocode}
-% preset options
-%    \begin{macrocode}
-  /nproc {} bind def
-  tx@OptexpDict /nbeam undef
-%    \end{macrocode}
 % execute options
 %    \begin{macrocode}
   exec
@@ -12339,11 +12326,6 @@ tx@OptexpDict begin
 /FillWideBeam {
   AngToVec /InvecLow ED /StartLow ED 
   AngToVec /InvecUp ED /StartUp ED 
-%    \end{macrocode}
-% preset options
-%    \begin{macrocode}
-  /nproc {} bind def
-  tx@OptexpDict /nbeam undef
 %    \end{macrocode}
 % execute user options
 %    \begin{macrocode}
@@ -13176,7 +13158,7 @@ tx@OptexpDict begin
 % \begin{macro}{TransformRefIndex}
 %    \begin{macrocode}
 /TransformRefIndex {
-  dup bgIndex eq { pop realBgIndex }{ nproc } ifelse
+  dup bgIndex eq { pop realBgIndex } if
 } bind def
 %    \end{macrocode}
 % \end{macro}
@@ -13184,25 +13166,26 @@ tx@OptexpDict begin
 % \begin{macro}{GetRefIndex}
 %    \begin{macrocode}
 /GetRefIndex {
-  tx@OptexpDict /nbeam known { pop nbeam }{ cvn load /n get } ifelse
+  cvn load /n get /nbeam load exch
+  EvalRefIndex
 } bind def
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}{GetRefIndex2}
+% \begin{macro}{EvalRefIndex}
 %   \begin{pssyntax}
-%     \PSvar{n} \PSop{GetRefIndex} \PSvar{neval}
+%     \PSarray{nbeam} \PSvar{n} \PSop{GetRefIndex} \PSvar{neval}
 %   \end{pssyntax}
 %    \begin{macrocode}
-/GetRefIndex2 {
-  tx@OptexpDict /nbeam known {
+/EvalRefIndex {
+  dup bgIndex eq not {
     1 dict begin 
 %    \end{macrocode}
 % Store \opt{n} locally for evaluation of the mathematical expression in
 % \opt{nbeam}.
 %    \begin{macrocode}
       /n ED
-      nbeam cvx exec
+      exec
     end
   } if
 } bind def
