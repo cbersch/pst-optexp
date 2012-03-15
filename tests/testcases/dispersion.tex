@@ -1,0 +1,34 @@
+\begin{pspicture}[showgrid=true](3,3)
+  \pnode(-1, 0){A}\pnode(1, 2.2){B}
+  \pnode(3, 0){C}
+  \optplane(0,2.19)(0,1)
+  \optprism[prismalign=center](A)(B)(C)
+  \optplane(C)(0,1)
+  \definecolor[ps]{bl}{rgb}{%
+    tx@addDict begin Red Green Blue end}%
+  \addtopsstyle{Beam}{linecolor=bl, linewidth=0.4\pslinewidth}
+  \multido{\i=0+1}{60}{%
+    \pstVerb{%
+      \i\space 650 400 sub 59 div mul 400 add 
+      tx@addDict begin wavelengthToRGB end }%
+    \drawbeam[n=\i\space 650 400 sub 59 div mul 400 add Sellmaier]{-}%
+  }%
+\end{pspicture}
+\bigskip
+
+\begin{pspicture}[showgrid=true](5,3)
+  \pnode(0, 1.5){A}
+  \pnode(5, 1.5){B}
+  \lens[lens=4 4 3, n=2, position=0.3](A)(B){}
+  \definecolor[ps]{bl}{rgb}{tx@addDict begin Red Green Blue end}%
+  \addtopsstyle{Beam}{linecolor=bl}
+  \multido{\i=0+1}{4}{%
+    \pstVerb{\i\space 650 580 sub 3 div mul 580 add tx@addDict begin wavelengthToRGB end }%
+    \drawbeam[beampos=0 0.6, n=*{(1.2-(\i*0.05))*n}]{(A)}{1}{(B)}
+  }%
+  \optplane[compname=Plane](5, 1.5)(-1,1)
+  \multido{\i=0+1}{4}{%
+    \pstVerb{\i\space 650 580 sub 3 div mul 580 add tx@addDict begin wavelengthToRGB end }%
+    \drawbeam[beampos=0 -0.6, n=*{(1.2-(\i*0.05))*n}]{(A)}{1}{Plane}
+  }%
+\end{pspicture}

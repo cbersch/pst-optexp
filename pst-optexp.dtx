@@ -2929,6 +2929,46 @@
 % \iffalse
 %</ignore>
 % \fi
+%
+% \choitem[auto]{prismalign}{auto,center}
+% \ifENGLISH Sets the vertical alignment of the prism with respect to the
+% «reflection» node. For \opt{center}, the prism center coincides with this
+% node. For \opt{auto}, the prism is shifted vertically to the reflection plane
+% such that input and output interface nodes lay on the connections between the
+% reflection node and the input reference node or output reference,
+% respectively.\fi
+%
+% \iffalse
+%<*ignore>
+% \fi
+\begin{pspicture}(13,3)
+  \footnotesize
+  \pnode(0,0){A}\pnode(3,1.8){B}\pnode(6,0){C}
+  \psdot(A)\uput[90](A){A}
+  \psdot(B)\uput[90](B){B}
+  \psdot(C)\uput[90](C){C}
+  \optprism[prismsize=2](A)(B)(C)
+  \psline[style=Refline, linestyle=dashed](A)(B)(C)
+  \newpsstyle{IfcDot}{dotstyle=+, linecolor=red, linewidth=1.5\pslinewidth}
+  \psdot[style=IfcDot](\oenodeCenter{})\uput{0.1}[-90](\oenodeCenter{}){\prm{center}}
+  \psdot[style=IfcDot](\oenodeIn{})\uput{0.1}[150](\oenodeIn{}){\prm{in}}
+  \psdot[style=IfcDot](\oenodeOut{})\uput{0.1}[30](\oenodeOut{}){\prm{out}}
+  \rput[b](\oenodeCenter{}|0,0){\opt{prismalign=auto}}
+  \pnode(7,0){A}\pnode(10,1.8){B}\pnode(13,0){C}
+  \psdot(A)\uput[90](A){A}
+  \psdot(B)\uput[90](B){B}
+  \psdot(C)\uput[90](C){C}
+  \optprism[prismsize=2, prismalign=center](A)(B)(C)
+  \psline[style=Refline, linestyle=dashed](A)(B)(C)
+  \newpsstyle{IfcDot}{dotstyle=+, linecolor=red, linewidth=1.5\pslinewidth}
+  \psdot[style=IfcDot](\oenodeCenter{})\uput{0.1}[-90](\oenodeCenter{}){\prm{center}}
+  \psdot[style=IfcDot](\oenodeIn{})\uput{0.1}[150](\oenodeIn{}){\prm{in}}
+  \psdot[style=IfcDot](\oenodeOut{})\uput{0.1}[30](\oenodeOut{}){\prm{out}}
+  \rput[b](\oenodeCenter{}|0,0){\opt{prismalign=center}}
+\end{pspicture}
+% \iffalse
+%</ignore>
+% \fi
 % \end{optionlist}
 % 
 % \ifGERMAN\section{Umkehrprisma}\fi
@@ -4738,17 +4778,19 @@
 %<*ignore>
 % \fi
 \begin{LTXexample}[morekeywords = {[21]{n}}]
-\begin{pspicture}(3.8,3)
-  \pnode(0,2.5){A}\pnode(1,2.5){B}\pnode(4,1){C}
+\begin{pspicture}(3,3)
+  \pnode(-1,0){A}\pnode(1,2.2){B}\pnode(3,0){C}
+  \optplane(0,2.19)(0,1)
   \optprism(A)(B)(C)
+  \optplane(C)(0,1)
   \definecolor[ps]{bl}{rgb}{%
     tx@addDict begin Red Green Blue end}%
   \addtopsstyle{Beam}{linecolor=bl, linewidth=0.4\pslinewidth}
-  \multido{\i=0+1}{20}{%
+  \multido{\i=0+1}{60}{%
     \pstVerb{%
-      \i\space 650 400 sub 19 div mul 400 add 
+      \i\space 650 400 sub 59 div mul 400 add 
       tx@addDict begin wavelengthToRGB end }%
-    \drawbeam[n=-2e-3 \i\space mul n add]{(A)}{1}{(C)}
+    \drawbeam[n=\i\space 650 400 sub 59 div mul 400 add Sellmaier]{-}%
   }%
 \end{pspicture}
 \end{LTXexample}
@@ -6610,7 +6652,7 @@
 \def\POE@str@dettype@diode{diode}
 \def\POE@str@bsstyle@cube{cube}
 \def\POE@str@bsstyle@plate{plate}
-\def\POE@str@autonode{auto}
+\def\POE@str@auto{auto}
 \def\POE@str@center{center}
 \def\POE@Verb#1{\pst@Verb{\pst@optexpdict #1 end }}%
 %    \end{macrocode}
@@ -7291,9 +7333,14 @@
 \define@key[psset]{optexp}{prismangle}{%
   \pst@checknum{#1}\POE@key@prismangle
 }
+\define@choicekey+[psset]{optexp}{prismalign}[\val\nr]%
+  {auto,center}%
+  {\def\POE@key@prismalign{#1}}%
+  {\PackageError{pst-optexp}{Unknown value '\val' for prismalign.}}%
 \psset[optexp]{%
   prismsize=1,
-  prismangle=60
+  prismangle=60,
+  prismalign=auto
 }%
 %    \end{macrocode}
 % \subsection{Parameters of fiber-optical components}
@@ -7755,16 +7802,16 @@
       \edef\POE@comps{\POE@temp\space \POE@comps}
     \fi
     \ifPOE@backlayer
-      \ifx\POE@key@startnode\POE@str@autonode\else
+      \ifx\POE@key@startnode\POE@str@auto\else
         \POE@pnode{/\POE@key@startnode\space \POE@comps exch pop 
           \POE@dict{getsubnode} \tx@UserCoor}{@@A}
       \fi
-      \ifx\POE@key@stopnode\POE@str@autonode\else
+      \ifx\POE@key@stopnode\POE@str@auto\else
         \POE@pnode{/\POE@key@stopnode\space \POE@comps pop 
                  \POE@dict{getsubnode} \tx@UserCoor}{@@B}
       \fi
-      \ifx\POE@key@startnode\POE@str@autonode
-        \ifx\POE@key@stopnode\POE@str@autonode
+      \ifx\POE@key@startnode\POE@str@auto
+        \ifx\POE@key@stopnode\POE@str@auto
           \POE@pnode{\POE@comps exch \POE@dict{NearestNode} 
                    \tx@UserCoor}{@@A}
           \POE@pnode{\POE@comps \POE@dict{NearestNode} 
@@ -7774,7 +7821,7 @@
                    \POE@dict{@GetCenter ToVec NearestNode} 
                    \tx@UserCoor}{@@A}
         \fi
-      \else\ifx\POE@key@stopnode\POE@str@autonode
+      \else\ifx\POE@key@stopnode\POE@str@auto
         \POE@pnode{\POE@comps pop /N@@@A 
                  \POE@dict{@GetCenter ToVec NearestNode} 
                  \tx@UserCoor}{@@B}
@@ -10555,7 +10602,11 @@
   \edef\@sz{\POE@key@prismsize\space}%
   \edef\@altan{\POE@key@prismangle\space 0.5 mul tan }%
   \edef\@hshift{%
-    \@sz 0.6 mul \@altan mul \POE@dict{OEangle} 0.5 mul tan div 
+    \ifx\POE@key@prismalign\POE@str@auto
+      \@sz 0.6 mul \@altan mul \POE@dict{OEangle} 0.5 mul tan div 
+    \else
+      0
+    \fi
   }%
   \newOptexpComp{%
     {\@sz -0.6 mul \@altan mul \@hshift neg} 
@@ -10564,6 +10615,7 @@
     {\@sz 0.6 mul \@altan mul \@hshift neg} 
     {90 \POE@key@prismangle\space 0.5 mul add dup cos exch sin} 
     trans {PlaneIfc} \POE@key@n true }%
+  \pnode(! 0 \@hshift neg){\oenodeCenter{}}
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -10574,7 +10626,11 @@
   \edef\@sz{\POE@key@prismsize\space}%
   \edef\@altan{\POE@key@prismangle\space 0.5 mul tan }%
   \edef\@hshift{%
-    \@sz 0.6 mul \@altan mul \POE@dict{OEangle} 0.5 mul tan div %
+    \ifx\POE@key@prismalign\POE@str@auto
+      \@sz 0.6 mul \@altan mul \POE@dict{OEangle} 0.5 mul tan div 
+    \else
+      0
+    \fi
   }%
   \pspolygon(! \@sz neg \@altan mul \@sz -0.4 mul \@hshift sub)
             (! \@sz \@altan mul \@sz -0.4 mul \@hshift sub)
@@ -13191,6 +13247,24 @@ tx@OptexpDict begin
       exec
     end
   } if
+} bind def
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{Sellmaier}
+%   Calculate the refractive index for BK7 glass with the Sellmaier
+%   equation. The wavelength must be given in nanometre. The coefficients are
+%   taken from \href{http://en.wikipedia.org/wiki/Sellmeier_equation}.
+%   \begin{pssyntax}
+%     \PSvar{lambda} \PSop{Sellmaier} \PSvar{n}
+%   \end{pssyntax}
+%    \begin{macrocode}
+/Sellmaier {
+  dup mul
+  dup dup 1.03961212 mul exch 6000.69867 sub div
+  exch dup dup 0.231792344 mul exch 20017.9144 sub div
+  exch dup 1.01046945 mul exch 103.560653e6 sub div
+  add add 1 add sqrt
 } bind def
 %    \end{macrocode}
 % \end{macro}

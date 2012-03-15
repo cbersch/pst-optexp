@@ -29,9 +29,10 @@ testcases.tex: $(addsuffix .tex, $(filter-out $(GENTEX) $(TESTCASE_HEADER), $(FI
 
 %.dvi: %.tex $(POE)
 	$(LATEX) -jobname=$* '\input{header}\input{$<}\end{document}' #2>&1 >/dev/null 
-	rm -f $*.aux $*.log
+	rm -f $*.aux $*.log $*.tmp $*.out
 
 veryclean: 
-	$(RM) $(addsuffix .pdf, $(FILELIST)) \
-	      $(addsuffix .ps, $(FILELIST)) \
+	$(RM) $(addsuffix .pdf, $(FILELIST) $(GENTEX)) \
+	      $(addsuffix .ps, $(FILELIST) $(GENTEX)) \
+	      $(addsuffix .tmp, $(FILELIST) $(GENTEX)) \
 	      $(addsuffix .tex, $(GENTEX))
