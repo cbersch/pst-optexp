@@ -18,7 +18,7 @@
 %<stylefile>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<stylefile>\ProvidesPackage{pst-optexp}
 %<*stylefile>
-    [2012/03/14 v3.0beta Optical experimental setups with PSTricks]
+    [2012/03/15 v3.0beta Optical experimental setups with PSTricks]
 %</stylefile>
 %
 %<*driver>
@@ -1764,6 +1764,31 @@
 % \iffalse
 %</ignore>
 % \fi
+%
+% \boolitem[false]{endbox}
+% \ifGERMAN 
+% Setzt die Box ans Ende der Referenzlinie. Mit \Lkeyword{abspos} oder
+% \Lkeyword{position} wäre das auch möglich aber im Allgemeinen schwieriger und
+% unflexibler, da die Breite der Box mit berücksichtigt werden müsste.  \fi
+% \ifENGLISH
+% Place the box at the end of the reference line. With \Lkeyword{abspos} or
+% \Lkeyword{position} this is also possible, but in general more difficult and
+% unflexible, because you must take into account the box size.
+% \fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[morekeywords={[21]{endbox}}]
+\begin{pspicture}(3,2)
+  \pnode(0.5,1){A}\pnode(1.5,1){B}\psdot(A)\psdot(B)
+  \optbox[endbox](A)(B)
+  \lens[endbox](B)(A)
+  \psline[style=Refline](A)(B)
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % \end{optionlist}
 % 
 % 
@@ -1961,7 +1986,7 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}[morekeywords={[21]{lens}}]
+\begin{LTXexample}
 \begin{pspicture}(3,1.5)
 \lens[beam](0,1)(3,1){L}
 \end{pspicture}
@@ -2078,7 +2103,7 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}[morekeywords={[21]{lens}}]
+\begin{LTXexample}
 \begin{pspicture}(3,1.5)
   \lens[lens=1](0,1)(1,1){L1}
   \lens[lensradius=-2 1, beam](0,1)(3,1){L2}
@@ -2098,7 +2123,7 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}[morekeywords={[21]{optplate}}]
+\begin{LTXexample}
 \begin{pspicture}(3,1.5)
   \optplate[beam](0,1)(3,1){filter}
 \end{pspicture}
@@ -2124,7 +2149,7 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}[morekeywords={[21]{optretplate}}]
+\begin{LTXexample}
 \begin{pspicture}(3,1.5)
   \optretplate[beam](0,1)(3,1){$\nicefrac{\lambda}{2}$}
 \end{pspicture}
@@ -2147,7 +2172,7 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}[morekeywords={[21]{pinhole}}]
+\begin{LTXexample}
 \begin{pspicture}(3,1.5)
   \pinhole[beam](0,1)(3,1){PH}
 \end{pspicture}
@@ -2196,7 +2221,7 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}[morekeywords={[21]{crystal}}]
+\begin{LTXexample}
 \begin{pspicture}(3,1.3)
 \crystal[beam](0,1)(3,1){Crystal}
 \end{pspicture}
@@ -2305,7 +2330,7 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}[morekeywords={[21]{optbox}}]
+\begin{LTXexample}
 \begin{pspicture}(3,2)
   \optbox[beam](0,0)(3,2){box}
 \end{pspicture}
@@ -2330,29 +2355,6 @@
 % \ifENGLISH The width and height of the box, is equivalent to calling both
 % \Lkeyword{optboxwidth} and \Lkeyword{optboxheight}. If only a single value is
 % given it is used for both width and height.
-% \fi
-%
-% \boolitem[false]{endbox}
-% \ifGERMAN 
-% Setzt die Box ans Ende der Referenzlinie. Mit \Lkeyword{abspos} oder
-% \Lkeyword{position} wäre das auch möglich aber im Allgemeinen schwieriger und
-% unflexibler, da die Breite der Box mit berücksichtigt werden müsste.  \fi
-% \ifENGLISH
-% Place the box at the end of the reference line. With \Lkeyword{abspos} or
-% \Lkeyword{position} this is also possible, but in general more difficult and
-% unflexible, because you must take into account the box size.
-% \fi
-% \iffalse
-%<*ignore>
-% \fi
-\begin{LTXexample}[morekeywords={[21]{endbox}}]
-\begin{pspicture}(3,2)
-  \optbox[beam, endbox, label=0 . . relative]%
-           (0,0)(1.5,1){box}
-\end{pspicture}
-\end{LTXexample}
-% \iffalse
-%</ignore>
 % \fi
 % \end{optionlist}
 % 
@@ -2460,6 +2462,22 @@
 %   45\textdegree.
 %   \fi
 % \end{optionlist}
+%
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[morekeywords={[21]{doveprism}}] 
+\begin{pspicture}(4,1.5)
+  \pnode(0,1){A}\pnode(4,1){B}
+  \doveprism[doveprismsize=1.2](A)(B)
+  \drawbeam[raytrace=false, linecolor=black]{(A)}{}{(B)}
+  \drawbeam[n=1.5, linecolor=red]{(A)}{}{(B)}
+  \drawbeam[n=*sqrt(5), linecolor=green, linestyle=dashed]{(A)}{}{(B)}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % 
 % \ifGERMAN\section{Polarisation}\fi
 % \ifENGLISH\section{Polarization}\fi
@@ -4741,6 +4759,20 @@
 % \iffalse
 %<*ignore>
 % \fi
+\begin{LTXexample} 
+\begin{pspicture}(3,1.5)
+  \pnode(0,1){A}\pnode(3,1){B}
+  \doveprism[n=*sqrt(5)](A)(B)
+  \drawbeam{(A)}{}{(B)}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
+% \iffalse
+%<*ignore>
+% \fi
 \begin{LTXexample}[morekeywords = {[21]{n}}]
 \begin{pspicture}(3,3)
   \pnode(0,1){A}\pnode(3,1){B}
@@ -4781,7 +4813,7 @@
 \begin{pspicture}(3,3)
   \pnode(-1,0){A}\pnode(1,2.2){B}\pnode(3,0){C}
   \optplane(0,2.19)(0,1)
-  \optprism(A)(B)(C)
+  \optprism[prismalign=center](A)(B)(C)
   \optplane(C)(0,1)
   \definecolor[ps]{bl}{rgb}{%
     tx@addDict begin Red Green Blue end}%
@@ -10013,28 +10045,18 @@
 % \begin{macro}{\lens@ref}
 %    \begin{macrocode}
 \def\lens@ref{%
-  \POE@Verb{/@@y \POE@key@lensheight\space 0.5 mul def}%
-}%
-%    \end{macrocode}
-% \end{macro}
-% 
-% \begin{macro}{\lens@nodes}
-%    \begin{macrocode}
-\def\lens@nodes{%
-  \edef\@th{0}% 
-  \def\@wd{\POE@key@lenswidth\space 2 div }%
-  \def\@ht{\POE@key@lensheight\space 2 div }%
-  \def\@rL{\POE@key@lensradiusleft }%
-  \def\@rR{\POE@key@lensradiusright }%
-  \ifdim\POE@key@lensradiusleft pt=0pt\else
+  \ifdim\POE@key@lensradiusleft pt=0pt
+    \edef\@th{0 }%
+  \else
     \edef\@th{%
       \ifPOE@thicklens 
-        \@wd
+        \POE@key@lenswidth\space 0.5 mul
       \else
         \ifdim\POE@key@lensradiusleft pt<0pt
-          \@ht 0.15 mul
+          \POE@key@lensheight\space 0.075 mul
         \else
-          \@rL \@ht capHeight
+          \POE@key@lensradiusleft
+          \POE@key@lensheight\space 0.5 mul capHeight
         \fi
       \fi
     \space}%     
@@ -10043,25 +10065,37 @@
     \edef\@th{%
       \@th\space
       \ifPOE@thicklens 
-        \@wd
+        \POE@key@lenswidth\space 0.5 mul
       \else
         \ifdim\POE@key@lensradiusright pt<0pt
-          \@ht 0.15 mul
+          \POE@key@lensheight\space 0.075 mul
         \else
-          \@rR \@ht capHeight
+          \POE@key@lensradiusright
+          \POE@key@lensheight\space 0.5 mul capHeight
         \fi
       \fi
       \space add
     \space}%
   \fi
+  \POE@Verb{%
+    /@@y \POE@key@lensheight\space 0.5 mul def
+    /@@x \@th 0.5 mul def
+  }%
+}%
+%    \end{macrocode}
+% \end{macro}
+% 
+% \begin{macro}{\lens@nodes}
+%    \begin{macrocode}
+\def\lens@nodes{%
   \newOptexpComp{%
-    {\@th -2 div 0} 
+    {@@x neg 0} 
     \ifdim\POE@key@lensradiusleft pt=0pt 
       {0 1} trans {PlaneIfc}
     \else 
       {\POE@key@lensradiusleft\space 0} trans {CurvedIfc}
     \fi
-    {\@th 2 div 0} 
+    {@@x 0} 
     \ifdim\POE@key@lensradiusright pt=0pt
       {0 1} trans {PlaneIfc}
     \else
@@ -10082,37 +10116,15 @@
   \def\@th{0}%
   \def\@wd{\POE@key@lenswidth\space\pst@number\psxunit mul 2 div }%
   \def\@ht{\POE@key@lensheight\space\pst@number\psyunit mul 2 div }%
-  \def\@rL{\POE@key@lensradiusleft\space\pst@number\psxunit mul }%
-  \def\@rR{\POE@key@lensradiusright\space\pst@number\psxunit mul }%
+  \def\@rL{\POE@key@lensradiusleft\space\pst@number\psrunit mul }%
+  \def\@rR{\POE@key@lensradiusright\space\pst@number\psrunit mul }%
   \ifdim\POE@key@lensradiusleft pt=0pt\else
-    \edef\@th{%
-      \ifPOE@thicklens
-        \@wd
-      \else
-        \ifdim\POE@key@lensradiusleft pt<0pt
-          \@ht 0.15 mul
-        \else
-          \@rL \@ht capHeight
-        \fi
-      \fi
-    \space}%
     \addto@pscode{ \@ht \@rL leftCurvedIfc }%
   \fi
   \ifdim\POE@key@lensradiusright pt=0pt\else
-    \edef\@th{%
-      \@th\space
-      \ifPOE@thicklens 
-        \@wd
-      \else
-        \ifdim\POE@key@lensradiusright pt<0pt
-          \@ht 0.15 mul
-        \else
-          \@rR \@ht capHeight
-        \fi
-      \fi\space add
-    \space}%
     \addto@pscode{ \@ht \@rR rightCurvedIfc }%
   \fi
+  \def\@@x{@@x \pst@number\psxunit mul }%
 %    \end{macrocode}
 % Check some special cases:
 %
@@ -10121,9 +10133,9 @@
   \ifdim\POE@key@lensradiusleft pt=0pt
     \ifdim\POE@key@lensradiusright pt=0pt\else
       \addto@pscode{%
-        \@th 2 div sub neg 5 1 roll
-        \@th 2 div neg \@ht neg moveto ArcR
-        \@th 2 div neg \@ht lineto
+        \@@x sub neg 5 1 roll
+        \@@x neg \@ht neg moveto ArcR
+        \@@x neg \@ht lineto
       }%
     \fi
   \fi
@@ -10133,9 +10145,9 @@
   \ifdim\POE@key@lensradiusright pt=0pt
     \ifdim\POE@key@lensradiusleft pt=0pt\else
       \addto@pscode{%
-        \@th 2 div sub 5 1 roll
-        \@th 2 div \@ht moveto ArcL
-        \@th 2 div \@ht neg lineto
+        \@@x sub 5 1 roll
+        \@@x \@ht moveto ArcL
+        \@@x \@ht neg lineto
       }%
     \fi
   \fi
@@ -10145,7 +10157,7 @@
   \ifdim\POE@key@lensradiusright pt=0pt\else
     \ifdim\POE@key@lensradiusleft pt=0pt\else
       \addto@pscode{%
-        \@th 2 div dup
+        \@@x dup
         7 1 roll sub neg 5 1 roll
         ArcR sub 5 1 roll ArcL
       }%
