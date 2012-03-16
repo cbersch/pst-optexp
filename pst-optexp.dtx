@@ -55,6 +55,7 @@
 \usepackage{breakurl}
 \definecolor{DOrange}{rgb}{1,.4,.2}%
 \colorlet{pdflinkcolor}{DOrange}
+\colorlet{DGreen}{green!90!black}
 \usepackage{pst-tree}
 \usepackage{showexpl}
 \makeatletter\renewcommand*\SX@Info{}\makeatother
@@ -3075,7 +3076,7 @@
 %   Teile hervorgehoben werden.
 %   \fi
 %   \ifENGLISH
-%   For some components it can me nice to highlight
+%   For some components it can be nice to highlight
 %   some internals. If \Lkeyword{usefiberstyle} is enabled, for examples the
 %   passing parts of the optical filter are drawn with the \Lstyle{Fiber}
 %   style. In the documentation this parameter is enabled to show the parts
@@ -3804,7 +3805,7 @@
 % zwischen dem \prm{in} und \prm{A} Knoten auszurichten.
 % \fi
 % \ifENGLISH
-% The \nxLcs{fibercollimator} can be used with two, three or four
+% The fiber collimator can be used with two, three or four
 % points. With two points, the collimator is placed like any other
 % dipole component between \prm{in} and \prm{out} node. For three nodes,
 % the fiber is drawn as \Lcs{psbezier} curve for which the central node
@@ -4691,14 +4692,15 @@
 % \section{Drawing beams}\label{sec:drawbeam}
 % The package provides several ways to connect components and nodes with beams,
 % which can be either single rays or extended beams. Most parameters have the
-% same effect on both single and extended beams, so most examples will be show
+% same effect on both single and extended beams, so most examples will be shown
 % for single beams only.
+%
 % \begin{ltxsyntax}
 %   \xLcs{drawbeam}\cmditem{drawbeam}[options]{obj$_1$}{obj$_2$}\ldots
 %   \xLcs{drawwidebeam}\cmditem*{drawwidebeam}[options]{obj$_1$}{obj$_2$}\ldots
 %
 %   These are the two macros for beam connections; they can take a variable
-%   number of arguments (minimum of two), which can be either
+%   number of arguments (minimum of two) which can be either
 %   \nxLPack{pst-optexp} component identifier or PSTricks nodes. To distinguish
 %   between nodes and components, the nodes must be enclosed in parenthesis
 %   within the brackets. For more information about component identifiers see
@@ -4711,21 +4713,48 @@
 % determine the beam path. The other mode is to connect the components only
 % regardless of their optical properties.
 %
-% \begin{optionlist}
-%   \boolitem[true]{raytrace} Choose the «tracing mode», \opt{true} mean to use
-%   the refractive index (raytracing), \opt{false} selects component connection («connect mode»). 
+% You must always keep in mind, that this is a package for \emph{sketching}
+% experimental setups. Therefore, we do not provide a comprehensive raytracing,
+% because deviations from the actual physical path are often desired for
+% sketches: beam angles and divergences should be in many cases more extreme
+% than in the real setup in order to highlight certain aspects. Also you should
+% consider the refractive index (see \prettyref{sec:n}) only as a tool to
+% optimize the visual effects of the beam path.
 %
-% For most cases, the «tracing» mode with \Lkeyword{n}\opt{=1} is equivalent to the «connect» mode except for \Lcs{optprism} and \Lcs{doveprism}:
+% \begin{optionlist}
+%   \boolitem[true]{raytrace} Chooses the mode of tracing the beam path,
+%   \opt{true} uses the refractive index («raytracing»), \opt{false} selects
+%   component connection («connect» mode).
+%
+%   In most cases, the «connect» mode is equivalent to «raytracing» with
+%   \Lkeyword{n}\opt{=1}, except for \Lcs{optprism} and \Lcs{doveprism}, where
+%   the interface nodes (\prettyref{sec:ifcnode}) are simply connected. See the
+%   following example for the differences between the tracing modes, the
+%   interface nodes are highlighted for clarity: 
+%
 %\iffalse
 %<*ignore>
 %\fi
-\begin{LTXexample}
-\begin{pspicture}(3,2)
-  \pnode(0,1.5){A}\pnode(2,1.5){B}\pnode(3,0.5){C}
-  \optprism(A)(B)(C)
-  \drawbeam[n=1, linecolor=red]{(A)}{}{(C)}
-%  \drawbeam[n=1.5, linecolor=blue]{(A)}{}{(C)}
-%  \drawbeam[raytrace=false, linecolor=black]{(A)}{}{(C)}  
+\begin{LTXexample}[linerange={1-3,5-9}]
+\begin{pspicture}(3,2.2)
+  \pnode(0,1.5){A}\pnode(1,1.5){B}\pnode(3,1){C}
+  \optprism[prismsize=1.2](A)(B)(C)
+  \psdot(\oenodeIn{})\psdot(\oenodeOut{})
+  \optplane(C)(0,1)
+  \drawbeam[n=1, linecolor=blue]{(A)}{1}{2}
+  \drawbeam[n=1.5, linecolor=red]{(A)}{1}{2}
+  \drawbeam[raytrace=false, linecolor=DGreen]{(A)}{1}{2}  
+\end{pspicture}
+\end{LTXexample}
+
+\begin{LTXexample}[linerange={1-3,5-8}]
+\begin{pspicture}(4,2)
+  \pnode(0,1){A}\pnode(4,1){B}
+  \doveprism[doveprismsize=1](A)(B)
+  \psdot(\oenodeIn{})\psdot(\oenodeIfc{2}{})\psdot(\oenodeOut{})
+  \optplane(B)(0,1)
+  \drawbeam[n=1.5, linecolor=red]{(A)}{1}{2}
+  \drawbeam[raytrace=false, linecolor=DGreen]{(A)}{1}{2}  
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -4734,7 +4763,7 @@
 % \end{optionlist}
 %
 %
-% \subsection{Refractive index} 
+% \subsection{Refractive index}\label{sec:n}
 %
 % \begin{optionlist}
 % \psnumitem[1.5]{n}
@@ -8048,6 +8077,11 @@
     \addto@pscode{ false }%
   \else
     \addto@pscode{%
+%    \end{macrocode}
+% I need to pack it this way in order to avoid replacing the \opt{n} inside the
+% code here. This must be done later, when it refers to the correct refractive
+% indices.
+%    \begin{macrocode}
      {/nbeam {\POE@key@n cvx exec} bind def}%
      [ \POE@key@beampos\space counttomark dup 
      0 eq { 
@@ -11664,7 +11698,7 @@ tx@OptexpDict begin
       /CompMtrx CM def
     grestore
     /N 1 def
-    /n bgIndex def
+    /n bgRefIndex def
     5 dict dup dup /P@1 ED /P@N ED
     begin
       /mode trans def
@@ -11746,7 +11780,7 @@ tx@OptexpDict begin
 /refl 0 def /trans 1 def /absorb 2 def
 /desc 0 def /asc 1 def /amb 2 def
 /missed 0 def /tir 1 def /ok 2 def
-/bgIndex 0 def /realBgIndex 1 def
+/bgRefIndex 0 def
 %    \end{macrocode}
 % 
 % About the design:
@@ -11860,7 +11894,7 @@ tx@OptexpDict begin
   /allowbeaminside false def
   /ambiguous false def
   /correct false def
-  /n bgIndex def
+  /n bgRefIndex def
   tx@Dict begin
     STV {CP T} stopped pop
   end
@@ -12063,7 +12097,7 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % only a single interface
 %    \begin{macrocode}
-    [ (C) name bgIndex 
+    [ (C) name bgRefIndex 
     PN 1 eq PN PlaneNum eq or {
 %    \end{macrocode}
 % its the first or last comp
@@ -12093,7 +12127,7 @@ tx@OptexpDict begin
 % now check which is the outgoing plane
 %    \begin{macrocode}
       name /outToPlane load GetNextPlane
-      [ exch name bgIndex trans draw ] cvx exch
+      [ exch name bgRefIndex trans draw ] cvx exch
       /PlaneNumTmp PlaneNumTmp 1 add def
     } {
       CurrTmp name GetNearestPlane /nextPlane ED
@@ -12107,7 +12141,7 @@ tx@OptexpDict begin
       3 1 roll ToVec /CurrVecTmp ED
       [ nextPlane name
       connectifc {
-        bgIndex
+        bgRefIndex
       }{
         name GetRefIndex
       } ifelse
@@ -12137,7 +12171,7 @@ tx@OptexpDict begin
 % now check which is the outgoing plane
 %    \begin{macrocode}
         name /outToPlane load GetNextPlane
-        [ exch name bgIndex trans draw ] cvx 3 1 roll
+        [ exch name bgRefIndex trans draw ] cvx 3 1 roll
         /PlaneNumTmp PlaneNumTmp 2 add def
       } ifelse
     } ifelse
@@ -12188,7 +12222,7 @@ tx@OptexpDict begin
 %    \begin{macrocode}
   exec
   connectifc {
-    /nbeam bgIndex def
+    /nbeam bgRefIndex def
   } if
   /startinside startinside beaminsidefirst or def
   /stopinside stopinside beaminsidelast or def
@@ -12211,7 +12245,7 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % Init the refractive index
 %    \begin{macrocode}
-  /n1 bgIndex def
+  /n1 bgRefIndex def
   /PN 1 def
   { 
 %    \end{macrocode}
@@ -12402,7 +12436,7 @@ tx@OptexpDict begin
 %    \begin{macrocode}
   exec
   connectifc {
-    /nbeam bgIndex def
+    /nbeam bgRefIndex def
   } if
   /startinside startinside beaminsidefirst or def
   /stopinside stopinside beaminsidelast or def
@@ -12445,7 +12479,7 @@ tx@OptexpDict begin
 % ambiguous components is among them.
 %    \begin{macrocode}
   counttomark /PlaneNum ED 
-  /n1 bgIndex def
+  /n1 bgRefIndex def
   /CurrR false def
   /PN 1 def
   {
@@ -12822,7 +12856,7 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % after the last component plane we have always air
 %    \begin{macrocode}
-            bgIndex
+            bgRefIndex
           }{
 %    \end{macrocode}
 % otherwise the respective refractive index of the component
@@ -13227,14 +13261,26 @@ tx@OptexpDict begin
 % 
 % 
 % \begin{macro}{TransformRefIndex}
+%   If the refractive index on the stack is for the background (has value
+%   \opt{bgRefIndex}, which is \opt{0}), we replace it here with its actual
+%   value (\opt{1}). This is necessary to distinguish between background index
+%   and components having an index of \opt{1}, which can be changed with option
+%   \opt{n}.
+%   \begin{pssyntax}
+%     \PSvar{n} \PSop{TransformRefIndex} \PSvar{n|1}
+%   \end{pssyntax}
 %    \begin{macrocode}
 /TransformRefIndex {
-  dup bgIndex eq { pop realBgIndex } if
+  dup bgRefIndex eq { pop 1 } if
 } bind def
 %    \end{macrocode}
 % \end{macro}
 %
 % \begin{macro}{GetRefIndex}
+% Evaluate the refractive index of component \opt{name}.
+% \begin{pssyntax}
+%   \PSstring{name} \PSop{GetRefIndex} \PSvar{neval}
+% \end{pssyntax}
 %    \begin{macrocode}
 /GetRefIndex {
   cvn load /n get /nbeam load exch
@@ -13244,12 +13290,14 @@ tx@OptexpDict begin
 % \end{macro}
 % 
 % \begin{macro}{EvalRefIndex}
+%   Evaluate the expression in \opt{nbeam} after setting refractive index to
+%   \opt{n}.
 %   \begin{pssyntax}
-%     \PSarray{nbeam} \PSvar{n} \PSop{GetRefIndex} \PSvar{neval}
+%     \PSproc{nbeam} \PSvar{n} \PSop{GetRefIndex} \PSvar{neval}
 %   \end{pssyntax}
 %    \begin{macrocode}
 /EvalRefIndex {
-  dup bgIndex eq not {
+  dup bgRefIndex eq not {
     1 dict begin 
 %    \end{macrocode}
 % Store \opt{n} locally for evaluation of the mathematical expression in
@@ -13301,10 +13349,10 @@ tx@OptexpDict begin
   exch /NodeB ED
   /dist -1 def
   dup cvn load /N get 1 1 3 -1 roll {
-    2 copy pop % name cnt name
+    2 copy pop 
     GetIfcCenter 2 copy
-    NodeB @ABDist % name X Y dist
-    dist 0 lt {% init /dist
+    NodeB @ABDist
+    dist 0 lt {
       /dist ED
       ToVec /node ED
     } {
