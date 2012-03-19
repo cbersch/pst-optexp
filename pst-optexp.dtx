@@ -9943,7 +9943,14 @@
 % 
 % \begin{macro}{fiberdipole@nodes}
 %    \begin{macrocode}
-\let\fiberdipole@nodes\dipole@nodes
+\def\fiberdipole@nodes{%
+  \newOptexpFiberComp{%
+    {@@x0 @@x sub 0}
+    @@x 0 eq not {
+      {@@x0 @@x add 0}
+    } if }%
+  \pnode(! \POE@dict{@@x0 @@y0}){\oenodeCenter{}}
+\ignorespaces}%
 %    \end{macrocode}
 % \end{macro}
 % 
@@ -11891,10 +11898,6 @@ tx@OptexpDict begin
   gsave
   12 dict dup 3 1 roll def begin
   /name ED
-  /allowbeaminside false def
-  /ambiguous false def
-  /correct false def
-  /n bgRefIndex def
   tx@Dict begin
     STV {CP T} stopped pop
   end
@@ -11989,20 +11992,20 @@ tx@OptexpDict begin
 % Plane2 Plane1 \PSproc{InVec} -> \PSproc{InVec'}
 %    \begin{macrocode}
 /TransformInVec {
-    3 1 roll
-    GetIfcCenter 4 2 roll
-    GetIfcCenter 5 -2 roll
-    @ABVect
-    3 -1 roll exec 2 copy 6 2 roll
-    0 eq exch 0 eq and not {
+  3 1 roll
+  GetIfcCenter 4 2 roll
+  GetIfcCenter 5 -2 roll
+  @ABVect
+  3 -1 roll exec 2 copy 6 2 roll
+  0 eq exch 0 eq and not {
 %    \end{macrocode}
 % invec != (0,0)
 %    \begin{macrocode}
-      exch atan matrix rotate dtransform
-    } {
-      4 2 roll pop pop
-    } ifelse
-    ToVec
+    exch atan matrix rotate dtransform
+  } {
+    4 2 roll pop pop
+  } ifelse
+  ToVec
 } bind def
 %    \end{macrocode}
 % \end{macro}
@@ -12230,7 +12233,7 @@ tx@OptexpDict begin
   counttomark /N ED
   PrearrangePlanes
   PushAllPlanesOnStack
-  beamalign relative eq {
+  beamalign relative eq counttomark 2 ge and {
     2 copy /InVec load TransformInVec
   } {
     /InVec load
@@ -12239,7 +12242,12 @@ tx@OptexpDict begin
   currentdict /lastBeamPointTmp known {
     /lastBeamPointTmp load /Curr ED
   }{
-    2 copy /StartPoint load  TransformStartPos /Curr ED
+    counttomark 2 ge {
+      2 copy /StartPoint load  TransformStartPos 
+    } {
+      /StartPoint load 
+    } ifelse
+    /Curr ED
   } ifelse
   counttomark /PlaneNum ED 
 %    \end{macrocode}
@@ -12248,6 +12256,9 @@ tx@OptexpDict begin
   /n1 bgRefIndex def
   /PN 1 def
   { 
+    PN PlaneNum gt {
+      exit
+    } if
 %    \end{macrocode}
 % iterate over all planes
 %    \begin{macrocode}
@@ -12454,7 +12465,7 @@ tx@OptexpDict begin
 % If the \opt{beamangle} is not absolute, use the connection between the first
 % two planes as reference and transform the input vectors accordingly.
 %    \begin{macrocode}
-  beamalign relative eq {
+  beamalign relative eq counttomark 2 ge and {
     2 copy /InvecLow load TransformInVec /CurrVecLow ED
     2 copy /InvecUp load TransformInVec /CurrVecUp ED
   } {
@@ -12470,8 +12481,13 @@ tx@OptexpDict begin
     /TmpLastBeamPointLow load /CurrLow ED
     /TmpLastBeamPointUp load /CurrUp ED
   } {
-    2 copy /StartLow load TransformStartPos /CurrLow ED
-    2 copy /StartUp load TransformStartPos /CurrUp ED
+    counttomark 2 ge {
+      2 copy /StartLow load TransformStartPos /CurrLow ED
+      2 copy /StartUp load TransformStartPos /CurrUp ED
+    } {
+      /StartLow load /CurrLow ED
+      /StartUp load /CurrUp ED
+    } ifelse
   } ifelse
 %    \end{macrocode}
 % \PSvar{PlaneNum} is the number of interfaces pushed on the stack by
@@ -12481,8 +12497,12 @@ tx@OptexpDict begin
   counttomark /PlaneNum ED 
   /n1 bgRefIndex def
   /CurrR false def
+  /ret missed def
   /PN 1 def
   {
+    PN PlaneNum gt {
+      exit
+    } if
     dup xcheck not {
 %    \end{macrocode}
 % Found an array (not executable) instead of a procedure. This is an ambiguous
@@ -12678,12 +12698,35 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}{isAmp}
+% \begin{macro}{isAmbiguous}
+%   Check if \PSvar{compname} is ambiguous, i.e. if it can have alternating beam
+%   paths depending on the input and output plane (e.g. beamsplitter can either
+%   transmit or reflect a beam).
+%   \begin{pssyntax}
+%     \PSstring{compname} \PSop{isAmbiguous} \PSvar{boolean}
+%   \end{pssyntax}
 % Check if 'compname' is ambiguous (i.e. a beamsplitter)
 % (compname) -> bool
 %    \begin{macrocode}
-/isAmb { 
-    cvn load /ambiguous get
+/isAmbiguous { 
+  cvn load dup /ambiguous known {
+    /ambiguous get
+  } { 
+    pop false
+  } ifelse
+} bind def
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{isFreeray}
+%   Check if \PSvar{compname} is a free-ray componente by checking if there is a
+%   refractive index associated with it.
+%   \begin{pssyntax}
+%     \PSstring{compname} \PSop{isFreeray} \PSvar{boolean}
+%   \end{pssyntax}
+%    \begin{macrocode}
+/isFreeray { 
+  cvn load /n known
 } bind def
 %    \end{macrocode}
 % \end{macro}
@@ -12697,28 +12740,37 @@ tx@OptexpDict begin
 /PrearrangePlanes {
   counttomark /N ED
   /CompA ED dup /CompB ED
-  CompA isAmb {
-    amb dup CompA
-  } {
-    CompB isAmb {
-      1 CompA GetIfcCenter (C) CompB GetIfcCenter @ABDist
-      (N) CompA GetIfcCenter (C) CompB GetIfcCenter @ABDist
+  CompA isFreeray {
+    CompA isAmbiguous {
+      amb dup CompA
     } {
-      1 CompA GetIfcCenter 
-      1 CompB GetIfcCenter 
-      (N) CompB GetIfcCenter 
-      true OrderNodes exch pop
-      (N) CompA GetIfcCenter 
-      1 CompB GetIfcCenter 
-      (N) CompB GetIfcCenter 
-      true OrderNodes exch pop
+      CompB isAmbiguous {
+        1 CompA GetIfcCenter (C) CompB GetIfcCenter @ABDist
+        (N) CompA GetIfcCenter (C) CompB GetIfcCenter @ABDist
+      } {
+        1 CompA GetIfcCenter 
+        1 CompB GetIfcCenter 
+        (N) CompB GetIfcCenter 
+        true OrderNodes exch pop
+        (N) CompA GetIfcCenter 
+        1 CompB GetIfcCenter 
+        (N) CompB GetIfcCenter 
+        true OrderNodes exch pop
+      } ifelse
+      le { desc } { asc } ifelse dup CompA
     } ifelse
-    le { desc } { asc } ifelse dup CompA
+    counttomark 2 roll
+  } {
+    counttomark 1 sub { pop } repeat
+    /N 0 def
   } ifelse
-  counttomark 2 roll
   2 1 N {
     /i ED exch /CompB ED %
-    CompB isAmb not {
+    CompB isFreeray not {
+      counttomark i 1 sub 2 mul 1 add sub { pop } repeat
+      exit
+    } if
+    CompB isAmbiguous not {
       dup desc eq { 1 } { dup amb eq { (C) }{ (N) } ifelse } ifelse 
       CompA GetIfcCenter
       1 CompB GetIfcCenter
@@ -12753,13 +12805,13 @@ tx@OptexpDict begin
 %    \begin{macrocode}
 /AdjustRelRot {
   exch dup cvn load /adjustRel known {
-    dup dup 4 2 roll isAmb { 
+    dup dup 4 2 roll isAmbiguous { 
       exch pop (C)
     }{ 
       desc eq { (N) }{ 1 } ifelse 
     } ifelse 
     exch GetIfcCenter 5 3 roll
-    exch dup 3 1 roll isAmb { 
+    exch dup 3 1 roll isAmbiguous { 
       pop (C)
     }{ 
       desc eq { 1 }{ (N) } ifelse 
@@ -12795,8 +12847,8 @@ tx@OptexpDict begin
 %   \end{psarglist}
 %    \begin{macrocode}
 /PushAllPlanesOnStack {
-  counttomark 2 div cvi /numComp ED
-  1 1 numComp {
+  counttomark 2 div cvi /@N ED
+  1 1 @N {
 %    \end{macrocode}
 % iterate over all components
 %    \begin{macrocode}
@@ -12805,14 +12857,15 @@ tx@OptexpDict begin
     dup 1 eq {
       /first true def pop beaminsidefirst
     } {
-      numComp eq {
+      @N eq {
         beaminsidelast
         /last true def
       } {
         beaminside
       } ifelse
     } ifelse 
-    exch load dup dup /allowbeaminside get 4 -1 roll and /drawinside ED
+    exch load dup dup /allowbeaminside get 4 -1 roll and 
+    /drawinside ED
     /ambiguous get {
       /name get drawinside [ 3 1 roll ]
       counttomark 1 roll pop
