@@ -5076,6 +5076,9 @@
 % path is truncated at this point. This happens when a beam misses a curved
 % interface or if total internal reflection would occur.
 % \fi
+% \begin{optionlist}
+%   \choitem[verbose]{error}{quiet, verbose}
+% \end{optionlist}
 % \iffalse
 %<*ignore>
 % \fi
@@ -6601,6 +6604,7 @@
 \g@addto@macro{\endpspicture}{%
 %    \end{macrocode}
 % Undefine the last beam nodes at the end of the \nxLenv{pspicture}.
+%
 %    \begin{macrocode}
   \POE@Verb{%
     /lastBeamPointUp /lastBeamPointLow /lastBeamPoint 
@@ -6609,7 +6613,9 @@
     3 { tx@NodeDict exch undef } repeat
   }%
 %    \end{macrocode}
+%
 % Reset the component list.
+%
 %    \begin{macrocode}
   \gdef\POE@complist{}\global\POE@cnt=0\relax
 }%
@@ -6622,7 +6628,7 @@
 %    \end{macrocode}
 % \section{Basic definitions}
 %
-% \subsection{Ifs for the boolean keys}
+% \subsection{Switches for the boolean keys}
 % See respective key definitions for explanation.
 %    \begin{macrocode}
 \newif\ifPOE@connjoin
@@ -6715,6 +6721,8 @@
 \def\POE@str@bsstyle@plate{plate}
 \def\POE@str@auto{auto}
 \def\POE@str@center{center}
+\def\POE@str@verbose{verbose}
+\def\POE@str@quiet{quiet}
 \def\POE@Verb#1{\pst@Verb{\pst@optexpdict #1 end }}%
 %    \end{macrocode}
 %
@@ -7033,6 +7041,13 @@
 \POE@insideobjtrue
 \psset[optexp]{compname=\@empty}
 \POE@insideobjfalse
+%    \end{macrocode}
+% Error handling.
+%    \begin{macrocode}
+\define@choicekey*+[psset]{optexp}{error}{quiet, verbose}%
+  {\edef\POE@key@error{#1}}%
+  {\PackageWarning{pst-optexp}{Unknown value '#1' for error.}}%
+\psset[optexp]{error=verbose}
 %    \end{macrocode}
 %
 % \subsection{Free-ray component parameters}
@@ -8082,7 +8097,14 @@
 % code here. This must be done later, when it refers to the correct refractive
 % indices.
 %    \begin{macrocode}
-     {/nbeam {\POE@key@n cvx exec} bind def}%
+     {/nbeam {\POE@key@n cvx exec} bind def
+      \ifx\POE@key@error\POE@key@quiet
+        /Warning /pop load bind def
+        /Error { pop quit } bind def
+      \else
+        /Warning /PrintWarning load bind def
+        /Error /PrintError load bind def
+      \fi}%
      [ \POE@key@beampos\space counttomark dup 
      0 eq { 
        pop 0 0 
@@ -8139,7 +8161,14 @@
 \def\drawwidebeam@ii{%
   \def\pst@fill##1{ gsave ##1 grestore }%
   \addto@pscode{%
-    {/nbeam {\POE@key@n cvx exec} bind def}
+    {/nbeam {\POE@key@n cvx exec} bind def
+      \ifx\POE@key@error\POE@key@quiet
+        /Warning /pop load bind def
+        /Error { pop quit } bind def
+      \else
+        /Warning /PrintWarning load bind def
+        /Error /PrintError load bind def
+      \fi}%
   }%
 %    \end{macrocode}
 % arrange and create the input vectors
@@ -11401,6 +11430,7 @@ tx@OptexpDict begin
 } bind def
 %    \end{macrocode}
 % \end{macro}
+%
 % \begin{macro}{nametostr}
 %    Convert a literal name to string.
 % \begin{pssyntax}
@@ -11412,6 +11442,15 @@ tx@OptexpDict begin
 } bind def
 %    \end{macrocode}
 % \end{macro}
+%    \begin{macrocode}
+/PrintError {
+  (Error: ) exch strcat ==
+  quit
+} bind def
+/PrintWarning {
+  (Warning: ) exch strcat ==
+} bind def
+%    \end{macrocode}
 %
 % \begin{macro}{nametostr}
 %    Convert an integer to a string.
@@ -11942,16 +11981,16 @@ tx@OptexpDict begin
 % PlaneNumber CompName -> PlaneVec
 %    \begin{macrocode}
 /GetPlaneVec {
-    cvn load begin
-        IfcName load begin
-            currentdict /RX known {
-              RX RY CompMtrx dtransform CM idtransform
-              neg exch
-            } {
-              DX DY CompMtrx dtransform CM idtransform
-            } ifelse
-        end
+  cvn load begin
+    IfcName load begin
+      currentdict /RX known {
+        RX RY CompMtrx dtransform CM idtransform
+        neg exch
+      } {
+        DX DY CompMtrx dtransform CM idtransform
+      } ifelse
     end
+  end
 } bind def
 %    \end{macrocode}
 % \end{macro}
@@ -12268,28 +12307,33 @@ tx@OptexpDict begin
 %    \begin{macrocode}
       PushAmbCompPlanesOnStack
     } if
-    %% {PlaneNumber CompName n mode draw}
     exec
     /draw ED
     /Mode ED
-    3 1 roll % n PlaneNumber CompName
-    cvn load begin % comp dict
-      IfcName load begin % plane dict, n on stack
+    3 1 roll
+    cvn load begin
+%    \end{macrocode}
+% Start the component dictionary.
+%
+%    \begin{macrocode}
+      IfcName load begin
         X Y
-        CompMtrx transform CM itransform % n1 X Y
-        2 copy ToVec 4 1 roll % {X Y} n1 X Y
+        CompMtrx transform CM itransform 
+        2 copy ToVec 4 1 roll
         currentdict /RX known { RX RY } { DX DY	} ifelse
-        CompMtrx dtransform CM idtransform  % {X Y} n1 X Y DX DY
-        Mode 6 -1 roll % {X Y} X Y DX DY mode n1
-        Curr CurrVec % {X Y} X Y DX DY mode n1 X0 Y0 X_in Y_in
+        CompMtrx dtransform CM idtransform
+        Mode 6 -1 roll 
+        Curr CurrVec
         currentdict /RX known 
         correct
       end
     end
-%% {Xp Yp} Xp Yp dXp dYp trans/refl n2 X0 Y0 X_in Y_in curved? correct?
+%    \end{macrocode}
+% on stack:  \opt{\{Xp Yp\} Xp Yp dXp dYp trans/refl n2 X0 Y0 Xin Yin curved? correct?}
+%    \begin{macrocode}
     /correct ED
     12 -1 roll /CurrCenter ED
-    5 1 roll % curved? X0 Y0 X_in Y_in
+    5 1 roll
     connectifc PrevCorrect PN 2 gt and PN 2 eq or and {
       CurrVec CurrCenter CurrCenterTmp PrevMode 
       currentdict /relAngle known 
@@ -12298,12 +12342,11 @@ tx@OptexpDict begin
     } if
     5 -1 roll
     { CurvedInterface }{ PlainInterface } ifelse
-
     missed eq {
       counttomark PN 1 sub 3 mul sub {pop} repeat
+      (The beam missed an interface) Warning exit
       exit
     } if
-
     PN 1 eq {
       pop pop
       /draw beaminsidefirst oldbeaminsidelast xor def
@@ -12323,10 +12366,8 @@ tx@OptexpDict begin
       exit
     } {
       CurrVec 0 eq exch 0 eq and {
-%    \end{macrocode}
-% last refraction was total internal reflection, exit!
-%    \begin{macrocode}
         PlaneNum PN sub {pop} repeat
+        (Total internal reflection occured, this is not supported) Warning
         exit
       } if
       /PN PN 1 add def
@@ -12566,7 +12607,8 @@ tx@OptexpDict begin
     curved { CurvedInterface } { PlainInterface } ifelse
     dup /ret ED
     missed eq {
-      counttomark {pop} repeat exit
+      counttomark {pop} repeat 
+      (The upper beam missed an interface) Warning exit
     } if
     /CurrUp load /OldUp ED
     ToVec /CurrVecUp ED
@@ -12585,6 +12627,7 @@ tx@OptexpDict begin
     curved { CurvedInterface } { PlainInterface } ifelse
     dup missed eq {
       /ret ED
+      (The lower beam missed an interface) Warning
       counttomark {pop} repeat exit
     } if
     tir eq ret tir eq or {
@@ -12672,6 +12715,7 @@ tx@OptexpDict begin
 %    \begin{macrocode}
         PlaneNum PN sub {pop} repeat
         DrawnSegm 0 gt { fillBeam newpath } if	
+        (Total internal reflection occured, this is not supported) Warning
         exit
       } if
       /PN PN 1 add def
@@ -12726,7 +12770,10 @@ tx@OptexpDict begin
 %   \end{pssyntax}
 %    \begin{macrocode}
 /isFreeray { 
-  cvn load /n known
+  cvn load /n known 
+  dup not {
+    (Encountered fiber component in beam path) Error
+  } if
 } bind def
 %    \end{macrocode}
 % \end{macro}
@@ -12765,7 +12812,7 @@ tx@OptexpDict begin
     /N 0 def
   } ifelse
   2 1 N {
-    /i ED exch /CompB ED %
+    /i ED exch /CompB ED
     CompB isFreeray not {
       counttomark i 1 sub 2 mul 1 add sub { pop } repeat
       exit
@@ -13252,10 +13299,8 @@ tx@OptexpDict begin
   4 copy
   0 eq 3 {exch 0 eq and} repeat {
 %    \end{macrocode}
-% check if all coordinates are zero, missed circle, stop
+% if all coordinates are zero we missed the circle, stop
 %    \begin{macrocode}
-%%    PlaneNum PN sub 4 add {pop} repeat
-%%    exit
     missed
   } {
     4 copy
