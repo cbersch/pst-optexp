@@ -18,8 +18,9 @@ doc-examples.tex: ../../pst-optexp.dtx doc-examples.py $(POE)
 	./doc-examples.py
 
 testcases.tex: $(addsuffix .tex, $(filter-out $(GENTEX) $(TESTCASE_HEADER), $(FILELIST)))
+	echo "\\psset[optexp]{pswarning=false}" > $@
 	@{ $(foreach file, $(basename $^), \
-		echo "\\\\bgroup\section{$(file)}\\\\input{$(file)}\\\\egroup\\\\newpage";) } > $@
+		echo "\\\\bgroup\section{$(file)}\\\\input{$(file)}\\\\egroup\\\\newpage";) } >> $@
 
 %.pdf: %.ps
 	ps2pdf $<
