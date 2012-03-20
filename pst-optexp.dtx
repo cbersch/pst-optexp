@@ -5077,7 +5077,7 @@
 % interface or if total internal reflection would occur.
 % \fi
 % \begin{optionlist}
-%   \choitem[verbose]{error}{quiet, verbose}
+%   \boolitem[true]{pswarning}
 % \end{optionlist}
 % \iffalse
 %<*ignore>
@@ -6664,6 +6664,7 @@
 \newif\ifPOE@beaminside
 \newif\ifPOE@raytrace
 \newif\ifPOE@globalnoderef
+\newif\ifPOE@pswarning
 %    \end{macrocode}
 % This is to check if \nxLkeyword{compname} is set inside or outside of a component. For this no boolean key is provided.
 %    \begin{macrocode}
@@ -7044,10 +7045,8 @@
 %    \end{macrocode}
 % Error handling.
 %    \begin{macrocode}
-\define@choicekey*+[psset]{optexp}{error}{quiet, verbose}%
-  {\edef\POE@key@error{#1}}%
-  {\PackageWarning{pst-optexp}{Unknown value '#1' for error.}}%
-\psset[optexp]{error=verbose}
+\define@boolkey[psset]{optexp}[POE@]{pswarning}[true]{}
+\psset[optexp]{pswarning=true}
 %    \end{macrocode}
 %
 % \subsection{Free-ray component parameters}
@@ -7904,10 +7903,6 @@
       \fi\fi
       \pst@getcoor{@@A}\POE@tempa
       \pst@getcoor{@@B}\POE@tempb
-%    \end{macrocode}
-% This is for backward compatibility. In version 2.x angleA and angleB could be
-% used to control the absolute fiber angles.
-%    \begin{macrocode}
       \ifx\psk@angleA\relax
         \ifx\POE@key@fiberalign\POE@str@fiberalign@abs
           \psset{angleA=\POE@key@fiberangleA}%
@@ -8098,12 +8093,10 @@
 % indices.
 %    \begin{macrocode}
      {/nbeam {\POE@key@n cvx exec} bind def
-      \ifx\POE@key@error\POE@key@quiet
-        /Warning /pop load bind def
-        /Error { pop quit } bind def
-      \else
+      \ifPOE@pswarning
         /Warning /PrintWarning load bind def
-        /Error /PrintError load bind def
+      \else
+        /Warning /pop load bind def
       \fi}%
      [ \POE@key@beampos\space counttomark dup 
      0 eq { 
@@ -8162,12 +8155,10 @@
   \def\pst@fill##1{ gsave ##1 grestore }%
   \addto@pscode{%
     {/nbeam {\POE@key@n cvx exec} bind def
-      \ifx\POE@key@error\POE@key@quiet
-        /Warning /pop load bind def
-        /Error { pop quit } bind def
-      \else
+      \ifPOE@pswarning
         /Warning /PrintWarning load bind def
-        /Error /PrintError load bind def
+      \else
+        /Warning /pop load bind def
       \fi}%
   }%
 %    \end{macrocode}
@@ -9057,14 +9048,6 @@
 }%
 %    \end{macrocode}
 % \end{macro}
-% \begin{macro}{\newOptexpFiberQuadrupole}
-%    \begin{macrocode}
-\def\newOptexpFiberQuadrupole{%
-  \@ifnextchar[%]
-    {\POE@newfiberquadrupole}{\POE@newfiberquadrupole[]}%
-}%
-%    \end{macrocode}
-% \end{macro}
 % 
 % \begin{macro}{\POE@newdipole}
 %    \begin{macrocode}
@@ -9172,81 +9155,6 @@
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}{\POE@newfiberquadrupole}
-%    \begin{macrocode}
-\def\POE@newfiberquadrupole[#1]#2#3{%
-  \@ifundefined{#2@i}{%
-    \@namedef{#2}{\pst@object{#2}}%
-    \expandafter\def\csname #2@i\endcsname(##1)(##2)(##3)(##4){%
-      \@ifnextchar\bgroup%
-        {\@nameuse{#2@i@}(##1)(##2)(##3)(##4)}%
-        {\@nameuse{#2@i@}(##1)(##2)(##3)(##4){}}%
-    }%
-    \expandafter\def\csname #2@i@\endcsname(##1)(##2)(##3)(##4)##5{%
-      \addbefore@par{#3}%
-      \addafter@par{#1}%
-      \begin@OptexpFiberObj
-        \ifPOE@backlayer
-          \ifx\POE@key@align\POE@str@top
-            \pnode(##1){\oenodeRefA{}}
-            \pnode(##3){\oenodeRefB{}}
-          \else\ifx\POE@key@align\POE@str@bottom
-            \pnode(##2){\oenodeRefA{}}
-            \pnode(##4){\oenodeRefB{}}
-          \else
-            \pst@getcoor{##1}\POE@tempa%
-            \pst@getcoor{##2}\POE@tempb%
-            \pnode(!\POE@tempa \POE@tempb 
-                    \POE@dict{VecAdd 0.5 VecScale}
-                    \tx@UserCoor){\oenodeRefA{}}
-            \pst@getcoor{##3}\POE@tempa%
-            \pst@getcoor{##4}\POE@tempb%
-            \pnode(!\POE@tempa \POE@tempb 
-                    \POE@dict{VecAdd 0.5 VecScale}
-                    \tx@UserCoor){\oenodeRefB{}}
-         \fi\fi
-       \fi
-       \POE@drawcomponent[#2]{##5}{\@nameuse{#2@ii}}
-       \ifPOE@backlayer
-         \POE@Verb{%
-           (1) (3) (\oenode{}{}) CorrectDipoleNodes 
-           (2) (N) (\oenode{}{}) CorrectDipoleNodes 
-         }%
-         \ifPOE@fiber@
-           \ifPOE@fiberin@
-             \ifPOE@fiberin@top
-               \drawfiber@{FiberIn1}[stopnode=1]{(##1)}%
-                                                {\POE@key@compname}
-             \fi
-             \ifPOE@fiberin@bottom
-               \drawfiber@{FiberIn2}[stopnode=2]{(##2)}%
-                                                {\POE@key@compname}
-             \fi
-           \fi
-           \ifPOE@fiberout@
-             \ifPOE@fiberout@top
-               \drawfiber@{FiberOut}[startnode=3]{\POE@key@compname}%
-                                                 {(##3)}
-             \fi
-             \ifPOE@fiberout@bottom
-               \drawfiber@{FiberOut2}[startnode=N]{\POE@key@compname}%
-                                                  {(##4)}
-             \fi
-           \fi
-         \fi
-       \fi
-     \end@OptexpObj
-    }%
-    \fiberdipole@iimacro{#2}%
-  }{%
-    \PackageError{pst-optexp}{%
-      fiber quadrupole object `#2' already defined
-    }%
-  }%
-\ignorespaces}%
-%    \end{macrocode}
-% \end{macro}
-% 
 % \begin{macro}{\dipole@iimacro}
 %    \begin{macrocode}
 \def\dipole@iimacro#1{%
@@ -9294,6 +9202,72 @@
 \ignorespaces}%
 %    \end{macrocode}
 % \end{macro}
+%
+% \begin{macro}{\POE@newfiberquadrupole}
+%    \begin{macrocode}
+\def\optcoupler{\pst@object{optcoupler}}%
+\def\optcoupler@i(#1)(#2)(#3)(#4){%
+  \@ifnextchar\bgroup%
+    {\@nameuse{optcoupler@i@}(#1)(#2)(#3)(#4)}%
+    {\@nameuse{optcoupler@i@}(#1)(#2)(#3)(#4){}}%
+}%
+\def\optcoupler@i@(#1)(#2)(#3)(#4)#5{%
+  \begin@OptexpFiberObj
+    \ifPOE@backlayer
+      \ifx\POE@key@align\POE@str@top
+        \pnode(#1){\oenodeRefA{}}
+        \pnode(#3){\oenodeRefB{}}
+      \else\ifx\POE@key@align\POE@str@bottom
+        \pnode(#2){\oenodeRefA{}}
+        \pnode(#4){\oenodeRefB{}}
+      \else
+        \pst@getcoor{#1}\POE@tempa%
+        \pst@getcoor{#2}\POE@tempb%
+        \pnode(!\POE@tempa \POE@tempb 
+                \POE@dict{VecAdd 0.5 VecScale}
+                \tx@UserCoor){\oenodeRefA{}}
+        \pst@getcoor{#3}\POE@tempa%
+        \pst@getcoor{#4}\POE@tempb%
+        \pnode(!\POE@tempa \POE@tempb 
+                \POE@dict{VecAdd 0.5 VecScale}
+                \tx@UserCoor){\oenodeRefB{}}
+      \fi\fi
+    \fi
+    \POE@drawcomponent[optcoupler]{#5}{\@nameuse{optcoupler@ii}}
+    \ifPOE@backlayer
+      \POE@Verb{%
+        (1) (3) (\oenode{}{}) CorrectDipoleNodes 
+        (2) (N) (\oenode{}{}) CorrectDipoleNodes 
+      }%
+      \ifPOE@fiber@
+        \ifPOE@fiberin@
+          \ifPOE@fiberin@top
+            \drawfiber@{FiberIn1}[stopnode=1]{(##1)}%
+                                             {\POE@key@compname}
+          \fi
+          \ifPOE@fiberin@bottom
+            \drawfiber@{FiberIn2}[stopnode=2]{(##2)}%
+                                             {\POE@key@compname}
+          \fi
+        \fi
+        \ifPOE@fiberout@
+          \ifPOE@fiberout@top
+            \drawfiber@{FiberOut}[startnode=3]{\POE@key@compname}%
+                                              {(##3)}
+          \fi
+          \ifPOE@fiberout@bottom
+            \drawfiber@{FiberOut2}[startnode=N]{\POE@key@compname}%
+                                               {(##4)}
+          \fi
+        \fi
+      \fi
+    \fi
+  \end@OptexpObj
+}%
+\fiberdipole@iimacro{optcoupler}%
+%    \end{macrocode}
+% \end{macro}
+% 
 % 
 % \begin{macro}{\wdmsplitter}
 %    \begin{macrocode}
@@ -9817,10 +9791,6 @@
 \newOptexpFiberDipole{optswitch}{}
 \newOptexpFiberDipole{fiberdelayline}{}
 \newOptexpFiberDipole{fiberbox}{fiber=none}
-%    \end{macrocode}
-% Define all fiber quadrupoles
-%    \begin{macrocode}
-\newOptexpFiberQuadrupole{optcoupler}{}
 %    \end{macrocode}
 %
 % \begin{macro}{\POE@drawcomponent}
@@ -10829,7 +10799,7 @@
 \def\optfilter@comp{%
   \edef\@sz{\POE@key@filtersize\space 0.5 mul }%
   \def\filter@curve{%
-    \parametricplot[plotstyle=curve,arrows=c-c]{-1}{1}{%
+    \parametricplot[plotstyle=curve,arrows=-]{-1}{1}{%
       t \@sz mul 0.7 mul t Pi mul RadtoDeg 
       90 add cos 0.2 \@sz mul mul}%
   }%
@@ -11443,10 +11413,6 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % \end{macro}
 %    \begin{macrocode}
-/PrintError {
-  (Error: ) exch strcat ==
-  quit
-} bind def
 /PrintWarning {
   (Warning: ) exch strcat ==
 } bind def
@@ -11825,7 +11791,7 @@ tx@OptexpDict begin
 /relative 0 def /absolute 1 def /center 2 def
 /refl 0 def /trans 1 def /absorb 2 def
 /desc 0 def /asc 1 def /amb 2 def
-/missed 0 def /tir 1 def /ok 2 def
+/ok 0 def /tir 1 def /missed 2 def
 /bgRefIndex 0 def
 %    \end{macrocode}
 % 
@@ -12772,7 +12738,7 @@ tx@OptexpDict begin
 /isFreeray { 
   cvn load /n known 
   dup not {
-    (Encountered fiber component in beam path) Error
+    (Encountered fiber component in beam path) Warning
   } if
 } bind def
 %    \end{macrocode}
@@ -13284,7 +13250,7 @@ tx@OptexpDict begin
 % 
 % \begin{macro}{CurvedInterface}
 %   \begin{pssyntax}
-%     \PSvar{Xp Yp Xr Yr mode n2 X0 Y0 Xin Yin} \PSop{CurvedInterface} \PSvar{X0' Y0' Xout Yout}
+%     \PSvar{Xp Yp Xr Yr mode n2 X0 Y0 Xin Yin} \PSop{CurvedInterface} \PSvar{X0' Y0' Xout Yout status}
 %   \end{pssyntax}
 %    \begin{macrocode}
 /CurvedInterface {
@@ -13328,6 +13294,9 @@ tx@OptexpDict begin
     } {
       ReflectVec ok
     } ifelse /n1 n2 def
+    5 -2 roll 2 copy 7 2 roll X0 Y0 @ABVect Xin Yin SProd 0 lt PN 1 gt and {
+      pop missed
+    } if
   } ifelse
 } bind def
 %    \end{macrocode}
@@ -13335,7 +13304,7 @@ tx@OptexpDict begin
 % 
 % \begin{macro}{PlainInterface}
 %   \begin{pssyntax}
-%     \PSvar{Xp Yp dXp dYp mode n2 X0 Y0 Xin Yin} \PSop{PlainInterface} \PSvar{X0' Y0' Xout Yout}
+%     \PSvar{Xp Yp dXp dYp mode n2 X0 Y0 Xin Yin} \PSop{PlainInterface} \PSvar{X0' Y0' Xout Yout status}
 %   \end{pssyntax}
 %    \begin{macrocode}
 /PlainInterface {%
@@ -13352,6 +13321,9 @@ tx@OptexpDict begin
     } {
       ReflectVec ok
     } ifelse /n1 n2 def
+    5 -2 roll 2 copy 7 2 roll X0 Y0 @ABVect Xin Yin SProd 0 lt PN 1 gt and {
+      pop missed
+    } if
   } ifelse
 } bind def
 %    \end{macrocode}
@@ -13462,7 +13434,7 @@ tx@OptexpDict begin
       } ifelse
     } ifelse
   } for
-  pop dist /node load 
+  pop dist /node load
 } bind def
 %    \end{macrocode}
 % \end{macro}
@@ -13549,7 +13521,7 @@ tx@OptexpDict begin
 % discard coordinates of B
 %    \begin{macrocode}
     4 2 roll pop pop 2 copy
-    CompA (Center) NodeName @GetCenter 
+    CompA (Center) NodeName @GetCenter
     4 2 roll @ABVect 4 2 roll
 %    \end{macrocode}
 % on stack: Xac-Xa Yac-Xa Xa Ya
@@ -13698,9 +13670,9 @@ tx@OptexpDict begin
 % approximately 8 digits, so in order to have an effect, the nodes must
 % be separated by $10^{-7}$ times the maximum coordinate value.
 %    \begin{macrocode}
-    8 -2 roll 2 copy abs exch abs max 2e-7 mul 3 1 roll 5 2 roll 
+    8 -2 roll 2 copy abs exch abs max 2e-1 mul 3 1 roll 5 2 roll 
     VecScale VecAdd ToVec 7 -1 roll @NewNode
-    4 2 roll 2 copy abs exch abs max -2e-7 mul 3 1 roll 5 2 roll 
+    4 2 roll 2 copy abs exch abs max -2e-1 mul 3 1 roll 5 2 roll 
     VecScale VecAdd ToVec exch @NewNode
   } {
     8 { pop } repeat
