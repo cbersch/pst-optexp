@@ -1384,7 +1384,7 @@
   \optgrating[compname=G](BS)(G)(BS)
   \lens[lens=2 2 1.5, compshift=0.1, n=2.25, compname=L](BS)(Out)
   \pinhole[phwidth=0.05, innerheight=0.05, position=0.8, compshift=0.18, compname=Ph](BS)(Out)
-  \optplane[compname=Out](Out)(1, 0)
+  \optplane[compname=Out](Out)
   \addtopsstyle{Beam}{linestyle=none, beamwidth=0.2, fillstyle=solid}
   \drawwidebeam[fillcolor=red!25!white]{(In)}{Bs}{G}{Bs}{L}{Ph}
   \drawwidebeam[fillcolor=red!50!white, beamangle=-5]{G}{Bs}{L}{Ph}{Out}
@@ -4740,7 +4740,7 @@
   \pnode(0,1.5){A}\pnode(1,1.5){B}\pnode(3,1){C}
   \optprism[prismsize=1.2](A)(B)(C)
   \psdot(\oenodeIn{})\psdot(\oenodeOut{})
-  \optplane(C)(0,1)
+  \optplane(C)
   \drawbeam[n=1, linecolor=blue]{(A)}{1}{2}
   \drawbeam[n=1.5, linecolor=red]{(A)}{1}{2}
   \drawbeam[raytrace=false, linecolor=DGreen]{(A)}{1}{2}  
@@ -4752,7 +4752,7 @@
   \pnode(0,1){A}\pnode(4,1){B}
   \doveprism[doveprismsize=1](A)(B)
   \psdot(\oenodeIn{})\psdot(\oenodeIfc{2}{})\psdot(\oenodeOut{})
-  \optplane(B)(0,1)
+  \optplane(B)
   \drawbeam[n=1.5, linecolor=red]{(A)}{1}{2}
   \drawbeam[raytrace=false, linecolor=DGreen]{(A)}{1}{2}  
 \end{pspicture}
@@ -4805,10 +4805,10 @@
 \begin{LTXexample}[morekeywords = {[21]{n}}]
 \begin{pspicture}(3,3)
   \pnode(0,1){A}\pnode(3,1){B}
-  \optplane(A)(0,1)
+  \optplane(A)
   \lens[lens=3 3 2, abspos=0.5, n=1.5](A)(B)
   \lens[lens=3 3 2, abspos=2, n=1.5](A)(B)
-  \optplane(B)(0,1)
+  \optplane(B)
   \addtopsstyle{Beam}{beampos=0.5}
   \drawbeam{-}
   \drawbeam[linecolor=red, n=2]{-}
@@ -4825,7 +4825,7 @@
 \begin{pspicture}(3,3)
   \pnode(0,1.5){A}\pnode(3,1.5){B}
   \lens[lens=4 4 3, n=2, abspos=0.3](A)(B)
-  \optplane[compname=Plane](B)(0,1)
+  \optplane[compname=Plane](B)
   \psset{beampos=0.6}
   \drawbeam[linecolor=red]{(A)}{1}{Plane}
   \drawbeam[linecolor=yellow, n=*(n+0.5)]{(A)}{1}{Plane}
@@ -4841,9 +4841,9 @@
 \begin{LTXexample}[morekeywords = {[21]{n}}]
 \begin{pspicture}(3,3)
   \pnode(-1,0){A}\pnode(1,2.2){B}\pnode(3,0){C}
-  \optplane(0,2.19)(0,1)
+  \optplane(0,2.19)
   \optprism[prismalign=center](A)(B)(C)
-  \optplane(C)(0,1)
+  \optplane(C)
   \definecolor[ps]{bl}{rgb}{%
     tx@addDict begin Red Green Blue end}%
   \addtopsstyle{Beam}{linecolor=bl, linewidth=0.4\pslinewidth}
@@ -5042,7 +5042,7 @@
 % \ifENGLISH This option is maintained for backward compatibility only and will be removed in future versions.\fi
 % \end{optionlist}
 % \begin{ltxsyntax}
-%   \xLcs{optplane}\cmditem{optplane}(center)(vec){name}
+%   \xLcs{optplane}\cmditem{optplane}(center)
 % \end{ltxsyntax}
 % 
 % \ifGERMAN\section{Aufgeweitete Strahlen}\fi
@@ -5086,8 +5086,8 @@
 \begin{LTXexample}
 \begin{pspicture}(3,2.7)
   \lens[lens=2 2 2, abspos=2.5](0,1)(3,1)
-  \optplane[compname=A](0,1)(0,1)
-  \optplane[compname=B](3,1)(0,1)
+  \optplane[compname=A](0,1)
+  \optplane[compname=B](3,1)
   \drawbeam{A}{1}{B}
   \drawbeam[beamangle=15]{A}{1}{B}
   % Verfehlt die zweite Grenzfläche, der Strahl wird nur bis zur ersten Grenzfläche gezeichnet.
@@ -5100,8 +5100,8 @@
 \begin{LTXexample}
 \begin{pspicture}(3,2.7)
   \lens[lens=2 2 2, abspos=2.5](0,1)(3,1)
-  \optplane[compname=A](0,1)(0,1)
-  \optplane[compname=B](3,1)(0,1)
+  \optplane[compname=A](0,1)
+  \optplane[compname=B](3,1)
   \drawbeam{A}{1}{B}
   \drawbeam[beamangle=15]{A}{1}{B}
   % misses the second interface, draw only until the first interface
@@ -5132,8 +5132,8 @@
 % \fi
 \begin{LTXexample}
 \begin{pspicture}(3,2.5)
-  \pnode(0,2){A}\optplane[compname=A](A)(0,1)
-  \pnode(4,0){B}\optplane[compname=B](3,0)(0,1)
+  \pnode(0,2){A}\optplane[compname=A](A)
+  \pnode(4,0){B}\optplane[compname=B](3,0)
   \optprism[n=1.8](A)([Xnodesep=2]A)(B)
   \addtopsstyle{Beam}{%
     fillcolor=green, fillstyle=solid, opacity=0.3}
@@ -6240,7 +6240,7 @@
 \pnode(1,4){SigIn}\pnode(3,4){BS}\pnode(3,5){LO}
 \pnode(5,4){Det1}\pnode(3,2){Det2}
 \begin{optexp}
-  \optplane[compname=LO](LO)(1,0)
+  \optplane[compname=LO](LO)
   \beamsplitter[compname=BS](SigIn)(BS)(Det2)
   \lens[abspos=0.5, compname=L2, n=2.1](Det2)(BS){$L_2$}
   \lens[abspos=0.5, compname=L1, n=2.1](Det1)(BS){$L_1$}
@@ -6665,6 +6665,7 @@
 \newif\ifPOE@raytrace
 \newif\ifPOE@globalnoderef
 \newif\ifPOE@pswarning
+\newif\ifPOE@defnode
 %    \end{macrocode}
 % This is to check if \nxLkeyword{compname} is set inside or outside of a component. For this no boolean key is provided.
 %    \begin{macrocode}
@@ -7047,6 +7048,8 @@
 %    \begin{macrocode}
 \define@boolkey[psset]{optexp}[POE@]{pswarning}[true]{}
 \psset[optexp]{pswarning=true}
+\define@boolkey[psset]{optexp}[POE@]{defnode}[true]{}
+\psset[optexp]{defnode=true}
 %    \end{macrocode}
 %
 % \subsection{Free-ray component parameters}
@@ -8094,9 +8097,9 @@
 %    \begin{macrocode}
      {/nbeam {\POE@key@n cvx exec} bind def
       \ifPOE@pswarning
-        /Warning /PrintWarning load bind def
+        /Warning /PrintWarning load def
       \else
-        /Warning /pop load bind def
+        /Warning /pop load def
       \fi}%
      [ \POE@key@beampos\space counttomark dup 
      0 eq { 
@@ -8156,9 +8159,9 @@
   \addto@pscode{%
     {/nbeam {\POE@key@n cvx exec} bind def
       \ifPOE@pswarning
-        /Warning /PrintWarning load bind def
+        /Warning /PrintWarning load def
       \else
-        /Warning /pop load bind def
+        /Warning /pop load def
       \fi}%
   }%
 %    \end{macrocode}
@@ -8887,12 +8890,16 @@
   \@ifnextchar[%]
     {\optplane@i}{\optplane@i[]}%
 }%
-\def\optplane@i[#1](#2)(#3){%
+\def\optplane@i[#1](#2){%
   \pst@getcoor{#2}\POE@tempa% origin
-  \pst@getcoor{#3}\POE@tempb% difference vector
   \optplate[#1, linestyle=none]%
-    (! \POE@tempa \POE@tempb neg exch \POE@dict{VecAdd} \tx@UserCoor)%
-    (! \POE@tempa \POE@tempb exch neg \POE@dict{VecAdd} \tx@UserCoor)%
+    (! \POE@tempa exch 1 sub exch \tx@UserCoor)%
+    (! \POE@tempa exch 1 add exch \tx@UserCoor)%
+  \ifnum9<1\POE@getlastcompname%
+    \ifPOE@defnode
+      \pnode(\oenodeCenter{}){\POE@key@compname}
+    \fi
+  \fi
 \ignorespaces}%
 %    \end{macrocode}
 % \end{macro}
@@ -9242,22 +9249,22 @@
       \ifPOE@fiber@
         \ifPOE@fiberin@
           \ifPOE@fiberin@top
-            \drawfiber@{FiberIn1}[stopnode=1]{(##1)}%
+            \drawfiber@{FiberIn1}[stopnode=1]{(#1)}%
                                              {\POE@key@compname}
           \fi
           \ifPOE@fiberin@bottom
-            \drawfiber@{FiberIn2}[stopnode=2]{(##2)}%
+            \drawfiber@{FiberIn2}[stopnode=2]{(#2)}%
                                              {\POE@key@compname}
           \fi
         \fi
         \ifPOE@fiberout@
           \ifPOE@fiberout@top
             \drawfiber@{FiberOut}[startnode=3]{\POE@key@compname}%
-                                              {(##3)}
+                                              {(#3)}
           \fi
           \ifPOE@fiberout@bottom
             \drawfiber@{FiberOut2}[startnode=N]{\POE@key@compname}%
-                                               {(##4)}
+                                               {(#4)}
           \fi
         \fi
       \fi
