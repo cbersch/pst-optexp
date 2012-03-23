@@ -43,6 +43,7 @@
 \usepackage{nicefrac}
 \usepackage{pst-func} 
 \usepackage{pst-optexp} 
+\psset[optexp]{pswarning=false}
 \usepackage{pst-circ}
 \usepackage[makeindex]{splitidx} 
 \usepackage{hypdoc} 
@@ -377,8 +378,10 @@
 \newcommand*{\styleshape}[1]{\texttt{#1}}
 \newcommand{\docindex}[1]{\sindex[doc]{#1|hyperpage}}
 \makeatletter
+\def\Lcs{\@ifstar{\Lcs@nobm}{\Lcs@bm}}
+\def\Lcs@nobm#1{\nxLcs{#1}\xLcs{#1}}
+\def\Lcs@bm#1{\hyperref[cmd:#1]{\Lcs@nobm{#1}}}
 \def\xLcs#1{\docindex{#1=\nxLcs{#1}}\docindex{\POEindexMacro!#1=\nxLcs{#1}}}
-\def\Lcs#1{\nxLcs{#1}\xLcs{#1}}
 \def\nxLcs#1{\texttt{\textbackslash#1}}
 
 \def\LPack#1{\texttt{#1}\docindex{#1=\texttt{#1}}\docindex{\POEindexPackage!#1=\texttt{#1}}}
@@ -4719,7 +4722,8 @@
 % sketches: beam angles and divergences should be in many cases more extreme
 % than in the real setup in order to highlight certain aspects. Also you should
 % consider the refractive index (see \prettyref{sec:n}) only as a tool to
-% optimize the visual effects of the beam path.
+% optimize the visual effects of the beam path, and not stick with its
+% physically correct values.
 %
 % \begin{optionlist}
 %   \boolitem[true]{raytrace} Chooses the mode of tracing the beam path,
@@ -4728,33 +4732,51 @@
 %
 %   In most cases, the «connect» mode is equivalent to «raytracing» with
 %   \Lkeyword{n}\opt{=1}, except for \Lcs{optprism} and \Lcs{doveprism}, where
-%   the interface nodes (\prettyref{sec:ifcnode}) are simply connected. See the
-%   following example for the differences between the tracing modes, the
-%   interface nodes are highlighted for clarity: 
+%   the interface nodes (\prettyref{sec:ifcnode}) are simply connected. 
+%
+%   See the following two example for the differences between the tracing modes
+%   using these two components. The interface nodes are highlighted for clarity.
+%
+%   The raytraced beam with \Lkeyword{n}\opt{=1} (blue) passes the component
+%   without changing its direction, the refraction for \Lkeyword{n}\opt{=1.5} is
+%   calculated, and the «connect» beam just passes through the two interface
+%   nodes.
 %
 %\iffalse
 %<*ignore>
 %\fi
-\begin{LTXexample}[linerange={1-3,5-9}]
+\begin{LTXexample}[linerange={1-7,9-9}]
 \begin{pspicture}(3,2.2)
   \pnode(0,1.5){A}\pnode(1,1.5){B}\pnode(3,1){C}
   \optprism[prismsize=1.2](A)(B)(C)
-  \psdot(\oenodeIn{})\psdot(\oenodeOut{})
   \optplane(C)
   \drawbeam[n=1, linecolor=blue]{(A)}{1}{2}
   \drawbeam[n=1.5, linecolor=red]{(A)}{1}{2}
   \drawbeam[raytrace=false, linecolor=DGreen]{(A)}{1}{2}  
+  \psdot(\oenodeIn{1})\psdot(\oenodeOut{1})
 \end{pspicture}
 \end{LTXexample}
-
-\begin{LTXexample}[linerange={1-3,5-8}]
+%\iffalse
+%</ignore>
+%\fi
+%
+% For the \Lcs{doveprism} the same applies as for the \Lcs{optprism}, but the
+% raytraced beam with \Lkeyword{n}\opt{=1} (blue) missed the second interface
+% because it is not refracted, and stops therefore at the first interface (see
+% \prettyref{sec:error-handling}).
+%
+%\iffalse
+%<*ignore>
+%\fi
+\begin{LTXexample}[linerange={1-7,9-9}]
 \begin{pspicture}(4,2)
   \pnode(0,1){A}\pnode(4,1){B}
   \doveprism[doveprismsize=1](A)(B)
-  \psdot(\oenodeIn{})\psdot(\oenodeIfc{2}{})\psdot(\oenodeOut{})
   \optplane(B)
+  \drawbeam[n=1, linecolor=blue, beampos=0.1]{(A)}{1}{2}
   \drawbeam[n=1.5, linecolor=red]{(A)}{1}{2}
   \drawbeam[raytrace=false, linecolor=DGreen]{(A)}{1}{2}  
+  \psdot(\oenodeIn{1})\psdot(\oenodeIfc{2}{1})\psdot(\oenodeOut{1})
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -4765,26 +4787,47 @@
 %
 % \subsection{Refractive index}\label{sec:n}
 %
+% The raytracing depends on the refractive index, which can be set flexibly for
+% each component. The refractive index is always relative to the background
+% which has a constant value for the whole sketch.
+%
 % \begin{optionlist}
-% \psnumitem[1.5]{n}
+% \valitem[1.5]{n}{code}
 % \ifGERMAN 
-% Setzt den Brechungsindex einer Komponente relativ zum Hintergrund.
+% Setzt den Brechungsindex relativ zum Hintergrund.
 % \fi
-% \ifENGLISH
-% Sets the relative refractive index of a component with respect to the background.
+% \ifENGLISH Sets the relative refractive index respect to the background. This
+% parameter has two scopes, you can either set the refractive index of each
+% component or of each beam ray: 
+% \begin{enumerate}
+% \item Using \Lkeyword{n} as global parameter or as argument of a component,
+%   sets a fixed refractive index for each affected components, without further
+%   actions, all beam paths experience this refractive index.
+% \item As parameter for \Lcs{drawbeam} or \Lcs{drawwidebeam}, you can change or
+%   overwrite the refractive index of the components for specific beam
+%   paths. This can be very useful e.g. to simulate chromatic dispersion. To set
+%   this globally for all beams, you must add the respective parameter
+%   definition to the \Lstyle{Beam} style, because global definitions of
+%   \Lkeyword{n} affect only the components and not the beams.
+% \end{enumerate}
 % \fi
+% \end{optionlist}
+% The \prm{code} can in general be any Postscript code which evaluates to a
+% number, e.g. \opt{1.5}, or \opt{5 sqrt}. If the \prm{code} starts with a
+% \opt{*}, it will be interpreted as an algebraic
+% expression\fnurl{http://mirror.ctan.org/graphics/pstricks/base/doc/pst-news08.pdf},
+% e.g. \opt{*sqrt(5)}. Inside the \prm{code} you can access the refractive index
+% of the component via \opt{n} which allows you to change the index relative to
+% the original value, e.g. use \opt{n=n 1.01 mul} to change \opt{n} by one
+% percent.
 %
-% \ifGERMAN 
-% Überschreibt den Brechungsindex der Komponenten (mit \Lkeyword{n} gesetzt) für
-% ganze Strahlen falls der Wert ungleich \opt{0} ist.
-% \fi
-% \ifENGLISH
-% Overwrites the refractive index of components (set with \Lkeyword{n}) for
-% whole beam ray, if the value is unequal to \opt{0}.
-% \fi
+% In the following you find several examples about the different aspects of
+% using \Lkeyword{n}.
 %
-% Supports algebraic expressions\fnurl{http://mirror.ctan.org/graphics/pstricks/base/doc/pst-news08.pdf}.
-%
+% \begin{enumerate}
+% \item Set a fixed refractive index for the component. Interestingly, for the
+%   default shape of the \Lcs{doveprism}, a refractive index of $\sqrt{5}$ gives
+%   the ideal output direction which is the same as the input direction.
 % \iffalse
 %<*ignore>
 % \fi
@@ -4799,15 +4842,19 @@
 %</ignore>
 % \fi
 %
-% \iffalse
+% \item In this example one beam uses the default refractive index of the
+%   components (green), the other one overwrites it with a value of \opt{2}
+%   (red).
+%\iffalse
 %<*ignore>
 % \fi
 \begin{LTXexample}[morekeywords = {[21]{n}}]
 \begin{pspicture}(3,3)
   \pnode(0,1){A}\pnode(3,1){B}
   \optplane(A)
-  \lens[lens=3 3 2, abspos=0.5, n=1.5](A)(B)
-  \lens[lens=3 3 2, abspos=2, n=1.5](A)(B)
+  \psset{lens=3 3 2, n=1.5}
+  \lens[abspos=0.5](A)(B)
+  \lens[abspos=2](A)(B)
   \optplane(B)
   \addtopsstyle{Beam}{beampos=0.5}
   \drawbeam{-}
@@ -4818,6 +4865,7 @@
 %</ignore>
 % \fi
 %
+% \item Now, one beam adds \opt{0.5} to the actual refractive index of the component.
 % \iffalse
 %<*ignore>
 % \fi
@@ -4835,6 +4883,11 @@
 %</ignore>
 % \fi
 %
+% \item Dynamically changing the refractive index is very useful to emulate
+%   chromatic dispersion. Here, we sketch dispersion of a prism by calculating
+%   the refractive index with Sellmaier's
+%   equation\fnurl{http://en.wikipedia.org/wiki/Sellmeier_equation} for
+%   different wavelengths.
 % \iffalse
 %<*ignore>
 % \fi
@@ -4858,6 +4911,7 @@
 % \iffalse
 %</ignore>
 % \fi
+% \end{enumerate}
 % \iffalse
 %<*ignore>
 % \fi
@@ -4895,7 +4949,6 @@
 % \iffalse
 %</ignore>
 % \fi
-% \end{optionlist}
 %
 % \subsection{Initial conditions}
 %
@@ -6665,7 +6718,6 @@
 \newif\ifPOE@raytrace
 \newif\ifPOE@globalnoderef
 \newif\ifPOE@pswarning
-\newif\ifPOE@defnode
 %    \end{macrocode}
 % This is to check if \nxLkeyword{compname} is set inside or outside of a component. For this no boolean key is provided.
 %    \begin{macrocode}
@@ -7048,8 +7100,6 @@
 %    \begin{macrocode}
 \define@boolkey[psset]{optexp}[POE@]{pswarning}[true]{}
 \psset[optexp]{pswarning=true}
-\define@boolkey[psset]{optexp}[POE@]{defnode}[true]{}
-\psset[optexp]{defnode=true}
 %    \end{macrocode}
 %
 % \subsection{Free-ray component parameters}
@@ -8891,15 +8941,10 @@
     {\optplane@i}{\optplane@i[]}%
 }%
 \def\optplane@i[#1](#2){%
-  \pst@getcoor{#2}\POE@tempa% origin
+  \pst@getcoor{#2}\POE@tempa
   \optplate[#1, linestyle=none]%
     (! \POE@tempa exch 1 sub exch \tx@UserCoor)%
     (! \POE@tempa exch 1 add exch \tx@UserCoor)%
-  \ifnum9<1\POE@getlastcompname%
-    \ifPOE@defnode
-      \pnode(\oenodeCenter{}){\POE@key@compname}
-    \fi
-  \fi
 \ignorespaces}%
 %    \end{macrocode}
 % \end{macro}
