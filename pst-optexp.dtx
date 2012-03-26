@@ -11147,63 +11147,101 @@
 \def\optcoupler@nodes{%
   \edef\@sz{\POE@key@couplersize\space}%
   \edef\@sep{\POE@key@couplersep\space 0.5 mul }%
-  \ifx\POE@key@align\POE@str@top
-    \def\@yshift{\@sep neg }%
-  \else\ifx\POE@key@align\POE@str@bottom
-    \def\@yshift{\@sep\space}%
+  \ifx\POE@key@couplertype\POE@str@couplertype@elliptic
+    \def\@lw{\getCLW 0.3 mul }%
   \else
-    \def\@yshift{0 }%
-  \fi\fi
-  \ifx\POE@key@couplertype\POE@str@couplertype@none
-    \newOptexpFiberComp{ {\@sz -0.5 mul \@yshift \@sep add}
-                         {\@sz -0.5 mul \@yshift \@sep sub}
-                         {\@sz 0.5 mul \@yshift \@sep add}
-                         {\@sz 0.5 mul \@yshift \@sep sub}}
-  \else
-    \newOptexpFiberComp{%
-      {\@sz neg \getCLW 0.3 mul add \@yshift \@sep add}
-      {\@sz neg \getCLW 0.3 mul add \@yshift \@sep sub}
-      {\@sz \getCLW 0.3 mul sub \@yshift \@sep add}
-      {\@sz \getCLW 0.3 mul sub \@yshift \@sep sub} }%
+    \def\@lw{0 }%
   \fi
-  \pnode(! 0 \@yshift){\oenodeCenter{}}
+  \newOptexpFiberComp{%
+    {@@x neg \@lw add @@y0 \@sep add}
+    {@@x neg \@lw add @@y0 \@sep sub}
+    {@@x \@lw sub @@y0 \@sep add}
+    {@@x \@lw sub @@y0 \@sep sub} }%
+  \pnode(! 0 \POE@dict{@@y0}){\oenodeCenter{}}
 }%
 %    \end{macrocode}
 % \end{macro}
 %
+% \begin{macro}{\POE@coupler@ref}
+%    \begin{macrocode}
+\def\POE@coupler@ref{%
+  \POE@Verb{%
+    /@@y0
+    \ifx\POE@key@align\POE@str@top
+      \POE@key@couplersep\space -0.5 mul
+    \else\ifx\POE@key@align\POE@str@bottom
+      \POE@key@couplersep\space 0.5 mul
+    \else
+      0
+    \fi\fi
+    def
+    /@@x \POE@key@couplersize
+      \ifx\POE@key@couplertype\POE@str@couplertype@none 
+        0.5 mul
+      \fi
+      def
+    \ifx\POE@key@couplertype\POE@str@couplertype@none
+      /@@y \POE@key@couplersep\space 0.5 mul def
+    \else
+      \ifx\POE@key@couplertype\POE@str@couplertype@crossswitch
+        /@@y \POE@key@couplersize\space def
+      \else
+        /@@y \POE@key@couplersize\space 0.4 mul def
+      \fi
+    \fi
+  }%
+}%
+%    \end{macrocode}
+% \end{macro}
+% 
+%    \begin{macrocode}
+\let\optcoupler@ref\POE@coupler@ref
+\def\wdmcoupler@ref{%
+  \POE@coupler@ref
+  \ifx\POE@key@couplertype\POE@str@couplertype@none
+    \ifx\POE@key@align\POE@str@center
+      \POE@Verb{/@@y 0 def }%
+    \fi
+  \fi
+}%
+\let\wdmsplitter@ref\wdmcoupler@ref
+%    \end{macrocode}
+%
 % \begin{macro}{\optcoupler@comp}
 %    \begin{macrocode}
 \def\optcoupler@comp{%
-  \edef\@sz{\POE@key@couplersize\space}%
-  \edef\@sep{\POE@key@couplersep\space 0.5 mul }%
-  \ifx\POE@key@align\POE@str@top
-    \def\@yshift{\@sep neg }%
-  \else\ifx\POE@key@align\POE@str@bottom
-    \def\@yshift{\@sep\space}%
-  \else
-    \def\@yshift{0 }%
-  \fi\fi
   \ifx\POE@key@couplertype\POE@str@couplertype@none
     \psline[style=Fiber](\oenode{1}{})(\oenode{3}{})
     \psline[style=Fiber](\oenode{2}{})(\oenode{N}{})
+  \fi
+  \POE@coupler@comp
+}%
+%    \end{macrocode}
+% \end{macro}
+% 
+% \begin{macro}{\POE@coupler@comp}
+%    \begin{macrocode}
+\def\POE@coupler@comp{%
+  \edef\@sz{\POE@key@couplersize\space}%
+  \ifx\POE@key@couplertype\POE@str@couplertype@none
   \else\ifx\POE@key@couplertype\POE@str@couplertype@elliptic
-    \psellipse[dimen=outer](!0 \@yshift)(! \@sz \@sz 0.4 mul)
-  \else\ifx\POE@key@couplertype\POE@str@couplertype@rectangular
-    \psframe[dimen=outer](!\@sz neg \@yshift \@sz 0.4 mul sub )%
-                         (!\@sz \@yshift \@sz 0.4 mul add)
-  \else\ifx\POE@key@couplertype\POE@str@couplertype@crossswitch
-    \psframe[dimen=outer](!\@sz neg \@yshift \@sz sub )%
-                         (!\@sz \@yshift \@sz add)
-    \edef\@sz{\POE@key@couplersize\space 0.5 mul }
-    \psline(! \@sz neg dup)(! \@sz dup)
-    \psline(! \@sz neg \@sz)(! \@sz dup neg)
-  \fi\fi\fi\fi
+    \psellipse[dimen=outer](!0 \POE@dict{@@y0})(! \POE@dict{@@x @@y})
+  \else
+    \psframe[dimen=outer](!\POE@dict{@@x neg @@y0 @@y sub})%
+                         (!\POE@dict{@@x @@y0 @@y add})%
+    \ifx\POE@key@couplertype\POE@str@couplertype@crossswitch
+      \psline(! \POE@dict{@@x -0.5 mul @@y0 @@y 0.5 mul sub})%
+             (! \POE@dict{@@x 0.5 mul @@y0 @@y 0.5 mul add})%
+      \psline(! \POE@dict{@@x -0.5 mul @@y0 @@y 0.5 mul add})%
+             (! \POE@dict{@@x 0.5 mul @@y0 @@y 0.5 mul sub})%
+    \fi
+  \fi\fi
   \ifx\POE@key@couplertype\POE@str@couplertype@crossswitch\else
     \ifPOE@variable
       \def\@arrowshift{ \psk@arrowlength\space \psk@arrowsize\space CLW mul add mul \pst@number\psyunit\space div }%
       \psline[style=VariableCoupler]%
-        (!\@sz -0.5 mul \@sz -0.8 mul \@yshift add)%
-        (!\@sz 0.5 mul \@sz 0.5 mul \@yshift add \@arrowshift add)
+        (!\@sz -0.5 mul \@sz -0.8 mul \POE@dict{@@y0} add)%
+        (!\@sz 0.5 mul \@sz 0.5 mul \POE@dict{@@y0} add \@arrowshift add)
     \fi
   \fi
 }%
@@ -11214,32 +11252,22 @@
 % \begin{macro}{\wdmcoupler@nodes}
 %    \begin{macrocode}
 \def\wdmcoupler@nodes{%
-  \edef\@sz{\POE@key@couplersize\space}%
   \edef\@sep{\POE@key@couplersep\space 0.5 mul }%
   \ifx\POE@key@couplertype\POE@str@couplertype@none
     \ifx\POE@key@align\POE@str@center
       \edef\@sep{0 }%
     \fi
   \fi
-  \ifx\POE@key@align\POE@str@top
-    \def\@yshift{\@sep neg }%
-  \else\ifx\POE@key@align\POE@str@bottom
-    \def\@yshift{\@sep }%
+  \ifx\POE@key@couplertype\POE@str@couplertype@elliptic
+    \def\@lw{\getCLW 0.3 mul }%
   \else
-    \def\@yshift{0 }%
-  \fi\fi
-  \ifx\POE@key@couplertype\POE@str@couplertype@none
-    \newOptexpFiberComp{%
-      {\@sz -0.5 mul \@yshift \@sep add}
-      {\@sz -0.5 mul \@yshift \@sep sub}
-      {\@sz 0.5 mul 0}}%
-  \else
-    \newOptexpFiberComp{%
-      {\@sz neg \getCLW 0.3 mul add \@yshift \@sep add}
-      {\@sz neg \getCLW 0.3 mul add \@yshift \@sep sub}
-      {\@sz \getCLW 0.3 mul sub 0}}%
+    \def\@lw{0 }%
   \fi
-  \pnode(! 0 \@yshift){\oenodeCenter{}}
+  \newOptexpFiberComp{%
+    {@@x neg \@lw add @@y0 \@sep add}
+    {@@x neg \@lw add  @@y0 \@sep sub}
+    {@@x  \@lw sub 0}}%
+  \pnode(! 0 \POE@dict{@@y0}){\oenodeCenter{}}
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -11247,26 +11275,7 @@
 % \begin{macro}{\wdmcoupler@comp}
 %    \begin{macrocode}
 \def\wdmcoupler@comp{%
-  \edef\@sz{\POE@key@couplersize\space}%
-  \edef\@sep{\POE@key@couplersep\space 0.5 mul }%
   \ifx\POE@key@couplertype\POE@str@couplertype@none
-    \ifx\POE@key@align\POE@str@center
-      \edef\@sep{0 }%
-    \fi
-  \fi
-  \ifx\POE@key@align\POE@str@top
-    \def\@yshift{\@sep neg }%
-  \else\ifx\POE@key@align\POE@str@bottom
-    \def\@yshift{\@sep\space}%
-  \else
-    \def\@yshift{0 }%
-  \fi\fi
-  \ifx\POE@key@couplertype\POE@str@couplertype@elliptic
-    \psellipse[dimen=outer](!0 \@yshift)(! \@sz \@sz 0.4 mul)
-  \else\ifx\POE@key@couplertype\POE@str@couplertype@rectangular
-    \psframe[dimen=outer](!\@sz neg \@yshift \@sz 0.4 mul sub )%
-                         (!\@sz \@yshift \@sz 0.4 mul add)
-  \else\ifx\POE@key@couplertype\POE@str@couplertype@none
     \ifx\POE@key@align\POE@str@top
       \psline[style=Fiber](\oenode{1}{})(\oenodeOut{})
       \psline[style=Fiber]%
@@ -11276,11 +11285,12 @@
       \psline[style=Fiber](\oenode{2}{})(\oenodeOut{})
       \ifx\POE@key@align\POE@str@bottom
         \psline[style=Fiber]%
-          (!/N@\oenodeIn{} \POE@dict{@GetCenter} 
-            \tx@UserCoor \POE@key@couplersep\space sub)(\oenode{1}{})
+          (!/N@\oenodeOut{} \POE@dict{@GetCenter} 
+            \tx@UserCoor \POE@key@couplersep\space add)(\oenode{1}{})
       \fi
     \fi
-  \fi\fi\fi
+  \fi
+  \POE@coupler@comp
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -11289,32 +11299,22 @@
 % \begin{macro}{\wdmsplitter@nodes}
 %    \begin{macrocode}
 \def\wdmsplitter@nodes{%
-  \edef\@sz{\POE@key@couplersize\space}%
   \edef\@sep{\POE@key@couplersep\space 0.5 mul }%
   \ifx\POE@key@couplertype\POE@str@couplertype@none
     \ifx\POE@key@align\POE@str@center
       \edef\@sep{0 }%
     \fi
   \fi
-  \ifx\POE@key@align\POE@str@top
-    \def\@yshift{\@sep neg }%
-  \else\ifx\POE@key@align\POE@str@bottom
-    \def\@yshift{\@sep }%
+  \ifx\POE@key@couplertype\POE@str@couplertype@elliptic
+    \def\@lw{\getCLW 0.3 mul }%
   \else
-    \def\@yshift{0 }%
-  \fi\fi
-  \ifx\POE@key@couplertype\POE@str@couplertype@none
-    \newOptexpFiberComp{%
-      {\@sz -0.5 mul 0}
-      {\@sz 0.5 mul \@yshift \@sep add}
-      {\@sz 0.5 mul \@yshift \@sep sub}}
-  \else
-    \newOptexpFiberComp{%
-      {\@sz neg \getCLW 0.3 mul add 0}
-      {\@sz \getCLW 0.3 mul sub \@yshift \@sep add}
-      {\@sz \getCLW 0.3 mul sub \@yshift \@sep sub} }
+    \def\@lw{0 }%
   \fi
-  \pnode(! 0 \@yshift){\oenodeCenter{}}
+  \newOptexpFiberComp{%
+    {@@x neg \@lw add 0}
+    {@@x \@lw sub @@y0 \@sep add}
+    {@@x \@lw sub @@y0 \@sep sub}}
+  \pnode(! 0 \POE@dict{@@y0}){\oenodeCenter{}}
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -11322,26 +11322,7 @@
 % \begin{macro}{\wdmsplitter@comp}
 %    \begin{macrocode}
 \def\wdmsplitter@comp{%
-  \edef\@sz{\POE@key@couplersize\space}%
-  \edef\@sep{\POE@key@couplersep\space 0.5 mul }%
   \ifx\POE@key@couplertype\POE@str@couplertype@none
-    \ifx\POE@key@align\POE@str@center
-      \edef\@sep{0 }%
-    \fi
-  \fi
-  \ifx\POE@key@align\POE@str@top
-    \def\@yshift{\@sep neg }%
-  \else\ifx\POE@key@align\POE@str@bottom
-    \def\@yshift{\@sep\space}%
-  \else
-    \def\@yshift{0 }%
-  \fi\fi
-  \ifx\POE@key@couplertype\POE@str@couplertype@elliptic
-    \psellipse[dimen=outer](!0 \@yshift)(! \@sz \@sz 0.4 mul)
-  \else\ifx\POE@key@couplertype\POE@str@couplertype@rectangular
-    \psframe[dimen=outer](!\@sz neg \@yshift \@sz 0.4 mul sub )%
-                         (!\@sz \@yshift \@sz 0.4 mul add)
-  \else\ifx\POE@key@couplertype\POE@str@couplertype@none
     \ifx\POE@key@align\POE@str@top
       \psline[style=Fiber](\oenodeIn{})(\oenode{2}{})
       \psline[style=Fiber](! \POE@dict{/N@\oenodeIn{} @GetCenter}
@@ -11353,7 +11334,8 @@
           \tx@UserCoor \POE@key@couplersep\space sub)(\oenode{2}{})
       \fi
     \fi
-  \fi\fi\fi
+  \fi
+  \POE@coupler@comp
 }%
 %    \end{macrocode}
 % \end{macro}
