@@ -39,7 +39,7 @@
 \newlength{\POEcaptionmargin}
 \usepackage[labelfont={small, color=DOrange}, singlelinecheck=false, justification=raggedright]{caption} 
 \DeclareCaptionFormat{poe}{\setlength{\POEcaptionmargin}{\widthof{#1}+5pt}\hspace*{-\POEcaptionmargin}#1\par}
-\captionsetup{format=poe}
+\captionsetup[lstlisting]{format=poe}
 \usepackage{nicefrac}
 \usepackage{pst-func} 
 \usepackage{pst-optexp} 
@@ -3510,9 +3510,31 @@
 % \begin{ltxsyntax}
 % \xLfmultipole{optcoupler}%
 % \cmditem{optcoupler}(lefttop)(leftbottom)(righttop)(rightbottom){label}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(0,-0.4)(3,1)
+  \optcoupler(0,1)(0,0)(3,1)(3,0){optcoupler}  
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 %
 % \xLfmultipole{wdmcoupler}%
 % \cmditem{wdmcoupler}(lefttop)(leftbottom)(right){label}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(0,-0.4)(3,1)
+  \wdmcoupler(0,1)(0,0)(3,0.5){wdmcoupler}  
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 %
 % \xLfmultipole{wdmsplitter}%
 % \cmditem{wdmsplitter}(left)(righttop)(rightbottom){label}
@@ -3520,10 +3542,8 @@
 %<*ignore>
 % \fi
 \begin{LTXexample}
-\begin{pspicture}(3,4)
-  \optcoupler(0,4)(0,3)(3,4)(3,3){optcoupler}  
-  \wdmsplitter(0,2)(3,2.5)(3,1.5){wdmsplitter}
-  \wdmcoupler(0,1)(0,0)(3,0.5){wdmcoupler}
+\begin{pspicture}(0,-0.4)(3,1)
+  \wdmsplitter(0,0.5)(3,1)(3,0){wdmsplitter}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -3549,12 +3569,8 @@
 % \fi
 % 
 % \choitem[elliptic]{couplertype}{none, elliptic, rectangular, crossswitch}
-% \ifGERMAN Wählt zwischen unterschiedlichen Kopplertypen, \opt{crossswitch} ist
-% nur für \Lcs{optcoupler} verfügbar.
-% \fi
-% \ifENGLISH Select between different coupler types, \opt{crossswitch} is
-% available for \Lcs{optcoupler} only.
-% \fi
+% \ifGERMAN Wählt zwischen unterschiedlichen Kopplertypen.\fi
+% \ifENGLISH Select between different coupler types.\fi
 % \iffalse
 %<*ignore>
 % \fi
@@ -3591,7 +3607,31 @@
 % \iffalse
 %</ignore>
 % \fi
+% 
+% \boolitem*[true]{variable}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[morekeywords={[21]{couplersep}}]
+\begin{pspicture}(3,1.5)
+  \optcoupler[variable]%
+               (0,1.5)(0,0.5)(3,1.5)(3,0.5){coupler}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % \end{optionlist}
+%
+% \begin{stylelist}
+% \styleitem{VariableCoupler}%
+% \ifGERMAN
+%   Der Stil des Pfeiles des verstellbaren Kopplers.
+% \fi
+% \ifENGLISH
+% The style of the arrow of the variable coupler.
+% \fi
+% \end{stylelist}
 % 
 % \ifGERMAN\subsection{Eingangs- und Ausgangsknoten}\fi
 % \ifENGLISH\subsection{Input and output nodes}\fi
@@ -4561,127 +4601,91 @@
 % \ifENGLISH\section{Accessing components}\fi\label{sec:accessobj}
 % 
 % All macros for connections can take either \nxLPack{pst-optexp} component
-% identifier or PSTricks nodes as arguments, which are denoted with \prm{obj$_1$},
+% identifier (see \prettyref{sec:namingobj}) or PSTricks nodes as arguments, which are denoted with \prm{obj$_1$},
 % \prm{obj$_2$}, \ldots \prm{obj$_N$}. To distinguish between nodes and
 % components, the nodes must be enclosed in parenthesis within the brackets.
 %
-% For more information about component identifiers see
-% \prettyref{sec:namingobj}, the following two examples summarize the basic
-% statements:
+% \begin{enumerate}
+% \item 
+% \ifGERMAN Auf alle Komponenten kann unter Verwendung der zugewiesenen Nummer zugegriffen werden. \fi
+% \ifENGLISH All components can be accessed via their automatic number.\fi
 % \iffalse
 %<*ignore>
 % \fi
-\ifGERMAN
 \begin{LTXexample}
 \begin{pspicture}(3,1.5)
   \pnode(0,1){A}\pnode(1.5,1){B}
   \optbox[endbox, labeloffset=0](A)(B){1}
-  % Verbinde eine Komponente unter Verwendung der Nummer
   \drawbeam{(A)}{1}
 \end{pspicture}
 \end{LTXexample}
-
+% \iffalse
+%</ignore>
+% \fi
+%
+% \item 
+%   \ifGERMAN Wenn eine Komponente mit \Lkeyword{compname} einen zusätzlichen
+%   Namen erhalten hat, so kann dieser anstelle der Nummer verwendet werden.\fi
+%   \ifENGLISH A component which has been assigned an identifier with
+%   \Lkeyword{compname}, can also be accessed via this instead of its number.\fi
+% \iffalse
+%<*ignore>
+% \fi
 \begin{LTXexample}
 \begin{pspicture}(3,2)
   \psset{endbox, labeloffset=0}
   \optbox[compname=obj](0,1)(1.5,1){obj}
-  % Verbinde eine Komponente unter Verwendung seines Namens
   \drawbeam{(0,1)}{obj}
 \end{pspicture}
 \end{LTXexample}
-\fi\ifENGLISH
-\begin{LTXexample}
-\begin{pspicture}(3,1.5)
-  \pnode(0,1){A}\pnode(1.5,1){B}
-  \optbox[endbox, labeloffset=0](A)(B){1}
-  % connect a component by its automatic number
-  \drawbeam{(A)}{1}
-\end{pspicture}
-\end{LTXexample}
-
-\begin{LTXexample}
-\begin{pspicture}(3,2)
-  \psset{endbox, labeloffset=0}
-  \optbox[compname=obj](0,1)(1.5,1){obj}
-  % connect a component by its compname
-  \drawbeam{(0,1)}{obj}
-\end{pspicture}
-\end{LTXexample}
-\fi
 % \iffalse
 %</ignore>
 % \fi
 % 
-% \medskip
-% If the argument is left empty, the last defined component is used.
-% 
+% \item
+% \ifGERMAN Wird das Argument leer gelassen, so kann man auf die zuletzt definierte Komponente zugreifen. \fi
+% \ifENGLISH If the argument is left empty, the last defined component is used.\fi
 % \iffalse
 %<*ignore>
 % \fi
-\ifGERMAN
 \begin{LTXexample}
 \begin{pspicture}(3,2)
   \psset{endbox, labeloffset=0}
   \optbox(0,0.5)(1.5,0.5){1}
   \optbox(0,1.5)(1.5,1.5){2}
-  % Ein leeres Argument bezieht sich auf die zuletzt definierte Komponente
   \drawbeam{(0,1)}{}
 \end{pspicture}
 \end{LTXexample}
-\fi\ifENGLISH
-\begin{LTXexample}
-\begin{pspicture}(3,2)
-  \psset{endbox, labeloffset=0}
-  \optbox(0,0.5)(1.5,0.5){1}
-  \optbox(0,1.5)(1.5,1.5){2}
-  % an empty argument refers to the last defined object
-  \drawbeam{(0,1)}{}
-\end{pspicture}
-\end{LTXexample}
-\fi
 % \iffalse
 %</ignore>
 % \fi
 %
-% Objects which have an explicit \Lkeyword{compname} can also be accessed by
-% this name or by their number.
-%
-% \iffalse
-%<*ignore>
+% \item 
+% \ifGERMAN 
+% Bei \Lcs{drawbeam} und \Lcs{drawwidebeam} können auch Zahlintervalle verwendet
+% werden. Gültige Intervallangaben sind
+% \begin{description}
+% \item[\texttt{x-y}] Von \opt{x} bis \opt{y}.
+% \item[\texttt{x-}] Von \opt{x} bis zur letzten Komponente.
+% \item[\texttt{-y}] Von der ersten Komponente bis \opt{y}.
+% \item[\texttt{-}] Alle Komponenten.
+% \end{description}
 % \fi
-\ifGERMAN
-\begin{LTXexample}
-\begin{pspicture}(3,2)
-  \psset{endbox, labeloffset=0}
-  \optbox[compname=obj](0,0.5)(1.5,0.5){obj, 1}
-  \optbox(0,1.5)(1.5,1.5){2}
-  % Benannte Komponenten werden auch nummeriert
-  \drawbeam{(0,1)}{2}
-\end{pspicture}
-\end{LTXexample}
-\fi\ifENGLISH
-\begin{LTXexample}
-\begin{pspicture}(3,2)
-  \psset{endbox, labeloffset=0}
-  \optbox[compname=obj](0,0.5)(1.5,0.5){obj, 1}
-  \optbox(0,1.5)(1.5,1.5){2}
-  % named objects are also numbered
-  \drawbeam{(0,1)}{2}
-\end{pspicture}
-\end{LTXexample}
-\fi
-% \iffalse
-%</ignore>
+% \ifENGLISH For \Lcs{drawbeam} and \Lcs{drawwidebeam} you can also specify a
+% number range. Valid range specifications are
+% \begin{description}
+% \item[\texttt{x-y}] From \opt{x} to \opt{y}.
+% \item[\texttt{x-}] From \opt{x} to the last component.
+% \item[\texttt{-y}] From the first component to \opt{y}.
+% \item[\texttt{-}] All components.
+% \end{description}
 % \fi
-%
-% This is especially useful when connecting a range of components.
-%
 % \iffalse
 %<*ignore>
 % \fi
 \begin{LTXexample}
 \begin{pspicture}(3,3)
-  \psset{endbox, optboxwidth=0.5, optboxheight=0.5, bssize=0.5}
+  \psset{endbox, optbox=0.5, bssize=0.5}
   \optbox[compname=obj](0.5,0.5)(0.5,2.5){obj, 1}
   \beamsplitter(0.5,2.5)(0.5,1)(2.5,1){2}
   \optbox(0.5,1)(2.5,1){3}
@@ -4691,7 +4695,7 @@
 % \iffalse
 %</ignore>
 % \fi
-% 
+% \end{enumerate}
 % \section{Drawing beams}\label{sec:drawbeam}
 % The package provides several ways to connect components and nodes with beams,
 % which can be either single rays or extended beams. Most parameters have the
