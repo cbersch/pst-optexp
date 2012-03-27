@@ -842,8 +842,8 @@
 %           \ifGERMAN Postscript-Kode der zu einer Zahl auswertet\fi\\
 %   int & \ifENGLISH integer number\fi\ifGERMAN Ganzzahl\fi\\ 
 %   dimen & \ifENGLISH dimension\fi\ifGERMAN Länge\fi\\
-%   psstyle & \ifENGLISH custom graphics parameter configuration defined with \Lcs{newpsstyle}\fi
-%             \ifGERMAN Benutzerdefinierte Parameterkonfiguration definiert mit \Lcs{newpsstyle}\fi\\
+%   psstyle & \ifENGLISH custom graphics parameter configuration defined with \Lcs*{newpsstyle}\fi
+%             \ifGERMAN Benutzerdefinierte Parameterkonfiguration definiert mit \Lcs*{newpsstyle}\fi\\
 %   refstring & \refstringexplanation\\ \bottomrule
 % \end{tabularx}
 % \ifGERMAN
@@ -1416,8 +1416,8 @@
 % flexibel gestalten zu können, was über das optionale Argument meistens
 % nicht möglich ist. 
 %
-% Vorhandene Stile können mit \Lcs{addtopsstyle} erweitert und mit
-% \Lcs{newpsstyle} überschrieben werden.
+% Vorhandene Stile können mit \Lcs*{addtopsstyle} erweitert und mit
+% \Lcs*{newpsstyle} überschrieben werden.
 %
 % Als Beispiel nehmen wir einen \opt{extended} Spiegel und möchten nur
 % den «extended»-Teil verändern. Hierfür wird der Stil
@@ -1430,8 +1430,8 @@
 % components. This is in general not possible with the optional
 % argument.
 %
-% Existing styles can be extended with \Lcs{addtopsstyle} and
-% overwritten with \Lcs{newpsstyle}.
+% Existing styles can be extended with \Lcs*{addtopsstyle} and
+% overwritten with \Lcs*{newpsstyle}.
 %
 % As example we consider an \opt{extended} mirror and want to change
 % only the «extended» part which is controlable with the
@@ -1470,7 +1470,7 @@
 % Verbindungen beeinflussen, die mit der Komponente zusammen gezeichnet
 % werden (\Lkeyword{beam}, \Lkeyword{fiber} usw.). Mit
 % \Lkeyword{newOptComp} und \Lkeyword{addtoOptComp} kann der Stil für
-% einzelne Komponenten oder zusammen mit \Lcs{newpsobject} im optionalen
+% einzelne Komponenten oder zusammen mit \Lcs*{newpsobject} im optionalen
 % Argument verwendet werden.
 % \fi
 % \ifENGLISH
@@ -1479,7 +1479,7 @@
 % connections that are drawn together with the component
 % (\Lkeyword{beam}, \Lkeyword{fiber} etc.). Use the key
 % \Lkeyword{newOptComp} and \Lkeyword{addtoOptComp} to change the style
-% for single components or for use with \Lcs{newpsobject} via the
+% for single components or for use with \Lcs*{newpsobject} via the
 % optional argument.
 % \fi
 % \iffalse
@@ -1727,11 +1727,11 @@
 %   \ifGERMAN 
 %   Setzt die relative Position eines Objektes zwischen seinen beiden
 %   Referenzknoten. Ist äquivalent zum \Lkeyword*{npos} Parameter von
-%   \Lcs{ncput} (eine Zahl im Intervall $[0,1]$).
+%   \Lcs*{ncput} (eine Zahl im Intervall $[0,1]$).
 %   \fi
 %   \ifENGLISH
 %   Control the relative position of an object between its two reference
-%   points. Equivalent to the \Lkeyword*{npos} parameter of \Lcs{ncput}
+%   points. Equivalent to the \Lkeyword*{npos} parameter of \Lcs*{ncput}
 %   (a number in the range $[0,1]$).
 %   \fi
 % \iffalse
@@ -5351,12 +5351,12 @@
 % \end{pspicture}
 % \ifGERMAN
 % \caption{Vererbungsdiagramm der PS-Stile für die automatischen
-%   Faserverbindungen. Sie sollten diese Stile mit \protect\Lcs{addtopsstyle}
+%   Faserverbindungen. Sie sollten diese Stile mit \protect\Lcs*{addtopsstyle}
 %   ändern um die Vererbungslinie beizubehalten.}%
 % \fi
 % \ifENGLISH
 % \caption{Inheritance diagram for the psstyles used for the automatic fiber
-%   connections. These styles should be changed with \protect\Lcs{addtopsstyle}
+%   connections. These styles should be changed with \protect\Lcs*{addtopsstyle}
 %   to preserve the inheritance.}%
 % \fi
 % \label{fig:fiberstyles}
@@ -5728,7 +5728,7 @@
 % \fi
 % \label{sec:customcomp}
 % The easiest way to define your own components is to use the
-% \Lcs{newpsobject} macro. With this you can define a new component using
+% \Lcs*{newpsobject} macro. With this you can define a new component using
 % predefined objects with a set of options. These options serve only as
 % default values and can be overridden when calling the macro. 
 % 
@@ -5901,10 +5901,10 @@
 %<*ignore>
 % \fi
 \begin{LTXexample}
-\begin{pspicture}(-2,-2)(2,2)
-  \psset{optboxwidth=0.6, optboxheight=0.5, labeloffset=0}
+\begin{pspicture}(-3,-3)(3,3)
+  \psset{optbox=0.6 0.5, labeloffset=0}
   \multido{\i=0+60,\ii=1+1}{6}{%
-    \pnode(1.75;\i){A}
+    \pnode(2.5;\i){A}
     \optbox([Xnodesep=-1]A)([Xnodesep=1]A){\ii}
   }
   \optbox[compname=ref](-1,0)(1,0){ref}
@@ -6067,14 +6067,16 @@
 %
 % \bgroup\psset{beam}
 % \noindent\showfdipoleifc{fibercollimator}\egroup
-% \begin{pspicture}(0,-0.5)(3,1.2)
-%   \pnode(0,0.7){A}\pnode(3,0.7){B}\pnode(1.5,-0.1){C}
+% \hspace{\fill}%
+% \begin{pspicture}(0,-0.5)(3,1.4)
+%   \pnode(0,1){A}\pnode(3,1){B}\pnode(1.2,-0.1){C}
 %   \optcirculator(A)(C)(B)
 %   \psdot(\oenodeIn{})\uput[-135](\oenodeIn{}){1}
-%   \psdot(\oenodeIfc{2}{})\uput[-135](\oenodeIfc{2}{}){2}
+%   \psdot(\oenodeIfc{2}{})\uput[-45](\oenodeIfc{2}{}){2}
 %   \psdot(\oenodeOut{})\uput[-45](\oenodeOut{}){N}
 %   \rput[bl](0,-0.4){\ttfamily\textbackslash optcirculator}
 % \end{pspicture}\hspace{\fill}%
+% \begin{pspicture}(3,1)\end{pspicture}%
 % \bigskip
 %
 % \noindent
@@ -6151,7 +6153,7 @@
 \optplate[abspos=6,platelinewidth=3\pslinewidth](Start)(CCD){SLM}
 \optplate[abspos=6.5,labelangle=180](Start)(CCD){PF}
 \lens[abspos=7](Start)(CCD){$L_3$}\mybox(Start)(CCD){CCD}
-\polarization[abspos=6.7](Start)(CCD)
+\polarization[abspos=6.7, polsize=0.8](Start)(CCD)
 \psset{loadbeampoints}
 \addtopsstyle{Beam}{fillstyle=solid,fillcolor=green, opacity=0.3}
 \drawwidebeam[beamwidth=0.1, stopinside]{1}{4}
