@@ -224,7 +224,7 @@
 \newenvironment*{stylelist}
   {\list{}{%
      \setlength{\labelwidth}{\marglistwidth}%
-     \setlength{\labelsep}{\marglistsep}%
+     \setlength{\labelsep}{0.5\marglistsep}%
      \setlength{\leftmargin}{0pt}%
      \renewcommand*{\makelabel}[1]{\hss\optionlistfont##1}}%
      \let\styleitem\POE@styleitem}%
@@ -249,12 +249,8 @@
   \item[{#2}]%
   \label{prm:#2}%
   \begingroup\raggedright
-  \@tempdima=\dimexpr\linewidth
-  \ifblank{#1}
-    {}
-    {\settowidth\@tempdimb{default: \ltd@textverb{#1}}%
-     \@tempdima=\dimexpr\@tempdima-\@tempdimb-4em\relax}%
-  \parbox[t]{\@tempdima}{\raggedright \prm{psstyle}}%
+  \prm{psstyle}%
+  \settowidth\@tempdimb{\prm{psstyle}}%
   \ifblank{#1}
     {}
     {\hfill default:~\ltd@textverb{#1}}
@@ -591,8 +587,8 @@
 % }
 %
 % \newcommand*{\deprecatedmsg}[2][3.0]{%
-% \ifGERMAN Dieser Parameter ist seit Version #2 veraltet, verwenden Sie stattdessen #1. \fi
-% \ifENGLISH This parameter is deprecated since versio #2, use #1 instead.\fi
+% \ifGERMAN Dieser Parameter ist seit Version #1 veraltet, verwenden Sie stattdessen #2. \fi
+% \ifENGLISH This parameter is deprecated since version #1, use #2 instead.\fi
 % }
 %
 % \makeatletter
@@ -2472,11 +2468,12 @@
 % \fi
 \begin{LTXexample}[morekeywords={[21]{doveprism}}] 
 \begin{pspicture}(4,1.5)
-  \pnode(0,1){A}\pnode(4,1){B}
-  \doveprism[doveprismsize=1.2](A)(B)
-  \drawbeam[raytrace=false, linecolor=black]{(A)}{}{(B)}
-  \drawbeam[n=1.5, linecolor=red]{(A)}{}{(B)}
-  \drawbeam[n=*sqrt(5), linecolor=green, linestyle=dashed]{(A)}{}{(B)}
+  \optplane(0,1)
+  \doveprism[doveprismsize=1.2](0,1)(4,1)
+  \optplane(4,1)
+  \drawbeam[raytrace=false, linecolor=black]{-}
+  \drawbeam[n=1.5, linecolor=red]{-}
+  \drawbeam[n=*sqrt(5), linecolor=green, linestyle=dashed]{-}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -2510,7 +2507,7 @@
 % \optitem[0.7\nxLcs{pslinewidth}]{pollinewidth}{\prm{num} or \prm{dimen}}
 %   \ifGERMAN \linewidthexplanation{des Polarisationszeichens}{Polarisationszeichen}\fi
 %   \ifENGLISH \linewidthexplanation{polarisation sign}{polarisation signs}\fi
-% \deprecatedmsg{\Lstyle{Polarization}}
+%   \deprecatedmsg{\Lstyle{Polarization}}
 %
 % \choitem[parallel]{poltype}{parallel, perp, misc, lcirc, rcirc}
 % \ifGERMAN Dieser Parameter wählt die Polarizationsart aus.\fi
@@ -2519,16 +2516,14 @@
 %<*ignore>
 % \fi
 \begin{LTXexample}[morekeywords={[21]{poltype}}] 
-\begin{pspicture}(3,5)
+\begin{pspicture}(0,-0.3)(3,4.3)
   \psset{beam}
   \begin{optexp}
-  \polarization[poltype=parallel, 
-                  abspos=0.5](0,4.5)(3,4.5)
-  \polarization[poltype=perp, abspos=1](0,3.5)(3,3.5)
-  \polarization[poltype=misc, abspos=1.5](0,2.5)(3,2.5)
-  \polarization[poltype=lcirc, abspos=2](0,1.5)(3,1.5)
-  \polarization[poltype=rcirc, 
-                  abspos=2.5](0,0.5)(3,0.5)
+  \polarization[poltype=parallel, abspos=0.5](0,4)(3,4)
+  \polarization[poltype=perp, abspos=1](0,3)(3,3)
+  \polarization[poltype=misc, abspos=1.5](0,2)(3,2)
+  \polarization[poltype=lcirc, abspos=2](0,1)(3,1)
+  \polarization[poltype=rcirc, abspos=2.5](0,0)(3,0)
   \end{optexp}
 \end{pspicture}
 \end{LTXexample}
@@ -3507,6 +3502,8 @@
 % \ifENGLISH\section{Fiber coupler}\fi
 % \label{sec:coupler}
 % 
+% \ifGERMAN \fi
+% \ifENGLISH The package provides three fiber couplers, which all share the same shapes and parameters. \fi
 % \begin{ltxsyntax}
 % \xLfmultipole{optcoupler}%
 % \cmditem{optcoupler}(lefttop)(leftbottom)(righttop)(rightbottom){label}
@@ -3568,7 +3565,7 @@
 %</ignore>
 % \fi
 % 
-% \choitem[elliptic]{couplertype}{none, elliptic, rectangular, crossswitch}
+% \choitem[ellipse]{couplertype}{none, ellipse, rectangle, crossswitch}
 % \ifGERMAN Wählt zwischen unterschiedlichen Kopplertypen.\fi
 % \ifENGLISH Select between different coupler types.\fi
 % \iffalse
@@ -3579,7 +3576,7 @@
   \psset{labeloffset=0.5}
   \optcoupler[couplertype=none]%
                 (0,4.5)(0,3.5)(3,4.5)(3,3.5)
-  \optcoupler[couplertype=rectangular]%
+  \optcoupler[couplertype=rectangle]%
                (0,3)(0,2)(3,3)(3,2)
   \optcoupler[couplertype=crossswitch]%
                (0,1.5)(0,0.5)(3,1.5)(3,0.5)
@@ -3589,33 +3586,35 @@
 %</ignore>
 % \fi
 % 
-% \choitem[center]{align}{top, bottom, center}
+% \choitem[center]{coupleralign}{top, bottom, center}
 % \ifGERMAN Die Ausrichtung des Kopplers bezüglich der Referenzknoten.\fi
 % \ifENGLISH The alignment of the coupler with respect to the reference nodes.\fi
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}[morekeywords={[21]{align}}]
+\begin{LTXexample}[morekeywords={[21]{coupleralign}}]
 \begin{pspicture}(3,3)
   \psset{labeloffset=0.4}
-  \optcoupler[align=top]%
-               (0,3)(0,2)(3,3)(3,2){Top}
-  \optcoupler[align=bottom]
-               (0,1.5)(0,0.5)(3,1.5)(3,0.5){Bottom}
+  \optcoupler[coupleralign=top]%
+               (0,3)(0,2)(3,3)(3,2){top}
+  \optcoupler[coupleralign=bottom]
+               (0,1.5)(0,0.5)(3,1.5)(3,0.5){bottom}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
 %</ignore>
 % \fi
-% 
+% \choitem[center]{align}{top, bottom, center}
+% \ifGERMAN Dieser Parameter wurde in Version 3.0 in \Lkeyword{coupleralign} umbenannt und ist seitdem veraltet. \fi
+% \ifENGLISH This parameter was renamed in version 3.0 to \Lkeyword{coupleralign} and is deprecated.\fi
+%
 % \boolitem*[true]{variable}
 % \iffalse
 %<*ignore>
 % \fi
 \begin{LTXexample}[morekeywords={[21]{couplersep}}]
-\begin{pspicture}(3,1.5)
-  \optcoupler[variable]%
-               (0,1.5)(0,0.5)(3,1.5)(3,0.5){coupler}
+\begin{pspicture}(3,1)
+  \optcoupler[variable](0,1)(0,0)(3,1)(3,0)
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -3649,7 +3648,7 @@
 % \fi
 % \begin{center}
 % \begin{pspicture}(11,2)
-% \psset{couplersize=0.5, couplertype=rectangular, couplersep=0.2}
+% \psset{couplersize=0.5, couplertype=rectangle, couplersep=0.2}
 % \wdmsplitter(0, 1.25)(3,2)(3,0.5)
 % \psdot(\oenodeIfc{1}{})\uput[90](\oenodeIfc{1}{}){1}
 % \psdot(\oenodeIfc{2}{})\uput[90](\oenodeIfc{2}{}){2}
@@ -3676,27 +3675,27 @@
 %
 % \ifGERMAN
 % Die Definition der Referenzknoten aus \prettyref{sec:refnode} ist für Koppler
-% nicht gültig und hängt von dem \Lkeyword{align} Parameter ab.
+% nicht gültig und hängt von dem \Lkeyword{coupleralign} Parameter ab.
 % \fi
 % \ifENGLISH
 % The definition of reference nodes from \prettyref{sec:refnode} is not
-% valid for couplers. Here, the nodes depend on the \Lkeyword{align} parameter.
+% valid for couplers. Here, the nodes depend on the \Lkeyword{coupleralign} parameter.
 % \fi
 % \begin{center}
 % \begin{pspicture}(12,2)
-% \psset{couplersize=0.5, couplertype=rectangular, couplersep=0.2}
+% \psset{couplersize=0.5, couplertype=rectangle, couplersep=0.2}
 % \optcoupler(0, 2)(0,0.7)(3,2)(3,0.7)
 % \psdot(\oenodeRefA{})\uput[90](\oenodeRefA{}){RefA}
 % \psdot(\oenodeRefB{})\uput[90](\oenodeRefB{}){RefB}
-% \optcoupler[align=top](4.5, 2)(4.5,0.7)(7.5,2)(7.5,0.7)
+% \optcoupler[coupleralign=top](4.5, 2)(4.5,0.7)(7.5,2)(7.5,0.7)
 % \psdot(\oenodeRefA{})\uput[-90](\oenodeRefA{}){RefA}
 % \psdot(\oenodeRefB{})\uput[-90](\oenodeRefB{}){RefB}
-% \optcoupler[align=bottom](9, 2)(9,0.7)(12,2)(12,0.7)
+% \optcoupler[coupleralign=bottom](9, 2)(9,0.7)(12,2)(12,0.7)
 % \psdot(\oenodeRefA{})\uput[90](\oenodeRefA{}){RefA}
 % \psdot(\oenodeRefB{})\uput[90](\oenodeRefB{}){RefB}
-% \rput[b](1.5,0){\opt{align=none}}
-% \rput[b](6,0){\opt{align=top}}
-% \rput[b](10.5,0){\opt{align=bottom}}
+% \rput[b](1.5,0){\opt{coupleralign=none}}
+% \rput[b](6,0){\opt{coupleralign=top}}
+% \rput[b](10.5,0){\opt{coupleralign=bottom}}
 % \end{pspicture}
 % \end{center}
 % \psset{usefiberstyle=false}
@@ -5387,7 +5386,7 @@
 \begin{LTXexample}[morekeywords={[21]{addtoFiberOut1}}]
 \begin{pspicture}(3,2)
   \newpsobject{tapcoupler}{wdmsplitter}{%
-    align=bottom, 
+    coupleralign=bottom, 
     addtoFiberOut1={arrows=->, arrowscale=1.2, arrowinset=0}
   }
   \tapcoupler(0,0.5)(3,1.5)(3,0.5){99/1}
@@ -5749,7 +5748,7 @@
 \begin{LTXexample}[morekeywords={[21]{newpsobject}}]
 \begin{pspicture}(3,1.7) 
 \newpsobject{pumpcoupler}{wdmcoupler}{%
-  align=top, addtoFiberIn2={ArrowInside=->, arrowscale=2}
+  coupleralign=top, addtoFiberIn2={ArrowInside=->, arrowscale=2}
 }
 \pumpcoupler[label=0.5 180](0,1)(0,0)(3,1){Pumpcoupler}
 \end{pspicture}
@@ -6280,12 +6279,12 @@
 \polcontrol[addtoFiberIn={arrows=|-}](PC1in)(PC1out){}
 \optfiberpolarizer[labeloffset=0.6](PC1out)(PC2in){polarizer}
 \polcontrol[addtoFiberOut={arrows=-|}](PC2in)(PC2out){}
-\wdmsplitter[labeloffset=0.3, align=bottom, addtoFiberIn={arrows=|-}, 
+\wdmsplitter[labeloffset=0.3, coupleralign=bottom, addtoFiberIn={arrows=|-}, 
              addtoFiberOut1={arrows=->}, addtoFiberOut2={arrows=-|}]%
              (CplIn)(CplOut)(CplSig){95/5}
 \wdmcoupler[addtoFiberIn1={ArrowInside=->}, addtoFiberIn2={angleA=0}, 
             addtoFiberOut={angleB=0,arrows=-|}, ncurv=0.9, 
-            align=bottom, compshift=0.8](Pump)(PC2out)(PumpSig){pump}
+            coupleralign=bottom, compshift=0.8](Pump)(PC2out)(PumpSig){pump}
 \optbox[endbox, label=0 . . relative]([offset=-0.1]Pump)(Pump){980~nm}
 \optfiber[fiberloops=2, labeloffset=0.4](CplIn)(PumpSig){Er$^+$-doped}
 \end{pspicture}
@@ -6763,8 +6762,9 @@
 \def\POE@str@filtertype@lowpass{lowpass}
 \def\POE@str@filtertype@highpass{highpass}
 \def\POE@str@couplertype@none{none}
+\def\POE@str@couplertype@ellipse{ellipse}
 \def\POE@str@couplertype@elliptic{elliptic}
-\def\POE@str@couplertype@rectangular{rectangular}
+\def\POE@str@couplertype@rectangle{rectangle}
 \def\POE@str@couplertype@crossswitch{crossswitch}
 \def\POE@str@polcontroltype@linear{linear}
 \def\POE@str@polcontroltype@triangle{triangle}
@@ -7650,16 +7650,25 @@
   \pst@checknum{#1}\POE@key@couplersep
 }
 \define@choicekey+[psset]{optexp}{couplertype}%
-  [\val\nr]{none,elliptic,crossswitch,rectangular}%
-  {\edef\POE@key@couplertype{#1}}%
+  [\val\nr]{none,elliptic,ellipse,crossswitch,rectangle}%
+  {%
+    \edef\POE@key@couplertype{#1}
+    \ifx\POE@key@couplertype\POE@str@couplertype@elliptic
+      \let\POE@key@couplertype\POE@str@couplertype@ellipse
+    \fi
+  }%
   {\PackageError{pst-optexp}{Unknown couplertype '\val'}}
 \define@key[psset]{optexp}{align}{%
-  \edef\POE@key@align{#1}%
+  \psset[optexp]{coupleralign=#1}%
 }
+\define@choicekey+[psset]{optexp}{coupleralign}%
+  [\val\nr]{top,bottom,center}%
+  {\edef\POE@key@coupleralign{#1}}%
+  {\PackageError{pst-optexp}{Unknown coupleralign '\val'}}
 \psset[optexp]{%
   couplersize=0.2,
   couplersep=0.05,
-  align=center,
+  coupleralign=center,
   couplertype=elliptic
 }%
 %    \end{macrocode}
@@ -9270,10 +9279,10 @@
 \def\optcoupler@i@(#1)(#2)(#3)(#4)#5{%
   \begin@OptexpFiberObj
     \ifPOE@backlayer
-      \ifx\POE@key@align\POE@str@top
+      \ifx\POE@key@coupleralign\POE@str@top
         \pnode(#1){\oenodeRefA{}}
         \pnode(#3){\oenodeRefB{}}
-      \else\ifx\POE@key@align\POE@str@bottom
+      \else\ifx\POE@key@coupleralign\POE@str@bottom
         \pnode(#2){\oenodeRefA{}}
         \pnode(#4){\oenodeRefB{}}
       \else
@@ -9337,9 +9346,9 @@
   \begin@OptexpFiberObj
     \ifPOE@backlayer
       \pnode(#1){\oenodeRefA{}}
-      \ifx\POE@key@align\POE@str@top
+      \ifx\POE@key@coupleralign\POE@str@top
          \pnode(#2){\oenodeRefB{}}
-      \else\ifx\POE@key@align\POE@str@bottom
+      \else\ifx\POE@key@coupleralign\POE@str@bottom
          \pnode(#3){\oenodeRefB{}}
       \else
          \pst@getcoor{#2}\POE@tempa%
@@ -9384,9 +9393,9 @@
   \begin@OptexpFiberObj
     \ifPOE@backlayer
       \pnode(#3){\oenodeRefB{}}
-      \ifx\POE@key@align\POE@str@top
+      \ifx\POE@key@coupleralign\POE@str@top
          \pnode(#1){\oenodeRefA{}}
-      \else\ifx\POE@key@align\POE@str@bottom
+      \else\ifx\POE@key@coupleralign\POE@str@bottom
          \pnode(#2){\oenodeRefA{}}
       \else
          \pst@getcoor{#1}\POE@tempa%
@@ -9875,7 +9884,7 @@
     \fi
   }%
   \@ifundefined{#1@ref}{}{\@nameuse{#1@ref}}%
-  \ifPOE@endbox%
+  \ifPOE@endbox
     \psset[optexp]{abspos={\POE@dict{ /N@\POE@refnodeA\space @GetCenter \tx@UserCoor /N@\POE@refnodeB\space @GetCenter \tx@UserCoor @ABDist @@x0 @@x add add }}}%
   \fi%
   \POE@disablepos
@@ -10531,11 +10540,13 @@
 % \begin{macro}{\optdetector@ref}
 %    \begin{macrocode}
 \def\optdetector@ref{%
-  \ifx\POE@key@dettype\POE@str@dettype@diode
-    \POE@Verb{ \POE@key@detsize\space 0.5 mul dup /@@x ED /@@y ED }%
-  \else 
-    \POE@Verb{ \POE@key@detsize\space 0.25 /@@x0 ED }%
-  \fi
+  \POE@Verb{%
+    \POE@key@detsize\space 0.5 mul dup /@@y ED 
+    \ifx\POE@key@dettype\POE@str@dettype@round
+      0.5 mul
+    \fi
+    /@@x ED 
+  }%
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -10543,11 +10554,9 @@
 % \begin{macro}{\optdetector@nodes}
 %    \begin{macrocode}
 \def\optdetector@nodes{%
+  \dipole@nodes
   \ifx\POE@key@dettype\POE@str@dettype@round
-    \newOptexpComp{{ \POE@key@detsize\space -0.25 mul 0} { 0 1 } refl {PlaneIfc} 1 }%
-    \pnode(! \POE@key@detsize\space -0.05 mul 0){\oenodeCenter{}}%
-  \else
-    \newOptexpComp{{ \POE@key@detsize\space -0.5 mul 0} { 0 1 } refl {PlaneIfc} 1 }%
+    \pnode(! \POE@dict{@@x0 @@x -0.2 mul add} 0){\oenodeCenter{}}%
   \fi
 }%
 %    \end{macrocode}
@@ -10556,30 +10565,21 @@
 % \begin{macro}{\optdetector@comp}
 %    \begin{macrocode}
 \def\optdetector@comp{%
-   \ifx\POE@key@dettype\POE@str@dettype@round
-      \begin@ClosedObj
-%    \end{macrocode}
-% I could have use pswedge but then a correction of the component size
-% depending on the current linewidth is not possible
-%    \begin{macrocode}
-         \addto@pscode{%
-           CLW 0.5 mul \POE@key@detsize\space\pst@number\psxunit mul -0.25 mul 0 
-           \POE@key@detsize\space\pst@number\psrunit mul 0.5 mul 
-           CLW sub -90 90 arc closepath }%
-      \end@ClosedObj
-   \else\ifx\POE@key@dettype\POE@str@dettype@diode
-      \edef\@sz{\POE@key@detsize\space 0.5 mul }%
-      \psframe[dimen=outer](! \@sz neg dup)(!\@sz dup)
-      \pspolygon(! \@sz -0.2 mul \@sz -0.4 mul)%
-             (! \@sz 0.6 mul \@sz -0.4 mul)%
-             (! \@sz 0.2 mul \@sz 0.4 mul)%
-      \psline(! \@sz -0.2 mul \@sz 0.4 mul \getCLWH add)%
-             (! \@sz 0.6 mul \@sz 0.4 mul \getCLWH add)
-      \psset{arrows=->, arrowinset=0, arrowscale=0.8}
-      \psline(! \@sz -0.8 mul \@sz 0.3 mul)%
-             (! \@sz -0.3 mul \@sz 0.15 mul)
-      \psline(! \@sz -0.8 mul 0)(! \@sz -0.3 mul \@sz -0.15 mul)
-   \fi\fi
+  \edef\@sz{\POE@key@detsize\space 0.5 mul }%
+  \ifx\POE@key@dettype\POE@str@dettype@round
+    \pswedge(!\POE@dict{@@x0 @@x sub @@y0}){!\@sz}{-90}{90}%
+  \else\ifx\POE@key@dettype\POE@str@dettype@diode
+    \psframe[dimen=outer](! \@sz neg dup)(!\@sz dup)%
+    \pspolygon(! \@sz -0.2 mul \@sz -0.4 mul)%
+              (! \@sz 0.6 mul \@sz -0.4 mul)%
+              (! \@sz 0.2 mul \@sz 0.4 mul)%
+    \psline(! \@sz -0.2 mul \@sz 0.4 mul \getCLWH add)%
+           (! \@sz 0.6 mul \@sz 0.4 mul \getCLWH add)
+    \psset{arrows=->, arrowinset=0, arrowscale=0.8}%
+    \psline(! \@sz -0.8 mul \@sz 0.3 mul)%
+           (! \@sz -0.3 mul \@sz 0.15 mul)%
+    \psline(! \@sz -0.8 mul 0)(! \@sz -0.3 mul \@sz -0.15 mul)%
+  \fi\fi
 \ignorespaces}%
 %    \end{macrocode}
 % \end{macro}
@@ -11151,7 +11151,7 @@
 \def\optcoupler@nodes{%
   \edef\@sz{\POE@key@couplersize\space}%
   \edef\@sep{\POE@key@couplersep\space 0.5 mul }%
-  \ifx\POE@key@couplertype\POE@str@couplertype@elliptic
+  \ifx\POE@key@couplertype\POE@str@couplertype@ellipse
     \def\@lw{\getCLW 0.3 mul }%
   \else
     \def\@lw{0 }%
@@ -11171,9 +11171,9 @@
 \def\POE@coupler@ref{%
   \POE@Verb{%
     /@@y0
-    \ifx\POE@key@align\POE@str@top
+    \ifx\POE@key@coupleralign\POE@str@top
       \POE@key@couplersep\space -0.5 mul
-    \else\ifx\POE@key@align\POE@str@bottom
+    \else\ifx\POE@key@coupleralign\POE@str@bottom
       \POE@key@couplersep\space 0.5 mul
     \else
       0
@@ -11203,7 +11203,7 @@
 \def\wdmcoupler@ref{%
   \POE@coupler@ref
   \ifx\POE@key@couplertype\POE@str@couplertype@none
-    \ifx\POE@key@align\POE@str@center
+    \ifx\POE@key@coupleralign\POE@str@center
       \POE@Verb{/@@y 0 def }%
     \fi
   \fi
@@ -11228,7 +11228,7 @@
 \def\POE@coupler@comp{%
   \edef\@sz{\POE@key@couplersize\space}%
   \ifx\POE@key@couplertype\POE@str@couplertype@none
-  \else\ifx\POE@key@couplertype\POE@str@couplertype@elliptic
+  \else\ifx\POE@key@couplertype\POE@str@couplertype@ellipse
     \psellipse[dimen=outer](!0 \POE@dict{@@y0})(! \POE@dict{@@x @@y})
   \else
     \psframe[dimen=outer](!\POE@dict{@@x neg @@y0 @@y sub})%
@@ -11244,8 +11244,8 @@
     \ifPOE@variable
       \def\@arrowshift{ \psk@arrowlength\space \psk@arrowsize\space CLW mul add mul \pst@number\psyunit\space div }%
       \psline[style=VariableCoupler]%
-        (!\@sz -0.5 mul \@sz -0.8 mul \POE@dict{@@y0} add)%
-        (!\@sz 0.5 mul \@sz 0.5 mul \POE@dict{@@y0} add \@arrowshift add)
+        (!\@sz -0.6 mul \@sz neg \POE@dict{@@y0} add)%
+        (!\@sz 0.6 mul \@sz 0.6 mul \POE@dict{@@y0} add \@arrowshift add)
     \fi
   \fi
 }%
@@ -11258,11 +11258,11 @@
 \def\wdmcoupler@nodes{%
   \edef\@sep{\POE@key@couplersep\space 0.5 mul }%
   \ifx\POE@key@couplertype\POE@str@couplertype@none
-    \ifx\POE@key@align\POE@str@center
+    \ifx\POE@key@coupleralign\POE@str@center
       \edef\@sep{0 }%
     \fi
   \fi
-  \ifx\POE@key@couplertype\POE@str@couplertype@elliptic
+  \ifx\POE@key@couplertype\POE@str@couplertype@ellipse
     \def\@lw{\getCLW 0.3 mul }%
   \else
     \def\@lw{0 }%
@@ -11280,14 +11280,14 @@
 %    \begin{macrocode}
 \def\wdmcoupler@comp{%
   \ifx\POE@key@couplertype\POE@str@couplertype@none
-    \ifx\POE@key@align\POE@str@top
+    \ifx\POE@key@coupleralign\POE@str@top
       \psline[style=Fiber](\oenode{1}{})(\oenodeOut{})
       \psline[style=Fiber]%
         (!/N@\oenodeOut{} \POE@dict{@GetCenter} 
           \tx@UserCoor \POE@key@couplersep\space sub)(\oenode{2}{})
     \else
       \psline[style=Fiber](\oenode{2}{})(\oenodeOut{})
-      \ifx\POE@key@align\POE@str@bottom
+      \ifx\POE@key@coupleralign\POE@str@bottom
         \psline[style=Fiber]%
           (!/N@\oenodeOut{} \POE@dict{@GetCenter} 
             \tx@UserCoor \POE@key@couplersep\space add)(\oenode{1}{})
@@ -11305,7 +11305,7 @@
 \def\wdmsplitter@nodes{%
   \edef\@sep{\POE@key@couplersep\space 0.5 mul }%
   \ifx\POE@key@couplertype\POE@str@couplertype@none
-    \ifx\POE@key@align\POE@str@center
+    \ifx\POE@key@coupleralign\POE@str@center
       \edef\@sep{0 }%
     \fi
   \fi
@@ -11327,13 +11327,13 @@
 %    \begin{macrocode}
 \def\wdmsplitter@comp{%
   \ifx\POE@key@couplertype\POE@str@couplertype@none
-    \ifx\POE@key@align\POE@str@top
+    \ifx\POE@key@coupleralign\POE@str@top
       \psline[style=Fiber](\oenodeIn{})(\oenode{2}{})
       \psline[style=Fiber](! \POE@dict{/N@\oenodeIn{} @GetCenter}
         \tx@UserCoor \POE@key@couplersep\space sub)(\oenode{N}{})
     \else
       \psline[style=Fiber](\oenodeIn{})(\oenode{N}{})
-      \ifx\POE@key@align\POE@str@bottom
+      \ifx\POE@key@coupleralign\POE@str@bottom
         \psline[style=Fiber](! \POE@dict{/N@\oenodeIn{} @GetCenter}
           \tx@UserCoor \POE@key@couplersep\space sub)(\oenode{2}{})
       \fi
@@ -13708,9 +13708,9 @@ tx@OptexpDict begin
 % approximately 8 digits, so in order to have an effect, the nodes must
 % be separated by $10^{-7}$ times the maximum coordinate value.
 %    \begin{macrocode}
-    8 -2 roll 2 copy abs exch abs max 2e-1 mul 3 1 roll 5 2 roll 
+    8 -2 roll 2 copy abs exch abs max 2e-7 mul 3 1 roll 5 2 roll 
     VecScale VecAdd ToVec 7 -1 roll @NewNode
-    4 2 roll 2 copy abs exch abs max -2e-1 mul 3 1 roll 5 2 roll 
+    4 2 roll 2 copy abs exch abs max -2e-7 mul 3 1 roll 5 2 roll 
     VecScale VecAdd ToVec exch @NewNode
   } {
     8 { pop } repeat
