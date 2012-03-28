@@ -55,6 +55,7 @@
   linktocpage=true} 
 \usepackage{breakurl}
 \definecolor{DOrange}{rgb}{1,.4,.2}%
+\definecolor{DDOrange}{rgb}{0.7, 0.23, 0.07}%
 \colorlet{pdflinkcolor}{DOrange}
 \colorlet{DGreen}{green!90!black}
 \usepackage{pst-tree}
@@ -92,7 +93,7 @@
   xleftmargin=1em, %
   prebreak = {\raisebox{-1ex}[\ht\strutbox]{\kern0.5ex \Large\Righttorque}},
   rulecolor=\color{black!20}, %
-  texcsstyle = [20]\color{DOrange}, %
+  texcsstyle = [20]\color{DDOrange},%!60!black},%{red!60!black}, %
   moretexcs = [20]{lens, optbox, oenode, oenodeIn, oenodeExt, oenodeOut,
     oenodeRefA, oenodeRefB, oenodeTrefA, oenodeTrefB, oenodeLabel,
     oenodeRotref, oenodeBeam, oenodeBeamUp, oenodeBeamLow,
@@ -589,6 +590,26 @@
 % \newcommand*{\deprecatedmsg}[2][3.0]{%
 % \ifGERMAN Dieser Parameter ist seit Version #1 veraltet, verwenden Sie stattdessen #2. \fi
 % \ifENGLISH This parameter is deprecated since version #1, use #2 instead.\fi
+% }
+%
+% \newcommand*{\addtostylemsg}[1]{%
+% \ifGERMAN Der vorhandene \Lstyle{#1}-Stil wird lokal um die Parameter in
+%   \prm{list} erweitert, \prm{list} muss mit geschweiften Klammern gekapselt
+%   werden.
+% \fi
+% \ifENGLISH 
+%   The \Lstyle{#1} style is extended by locally adding the
+%   parameters contained in \prm{list}. The \prm{list} must be surrounded
+%   by curly braces.
+% \fi
+% }
+% \newcommand*{\newstylemsg}[1]{%
+% \ifGERMAN Analog zu \Lkeyword{addto#1}, nur wird der
+%   \Lstyle{#1}-Stil mit denen neuen Parametern überschrieben.
+% \fi
+% \ifENGLISH Analogous to \Lkeyword{addto#1}, but an existing
+%   \Lstyle{#1} style is overwritten with the new parameter set.
+% \fi
 % }
 %
 % \makeatletter
@@ -1574,21 +1595,11 @@
 %
 % \begin{optionlist}
 % \valitem{addtoOptComp}{list} 
-% \ifGERMAN Der vorhandene \Lstyle{OptComp}-Stil wird lokal um die Parameter in
-% \prm{list} erweitert, \prm{list} muss mit geschweiften Klammern gekapselt
-% werden.
-% \fi
-% \ifENGLISH 
-% The \Lstyle{OptComp} style is extended by locally adding the
-% parameters contained in \prm{list}. The \prm{list} must be surrounded
-% by curly braces.
-%\fi
+% \addtostylemsg{OptComp}
 %
 % \valitem{newOptComp}{list}
-% \ifGERMAN Analog zu \Lkeyword{addtoOptComp}, nur wird der
-% \Lstyle{OptComp}-Stil mit denen neuen Parametern überschrieben.\fi
-% \ifENGLISH Analogous to \Lkeyword{addtoOptComp}, but an existing
-% \Lstyle{OptComp} style is overwritten with the new parameter set.\fi
+% \newstylemsg{OptComp}
+%
 % \iffalse
 %<*ignore>
 % \fi
@@ -3841,7 +3852,7 @@
 % Der Faserkollimator kann mit zwei, drei oder vier Punkten verwendet
 % werden. Bei zwei Punkten wird der Kollimator wie jeder andere Zweipol
 % zwischen \prm{in} und \prm{out} Knoten platziert. Bei drei Punkten
-% wird eine \Lcs{psbezier} Kurve gezeichnet, wobei der mittlere Punkt
+% wird eine \Lcs*{psbezier} Kurve gezeichnet, wobei der mittlere Punkt
 % doppelt verwendet wird. Die Positionierungsparameter (see
 % \prettyref{sec:positioning}) können verwendet werden um den Kollimator
 % zwischen dem \prm{in} und \prm{A} Knoten auszurichten.
@@ -3850,7 +3861,7 @@
 % The fiber collimator can be used with two, three or four
 % points. With two points, the collimator is placed like any other
 % dipole component between \prm{in} and \prm{out} node. For three nodes,
-% the fiber is drawn as \Lcs{psbezier} curve for which the central node
+% the fiber is drawn as \Lcs*{psbezier} curve for which the central node
 % \prm{A} is used twice. Positioning parameters can be used to shift the
 % object between \prm{in} and \prm{A} nodes.
 % \fi
@@ -3868,13 +3879,13 @@
 % \medskip
 %
 % \ifGERMAN
-% Bei vier Knoten wird eine \Lcs{psbezier} Kurve mit allen vier Knoten
+% Bei vier Knoten wird eine \Lcs*{psbezier} Kurve mit allen vier Knoten
 % gezeichnet. Die Positionierungsparameter (see
 % \prettyref{sec:positioning}) können verwendet werden um den Kollimator
 % zwischen dem \prm{in} und \prm{A} Knoten auszurichten.
 % \fi
 % \ifENGLISH
-% For four nodes, the fiber is drawn as \Lcs{psbezier} curve with the
+% For four nodes, the fiber is drawn as \Lcs*{psbezier} curve with the
 % specified nodes. Positioning parameters can be used to shift the
 % object between \prm{in} and \prm{A} nodes.
 % \fi
@@ -4787,6 +4798,35 @@
 % \fi
 % \end{optionlist}
 %
+% \subsection{Automatic connection}
+% \begin{optionlist}
+% \boolitem[false]{beam}
+% \ifGERMAN Kann als Option für jede Komponente verwendet werden, ist äquivalent zu\fi
+% \ifENGLISH Can be used as option for every component, is equivalent to the statement\fi
+% \begin{lstlisting}[gobble=2]
+% \drawbeam[raytrace=false]{(\oenodeRefA{})}{}{(\oenodeRefB{})}
+% \end{lstlisting}
+% \ifENGLISH which draws a beam from one reference node via the component to the
+% other reference node.\fi 
+% \ifGERMAN womit ein Strahl vom ersten Referenzknoten über die Komponente zum
+% zweiten Referenzknoten gezeichnet wird.\fi
+%
+% \valitem{conn}{string}
+% \ifGERMAN Diese Option wird nur aus Kompatibilitätsgründen noch bereitgestellt
+% und wird aus zukünftigen Versionen entfernt.\fi
+% \ifENGLISH This option is maintained for backward compatibility only and will be removed in future versions.\fi
+% \end{optionlist}
+%
+% \subsection{Beam appearance}
+%
+% \begin{stylelist}
+% \styleitem{Beam}
+% \end{stylelist}
+%
+% \begin{optionlist}
+%   \valitem{addtoBeam}{list} \addtostylemsg{Beam}
+%   \valitem{newBeam}{list} \newstylemsg{Beam}
+% \end{optionlist}
 %
 % \subsection{Refractive index}\label{sec:n}
 %
@@ -4990,7 +5030,36 @@
 % \fi
 % 
 % \choitem[relative]{beamalign}{relative, absolute}
+% \ifGERMAN
+% \fi
+% \ifENGLISH
+% Select whether the \Lkeyword{beamangle} is relative to the connection between
+% the first two components, or if it is an absolute angle.
 %
+% A typical situation where an absolute angle is helpful is with rotated
+% components. By rotating a component, also its interface nodes (see
+% \prettyref{sec:ifcnode}) are rotated, which are used to determine the input
+% angle for relative alignment. Accordingly, in the following example, the green
+% beam with the relative alignment is not horizontal.
+% \fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[morekeywords = {[21]{beamalign, angle}}]
+\begin{pspicture}(3,1.5)
+  \pnode(0,0.75){A}\pnode(3,0.75){B}
+  \optbox[angle=10, showifcnodes](A)(B)
+  \drawbeam{(A)}{}{(B)}
+  \drawbeam[linecolor=red, beamalign=absolute]{(A)}{}{(B)}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
+% \subsection{Internal beam path}
+%
+% 
 % \boolitem[true]{beaminside}
 % \ifGERMAN
 % Zeichne den Strahlengang innerhalb aller Komponenten mit Ausnahme der
@@ -5081,21 +5150,6 @@
 % Draw the internal beams in all components except for the first and last one.
 % \fi
 %
-% \boolitem[false]{beam}
-% \ifGERMAN Kann als Option für jede Komponente verwendet werden, ist äquivalent zu\fi
-% \ifENGLISH Can be used as option for every component, is equivalent to the statement\fi
-% \begin{lstlisting}[gobble=2]
-% \drawbeam[raytrace=false]{(\oenodeRefA{})}{}{(\oenodeRefB{})}
-% \end{lstlisting}
-% \ifENGLISH which draws a beam from one reference node via the component to the
-% other reference node.\fi 
-% \ifGERMAN womit ein Strahl vom ersten Referenzknoten über die Komponente zum
-% zweiten Referenzknoten gezeichnet wird.\fi
-%
-% \valitem{conn}{string}
-% \ifGERMAN Diese Option wird nur aus Kompatibilitätsgründen noch bereitgestellt
-% und wird aus zukünftigen Versionen entfernt.\fi
-% \ifENGLISH This option is maintained for backward compatibility only and will be removed in future versions.\fi
 % \end{optionlist}
 % \begin{ltxsyntax}
 %   \xLcs{optplane}\cmditem{optplane}(center)
@@ -5316,7 +5370,7 @@
 % \subsection{Automatic fiber connections}\label{sec:drawfiber-auto}
 %
 % All fiber-optical components described in \prettyref{chap:fibercomp} are
-% connected automatically to their reference nodes with \Lcs{pccurve}. The
+% connected automatically to their reference nodes with \Lcs*{pccurve}. The
 % styles of the fiber connections can be configured independently by the
 % styles shown in \prettyref{fig:fiberstyles}.
 %
@@ -5796,7 +5850,7 @@
 % simplest case you only have to define the actual drawing of the component
 % outline.
 %
-% The macro \Lcs{newOptexpDipoleNolabel} is superfluous because since version
+% The macro \Lcs*{newOptexpDipoleNolabel} is superfluous because since version
 % 3.0 the label is optional for all components.
 %
 % The actual process of creating a new component is split up in different parts,
@@ -6798,7 +6852,7 @@
   \addtopsstyle{OptComp}{#1}%
 }
 \newpsstyle{OptionalStyle}{linestyle=dashed,dash=1.5pt 1pt}%
-\newpsstyle{IfcNodeStyle}{linecolor=blue}%
+\newpsstyle{IfcNodeStyle}{dotstyle=x, dotscale=1.5, linecolor=blue}%
 \newpsstyle{Beam}{linecolor=green!90!black,
                   linewidth=\pslinewidth, linejoin=1}%
 \define@key[psset]{optexp}{newBeam}{%
@@ -9096,6 +9150,16 @@
 \def\newOptexpDipole{%
   \@ifnextchar[%]
     {\POE@newdipole}{\POE@newdipole[]}%
+}%
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\newOptexpDipoleNolabel}
+%    \begin{macrocode}
+\def\newOptexpDipoleNolabel{%
+  \PackageWarning{pst-optexp}{%
+    \string\newOptexpDipoleNolabel\space is deprecated,\MessageBreak
+    use \string\newOptexpDipole\space instead.}%
+  \newOptexpDipole
 }%
 %    \end{macrocode}
 % \end{macro}
