@@ -3661,13 +3661,13 @@
 % \begin{pspicture}(11,2)
 % \psset{couplersize=0.5, couplertype=rectangle, couplersep=0.2}
 % \wdmsplitter(0, 1.25)(3,2)(3,0.5)
-% \psdot(\oenodeIfc{1}{})\uput[90](\oenodeIfc{1}{}){1}
+% \psdot(\oenodeIfc{1}{})\uput[120](\oenodeIfc{1}{}){1}
 % \psdot(\oenodeIfc{2}{})\uput[90](\oenodeIfc{2}{}){2}
 % \psdot(\oenodeIfc{N}{})\uput[-90](\oenodeIfc{N}{}){N}
 % \wdmcoupler(4, 2)(4,0.5)(7,1.25)
 % \psdot(\oenodeIfc{1}{})\uput[90](\oenodeIfc{1}{}){1}
 % \psdot(\oenodeIfc{2}{})\uput[-90](\oenodeIfc{2}{}){2}
-% \psdot(\oenodeIfc{N}{})\uput[90](\oenodeIfc{N}{}){N}
+% \psdot(\oenodeIfc{N}{})\uput[60](\oenodeIfc{N}{}){N}
 % \optcoupler(8,2)(8,0.5)(11,2)(11,0.5)
 % \psdot(\oenodeIfc{1}{})\uput[90](\oenodeIfc{1}{}){1}
 % \psdot(\oenodeIfc{2}{})\uput[-90](\oenodeIfc{2}{}){2}
@@ -4842,6 +4842,7 @@
 % \ifENGLISH Sets the relative refractive index respect to the background. This
 % parameter has two scopes, you can either set the refractive index of each
 % component or of each beam ray: 
+% \end{optionlist}
 % \begin{enumerate}
 % \item Using \Lkeyword{n} as global parameter or as argument of a component,
 %   sets a fixed refractive index for each affected components, without further
@@ -4854,7 +4855,13 @@
 %   \Lkeyword{n} affect only the components and not the beams.
 % \end{enumerate}
 % \fi
+% \ifGERMAN
 % \end{optionlist}
+% \begin{enuemrate}
+% \item
+% \item
+% \end{enumerate}
+% \fi
 % The \prm{code} can in general be any Postscript code which evaluates to a
 % number, e.g. \opt{1.5}, or \opt{5 sqrt}. If the \prm{code} starts with a
 % \opt{*}, it will be interpreted as an algebraic
@@ -4908,7 +4915,8 @@
 %</ignore>
 % \fi
 %
-% \item Now, one beam adds \opt{0.5} to the actual refractive index of the component.
+% \item Now, the red beam uses the default refractive index of the component,
+%   the yellow beam adds \opt{0.5} to the default index.
 % \iffalse
 %<*ignore>
 % \fi
@@ -6773,6 +6781,8 @@
 \newif\ifPOE@beaminsidelast
 \newif\ifPOE@savebeampoints
 \newif\ifPOE@loadbeampoints
+\newif\ifPOE@savebeam
+\newif\ifPOE@loadbeam
 \newif\ifPOE@beaminside
 \newif\ifPOE@raytrace
 \newif\ifPOE@globalnoderef
@@ -7272,8 +7282,8 @@
   \pst@divide{\POE@key@lampscale pt}{0.3pt}{\POE@key@lampscale}
   \addtopsstyle{CrystalLamp}{unit=\POE@key@lampscale}
   \PackageWarning{pst-optexp}{%
-    Parameter lampscale is deprecated, \MessageBreak
-    use style CrystalLamp.}%
+    Parameter 'lampscale' is deprecated, \MessageBreak
+    use style 'CrystalLamp'.}%
 }
 \psset[optexp]{%
   crystalwidth=1.4,
@@ -7337,7 +7347,7 @@
 }
 \define@choicekey*+[psset]{optexp}{dettype}[\val\nr]{round,diode}%
    {\edef\POE@key@dettype{\val}}
-   {\PackageError{pst-optexp}{Unknown dettype '\val'}}
+   {\PackageError{pst-optexp}{Unknown value '\val' for dettype.}}
 \psset[optexp]{%
   detsize=0.8,
   dettype=round
@@ -7351,8 +7361,8 @@
 \define@key[psset]{optexp}{pollinewidth}{%
   \edef\POE@key@pollinewidth{#1}%
   \PackageWarning{pst-optexp}{%
-    Parameter pollinewidth is deprecated, \MessageBreak
-    use style Polarization.}%
+    Parameter 'pollinewidth' is deprecated, \MessageBreak
+    use style 'Polarization'.}%
 }%
 %    \end{macrocode}
 % This is defined manually, to avoid printing the warning inside the key definition above.
@@ -7365,7 +7375,7 @@
 \define@choicekey+[psset]{optexp}{poltype}%
   [\val\nr]{parallel,misc,perp,rcirc,lcirc}%
   {\edef\POE@key@poltype{#1}}
-  {\PackageError{pst-optexp}{Unknown poltype '\val'}%
+  {\PackageError{pst-optexp}{Unknown value '\val' for poltype.}%
 }
 \psset[optexp]{%
   poltype=parallel,
@@ -7433,39 +7443,39 @@
 \define@key[psset]{optexp}{optgridcount}{%
   \pst@checknum{#1}\POE@key@gratingcount
   \PackageWarning{pst-optexp}{%
-    Parameter optgridcount is deprecated,\MessageBreak
-    use gratingcount instead.}%
+    Parameter 'optgridcount' is deprecated,\MessageBreak
+    use 'gratingcount' instead.}%
 }%
 \define@key[psset]{optexp}{optgridwidth}{%
   \pst@checknum{#1}\POE@key@gratingwidth
   \PackageWarning{pst-optexp}{%
-    Parameter optgridwidth is deprecated,\MessageBreak
-    use gratingwidth instead.}%
+    Parameter 'optgridwidth' is deprecated,\MessageBreak
+    use 'gratingwidth' instead.}%
 }%
 \define@key[psset]{optexp}{optgridheight}{%
   \pst@checknum{#1}\POE@key@gratingheight
   \PackageWarning{pst-optexp}{%
-    Parameter optgridheight is deprecated,\MessageBreak
-    use gratingheight instead.}%
+    Parameter 'optgridheight' is deprecated,\MessageBreak
+    use 'gratingheight' instead.}%
 }%
 \define@choicekey*[psset]{optexp}{optgridtype}%
   [\val\nr]{binary,blazed}{%
   \edef\POE@key@gratingtype{#1}%
   \PackageWarning{pst-optexp}{%
-    Parameter optgridtype is deprecated,\MessageBreak
-    use gratingtype instead.}%
+    Parameter 'optgridtype' is deprecated,\MessageBreak
+    use 'gratingtype' instead.}%
 }%
 \define@key[psset]{optexp}{optgriddepth}{%
   \pst@checknum{#1}\POE@key@gratingdepth
   \PackageWarning{pst-optexp}{%
-    Parameter optgriddepth is deprecated,\MessageBreak
-    use gratingdepth instead.}%
+    Parameter 'optgriddepth' is deprecated,\MessageBreak
+    use 'gratingdepth' instead.}%
 }%
 \define@key[psset]{optexp}{optgridlinewidth}{%
   \edef\POE@key@gratinglinewidth{#1}%
   \PackageWarning{pst-optexp}{%
-    Parameter optgridlinewidth is deprecated,\MessageBreak
-    use gratinglinewidth instead.}%
+    Parameter 'optgridlinewidth' is deprecated,\MessageBreak
+    use 'gratinglinewidth' instead.}%
 }%
 %    \end{macrocode}
 % These are the new grating parameters.
@@ -7557,7 +7567,7 @@
 \define@choicekey+[psset]{optexp}{filtertype}[\val\nr]%
    {bandstop,bandpass,lowpass,highpass}%
    {\def\POE@key@filtertype{#1}}%
-   {\PackageError{pst-optexp}{Unknown filtertype '\val'}}
+   {\PackageError{pst-optexp}{Unknown value '\val' for filtertype}}
 \newpsstyle{FilterInt}{}
 \psset[optexp]{%
   filtersize=0.8,
@@ -7614,7 +7624,7 @@
 \define@choicekey+[psset]{optexp}{switchstyle}%
   [\val\nr]{opened,closed}%
   {\edef\POE@key@switchstyle{#1}}%
-  {\PackageError{pst-optexp}{Unknown switchstyle '\val'}}
+  {\PackageError{pst-optexp}{Unknown value '\val' for switchstyle.}}
 \psset[optexp]{%
   switchsize=0.8,
   switchstyle=opened
@@ -7713,14 +7723,17 @@
       \let\POE@key@couplertype\POE@str@couplertype@ellipse
     \fi
   }%
-  {\PackageError{pst-optexp}{Unknown couplertype '\val'}}
+  {\PackageError{pst-optexp}{Unknown value '\val' for couplertype.}}
 \define@key[psset]{optexp}{align}{%
   \psset[optexp]{coupleralign=#1}%
+  \PackageWarning{pst-optexp}{%
+    Parameter 'align' is deprecated,\MessageBreak
+    use 'coupleralign' instead.}%
 }
 \define@choicekey+[psset]{optexp}{coupleralign}%
   [\val\nr]{top,bottom,center}%
   {\edef\POE@key@coupleralign{#1}}%
-  {\PackageError{pst-optexp}{Unknown coupleralign '\val'}}
+  {\PackageError{pst-optexp}{Unknown value '\val' for coupleralign.}}
 \psset[optexp]{%
   couplersize=0.2,
   couplersep=0.05,
@@ -7773,6 +7786,8 @@
 \define@boolkey[psset]{optexp}[POE@]{beaminsidelast}[true]{}%
 \define@boolkey[psset]{optexp}[POE@]{savebeampoints}[true]{}%
 \define@boolkey[psset]{optexp}[POE@]{loadbeampoints}[true]{}%
+\define@boolkey[psset]{optexp}[POE@]{savebeam}[true]{}%
+\define@boolkey[psset]{optexp}[POE@]{loadbeam}[true]{}%
 \define@boolkey[psset]{optexp}[POE@]{beaminside}[true]{}%
 \define@boolkey[psset]{optexp}[POE@]{allowbeaminside}[true]{}%
 \define@boolkey[psset]{optexp}[POE@]{raytrace}[true]{}%
@@ -7782,7 +7797,7 @@
 \define@choicekey+[psset]{optexp}{beamalign}%
   [\val\nr]{relative,absolute}%
   {\edef\POE@key@beamalign{#1}}%
-  {\PackageError{pst-optexp}{Unknown beamalign '\val'}}
+  {\PackageError{pst-optexp}{Unknown value '\val' for beamalign.}}
 \psset[optexp]{%
   raytrace=true
   ,startinside=false
@@ -7793,6 +7808,8 @@
   ,beaminsidelast=false
   ,loadbeampoints=false
   ,savebeampoints=true
+  ,loadbeam=false
+  ,savebeam=false
   ,beamangle=0
   ,beampos=\@empty
   ,beamalign=relative
@@ -7888,10 +7905,10 @@
 \define@choicekey+[psset]{optexp}{fiberalign}%
   [\val\nr]{relative,center,absolute}%
   {\edef\POE@key@fiberalign{\val}}%
-  {\PackageError{pst-optexp}{Unknown fiberalign '\val'}}%  
+  {\PackageError{pst-optexp}{Unknown value '\val' for fiberalign.}}%  
 \define@key[psset]{optexp}{fiberstyle}{%
   \@ifundefined{nc#1}%
-    {\PackageError{pst-optexp}{Unknown fiberstyle '#1'}}%
+    {\PackageError{pst-optexp}{Unknown value '#1' for fiberstyle.}}%
     {\def\POE@key@fiberstyle{#1}}}
 \psset[optexp]{%
   fiberangleA=0,
@@ -7905,10 +7922,10 @@
 \define@choicekey+[psset]{optexp}{startnode}%
   [\val\nr]{auto,1,2,3,4,N}%
   {\edef\POE@key@startnode{\val}}
-  {\PackageError{pst-optexp}{Unknown startnode '\val'}}
+  {\PackageError{pst-optexp}{Unknown startnode number '\val'}}
 \define@choicekey+[psset]{optexp}{stopnode}[\val\nr]{auto,1,2,3,4,N}%
    {\edef\POE@key@stopnode{\val}}
-   {\PackageError{pst-optexp}{Unknown stopnode '\val'}}
+   {\PackageError{pst-optexp}{Unknown stopnode number '\val'}}
 \psset[optexp]{%
   startnode=auto,
   stopnode=auto
@@ -8083,8 +8100,20 @@
   \begin@SpecialObj%
   \addto@pscode{%
      \pst@optexpdict 
-     /loadbeampoints \ifPOE@loadbeampoints true \else false \fi def
-     /savebeampoints \ifPOE@savebeampoints true \else false \fi def
+     \ifPOE@loadbeam
+       /loadbeampoints true def
+       /loadbeam true def
+     \else
+       /loadbeampoints \ifPOE@loadbeampoints true \else false \fi def
+       /loadbeam false def
+     \fi
+     \ifPOE@savebeam
+       /savebeampoints true def
+       /savebeam true def
+     \else
+       /savebeampoints \ifPOE@savebeampoints true \else false \fi def
+       /savebeam false def
+     \fi     
      /beaminsidefirst \ifPOE@beaminsidefirst true \else false \fi def
      /beaminsidelast \ifPOE@beaminsidelast true \else false \fi def
      /beaminside \ifPOE@beaminside true \else false \fi def
@@ -8324,13 +8353,18 @@
       counttomark 1 add copy 
       gsave
         /fillBeam { \psk@fillstyle } def
-        currentdict /TmpLastBeamPointLow undef 
-        currentdict /TmpLastBeamPointUp undef 
+        currentdict dup /TmpLastBeamPointLow undef /TmpLastBeamPointUp undef
+        currentdict dup /lastVecLow undef /lastVecUp undef
         loadbeampoints
         tx@NodeDict /N@\oenodeBeamLow\space known and
         tx@NodeDict /N@\oenodeBeamUp\space known and {
           /N@\oenodeBeamLow\space @GetCenter ToVec /TmpLastBeamPointLow ED
           /N@\oenodeBeamUp\space @GetCenter ToVec /TmpLastBeamPointUp ED
+        } if
+        loadbeam currentdict /lastFillVecLow known and 
+        currentdict /lastFillVecUp known and {
+          /lastFillVecLow load /lastVecLow ED
+          /lastFillVecUp load /lastVecUp ED
         } if
         FillWideBeam
       grestore pop % pop off the mark
@@ -9322,10 +9356,10 @@
         \@nameuse{#1@comp}%
       \fi
     }{%
-      \PackageWarning{pst-optexp}{%
-        Using #1@iii, please switch to the new\MessageBreak
-        interface system}%
       \ifPOE@backlayer
+        \PackageWarning{pst-optexp}{%
+          Using #1@iii, please switch to the new\MessageBreak
+          interface system.}%
         \@nameuse{#1@iii}%
       \fi
     }%
@@ -12429,7 +12463,7 @@ tx@OptexpDict begin
     counttomark 3 roll
     /CurrCenterTmp /CurrCenter load def
     /lastBeamPointTmp /Curr load def
-    /lastVec /CurrVec load def
+    /lastVecTmp /CurrVec load def
     /PrevMode Mode def
     /PrevCorrect correct def
     PN PlaneNum eq {
@@ -12503,26 +12537,32 @@ tx@OptexpDict begin
   numComp 7 add 6 roll numComp 1 add copy
   numComp 1 add 2 mul 6 add numComp 1 add roll
   numComp 1 add 3 add -3 roll
-  currentdict /lastBeamPointTmp undef
+  currentdict dup /lastBeamPointTmp undef /lastVecTmp undef
   loadbeampoints currentdict /lastBeamPointLow known and {
     /lastBeamPointLow load /lastBeamPointTmp ED
+  } if
+  loadbeam currentdict /lastVecLow known and {
+    /lastVecLow load /lastVecTmp ED
   } if
   TraceBeam
   savebeampoints 
   currentdict /lastBeamPointTmp known and {
     /lastBeamPointTmp load /lastBeamPointLow ED
-    /lastVec load /lastVecLow ED
+    /lastVecTmp load /lastVecLow ED
   } if
-  currentdict /lastBeamPointTmp undef
+  currentdict dup /lastBeamPointTmp undef /lastVecTmp undef 
   loadbeampoints currentdict /lastBeamPointUp known and {
     /lastBeamPointUp load /lastBeamPointTmp ED
+  } if
+  loadbeam currentdict /lastVecUp known and {
+    /lastVecUp load /lastVecTmp ED
   } if
   counttomark 1 add dup numComp 4 add add exch roll
   TraceBeam
   savebeampoints 
   currentdict /lastBeamPointTmp known and {
     /lastBeamPointTmp load /lastBeamPointUp ED
-    /lastVec load /lastVecUp ED
+    /lastVecTmp load /lastVecUp ED
   } if
   savebeampoints
   currentdict /lastBeamPointUp known and
@@ -12536,6 +12576,9 @@ tx@OptexpDict begin
       /lastBeamPointUp load /lastBeamPointLow load
       /lastBeamPointUp ED /lastBeamPointLow ED
     } if
+  } if
+  savebeam not {
+    currentdict dup /lastVecUp undef /lastVecLow undef
   } if
 } bind def
 %    \end{macrocode}
