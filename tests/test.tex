@@ -66,6 +66,37 @@
 \providecommand\OFF{\xdef\lst@alloverstyle##1{##1}}
 \makeatother
 \begin{document}
+\begin{pspicture}(-0.2,0)(9,5)
+\makeatletter
+\def\LCLV@iii{%
+  \newOptexpComp{ {-0.12 0} {0 1} trans {PlaneIfc}
+                  {0.15 0} {0 1} trans {PlaneIfc} \POE@key@n}%
+  \psframe[fillstyle=solid,fillcolor=black,dimen=outer](-0.12,-0.5)(0,0.5)
+  \psframe[fillstyle=solid,fillcolor=gray!50,dimen=outer](0,-0.5)(0.15,0.5)
+}%
+\makeatother
+\newOptexpDipole{LCLV}{}\psset{lens=1.2 0 1.2, n=1.72}
+\addtopsstyle{Beam}{fillstyle=solid, fillcolor=green, opacity=0.3}
+\pnode(2.4,1){BS1}\pnode([offset=3]BS1){M1}
+\pnode([Xnodesep=5.5]M1){PP}\pnode(PP|BS1){BS2}
+\begin{optexp}
+  \optbox[labeloffset=0, endbox, optboxwidth=1.6](BS1)([Xnodesep=-1]BS1){Nd:YAG}
+  \beamsplitter[compname=BS](BS2)(BS1)(M1){BS}
+  \LCLV[position=0.2, compname=LCLV](BS1)(BS2){LCLV}
+  \optretplate(BS1)(M1){P}
+  \mirror(BS1)(M1)(PP){M}
+  \lens[position=0.2](M1)(PP){L}
+  \pinhole(M1)(PP){}
+  \lens[position=0.2](PP)(M1){L}
+  \pentaprism(M1)(PP)(BS2){PP}
+  \beamsplitter(PP)(BS2)(BS1){BS}
+  \doveprism[compname=Dove, position=0.27, n=2.3](BS2)(BS1){Dove}
+  \lens[n=2.5](BS2)(BS1){L}
+  \drawwidebeam[beamwidth=0.3]{1-3}
+  \drawwidebeam[loadbeampoints]{3}{2}{4-}{3}
+\end{optexp}
+\end{pspicture}
+\end{document}
 \begin{pspicture}(3,2)
   \pnode(0,1.5){A}\pnode(2,1.5){B}\pnode(3,0.5){C}
   \optprism(A)(B)(C)
