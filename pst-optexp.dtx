@@ -4857,7 +4857,7 @@
 % \fi
 % \ifGERMAN
 % \end{optionlist}
-% \begin{enuemrate}
+% \begin{enumerate}
 % \item
 % \item
 % \end{enumerate}
@@ -6138,7 +6138,8 @@
 %   \psdot(\oenodeOut{})\uput[-45](\oenodeOut{}){N}
 %   \rput[bl](0,-0.4){\ttfamily\textbackslash optcirculator}
 % \end{pspicture}\hspace{\fill}%
-% \begin{pspicture}(3,1)\end{pspicture}%
+% \begin{pspicture}(3,1)
+% \end{pspicture}%
 % \bigskip
 %
 % \noindent
@@ -7756,17 +7757,18 @@
     use 'n' instead}%
 }%
 \define@key[psset]{optexp}{n}{%
-  \POE@psset@@n#1\@nil
+  \POE@parsealg{n}#1\@nil
 }
-\def\POE@psset@@n#1#2\@nil{%
-  \ifx#1*\relax
-    \POE@psset@@@n#2\@nil
+\def\POE@parsealg#1#2#3\@nil{%
+  \ifx#2*\relax
+    \POE@@parsealg#3\@nil
+    \expandafter\let\csname POE@key@#1\endcsname\POE@tempA
   \else
-    \edef\POE@key@n{[#1#2] }%
+    \@namedef{POE@key@#1}{[#2#3] }%
   \fi
 }
-\def\POE@psset@@@n#1#2\@nil{%
-  \edef\POE@key@n{tx@Dict begin (#1#2) AlgParser end }%
+\def\POE@@parsealg#1#2\@nil{%
+  \edef\POE@tempA{tx@Dict begin (#1#2) AlgParser end }%
 }
 \define@key[psset]{optexp}{beamangle}{%
   \edef\POE@key@beamangle{#1}%
@@ -8211,7 +8213,7 @@
 % Erase all beam-drawing code and leave only \opt{false} on the stack to 
 % indicate that no beampoints should be stored.
 %    \begin{macrocode}
-      \def\pst@code{ false }%
+      \def\pst@code{ false false }%
     \fi
   \fi
   \let\use@pscode\POE@beam@use@pscode
@@ -8268,10 +8270,17 @@
     \addto@pscode{%
       savebeampoints currentdict /lastBeamPointTmp known and dup { 
         lastBeamPointTmp /N@\oenodeBeam\space 4 -1 roll
-      } if }%
+      } if 
+      savebeam currentdict /lastVec known and dup {
+        /lastVec dup load 3 -1 roll
+      } if
+    }%
   \fi
   \end@BeamObj
-  \POE@Verb{ { \tx@NodeScale @NewNode } if }%
+  \POE@Verb{%
+    { tx@OptexpDict begin def def end } if
+    { \tx@NodeScale @NewNode } if 
+  }%
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -8397,6 +8406,13 @@
           TmpLastBeamPointUp /N@\oenodeBeamUp\space
           7 -1 roll
         } if
+        savebeam
+        currentdict /lastVecLow known and
+        currentdict /lastVecUp known and dup {
+          /lastVecLow /lastVecLow load
+          /lastVecUp /lastVecUp load
+          5 -1 roll
+        } if
       }%
     \fi
   \else
@@ -8407,11 +8423,21 @@
         lastBeamPointLow /N@\oenodeBeamLow\space
         lastBeamPointUp /N@\oenodeBeamUp\space
         7 -1 roll
-      } if 
+      } if
+      savebeam
+      currentdict /lastVecLow known and
+      currentdict /lastVecUp known and dup {
+        /lastVecLow /lastVecLow load
+        /lastVecUp /lastVecUp load
+        5 -1 roll
+      } if
     }%
   \fi
   \end@BeamObj
-  \POE@Verb{ { \tx@NodeScale @NewNode @NewNode } if }%
+  \POE@Verb{%
+    { tx@OptexpDict begin def def end } if
+    { \tx@NodeScale @NewNode @NewNode } if 
+  }%
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -12539,30 +12565,30 @@ tx@OptexpDict begin
   numComp 1 add 3 add -3 roll
   currentdict dup /lastBeamPointTmp undef /lastVecTmp undef
   loadbeampoints currentdict /lastBeamPointLow known and {
-    /lastBeamPointLow load /lastBeamPointTmp ED
+    /lastBeamPointTmp /lastBeamPointLow load def
   } if
   loadbeam currentdict /lastVecLow known and {
-    /lastVecLow load /lastVecTmp ED
+    /lastVecTmp /lastVecLow load def
   } if
   TraceBeam
   savebeampoints 
   currentdict /lastBeamPointTmp known and {
-    /lastBeamPointTmp load /lastBeamPointLow ED
-    /lastVecTmp load /lastVecLow ED
+    /lastBeamPointLow /lastBeamPointTmp load def
+    /lastVecLow /lastVecTmp load def
   } if
   currentdict dup /lastBeamPointTmp undef /lastVecTmp undef 
   loadbeampoints currentdict /lastBeamPointUp known and {
-    /lastBeamPointUp load /lastBeamPointTmp ED
+    /lastBeamPointTmp /lastBeamPointUp load def
   } if
   loadbeam currentdict /lastVecUp known and {
-    /lastVecUp load /lastVecTmp ED
+    /lastVecTmp /lastVecUp load def
   } if
   counttomark 1 add dup numComp 4 add add exch roll
   TraceBeam
   savebeampoints 
   currentdict /lastBeamPointTmp known and {
-    /lastBeamPointTmp load /lastBeamPointUp ED
-    /lastVecTmp load /lastVecUp ED
+    /lastBeamPointUp /lastBeamPointTmp load def
+    /lastVecUp /lastVecTmp load def
   } if
   savebeampoints
   currentdict /lastBeamPointUp known and
