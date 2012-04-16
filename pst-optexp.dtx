@@ -1404,7 +1404,7 @@
   \optgrating[compname=G](BS)(G)(BS)
   \lens[lens=2 2 1.5, compshift=0.1, n=2.25, compname=L](BS)(Out)
   \pinhole[phwidth=0.05, innerheight=0.05, position=0.8, compshift=0.18, compname=Ph](BS)(Out)
-  \optplane[compname=Out](Out)
+  \optplane[compname=Out, angle=90](Out)
   \addtopsstyle{Beam}{linestyle=none, beamwidth=0.2, fillstyle=solid}
   \drawwidebeam[fillcolor=red!25!white]{(In)}{Bs}{G}{Bs}{L}{Ph}
   \drawwidebeam[fillcolor=red!50!white, beamangle=-5]{G}{Bs}{L}{Ph}{Out}
@@ -4511,11 +4511,11 @@
   \lens[abspos=1](A)(B)
   \addtopsstyle{Beam}{%
     fillstyle=solid, fillcolor=green, opacity=0.3}
-  \drawwidebeam[beamwidth=0.5]{(A)}{}
+  \drawwidebeam[beamwidth=0.5, savebeam]{(A)}{}
   \psdot(\oenodeBeamUp)\psdot(\oenodeBeamLow)
   \uput[90](\oenodeBeamUp){\rput[rb](0,0){BeamUp}}
   \uput[-90](\oenodeBeamLow){\rput[rt](0,0){BeamLow}}
-  \drawwidebeam[beamwidth=0.5, skipconn=1]{(A)}{}{(B)}
+  \drawwidebeam[loadbeam, beaminsidefirst]{}{(B)}
   \psdot(\oenodeBeamUp)\psdot(\oenodeBeamLow)
   \uput[90](\oenodeBeamUp){\rput[rb](0,0){BeamUp}}
   \uput[-90](\oenodeBeamLow){\rput[rt](0,0){BeamLow}}
@@ -5357,7 +5357,6 @@
 % \fi
 %
 % \begin{optionlist}
-%   \intitem[0]{skipconn}
 %   \boolitem[false]{startinside}
 %   
 %   \boolitem[false]{stopinside}
@@ -8141,20 +8140,13 @@
   \begin@BeamObj
   \let\pst@linetype\pst@arrowtype
   \pst@addarrowdef%
-  \let\POE@strokebeam\POE@strokewidebeam
 }%
 %    \end{macrocode}
 % \end{macro}
 % 
 % \begin{macro}{\begin@SingleBeamObj}
 %    \begin{macrocode}
-\def\begin@SingleBeamObj{%
-  \addbefore@par{style=Beam}%
-  \begin@BeamObj
-  \let\pst@linetype\pst@arrowtype
-  \pst@addarrowdef%
-  \let\POE@strokebeam\POE@strokesinglebeam
-}
+\let\begin@SingleBeamObj\begin@WideBeamObj
 %    \end{macrocode}
 % \end{macro}
 % 
@@ -8205,7 +8197,7 @@
 % \begin{macro}{\end@BeamObj}
 %    \begin{macrocode}
 \def\end@BeamObj{%
-  \addto@pscode{ end}%
+  \addto@pscode{ end }%
   \let\psk@fillstyle\relax
   \ifPOE@optexpenv
     \ifPOE@frontlayer
@@ -8237,7 +8229,7 @@
 %    \begin{macrocode}
 \def\drawbeam@iii{%
   \ifx\pslinestyle\@none
-    \addto@pscode{ false }%
+    \addto@pscode{ false false }%
   \else
     \addto@pscode{%
 %    \end{macrocode}
@@ -8261,24 +8253,26 @@
      } ifelse \tx@ScreenCoor] cvx
      \POE@key@beamangle\space
      currentdict /lastBeamPointTmp undef
+     currentdict /lastVecTmp undef
      loadbeampoints tx@NodeDict /N@\oenodeBeam\space known and {
        /N@\oenodeBeam\space @GetCenter ToVec /lastBeamPointTmp ED
      } if
+     loadbeam currentdict /lastVec known and {
+       /lastVecTmp /lastVec load def
+     } if
      TraceBeam 
-   }%
-    \POE@strokebeam
-    \addto@pscode{%
+    \POE@strokesinglebeam
       savebeampoints currentdict /lastBeamPointTmp known and dup { 
         lastBeamPointTmp /N@\oenodeBeam\space 4 -1 roll
       } if 
-      savebeam currentdict /lastVec known and dup {
-        /lastVec dup load 3 -1 roll
+      savebeam currentdict /lastVecTmp known and dup {
+        /lastVec lastVecTmp 4 -1 roll
       } if
     }%
   \fi
   \end@BeamObj
   \POE@Verb{%
-    { tx@OptexpDict begin def def end } if
+    { tx@OptexpDict begin ToVec def end } if
     { \tx@NodeScale @NewNode } if 
   }%
 }%
@@ -8295,16 +8289,14 @@
 % \begin{macro}{\POE@strokesinglebeam}
 %    \begin{macrocode}
 \def\POE@strokesinglebeam{%
-  \addto@pscode{%
-    gsave 
-      Drawbeam 
-      \tx@setlinejoin
-      \pst@number\pslinewidth SLW
-      \pst@usecolor\pslinecolor
-      \tx@setStrokeTransparency
-      \@nameuse{psls@\pslinestyle}
-    grestore
-  }%
+  gsave 
+    Drawbeam 
+    \tx@setlinejoin
+    \pst@number\pslinewidth SLW
+    \pst@usecolor\pslinecolor
+    \tx@setStrokeTransparency
+    \@nameuse{psls@\pslinestyle}
+  grestore
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -8357,99 +8349,74 @@
 %    \end{macrocode}
 % stroke and/or fill
 %    \begin{macrocode}
-  \ifx\psk@fillstyle\relax\else
-    \addto@pscode{%
-      counttomark 1 add copy 
-      gsave
-        /fillBeam { \psk@fillstyle } def
-        currentdict dup /TmpLastBeamPointLow undef /TmpLastBeamPointUp undef
-        currentdict dup /lastVecLow undef /lastVecUp undef
-        loadbeampoints
-        tx@NodeDict /N@\oenodeBeamLow\space known and
-        tx@NodeDict /N@\oenodeBeamUp\space known and {
-          /N@\oenodeBeamLow\space @GetCenter ToVec /TmpLastBeamPointLow ED
-          /N@\oenodeBeamUp\space @GetCenter ToVec /TmpLastBeamPointUp ED
-        } if
-        loadbeam currentdict /lastFillVecLow known and 
-        currentdict /lastFillVecUp known and {
-          /lastFillVecLow load /lastVecLow ED
-          /lastFillVecUp load /lastVecUp ED
-        } if
-        FillWideBeam
-      grestore pop % pop off the mark
-    }%
-  \fi%
+  \addto@pscode{%
+    counttomark mark exch 2 add 1 roll
+    gsave
+      \ifx\psk@fillstyle\relax
+        currentdict /fillBeam undef
+      \else
+        /fillBeam {\psk@fillstyle} def
+      \fi
+      /strokeBeam \ifx\pslinestyle\@none false \else true \fi def
+      currentdict dup /lastBeamPointTmpLow undef /lastBeamPointTmpUp undef
+      currentdict dup /lastVecTmpLow undef /lastVecTmpUp undef
+      loadbeampoints
+      tx@NodeDict /N@\oenodeBeamLow\space known and
+      tx@NodeDict /N@\oenodeBeamUp\space known and {
+        /N@\oenodeBeamLow\space @GetCenter ToVec /lastBeamPointTmpLow ED
+        /N@\oenodeBeamUp\space @GetCenter ToVec /lastBeamPointTmpUp ED
+      } if
+      loadbeam 
+      currentdict /lastVecLow known and 
+      currentdict /lastVecUp known and {
+        /lastVecTmpLow /lastVecLow load def
+        /lastVecTmpUp /lastVecUp load def
+      } if
+      TraceAndFillWideBeam
+    grestore pop % pop off the mark
 %    \end{macrocode}
-% stroke
+% Rearrange the points so that we can use two Drawbeam calls.
+% 
 %    \begin{macrocode}
-  \ifx\pslinestyle\@none
-    \addto@pscode{ cleartomark }%
-  \else
-    \addto@pscode{%
-      currentdict /lastBeamPointUp undef
-      currentdict /lastBeamPointLow undef
-      loadbeampoints tx@NodeDict /N@\oenodeBeamLow\space known
-      tx@NodeDict /N@\oenodeBeamUp\space known and and {
-        /N@\oenodeBeamLow\space @GetCenter ToVec /lastBeamPointLow ED
-        /N@\oenodeBeamUp\space @GetCenter ToVec /lastBeamPointUp ED
-      } if
-      TraceWideBeam }%
-    \POE@strokebeam
-  \fi
-  \ifx\pslinestyle\@none
-    \ifx\psk@fillstyle\relax\else
-      \addto@pscode{%
-        savebeampoints
-        currentdict /TmpLastBeamPointLow known and
-        currentdict /TmpLastBeamPointUp known and dup {
-          TmpLastBeamPointLow /N@\oenodeBeamLow\space
-          TmpLastBeamPointUp /N@\oenodeBeamUp\space
-          7 -1 roll
-        } if
-        savebeam
-        currentdict /lastVecLow known and
-        currentdict /lastVecUp known and dup {
-          /lastVecLow /lastVecLow load
-          /lastVecUp /lastVecUp load
-          5 -1 roll
-        } if
-      }%
-    \fi
-  \else
-    \addto@pscode{%
-      savebeampoints 
-      currentdict /lastBeamPointLow known and
-      currentdict /lastBeamPointUp known and dup {
-        lastBeamPointLow /N@\oenodeBeamLow\space
-        lastBeamPointUp /N@\oenodeBeamUp\space
-        7 -1 roll
-      } if
-      savebeam
-      currentdict /lastVecLow known and
-      currentdict /lastVecUp known and dup {
-        /lastVecLow /lastVecLow load
-        /lastVecUp /lastVecUp load
-        5 -1 roll
-      } if
-    }%
-  \fi
+    counttomark 0 gt strokeBeam and {
+      counttomark dup /cnta ED /cntb ED
+      cnta 6 idiv {
+        cnta 3 roll /cnta cnta 3 sub def
+        /cntb cntb 3 sub def
+        cntb 3 roll /cntb cntb 3 sub def
+      } repeat
+      counttomark 2 idiv 1 add mark exch 1 roll
+      \POE@strokesinglebeam
+      \POE@strokesinglebeam
+    } {
+      pop % pop off the mark
+    } ifelse
+    currentdict /fillBeam known strokeBeam or
+    savebeampoints and
+    currentdict /lastBeamPointTmpLow known and
+    currentdict /lastBeamPointTmpUp known and dup {
+      lastBeamPointTmpLow /N@\oenodeBeamLow\space
+      lastBeamPointTmpUp /N@\oenodeBeamUp\space
+      7 -1 roll
+    } if
+    currentdict /fillBeam known strokeBeam or 
+    savebeam and
+    currentdict /lastVecTmpLow known and
+    currentdict /lastVecTmpUp known and dup {
+      /lastVecLow lastVecTmpLow
+      /lastVecUp lastVecTmpUp
+      7 -1 roll
+    } if
+  }%
   \end@BeamObj
   \POE@Verb{%
-    { tx@OptexpDict begin def def end } if
+    { tx@OptexpDict begin ToVec def ToVec def end } if
     { \tx@NodeScale @NewNode @NewNode } if 
   }%
 }%
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}{\POE@strokewidebeam}
-%    \begin{macrocode}
-\def\POE@strokewidebeam{%
-  \POE@strokesinglebeam
-  \POE@strokesinglebeam
-}%
-%    \end{macrocode}
-% \end{macro}
 %    \begin{macrocode}
 \def\POE@getcomprange#1-#2\@nil{%
   \ifx\\#2\\%
@@ -12402,10 +12369,14 @@ tx@OptexpDict begin
   counttomark /N ED
   PrearrangePlanes
   PushAllPlanesOnStack
-  beamalign relative eq counttomark 2 ge and {
-    2 copy /InVec load TransformInVec
+  currentdict /lastVecTmp known {
+    /lastVecTmp load
   } {
-    /InVec load
+    beamalign relative eq counttomark 2 ge and {
+      2 copy /InVec load TransformInVec
+    } {
+      /InVec load
+    } ifelse
   } ifelse
   /CurrVec ED
   currentdict /lastBeamPointTmp known {
@@ -12548,69 +12519,7 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}{TraceWideBeam}
-%   Stroke a wide beam. Only rearranges the input parameters and calls
-%   \PSvar{TraceBeam} twice, for the upper and lower beam.
-% \begin{pssyntax}
-%   \PSvar{[ CompN \ldots{} Comp1} \PSproc{options} \PSproc{start point
-%     up} \PSproc{beamangle\_up} \PSproc{start point low}
-%   \PSproc{beamangle\_low} \PSop{TraceWideBeam}
-% \end{pssyntax}
-%    \begin{macrocode}
-/TraceWideBeam {
-  5 -1 roll dup 6 1 roll 3 1 roll
-  counttomark 6 sub /numComp ED
-  numComp 7 add 6 roll numComp 1 add copy
-  numComp 1 add 2 mul 6 add numComp 1 add roll
-  numComp 1 add 3 add -3 roll
-  currentdict dup /lastBeamPointTmp undef /lastVecTmp undef
-  loadbeampoints currentdict /lastBeamPointLow known and {
-    /lastBeamPointTmp /lastBeamPointLow load def
-  } if
-  loadbeam currentdict /lastVecLow known and {
-    /lastVecTmp /lastVecLow load def
-  } if
-  TraceBeam
-  savebeampoints 
-  currentdict /lastBeamPointTmp known and {
-    /lastBeamPointLow /lastBeamPointTmp load def
-    /lastVecLow /lastVecTmp load def
-  } if
-  currentdict dup /lastBeamPointTmp undef /lastVecTmp undef 
-  loadbeampoints currentdict /lastBeamPointUp known and {
-    /lastBeamPointTmp /lastBeamPointUp load def
-  } if
-  loadbeam currentdict /lastVecUp known and {
-    /lastVecTmp /lastVecUp load def
-  } if
-  counttomark 1 add dup numComp 4 add add exch roll
-  TraceBeam
-  savebeampoints 
-  currentdict /lastBeamPointTmp known and {
-    /lastBeamPointUp /lastBeamPointTmp load def
-    /lastVecUp /lastVecTmp load def
-  } if
-  savebeampoints
-  currentdict /lastBeamPointUp known and
-  currentdict /lastBeamPointLow known and {
-    lastBeamPointUp lastBeamPointLow @ABVect 
-    lastVecUp lastVecLow 3 -1 roll add 3 1 roll add exch
-    4 -1 roll mul 3 1 roll mul sub 0 gt {
-%    \end{macrocode}
-% swap upper and lower beam points for next beam
-%    \begin{macrocode}
-      /lastBeamPointUp load /lastBeamPointLow load
-      /lastBeamPointUp ED /lastBeamPointLow ED
-    } if
-  } if
-  savebeam not {
-    currentdict dup /lastVecUp undef /lastVecLow undef
-  } if
-} bind def
-%    \end{macrocode}
-% \end{macro}
-% 
-% \begin{macro}{FillWideBeam}
+% \begin{macro}{TraceAndFillWideBeam}
 % Fill a wide beam. This has an own procedure, because each segment
 % of the beam must be filled separately.
 % \begin{pssyntax}
@@ -12619,7 +12528,7 @@ tx@OptexpDict begin
 %   \PSproc{start point low} \PSvar{beamangle\_low} \PSop{FillWideBeam}
 % \end{pssyntax}
 %    \begin{macrocode}
-/FillWideBeam {
+/TraceAndFillWideBeam {
   AngToVec /InvecLow ED /StartLow ED 
   AngToVec /InvecUp ED /StartUp ED 
 %    \end{macrocode}
@@ -12641,25 +12550,30 @@ tx@OptexpDict begin
   /PrevCorrect false def
   PrearrangePlanes
   PushAllPlanesOnStack
+  currentdict /lastVecTmpUp known currentdict /lastVecTmpLow known and {
+    /CurrVecLow /lastVecTmpLow load def
+    /CurrVecUp /lastVecTmpUp load def
+  }{
 %    \end{macrocode}
 % If the \opt{beamangle} is not absolute, use the connection between the first
 % two planes as reference and transform the input vectors accordingly.
 %    \begin{macrocode}
-  beamalign relative eq counttomark 2 ge and {
-    2 copy /InvecLow load TransformInVec /CurrVecLow ED
-    2 copy /InvecUp load TransformInVec /CurrVecUp ED
-  } {
-    /InvecLow load /CurrVecLow ED
-    /InvecUp load /CurrVecUp ED
+    beamalign relative eq counttomark 2 ge and {
+      2 copy /InvecLow load TransformInVec /CurrVecLow ED
+      2 copy /InvecUp load TransformInVec /CurrVecUp ED
+    } {
+      /CurrVecLow /InvecLow load def
+      /CurrVecUp /InvecUp load def
+    } ifelse
   } ifelse
 %    \end{macrocode}
-% If \opt{loadbeampoints} is set, the nodes \PSname{TmpLastBeamPointLow} and
-% \PSname{TmpLastBeamPointUp} are defined and used as starting points.
+% If \opt{loadbeampoints} is set, the nodes \PSname{lastBeamPointTmpLow} and
+% \PSname{lastBeamPointTmpUp} are defined and used as starting points.
 %    \begin{macrocode}
-  currentdict /TmpLastBeamPointLow known 
-  currentdict /TmpLastBeamPointUp known and {
-    /TmpLastBeamPointLow load /CurrLow ED
-    /TmpLastBeamPointUp load /CurrUp ED
+  currentdict /lastBeamPointTmpLow known 
+  currentdict /lastBeamPointTmpUp known and {
+    /lastBeamPointTmpLow load /CurrLow ED
+    /lastBeamPointTmpUp load /CurrUp ED
   } {
     counttomark 2 ge {
       2 copy /StartLow load TransformStartPos /CurrLow ED
@@ -12801,9 +12715,9 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % center done
 %    \begin{macrocode}
-    PN 1 gt {
+    PN 1 gt currentdict /fillBeam known and {
       draw {
-        /DrawnSegm dup load 1 add def
+        /DrawnSegm DrawnSegm 1 add def
         OldUp moveto CurrUp lineto
         curved {
           CurrCenter CurrUp CurrLow 
@@ -12837,28 +12751,31 @@ tx@OptexpDict begin
         fillBeam newpath
         /DrawnSegm 0 def
       } if
-    } {
+    } if
+    PN 1 eq {
 %    \end{macrocode}
 % PN == 1
 %    \begin{macrocode}
       /CurrVecUp /OldVecUp load def
       /CurrVecLow /OldVecLow load def
-    } ifelse
-    PN PlaneNum eq {
-      DrawnSegm 0 gt { fillBeam newpath } if
-      exit
-    } {
-      ret tir eq {
+    } if
 %    \end{macrocode}
-% at least one of the last two refractions was total internal reflection, exit!
+% If the beam should also be stroked, push the coordinates and the 'draw' information on the stack
 %    \begin{macrocode}
-        PlaneNum PN sub {pop} repeat
-        DrawnSegm 0 gt { fillBeam newpath } if	
-        (Total internal reflection occured, this is not supported) Warning
-        exit
+    strokeBeam {
+      CurrUp draw CurrLow draw counttomark 1 add 6 roll
+    } if
+    PN PlaneNum eq ret tir eq or {
+      DrawnSegm 0 gt currentdict /fillBeam known and { 
+        fillBeam newpath 
       } if
-      /PN PN 1 add def
-    } ifelse
+      ret tir eq {
+        PlaneNum PN sub {pop} repeat
+        (Total internal reflection occured, this is not supported) Warning
+      } if
+      exit
+    } if
+    /PN PN 1 add def
     /CurrPCenterTmp /CurrPCenter load def
     /PrevMode Mode def
     /PrevCorrect correct def
@@ -12870,11 +12787,15 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % swap upper and lower beam points for next beam
 %    \begin{macrocode}
-      /TmpLastBeamPointUp /CurrLow load def
-      /TmpLastBeamPointLow /CurrUp load def
+      /lastBeamPointTmpUp /CurrLow load def
+      /lastBeamPointTmpLow /CurrUp load def
+      /lastVecTmpUp /CurrVecLow load def
+      /lastVecTmpLow /CurrVecUp load def
     } {
-      /TmpLastBeamPointLow /CurrLow load def
-      /TmpLastBeamPointUp /CurrUp load def
+      /lastBeamPointTmpLow /CurrLow load def
+      /lastBeamPointTmpUp /CurrUp load def
+      /lastVecTmpUp /CurrVecUp load def
+      /lastVecTmpLow /CurrVecLow load def
     } ifelse
   } if
 } bind def
