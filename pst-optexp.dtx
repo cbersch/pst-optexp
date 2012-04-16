@@ -964,7 +964,7 @@
 %\fi
 \begin{LTXexample}[morekeywords={[21]{labeloffset}}]
 \begin{pspicture}[showgrid=true](3,2)
-  \pnode(0,1){A}\pnode(1,1){B}
+  \pnode(2,1){A}\pnode(3,1){B}
   \lens(A)(B){lens}
   \optbox[endbox, labeloffset=0](B)(A){box}
 \end{pspicture}
@@ -4547,7 +4547,6 @@
 %</ignore>
 % \fi
 %
-% \pagebreak
 % \ifGERMAN
 % Desweiteren werden die Endknoten durch \Lkeyword{stopinside}
 % beeinflusst. Siehe \prettyref{sec:custombeam} für weitere Details.
@@ -4675,10 +4674,10 @@
 % Bei \Lcs{drawbeam} und \Lcs{drawwidebeam} können auch Zahlintervalle verwendet
 % werden. Gültige Intervallangaben sind
 % \begin{description}
-% \item[\texttt{x-y}] Von \opt{x} bis \opt{y}.
-% \item[\texttt{x-}] Von \opt{x} bis zur letzten Komponente.
-% \item[\texttt{-y}] Von der ersten Komponente bis \opt{y}.
-% \item[\texttt{-}] Alle Komponenten.
+% \item[\parbox{2em}{\texttt{x-y}}] Von \opt{x} bis \opt{y}.
+% \item[\parbox{2em}{\texttt{x-}}] Von \opt{x} bis zur letzten Komponente.
+% \item[\parbox{2em}{\texttt{-y}}] Von der ersten Komponente bis \opt{y}.
+% \item[\parbox{2em}{\texttt{-}}] Alle Komponenten.
 % \end{description}
 % \fi
 % \ifENGLISH For \Lcs{drawbeam} and \Lcs{drawwidebeam} you can also specify a
@@ -5185,13 +5184,13 @@
 % eine umfassende Fehlerbehandlung zur Zeit der Kompilation nicht möglich. Um
 % jedoch trotzdem fehlerfreie Bilder zu bekommen, wird der Strahlengang
 % abgebrochen, sobald eine Situation eintritt, die nicht unterstützt wird. Das kann
-% eintreten, falls der Strahl eine gekrümmte Grenzfläche nicht trifft, oder
+% eintreten, falls der Strahl eine Grenzfläche nicht trifft, oder
 % Totalreflektion auftritt.
 % \fi
 % \ifENGLISH All beam are calculated and drawn directly in Postscript, so that a
 % comprehensive error handling at compilation time is not possible. If a
 % situation arises, which is not supported by the drawing algorithm, the beam
-% path is truncated at this point. This happens when a beam misses a curved
+% path is truncated at this point. This happens when a beam misses an
 % interface or if total internal reflection would occur.
 % \fi
 % \begin{optionlist}
@@ -5233,29 +5232,27 @@
 %</ignore>
 % \fi
 % 
-% \ifGERMAN Bei aufgeweiteten Strahlen (siehe \prettyref{sec:drawwidebeam}) kann
-% es passieren, dass einer der Randstrahlen total reflektiert würde, der andere
-% aber nicht. Da die Randstrahlen unabhängig voneinander gezeichnet werden (wie
-% zwei \Lcs{drawbeam} Aufrufe), wird einer abgeschnitten, und der andere
-% fortgeführt. Die Füllung geht nur soweit wie beide Strahlen vorhanden sind.
+% \ifGERMAN Bei aufgeweiteten Strahlen (siehe \prettyref{sec:drawwidebeam}) wird
+% der Strahlengang abgebrochen, falls einer der beiden Randstrahlen einen Fehler
+% aufweist.
 % \fi
-% \ifENGLISH For wide beams (see \prettyref{sec:drawwidebeam}) it can happen
-% that only one marginal beam would be totally reflected, the other not. Because
-% the marginal beams are drawn independent of each other (like two
-% \Lcs{drawbeam} calls), one is continued and the other is truncated. The filled
-% beam is drawn only where both beams are present.
+% \ifENGLISH For wide beams (see \prettyref{sec:drawwidebeam}) the beam ray is
+% interrupted if one of the marginal rays has an error.
 % \fi
 % \iffalse
 %<*ignore>
 % \fi
 \begin{LTXexample}
 \begin{pspicture}(3,2.5)
-  \pnode(0,2){A}\optplane[compname=A](A)
-  \pnode(4,0){B}\optplane[compname=B](3,0)
-  \optprism[n=1.8](A)([Xnodesep=2]A)(B)
-  \addtopsstyle{Beam}{%
-    fillcolor=green, fillstyle=solid, opacity=0.3}
-  \drawwidebeam[beamdiv=10]{A}{3}{B}
+  \pnode(0,2){A}\pnode(3,0){B}
+  \optplane(A)
+  \optprism[n=1.8](A)([Xnodesep=1.5]A)(B)
+  \optplane(B)
+  \addtopsstyle{Beam}{fillcolor=green, fillstyle=solid, opacity=0.3, linewidth=3\pslinewidth}
+  \drawwidebeam[beamdiv=10]{-}
+  \newpsstyle{Beam}{linecolor=red, linestyle=dashed}
+  \drawbeam[beamangle=5]{-}
+  \drawbeam[beamangle=-5]{-}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -5355,6 +5352,22 @@
 % \iffalse
 %</ignore>
 % \fi
+%
+% \begin{optionlist}
+%   \boolitem[true]{savebeam}
+%   \ifGERMAN Speichert die Endzustände jedes \nxLcs{draw*beam} Makros,
+%   vorangegangene Werte werden überschrieben. \Lcs{drawbeam} und
+%   \Lcs{drawwidebeam} werden getrennt behandelt.
+%   \fi
+%   \ifENGLISH Saves the end conditions of each \nxLcs{draw*beam} macro, previous
+%   values are overwritten. \Lcs{drawbeam} and \Lcs{drawwidebeam} are treated
+%   separately.
+%   \fi
+%
+%   \boolitem[false]{loadbeam}
+%   \ifGERMAN Verwende die Endpunkte des letzten Strahls als Startpunkte.\fi
+%   \ifENGLISH Use the end points of the last beam as starting points for the next beam.\fi
+% \end{optionlist}
 %
 % \begin{optionlist}
 %   \boolitem[false]{startinside}
@@ -9570,7 +9583,7 @@
   \end@OptexpObj
 }%
 \fiberdipole@iimacro{optcirculator}%
-% 
+%     \end{macrocode}
 % \begin{macro}{\POE@calcNodes}
 %   Some of the components need three points to be positioned. 
 %   These are:
@@ -9723,27 +9736,19 @@
 % 
 % \begin{macro}{\POE@putlabel}
 % Positioning of the label depending on the reference coordinates.
-% Needs possibly a previously defined node \cs{poe@nodeLabelShifted} which
+% Needs possibly a previously defined node \cs{oenodeLabel} which
 % marks exactly the position of the label relative to the component.
 % This is defined by calling \cs{poe@putcomp}.
-% 
-% Parameter 'labelref' which sets the reference coordinates can have 
-% the values 
-% \begin{description}
-% \item[global] labelangle rotates the label origin in global coordinate system, text is not rotated
-% \item[relgrav] labelangle rotates the label origin relativ to the local coordinate system of the component, text is not rotated
-% \item[relative] as relgrav but text is rotated together with object.
-% \end{description}
 %    \begin{macrocode}  
 \def\POE@putlabel#1{%
   \def\POE@temp{#1}%
 %    \end{macrocode}
-% Put the label only if it is not empty.
+% Put the label only if it's not empty.
 %    \begin{macrocode}
   \ifx\POE@temp\@empty\else
 %    \end{macrocode}
-% For global positioning, the label is placed in global coordinate system with
-% respect to the center node.
+% For \opt{global} positioning, the label is placed in global coordinate system
+% with respect to the center node.
 %    \begin{macrocode}
   \ifx\POE@key@labelref\POE@str@labelref@global
     \nput[labelsep=\POE@key@labeloffset]%
@@ -10839,7 +10844,7 @@
 }%
 %    \end{macrocode}
 % \end{macro}
-% 
+%
 % \subsubsection{rightangleprism}
 %
 % \begin{macro}{\rightangleprism@nodes}
