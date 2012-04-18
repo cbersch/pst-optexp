@@ -12482,37 +12482,21 @@ tx@OptexpDict begin
     /draw ED
     /Mode ED
     3 1 roll
-    cvn load begin
+    LoadIfc
 %    \end{macrocode}
-% Start the component dictionary.
-%
+%% on stack:  \opt{\{Xp Yp\} Xp Yp dXp dYp trans/refl n2 X0 Y0 Xin Yin curved? correct?}
+% on stack:  \opt{\{Xp Yp\} Xp Yp dXp dYp trans/refl n2 curved? correct?}
 %    \begin{macrocode}
-      IfcName load begin
-        X Y
-        CompMtrx transform CM itransform 
-        2 copy ToVec 4 1 roll
-        currentdict /RX known { RX RY } { DX DY	} ifelse
-        CompMtrx dtransform CM idtransform
-        Mode 6 -1 roll 
-        Curr CurrVec
-        currentdict /RX known 
-        correct
-      end
-    end
-%    \end{macrocode}
-% on stack:  \opt{\{Xp Yp\} Xp Yp dXp dYp trans/refl n2 X0 Y0 Xin Yin curved? correct?}
-%    \begin{macrocode}
-    /correct ED
-    12 -1 roll /CurrCenter ED
-    5 1 roll
+    /correct ED /curved ED
+    7 -1 roll /CurrCenter ED
+    Curr CurrVec
     connectifc PrevCorrect PN 2 gt and PN 2 eq or and {
       CurrVec CurrCenter CurrCenterTmp PrevMode 
       currentdict /relAngle known 
       { relAngle } { 0 } ifelse connectInterfaces
       /relAngle ED
     } if
-    5 -1 roll
-    { CurvedInterface }{ PlainInterface } ifelse
+    curved { CurvedInterface }{ PlainInterface } ifelse
     missed eq {
       counttomark PN 1 sub 3 mul sub {pop} repeat
       (The beam missed an interface) Warning exit
@@ -12690,27 +12674,9 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % Enter the component dictionary
 %    \begin{macrocode}
-    3 1 roll cvn load begin
-%    \end{macrocode}
-% Enter the interface dictionary and push all required information on the stack
-%    \begin{macrocode}
-      IfcName load begin
-        X Y CompMtrx transform CM itransform
-        2 copy ToVec 4 1 roll
-        currentdict /RX known {
-          RX RY 
-        } {
-          DX DY
-        } ifelse
-        CompMtrx dtransform CM idtransform 4 copy
-        Mode 10 -1 roll
-        6 copy 
-        currentdict /RX known
-        correct
-      end
-    end
-    /correct ED
-    /curved ED
+    3 1 roll 
+    LoadIfc /correct ED /curved ED
+    6 2 roll 4 copy 10 -2 roll 6 copy
     /oldn1 n1 def 
     % {X Y} X Y DX DY X Y DX DY mode n1 X Y DX DY mode n1
 %    \end{macrocode}
@@ -13149,6 +13115,29 @@ tx@OptexpDict begin
 } bind def
 %    \end{macrocode}
 % \end{macro}
+% 
+% \begin{macro}{LoadIfc}
+% \begin{pssyntax}
+% \PSvar{IfcNum} \PSstring{CompName} \PSop{LoadIfc} \PSproc{X Y} \PSvar{X Y dX dY mode n curved correct}
+% \end{pssyntax}
+%    \begin{macrocode}
+/LoadIfc {
+  cvn load begin
+    IfcName load begin
+      X Y
+      CompMtrx transform CM itransform 
+      2 copy ToVec 4 1 roll
+      currentdict /RX known { RX RY } { DX DY } ifelse
+      CompMtrx dtransform CM idtransform
+      mode 6 -1 roll 
+      currentdict /RX known 
+      correct
+    end
+  end
+} bind def
+%    \end{macrocode}
+% \end{macro}
+%
 % \begin{macro}{NodeName}
 % Construct the plane name from PlaneNum. This must be called within a dict of a
 % optexpcomp, because the last node ends with (N) instead of the number and we must
