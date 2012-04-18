@@ -8149,7 +8149,7 @@
 % \begin{macro}{\begin@WideBeamObj}
 %    \begin{macrocode}
 \def\begin@WideBeamObj{%
-  \addafter@par{style=Beam}%
+  \addbefore@par{style=Beam}%
   \begin@BeamObj
   \let\pst@linetype\pst@arrowtype
   \pst@addarrowdef%
@@ -12480,15 +12480,14 @@ tx@OptexpDict begin
     } if
     exec
     /draw ED
-    /Mode ED
-    3 1 roll
+    dup /Mode ED exch 4 2 roll
     LoadIfc
 %    \end{macrocode}
 %% on stack:  \opt{\{Xp Yp\} Xp Yp dXp dYp trans/refl n2 X0 Y0 Xin Yin curved? correct?}
-% on stack:  \opt{\{Xp Yp\} Xp Yp dXp dYp trans/refl n2 curved? correct?}
+% on stack:  \opt{n2 \{Xp Yp\} Xp Yp dXp dYp trans/refl curved? correct?}
 %    \begin{macrocode}
     /correct ED /curved ED
-    7 -1 roll /CurrCenter ED
+    5 -1 roll /CurrCenter ED 6 -2 roll
     Curr CurrVec
     connectifc PrevCorrect PN 2 gt and PN 2 eq or and {
       CurrVec CurrCenter CurrCenterTmp PrevMode 
@@ -12670,15 +12669,13 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % \PSvar{Mode} stores the mode (transmittive or reflective) of the current interface.
 %    \begin{macrocode}
-    /Mode ED
+    dup /Mode ED exch 4 2 roll
 %    \end{macrocode}
 % Enter the component dictionary
 %    \begin{macrocode}
-    3 1 roll 
     LoadIfc /correct ED /curved ED
-    6 2 roll 4 copy 10 -2 roll 6 copy
+    4 copy 11 -2 roll 6 copy
     /oldn1 n1 def 
-    % {X Y} X Y DX DY X Y DX DY mode n1 X Y DX DY mode n1
 %    \end{macrocode}
 % \PSvar{CurrPCenter} holds the coordinates of the current interface center.
 %    \begin{macrocode}
@@ -13118,7 +13115,7 @@ tx@OptexpDict begin
 % 
 % \begin{macro}{LoadIfc}
 % \begin{pssyntax}
-% \PSvar{IfcNum} \PSstring{CompName} \PSop{LoadIfc} \PSproc{X Y} \PSvar{X Y dX dY mode n curved correct}
+% \PSvar{IfcNum} \PSstring{CompName} \PSop{LoadIfc} \PSproc{X Y} \PSvar{X Y dX dY curved correct}
 % \end{pssyntax}
 %    \begin{macrocode}
 /LoadIfc {
@@ -13126,10 +13123,9 @@ tx@OptexpDict begin
     IfcName load begin
       X Y
       CompMtrx transform CM itransform 
-      2 copy ToVec 4 1 roll
+      2 copy ToVec 3 1 roll
       currentdict /RX known { RX RY } { DX DY } ifelse
       CompMtrx dtransform CM idtransform
-      mode 6 -1 roll 
       currentdict /RX known 
       correct
     end

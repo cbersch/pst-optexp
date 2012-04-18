@@ -66,6 +66,23 @@
 \providecommand\OFF{\xdef\lst@alloverstyle##1{##1}}
 \makeatother
 \begin{document}
+\begin{pspicture}(3.2,5)
+  \pnode(0,3){In}\pnode(1,3){BS}\pnode(3,3){M1}
+  \pnode(1,5){M2}\pnode(1,1){PD}
+  \psset{mirrortype=extended, mirrordepth=0.2, bsstyle=plate, dettype=diode}
+  \begin{optexp}
+    \beamsplitter[compname=BS](In)(BS)(PD)
+    \mirror[compname=M1](BS)(M1)(BS)
+    \mirror[compname=M2, variable](BS)(M2)(BS)
+    \lens[compname=L](BS)(PD)
+    \optdetector[compname=Det](BS)(PD)
+    \addtopsstyle{Beam}{beamwidth=0.2, fillstyle=solid, fillcolor=green!20!white}
+    \drawwidebeam{(In)}{BS}{M1}{BS}{M2}{BS}{L}{Det}
+    \drawbeam[linecolor=red, beamangle=1.5]{(In)}{BS}{M1}{BS}{M2}{BS}{L}{Det}
+  \end{optexp}
+\end{pspicture}
+\end{document}
+
 \begin{pspicture}(-0.2,0)(9,5)
 \makeatletter
 \def\LCLV@iii{%
