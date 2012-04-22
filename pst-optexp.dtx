@@ -12787,33 +12787,22 @@ tx@OptexpDict begin
 % lower done
 %    \begin{macrocode}
     /OldR CurrR def
-    /curved IfcNum CompName isCurved def
-    IfcNum CompName LoadIfc
-    curved {
-      tx@Dict begin Pyth end /CurrR ED
-    } {
-      pop pop /CurrR false def
-    } ifelse
-%    \end{macrocode}
-% radius done, X Y still on stack
-%    \begin{macrocode}
     OldR type /realtype eq {
       /CurrCenter load /OldCenter ED
     } if
-    curved {
+    IfcNum CompName isCurved {
+      IfcNum CompName LoadIfc
+      tx@Dict begin Pyth end /CurrR ED
       ToVec /CurrCenter ED
     } {
-      pop pop
+      /CurrR false def
       /CurrCenter false def
     } ifelse
-%    \end{macrocode}
-% center done
-%    \begin{macrocode}
     PN 1 gt currentdict /fillBeam known and {
       draw {
         /DrawnSegm DrawnSegm 1 add def
         OldUp moveto CurrUp lineto
-        curved {
+        IfcNum CompName isCurved {
           CurrCenter CurrUp CurrLow 
           4 copy 3 -1 roll eq 3 1 roll eq and {
             6 {pop} repeat
