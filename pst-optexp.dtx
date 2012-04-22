@@ -12550,23 +12550,16 @@ tx@OptexpDict begin
       PushAmbCompPlanesOnStack
     } if
     exec
-    /draw ED
-    dup /Mode ED exch 4 2 roll
-    LoadIfc
-%    \end{macrocode}
-%% on stack:  \opt{\{Xp Yp\} Xp Yp dXp dYp trans/refl n2 X0 Y0 Xin Yin curved? correct?}
-% on stack:  \opt{n2 \{Xp Yp\} Xp Yp dXp dYp trans/refl curved? correct?}
-%    \begin{macrocode}
-    /correct ED /curved ED
-    5 -1 roll /CurrCenter ED 6 -2 roll
-    Curr CurrVec
+    /draw ED /Mode ED /n2 ED 2 copy /CompName ED /IfcNum ED
+    GetIfcCenter ToVec /CurrCenter ED
+    Curr CurrVec 
     connectifc PrevCorrect PN 2 gt and PN 2 eq or and {
       CurrVec CurrCenter CurrCenterTmp PrevMode 
       currentdict /relAngle known 
       { relAngle } { 0 } ifelse connectInterfaces
       /relAngle ED
     } if
-    curved { CurvedInterface }{ PlainInterface } ifelse
+    IfcNum CompName Mode n2 8 -4 roll HandleInterface
     missed eq {
       counttomark PN 1 sub 3 mul sub {pop} repeat
       (The beam missed an interface) Warning exit
@@ -12586,7 +12579,7 @@ tx@OptexpDict begin
     /lastBeamPointTmp /Curr load def
     /lastVecTmp /CurrVec load def
     /PrevMode Mode def
-    /PrevCorrect correct def
+    CompName cvn load /correct get /PrevCorrect ED
     PN PlaneNum eq {
       exit
     } {
@@ -12740,17 +12733,12 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % \PSvar{Mode} stores the mode (transmittive or reflective) of the current interface.
 %    \begin{macrocode}
-    dup /Mode ED exch 4 2 roll
-%    \end{macrocode}
-% Enter the component dictionary
-%    \begin{macrocode}
-    LoadIfc /correct ED /curved ED
-    4 copy 11 -2 roll 6 copy
-    /oldn1 n1 def 
+    /Mode ED /n2 ED 2 copy /CompName ED /IfcNum ED
 %    \end{macrocode}
 % \PSvar{CurrPCenter} holds the coordinates of the current interface center.
 %    \begin{macrocode}
-    17 -1 roll /CurrPCenter ED
+    GetIfcCenter ToVec /CurrPCenter ED
+    /oldn1 n1 def
 %    \end{macrocode}
 % Calculate new upper vector and intersection point
 %    \begin{macrocode}
@@ -12760,14 +12748,14 @@ tx@OptexpDict begin
       currentdict /relAngleUp known { relAngleUp } { 0 } ifelse 
       connectInterfaces /relAngleUp ED
     } if
-    2 copy ToVec /OldVecUp ED
-    curved { CurvedInterface } { PlainInterface } ifelse
+    /CurrVecUp load /OldVecUp ED
+    /CurrUp load /OldUp ED
+    IfcNum CompName Mode n2 8 4 roll HandleInterface
     dup /ret ED
     missed eq {
       counttomark {pop} repeat 
       (The upper beam missed an interface) Warning exit
     } if
-    /CurrUp load /OldUp ED
     ToVec /CurrVecUp ED
     ToVec /CurrUp ED
     /n1 oldn1 def
@@ -12780,8 +12768,9 @@ tx@OptexpDict begin
       currentdict /relAngleLow known { relAngleLow } { 0 } ifelse 
       connectInterfaces /relAngleLow ED
     } if
-    2 copy ToVec /OldVecLow ED
-    curved { CurvedInterface } { PlainInterface } ifelse
+    /CurrVecLow load /OldVecLow ED
+    /CurrLow load /OldLow ED
+    IfcNum CompName Mode n2 8 4 roll HandleInterface
     dup missed eq {
       /ret ED
       (The lower beam missed an interface) Warning
@@ -12792,13 +12781,14 @@ tx@OptexpDict begin
     } {
       /ret ok def
     } ifelse
-    /CurrLow load /OldLow ED
     ToVec /CurrVecLow ED
     ToVec /CurrLow ED
 %    \end{macrocode}
 % lower done
 %    \begin{macrocode}
     /OldR CurrR def
+    /curved IfcNum CompName isCurved def
+    IfcNum CompName LoadIfc
     curved {
       tx@Dict begin Pyth end /CurrR ED
     } {
@@ -12882,7 +12872,7 @@ tx@OptexpDict begin
     /PN PN 1 add def
     /CurrPCenterTmp /CurrPCenter load def
     /PrevMode Mode def
-    /PrevCorrect correct def
+    CompName cvn load /correct get /PrevCorrect ED
   } loop
   ret missed eq not {
     CurrUp CurrLow @ABVect 
@@ -12939,7 +12929,54 @@ tx@OptexpDict begin
 } bind def
 %    \end{macrocode}
 % \end{macro}
+% 
+% \begin{macro}{isCurved}
+%  Check if interface \PSvar{IfcNum} of componente \PSvar{compname} is curved.
+%   \begin{pssyntax}
+%     \PSvar{IfcNum} \PSstring{compname} \PSop{isCurved} \PSvar{bool}
+%   \end{pssyntax}
+%    \begin{macrocode}
+/isCurved {
+  cvn load begin
+    IfcName load /RX known
+  end
+} bind def
+%    \end{macrocode}
+% \end{macro}
 %
+% \begin{macro}{HandleInterface}
+% \begin{pssyntax}
+% \PSvar{IfcNum} \PSstring{CompName} \PSvar{mode n2 X0 Y0 Xin Yin} 
+% \PSop{HandleInterface} 
+% \PSvar{X0' Y0' Xout Yout status}
+% \end{pssyntax}
+%    \begin{macrocode}
+/HandleInterface {
+  /Yin ED /Xin ED /Y0 ED /X0 ED /n2 ED /mode ED
+  2 copy LoadIfc
+  6 -2 roll isCurved { CurvedInterface }{ PlainInterface } ifelse
+} bind def
+%    \end{macrocode}
+% \end{macro}
+% 
+% \begin{macro}{LoadIfc}
+% \begin{pssyntax}
+% \PSvar{IfcNum} \PSstring{CompName} \PSop{LoadIfc} \PSvar{X Y} \PSvar{dX|RY dY|RY}
+% \end{pssyntax}
+%    \begin{macrocode}
+/LoadIfc {
+  cvn load begin
+    IfcName load begin
+      X Y
+      CompMtrx transform CM itransform
+      currentdict /RX known { RX RY }{ DX DY } ifelse
+      CompMtrx dtransform CM idtransform
+    end
+  end
+} bind def
+%    \end{macrocode}
+% \end{macro}
+% 
 % \begin{macro}{isFreeray}
 %   Check if \PSvar{compname} is a free-ray componente by checking if there is a
 %   refractive index associated with it.
@@ -13184,27 +13221,6 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}{LoadIfc}
-% \begin{pssyntax}
-% \PSvar{IfcNum} \PSstring{CompName} \PSop{LoadIfc} \PSproc{X Y} \PSvar{X Y dX dY curved correct}
-% \end{pssyntax}
-%    \begin{macrocode}
-/LoadIfc {
-  cvn load begin
-    IfcName load begin
-      X Y
-      CompMtrx transform CM itransform 
-      2 copy ToVec 3 1 roll
-      currentdict /RX known { RX RY } { DX DY } ifelse
-      CompMtrx dtransform CM idtransform
-      currentdict /RX known 
-      correct
-    end
-  end
-} bind def
-%    \end{macrocode}
-% \end{macro}
-%
 % \begin{macro}{NodeName}
 % Construct the plane name from PlaneNum. This must be called within a dict of a
 % optexpcomp, because the last node ends with (N) instead of the number and we must
@@ -13484,11 +13500,10 @@ tx@OptexpDict begin
 % 
 % \begin{macro}{CurvedInterface}
 %   \begin{pssyntax}
-%     \PSvar{Xp Yp Xr Yr mode n2 X0 Y0 Xin Yin} \PSop{CurvedInterface} \PSvar{X0' Y0' Xout Yout status}
+%     \PSvar{Xp Yp Xr Yr} \PSop{CurvedInterface} \PSvar{X0' Y0' Xout Yout status}
 %   \end{pssyntax}
 %    \begin{macrocode}
 /CurvedInterface {
-  /Yin ED /Xin ED /Y0 ED /X0 ED /n2 ED /mode ED
   2 copy /Yr ED /Xr ED 
   tx@Dict begin Pyth end /radius ED /Yp ED /Xp ED
   /X0n X0 Xp sub def /Y0n Y0 Yp sub def
@@ -13538,11 +13553,10 @@ tx@OptexpDict begin
 % 
 % \begin{macro}{PlainInterface}
 %   \begin{pssyntax}
-%     \PSvar{Xp Yp dXp dYp mode n2 X0 Y0 Xin Yin} \PSop{PlainInterface} \PSvar{X0' Y0' Xout Yout status}
+%     \PSvar{Xp Yp dXp dYp} \PSop{PlainInterface} \PSvar{X0' Y0' Xout Yout status}
 %   \end{pssyntax}
 %    \begin{macrocode}
 /PlainInterface {%
-  /Yin ED /Xin ED /Y0 ED /X0 ED /n2 ED /mode ED 
   /dYp ED /dXp ED /Yp ED /Xp ED
   Xp Yp Xp dXp add Yp dYp add X0 Y0 X0 Xin add Y0 Yin add 
   @InterLines missed eq {
