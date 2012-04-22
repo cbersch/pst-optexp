@@ -12554,12 +12554,12 @@ tx@OptexpDict begin
     GetIfcCenter ToVec /CurrCenter ED
     Curr CurrVec 
     connectifc PrevCorrect PN 2 gt and PN 2 eq or and {
-      CurrVec CurrCenter CurrCenterTmp PrevMode 
+      CurrVec CurrCenter PrevCenter PrevMode 
       currentdict /relAngle known 
       { relAngle } { 0 } ifelse connectInterfaces
       /relAngle ED
     } if
-    IfcNum CompName Mode n2 8 -4 roll HandleInterface
+    IfcNum CompName Mode n2 8 4 roll HandleInterface
     missed eq {
       counttomark PN 1 sub 3 mul sub {pop} repeat
       (The beam missed an interface) Warning exit
@@ -12575,7 +12575,7 @@ tx@OptexpDict begin
     ToVec /Curr ED 
     draw PN skipconn 1 add gt and
     counttomark 3 roll
-    /CurrCenterTmp /CurrCenter load def
+    /PrevCenter /CurrCenter load def
     /lastBeamPointTmp /Curr load def
     /lastVecTmp /CurrVec load def
     /PrevMode Mode def
@@ -12591,8 +12591,6 @@ tx@OptexpDict begin
       /PN PN 1 add def
     } ifelse
   } loop
-  currentdict /CurrVec undef
-  currentdict /Curr undef
 } bind def
 %    \end{macrocode}
 % \end{macro}
@@ -12744,12 +12742,12 @@ tx@OptexpDict begin
 %    \begin{macrocode}
     CurrUp CurrVecUp
     connectifc PrevCorrect PN 2 gt and PN 2 eq or and {
-      CurrVecUp CurrPCenter CurrPCenterTmp PrevMode 
+      CurrVecUp CurrPCenter PrevPCenter PrevMode 
       currentdict /relAngleUp known { relAngleUp } { 0 } ifelse 
       connectInterfaces /relAngleUp ED
     } if
-    /CurrVecUp load /OldVecUp ED
-    /CurrUp load /OldUp ED
+    /CurrVecUp load /PrevVecUp ED
+    /CurrUp load /PrevUp ED
     IfcNum CompName Mode n2 8 4 roll HandleInterface
     dup /ret ED
     missed eq {
@@ -12762,14 +12760,14 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % Calculate new lower vector and intersection point
 %    \begin{macrocode}
+    /CurrVecLow load /PrevVecLow ED
+    /CurrLow load /PrevLow ED
     CurrLow CurrVecLow
     connectifc PrevCorrect PN 2 gt and PN 2 eq or and  {
-      CurrVecLow CurrPCenter CurrPCenterTmp PrevMode 
+      CurrVecLow CurrPCenter PrevPCenter PrevMode 
       currentdict /relAngleLow known { relAngleLow } { 0 } ifelse 
       connectInterfaces /relAngleLow ED
     } if
-    /CurrVecLow load /OldVecLow ED
-    /CurrLow load /OldLow ED
     IfcNum CompName Mode n2 8 4 roll HandleInterface
     dup missed eq {
       /ret ED
@@ -12786,9 +12784,9 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % lower done
 %    \begin{macrocode}
-    /OldR CurrR def
-    OldR type /realtype eq {
-      /CurrCenter load /OldCenter ED
+    /PrevR CurrR def
+    PrevR type /realtype eq {
+      /CurrCenter load /PrevCenter ED
     } if
     IfcNum CompName isCurved {
       IfcNum CompName LoadIfc
@@ -12801,7 +12799,7 @@ tx@OptexpDict begin
     PN 1 gt currentdict /fillBeam known and {
       draw {
         /DrawnSegm DrawnSegm 1 add def
-        OldUp moveto CurrUp lineto
+        PrevUp moveto CurrUp lineto
         IfcNum CompName isCurved {
           CurrCenter CurrUp CurrLow 
           4 copy 3 -1 roll eq 3 1 roll eq and {
@@ -12813,20 +12811,20 @@ tx@OptexpDict begin
         } {
           CurrLow lineto
         } ifelse
-        OldLow lineto
-        OldR type /booleantype eq not {
+        PrevLow lineto
+        PrevR type /booleantype eq not {
 %    \end{macrocode}
 % previous interface was also curved
 %    \begin{macrocode}
-          OldCenter OldLow OldUp
+          PrevCenter PrevLow PrevUp
           4 copy 3 -1 roll eq 3 1 roll eq and {
             6 {pop} repeat
           } {
             TangentCrosspoint
-            OldUp OldR arct
+            PrevUp PrevR arct
           } ifelse
         } {
-          OldUp lineto
+          PrevUp lineto
         } ifelse
       } if
       Mode refl eq draw and
@@ -12839,8 +12837,8 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % PN == 1
 %    \begin{macrocode}
-      /CurrVecUp /OldVecUp load def
-      /CurrVecLow /OldVecLow load def
+      /CurrVecUp /PrevVecUp load def
+      /CurrVecLow /PrevVecLow load def
     } if
 %    \end{macrocode}
 % If the beam should also be stroked, push the coordinates and the 'draw' information on the stack
@@ -12859,7 +12857,7 @@ tx@OptexpDict begin
       exit
     } if
     /PN PN 1 add def
-    /CurrPCenterTmp /CurrPCenter load def
+    /PrevPCenter /CurrPCenter load def
     /PrevMode Mode def
     CompName cvn load /correct get /PrevCorrect ED
   } loop
