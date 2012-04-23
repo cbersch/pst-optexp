@@ -1,3 +1,21 @@
+\begin{pspicture}[showgrid](3,3)
+  \pnode(0,1){A}\pnode(2,1){B}\pnode(3,2){C}\pnode(2.5,3){D}
+  \optplane(A)
+  \optgrating(A)(B)(C)
+  \pinhole[phwidth=-0.1, abspos=0.5](D)(B)
+  \optplate[position=end, linestyle=none](B)(D)
+  \definecolor[ps]{bl}{rgb}{%
+    tx@addDict begin Red Green Blue end}%
+  \drawbeam{1-2}
+  \addtopsstyle{Beam}{linecolor=bl, linewidth=0.4\pslinewidth}
+  \multido{\i=0+1}{60}{%
+    \pstVerb{%
+      \i\space 650 400 sub 59 div mul 400 add 
+      tx@addDict begin wavelengthToRGB end }%
+    \drawbeam[beamangle=\i\space 0.2 mul 5 sub]{2-}%
+  }%
+\end{pspicture}
+
 \begin{pspicture}(3,2.7)
   \optplane[compname=A](0,1)
   \lens[lens=2 2 2, abspos=2.5](0,1)(3,1)
