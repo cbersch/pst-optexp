@@ -1426,7 +1426,7 @@
   \pinhole[phwidth=0.05, innerheight=0.05, position=0.8, compshift=0.18, compname=Ph](BS)(Out)
   \optplane[compname=Out, angle=90](Out)
   \addtopsstyle{Beam}{linestyle=none, beamwidth=0.2, fillstyle=solid}
-  \drawwidebeam[fillcolor=red!25!white]{(In)}{Bs}{G}{Bs}{L}{Ph}
+  \drawwidebeam[fillcolor=red!25!white]{(In)}{Bs}{G}{Bs}{L}{Ph}{Out}
   \drawwidebeam[fillcolor=red!50!white, beamangle=-5]{G}{Bs}{L}{Ph}{Out}
 \end{pspicture}
 \end{LTXexample}
@@ -6453,8 +6453,8 @@
 \begin{pspicture}(-0.2,0)(9,5)
 \makeatletter
 \def\LCLV@nodes{%
-  \newOptexpComp{ {-0.12 0} {0 1} trans {PlaneIfc}
-                  {0.15 0} {0 1} trans {PlaneIfc} \POE@key@n}%
+  \newOptexpComp{ {-0.12 0} {0 1} -0.5 0.5 trans {PlaneIfc}
+                  {0.15 0} {0 1} -0.5 0.5 trans {PlaneIfc} \POE@key@n}%
 }%
 \def\LCLV@comp{%
   \psframe[fillstyle=solid,fillcolor=black,dimen=outer](-0.12,-0.5)(0,0.5)
@@ -9120,7 +9120,10 @@
 }%
 \def\optplane@i[#1](#2){%
   \pst@getcoor{#2}\POE@tempa
-  \optplate[#1, linestyle=none]%
+%    \end{macrocode}
+% Set the height to 0 to circumvent problems with the NA beeing too low
+%    \begin{macrocode}
+  \optplate[#1, plateheight=0, linestyle=none]%
     (! \POE@tempa exch 1 sub exch \tx@UserCoor)%
     (! \POE@tempa exch 1 add exch \tx@UserCoor)%
 \ignorespaces}%
@@ -9918,7 +9921,7 @@
       \POE@drawcomponent{#4}{%
         \ifPOE@backlayer
           \pnode(0,0){\oenodeCenter{}}%
-          \newOptexpComp{{ 0 0 } { 0 1 } trans {PlaneIfc} 1 }%
+          \newOptexpComp{{ 0 0 } { 0 1 } 0 0 trans {PlaneIfc} 1 }%
         \fi
         \ifPOE@frontlayer
           #3
@@ -9943,7 +9946,7 @@
     \fi
     \POE@drawcomponent{#5}{%
       \pnode(0,0){\oenodeCenter{}}% 
-      \newOptexpComp{{ 0 0 } { 1 0 } refl {PlaneIfc} 1 }%
+      \newOptexpComp{{ 0 0 } { 1 0 } 0 0 refl {PlaneIfc} 1 }%
       #4
     }%
     \POE@drawInternalConnections
@@ -10157,7 +10160,7 @@
 % \begin{macro}{\tripole@nodes}
 %    \begin{macrocode}
 \def\tripole@nodes{%
-  \newOptexpComp{ {0 0} {1 0} refl {PlaneIfc} 1}%
+  \newOptexpComp{ {0 0} {1 0} @@x neg @@x refl {PlaneIfc} 1}%
   \pnode(! \POE@dict{@@y0 @@x0}){\oenodeCenter{}}
 \ignorespaces}%
 %    \end{macrocode}
@@ -10167,9 +10170,9 @@
 %    \begin{macrocode}
 \def\dipole@nodes{%
   \newOptexpComp{%
-    {@@x0 @@x sub 0} {0 1} trans {PlaneIfc} 
+    {@@x0 @@x sub 0} {0 1} @@y0 @@y sub @@y0 @@y add trans {PlaneIfc} 
     @@x 0 eq not {
-      {@@x0 @@x add 0} {0 1} trans {PlaneIfc}
+      {@@x0 @@x add 0} {0 1} @@y0 @@y sub @@y0 @@y add trans {PlaneIfc}
     } if \POE@key@n }%
   \pnode(! \POE@dict{@@x0 @@y0}){\oenodeCenter{}}
 \ignorespaces}%
@@ -10218,9 +10221,11 @@
    \newOptexpComp{%
      { 0 0 } 
      \ifdim\POE@key@mirrorradius pt=0pt
-       { 1 0 } refl {PlaneIfc}
+       { 1 0 } \POE@key@mirrorwidth\space -0.5 mul dup neg refl {PlaneIfc}
      \else
-       { 0 \POE@key@mirrorradius\space neg} refl {CurvedIfc}
+       { 0 \POE@key@mirrorradius\space neg} 
+       \POE@key@mirrorwidth\space -0.5 mul dup neg 
+       refl {CurvedIfc}
      \fi
      1 %
    }%
@@ -10320,8 +10325,8 @@
 %    \begin{macrocode}
 \def\thickmirror@nodes{%
    \newOptexpCompAmb{%
-     { 0 -0.2} {1 0} trans {PlaneIfc}
-     { 0 0 } { 1 0 } refl {PlaneIfc} 2 \POE@key@n
+     { 0 -0.2} {1 0} 0 0 trans {PlaneIfc}
+     { 0 0 } { 1 0 } 0 0 refl {PlaneIfc} 2 \POE@key@n
    }%
 }%
 %    \end{macrocode}
@@ -10387,15 +10392,23 @@
   \newOptexpComp{%
     {@@x neg 0} 
     \ifdim\POE@key@lensradiusleft pt=0pt 
-      {0 1} trans {PlaneIfc}
+      {0 1} 
+      \POE@key@lensheight\space -0.5 mul dup neg
+      trans {PlaneIfc}
     \else 
-      {\POE@key@lensradiusleft\space 0} trans {CurvedIfc}
+      {\POE@key@lensradiusleft\space 0} 
+      \POE@key@lensheight\space -0.5 mul dup neg
+      trans {CurvedIfc}
     \fi
     {@@x 0} 
     \ifdim\POE@key@lensradiusright pt=0pt
-      {0 1} trans {PlaneIfc}
+      {0 1} 
+      \POE@key@lensheight\space -0.5 mul dup neg
+      trans {PlaneIfc}
     \else
-      {\POE@key@lensradiusright\space neg 0} trans {CurvedIfc} 
+      {\POE@key@lensradiusright\space neg 0} 
+      \POE@key@lensheight\space -0.5 mul dup neg
+      trans {CurvedIfc} 
     \fi
     \POE@key@n
   }%
@@ -10474,7 +10487,19 @@
 \ignorespaces}%
 %    \end{macrocode}
 % \end{macro}
-% 
+%
+% \begin{macro}{\dipole@nodes}
+%    \begin{macrocode}
+\def\pinhole@nodes{%
+  \newOptexpComp{%
+    {-1e-4 0} {0 1} @@y0 @@y sub @@y0 @@y add trans {PlaneIfc}
+    {0 0} {0 1} \POE@key@innerheight\space -0.5 mul dup neg trans {PlaneIfc}  
+    {1e-4 0} {0 1} @@y0 @@y sub @@y0 @@y add trans {PlaneIfc}
+    \POE@key@n }%
+\ignorespaces}%
+%    \end{macrocode}
+% \end{macro}
+%
 % \begin{macro}{\pinhole@comp}
 %    \begin{macrocode}
 \def\pinhole@comp{%
@@ -10508,18 +10533,18 @@
 % \begin{macro}{\beamsplitter@nodes}
 %    \begin{macrocode}
 \def\beamsplitter@nodes{%
-  \edef\@bs@wd{\POE@key@bssize\space 2.0 div }%
+  \edef\@bs@wd{\POE@key@bssize\space 0.5 mul }%
   \ifx\POE@key@bsstyle\POE@str@bsstyle@cube
     \newOptexpCompAmb{%
-      {\@bs@wd 2 sqrt div neg dup} {-1 1} trans {PlaneIfc}
-      {\@bs@wd 2 sqrt div dup neg} {1 1} trans {PlaneIfc}
-      {0 0} {1 0} trans {PlaneIfc}
-      {\@bs@wd 2 sqrt div dup} {-1 1} trans {PlaneIfc}
-      {\@bs@wd 2 sqrt div neg dup neg} {1 1} trans {PlaneIfc} 
+      {\@bs@wd 2 sqrt div neg dup} {-1 1} \@bs@wd neg \@bs@wd trans {PlaneIfc}
+      {\@bs@wd 2 sqrt div dup neg} {1 1} \@bs@wd neg \@bs@wd trans {PlaneIfc}
+      {0 0} {1 0} \@bs@wd 2 sqrt mul dup neg exch trans {PlaneIfc}
+      {\@bs@wd 2 sqrt div dup} {-1 1} \@bs@wd neg \@bs@wd trans {PlaneIfc}
+      {\@bs@wd 2 sqrt div neg dup neg} {1 1} \@bs@wd neg \@bs@wd trans {PlaneIfc} 
       3 \POE@key@n
     }%
   \else\ifx\POE@key@bsstyle\POE@str@bsstyle@plate
-    \newOptexpCompAmb{ {0 0} {1 0} trans {PlaneIfc} 1 1 }%
+    \newOptexpCompAmb{ {0 0} {1 0} \@bs@wd neg \@bs@wd trans {PlaneIfc} 1 1 }%
   \fi\fi
 \ignorespaces}%
 %    \end{macrocode}
@@ -10832,9 +10857,13 @@
 %    \begin{macrocode}
 \def\doveprism@nodes{%
   \newOptexpComp{%
-    {\POE@key@doveprismsize\space neg 0} {1 1} trans {PlaneIfc}
-    {0 \POE@key@doveprismsize\space -0.5 mul} {1 0} refl {PlaneIfc}
-    {\POE@key@doveprismsize\space 0} {-1 1} trans {PlaneIfc} 
+    {\POE@key@doveprismsize\space neg 0} {1 1} 
+    \POE@key@doveprismsize\space 2 sqrt div dup neg exch trans {PlaneIfc}
+    {0 \POE@key@doveprismsize\space -0.5 mul} {1 0} 
+    \POE@key@doveprismsize\space -1.5 mul dup neg
+    refl {PlaneIfc}
+    {\POE@key@doveprismsize\space 0} {-1 1} 
+    \POE@key@doveprismsize\space 2 sqrt div dup neg exch trans {PlaneIfc} 
     \POE@key@n true 
   }%
 \ignorespaces}%
@@ -10861,15 +10890,15 @@
 \def\pentaprism@nodes{%
   \edef\@sz{\POE@key@pentaprismsize\space}%
   \newOptexpComp{%
-    {\@sz 2 sqrt -2 mul div dup } {-1 1} trans {PlaneIfc}
+    {\@sz 2 sqrt -2 mul div dup } {-1 1} 0 0 trans {PlaneIfc}
     {\@sz 2 sqrt div 67.5 cos \@sz mul 
       67.5 sin 2 mul div sub \@sz 2 div}
     { 67.5 cos \@sz mul 67.5 sin div neg \@sz} 
-      refl {PlaneIfc}
+     0 0 refl {PlaneIfc}
     {\@sz 2 sqrt div neg 67.5 cos \@sz mul 
       67.5 sin 2 mul div add \@sz 2 div}
-    { 67.5 cos \@sz mul 67.5 sin div \@sz} refl {PlaneIfc}
-    {\@sz 2 sqrt 2 mul div dup neg} {1 1} trans {PlaneIfc} 
+    { 67.5 cos \@sz mul 67.5 sin div \@sz} 0 0 refl {PlaneIfc}
+    {\@sz 2 sqrt 2 mul div dup neg} {1 1} 0 0 trans {PlaneIfc} 
     \POE@key@n
   }%
 }%
@@ -10911,10 +10940,10 @@
   \newOptexpComp{%
     {\@sz -0.6 mul \@altan mul \@hshift neg} 
     {90 \POE@key@prismangle\space 0.5 mul sub dup cos exch sin} 
-    trans {PlaneIfc}
+    0 0 trans {PlaneIfc}
     {\@sz 0.6 mul \@altan mul \@hshift neg} 
     {90 \POE@key@prismangle\space 0.5 mul add dup cos exch sin} 
-    trans {PlaneIfc} \POE@key@n true }%
+    0 0 trans {PlaneIfc} \POE@key@n true }%
   \pnode(! 0 \@hshift neg){\oenodeCenter{}}
 }%
 %    \end{macrocode}
@@ -10947,13 +10976,13 @@
   \edef\@sz{\POE@key@prismsize\space}%
   \edef\@altan{\POE@key@prismangle\space 0.5 mul tan }%
   \newOptexpCompAmb{%
-    {0 0} {1 0} refl {PlaneIfc}
+    {0 0} {1 0} 0 0 refl {PlaneIfc}
     {\@sz -0.5 mul \@altan mul \@sz -0.5 mul} 
     {90 \POE@key@prismangle\space 0.5 mul add dup cos exch sin} 
-    trans {PlaneIfc}
+    0 0 trans {PlaneIfc}
     {\@sz 0.5 mul \@altan mul \@sz -0.5 mul} 
     {90 \POE@key@prismangle\space 0.5 mul sub dup cos exch sin} 
-    trans {PlaneIfc} 1 \POE@key@n true }%
+    0 0 trans {PlaneIfc} 1 \POE@key@n true }%
   \pnode(! 0 \@sz -0.5 mul){\oenodeCenter{}}
 }%
 %    \end{macrocode}
@@ -10979,10 +11008,10 @@
   \edef\@sz{\POE@key@raprismsize\space 0.5 mul }%
   \edef\@ht{\POE@dict{OEangle 0.5 mul sin modA mul} }%
   \newOptexpComp{%
-    {\@ht neg \@ht \@sz sub} {1 0} trans {PlaneIfc}
-    {\@ht neg 0} {1 1} refl {PlaneIfc}
-    {\@ht 0} {1 -1} refl {PlaneIfc}
-    {\@ht dup \@sz sub } {1 0} trans {PlaneIfc} 
+    {\@ht neg \@ht \@sz sub} {1 0} 0 0 trans {PlaneIfc}
+    {\@ht neg 0} {1 1} 0 0 refl {PlaneIfc}
+    {\@ht 0} {1 -1} 0 0 refl {PlaneIfc}
+    {\@ht dup \@sz sub } {1 0} 0 0 trans {PlaneIfc} 
     \POE@key@n 
   }%
 \ignorespaces}%
@@ -11597,8 +11626,8 @@
 \def\fibercollimator@nodes{%
    \def\@sz{\POE@key@fibercolsize\space 0.5 mul }%
    \pnode(!\@sz neg 0){\oenodeIn{}}
-   \newOptexpComp{ {\@sz neg 0} {0 1} trans {PlaneIfc} 
-                   {\@sz 0} {0 1} trans {PlaneIfc} 1 }%
+   \newOptexpComp{ {\@sz neg 0} {0 1} 0 0 trans {PlaneIfc} 
+                   {\@sz 0} {0 1} 0 0 trans {PlaneIfc} 1 }%
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -11976,7 +12005,7 @@ tx@OptexpDict begin
     5 dict dup dup /P@1 ED /P@N ED
     begin
       /mode trans def
-      {} PlaneIfc
+      {} 0 0 PlaneIfc
     end
   /adjustRel true def
   end
@@ -11987,23 +12016,34 @@ tx@OptexpDict begin
 % \begin{macro}{CurvedIfc}
 % Defines a curved interface.
 % \begin{pssyntax}
-%   \PSop{CurvedIfc}
+%   \PSproc{X Y} \PSproc{DX DY} \PSproc{scl} \PSvar{NAlow NAup} \PSop{CurvedIfc}
 % \end{pssyntax}
 %    \begin{macrocode}
 /CurvedIfc {
-    2 copy 5 3 roll exec 3 -1 roll exec VecAdd 
-    5 -1 roll exec /Y ED /X ED
-    exch exec 3 -1 roll exec 2 copy tx@Dict begin Pyth end 
-    /R ED /RY ED /RX ED
+  5 2 roll
+  2 copy 5 3 roll exec 3 -1 roll exec VecAdd 
+  5 -1 roll exec /Y ED /X ED
+  exch exec 3 -1 roll 3 copy exec /RY ED /RX ED
+  3 1 roll NormalizeVec 3 -1 roll exec
+  tx@Dict begin Pyth end dup
+  3 1 roll mul 1.00001 mul /NAup ED
+  mul 1.00001 mul /NAlow ED
 } bind def
 %    \end{macrocode}
 % \end{macro}
 % 
 % \begin{macro}{PlaneIfc}
+%   \begin{pssyntax}
+%     \PSproc{X Y} \PSproc{DX DY} \PSproc{scl} \PSvar{NAlow NAup} \PSop{PlaneIfc}
+%   \end{pssyntax}
 %    \begin{macrocode}
 /PlaneIfc {
-    dup 3 -1 roll exec 3 -1 roll exec /DY ED /DX ED
-    exch exec 3 -1 roll exec /Y ED /X ED
+  5 2 roll
+  dup 3 -1 roll exec NormalizeVec 3 -1 roll exec 2 copy /DY ED /DX ED
+  tx@Dict begin Pyth end dup 4 2 roll
+  exch exec 3 -1 roll exec /Y ED /X ED
+  3 1 roll mul 1.00001 mul /NAup ED
+  mul 1.00001 mul /NAlow ED
 } bind def
 %    \end{macrocode}
 % \end{macro}
@@ -12011,11 +12051,13 @@ tx@OptexpDict begin
 % \begin{macro}{NewCompIfc}
 % Defines a new interface of a component, must be called within \PSvar{NewOptexpComp}.
 % \begin{pssyntax}
-%   \PSproc{x y} \PSproc{dx dy | rx ry} mode (CompName) (Name) \PSproc{New\ldots Ifc} \PSproc{scaling} \PSop{NewCompIfc}
+%   \PSproc{x y} \PSproc{dx dy | rx ry} \PSvar{NAlow NAup mode} 
+%   \PSstring{CompName} \PSstring{Name} \PSproc{New\ldots Ifc} \PSproc{scaling} \PSop{NewCompIfc}
 % \end{pssyntax}
 % \begin{psarglist}
 % \psargitem{\PSproc{x y}} The coordinates of the interface node which lies on the optical axis.??
 % \psargitem{\PSproc{dx dy | rx ry}} For a plane interface, this is the vector that describes the plane, for a curved interface this is the
+% \psargitem{\PSvar{NAlow NAup}}
 % \psargitem{\PSvar{mode}} An integer which characterizes if an interface is
 %   reflective or transmittive. You should use the predefined variable
 %   \PSname{refl} and \PSname{trans} for this.
@@ -12030,13 +12072,13 @@ tx@OptexpDict begin
   /scl ED
   /next ED
   dup (P@) exch strcat cvn
-  5 dict dup
+  6 dict dup
   3 1 roll def
   begin
     3 -1 roll
     /mode ED
-    4 -1 roll dup 5 -1 roll
-    {scl} next
+    6 -1 roll dup 7 -1 roll
+    {scl} 8 -2 roll next
   end
 %    \end{macrocode}
 % store a new node \PSname{N@NameX}, with X=1..N this node always
@@ -12106,7 +12148,7 @@ tx@OptexpDict begin
 % \end{psarglist}
 %
 % \begin{pssyntax}
-%   \PSvar{[} \PSproc{x y} \PSproc{dx dy | rx ry} \PSvar{type}
+%   \PSvar{[} \PSproc{x y} \PSproc{dx dy | rx ry} \PSvar{NAlow NAup} \PSvar{type}
 %   \PSproc{\ldots Ifc} \PSvar{\ldots{} [n] correct? amb? allowbeaminside?} 
 %   \PSstring{CompName} \PSproc{scaling} \PSop{NewOptexpComp}
 % \end{pssyntax}
@@ -12124,7 +12166,7 @@ tx@OptexpDict begin
   end
   /CompMtrx CM def
   grestore
-  counttomark dup 4 idiv dup /N ED 4 mul eq { 1 } if 
+  counttomark dup 6 idiv dup /N ED 6 mul eq { 1 } if 
   cvx 1 EvalRefIndex /n ED
 %    \end{macrocode}
 % This defines for ambiguous components, which interface coincides with the
@@ -12177,12 +12219,12 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % only a single plane is specified, create the aliases.
 %    \begin{macrocode}
-    {0 1} trans name (1) {PlaneIfc} {sc} NewCompIfc 
+    {0 1} 0 0 trans name (1) {PlaneIfc} {sc} NewCompIfc 
     (1) (N) IfcAlias
   }{
     N -1 1 {
       dup N eq { pop (N) }{inttostr} ifelse
-      {0 1} absorb name 4 -1 roll {PlaneIfc} {sc} NewCompIfc
+      {0 1} 0 0 absorb name 6 -1 roll {PlaneIfc} {sc} NewCompIfc
     } for
   } ifelse
   end
@@ -12507,7 +12549,6 @@ tx@OptexpDict begin
   /startinside startinside beaminsidefirst or def
   /stopinside stopinside beaminsidelast or def
   /PrevCorrect false def
-  counttomark /N ED
   PrearrangePlanes
   PushAllPlanesOnStack
   currentdict /lastVecTmp known {
@@ -12849,6 +12890,7 @@ tx@OptexpDict begin
     PN PlaneNum eq ret tir eq or {
       DrawnSegm 0 gt currentdict /fillBeam known and { 
         fillBeam newpath 
+        /DrawnSegm 0 def
       } if
       ret tir eq {
         PlaneNum PN sub {pop} repeat
@@ -12861,6 +12903,10 @@ tx@OptexpDict begin
     /PrevMode Mode def
     CompName cvn load /correct get /PrevCorrect ED
   } loop
+  DrawnSegm 0 gt currentdict /fillBeam known and {
+    fillBeam newpath
+    /DrawnSegm 0 def
+  } if
   ret missed eq not {
     CurrUp CurrLow @ABVect 
     CurrVecUp CurrVecLow 3 -1 roll add 3 1 roll add exch
@@ -12940,12 +12986,41 @@ tx@OptexpDict begin
 %    \begin{macrocode}
 /HandleInterface {
   /Yin ED /Xin ED /Y0 ED /X0 ED /n2 ED /mode ED
-  2 copy LoadIfc
+  2 copy 2 copy LoadIfc
   6 -2 roll isCurved { CurvedInterface }{ PlainInterface } ifelse
+%    \end{macrocode}
+% IfcNum CompName X0' Y0' Xout Yout status
+%
+% Check if X0' Y0' are within the numerical aperture of the interface
+%    \begin{macrocode}
+  dup missed eq not {
+    7 3 roll 2 copy 9 2 roll
+    4 2 roll 2 copy
+    %% X0' Y0' Xout Yout status X0' Y0' IfcNum CompName IfcNum CompName
+    cvn load begin IfcName load dup /NAlow get exch /NAup get end
+    2 copy lt {
+      4 2 roll 2 copy LoadIfc NormalizeVec
+      6 -2 roll isCurved {
+        neg exch
+      } if
+      %% ... X0' Y0' NAlow NAup X Y dXp dYp
+      8 -2 roll 6 -2 roll
+      %% ... NAlow NAup dXp dYp X0' Y0' X Y
+      @ABVect SProd
+      dup 4 -1 roll ge 3 1 roll ge and not 
+      {
+        pop missed
+      } if
+    }{
+      6 {pop} repeat
+    } ifelse
+  } {
+    7 -2 roll pop pop
+  } ifelse
 } bind def
 %    \end{macrocode}
 % \end{macro}
-% 
+%
 % \begin{macro}{LoadIfc}
 % \begin{pssyntax}
 % \PSvar{IfcNum} \PSstring{CompName} \PSop{LoadIfc} \PSvar{X Y} \PSvar{dX|RY dY|RY}
@@ -13547,7 +13622,7 @@ tx@OptexpDict begin
   /dYp ED /dXp ED /Yp ED /Xp ED
   Xp Yp Xp dXp add Yp dYp add X0 Y0 X0 Xin add Y0 Yin add 
   @InterLines missed eq {
-    missed
+    0 0 missed
   } {
     Xin Yin Xin Yin dXp dYp NormalVec
     mode trans eq {

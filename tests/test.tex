@@ -66,6 +66,18 @@
 \providecommand\OFF{\xdef\lst@alloverstyle##1{##1}}
 \makeatother
 \begin{document}
+\begin{pspicture}(0.5,0)(2.2,4)
+  \pnode(0,1){In}\pnode(1,1){BS}\pnode(2,1){G}\pnode(1,4){Out}
+  \beamsplitter[compname=Bs](G)(BS)(Out)
+  \optgrating[compname=G](BS)(G)(BS)
+  \lens[lens=2 2 1.5, compshift=0.1, n=2.25, compname=L](BS)(Out)
+  \pinhole[phwidth=0.05, innerheight=0.05, position=0.8, compshift=0.18, compname=Ph](BS)(Out)
+  \optplane[compname=Out, angle=90](Out)
+  \addtopsstyle{Beam}{linestyle=none, beamwidth=0.2, fillstyle=solid}%, beaminsidelast}
+  \drawwidebeam[fillcolor=red!25!white]{(In)}{Bs}{G}{Bs}{L}{Ph}{Out}
+  \drawwidebeam[fillcolor=red!50!white, beamangle=-5]{G}{Bs}{L}{Ph}{Out}
+\end{pspicture}
+\end{document}
 \begin{pspicture}(5,2)
   \pnode(0.5,1){A}
   \pnode(4.5,1){B}
