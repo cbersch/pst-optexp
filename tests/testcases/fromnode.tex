@@ -1,5 +1,6 @@
 Test what happens if the input interface is missed (this situation could be
 fixed if you use \textbackslash optplane instead of the nodes for drawing.
+
 \begin{LTXexample}[pos=t]
 \begin{pspicture}[showgrid=true](0.5,-0.3)(6,3.3)
   \psset{beaminsidelast}
@@ -26,35 +27,6 @@ fixed if you use \textbackslash optplane instead of the nodes for drawing.
 \end{pspicture}
 \end{LTXexample}
 
-\newpage
-The same for filled beams, only if both lower and upper beams are possible, the beam is filled.
-\begin{LTXexample}[pos=t]
-\begin{pspicture}[showgrid=true](0.5,-0.3)(6,3.3)
-  \psset{beaminsidelast}
-  % a single beam misses the input interface
-  \pnode(1,3){A}\pnode(1,1){G}\pnode(2,1){B}
-  \beamsplitter(A)(G)(B)
-  \drawbeam{(A)}{}
-  % both beams hit the input interface because of beamdiv > 0
-  \newpsstyle{Beam}{linestyle=none, fillstyle=solid, fillcolor=green}
-  \pnode(2,3){A}\pnode(2,1){G}\pnode(3,1){B}
-  \beamsplitter(A)(G)(B)
-  \drawwidebeam[beamdiv=4]{(A)}{}
-  % the lower beam misses the input interface
-  \pnode(3,3){A}\pnode(3,1){G}\pnode(4,1){B}
-  \beamsplitter(A)(G)(B)
-  \drawwidebeam[beamdiv=4, beamangle=2]{(A)}{}
-  % the upper beam misses the input interface
-  \pnode(4,3){A}\pnode(4,1){G}\pnode(5,1){B}
-  \beamsplitter(A)(G)(B)
-  \drawwidebeam[beamdiv=4, beamangle=-2]{(A)}{}
-  % both beams miss the input interface
-  \pnode(5,3){A}\pnode(5,1){G}\pnode(6,1){B}
-  \beamsplitter(A)(G)(B)
-  \drawwidebeam[beamwidth=0.1]{(A)}{}
-  
-\end{pspicture}
-\end{LTXexample}
 
 \begin{pspicture}[showgrid=true](6,5)
   \pnode(2,4){A}
