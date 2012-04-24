@@ -1,18 +1,19 @@
+\psset{pswarning=false}
 \begin{pspicture}[showgrid](3,3)
   \pnode(0,1){A}\pnode(2,1){B}\pnode(3,2){C}\pnode(2.5,3){D}
   \optplane(A)
-  \optgrating(A)(B)(C)
-  \pinhole[phwidth=-0.1, abspos=0.5](D)(B)
-  \optplate[position=end, linestyle=none](B)(D)
+  \optgrating[reverse](A)(B)(C)
+  \pinhole[phwidth=-0.1, innerheight=0.03, abspos=0.5](D)(B)
+  \optplate[position=end, plateheight=1.5](B)(D)
   \definecolor[ps]{bl}{rgb}{%
     tx@addDict begin Red Green Blue end}%
-  \drawbeam{1-2}
+  \drawbeam[linecolor=red]{1-2}
   \addtopsstyle{Beam}{linecolor=bl, linewidth=0.4\pslinewidth}
   \multido{\i=0+1}{60}{%
     \pstVerb{%
       \i\space 650 400 sub 59 div mul 400 add 
       tx@addDict begin wavelengthToRGB end }%
-    \drawbeam[beamangle=\i\space 0.2 mul 5 sub]{2-}%
+    \drawbeam[beamangle=\i\space 0.3 mul 6.5 sub]{2-}%
   }%
 \end{pspicture}
 
