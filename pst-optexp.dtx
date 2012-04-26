@@ -1908,7 +1908,7 @@
 \begin{pspicture}(-0.3,0)(2,3.7)
   \psset{labeloffset=1, optboxwidth=1, arrowscale=1.5, arrowinset=0}
   \begin{optexp}
-  \optbox[endbox, labelangle=90](1,1)(1,2){Box}
+  \optbox[position=end, labelangle=90](1,1)(1,2){Box}
   \beamsplitter[labelangle=-90](1,2)(1,1)(2,1){BS}
   \drawbeam[arrows=->]{1}{2}{(2,1)}
   \frontlayer{%
@@ -1952,7 +1952,7 @@
 % \fi
 \begin{LTXexample}[morekeywords={[21]{label}}]
 \begin{pspicture}(-2,-2)(2,2)
-  \psset{endbox, optboxwidth=1, optboxheight=0.6, label=0 . . relative}
+  \psset{position=end, optboxsize=1 0.6, innerlabel}
   \multido{\i=0+45}{8}{%
     \optbox(0,0)(1;\i){\i}
   }
@@ -1961,7 +1961,7 @@
 
 \begin{LTXexample}[morekeywords={[21]{labelref}}]
 \begin{pspicture}(-2,-2)(2,2)
-  \psset{endbox, optboxwidth=1, optboxheight=0.6, labelref=relgrav}
+  \psset{position=end, optboxsize=1 0.6, labelref=relgrav}
   \multido{\i=0+72}{5}{%
     \optbox(0,0)(1;\i){\i}
   }
@@ -1970,9 +1970,9 @@
 
 \begin{LTXexample}[morekeywords={[21]{labelref}}]
 \begin{pspicture}(-2,-2)(2,2)
-  \psset{endbox, optboxwidth=1, optboxheight=0.6, labelref=global}
+  \psset{position=end, optboxsize=1 0.6, labelref=global}
   \multido{\i=0+72}{5}{%
-    \optbox[labelref=global](0,0)(1;\i){\i}
+    \optbox(0,0)(1;\i){\i}
   }
 \end{pspicture}
 \end{LTXexample}
@@ -2390,7 +2390,7 @@
 % \numitem[0.8]{optboxheight}
 % \ifGERMAN Die Höhe der Box.\fi\ifENGLISH The height of the box.\fi
 %
-% \optitem{optbox}{\prm{width}[ \prm{height}]}
+% \optitem{optboxsize}{\prm{width}[ \prm{height}]}
 % \ifGERMAN Die Breite und Höhe der Box, äquivalent zum Aufruf von
 % \Lkeyword{optboxwidth} und \Lkeyword{optboxheight}. Wird nur ein Wert
 % angegeben, dann wird dieser für Breite und Höhe verwendet.
@@ -2494,7 +2494,7 @@
 % \end{ltxsyntax}
 % 
 % \begin{optionlist}
-%   \numitem[0.6]{doveprismsize} 
+%   \optitem[0.6]{doveprismsize}{\prm{num}[ \prm{num}]}
 %   \ifGERMAN
 %   Die Höhe des Prismas, die Gesamtbreite ist das dreifache und die Winkel an
 %   der Eingangs- und Ausgangsfläche betragen 45\textdegree.
@@ -2504,6 +2504,13 @@
 %   three times the height and the angles at the input and output faces are
 %   45\textdegree.
 %   \fi
+%   \numitem{doveprismheight}
+%   \ifGERMAN Die Höhe des Prisma.\fi
+%   \ifENGLISH The prism height.\fi
+%
+%   \numitem{doveprismwidth}
+%   \ifGERMAN Die Länge der Grundseite des Prisma.\fi
+%   \ifENGLISH The length of the prism base edge.\fi
 % \end{optionlist}
 %
 % \iffalse
@@ -4243,7 +4250,7 @@
 %
 % \begin{pspicture}(6,2.5) 
 %   \addtopsstyle{Beam}{beaminside=false, arrows=->, arrowinset=0, arrowscale=1.5}
-%    \psset{optboxheight=1.5, optboxwidth=2.5}\ttfamily
+%    \psset{optboxsize=2.5 1.5}\ttfamily
 %    \pnode(0,1.25){A}\pnode(6,1.25){B}
 %    \optbox[beam, extnode=tl](A)(B)
 %    \psdot(\oenodeExt{})\uput[135](\oenodeExt{}){tl}
@@ -4281,7 +4288,7 @@
 % \fi
 \begin{LTXexample}
 \begin{pspicture}(-2,-2)(2,2)
-  \psset{endbox, optboxwidth=1, optboxheight=0.6, dotscale=1.5}
+  \psset{endbox, optboxsize=1 0.6, dotscale=1.5}
   \psset{globalnoderef, extnode=tr}
   \multido{\i=0+45}{8}{%
     \optbox[label=0 . . relative](0,0)(1;\i){\i}
@@ -4308,7 +4315,7 @@
 % \fi
 \begin{LTXexample}
 \begin{pspicture}(-2,-2)(2,2)
-  \psset{endbox, optboxwidth=1, optboxheight=0.6, dotscale=1.5}
+  \psset{endbox, optboxsize=1 0.6, dotscale=1.5}
   \psset{globalnoderef=false, extnode=tr}
   \multido{\i=0+45}{8}{%
     \optbox[label=0 . . relative](0,0)(1;\i){\i}
@@ -4483,7 +4490,7 @@
 \begin{LTXexample}
 \begin{pspicture}(0,0)(3,2) 
   \pnode(0,1){A}\pnode(1.6,1){B}
-  \optbox[endbox](A)(B)
+  \optbox[position=end](A)(B)
   \drawbeam[beaminsidelast=false]{(A)}{1}
   \psdot(\oenodeBeam)
 \end{pspicture}
@@ -4593,7 +4600,7 @@
 \begin{LTXexample}
 \begin{pspicture}(0,0)(3,2) 
   \pnode(0,1){A}\pnode(1.6,1){B}
-  \optbox[endbox](A)(B)
+  \optbox[position=end](A)(B)
   \psset{beaminsidelast=false}
   \drawbeam[linecolor=red, beampos=0.3]{(A)}{1}
   \psdot(\oenodeBeam)
@@ -4656,7 +4663,7 @@
 \begin{LTXexample}
 \begin{pspicture}(3,1.5)
   \pnode(0,1){A}\pnode(1.5,1){B}
-  \optbox[endbox, labeloffset=0](A)(B){1}
+  \optbox[position=end, labeloffset=0](A)(B){1}
   \drawbeam{(A)}{1}
 \end{pspicture}
 \end{LTXexample}
@@ -4726,7 +4733,7 @@
 % \fi
 \begin{LTXexample}
 \begin{pspicture}(3,3)
-  \psset{endbox, optbox=0.5, bssize=0.5}
+  \psset{position=end, optboxsize=0.5, bssize=0.5}
   \optbox[compname=obj](0.5,0.5)(0.5,2.5){obj, 1}
   \beamsplitter(0.5,2.5)(0.5,1)(2.5,1){2}
   \optbox(0.5,1)(2.5,1){3}
@@ -5001,7 +5008,7 @@
 \begin{pspicture}(4,3.8)
   \pnode(1.5,0.5){A}\pnode(3.5,0.5){B}
   \pnode(3.5,3.5){C} 
-  \optbox[endbox](B)(A){}
+  \optbox[position=end](B)(A){}
   \psset{mirrortype=extended}
   \mirror[mirrorradius=3](A)(B)(C){} 
   \mirror(B)(C)(B){} 
@@ -5056,7 +5063,7 @@
   \pnode(1.5,0.5){A}\pnode(3.5,0.5){B}
   \pnode(3.5,3.5){C} 
   \psset{mirrortype=extended}
-  \optbox[endbox](B)(A){}
+  \optbox[position=end](B)(A){}
   \mirror(A)(B)(C){} 
   \mirror(B)(C)(B){} 
   \drawbeam[linecolor=red, beamangle=3]{-3}
@@ -5113,10 +5120,10 @@
 \begin{LTXexample}[morekeywords = {[21]{beaminside}}]
 \begin{pspicture}(0.3,0.3)(3,4)
   \psset{optboxwidth=1}
-  \optbox[endbox](1,1)(1,3)
+  \optbox[position=end](1,1)(1,3)
   \optretplate(1,1)(1,3)
   \pentaprism(1,3)(1,1)(2,1)
-  \optbox[endbox](1,1)(2,1)
+  \optbox[position=end](1,1)(2,1)
   \drawbeam[beampos=-0.05, linecolor=red]{1}{2}{3}{4}
   \drawbeam[beampos=0.05, beaminside=false]{1}{2}{3}{4}
 \end{pspicture}
@@ -5138,10 +5145,10 @@
 \begin{LTXexample}[morekeywords = {[21]{beaminsidefirst}}]
 \begin{pspicture}(0.3,0.3)(3,4)
   \psset{optboxwidth=1}
-  \optbox[endbox](1,1)(1,3)
+  \optbox[position=end](1,1)(1,3)
   \optretplate(1,1)(1,3)
   \pentaprism(1,3)(1,1)(2,1)
-  \optbox[endbox](1,1)(2,1)
+  \optbox[position=end](1,1)(2,1)
   \drawbeam[beampos=-0.05, linecolor=red]{1}{2}{3}{4}
   \drawbeam[beampos=0.05, beaminsidefirst]{1}{2}{3}{4}
 \end{pspicture}
@@ -5163,10 +5170,10 @@
 \begin{LTXexample}[morekeywords = {[21]{beaminsidelast}}]
 \begin{pspicture}(0.3,0.3)(3,4)
   \psset{optboxwidth=1}
-  \optbox[endbox](1,1)(1,3)
+  \optbox[position=end](1,1)(1,3)
   \optretplate(1,1)(1,3)
   \pentaprism(1,3)(1,1)(2,1)
-  \optbox[endbox](1,1)(2,1)
+  \optbox[position=end](1,1)(2,1)
   \drawbeam[beampos=-0.05, linecolor=red]{1}{2}{3}{4}
   \drawbeam[beampos=0.05, beaminsidelast]{1}{2}{3}{4}
 \end{pspicture}
@@ -5694,9 +5701,9 @@
 \begin{LTXexample}
 \begin{pspicture}(3,3)
   \pnode(1, 0.5){A}\pnode(2.5,0.5){B}\pnode(2.5,2){C}
-  \psset{fiber=none, optbox=1 0.6, innerlabel}
-  \optbox[endbox](B)(A){start}
-  \optbox[endbox](B)(C){stop}
+  \psset{fiber=none, optboxsize=1 0.6, innerlabel}
+  \optbox[position=start](A)(B){start}
+  \optbox[position=end](B)(C){stop}
   \drawfiber[fiberstyle=diag, linearc=0.5]{1}{2}
 \end{pspicture}
 \end{LTXexample}
@@ -6029,7 +6036,7 @@
 % \fi
 \begin{LTXexample}
 \begin{pspicture}(-3,-3)(3,3)
-  \psset{optbox=0.6 0.5, labeloffset=0}
+  \psset{optboxsize=0.6 0.5, labeloffset=0}
   \multido{\i=0+60,\ii=1+1}{6}{%
     \pnode(2.5;\i){A}
     \optbox([Xnodesep=-1]A)([Xnodesep=1]A){\ii}
@@ -6248,7 +6255,7 @@
 % \fi
 \begin{LTXexample}[pos=t, caption={caption}]
 \begin{pspicture}(10.4,1.7)
-\newpsobject{mybox}{optbox}{endbox, label=0, optboxwidth=1.2}
+\newpsobject{mybox}{optbox}{position=end, label=0, optboxwidth=1.2}
 \addtopsstyle{Beam}{linewidth=2\pslinewidth}
 \pnode(1.2,1){Start}\pnode(9.2,1){CCD}
 \begin{optexp}
@@ -6269,7 +6276,7 @@
 
 \begin{LTXexample}[pos=t, caption={caption}]
 \begin{pspicture}(10.4,1.7)
-\newpsobject{mybox}{optbox}{endbox, label=0, optboxwidth=1.2}
+\newpsobject{mybox}{optbox}{position=end, label=0, optboxwidth=1.2}
 \pnode(1.2,1){Start}\pnode(9.2,1){CCD}
 \begin{optexp}
 \mybox(CCD)(Start){Laser}
@@ -6298,7 +6305,7 @@
 \pnode(-2,0){LOut}\pnode(0,0){Grat}\pnode(4;45){Out}\pnode(2.5;70){Mvar}
 \newpsstyle{Beam}{linewidth=2\pslinewidth, linecolor=red!90!black}
 \begin{optexp}
-  \optbox[optboxwidth=2.2, labeloffset=0, endbox](Grat)(LOut){diode laser}
+  \optbox[optboxwidth=2.2, labeloffset=0, position=start](LOut)(Grat){diode laser}
   \mirror[variable](Grat)(Mvar)(Grat){M$_\mathrm{var}$}
   \optretplate[position=0.3](LOut)(Grat){$\nicefrac{\lambda}{4}$}
   \optgrating(LOut)(Grat)(Out){grating}
@@ -6313,8 +6320,8 @@
 \begin{LTXexample}[pos=t, caption={caption}]
 \begin{pspicture}(8.5,1.9)
 \pnode(1.4,1.3){Laser}\pnode(7.6,1.3){Diode}
-\optbox[endbox, labeloffset=0](Diode)(Laser){Laser}%
-\optbox[abspos=4, optbox=1 0.6, labeloffset=1, n=3,
+\optbox[position=start, labeloffset=0](Laser)(Diode){Laser}%
+\optbox[abspos=4, optboxsize=1 0.6, labeloffset=1, n=3,
         compname=PC, angle=-10, rotateref=l](Laser)(Diode){Photonic Crystal}
 \optdetector[dettype=diode](\oenodeOut{PC})(Diode|\oenodeOut{PC}){PD}
 \nodexn{(\oenodeIn{PC}) + (2;170)}{Angle1}
@@ -6339,7 +6346,7 @@
 \pnode(2,7){L}\pnode(2,5.8){Pbs}\pnode([Xnodesep=1]Pbs){Blk1}\pnode(2,2.3){Bs}
 \pnode([Xnodesep=-1]Bs){Blk2}\pnode([Xnodesep=3.5]Bs){Out}\pnode(2,1.3){Slm}
 \begin{optexp}
-  \optbox[endbox, innerlabel, optbox=1.2 0.6](Pbs)(L){Laser}
+  \optbox[position=end, innerlabel, optboxsize=1.2 0.6](Pbs)(L){Laser}
   \psset{labelalign=r, mirrortype=extended}
   \newpsstyle{ExtendedMirror}{fillstyle=solid, fillcolor=black}
   \optretplate[position=0.4](L)(Pbs){HWP}
@@ -6367,7 +6374,7 @@
 \begin{pspicture}(6.4,3.2)
 \addtopsstyle{Fiber}{linecolor=red}\psset{fiber=none}
 \pnode(2.3,2.3){Lin}\pnode([Xnodesep=4.5]Lin){Det}
-\optbox[label=-0.2, endbox, compname=L, extnode=b](Det)(Lin){%
+\optbox[label=-0.2, position=start, compname=L, extnode=b](Lin)(Det){%
   \psGauss[yunit=0.03,sigma=0.03]{-0.5}{0.5}}
 \optbox[label=0, compname=EAM, extnode=b, abspos=1.5](Lin)(Det){EAM}
 \optfiber[labeloffset=0.3, abspos=3.2](Lin)(Det){fibre}
@@ -6387,7 +6394,7 @@
 \begin{pspicture}(0.4,0.6)(8.2,3.5)
 \pnode(2,3){Laser}\pnode(2,1){PwMeter}\pnode(6,3){CplTop}\pnode(6,1){CplBot}
 \psset{arrowscale=1.5, arrowinset=0}
-\optbox[endbox, optbox=1.6 1, labeloffset=0]([Xnodesep=0.1]Laser)(Laser){%
+\optbox[position=start, optboxsize=1.6 1, labeloffset=0](Laser)([Xnodesep=0.1]Laser){%
   \begin{tabular}{@{}c@{}}Nd:YAG\\[-0.4ex]cw laser\end{tabular}}
 \optcoupler[addtoFiberIn1={ArrowInside=->}, addtoFiberIn2={ArrowInside=-<},
             labeloffset=0.4](Laser)(PwMeter)(CplTop)(CplBot){WDM}
@@ -6415,7 +6422,7 @@
 \wdmcoupler[addtoFiberIn1={ArrowInside=->}, addtoFiberIn2={angleA=0}, 
             addtoFiberOut={angleB=0,arrows=-|}, ncurv=0.9, 
             coupleralign=bottom, compshift=0.8](Pump)(PC2out)(PumpSig){pump}
-\optbox[endbox, label=0 . . relative]([offset=-0.1]Pump)(Pump){980~nm}
+\optbox[position=start, innerlabel](Pump)([offset=-0.1]Pump){980~nm}
 \optfiber[fiberloops=2, labeloffset=0.4](CplIn)(PumpSig){Er$^+$-doped}
 \end{pspicture}
 \end{LTXexample}
@@ -6466,7 +6473,7 @@
 \pnode(2.4,1){BS1}\pnode([offset=3]BS1){M1}
 \pnode([Xnodesep=5.5]M1){PP}\pnode(PP|BS1){BS2}
 \begin{optexp}
-  \optbox[labeloffset=0, endbox, optboxwidth=1.6](BS1)([Xnodesep=-1]BS1){Nd:YAG}
+  \optbox[label=0, position=start, optboxwidth=1.6]([Xnodesep=-1]BS1)(BS1){Nd:YAG}
   \beamsplitter[compname=BS](BS2)(BS1)(M1){BS}
   \LCLV[position=0.2, compname=LCLV](BS1)(BS2){LCLV}
   \optretplate(BS1)(M1){P}
@@ -6491,8 +6498,8 @@
 \pnode(4,2){BSFwd}\pnode(6.5,2){BSBwd}\pnode(2,2){BS4f}\pnode(2,0.5){M4f3}
 \pnode(8,2){M4f1}\pnode(8,0.5){M4f2}\pnode(1,2){CCD}
 \psset{mirrorwidth=0.6, plateheight=0.7, outerheight=0.7, labeloffset=0.7, labelstyle=\scriptsize, lens=1.2 1.2 0.8, bssize=0.5} 
-\optbox[endbox, optbox=1.5 0.7,labeloffset=0]% 
-   (PBS)(Laser){\parbox{1.5cm}{\centering Nd:YAG\\ 532\,nm}}
+\optbox[position=start, optboxsize=1.5 0.7, innerlabel]% 
+   (Laser)(PBS){\parbox{1.5cm}{\centering Nd:YAG\\ 532\,nm}}
 \lens[lensheight=0.5, position=0.2](Laser)(PBS){MO}
 \pinhole[position=0.3,labelangle=180](Laser)(PBS){PH}
 \lens[position=0.5](Laser)(PBS){L}
@@ -6512,7 +6519,7 @@
 \mirror(BSBwd)(M4f1)(M4f2){M}\mirror(M4f1)(M4f2)(M4f3){M}
 \lens[labelangle=180](M4f2)(M4f3){L}\mirror(M4f2)(M4f3)(BS4f){M}
 \beamsplitter(M4f3)(BS4f)(CCD){BS}
-\optbox[endbox,labeloffset=0, optboxwidth=1](BS4f)(CCD){CCD}
+\optbox[position=end, label=0, optboxwidth=1](BS4f)(CCD){CCD}
 \lens[abspos=0.7](BS4f)(BSFwd){L}\lens[abspos=0.7](BSBwd)(M4f1){L}
 \addtopsstyle{Beam}{linewidth=2\pslinewidth}
 \drawbeam{1-6}{11-14}{13}{12}{15}{18}{16}{17}{25}{23}{24}
@@ -6528,7 +6535,7 @@
 \pnode(1,5){LD}\pnode([Xnodesep=5.5]LD){CPLin1}
 \pnode([offset=-2]CPLin1){CPLin2}\pnode([Xnodesep=2.5]CPLin1){CPLout1}
 \pnode([Xnodesep=2.5]CPLin2){CPLout2}\pnode([Xnodesep=3]CPLout1){RX}
-\optbox[endbox, labeloffset=0](CPLin1)(LD){LD}
+\optbox[position=start, label=0](LD)(CPLin1){LD}
 \optmzm[abspos=0.8](LD)(CPLin1){MZM}
 \optamp[abspos=2](LD)(CPLin1){EDFA}
 \optfilter[abspos=3](LD)(CPLin1){BPF}
@@ -6538,7 +6545,7 @@
 \optcoupler[couplertype=none, fiber](CPLin1)(CPLin2)(CPLout1)(CPLout2)
 \optamp[abspos=0.8, fiber=in](CPLout1)(RX){EDFA}
 \optfilter[abspos=2](CPLout1)(RX){BPF}
-\optbox[endbox](CPLout1)(RX){RX}
+\optbox[position=end](CPLout1)(RX){RX}
 \drawfiber{8}{9}{10}
 \pnode([Xnodesep=-0.5]LD|CPLin2){TL}\pnode(RX|TL){TR}
 \pnode([offset=-2.5]TR){BR}\pnode(TL|BR){BL}
@@ -6568,7 +6575,7 @@
                         fillstyle=solid, fillcolor=red, opacity=0.3}
   \multido{\i=1+1, \ii=165+10}{4}{%
     \rput(Ref){\pnode(6;\ii){A\i}}
-    \optbox[optbox=0.5 0.3, endbox, compname=Box\i, extnode=l](Ref)(A\i)
+    \optbox[optboxsize=0.5 0.3, position=end, compname=Box\i, extnode=l](Ref)(A\i)
     \lens[lens=0 -0.6 0.6, abspos=0.5, compname=L\i](A\i)(Ref)
     \lens[lens=1.2 1.2 0.8, abspos=1.1, n=1.65, compname=LC\i](A\i)(Ref)
     \drawwidebeam{Box\i}{L\i}{LC\i}{RefPlane}
@@ -6577,8 +6584,8 @@
   \optcoupler[abspos=1](In)(In)(Ref)(Ref)
   \wdmsplitter[abspos=2.5, compshift=1](In)(Ref)(Ref)
   \wdmsplitter[abspos=2.5, compshift=-1](In)(Ref)(Ref)
-  \optbox[compshift=-1, endbox, label=0](Ref)(In){Laser1}
-  \optbox[compshift=1, endbox, label=0](Ref)(In){Laser2}
+  \optbox[compshift=-1, position=start, label=0](In)(Ref){Laser1}
+  \optbox[compshift=1, position=start, label=0](In)(Ref){Laser2}
   \drawfiber{17}{14}{15}{Box1}
   \drawfiber{15}{Box2}
   \drawfiber{18}{14}{16}{Box3}
@@ -7374,10 +7381,10 @@
 \define@key[psset]{optexp}{optboxheight}{%
   \pst@checknum{#1}\POE@key@optboxheight
 }
-\define@key[psset]{optexp}{optbox}{%
-  \pst@expandafter\POE@psset@@optbox{#1} {} {} {}\@nil
+\define@key[psset]{optexp}{optboxsize}{%
+  \pst@expandafter\POE@psset@@optboxsize{#1} {} {} {}\@nil
 }%
-\def\POE@psset@@optbox#1 #2 #3\@nil{%
+\def\POE@psset@@optboxsize#1 #2 #3\@nil{%
   \edef\POE@temp{#1}%
   \ifx\POE@temp\@empty\else
     \psset[optexp]{optboxwidth=#1}%
@@ -7467,9 +7474,29 @@
 %    \end{macrocode}
 % Dove prism
 %    \begin{macrocode}
-\define@key[psset]{optexp}{doveprismsize}{%
-  \pst@checknum{#1}\POE@key@doveprismsize
+\define@key[psset]{optexp}{doveprismheight}{%
+  \pst@checknum{#1}\POE@key@doveprismheight
 }
+\define@key[psset]{optexp}{doveprismwidth}{%
+  \pst@checknum{#1}\POE@key@doveprismwidth
+}
+\define@key[psset]{optexp}{doveprismsize}{%
+  \pst@expandafter\POE@psset@@doveprismsize{#1} {} {} {}\@nil
+}%
+\def\POE@psset@@doveprismsize#1 #2 #3\@nil{%
+  \ifx.#1\relax\else
+    \psset[optexp]{doveprismwidth=#1}%
+  \fi
+  \edef\POE@temp{#2}%
+  \ifx\POE@temp\@empty
+    \ifx.#1\relax\else
+      \psset[optexp]{doveprismheight=#1}%
+      \pstFPmul\POE@key@doveprismwidth{3}{#1}
+    \fi
+  \else
+    \psset[optexp]{doveprismheight=#2}%
+  \fi
+}%
 \psset[optexp]{doveprismsize=0.6}%
 %    \end{macrocode}
 % Beamsplitter
@@ -7680,9 +7707,29 @@
 %    \end{macrocode}
 % Isolator
 %    \begin{macrocode}
-\define@key[psset]{optexp}{isolatorsize}{%
-  \pst@checknum{#1}\POE@key@isolatorsize
+\define@key[psset]{optexp}{isolatorwidth}{%
+  \pst@checknum{#1}\POE@key@isolatorwidth
 }
+\define@key[psset]{optexp}{isolatorheight}{%
+  \pst@checknum{#1}\POE@key@isolatorheight
+}
+\define@key[psset]{optexp}{isolatorsize}{%
+  \pst@expandafter\POE@psset@@isolatorsize{#1} {} {} {}\@nil
+}%
+\def\POE@psset@@isolatorsize#1 #2 #3\@nil{%
+  \ifx.#1\relax\else
+    \psset[optexp]{isolatorwidth=#1}%
+  \fi
+  \edef\POE@temp{#2}%
+  \ifx\POE@temp\@empty
+    \ifx.#1\relax\else
+      \psset[optexp]{isolatorheight=#1}%
+      \pstFPmul\POE@key@isolatorwidth{1.6}{#1}
+    \fi
+  \else
+    \psset[optexp]{isolatorheight=#2}%
+  \fi
+}%
 \psset[optexp]{isolatorsize=0.6}%
 %    \end{macrocode}
 % Fiber polarizer
@@ -10857,13 +10904,15 @@
 %    \begin{macrocode}
 \def\doveprism@nodes{%
   \newOptexpComp{%
-    {\POE@key@doveprismsize\space neg 0} {1 1} 
-    \POE@key@doveprismsize\space 2 sqrt div dup neg exch trans {PlaneIfc}
-    {0 \POE@key@doveprismsize\space -0.5 mul} {1 0} 
-    \POE@key@doveprismsize\space -1.5 mul dup neg
+    /@wd \POE@key@doveprismwidth\space 0.5 mul def
+    /@htsq \POE@key@doveprismheight\space 2 sqrt div def
+    {@wd neg \POE@key@doveprismheight\space 0.5 mul add 0} {1 1} 
+    @htsq neg @htsq trans {PlaneIfc}
+    {0 \POE@key@doveprismheight\space -0.5 mul} {1 0} 
+    \POE@key@doveprismwidth\space -0.5 mul dup neg
     refl {PlaneIfc}
-    {\POE@key@doveprismsize\space 0} {-1 1} 
-    \POE@key@doveprismsize\space 2 sqrt div dup neg exch trans {PlaneIfc} 
+    {@wd \POE@key@doveprismheight\space 0.5 mul sub 0} {-1 1} 
+    @htsq neg @htsq trans {PlaneIfc} 
     \POE@key@n true 
   }%
 \ignorespaces}%
@@ -10873,12 +10922,12 @@
 % \begin{macro}{\doveprism@comp}
 %    \begin{macrocode}
 \def\doveprism@comp{%
-   \edef\@ht{\POE@key@doveprismsize\space 0.5 mul }%
-   \edef\@wd{\POE@key@doveprismsize\space 1.5 mul }%
+   \edef\@ht{\POE@key@doveprismheight\space 0.5 mul }%
+   \edef\@wd{\POE@key@doveprismwidth\space 0.5 mul }%
    \pspolygon(! \@wd neg \@ht neg)%
              (! \@wd \@ht neg)%
-             (! \@ht dup)%
-             (! \@ht neg \@ht)%
+             (! \@wd \@ht 2 mul sub \@ht)%
+             (! \@ht 2 mul \@wd sub \@ht)%
 \ignorespaces}%
 %    \end{macrocode}
 % \end{macro}
@@ -11242,7 +11291,8 @@
 %    \begin{macrocode}
 \def\optisolator@ref{%
   \POE@Verb{%
-    \POE@key@isolatorsize\space dup 0.8 mul /@@x ED 0.5 mul /@@y ED 
+    /@@x \POE@key@isolatorwidth\space 0.5 mul def
+    /@@y \POE@key@isolatorheight\space 0.5 mul def
   }%
 }%
 %    \end{macrocode}
@@ -11251,8 +11301,8 @@
 % \begin{macro}{\optisolator@comp}
 %    \begin{macrocode}
 \def\optisolator@comp{%
-  \edef\@ht{\POE@key@isolatorsize\space 0.5 mul }%
-  \edef\@wd{\POE@key@isolatorsize\space 0.8 mul }%
+  \edef\@ht{\POE@key@isolatorheight\space 0.5 mul }%
+  \edef\@wd{\POE@key@isolatorwidth\space 0.5 mul }%
   \psframe[dimen=outer](! \@wd neg \@ht neg)(! \@wd \@ht)
   \psline[style=IsolatorArrow,
           arrows=->](! \@wd neg 0.6 mul 0)(!\@wd 0.6 mul 0)
