@@ -7425,9 +7425,28 @@
 %    \end{macrocode}
 % Detector
 %    \begin{macrocode}
-\define@key[psset]{optexp}{detsize}{%
-  \pst@checknum{#1}\POE@key@detsize
+\define@key[psset]{optexp}{detwidth}{%
+  \pst@checknum{#1}\POE@key@detwidth
 }
+\define@key[psset]{optexp}{detheight}{%
+  \pst@checknum{#1}\POE@key@detheight
+}
+\define@key[psset]{optexp}{detsize}{%
+  \pst@expandafter\POE@psset@@detsize{#1} {} {} {}\@nil
+}%
+\def\POE@psset@@detsize#1 #2 #3\@nil{%
+  \ifx.#1\relax\else
+    \psset[optexp]{detwidth=#1}%
+  \fi
+  \edef\POE@temp{#2}%
+  \ifx\POE@temp\@empty
+    \ifx.#1\relax\else
+      \psset[optexp]{detheight=#1}%
+    \fi
+  \else\ifx.#2\relax\else
+    \psset[optexp]{detheight=#2}%
+  \fi\fi
+}%
 \define@choicekey*+[psset]{optexp}{dettype}[\val\nr]{round,diode}%
    {\edef\POE@key@dettype{\val}}
    {\PackageError{pst-optexp}{Unknown value '\val' for dettype.}}
@@ -7726,9 +7745,9 @@
       \psset[optexp]{isolatorheight=#1}%
       \pstFPmul\POE@key@isolatorwidth{1.6}{#1}
     \fi
-  \else
+  \else\ifx.#2\relax\else
     \psset[optexp]{isolatorheight=#2}%
-  \fi
+  \fi\fi
 }%
 \psset[optexp]{isolatorsize=0.6}%
 %    \end{macrocode}
@@ -7755,9 +7774,29 @@
 %    \end{macrocode}
 % Fiber delay line
 %    \begin{macrocode}
-\define@key[psset]{optexp}{fdlsize}{%
-  \pst@checknum{#1}\POE@key@fdlsize
+\define@key[psset]{optexp}{fdlwidth}{%
+  \pst@checknum{#1}\POE@key@fdlwidth
 }
+\define@key[psset]{optexp}{fdlheight}{%
+  \pst@checknum{#1}\POE@key@fdlheight
+}
+\define@key[psset]{optexp}{fdlsize}{%
+  \pst@expandafter\POE@psset@@fdlsize{#1} {} {} {}\@nil
+}%
+\def\POE@psset@@fdlsize#1 #2 #3\@nil{%
+  \ifx.#1\relax\else
+    \psset[optexp]{fdlwidth=#1}%
+  \fi
+  \edef\POE@temp{#2}%
+  \ifx\POE@temp\@empty
+    \ifx.#1\relax\else
+      \psset[optexp]{fdlheight=#1}%
+      \pstFPmul\POE@key@fdlwidth{1.6}{#1}
+    \fi
+  \else\ifx.#2\relax\else
+    \psset[optexp]{fdlheight=#2}%
+  \fi\fi
+}%
 \psset[optexp]{fdlsize=0.6}%
 %    \end{macrocode}
 % Fiber collimator 
@@ -10805,11 +10844,12 @@
 %    \begin{macrocode}
 \def\optdetector@ref{%
   \POE@Verb{%
-    \POE@key@detsize\space 0.5 mul dup /@@y ED 
+    /@@y \POE@key@detheight\space 0.5 mul def
     \ifx\POE@key@dettype\POE@str@dettype@round
-      0.5 mul
+      /@@x \POE@key@detwidth\space 0.5 mul def
+    \else
+      /@@x @@y def
     \fi
-    /@@x ED 
   }%
 }%
 %    \end{macrocode}
@@ -10829,20 +10869,21 @@
 % \begin{macro}{\optdetector@comp}
 %    \begin{macrocode}
 \def\optdetector@comp{%
-  \edef\@sz{\POE@key@detsize\space 0.5 mul }%
+  \def\@ht{\POE@key@detheight\space 0.5 mul }%
+  \def\@wd{\POE@key@detwidth\space 0.5 mul }%
   \ifx\POE@key@dettype\POE@str@dettype@round
-    \pswedge(!\POE@dict{@@x0 @@x sub @@y0}){!\@sz}{-90}{90}%
+    \psellipticwedge(!\POE@dict{@@x0 @@x sub @@y0})(!\POE@dict{@@x 2 mul @@y}){-90}{90}%
   \else\ifx\POE@key@dettype\POE@str@dettype@diode
-    \psframe[dimen=outer](! \@sz neg dup)(!\@sz dup)%
-    \pspolygon(! \@sz -0.2 mul \@sz -0.4 mul)%
-              (! \@sz 0.6 mul \@sz -0.4 mul)%
-              (! \@sz 0.2 mul \@sz 0.4 mul)%
-    \psline(! \@sz -0.2 mul \@sz 0.4 mul \getCLWH add)%
-           (! \@sz 0.6 mul \@sz 0.4 mul \getCLWH add)
+    \psframe[dimen=outer](! \@ht neg dup)(!\@ht dup)%
+    \pspolygon(! \@ht -0.2 mul \@ht -0.4 mul)%
+              (! \@ht 0.6 mul \@ht -0.4 mul)%
+              (! \@ht 0.2 mul \@ht 0.4 mul)%
+    \psline(! \@ht -0.2 mul \@ht 0.4 mul \getCLWH add)%
+           (! \@ht 0.6 mul \@ht 0.4 mul \getCLWH add)
     \psset{arrows=->, arrowinset=0, arrowscale=0.8}%
-    \psline(! \@sz -0.8 mul \@sz 0.3 mul)%
-           (! \@sz -0.3 mul \@sz 0.15 mul)%
-    \psline(! \@sz -0.8 mul 0)(! \@sz -0.3 mul \@sz -0.15 mul)%
+    \psline(! \@ht -0.8 mul \@ht 0.3 mul)%
+           (! \@ht -0.3 mul \@ht 0.15 mul)%
+    \psline(! \@ht -0.8 mul 0)(! \@ht -0.3 mul \@ht -0.15 mul)%
   \fi\fi
 \ignorespaces}%
 %    \end{macrocode}
@@ -11384,7 +11425,8 @@
 %    \begin{macrocode}
 \def\fiberdelayline@ref{%
   \POE@Verb{%
-    \POE@key@fdlsize\space dup 0.8 mul /@@x ED 0.5 mul /@@y ED 
+    /@@y \POE@key@fdlheight\space 0.5 mul def
+    /@@x \POE@key@fdlwidth\space 0.5 mul def
   }%
 }%
 %    \end{macrocode}
@@ -11393,11 +11435,9 @@
 % \begin{macro}{\fiberdelayline@comp}
 %    \begin{macrocode}
 \def\fiberdelayline@comp{%
-  \def\@wd{\POE@key@fdlsize\space 0.8 mul }%
-  \def\@ht{\POE@key@fdlsize\space 0.5 mul }%
-  \psframe[dimen=outer](! \@wd neg \@ht neg)(! \@wd \@ht)
-  \psline[style=FdlArrow](! \@wd -0.3 mul \@ht -1.5 mul)%
-                         (! \@wd 0.3 mul \@ht 1.2 mul CLW 
+  \psframe[dimen=outer](! @@x neg @@y neg)(! @@x @@y)
+  \psline[style=FdlArrow](! @@x -0.3 mul @@y -1.5 mul)%
+                         (! @@x 0.3 mul @@y 1.2 mul CLW 
                             \pst@number\psyunit div 5 mul add)
 \ignorespaces}%
 %    \end{macrocode}
