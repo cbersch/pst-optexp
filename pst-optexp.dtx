@@ -2447,6 +2447,29 @@
 %</ignore>
 % \fi
 % \end{optionlist}
+%
+% \begin{stylelist}
+% \styleitem{DetectorStyle} 
+% \ifGERMAN 
+% Der Stil der Diode für \Lkeyword{dettype}\opt{=diode}.
+% \fi
+% \ifENGLISH 
+% The style of the diode for \Lkeyword{dettype}\opt{=diode}.
+% \fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(3,1.5)
+  \newpsstyle{OptComp}{linewidth=2\pslinewidth}
+  \newpsstyle{DetectorStyle}{linewidth=0.5\pslinewidth}
+  \optdetector[dettype=diode](0,1)(2,1)
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+% \end{stylelist}
 % 
 % \ifGERMAN\section{Optische Diode}\fi
 % \ifENGLISH\section{Optical diode}\fi
@@ -2494,6 +2517,14 @@
 % \end{ltxsyntax}
 % 
 % \begin{optionlist}
+%   \numitem{doveprismheight}
+%   \ifGERMAN Die Höhe des Prisma.\fi
+%   \ifENGLISH The prism height.\fi
+%
+%   \numitem{doveprismwidth}
+%   \ifGERMAN Die Länge der Grundseite des Prisma.\fi
+%   \ifENGLISH The length of the prism base edge.\fi
+%
 %   \optitem[0.6]{doveprismsize}{\prm{num}[ \prm{num}]}
 %   \ifGERMAN
 %   Die Höhe des Prismas, die Gesamtbreite ist das dreifache und die Winkel an
@@ -2504,13 +2535,6 @@
 %   three times the height and the angles at the input and output faces are
 %   45\textdegree.
 %   \fi
-%   \numitem{doveprismheight}
-%   \ifGERMAN Die Höhe des Prisma.\fi
-%   \ifENGLISH The prism height.\fi
-%
-%   \numitem{doveprismwidth}
-%   \ifGERMAN Die Länge der Grundseite des Prisma.\fi
-%   \ifENGLISH The length of the prism base edge.\fi
 % \end{optionlist}
 %
 % \iffalse
@@ -3250,6 +3274,8 @@
 % 
 % \begin{optionlist}
 % \numitem[0.8]{optmzmsize} \sizeexplanation{\ifGERMAN des Modulators\fi\ifENGLISH modulator\fi}
+% \numitem{optmzmwidth}
+% \numitem{optmzmheight}
 % \end{optionlist}
 % 
 % \ifGERMAN\section{Polarisationssteller}\fi
@@ -3309,6 +3335,8 @@
 % \end{ltxsyntax}
 % 
 % \begin{optionlist}
+%   \numitem{isolatorwidth}
+%   \numitem{isolatorheight}
 %   \numitem[0.6]{isolatorsize} \sizeexplanation{\ifGERMAN des Isolators\fi\ifENGLISH isolator\fi}
 % \end{optionlist}
 %
@@ -3822,7 +3850,7 @@
 % \end{optionlist}
 %
 % \begin{stylelist}
-% \styleitem{FilterInt}
+% \styleitem{FilterStyle}
 % \ifGERMAN Beinflusst das Aussehen der internen Filterlinien.\fi
 % \ifENGLISH Changes the style of the internal filter lines.\fi
 % \iffalse
@@ -3832,7 +3860,7 @@
 \begin{pspicture}(3,1.5)
   \newpsstyle{OptComp}{linewidth=2\pslinewidth}
   \optfilter(0,1)(1.5,1)
-  \newpsstyle{FilterInt}{linewidth=0.5\pslinewidth}
+  \newpsstyle{FilterStyle}{linewidth=0.5\pslinewidth}
   \optfilter(1.5,1)(3,1)
 \end{pspicture}
 \end{LTXexample}
@@ -7450,6 +7478,7 @@
 \define@choicekey*+[psset]{optexp}{dettype}[\val\nr]{round,diode}%
    {\edef\POE@key@dettype{\val}}
    {\PackageError{pst-optexp}{Unknown value '\val' for dettype.}}
+\newpsstyle{DetectorStyle}{}
 \psset[optexp]{%
   detsize=0.8,
   dettype=round
@@ -7690,7 +7719,7 @@
    {bandstop,bandpass,lowpass,highpass}%
    {\def\POE@key@filtertype{#1}}%
    {\PackageError{pst-optexp}{Unknown value '\val' for filtertype}}
-\newpsstyle{FilterInt}{}
+\newpsstyle{FilterStyle}{}
 \psset[optexp]{%
   filtersize=0.8,
   filtertype=bandpass
@@ -7719,9 +7748,29 @@
 %    \end{macrocode}
 % Mach-Zehnder modulator
 %    \begin{macrocode}
-\define@key[psset]{optexp}{optmzmsize}{%
-  \pst@checknum{#1}\POE@key@optmzmsize
+\define@key[psset]{optexp}{optmzmheight}{%
+  \pst@checknum{#1}\POE@key@optmzmheight
 }
+\define@key[psset]{optexp}{optmzmwidth}{%
+  \pst@checknum{#1}\POE@key@optmzmwidth
+}
+\define@key[psset]{optexp}{optmzmsize}{%
+  \pst@expandafter\POE@psset@@optmzmsize{#1} {} {} {}\@nil
+}%
+\def\POE@psset@@optmzmsize#1 #2 #3\@nil{%
+  \ifx.#1\relax\else
+    \psset[optexp]{optmzmwidth=#1}%
+  \fi
+  \edef\POE@temp{#2}%
+  \ifx\POE@temp\@empty
+    \ifx.#1\relax\else
+      \psset[optexp]{optmzmheight=#1}%
+      \pstFPmul\POE@key@optmzmwidth{1.6}{#1}
+    \fi
+  \else
+    \psset[optexp]{optmzmheight=#2}%
+  \fi
+}%
 \psset[optexp]{optmzmsize=0.8}
 %    \end{macrocode}
 % Isolator
@@ -10845,11 +10894,7 @@
 \def\optdetector@ref{%
   \POE@Verb{%
     /@@y \POE@key@detheight\space 0.5 mul def
-    \ifx\POE@key@dettype\POE@str@dettype@round
-      /@@x \POE@key@detwidth\space 0.5 mul def
-    \else
-      /@@x @@y def
-    \fi
+    /@@x \POE@key@detwidth\space 0.5 mul def
   }%
 }%
 %    \end{macrocode}
@@ -10869,21 +10914,28 @@
 % \begin{macro}{\optdetector@comp}
 %    \begin{macrocode}
 \def\optdetector@comp{%
-  \def\@ht{\POE@key@detheight\space 0.5 mul }%
-  \def\@wd{\POE@key@detwidth\space 0.5 mul }%
   \ifx\POE@key@dettype\POE@str@dettype@round
     \psellipticwedge(!\POE@dict{@@x0 @@x sub @@y0})(!\POE@dict{@@x 2 mul @@y}){-90}{90}%
   \else\ifx\POE@key@dettype\POE@str@dettype@diode
-    \psframe[dimen=outer](! \@ht neg dup)(!\@ht dup)%
-    \pspolygon(! \@ht -0.2 mul \@ht -0.4 mul)%
-              (! \@ht 0.6 mul \@ht -0.4 mul)%
-              (! \@ht 0.2 mul \@ht 0.4 mul)%
-    \psline(! \@ht -0.2 mul \@ht 0.4 mul \getCLWH add)%
-           (! \@ht 0.6 mul \@ht 0.4 mul \getCLWH add)
-    \psset{arrows=->, arrowinset=0, arrowscale=0.8}%
-    \psline(! \@ht -0.8 mul \@ht 0.3 mul)%
-           (! \@ht -0.3 mul \@ht 0.15 mul)%
-    \psline(! \@ht -0.8 mul 0)(! \@ht -0.3 mul \@ht -0.15 mul)%
+    \ifdim\POE@key@detwidth pt<\POE@key@detheight pt
+      \def\@sz{\POE@key@detwidth\space 0.5 mul }%
+    \else
+      \def\@sz{\POE@key@detheight\space 0.5 mul }%
+    \fi
+    \psframe[dimen=outer](! \POE@key@detwidth\space -0.5 mul \POE@key@detheight\space -0.5 mul)%
+                         (! \POE@key@detwidth\space 0.5 mul \POE@key@detheight\space 0.5 mul)%
+    \bgroup
+      \psset{style=DetectorStyle}
+      \pspolygon(! \@sz -0.2 mul \@sz -0.4 mul)%
+                (! \@sz 0.6 mul \@sz -0.4 mul)%
+                (! \@sz 0.2 mul \@sz 0.4 mul)%
+      \psline(! \@sz -0.2 mul \@sz 0.4 mul \getCLWH add)%
+             (! \@sz 0.6 mul \@sz 0.4 mul \getCLWH add)
+      \psset{arrows=->, arrowinset=0, arrowscale=0.8}%
+      \psline(! \@sz -0.8 mul \@sz 0.3 mul)%
+             (! \@sz -0.3 mul \@sz 0.15 mul)%
+      \psline(! \@sz -0.8 mul 0)(! \@sz -0.3 mul \@sz -0.15 mul)%
+    \egroup
   \fi\fi
 \ignorespaces}%
 %    \end{macrocode}
@@ -11155,7 +11207,8 @@
 %    \begin{macrocode}
 \def\optmzm@ref{%
   \POE@Verb{%
-    \POE@key@optmzmsize\space dup 0.8 mul /@@x ED 0.5 mul /@@y ED 
+    /@@x \POE@key@optmzmwidth\space 0.5 mul def
+    /@@y \POE@key@optmzmheight\space 0.5 mul def
   }%
 }%
 %    \end{macrocode}
@@ -11164,20 +11217,18 @@
 % \begin{macro}{\optmzm@comp}
 %    \begin{macrocode}
 \def\optmzm@comp{%
-  \def\@wd{\POE@key@optmzmsize\space 0.8 mul }%
-  \def\@ht{\POE@key@optmzmsize\space 0.5 mul }%
   \bgroup
     \ifPOE@usefiberstyle
       \psset{style=Fiber}
     \fi
-    \psline(! \@wd neg 0)(! \@wd -0.7 mul 0)%
-           (! \@wd -0.4 mul \@ht 0.6 mul)%
-           (! \@wd 0.4 mul \@ht 0.6 mul)(! \@wd 0.7 mul 0)%
-           (! \@wd 0)(! \@wd 0.7 mul 0)%
-           (! \@wd 0.4 mul \@ht -0.6 mul)%
-           (! \@wd -0.4 mul \@ht -0.6 mul)(! \@wd -0.7 mul 0)%
+    \psline(! \POE@dict{@@x} neg 0)(! \POE@dict{@@x} -0.7 mul 0)%
+           (! \POE@dict{@@x} -0.4 mul \POE@dict{@@y} 0.6 mul)%
+           (! \POE@dict{@@x 0.4 mul @@y 0.6 mul})(! \POE@dict{@@x} 0.7 mul 0)%
+           (! \POE@dict{@@x} 0)(! \POE@dict{@@x} 0.7 mul 0)%
+           (! \POE@dict{@@x 0.4 mul @@y -0.6 mul})%
+           (! \POE@dict{@@x -0.4 mul @@y -0.6 mul})(! \POE@dict{@@x} -0.7 mul 0)%
   \egroup
-  \psframe[dimen=outer](! \@wd neg \@ht neg)(! \@wd \@ht)
+  \psframe[dimen=outer](! \POE@dict{@@x neg @@y neg})(!\POE@dict{@@x @@y})
 \ignorespaces}%
 %    \end{macrocode}
 % \end{macro}
@@ -11204,7 +11255,7 @@
   }%
   \psframe[dimen=outer](! \@sz neg dup)(! \@sz dup)
   \bgroup
-  \psset{style=FilterInt}%
+  \psset{style=FilterStyle}%
     \ifx\POE@key@filtertype\POE@str@filtertype@bandpass
       \psline(! -0.3 \@sz mul -0.65 \@sz mul)%
              (! 0.3 \@sz mul -0.35 \@sz mul)%
