@@ -7920,9 +7920,28 @@
 %    \end{macrocode}
 % Coupler
 %    \begin{macrocode}
-\define@key[psset]{optexp}{couplersize}{%
-  \pst@checknum{#1}\POE@key@couplersize
+\define@key[psset]{optexp}{couplerwidth}{%
+  \pst@checknum{#1}\POE@key@couplerwidth
 }
+\define@key[psset]{optexp}{couplerheight}{%
+  \pst@checknum{#1}\POE@key@couplerheight
+}
+\define@key[psset]{optexp}{couplersize}{%
+  \pst@expandafter\POE@psset@@couplersize{#1} {} {} {}\@nil
+}%
+\def\POE@psset@@couplersize#1 #2 #3\@nil{%
+  \ifx.#1\relax\else
+    \pstFPmul\POE@key@couplerwidth{2}{#1}
+  \fi
+  \edef\POE@temp{#2}%
+  \ifx\POE@temp\@empty
+    \ifx.#1\relax\else
+      \pstFPmul\POE@key@couplerheight{0.4}{#1}
+    \fi
+  \else\ifx.#2\relax\else
+    \psset[optexp]{couplerheight=#2}%
+  \fi\fi
+}%
 \define@key[psset]{optexp}{couplersep}{%
   \pst@checknum{#1}\POE@key@couplersep
 }
@@ -9873,29 +9892,39 @@
 % \end{macro}
 %
 % \begin{macro}{\POE@nlput}
+%   We cannot use \cs{nlput} from \opt{pst-node}, because that does not work
+%   correctly for negative distances together with \opt{nrot=:U}, which happens
+%   for \opt{position=start}.
 %    \begin{macrocode}
 \def\POE@nlput{\pst@object{POE@nlput}}
 \def\POE@nlput@i(#1)(#2)#3#4{%
   \begin@SpecialObj
-  \POE@LDNode(#1)(#2){#3}{temp@lnput}
-  \pcline[linestyle=none](#1)(temp@lnput)%
-  \ncput[npos=1]{#4}%
+  \POE@LDNode(#1)(#2){#3}
+  \pcline[linestyle=none](temp@nlputA)(temp@nlputB)%
+  \ncput[npos=0.5]{#4}%
   \end@SpecialObj}
 %    \end{macrocode}
 % \end{macro}
 %
 % \begin{macro}{\POE@LDNode}
 %    \begin{macrocode}
-\def\POE@LDNode(#1)(#2)#3#4{%  
+\def\POE@LDNode(#1)(#2)#3{%
   \pst@getcoor{#1}\pst@tempA%
   \pst@getcoor{#2}\pst@tempB%
-  \pnode(!%
+  \pnode(!
     \pst@tempA \tx@UserCoor /YA ED /XA ED
     \pst@tempB \tx@UserCoor /YB ED /XB ED
     /dx XB XA sub def
     /dy YB YA sub def
     /angle dy dx Atan def
-    XA #3 angle cos mul add YA #3 angle sin mul add ){#4}%
+    XA #3 1 sub angle cos mul add YA #3 1 sub angle sin mul add ){temp@nlputA}%
+  \pnode(!
+    \pst@tempA \tx@UserCoor /YA ED /XA ED
+    \pst@tempB \tx@UserCoor /YB ED /XB ED
+    /dx XB XA sub def
+    /dy YB YA sub def
+    /angle dy dx Atan def
+    XA #3 1 add angle cos mul add YA #3 1 add angle sin mul add ){temp@nlputB}%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -10212,17 +10241,17 @@
 %    \end{macrocode}
 % If parameter \opt{position} is given, use it for \opt{npos}.
 %    \begin{macrocode}
-    \ifx\POE@key@position\@empty
+    \ifx\POE@key@abspos\@empty
 %    \end{macrocode}
 % Then check if absolute positioning with \opt{abspos} is wanted.
 %    \begin{macrocode}
-      \ifx\POE@key@abspos\@empty
+      \ifx\POE@key@position\@empty
         \ncput[nrot=:U,npos=]{\POE@putcomp{\@@comp}}%
       \else
-        \POE@nlput[nrot=:U](\POE@refnodeA)(\POE@refnodeB){\POE@key@abspos}{\POE@putcomp{\@@comp}}%
+        \ncput[nrot=:U,npos=\POE@key@position]{\POE@putcomp{\@@comp}}%
       \fi
     \else
-      \ncput[nrot=:U,npos=\POE@key@position]{\POE@putcomp{\@@comp}}%
+      \POE@nlput[nrot=:U](\POE@refnodeA)(\POE@refnodeB){\POE@key@abspos}{\POE@putcomp{\@@comp}}%
     \fi
   \endgroup
   \ifPOE@backlayer
@@ -11543,7 +11572,6 @@
 % \begin{macro}{\optcoupler@nodes}
 %    \begin{macrocode}
 \def\optcoupler@nodes{%
-  \edef\@sz{\POE@key@couplersize\space}%
   \edef\@sep{\POE@key@couplersep\space 0.5 mul }%
   \ifx\POE@key@couplertype\POE@str@couplertype@ellipse
     \def\@lw{\getCLW 0.3 mul }%
@@ -11573,20 +11601,14 @@
       0
     \fi\fi
     def
-    /@@x \POE@key@couplersize
-      \ifx\POE@key@couplertype\POE@str@couplertype@none 
-        0.5 mul
-      \fi
-      def
+    /@@x \POE@key@couplerwidth\space 0.5 mul def
+    /@@y 
     \ifx\POE@key@couplertype\POE@str@couplertype@none
-      /@@y \POE@key@couplersep\space 0.5 mul def
+      \POE@key@couplersep
     \else
-      \ifx\POE@key@couplertype\POE@str@couplertype@crossswitch
-        /@@y \POE@key@couplersize\space def
-      \else
-        /@@y \POE@key@couplersize\space 0.4 mul def
-      \fi
-    \fi
+      \POE@key@couplerheight
+    \fi\space
+    def
   }%
 }%
 %    \end{macrocode}
@@ -11620,7 +11642,6 @@
 % \begin{macro}{\POE@coupler@comp}
 %    \begin{macrocode}
 \def\POE@coupler@comp{%
-  \edef\@sz{\POE@key@couplersize\space}%
   \ifx\POE@key@couplertype\POE@str@couplertype@none
   \else\ifx\POE@key@couplertype\POE@str@couplertype@ellipse
     \psellipse[dimen=outer](!0 \POE@dict{@@y0})(! \POE@dict{@@x @@y})
@@ -11638,8 +11659,8 @@
     \ifPOE@variable
       \def\@arrowshift{ \psk@arrowlength\space \psk@arrowsize\space CLW mul add mul \pst@number\psyunit\space div }%
       \psline[style=VariableCoupler]%
-        (!\@sz -0.6 mul \@sz neg \POE@dict{@@y0} add)%
-        (!\@sz 0.6 mul \@sz 0.6 mul \POE@dict{@@y0} add \@arrowshift add)
+        (!\POE@dict{@@x -0.6 mul @@y0 @@x sub})%
+        (!\POE@dict{@@x 0.6 mul dup @@y0 add \@arrowshift add})
     \fi
   \fi
 }%
