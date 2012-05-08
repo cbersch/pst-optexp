@@ -11466,7 +11466,6 @@
 % \begin{macro}{\optswitch@comp}
 %    \begin{macrocode}
 \def\optswitch@comp{%
-  \edef\@sz{\POE@key@switchsize\space 0.5 mul }%
 %    \end{macrocode}
 % storing the linewidth of the object allows for some aesthetic fine tuning 
 %    \begin{macrocode}
@@ -11475,26 +11474,26 @@
     \ifPOE@usefiberstyle
       \psset{style=Fiber}
     \fi
-    \psline[arrows=-](! \@sz neg 0)(! \@sz -0.6 mul @lw sub 0)%
-    \psline[arrows=-](! \@sz 0.6 mul 0)(! \@sz 0)%
+    \psline[arrows=-](! \POE@dict{@@x} neg 0)(! \POE@dict{@@x} -0.6 mul @lw sub 0)%
+    \psline[arrows=-](! \POE@dict{@@x} 0.6 mul 0)(! \POE@dict{@@x} 0)%
   \egroup
   \ifx\POE@key@switchstyle\POE@str@closed%
     \bgroup
       \ifPOE@usefiberstyle
         \psset{style=Fiber}
       \fi
-      \psdot[dotsize=3\pslinewidth](! \@sz 0.6 mul 0)%
-      \psdot[dotsize=3\pslinewidth](! \@sz -0.6 mul 0)%
+      \psdot[dotsize=3\pslinewidth](! \POE@dict{@@x} 0.6 mul 0)%
+      \psdot[dotsize=3\pslinewidth](! \POE@dict{@@x} -0.6 mul 0)%
       \psline[arrows=-, linewidth=1.5\pslinewidth]%
-        (! \@sz -0.6 mul @lw)(! \@sz 0.6 mul @lw)%      
+        (! \POE@dict{@@x} -0.6 mul @lw)(! \POE@dict{@@x} 0.6 mul @lw)%      
     \egroup
   \else
     \psline[arrows=-, linewidth=1.5\pslinewidth]%
-      (! \@sz -0.6 mul @lw add @lw)(! \@sz 0.6 mul dup)%
-    \pscircle(! \@sz -0.6 mul 0){\pslinewidth}%
-    \psdot[dotsize=3\pslinewidth](! \@sz 0.6 mul 0)%
+      (! \POE@dict{@@x} -0.6 mul @lw add @lw)(! \POE@dict{@@x 0.6 mul @@y 0.6 mul})%
+    \pscircle(! \POE@dict{@@x} -0.6 mul 0){\pslinewidth}%
+    \psdot[dotsize=3\pslinewidth](! \POE@dict{@@x} 0.6 mul 0)%
   \fi
-  \psframe[dimen=outer](! \@sz neg dup)(! \@sz dup)%
+  \psframe[dimen=outer](! \POE@dict{@@x neg @@y neg})(! \POE@dict{@@x @@y})%
 \ignorespaces}%
 %    \end{macrocode}
 % \end{macro}
@@ -11515,9 +11514,9 @@
 % \begin{macro}{\fiberdelayline@comp}
 %    \begin{macrocode}
 \def\fiberdelayline@comp{%
-  \psframe[dimen=outer](! @@x neg @@y neg)(! @@x @@y)
-  \psline[style=FdlArrow](! @@x -0.3 mul @@y -1.5 mul)%
-                         (! @@x 0.3 mul @@y 1.2 mul CLW 
+  \psframe[dimen=outer](! \POE@dict{@@x neg @@y neg})(! \POE@dict{@@x @@y})
+  \psline[style=FdlArrow](! \POE@dict{@@x -0.3 mul @@y -1.5 mul})%
+                         (! \POE@dict{@@x 0.3 mul @@y} 1.2 mul CLW 
                             \pst@number\psyunit div 5 mul add)
 \ignorespaces}%
 %    \end{macrocode}
@@ -12625,7 +12624,8 @@ tx@OptexpDict begin
 %    \begin{macrocode}
       [ (C) name
       name GetRefIndex
-      trans draw ] cvx 
+      trans draw ] cvx
+      PlaneNumTmp PlaneNum gt { exch } if
     } {
 %    \end{macrocode}
 % check the mode of the ambiguous interface
