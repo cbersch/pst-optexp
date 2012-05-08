@@ -5,7 +5,7 @@
 \usepackage{lmodern}
 \usepackage{bera}
 \usepackage{marvosym}
-\usepackage{pst-optexp}
+\usepackage{pst-circ, pst-func, pst-optexp}
 \usepackage{showexpl}
 \usepackage{ltxdockit}
 \makeatletter\renewcommand*\SX@Info{}\makeatother
@@ -66,6 +66,23 @@
 \providecommand\OFF{\xdef\lst@alloverstyle##1{##1}}
 \makeatother
 \begin{document}
+\begin{pspicture}(6.4,3.2)
+\addtopsstyle{Fiber}{linecolor=red}\psset{fiber=none}
+\pnode(2.3,2.3){Lin}\pnode([Xnodesep=4.5]Lin){Det}
+\optbox[showoptdots, position=start, compname=L, extnode=b](Lin)(Det){%
+  \psGauss[yunit=0.03,sigma=0.03]{-0.5}{0.5}}
+\optbox[label=0, compname=EAM, extnode=b, abspos=1.5](Lin)(Det){EAM}
+\optfiber[labeloffset=0.3, abspos=3.2](Lin)(Det){fibre}
+\optdetector(Lin)(Det){OSA}
+\pnode([Xnodesep=-1,offset=-1]\oenodeExt{L}){Osc}
+\pnode(\oenodeExt{L}|Osc){PSin}\pnode(\oenodeExt{EAM}|Osc){PSout}
+\oscillator[output=right](Osc){10\,GHz}{}
+\phaseshifter[arrowscale=1.5, inputarrow, labeloffset=-0.7](PSin)(PSout){$\tau$}
+\drawfiber{1}{2}{3}{4}
+\psset{arrows=->, arrowinset=0, arrowscale=1.5}
+\wire(PSin)(\oenodeExt{L})\wire(PSout)(\oenodeExt{EAM})
+\end{pspicture}
+\end{document}
 \begin{pspicture}(0.3,0.6)(5.5,7.8)
 \newOptexpTripole{reflslm}{}
 \makeatletter
