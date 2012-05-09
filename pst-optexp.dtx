@@ -7455,25 +7455,22 @@
 %    \begin{macrocode}
 \define@key[psset]{optexp}{detwidth}{%
   \pst@checknum{#1}\POE@key@detwidth
+  \let\POE@key@detsize\@empty
 }
 \define@key[psset]{optexp}{detheight}{%
   \pst@checknum{#1}\POE@key@detheight
+  \let\POE@key@detsize\@empty
 }
 \define@key[psset]{optexp}{detsize}{%
   \pst@expandafter\POE@psset@@detsize{#1} {} {} {}\@nil
 }%
 \def\POE@psset@@detsize#1 #2 #3\@nil{%
-  \ifx.#1\relax\else
-    \psset[optexp]{detwidth=#1}%
+  \ifx\\#2\\
+    \pst@checknum{#1}\POE@key@detsize
+  \else
+    \psset[optexp]{detwidth=#1}
+    \psset[optexp]{detheight=#2}
   \fi
-  \edef\POE@temp{#2}%
-  \ifx\POE@temp\@empty
-    \ifx.#1\relax\else
-      \psset[optexp]{detheight=#1}%
-    \fi
-  \else\ifx.#2\relax\else
-    \psset[optexp]{detheight=#2}%
-  \fi\fi
 }%
 \define@choicekey*+[psset]{optexp}{dettype}[\val\nr]{round,diode}%
    {\edef\POE@key@dettype{\val}}
@@ -7872,15 +7869,13 @@
 \def\POE@psset@@optcircangle#1 #2 #3\@nil{%
   \edef\POE@tempA{#1}%
   \edef\POE@tempB{#2}%
-  \ifx\POE@tempA\@empty
+  \ifx\\#2\\
+    \PackageError{pst-optexp}{optcircangle requires two numbers}%
+  \else\ifx\\#1\\
     \PackageError{pst-optexp}{optcircangle requires two numbers}%
   \else
-    \ifx\POE@tempB\@empty
-      \PackageError{pst-optexp}{optcircangle requires two numbers}%
-    \else
-      \psset[optexp]{optcircangleA=#1, optcircangleB=#2}%
-    \fi
-  \fi
+    \psset[optexp]{optcircangleA=#1, optcircangleB=#2}%
+  \fi\fi
 }%
 \psset[optexp]{%
   optcircsize=0.8, 
@@ -7922,25 +7917,22 @@
 %    \begin{macrocode}
 \define@key[psset]{optexp}{couplerwidth}{%
   \pst@checknum{#1}\POE@key@couplerwidth
+  \let\POE@key@couplersize\@empty
 }
 \define@key[psset]{optexp}{couplerheight}{%
   \pst@checknum{#1}\POE@key@couplerheight
+  \let\POE@key@couplersize\@empty
 }
 \define@key[psset]{optexp}{couplersize}{%
   \pst@expandafter\POE@psset@@couplersize{#1} {} {} {}\@nil
 }%
 \def\POE@psset@@couplersize#1 #2 #3\@nil{%
-  \ifx.#1\relax\else
-    \pstFPmul\POE@key@couplerwidth{2}{#1}
+  \ifx\\#2\\
+    \pst@checknum{#1}\POE@key@couplersize
+  \else
+    \psset[optexp]{couplerwidth=#1}
+    \psset[optexp]{couplerheight=#1}
   \fi
-  \edef\POE@temp{#2}%
-  \ifx\POE@temp\@empty
-    \ifx.#1\relax\else
-      \pstFPmul\POE@key@couplerheight{0.4}{#1}
-    \fi
-  \else\ifx.#2\relax\else
-    \psset[optexp]{couplerheight=#2}%
-  \fi\fi
 }%
 \define@key[psset]{optexp}{couplersep}{%
   \pst@checknum{#1}\POE@key@couplersep
@@ -7965,6 +7957,8 @@
   {\edef\POE@key@coupleralign{#1}}%
   {\PackageError{pst-optexp}{Unknown value '\val' for coupleralign.}}
 \psset[optexp]{%
+  couplerwidth=0.4,
+  couplerheight=0.16,
   couplersize=0.2,
   couplersep=0.05,
   coupleralign=center,
@@ -10921,10 +10915,19 @@
 % \begin{macro}{\optdetector@ref}
 %    \begin{macrocode}
 \def\optdetector@ref{%
-  \POE@Verb{%
-    /@@y \POE@key@detheight\space 0.5 mul def
-    /@@x \POE@key@detwidth\space 0.5 mul def
-  }%
+  \ifx\POE@key@detsize\@empty
+    \POE@Verb{%
+      /@@y \POE@key@detheight\space 0.5 mul def
+      /@@x \POE@key@detwidth\space 0.5 mul def
+    }%
+  \else
+    \POE@Verb{%
+      /@@y \POE@key@detsize\space 0.5 mul def
+      /@@x \POE@key@detsize\space
+      \ifx\POE@key@dettype\POE@str@dettype@round 0.25\else 0.5\fi\space
+      mul def
+    }%
+  \fi
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -10946,13 +10949,17 @@
   \ifx\POE@key@dettype\POE@str@dettype@round
     \psellipticwedge(!\POE@dict{@@x0 @@x sub @@y0})(!\POE@dict{@@x 2 mul @@y}){-90}{90}%
   \else\ifx\POE@key@dettype\POE@str@dettype@diode
-    \ifdim\POE@key@detwidth pt<\POE@key@detheight pt
-      \def\@sz{\POE@key@detwidth\space 0.5 mul }%
+    \ifx\POE@key@detsize\@empty
+      \ifdim\POE@key@detwidth pt<\POE@key@detheight pt
+        \def\@sz{\POE@key@detwidth\space 0.5 mul }%
+      \else
+        \def\@sz{\POE@key@detheight\space 0.5 mul }%
+      \fi
     \else
-      \def\@sz{\POE@key@detheight\space 0.5 mul }%
+      \def\@sz{\POE@key@detsize\space 0.5 mul }%
     \fi
-    \psframe[dimen=outer](! \POE@key@detwidth\space -0.5 mul \POE@key@detheight\space -0.5 mul)%
-                         (! \POE@key@detwidth\space 0.5 mul \POE@key@detheight\space 0.5 mul)%
+    \psframe[dimen=outer](! \POE@dict{@@x neg @@y neg})%
+                         (! \POE@dict{@@x @@y})%
     \bgroup
       \psset{style=DetectorStyle}
       \pspolygon(! \@sz -0.2 mul \@sz -0.4 mul)%
@@ -11600,14 +11607,21 @@
       0
     \fi\fi
     def
-    /@@x \POE@key@couplerwidth\space 0.5 mul def
-    /@@y 
+    \ifx\POE@key@couplersize\@empty
+      \POE@key@couplersize
+    \else
+      \POE@key@couplerwidth
+    \fi
+    \space 0.5 mul /@@x ED
     \ifx\POE@key@couplertype\POE@str@couplertype@none
       \POE@key@couplersep
     \else
-      \POE@key@couplerheight
-    \fi\space
-    def
+      \ifx\POE@key@couplersize\@empty
+        \POE@key@couplersize\space 0.2 mul
+      \else
+        \POE@key@couplerheight\space 0.5 mul
+    \fi\fi
+    \space /@@y ED
   }%
 }%
 %    \end{macrocode}
