@@ -17,6 +17,9 @@ OBJECTS=$(shell ls *.tex)
 FILELIST=$(basename $(OBJECTS))
 POE=$(shell kpsewhich pst-optexp.tex pst-optexp.pro)
 
+export TEXINPUTS := ..:
+export DVIPSHEADERS := ..:
+
 .PHONY: all clean veryclean
 
 .SECONDARY: $(addsuffix .ps, $(FILELIST))
@@ -30,7 +33,7 @@ connectall.tex: connectall.py $(POE)
 	ps2pdf $<
 
 %.ps: %.dvi
-	dvips -q $< 2>&1 >/dev/null
+	dvips $< # 2>&1 >/dev/null
 
 %.dvi: %.tex $(POE)
 	$(LATEX) $< #2>&1 >/dev/null 
