@@ -1,3 +1,9 @@
+\documentclass{article}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{pst-optexp}
+\thispagestyle{empty}
+\begin{document}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Title:       Versuchsaufbau 1
 % Versuch:		406 Absorptionsspektroskopie an molekularen Gasen
@@ -12,7 +18,6 @@
 %              http://creativecommons.org/licenses/by-nc-sa/3.0/de/
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\input header
 \begin{pspicture}[showgrid=true](-.7,-.5)(7.8,9)
    %\sbPSTGridDev
    \sffamily
@@ -74,8 +79,8 @@
 \end{pspicture}
 
 \begin{pspicture}[showgrid=true](-.7,-.5)(7.8,9)
-   %\sbPSTGridDev
-\footnotesize\sffamily
+  \newpsobject{laser}{optbox}{position=start, innerlabel} 
+  \footnotesize\sffamily
    \psset{labeloffset=0.5}
    \pnode(0,1){DL}
    \pnode(0,2){OAP}
@@ -88,7 +93,7 @@
    \pnode([offset=4.5, Xnodesep=1.5]SP2){Det}
    \psset{mirrortype=extended, labeloffset=0.4, variable}
    \begin{optexp}
-   \optbox[endbox, label=0 . . relative](OAP)(DL){\begin{tabular}{@{}c@{}}Dioden-\\laser\end{tabular}}
+   \laser(DL)(OAP){\begin{tabular}{@{}c@{}}Dioden-\\laser\end{tabular}}
    \mirror[mirrorradius=1, variable=false](DL)(OAP)(ST){OAP}
    \mirror(ST)(SP1)(SP2){SP1}
    \mirror(SP1)(SP2)(Det){SP2}
@@ -96,15 +101,15 @@
    \mirror(SP4)(SP3)(JL){SP3}
    \beamsplitter[bssize=0.3, labelangle=315](SP4)(ST)(SP1){ST}
    \optplate[abspos=0.5, plateheight=0.5](ST)(SP1){CP}
-   \optbox[endbox, label=0 . . relative](SP3)(JL){\begin{tabular}{@{}c@{}}Justage-\\laser\end{tabular}}
+   \laser(JL)(SP3){\begin{tabular}{@{}c@{}}Justage-\\laser\end{tabular}}
    \optdetector[label=1 15](SP2)(Det){Detektor}
-   \optbox[optboxheight=1.5, optboxwidth=2.5, label=0.9 180 b relative](SP2)(Det){Plasmareaktor}
+   \optbox[optboxsize=2.5 1.5, label=0.9 180 b relative](SP2)(Det){Plasmareaktor}
    \optplate[platelinewidth=3pt, linecolor=blue!40!white, abspos=1.13](SP2)(Det)
    \frontlayer{\psline[arrows=->, linestyle=dashed, dash=2pt 2pt](4,6)([Xnodesep=0.2]\oenodeIn{})}
    \optplate[platelinewidth=3pt, linecolor=blue!40!white, abspos=3.6](SP2)(Det)
    \frontlayer{\psline[arrows=->, linestyle=dashed, dash=2pt 2pt](4,6)([Xnodesep=0.2, offset=-0.1]\oenodeIn{})}
    \addtopsstyle{Beam}{linewidth=1.5pt}
-   \drawbeam[startpos=0.05, linecolor=red]{9}{6}{5}{7}{3}{4}{10}
+   \drawbeam[beampos=0.05, linecolor=red]{9}{6}{5}{7}{3}{4}{10}
    \drawbeam[linecolor=blue]{1}{2}{7}{3}{4}{10}
  \end{optexp}
  \rput[l](4,6){\footnotesize NaCl-Fenster}

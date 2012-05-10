@@ -11517,14 +11517,28 @@
 }%
 %    \end{macrocode}
 % \end{macro}
-%
+%    \begin{macrocode}
+\def\POE@get@yarrowscale#1 #2 #3 #4\@nil{%
+  \def\POE@tempA{#3\space}%
+}%
+%    \end{macrocode}
 % \begin{macro}{\fiberdelayline@comp}
 %    \begin{macrocode}
 \def\fiberdelayline@comp{%
   \psframe[dimen=outer](! \POE@dict{@@x neg @@y neg})(! \POE@dict{@@x @@y})
-  \psline[style=FdlArrow](! \POE@dict{@@x -0.3 mul @@y -1.5 mul})%
-                         (! \POE@dict{@@x 0.3 mul @@y} 1.2 mul CLW 
-                            \pst@number\psyunit div 5 mul add)
+  \begingroup
+    \psset{style=FdlArrow}
+    \use@par
+    \pst@expandafter\POE@get@yarrowscale{\psk@arrowscale}\@nil
+    \def\@arrowshift{%
+      \psk@arrowlength\space \psk@arrowsize\space\pst@number\pslinewidth\space mul add mul 
+      \POE@tempA mul 
+      @@y 2.9 mul @@x 0.6 mul atan 2 copy cos mul 3 1 roll sin mul \tx@UserCoor abs exch abs exch
+      \space
+    }%
+    \psline(! \POE@dict{@@x -0.4 mul @@y -1.6 mul})%
+           (! \POE@dict{@@x 0.2 mul @@y 1.3 mul \@arrowshift VecAdd})
+  \endgroup
 \ignorespaces}%
 %    \end{macrocode}
 % \end{macro}
@@ -11670,10 +11684,19 @@
   \fi\fi
   \ifx\POE@key@couplertype\POE@str@couplertype@crossswitch\else
     \ifPOE@variable
-      \def\@arrowshift{ \psk@arrowlength\space \psk@arrowsize\space CLW mul add mul \pst@number\psyunit\space div }%
-      \psline[style=VariableCoupler]%
-        (!\POE@dict{@@x -0.6 mul @@y0 @@x sub})%
-        (!\POE@dict{@@x 0.6 mul dup @@y0 add \@arrowshift add})
+      \begingroup
+        \psset{style=VariableCoupler}
+        \use@par
+        \pst@expandafter\POE@get@yarrowscale{\psk@arrowscale}\@nil
+        \def\@arrowshift{%
+          \psk@arrowlength\space \psk@arrowsize\space\pst@number\pslinewidth\space mul add mul 
+          \POE@tempA mul 
+          1.6 0.8 atan 2 copy cos mul 3 1 roll sin mul \tx@UserCoor abs exch abs exch
+        \space
+        }%
+        \psline(!\POE@dict{@@x -0.4 mul @@y0 @@x sub})%
+               (!\POE@dict{@@x 0.4 mul @@x 0.6 mul @@y0 add \@arrowshift VecAdd})
+      \endgroup
     \fi
   \fi
 }%
