@@ -34,14 +34,15 @@ connectall.tex: connectall.py $(POE)
 	ps2pdf $<
 
 %.ps: %.dvi
-	dvips -q $< 2>&1 >/dev/null
+	dvips $< #-q $< 2>&1 >/dev/null
 
 %.dvi: %.tex $(POE)
-	$(LATEX) $< 2>&1 >/dev/null 
+	$(LATEX) $< #2>&1 >/dev/null 
 	rm -f $*.aux $*.log
 
 clean: clean
 	$(RM) $(addsuffix .ps, $(FILELIST)) \
+	      $(addsuffix .dvi, $(FILELIST)) \
 	      $(addsuffix .pdf, $(FILELIST))
 
 ### Makefile ends here
