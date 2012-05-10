@@ -12,6 +12,10 @@
 # When using target 'all', all .tex files in the directory are
 # compiled
 #
+
+export TEXINPUTS := ../..:
+export DVIPSHEADERS := ../..:
+
 LATEX = latex -interaction=nonstopmode
 OBJECTS=$(shell ls *.tex)
 FILELIST=$(basename $(OBJECTS))
