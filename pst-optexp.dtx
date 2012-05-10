@@ -7884,35 +7884,6 @@
 \newpsstyle{OptCircArrow}{unit=0.7, arrows=->, arrowinset=0}
 %    \end{macrocode}
 %
-% Fiberbox
-%    \begin{macrocode}
-\define@key[psset]{optexp}{fiberboxheight}{%
-  \pst@checknum{#1}\POE@key@fiberboxheight
-}%
-\define@key[psset]{optexp}{fiberboxwidth}{%
-  \pst@checknum{#1}\POE@key@fiberboxwidth
-}%
-\define@key[psset]{optexp}{fiberboxincount}{%
-  \def\POE@key@fiberboxincount{#1}%
-}%
-\define@key[psset]{optexp}{fiberboxoutcount}{%
-  \def\POE@key@fiberboxoutcount{#1}%
-}%
-\define@key[psset]{optexp}{fiberboxinsep}{%
-  \pst@checknum{#1}\POE@key@fiberboxinsep
-}%
-\define@key[psset]{optexp}{fiberboxoutsep}{%
-  \pst@checknum{#1}\POE@key@fiberboxoutsep
-}%
-\psset[optexp]{%
-  fiberboxwidth=0.8,
-  fiberboxincount=1,
-  fiberboxoutcount=2,
-  fiberboxinsep=0.4,
-  fiberboxoutsep=0.4
-}%
-\let\POE@key@fiberboxheight\@empty
-%    \end{macrocode}
 % Coupler
 %    \begin{macrocode}
 \define@key[psset]{optexp}{couplerwidth}{%
@@ -10185,7 +10156,6 @@
 \newOptexpFiberDipole{optfiberpolarizer}{}
 \newOptexpFiberDipole{optswitch}{}
 \newOptexpFiberDipole{fiberdelayline}{}
-\newOptexpFiberDipole{fiberbox}{fiber=none}
 %    \end{macrocode}
 %
 % \begin{macro}{\POE@drawcomponent}
@@ -11543,51 +11513,6 @@
 %    \end{macrocode}
 % \end{macro}
 % 
-% \subsubsection{fiberbox}
-% \begin{macro}{\fiberbox@nodes}
-%    \begin{macrocode}
-\def\fiberbox@nodes{%
-  \def\@wd{\POE@key@fiberboxwidth\space 0.5 mul }%
-  \edef\POE@tempA{}%
-  \multido{\i=1+1}{\POE@key@fiberboxincount}{%
-    \xdef\POE@tempA{%
-      \POE@tempA
-      {\@wd neg \POE@key@fiberboxincount\space 1 sub 
-      0.5 mul \i\space sub 1 add 
-      \POE@key@fiberboxinsep\space mul}
-    }%
-  }%
-  \pst@cntp=\POE@key@fiberboxincount
-  \advance\pst@cntp by 1
-  \multido{\i=\pst@cntp+1}{\POE@key@fiberboxoutcount}{%
-    \xdef\POE@tempA{%
-      \POE@tempA
-      {\@wd \POE@key@fiberboxoutcount\space 1 sub 
-      0.5 mul \i\space sub \the\pst@cntp\space add 
-      \POE@key@fiberboxoutsep\space mul}
-    }%
-  }%
-  \newOptexpFiberComp{\POE@tempA}%
-}%
-\def\fiberbox@comp{%
-  \def\@wd{\POE@key@fiberboxwidth\space 0.5 mul }%
-  \def\@ht{%
-    \ifx\POE@key@fiberboxheight\@empty
-      \POE@key@fiberboxincount\space
-      \POE@key@fiberboxinsep\space mul
-      \POE@key@fiberboxoutcount\space
-      \POE@key@fiberboxoutsep\space mul
-      max 
-    \else
-      \POE@key@fiberboxheight\space
-    \fi
-    0.5 mul  
-  }%
-  \psframe(!\@wd neg \@ht neg)(!\@wd \@ht)
-}%
-%    \end{macrocode}
-% \end{macro}
-%
 % \subsubsection{optcoupler}
 % \begin{macro}{\optcoupler@nodes}
 %    \begin{macrocode}
