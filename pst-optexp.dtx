@@ -11593,16 +11593,11 @@
 %    \begin{macrocode}
 \def\optcoupler@nodes{%
   \edef\@sep{\POE@key@couplersep\space 0.5 mul }%
-  \ifx\POE@key@couplertype\POE@str@couplertype@ellipse
-    \def\@lw{\getCLW 0.3 mul }%
-  \else
-    \def\@lw{0 }%
-  \fi
   \newOptexpFiberComp{%
-    {@@x neg \@lw add @@y0 \@sep add}
-    {@@x neg \@lw add @@y0 \@sep sub}
-    {@@x \@lw sub @@y0 \@sep add}
-    {@@x \@lw sub @@y0 \@sep sub} }%
+    {@@x neg @@y0 \@sep add}
+    {@@x neg @@y0 \@sep sub}
+    {@@x @@y0 \@sep add}
+    {@@x @@y0 \@sep sub} }%
   \pnode(! 0 \POE@dict{@@y0}){\oenodeCenter{}}
 }%
 %    \end{macrocode}
@@ -11671,7 +11666,7 @@
 \def\POE@coupler@comp{%
   \ifx\POE@key@couplertype\POE@str@couplertype@none
   \else\ifx\POE@key@couplertype\POE@str@couplertype@ellipse
-    \psellipse[dimen=outer](!0 \POE@dict{@@y0})(! \POE@dict{@@x @@y})
+    \psellipse(!0 \POE@dict{@@y0})(! \POE@dict{@@x @@y})
   \else
     \psframe[dimen=outer](!\POE@dict{@@x neg @@y0 @@y sub})%
                          (!\POE@dict{@@x @@y0 @@y add})%
@@ -11713,15 +11708,10 @@
       \edef\@sep{0 }%
     \fi
   \fi
-  \ifx\POE@key@couplertype\POE@str@couplertype@ellipse
-    \def\@lw{\getCLW 0.3 mul }%
-  \else
-    \def\@lw{0 }%
-  \fi
   \newOptexpFiberComp{%
-    {@@x neg \@lw add @@y0 \@sep add}
-    {@@x neg \@lw add  @@y0 \@sep sub}
-    {@@x  \@lw sub 0}}%
+    {@@x neg @@y0 \@sep add}
+    {@@x neg  @@y0 \@sep sub}
+    {@@x 0}}%
   \pnode(! 0 \POE@dict{@@y0}){\oenodeCenter{}}
 }%
 %    \end{macrocode}
@@ -11760,15 +11750,10 @@
       \edef\@sep{0 }%
     \fi
   \fi
-  \ifx\POE@key@couplertype\POE@str@couplertype@elliptic
-    \def\@lw{\getCLW 0.3 mul }%
-  \else
-    \def\@lw{0 }%
-  \fi
   \newOptexpFiberComp{%
-    {@@x neg \@lw add 0}
-    {@@x \@lw sub @@y0 \@sep add}
-    {@@x \@lw sub @@y0 \@sep sub}}
+    {@@x neg 0}
+    {@@x @@y0 \@sep add}
+    {@@x @@y0 \@sep sub}}
   \pnode(! 0 \POE@dict{@@y0}){\oenodeCenter{}}
 }%
 %    \end{macrocode}
