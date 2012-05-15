@@ -1,0 +1,55 @@
+% Setup according to http://dx.doi.org/10.1364/OL.37.000797
+\documentclass{article}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{pst-optexp}
+\thispagestyle{empty}
+\begin{document}
+\makeatletter
+\def\slm@comp{\psframe[dimen=outer](-0.5,0)(0.5,0.1)}%
+\makeatother
+\newOptexpTripole{slm}{}
+\newpsobject{laser}{optbox}{position=start, innerlabel}
+\begin{pspicture}[showgrid](12,8)
+  \psset{lens=2}
+  \pnode(1,6){L}
+  \pnode([offset=-6]L){PSLM}
+  \pnode([Xnodesep=2,offset=1]L){ASLM}
+  \pnode([offset=-0.5,Xnodesep=9]L){MRef}
+  \pnode([offset=-7]ASLM){ML}
+  \pnode([Xnodesep=8.5]ML){Cam}
+  \laser[optboxsize=1.6 0.6](L)(PSLM){Nd:YAG}
+  \beamsplitter[bssize=0.4, labelangle=-90](L)(L|MRef)(MRef){BS}
+  \lens[abspos=1.2, lens=0.5 0.5 0.4, n=2.5](L)(PSLM){MO}
+  \pinhole[phwidth=0.07, outerheight=0.6, abspos=1.4](L)(PSLM){PH}
+  \lens[abspos=2.3](L)(PSLM){L}
+  \slm(L)(PSLM)(ASLM){PSLM}
+  \lens(PSLM)(ASLM){L}
+  \slm(PSLM)(ASLM)(ML){ASLM}
+  \lens[position=0.45](ASLM)(ML){L}
+  \mirror(ASLM)(ML)(Cam){M}
+  \newpsstyle{Beam}{fillcolor=green!80!black, opacity=0.5, fillstyle=solid, linestyle=none, beaminside=false}
+  \drawwidebeam[beamwidth=0.1, stopinside]{1-5}
+  \drawwidebeam[loadbeampoints, stopinside]{5-7}
+  \pnode(\oenodeBeamUp){Up}\pnode(\oenodeBeamLow){Low}
+  \drawwidebeam[loadbeampoints, beamdiv=-8.5, savebeampoints=false]{7-8}
+  \drawwidebeam[loadbeampoints, beamdiv=-8.5, beamangle=-4]{7-8}
+  \drawwidebeam[loadbeampoints, beamdiv=-8.5, beamangle=-4.5]{8-9}
+  \pnode(Up){\oenodeBeamUp}  \pnode(Low){\oenodeBeamLow}
+  \drawwidebeam[loadbeampoints, beamdiv=-8.5, beamangle=4]{7-8}
+  \drawwidebeam[loadbeampoints, beamdiv=-8.5, beamangle=4.5]{8-9}
+  \lens[abspos=2](ML)(Cam){L}
+  \lens[abspos=4](ML)(Cam){L}
+  \crystal[abspos=5.5, voltage, crystalwidth=1, crystalheight=0.6](ML)(Cam){SBN}
+  \drawwidebeam[loadbeampoints, stopinside]{9-11}
+  \pnode(\oenodeBeamUp){Up}\pnode(\oenodeBeamLow){Low}
+  \drawwidebeam[loadbeampoints, beamdiv=-17, beamangle=5, stopinside]{11-12}
+  \beamsplitter[bssize=0.6](MRef)(MRef|Cam)(Cam){BS}
+  \lens[n=2.4](MRef|Cam)(Cam){L}
+  \optbox[optboxsize=0.8 0.6, position=end](ML)(Cam){Cam}
+  \drawwidebeam[loadbeampoints, beamangle=-5]{12-16}
+  \pnode(Up){\oenodeBeamUp}  \pnode(Low){\oenodeBeamLow}
+  \drawwidebeam[loadbeampoints, beamdiv=-17, beamangle=-5, stopinside]{11-12}
+  \drawwidebeam[loadbeampoints, beamangle=5]{12-16}
+\end{pspicture}
+\end{document}
