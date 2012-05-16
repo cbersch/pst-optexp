@@ -11,7 +11,7 @@
 \newOptexpTripole{slm}{}
 \newpsobject{laser}{optbox}{position=start, innerlabel}
 \begin{pspicture}(12.5,9)
-  \psset{lens=2}
+  \psset[optexp]{lens=2, phwidth=0.07, outerheight=0.6}
   \pnode(1,7){L}
   \pnode([offset=-6]L){PSLM}
   \pnode([Xnodesep=2,offset=1]L){ASLM}
@@ -22,13 +22,15 @@
   \laser[optboxsize=1.6 0.6](L)(PSLM){Nd:YAG}
   \beamsplitter[bssize=0.4, labelangle=-90](L)(L|MRef)(MRef){BS}
   \lens[abspos=1.2, lens=0.5 0.5 0.4, n=2.5, labelangle=-10](L)(PSLM){MO}
-  \pinhole[phwidth=0.07, outerheight=0.6, abspos=1.4, labelangle=10](L)(PSLM){PH}
+  \pinhole[abspos=1.4, labelangle=10](L)(PSLM){PH}
   \lens[abspos=2.3](L)(PSLM){L}
-  \slm(L)(PSLM)(ASLM){PSLM}
+  \slm[labeloffset=0.5](L)(PSLM)(ASLM){PSLM}
   \lens[label=0.6 -40](PSLM)(ASLM){L}
-  \slm(PSLM)(ASLM)(ML){ASLM}
+  \slm[labeloffset=0.5](PSLM)(ASLM)(ML){ASLM}
   \lens[position=0.45, labelangle=180](ASLM)(ML){L}
-  \mirror(ASLM)(ML)(Cam){M}
+  \optretplate[labelangle=180, position=0.55](ASLM)(ML){$\lambda/2$}
+  \optplate[labelangle=180, position=0.62](ASLM)(ML){P}
+  \mirror[labeloffset=0.4](ASLM)(ML)(Cam){M}
   \newpsstyle{Beam}{fillcolor=green!80!black, opacity=0.5, fillstyle=solid, linestyle=none, beaminside}
   \drawwidebeam[beamwidth=0.1, stopinside]{1-5}
   \psset{loadbeampoints}
@@ -40,24 +42,24 @@
   \drawwidebeam[beamdiv=-8.5, beamangle=4.5]{8-9}
   \lens[abspos=2](ML)(Cam){L}
   \lens[abspos=4](ML)(Cam){L}
-  \crystal[abspos=5.5, voltage, crystalwidth=1, crystalheight=0.6](ML)(Cam){SBN}
+  \crystal[abspos=6, voltage, crystalwidth=1, crystalheight=0.6, frontlayer, fillcolor=yellow!90!black, fillstyle=solid](ML)(Cam){SBN}
   \beamsplitter[bssize=0.6](MRef)(MRef|Cam)(Cam){BS}
   \lens[n=2.4](MRef|Cam)(Cam){L}
   \optbox[optboxsize=0.8 0.6, position=end](ML)(Cam){Cam}
-  \drawwidebeam[savebeampoints=2, stopinside]{9-11}
-  \drawwidebeam[loadbeampoints=2, beamdiv=-17, beamangle=5, stopinside]{11-12}
-  \drawwidebeam[beamangle=-5]{12-16}
-  \drawwidebeam[loadbeampoints=2, beamdiv=-17, beamangle=-5, stopinside]{11-12}
-  \drawwidebeam[beamangle=5]{12-16}
+  \drawwidebeam[savebeampoints=2, stopinside]{9-13}
+  \drawwidebeam[loadbeampoints=2, beamdiv=-16, beamangle=5, stopinside]{13-14}
+  \drawwidebeam[beamangle=-5]{14-18}
+  \drawwidebeam[loadbeampoints=2, beamdiv=-16, beamangle=-5, stopinside]{13-14}
+  \drawwidebeam[beamangle=5]{14-18}
   %
   \lens[lens=0.5 0.5 0.4, n=2](L|MRef)(MRef){MO}
-  \pinhole[phwidth=0.07, outerheight=0.6, position=0.52, labelangle=180](L|MRef)(MRef){PH}
+  \pinhole[position=0.53, labelangle=180](L|MRef)(MRef){PH}
   \lens[position=0.65](L|MRef)(MRef){L}
   \optplate[position=0.7](L|MRef)(MRef){S}
-  \mirror(L|MRef)(MRef)(MRef|Cam)
+  \mirror[labeloffset=0.4](L|MRef)(MRef)(MRef|Cam){M}
   \addtopsstyle{Beam}{fillcolor=red!70}
-  \drawwidebeam[loadbeampoints=false, beamwidth=0.1, savebeampoints]{2}{17-19}
-  \drawwidebeam{19-21}{14-16}
+  \drawwidebeam[loadbeampoints=false, beamwidth=0.1, savebeampoints]{2}{19-21}
+  \drawwidebeam{21-23}{16-18}
 \end{optexp}
 \end{pspicture}
 \end{document}
