@@ -676,7 +676,7 @@
 %   }^^A
 %   \newpsstyle{Beam}{linecolor=red}
 %   \backlayer{\psline[style=Beam,ArrowInside=->, linewidth=2\pslinewidth, arrowinset=0](In)(\oenodeIn{3})(\oenodeOut{4})}
-%   \drawbeam[linewidth=2\pslinewidth, arrows=->, arrowinset=0, beamangle=-90, beamalign=absolute]{(\oenodeBeam)}{8}{(Out)}  
+%   \drawbeam[linewidth=2\pslinewidth, arrows=->, arrowinset=0, beamangle=-90, beamalign=absolute]{(\oenodeBeam{})}{8}{(Out)}  
 % \end{optexp}
 % \rput(4,4.5){^^A
 %   \psframe[fillstyle=solid,fillcolor=gray!70](-0.1, -0.6)(0.1, 0.7)
@@ -4495,13 +4495,12 @@
 % \label{sec:beamnode}
 %
 % \ifGERMAN
-% Die Endknoten des letzten \Lcs{drawbeam} oder \Lcs{drawwidebeam} Kommandos
-% können verwendet werden, wenn \Lkeyword{savebeampoints} auf \opt{true} gesetzt.
-% ist.
+% Die Endknoten eines \Lcs{drawbeam} oder \Lcs{drawwidebeam} Kommandos
+% können wieder verwendet werden, wenn \Lkeyword{savebeampoints} gesetzt ist.
 % \fi
 % \ifENGLISH
-% The end points of the most recent \Lcs{drawbeam} or \Lcs{drawwidebeam} command can
-% be accessed if \Lkeyword{savebeampoints} is set to \opt{true}.
+% The end points of a recent \Lcs{drawbeam} or \Lcs{drawwidebeam} command can
+% be reused if \Lkeyword{savebeampoints} is set.
 % \fi
 % \begin{ltxsyntax}
 %   \cmditem{oenodeBeam}
@@ -4520,7 +4519,7 @@
   \pnode(0,1){A}\pnode(1.6,1){B}
   \optbox[position=end](A)(B)
   \drawbeam[beaminsidelast=false]{(A)}{1}
-  \psdot(\oenodeBeam)
+  \psdot(\oenodeBeam{})
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -4547,9 +4546,9 @@
   \addtopsstyle{Beam}{%
     fillstyle=solid, fillcolor=green, opacity=0.3}
   \drawwidebeam[beamwidth=0.5]{(A)}{}{(B)}
-  \psdot(\oenodeBeamUp)\psdot(\oenodeBeamLow)
-  \uput[90](\oenodeBeamUp){\rput[rb](0,0){BeamUp}}
-  \uput[-90](\oenodeBeamLow){\rput[rt](0,0){BeamLow}}
+  \psdot(\oenodeBeamUp{})\psdot(\oenodeBeamLow{})
+  \uput[90](\oenodeBeamUp{}){\rput[rb](0,0){BeamUp}}
+  \uput[-90](\oenodeBeamLow{}){\rput[rt](0,0){BeamLow}}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -4579,13 +4578,13 @@
   \addtopsstyle{Beam}{%
     fillstyle=solid, fillcolor=green, opacity=0.3}
   \drawwidebeam[beamwidth=0.5, savebeam]{(A)}{}
-  \psdot(\oenodeBeamUp)\psdot(\oenodeBeamLow)
-  \uput[90](\oenodeBeamUp){\rput[rb](0,0){BeamUp}}
-  \uput[-90](\oenodeBeamLow){\rput[rt](0,0){BeamLow}}
+  \psdot(\oenodeBeamUp{})\psdot(\oenodeBeamLow{})
+  \uput[90](\oenodeBeamUp{}){\rput[rb](0,0){BeamUp}}
+  \uput[-90](\oenodeBeamLow{}){\rput[rt](0,0){BeamLow}}
   \drawwidebeam[loadbeam, beaminsidefirst]{}{(B)}
-  \psdot(\oenodeBeamUp)\psdot(\oenodeBeamLow)
-  \uput[90](\oenodeBeamUp){\rput[rb](0,0){BeamUp}}
-  \uput[-90](\oenodeBeamLow){\rput[rt](0,0){BeamLow}}
+  \psdot(\oenodeBeamUp{})\psdot(\oenodeBeamLow{})
+  \uput[90](\oenodeBeamUp{}){\rput[rb](0,0){BeamUp}}
+  \uput[-90](\oenodeBeamLow{}){\rput[rt](0,0){BeamLow}}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -4608,7 +4607,7 @@
 %<*ignore>
 % \fi
 \begin{lstlisting}
-\pnode(\oenodeBeam){MyBeamNode}
+\pnode(\oenodeBeam{}){MyBeamNode}
 \end{lstlisting}
 % \iffalse
 %</ignore>
@@ -4631,9 +4630,9 @@
   \optbox[position=end](A)(B)
   \psset{beaminsidelast=false}
   \drawbeam[linecolor=red, beampos=0.3]{(A)}{1}
-  \psdot(\oenodeBeam)
+  \psdot(\oenodeBeam{})
   \drawbeam[stopinside]{(A)}{1}
-  \psdot(\oenodeBeam)
+  \psdot(\oenodeBeam{})
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -5339,7 +5338,7 @@
 % Ausbreitungsrichtung definieren kann.
 % \fi
 % \begin{optionlist}
-%   \boolitem[true]{savebeampoints}
+%   \choitem[true]{savebeampoints}{true,false,\prm{int}}
 %   \ifGERMAN Speichert die Endpunkte jedes \nxLcs{draw*beam} Makros,
 %   vorangegangene Punkte werden überschrieben. \Lcs{drawbeam} und
 %   \Lcs{drawwidebeam} werden getrennt behandelt.
@@ -5349,7 +5348,7 @@
 %   separately.
 %   \fi
 %
-%   \boolitem[false]{loadbeampoints}
+%   \choitem[false]{loadbeampoints}{true,false,\prm{int}}
 %   \ifGERMAN Verwende die Endpunkte des letzten Strahls als Startpunkte.\fi
 %   \ifENGLISH Use the end points of the last beam as starting points for the next beam.\fi
 % \end{optionlist}
@@ -6822,23 +6821,28 @@
 % \nxLenv{pspicture}.
 %    \begin{macrocode}
 \gdef\POE@complist{}%
+\gdef\POE@beamlist{1}%
 \g@addto@macro{\endpspicture}{%
 %    \end{macrocode}
-% Undefine the last beam nodes at the end of the \nxLenv{pspicture}.
 %
+% Undefine all beam nodes at the end of the \nxLenv{pspicture}.
 %    \begin{macrocode}
-  \POE@Verb{%
-    /lastBeamPointUp /lastBeamPointLow /lastBeamPoint 
-    3 { currentdict exch undef } repeat 
-    /N@\oenodeBeam\space /N@\oenodeBeamUp\space /N@\oenodeBeamLow\space
-    3 { tx@NodeDict exch undef } repeat
+  \expandafter\XKV@for@n\expandafter{\POE@beamlist}\POE@temp{%
+    \POE@Verb{%
+      /lastBeamPointUp\POE@temp\space 
+      /lastBeamPointLow\POE@temp\space 
+      /lastBeamPoint\POE@temp\space 
+      3 { currentdict exch undef } repeat 
+      /N@\oenodeBeam{\POE@temp} /N@\oenodeBeamUp{\POE@temp} /N@\oenodeBeamLow{\POE@temp}
+      3 { tx@NodeDict exch undef } repeat
+    }%
   }%
 %    \end{macrocode}
 %
 % Reset the component list.
 %
 %    \begin{macrocode}
-  \gdef\POE@complist{}\global\POE@cnt=0\relax
+  \gdef\POE@complist{}\gdef\POE@beamlist{1}\global\POE@cnt=0\relax
 }%
 %    \end{macrocode}
 % Some convenience definitions.
@@ -6881,8 +6885,6 @@
 \newif\ifPOE@stopinside
 \newif\ifPOE@beaminsidefirst
 \newif\ifPOE@beaminsidelast
-\newif\ifPOE@savebeampoints
-\newif\ifPOE@loadbeampoints
 \newif\ifPOE@savebeam
 \newif\ifPOE@loadbeam
 \newif\ifPOE@beaminside
@@ -7980,10 +7982,62 @@
 \define@boolkey[psset]{optexp}[POE@]{stopinside}[true]{}%
 \define@boolkey[psset]{optexp}[POE@]{beaminsidefirst}[true]{}%
 \define@boolkey[psset]{optexp}[POE@]{beaminsidelast}[true]{}%
-\define@boolkey[psset]{optexp}[POE@]{savebeampoints}[true]{}%
-\define@boolkey[psset]{optexp}[POE@]{loadbeampoints}[true]{}%
-\define@boolkey[psset]{optexp}[POE@]{savebeam}[true]{}%
-\define@boolkey[psset]{optexp}[POE@]{loadbeam}[true]{}%
+\define@choicekey+[psset]{optexp}{savebeampoints}%
+  [\val\nr]{true,false}[true]{%
+    \ifcase\nr\relax
+      \def\POE@key@savebeampoints{1}
+    \or
+      \def\POE@key@savebeampoints{0}
+    \fi
+  }{%
+    \ifnum9<1#1
+      \def\POE@key@savebeampoints{#1}
+    \else
+      \PackageError{pst-optexp}{savebeampoints must be a positive integer or 0.}%
+    \fi
+    \@expandtwoargs\in@{,\POE@key@savebeampoints,}{,\POE@beamlist,}%
+    \ifin@\else
+      \xdef\POE@beamlist{%
+        \POE@key@savebeampoints\ifx\POE@beamlist\@empty\else,\fi\POE@beamlist
+      }%
+    \fi
+}%
+\define@choicekey+[psset]{optexp}{loadbeampoints}%
+  [\val\nr]{true,false}[true]{%
+    \ifcase\nr\relax
+      \def\POE@key@loadbeampoints{1}
+    \or
+      \def\POE@key@loadbeampoints{0}
+    \fi
+  }{%
+    \ifnum9<1#1
+      \def\POE@key@loadbeampoints{#1}%
+    \else
+      \PackageError{pst-optexp}{loadbeampoints must be a positive integer or 0.}%
+    \fi
+    \@expandtwoargs\in@{,\POE@key@loadbeampoints,}{,\POE@beamlist,}%
+    \ifin@\else
+      \xdef\POE@beamlist{%
+        \POE@key@loadbeampoints\ifx\POE@beamlist\@empty\else,\fi\POE@beamlist
+      }%
+    \fi
+}%
+\define@key[psset]{optexp}{loadbeam}[true]{%
+  \setkeys+[psset]{optexp}{loadbeampoints=#1}%
+  \ifdim\POE@key@loadbeampoints pt>0pt
+    \POE@loadbeamtrue
+  \else
+    \POE@loadbeamfalse
+  \fi
+}%
+\define@key[psset]{optexp}{savebeam}[true]{%
+  \setkeys+[psset]{optexp}{savebeampoints=#1}%
+  \ifdim\POE@key@savebeampoints pt>0pt
+    \POE@savebeamtrue
+  \else
+    \POE@savebeamfalse
+  \fi
+}%
 \define@boolkey[psset]{optexp}[POE@]{beaminside}[true]{}%
 \define@boolkey[psset]{optexp}[POE@]{allowbeaminside}[true]{}%
 \define@boolkey[psset]{optexp}[POE@]{raytrace}[true]{}%
@@ -8002,10 +8056,10 @@
   ,beaminside=true
   ,beaminsidefirst=false
   ,beaminsidelast=false
-  ,loadbeampoints=false
-  ,savebeampoints=true
   ,loadbeam=false
   ,savebeam=false
+  ,loadbeampoints=false
+  ,savebeampoints=true
   ,beamangle=0
   ,beampos=\@empty
   ,beamalign=relative
@@ -8295,21 +8349,11 @@
   \addbefore@par{n=n}%
   \begin@SpecialObj%
   \addto@pscode{%
-     \pst@optexpdict 
-     \ifPOE@loadbeam
-       /loadbeampoints true def
-       /loadbeam true def
-     \else
-       /loadbeampoints \ifPOE@loadbeampoints true \else false \fi def
-       /loadbeam false def
-     \fi
-     \ifPOE@savebeam
-       /savebeampoints true def
-       /savebeam true def
-     \else
-       /savebeampoints \ifPOE@savebeampoints true \else false \fi def
-       /savebeam false def
-     \fi     
+     \pst@optexpdict
+     /loadbeampoints \POE@key@loadbeampoints\space def 
+     /loadbeam \ifPOE@loadbeam true \else false \fi def
+     /savebeampoints \POE@key@savebeampoints\space def
+     /savebeam \ifPOE@savebeam true \else false \fi def
      /beaminsidefirst \ifPOE@beaminsidefirst true \else false \fi def
      /beaminsidelast \ifPOE@beaminsidelast true \else false \fi def
      /beaminside \ifPOE@beaminside true \else false \fi def
@@ -8432,36 +8476,39 @@
 % code here. This must be done later, when it refers to the correct refractive
 % indices.
 %    \begin{macrocode}
-     {/nbeam {\POE@key@n cvx exec} bind def
-      \ifPOE@pswarning
-        /Warning /PrintWarning load def
-      \else
-        /Warning /pop load def
-      \fi}%
-     [ \POE@key@beampos\space counttomark dup 
-     0 eq { 
-       pop 0 0 
-     } {
-       1 eq {
-         0 exch
-       } if
-     } ifelse \tx@ScreenCoor] cvx
-     \POE@key@beamangle\space
-     currentdict /lastBeamPointTmp undef
-     currentdict /lastVecTmp undef
-     loadbeampoints tx@NodeDict /N@\oenodeBeam\space known and {
-       /N@\oenodeBeam\space @GetCenter ToVec /lastBeamPointTmp ED
-     } if
-     loadbeam currentdict /lastVec known and {
-       /lastVecTmp /lastVec load def
-     } if
-     TraceBeam 
-    \POE@strokesinglebeam
-      savebeampoints currentdict /lastBeamPointTmp known and dup { 
-        lastBeamPointTmp /N@\oenodeBeam\space 4 -1 roll
+      {/nbeam {\POE@key@n cvx exec} bind def
+       \ifPOE@pswarning
+         /Warning /PrintWarning load def
+       \else
+         /Warning /pop load def
+       \fi}%
+      [ \POE@key@beampos\space counttomark dup 
+      0 eq { 
+        pop 0 0 
+      } {
+        1 eq {
+          0 exch
+        } if
+      } ifelse \tx@ScreenCoor] cvx
+      \POE@key@beamangle\space
+      currentdict /lastBeamPointTmp undef
+      currentdict /lastVecTmp undef
+      loadbeampoints 1 ge 
+      tx@NodeDict /N@\oenodeBeam{\POE@key@loadbeampoints} known and {
+        /N@\oenodeBeam{\POE@key@loadbeampoints} @GetCenter ToVec 
+        /lastBeamPointTmp ED
+      } if
+      loadbeam currentdict /lastVec\POE@key@loadbeampoints\space known and {
+        /lastVecTmp /lastVec\POE@key@loadbeampoints\space load def
+      } if
+      TraceBeam 
+      \POE@strokesinglebeam
+      savebeampoints 1 ge
+      currentdict /lastBeamPointTmp known and dup { 
+        lastBeamPointTmp /N@\oenodeBeam{\POE@key@savebeampoints}\space 4 -1 roll
       } if 
       savebeam currentdict /lastVecTmp known and dup {
-        /lastVec lastVecTmp 4 -1 roll
+        /lastVec\POE@key@savebeampoints\space lastVecTmp 4 -1 roll
       } if
     }%
   \fi
@@ -8555,17 +8602,19 @@
       /strokeBeam \ifx\pslinestyle\@none false \else true \fi def
       currentdict dup /lastBeamPointTmpLow undef /lastBeamPointTmpUp undef
       currentdict dup /lastVecTmpLow undef /lastVecTmpUp undef
-      loadbeampoints
-      tx@NodeDict /N@\oenodeBeamLow\space known and
-      tx@NodeDict /N@\oenodeBeamUp\space known and {
-        /N@\oenodeBeamLow\space @GetCenter ToVec /lastBeamPointTmpLow ED
-        /N@\oenodeBeamUp\space @GetCenter ToVec /lastBeamPointTmpUp ED
+      loadbeampoints 1 ge
+      tx@NodeDict /N@\oenodeBeamLow{\POE@key@loadbeampoints} known and
+      tx@NodeDict /N@\oenodeBeamUp{\POE@key@loadbeampoints} known and {
+        /N@\oenodeBeamLow{\POE@key@loadbeampoints} @GetCenter ToVec 
+        /lastBeamPointTmpLow ED
+        /N@\oenodeBeamUp{\POE@key@loadbeampoints} @GetCenter ToVec 
+        /lastBeamPointTmpUp ED
       } if
       loadbeam 
-      currentdict /lastVecLow known and 
-      currentdict /lastVecUp known and {
-        /lastVecTmpLow /lastVecLow load def
-        /lastVecTmpUp /lastVecUp load def
+      currentdict /lastVecLow\POE@key@loadbeampoints\space known and 
+      currentdict /lastVecUp\POE@key@loadbeampoints\space known and {
+        /lastVecTmpLow /lastVecLow\POE@key@loadbeampoints\space load def
+        /lastVecTmpUp /lastVecUp\POE@key@loadbeampoints\space load def
       } if
       TraceAndFillWideBeam
     grestore pop % pop off the mark
@@ -8587,19 +8636,19 @@
       pop % pop off the mark
     } ifelse
     currentdict /fillBeam known strokeBeam or
-    savebeampoints and
+    savebeampoints 1 ge and
     currentdict /lastBeamPointTmpLow known and
     currentdict /lastBeamPointTmpUp known and dup {
-      lastBeamPointTmpLow /N@\oenodeBeamLow\space
-      lastBeamPointTmpUp /N@\oenodeBeamUp\space
+      lastBeamPointTmpLow /N@\oenodeBeamLow{\POE@key@savebeampoints}
+      lastBeamPointTmpUp /N@\oenodeBeamUp{\POE@key@savebeampoints}
       7 -1 roll
     } if
     currentdict /fillBeam known strokeBeam or 
     savebeam and
     currentdict /lastVecTmpLow known and
     currentdict /lastVecTmpUp known and dup {
-      /lastVecLow lastVecTmpLow
-      /lastVecUp lastVecTmpUp
+      /lastVecLow\POE@key@savebeampoints\space lastVecTmpLow
+      /lastVecUp\POE@key@savebeampoints\space lastVecTmpUp
       7 -1 roll
     } if
   }%
@@ -9115,20 +9164,26 @@
 % \end{macro}
 % \begin{macro}{\oenodeBeam}
 %    \begin{macrocode}
-\def\oenodeBeam{%
-  \POE@str@basicname@prefix\POE@str@basicname@default Beam}%
+\def\oenodeBeam#1{%
+  \POE@str@basicname@prefix\POE@str@basicname@default Beam%
+  \ifx\\#1\\1\else#1\fi
+}%
 %    \end{macrocode}
 % \end{macro}
 % \begin{macro}{\oenodeBeamUp}
 %    \begin{macrocode}
-\def\oenodeBeamUp{%
-  \POE@str@basicname@prefix\POE@str@basicname@default BeamUp}%
+\def\oenodeBeamUp#1{%
+  \POE@str@basicname@prefix\POE@str@basicname@default BeamUp%
+  \ifx\\#1\\1\else#1\fi
+}%
 %    \end{macrocode}
 % \end{macro}
 % \begin{macro}{\oenodeBeamLow}
 %    \begin{macrocode}
-\def\oenodeBeamLow{%
-  \POE@str@basicname@prefix\POE@str@basicname@default BeamLow}%
+\def\oenodeBeamLow#1{%
+  \POE@str@basicname@prefix\POE@str@basicname@default BeamLow%
+  \ifx\\#1\\1\else#1\fi
+}%
 %    \end{macrocode}
 % \end{macro}
 % 
@@ -13367,8 +13422,8 @@ tx@OptexpDict begin
           3 1 roll 5 1 roll
           [ 6 1 roll ] cvx counttomark 1 roll
           last {
-            savebeampoints stopinside not and
-            savebeampoints not beaminsidelast not and or {
+            savebeampoints 1 ge stopinside not and
+            savebeampoints 1 lt beaminsidelast not and or {
               exit
             } if
           } if
