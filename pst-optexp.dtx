@@ -6833,7 +6833,9 @@
       /lastBeamPointLow\POE@temp\space 
       /lastBeamPoint\POE@temp\space 
       3 { currentdict exch undef } repeat 
-      /N@\oenodeBeam{\POE@temp} /N@\oenodeBeamUp{\POE@temp} /N@\oenodeBeamLow{\POE@temp}
+      /N@\oenodeBeam{\POE@temp} 
+      /N@\oenodeBeamUp{\POE@temp} 
+      /N@\oenodeBeamLow{\POE@temp}
       3 { tx@NodeDict exch undef } repeat
     }%
   }%
@@ -7281,7 +7283,7 @@
 % Error handling.
 %    \begin{macrocode}
 \define@boolkey[psset]{optexp}[POE@]{pswarning}[true]{}
-\psset[optexp]{pswarning=true}
+\psset[optexp]{pswarning=true}%
 %    \end{macrocode}
 %
 % \subsection{Free-ray component parameters}
@@ -7993,12 +7995,14 @@
     \ifnum9<1#1
       \def\POE@key@savebeampoints{#1}
     \else
-      \PackageError{pst-optexp}{savebeampoints must be a positive integer or 0.}%
+      \PackageError{pst-optexp}%
+        {savebeampoints must be a positive integer or 0.}%
     \fi
     \@expandtwoargs\in@{,\POE@key@savebeampoints,}{,\POE@beamlist,}%
     \ifin@\else
       \xdef\POE@beamlist{%
-        \POE@key@savebeampoints\ifx\POE@beamlist\@empty\else,\fi\POE@beamlist
+        \POE@key@savebeampoints
+        \ifx\POE@beamlist\@empty\else,\fi\POE@beamlist
       }%
     \fi
 }%
@@ -8013,12 +8017,14 @@
     \ifnum9<1#1
       \def\POE@key@loadbeampoints{#1}%
     \else
-      \PackageError{pst-optexp}{loadbeampoints must be a positive integer or 0.}%
+      \PackageError{pst-optexp}%
+        {loadbeampoints must be a positive integer or 0.}%
     \fi
     \@expandtwoargs\in@{,\POE@key@loadbeampoints,}{,\POE@beamlist,}%
     \ifin@\else
       \xdef\POE@beamlist{%
-        \POE@key@loadbeampoints\ifx\POE@beamlist\@empty\else,\fi\POE@beamlist
+        \POE@key@loadbeampoints
+        \ifx\POE@beamlist\@empty\else,\fi\POE@beamlist
       }%
     \fi
 }%
@@ -8127,8 +8133,10 @@
     fiberin@top, fiberin@bottom, 
     fiberout@top, fiberout@bottom}%
 }%
-\def\POE@getfiber@t{\psset[optexp]{fiberin@bottom=false, fiberout@bottom=false}}%
-\def\POE@getfiber@b{\psset[optexp]{fiberin@top=false, fiberout@top=false}}%
+\def\POE@getfiber@t{%
+  \psset[optexp]{fiberin@bottom=false, fiberout@bottom=false}}%
+\def\POE@getfiber@b{%
+  \psset[optexp]{fiberin@top=false, fiberout@top=false}}%
 \def\POE@getfiber@l{\psset[optexp]{fiberout@=false}}%
 \def\POE@getfiber@r{\psset[optexp]{fiberin@=false}}%
 \let\POE@getfiber@i\POE@getfiber@l
@@ -8297,7 +8305,8 @@
           \psset{angleA=\POE@key@fiberangleA}%
         \else
           \psset{angleA=! \POE@dict{%
-            \POE@tempb \POE@tempa \POE@comps exch \POE@key@fiberalign\space RelFiberAngle
+            \POE@tempb \POE@tempa \POE@comps exch 
+            \POE@key@fiberalign\space RelFiberAngle
             \POE@key@fiberangleA\space add}
           }%
         \fi
@@ -8307,7 +8316,8 @@
           \psset{angleB=\POE@key@fiberangleB}%
         \else
           \psset{angleB=! \POE@dict{%
-            \POE@tempa \POE@tempb \POE@comps \POE@key@fiberalign\space RelFiberAngle
+            \POE@tempa \POE@tempb \POE@comps 
+            \POE@key@fiberalign\space RelFiberAngle
             \POE@key@fiberangleB\space add}
           }%
         \fi
@@ -8498,14 +8508,16 @@
         /N@\oenodeBeam{\POE@key@loadbeampoints} @GetCenter ToVec 
         /lastBeamPointTmp ED
       } if
-      loadbeam currentdict /lastVec\POE@key@loadbeampoints\space known and {
+      currentdict /lastVec\POE@key@loadbeampoints\space known 
+      loadbeam and {
         /lastVecTmp /lastVec\POE@key@loadbeampoints\space load def
       } if
       TraceBeam 
       \POE@strokesinglebeam
       savebeampoints 1 ge
       currentdict /lastBeamPointTmp known and dup { 
-        lastBeamPointTmp /N@\oenodeBeam{\POE@key@savebeampoints}\space 4 -1 roll
+        lastBeamPointTmp 
+        /N@\oenodeBeam{\POE@key@savebeampoints}\space 4 -1 roll
       } if 
       savebeam currentdict /lastVecTmp known and dup {
         /lastVec\POE@key@savebeampoints\space lastVecTmp 4 -1 roll
@@ -8524,7 +8536,7 @@
 %    \begin{macrocode}
 \def\tx@NodeScale{%
   \pst@nodedict 
-    /NodeScale {\ifx\pstnodescale\@undefined  \else\pstnodescale \fi} def 
+    /NodeScale {\ifx\pstnodescale\@undefined\else\pstnodescale\fi} def 
   end }
 %    \end{macrocode}
 % 
@@ -8600,11 +8612,12 @@
         /fillBeam {\psk@fillstyle} def
       \fi
       /strokeBeam \ifx\pslinestyle\@none false \else true \fi def
-      currentdict dup /lastBeamPointTmpLow undef /lastBeamPointTmpUp undef
-      currentdict dup /lastVecTmpLow undef /lastVecTmpUp undef
-      loadbeampoints 1 ge
-      tx@NodeDict /N@\oenodeBeamLow{\POE@key@loadbeampoints} known and
-      tx@NodeDict /N@\oenodeBeamUp{\POE@key@loadbeampoints} known and {
+      [/lastBeamPointTmpLow /lastBeamPointTmpUp
+      /lastVecTmpLow /lastVecTmpUp]
+      {currentdict exch undef} forall
+      tx@NodeDict /N@\oenodeBeamLow{\POE@key@loadbeampoints} known
+      tx@NodeDict /N@\oenodeBeamUp{\POE@key@loadbeampoints} known
+      loadbeampoints 1 ge and and {
         /N@\oenodeBeamLow{\POE@key@loadbeampoints} @GetCenter ToVec 
         /lastBeamPointTmpLow ED
         /N@\oenodeBeamUp{\POE@key@loadbeampoints} @GetCenter ToVec 
@@ -8755,7 +8768,8 @@
   \ifx\POE@key@conn\@empty
     \advance\POE@nodecnt by 1
     \POE@getcomp{%
-      {\pst@coor} {0 1} (\POE@str@basicname@default N@\the\POE@nodecnt) 
+      {\pst@coor} {0 1} 
+      (\POE@str@basicname@default N@\the\POE@nodecnt) 
       {\tx@UserCoor} NewTempNodeComp 
       (\POE@str@basicname@default N@\the\POE@nodecnt)
     }%
@@ -9402,10 +9416,9 @@
 % \end{macro}
 % 
 % \begin{macro}{\addafter@par}
-% Command analog to \cs{addbefore@par} which is defined in pstricks.tex
-% \cs{addafter@par} inserts new options at the end of the current token register.
-% This can be useful to preset options that are not allowed to be changed by the
-% user.
+%   Analog to \cs{addbefore@par} from pstricks.tex, but inserts new options at
+%   the end of the current token register.  This can be useful to preset options
+%   that are not allowed to be changed by the user.
 %    \begin{macrocode}
 \def\addafter@par#1{%
   \ifx\pst@par\@empty
@@ -9719,10 +9732,12 @@
         \fi
         \ifPOE@fiberout@
           \ifPOE@fiberout@top
-            \drawfiber@{FiberOut1}[startnode=2]{\POE@key@compname}{(#2)}
+            \drawfiber@{FiberOut1}[startnode=2]%
+              {\POE@key@compname}{(#2)}
           \fi
           \ifPOE@fiberout@bottom
-            \drawfiber@{FiberOut2}[startnode=N]{\POE@key@compname}{(#3)}
+            \drawfiber@{FiberOut2}[startnode=N]%
+              {\POE@key@compname}{(#3)}
           \fi
         \fi
       \fi
@@ -9806,7 +9821,8 @@
             4 2 roll tx@EcldDict begin Project end VecAdd
             2 copy 6 -2 roll -0.5 VecScale VecAdd
           }){\oenode@RefA{}}%
-          \pnode(! \POE@dict{4 2 roll 0.5 VecScale VecAdd}){\oenode@RefB{}}%
+          \pnode(! \POE@dict{4 2 roll 0.5 VecScale VecAdd})%
+            {\oenode@RefB{}}%
         \fi
       \fi
     \fi
@@ -9818,10 +9834,12 @@
         \fi
         \ifPOE@fiberout@
           \ifPOE@fiberout@top
-            \drawfiber@{FiberOut1}[startnode=N]{\POE@key@compname}{(#3)}
+            \drawfiber@{FiberOut1}[startnode=N]%
+              {\POE@key@compname}{(#3)}
           \fi
           \ifPOE@fiberout@bottom
-            \drawfiber@{FiberOut2}[startnode=2, fiberalign=center]{\POE@key@compname}{(#2)}
+            \drawfiber@{FiberOut2}[startnode=2, fiberalign=center]%
+              {\POE@key@compname}{(#2)}
           \fi
         \fi
       \fi
@@ -9829,7 +9847,9 @@
   \end@OptexpObj
 }%
 \fiberdipole@iimacro{optcirculator}%
-%     \end{macrocode}
+%    \end{macrocode}
+% \end{macro}
+%
 % \begin{macro}{\POE@calcNodes}
 %   Some of the components need three points to be positioned. 
 %   These are:
@@ -9937,14 +9957,16 @@
     /dx XB XA sub def
     /dy YB YA sub def
     /angle dy dx Atan def
-    XA #3 1 sub angle cos mul add YA #3 1 sub angle sin mul add ){temp@nlputA}%
+    XA #3 1 sub angle cos mul add 
+    YA #3 1 sub angle sin mul add ){temp@nlputA}%
   \pnode(!
     \pst@tempA \tx@UserCoor /YA ED /XA ED
     \pst@tempB \tx@UserCoor /YB ED /XB ED
     /dx XB XA sub def
     /dy YB YA sub def
     /angle dy dx Atan def
-    XA #3 1 add angle cos mul add YA #3 1 add angle sin mul add ){temp@nlputB}%
+    XA #3 1 add angle cos mul add 
+    YA #3 1 add angle sin mul add ){temp@nlputB}%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -10042,15 +10064,18 @@
               { /yA ED /xA ED /yB ED /xB ED} ifelse
           } ifelse
       } if >%
-      \ncline[linestyle=none,fillstyle=none, npos=]{\POE@trefnodeA}{\POE@trefnodeB}%
+      \ncline[linestyle=none,fillstyle=none, npos=]%
+             {\POE@trefnodeA}{\POE@trefnodeB}%
       \ifx\POE@key@position\@empty
         \ifx\POE@key@abspos\@empty
           \ncput[nrot=:U,npos=]{\POE@putlabelrelative{#1}}%
         \else
-          \POE@nlput[nrot=:U](\POE@trefnodeA)(\POE@trefnodeB){\POE@key@abspos}{\POE@putlabelrelative{#1}}%
+          \POE@nlput[nrot=:U](\POE@trefnodeA)(\POE@trefnodeB)%
+            {\POE@key@abspos}{\POE@putlabelrelative{#1}}%
         \fi
       \else
-        \ncput[nrot=:U, npos=\POE@key@position]{\POE@putlabelrelative{#1}}%
+        \ncput[nrot=:U, npos=\POE@key@position]%
+          {\POE@putlabelrelative{#1}}%
       \fi
     \endgroup
   \fi\fi\fi
@@ -10230,22 +10255,33 @@
           \POE@key@extnode@xref\space
           \POE@key@extnode@yref\space
           DefineExtNode}){\oenodeExt{}}%
-        \ifnum9<1\POE@key@compname\relax
-          \POE@Verb{ tx@NodeDict begin /N@\oenodeExt{} load /N@ExtNode ED end }%
-        \else
-          \POE@Verb{ tx@NodeDict begin /N@\oenodeExt{} load /N@\POE@key@compname ExtNode ED end }%
-        \fi
+        \POE@Verb{%
+          tx@NodeDict begin /N@\oenodeExt{} load
+          \ifnum9<1\POE@key@compname
+            /N@ExtNode 
+          \else
+            /N@\POE@key@compname ExtNode 
+          \fi
+          ED end 
+        }%
       \fi
     \fi
   }%
   \@ifundefined{#1@ref}{}{\@nameuse{#1@ref}}%
   \ifPOE@endbox
-    \psset[optexp]{abspos={\POE@dict{ /N@\POE@refnodeA\space @GetCenter \tx@UserCoor /N@\POE@refnodeB\space @GetCenter \tx@UserCoor @ABDist @@x0 @@x add add }}}%
+    \psset[optexp]{abspos={%
+      \POE@dict{%
+        /N@\POE@refnodeA\space @GetCenter \tx@UserCoor 
+        /N@\POE@refnodeB\space @GetCenter \tx@UserCoor 
+        @ABDist @@x0 @@x add add 
+      }%
+    }}%
   \else\ifPOE@startbox
     \psset[optexp]{abspos={\POE@dict{ @@x0 neg @@x sub }}}%
   \fi\fi
   \POE@disablepos
-  \ncline[linestyle=none,fillstyle=none,npos=]{\POE@refnodeA}{\POE@refnodeB}%
+  \ncline[linestyle=none,fillstyle=none,npos=]%
+    {\POE@refnodeA}{\POE@refnodeB}%
 %    \end{macrocode}
 % Positioning of the component
 %    \begin{macrocode}
@@ -10270,7 +10306,8 @@
         \ncput[nrot=:U,npos=\POE@key@position]{\POE@putcomp{\@@comp}}%
       \fi
     \else
-      \POE@nlput[nrot=:U](\POE@refnodeA)(\POE@refnodeB){\POE@key@abspos}{\POE@putcomp{\@@comp}}%
+      \POE@nlput[nrot=:U](\POE@refnodeA)(\POE@refnodeB)%
+        {\POE@key@abspos}{\POE@putcomp{\@@comp}}%
     \fi
   \endgroup
   \ifPOE@backlayer
@@ -10518,7 +10555,8 @@
 % \begin{macro}{\thickmirror@comp}
 %    \begin{macrocode}
 \def\thickmirror@comp{%
-  \psframe[linestyle=none, fillcolor=gray!20, fillstyle=solid](-0.5, -0.2)(0.5,0)
+  \psframe[linestyle=none, fillcolor=gray!20, fillstyle=solid]%
+    (-0.5, -0.2)(0.5,0)
   \psline(-0.5, 0)(0.5, 0)
 }%
 %    \end{macrocode}
@@ -10671,12 +10709,13 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\dipole@nodes}
+% \begin{macro}{\pinhole@nodes}
 %    \begin{macrocode}
 \def\pinhole@nodes{%
   \newOptexpComp{%
     {-1e-4 0} {0 1} @@y0 @@y sub @@y0 @@y add trans {PlainIfc}
-    {0 0} {0 1} \POE@key@innerheight\space -0.5 mul dup neg trans {PlainIfc}  
+    {0 0} {0 1} \POE@key@innerheight\space -0.5 mul dup neg 
+    trans {PlainIfc}  
     {1e-4 0} {0 1} @@y0 @@y sub @@y0 @@y add trans {PlainIfc}
     \POE@key@n }%
 \ignorespaces}%
@@ -10719,15 +10758,21 @@
   \edef\@bs@wd{\POE@key@bssize\space 0.5 mul }%
   \ifx\POE@key@bsstyle\POE@str@bsstyle@cube
     \newOptexpCompAmb{%
-      {\@bs@wd 2 sqrt div neg dup} {-1 1} \@bs@wd neg \@bs@wd trans {PlainIfc}
-      {\@bs@wd 2 sqrt div dup neg} {1 1} \@bs@wd neg \@bs@wd trans {PlainIfc}
-      {0 0} {1 0} \@bs@wd 2 sqrt mul dup neg exch trans {PlainIfc}
-      {\@bs@wd 2 sqrt div dup} {-1 1} \@bs@wd neg \@bs@wd trans {PlainIfc}
-      {\@bs@wd 2 sqrt div neg dup neg} {1 1} \@bs@wd neg \@bs@wd trans {PlainIfc} 
+      {\@bs@wd 2 sqrt div neg dup} {-1 1} \@bs@wd neg \@bs@wd 
+      trans {PlainIfc}
+      {\@bs@wd 2 sqrt div dup neg} {1 1} \@bs@wd neg \@bs@wd
+      trans {PlainIfc}
+      {0 0} {1 0} \@bs@wd 2 sqrt mul dup neg exch 
+      trans {PlainIfc}
+      {\@bs@wd 2 sqrt div dup} {-1 1} \@bs@wd neg \@bs@wd 
+      trans {PlainIfc}
+      {\@bs@wd 2 sqrt div neg dup neg} {1 1} \@bs@wd neg \@bs@wd 
+      trans {PlainIfc} 
       3 \POE@key@n
     }%
   \else\ifx\POE@key@bsstyle\POE@str@bsstyle@plate
-    \newOptexpCompAmb{ {0 0} {1 0} \@bs@wd neg \@bs@wd trans {PlainIfc} 1 1 }%
+    \newOptexpCompAmb{%
+      {0 0} {1 0} \@bs@wd neg \@bs@wd trans {PlainIfc} 1 1 }%
   \fi\fi
 \ignorespaces}%
 %    \end{macrocode}
@@ -10948,9 +10993,9 @@
   \else
     \POE@Verb{%
       /@@y \POE@key@detsize\space 0.5 mul def
-      /@@x \POE@key@detsize\space
-      \ifx\POE@key@dettype\POE@str@dettype@round 0.25\else 0.5\fi\space
-      mul def
+      /@@x \POE@key@detsize\space 0.5 mul
+      \ifx\POE@key@dettype\POE@str@dettype@round 0.5 mul\fi
+      \space def
     }%
   \fi
 }%
@@ -10972,7 +11017,8 @@
 %    \begin{macrocode}
 \def\optdetector@comp{%
   \ifx\POE@key@dettype\POE@str@dettype@round
-    \psellipticwedge(!\POE@dict{@@x0 @@x sub @@y0})(!\POE@dict{@@x 2 mul @@y}){-90}{90}%
+    \psellipticwedge(!\POE@dict{@@x0 @@x sub @@y0})%
+      (!\POE@dict{@@x 2 mul @@y}){-90}{90}%
   \else\ifx\POE@key@dettype\POE@str@dettype@diode
     \ifx\POE@key@detsize\@empty
       \ifdim\POE@key@detwidth pt<\POE@key@detheight pt
@@ -11241,8 +11287,10 @@
 %    \begin{macrocode}
 \def\optfiber@nodes{%
   \newOptexpFiberComp{%
-    {\POE@key@fiberloopsep\space\POE@key@fiberloops\space 1 sub mul -0.5 mul 0}
-    {\POE@key@fiberloopsep\space\POE@key@fiberloops\space 1 sub mul 0.5 mul 0}}%
+    {\POE@key@fiberloopsep\space\POE@key@fiberloops\space
+      1 sub mul -0.5 mul 0}
+    {\POE@key@fiberloopsep\space\POE@key@fiberloops\space
+      1 sub mul 0.5 mul 0}}%
 \ignorespaces}%
 %    \end{macrocode}
 % \end{macro}
@@ -11284,12 +11332,15 @@
     \fi
     \psline(! \POE@dict{@@x} neg 0)(! \POE@dict{@@x} -0.7 mul 0)%
            (! \POE@dict{@@x} -0.4 mul \POE@dict{@@y} 0.6 mul)%
-           (! \POE@dict{@@x 0.4 mul @@y 0.6 mul})(! \POE@dict{@@x} 0.7 mul 0)%
-           (! \POE@dict{@@x} 0)(! \POE@dict{@@x} 0.7 mul 0)%
+           (! \POE@dict{@@x 0.4 mul @@y 0.6 mul})%
+           (! \POE@dict{@@x} 0.7 mul 0)(! \POE@dict{@@x} 0)%
+           (! \POE@dict{@@x} 0.7 mul 0)%
            (! \POE@dict{@@x 0.4 mul @@y -0.6 mul})%
-           (! \POE@dict{@@x -0.4 mul @@y -0.6 mul})(! \POE@dict{@@x} -0.7 mul 0)%
+           (! \POE@dict{@@x -0.4 mul @@y -0.6 mul})%
+           (! \POE@dict{@@x} -0.7 mul 0)%
   \egroup
-  \psframe[dimen=outer](! \POE@dict{@@x neg @@y neg})(!\POE@dict{@@x @@y})
+  \psframe[dimen=outer](! \POE@dict{@@x neg @@y neg})%
+                       (!\POE@dict{@@x @@y})
 \ignorespaces}%
 %    \end{macrocode}
 % \end{macro}
@@ -11506,7 +11557,8 @@
     \ifPOE@usefiberstyle
       \psset{style=Fiber}
     \fi
-    \psline[arrows=-](! \POE@dict{@@x} neg 0)(! \POE@dict{@@x} -0.6 mul @lw sub 0)%
+    \psline[arrows=-](! \POE@dict{@@x} neg 0)%
+                     (! \POE@dict{@@x} -0.6 mul @lw sub 0)%
     \psline[arrows=-](! \POE@dict{@@x} 0.6 mul 0)(! \POE@dict{@@x} 0)%
   \egroup
   \ifx\POE@key@switchstyle\POE@str@closed%
@@ -11521,11 +11573,13 @@
     \egroup
   \else
     \psline[arrows=-, linewidth=1.5\pslinewidth]%
-      (! \POE@dict{@@x} -0.6 mul @lw add @lw)(! \POE@dict{@@x 0.6 mul @@y 0.6 mul})%
+      (! \POE@dict{@@x} -0.6 mul @lw add @lw)%
+      (! \POE@dict{@@x 0.6 mul @@y 0.6 mul})%
     \pscircle(! \POE@dict{@@x} -0.6 mul 0){\pslinewidth}%
     \psdot[dotsize=3\pslinewidth](! \POE@dict{@@x} 0.6 mul 0)%
   \fi
-  \psframe[dimen=outer](! \POE@dict{@@x neg @@y neg})(! \POE@dict{@@x @@y})%
+  \psframe[dimen=outer](! \POE@dict{@@x neg @@y neg})%
+                       (! \POE@dict{@@x @@y})%
 \ignorespaces}%
 %    \end{macrocode}
 % \end{macro}
@@ -11550,16 +11604,18 @@
 % \begin{macro}{\fiberdelayline@comp}
 %    \begin{macrocode}
 \def\fiberdelayline@comp{%
-  \psframe[dimen=outer](! \POE@dict{@@x neg @@y neg})(! \POE@dict{@@x @@y})
+  \psframe[dimen=outer](! \POE@dict{@@x neg @@y neg})%
+                       (! \POE@dict{@@x @@y})
   \begingroup
     \psset{style=FdlArrow}
     \use@par
     \pst@expandafter\POE@get@yarrowscale{\psk@arrowscale}\@nil
     \def\@arrowshift{%
-      \psk@arrowlength\space \psk@arrowsize\space\pst@number\pslinewidth\space mul add mul 
+      \psk@arrowlength\space \psk@arrowsize\space
+      \pst@number\pslinewidth\space mul add mul 
       \POE@tempA mul 
-      @@y 2.9 mul @@x 0.6 mul atan 2 copy cos mul 3 1 roll sin mul \tx@UserCoor abs exch abs exch
-      \space
+      @@y 2.9 mul @@x 0.6 mul atan 2 copy cos mul 3 1 roll sin mul 
+      \tx@UserCoor abs exch abs exch\space
     }%
     \psline(! \POE@dict{@@x -0.4 mul @@y -1.6 mul})%
            (! \POE@dict{@@x 0.2 mul @@y 1.3 mul \@arrowshift VecAdd})
@@ -11670,13 +11726,15 @@
         \use@par
         \pst@expandafter\POE@get@yarrowscale{\psk@arrowscale}\@nil
         \def\@arrowshift{%
-          \psk@arrowlength\space \psk@arrowsize\space\pst@number\pslinewidth\space mul add mul 
+          \psk@arrowlength\space\psk@arrowsize\space
+          \pst@number\pslinewidth\space mul add mul 
           \POE@tempA mul 
-          1.6 0.8 atan 2 copy cos mul 3 1 roll sin mul \tx@UserCoor abs exch abs exch
-        \space
+          1.6 0.8 atan 2 copy cos mul 3 1 roll sin mul
+          \tx@UserCoor abs exch abs exch\space
         }%
         \psline(!\POE@dict{@@x -0.4 mul @@y0 @@x sub})%
-               (!\POE@dict{@@x 0.4 mul @@x 0.6 mul @@y0 add \@arrowshift VecAdd})
+               (!\POE@dict{@@x 0.4 mul @@x 0.6 mul @@y0 add 
+                 \@arrowshift VecAdd})
       \endgroup
     \fi
   \fi
@@ -11844,6 +11902,49 @@
 %    \begin{macrocode}
 /tx@OptexpDict 200 dict def
 tx@OptexpDict begin
+/Debug false def
+/DebugDepth 0 def
+/DebugBegin { 
+  Debug {
+    /DebugProcName ED
+    DebugDepth 2 mul string
+    0 1 DebugDepth 2 mul 1 sub {
+      dup 2 mod 0 eq { (|) }{( )} ifelse
+      3 -1 roll dup 4 2 roll
+      putinterval
+    } for
+    DebugProcName strcat ==
+    /DebugDepth DebugDepth 1 add def
+  }{
+    pop
+  } ifelse
+} bind def
+/DebugEnd {
+  Debug {
+    /DebugDepth DebugDepth 1 sub def
+    DebugDepth 2 mul 2 add string
+    0 1 DebugDepth 2 mul 1 sub {
+      dup 2 mod 0 eq { (|) }{ ( ) } ifelse
+      3 -1 roll dup 4 2 roll
+      putinterval
+    } for
+    dup DebugDepth 2 mul (+-) putinterval
+    ( done) strcat ==
+  } if
+} bind def
+/DebugMsg { 
+  Debug {
+    DebugDepth 1 add 2 mul string
+    0 1 DebugDepth 2 mul 1 add {
+      dup 2 mod 0 eq { (|) }{( )} ifelse
+      3 -1 roll dup 4 2 roll
+      putinterval
+    } for
+    exch strcat ==
+  }{
+    pop
+  } ifelse
+} bind def
 %    \end{macrocode}
 % \begin{macro}{strcat}
 % Concatenate two strings and leave the result on the stack
@@ -11909,58 +12010,60 @@ tx@OptexpDict begin
 % \end{pssyntax}
 %    \begin{macrocode}
 /calcNodes {
-    /YG exch def /XG exch def
-    /ay YG 3 -1 roll sub def
-    /ax XG 3 -1 roll sub def
-    /by exch YG sub def
-    /bx exch XG sub def
-    /a ax ay Pyth def
+  (calcNode) DebugBegin
+  /YG exch def /XG exch def
+  /ay YG 3 -1 roll sub def
+  /ax XG 3 -1 roll sub def
+  /by exch YG sub def
+  /bx exch XG sub def
+  /a ax ay Pyth def
 %    \end{macrocode}
 % Used by \cs{rightangleprism}.
 %    \begin{macrocode}
-    /modA a def
-    /b bx by Pyth def
-    /cx ax a div bx b div add def
-    /cy ay a div by b div add def
-    /c@tmp cx cy Pyth def
-    /c ax bx add ay by add Pyth def
+  /modA a def
+  /b bx by Pyth def
+  /cx ax a div bx b div add def
+  /cy ay a div by b div add def
+  /c@tmp cx cy Pyth def
+  /c ax bx add ay by add Pyth def
 %    \end{macrocode}
 % Used by \cs{rightangleprism} and \cs{optprism}.
 %    \begin{macrocode}
-    /OEangle c dup mul a dup mul sub b dup mul sub 
+  /OEangle c dup mul a dup mul sub b dup mul sub 
              -2 a b mul mul div Acos def
 %    \end{macrocode}
 % If $c=0$, then set the coordinates of the vector manually depending whether
 % \PSvar{a} and \PSvar{b} are parallel or antiparallel.
 %    \begin{macrocode}
-    c 0 eq {
-      ax ay bx by DotProd 0 gt {
+  c 0 eq {
+    ax ay bx by DotProd 0 gt {
 %    \end{macrocode}
 % $\text{dotprod} > 0$, i.e. \PSvar{a} and \PSvar{b} are parallel.
 %    \begin{macrocode}
-        /cx ax def
-        /cy ay def
-      }{
-        /cx ay def
-        /cy ax neg def
-      } ifelse
-      /c@tmp a def
-    } if
-    /X@A XG cx c@tmp div add def
-    /Y@A YG cy c@tmp div add def
-    /X@B XG cx c@tmp div sub def
-    /Y@B YG cy c@tmp div sub def
+      /cx ax def
+      /cy ay def
+    }{
+      /cx ay def
+      /cy ax neg def
+    } ifelse
+    /c@tmp a def
+  } if
+  /X@A XG cx c@tmp div add def
+  /Y@A YG cy c@tmp div add def
+  /X@B XG cx c@tmp div sub def
+  /Y@B YG cy c@tmp div sub def
 %    \end{macrocode}
 % Test the chirality (the order) of the input points. Input angles $> 90$\textdegree
 % don't make sense, in this case we exhange the calculated reference nodes.
 %    \begin{macrocode}
-    ax by mul ay bx mul sub 0 le {
-      Y@A X@A 
-      /X@A X@B def
-      /Y@A Y@B def
-      /X@B exch def
-      /Y@B exch def
-    }if
+  ax by mul ay bx mul sub 0 le {
+    Y@A X@A 
+    /X@A X@B def
+    /Y@A Y@B def
+    /X@B exch def
+    /Y@B exch def
+  } if
+  DebugEnd
 } bind def
 %    \end{macrocode}
 % \end{macro}
@@ -12032,7 +12135,9 @@ tx@OptexpDict begin
 %   \end{pssyntax}
 %    \begin{macrocode}
 /SlopeAngle {
-    @GetCenter 3 -1 roll @GetCenter @ABVect exch atan
+  (SlopeAngle) DebugBegin
+  @GetCenter 3 -1 roll @GetCenter @ABVect exch atan
+  DebugEnd
 } bind def
 %    \end{macrocode}
 % \end{macro}
@@ -12049,23 +12154,26 @@ tx@OptexpDict begin
 % \end{pssyntax}
 %    \begin{macrocode}
 /DefineExtNode {%
+  (DefineExtNode) DebugBegin
   @@y mul RefFac mul @@y0 add 
   exch @@x mul RefFac mul @@x0 add exch
+  DebugEnd
 } bind def
 %    \end{macrocode}
 % \end{macro}
 % 
 % \begin{macro}{GetInternalNodeNames}
-%   Push all internal node names of \PSstring{basicnodename} on the
+%   Push all internal node names of \PSstring{basicname} on the
 %   stack. If \PSvar{reverse} is \PSvar{true}, the names are pushed in
 %   reverse order.
 %   \begin{pssyntax}
-%     \PSstring{basicnodename} \PSvar{reverse} \PSop{GetInternalNodeNames}
-%     \PSname{N@basicnodenameN} \ldots{} \PSname{N@basicnodename1} (if
+%     \PSstring{basicname} \PSvar{reverse} \PSop{GetInternalNodeNames}
+%     \PSname{N@basicnameN} \ldots{} \PSname{N@basicname1} (if
 %     \PSvar{reverse = false})
 %   \end{pssyntax}
 %    \begin{macrocode}
 /GetInternalNodeNames {
+  (GetInternalNodeNames) DebugBegin
   /reverse ED
   dup cvn load /N get dup
   reverse { -1 1 } { 1 1 3 -1 roll } ifelse
@@ -12073,6 +12181,7 @@ tx@OptexpDict begin
     3 -1 roll dup 4 1 roll exch NodeName 3 1 roll
   } for
   pop pop
+  DebugEnd
 } bind def
 %    \end{macrocode}
 % \end{macro}
@@ -12086,8 +12195,10 @@ tx@OptexpDict begin
 % \end{pssyntax}
 %    \begin{macrocode}
 /GetInternalBeamNodes {
+  (GetInternalBeamNodes) DebugBegin
   [ 3 1 roll GetInternalNodeNames ]
   { @GetCenter } forall
+  DebugEnd
 } bind def
 %    \end{macrocode}
 % \end{macro}
@@ -12150,6 +12261,7 @@ tx@OptexpDict begin
 %   \end{pssyntax}
 %    \begin{macrocode}
 /NewTempNodeComp {
+  (NewTempNodeComp) DebugBegin
   /sc ED
   dup cvn
   6 dict dup 3 1 roll def begin
@@ -12176,6 +12288,7 @@ tx@OptexpDict begin
     end
   /adjustRel true def
   end
+  DebugEnd
 } bind def
 %    \end{macrocode}
 % \end{macro}
@@ -12218,8 +12331,9 @@ tx@OptexpDict begin
 % \begin{macro}{NewCompIfc}
 % Defines a new interface of a component, must be called within \PSvar{NewOptexpComp}.
 % \begin{pssyntax}
-%   \PSproc{x y} \PSproc{dx dy | rx ry} \PSvar{NAlow NAup mode} 
-%   \PSstring{CompName} \PSstring{Name} \PSproc{New\ldots Ifc} \PSproc{scaling} \PSop{NewCompIfc}
+%   \PSproc{x y} \PSproc{dx dy|rx ry} \PSvar{NAlow NAup mode} 
+%   \PSstring{CompName} \PSstring{Name} \PSproc{New\ldots Ifc} \PSproc{scaling} 
+%   \PSop{NewCompIfc}
 % \end{pssyntax}
 % \begin{psarglist}
 % \psargitem{\PSproc{x y}} The coordinates of the interface node which lies on the optical axis.??
@@ -12312,6 +12426,7 @@ tx@OptexpDict begin
 % \end{pssyntax}
 %    \begin{macrocode}
 /NewOptexpComp {
+  (NewOptexpComp) DebugBegin
   /sc ED dup cvn
   gsave
   12 dict dup 3 1 roll def begin
@@ -12352,6 +12467,7 @@ tx@OptexpDict begin
   } if
   end
   pop
+  DebugEnd
 } bind def
 %    \end{macrocode}
 % \end{macro}
@@ -12363,6 +12479,7 @@ tx@OptexpDict begin
 % \end{pssyntax}
 %    \begin{macrocode}
 /NewOptexpFiberComp {
+  (NewOptexpFiberComp) DebugBegin
   /sc ED dup cvn
   gsave
   12 dict dup 3 1 roll def begin
@@ -12387,6 +12504,7 @@ tx@OptexpDict begin
   } ifelse
   end
   pop
+  DebugEnd
 } bind def
 %    \end{macrocode}
 % \end{macro}
@@ -12415,6 +12533,7 @@ tx@OptexpDict begin
 %   \end{pssyntax}
 %    \begin{macrocode}
 /GetPlaneVec {
+  (GetPlaneVec) DebugBegin
   cvn load begin
     IfcName load begin
       currentdict /RX known {
@@ -12425,6 +12544,7 @@ tx@OptexpDict begin
       } ifelse
     end
   end
+  DebugEnd
 } bind def
 %    \end{macrocode}
 % \end{macro}
@@ -12434,12 +12554,13 @@ tx@OptexpDict begin
 %   \begin{pssyntax}
 %     \PSvar{IfcNum} \PSstring{CompName} \PSop{GetIfcCenter} \PSvar{X Y}
 %   \end{pssyntax}
-% or by passing an interface procedure like they are generated by \PSvar{PushAllPlanesOnStack}.
+% or by passing an interface procedure generated by \PSvar{PushAllPlanesOnStack}.
 %   \begin{pssyntax}
 %     \PSproc{Ifc} \PSop{GetIfcCenter} \PSvar{X Y}
 %   \end{pssyntax}
 %    \begin{macrocode}
 /GetIfcCenter {
+  (GetIfcCenter) DebugBegin
   dup type /stringtype eq not {
     dup xcheck not {
 %    \end{macrocode}
@@ -12460,6 +12581,7 @@ tx@OptexpDict begin
       CompMtrx transform CM itransform
     end
   end
+  DebugEnd
 } bind def
 %    \end{macrocode}
 % \end{macro}
@@ -12473,6 +12595,7 @@ tx@OptexpDict begin
 %   \end{pssyntax}
 %    \begin{macrocode}
 /TransformInVec {
+  (TransformInVec) DebugBegin
   3 1 roll
   GetIfcCenter 4 2 roll
   GetIfcCenter 5 -2 roll
@@ -12487,6 +12610,7 @@ tx@OptexpDict begin
     4 2 roll pop pop
   } ifelse
   ToVec
+  DebugEnd
 } bind def
 %    \end{macrocode}
 % \end{macro}
@@ -12497,16 +12621,18 @@ tx@OptexpDict begin
 % Plane2 Plane1 \PSproc{StartPos} -> \PSproc{StartPos'+Plane1Center}
 %    \begin{macrocode}
 /TransformStartPos {
-    exec 2 copy 6 2 roll 0 eq exch 0 eq and not
-    3 1 roll GetIfcCenter 4 2 roll
-    GetIfcCenter 5 2 roll {
-      2 copy 8 2 roll
-      @ABVect exch atan matrix rotate dtransform
-      VecAdd
-    } {
-      6 2 roll pop pop pop pop
-    } ifelse
-    ToVec
+  (TransformStartPos) DebugBegin
+  exec 2 copy 6 2 roll 0 eq exch 0 eq and not
+  3 1 roll GetIfcCenter 4 2 roll
+  GetIfcCenter 5 2 roll {
+    2 copy 8 2 roll
+    @ABVect exch atan matrix rotate dtransform
+    VecAdd
+  } {
+    6 2 roll pop pop pop pop
+  } ifelse
+  ToVec
+  DebugEnd
 } bind def
 %    \end{macrocode}
 % \end{macro}
@@ -12517,6 +12643,7 @@ tx@OptexpDict begin
 %   \end{pssyntax}
 %    \begin{macrocode}
 /GetNearestPlane {
+  (GetNearestPlane) DebugBegin
   3 copy 1 exch GetIfcCenter @ABDist /dist ED /nearestPlane 1 def
   dup cvn load /N get 2 1 3 -1 roll {
 %    \end{macrocode}
@@ -12529,6 +12656,7 @@ tx@OptexpDict begin
     } ifelse
   } for
   pop pop pop nearestPlane
+  DebugEnd
 } bind def
 %    \end{macrocode}
 % \end{macro}
@@ -12541,8 +12669,9 @@ tx@OptexpDict begin
 % drawn.
 %    \begin{macrocode}
 /PushAmbCompPlanesOnStack {
+ (PushAmbCompPlanesOnStack) DebugBegin 
   currentdict /outToPlane undef
-  PN PlaneNum eq not {
+  PN IfcCnt eq not {
 %    \end{macrocode}
 % not the last component, there should be another one on the stack
 %    \begin{macrocode}
@@ -12566,7 +12695,7 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % the old plane number, without counting the additional planes of the current ambcomp
 %    \begin{macrocode}
-  /PlaneNumTmp PlaneNum def
+  /IfcCntTmp IfcCnt def
 %    \end{macrocode}
 % Load some parameters from \opt{ambcomp}
 %    \begin{macrocode}
@@ -12598,7 +12727,7 @@ tx@OptexpDict begin
 % If there is one, i.e. if \PSvar{GetNextPlane} leaves something not equal to \PSvar{0} on the stack, this is the plane.
 %    \begin{macrocode}
       [ exch name bgRefIndex trans draw ] cvx exch
-      /PlaneNumTmp PlaneNumTmp 1 add def
+      /IfcCntTmp IfcCntTmp 1 add def
     } {
       pop
     } ifelse
@@ -12625,16 +12754,16 @@ tx@OptexpDict begin
 % always draw to first interface
 %    \begin{macrocode}
       5 -1 roll true ] cvx
-      /PlaneNumTmp PlaneNumTmp 1 add def
+      /IfcCntTmp IfcCntTmp 1 add def
     } if
-    PN PlaneNum eq {
+    PN IfcCnt eq {
 %    \end{macrocode}
 % its the last comp, just put the center plane on the stack
 %    \begin{macrocode}
       [ (C) name
       name GetRefIndex
       trans draw ] cvx
-      PlaneNumTmp PlaneNum gt { exch } if
+      IfcCntTmp IfcCnt gt { exch } if
     } {
 %    \end{macrocode}
 % check the mode of the ambiguous interface
@@ -12652,7 +12781,7 @@ tx@OptexpDict begin
       dup dup name isAmbiguousIfc exch 0 eq or not {
         [ exch name bgRefIndex trans draw ] cvx exch
         firstPlane name isAmbiguousIfc not { 3 -1 roll } if
-        /PlaneNumTmp PlaneNumTmp 1 add def
+        /IfcCntTmp IfcCntTmp 1 add def
       } {
         pop
 %    \end{macrocode}
@@ -12663,7 +12792,8 @@ tx@OptexpDict begin
       } ifelse
     } ifelse
   } ifelse
-  /PlaneNum PlaneNumTmp def
+  /IfcCnt IfcCntTmp def
+  DebugEnd
 } bind def
 %    \end{macrocode}
 % \end{macro}
@@ -12672,6 +12802,7 @@ tx@OptexpDict begin
 % \PSstring{comp} \PSproc{outToPlane} \PSop{GetNextPlane} \PSvar{PlaneNumber}
 %    \begin{macrocode}
 /GetNextPlane {
+  (GetNextPlane) DebugBegin
   2 copy (C) 3 -1 roll
   GetIfcCenter 3 -1 roll exec GetIfcCenter 
   4 2 roll 4 copy @ABVect /VecY ED /VecX ED 
@@ -12695,6 +12826,7 @@ tx@OptexpDict begin
     } ifelse
   } for
   pop pop nextPlane
+  DebugEnd
 } bind def
 %    \end{macrocode}
 % \end{macro}
@@ -12704,6 +12836,7 @@ tx@OptexpDict begin
 % -> Yn Xn drawToN? ... Y1 X1 drawTo1? Y0 X0
 %    \begin{macrocode}
 /TraceBeam {
+  (Tracebeam) DebugBegin
   AngToVec /InVec ED /StartPoint ED
   /oldbeaminsidelast currentdict /beaminsidelast known { 
     beaminsidelast 
@@ -12742,16 +12875,18 @@ tx@OptexpDict begin
     } ifelse
     /Curr ED
   } ifelse
-  counttomark /PlaneNum ED 
+  counttomark /IfcCnt ED 
 %    \end{macrocode}
 % Init the refractive index
 %    \begin{macrocode}
   /n1 bgRefIndex def
   /PN 1 def
-  { 
-    PN PlaneNum gt {
+  (start looping) DebugMsg
+  {
+    PN IfcCnt gt {
       exit
     } if
+    (checked) DebugMsg
 %    \end{macrocode}
 % iterate over all planes
 %    \begin{macrocode}
@@ -12792,17 +12927,19 @@ tx@OptexpDict begin
     /lastVecTmp /CurrVec load def
     /PrevMode Mode def
     CompName cvn load /correct get /PrevCorrect ED
-    PN PlaneNum eq {
+    PN IfcCnt eq {
       exit
     } {
       CurrVec 0 eq exch 0 eq and {
-        PlaneNum PN sub {pop} repeat
-        (Total internal reflection occured, this is not supported) Warning
+        IfcCnt PN sub {pop} repeat
+        (Total internal reflection occured, this is not supported)
+        Warning
         exit
       } if
       /PN PN 1 add def
     } ifelse
   } loop
+  DebugEnd
 } bind def
 %    \end{macrocode}
 % \end{macro}
@@ -12856,6 +12993,7 @@ tx@OptexpDict begin
 % \end{pssyntax}
 %    \begin{macrocode}
 /TraceAndFillWideBeam {
+  (TraceAndFillWideBeam) DebugBegin
   AngToVec /InvecLow ED /StartLow ED 
   AngToVec /InvecUp ED /StartUp ED 
 %    \end{macrocode}
@@ -12877,7 +13015,8 @@ tx@OptexpDict begin
   /PrevCorrect false def
   PrearrangePlanes
   PushAllPlanesOnStack
-  currentdict /lastVecTmpUp known currentdict /lastVecTmpLow known and {
+  currentdict /lastVecTmpUp known 
+  currentdict /lastVecTmpLow known and {
     /CurrVecLow /lastVecTmpLow load def
     /CurrVecUp /lastVecTmpUp load def
   }{
@@ -12911,24 +13050,24 @@ tx@OptexpDict begin
     } ifelse
   } ifelse
 %    \end{macrocode}
-% \PSvar{PlaneNum} is the number of interfaces pushed on the stack by
+% \PSvar{IfcCnt} is the number of interfaces pushed on the stack by
 % \PSvar{PushAllPlanesOnStack}. This number may be corrected later if an
 % ambiguous components is among them.
 %    \begin{macrocode}
-  counttomark /PlaneNum ED 
+  counttomark /IfcCnt ED 
   /n1 bgRefIndex def
   /CurrR false def
   /ret missed def
   /PN 1 def
   {
-    PN PlaneNum gt {
+    PN IfcCnt gt {
       exit
     } if
     dup xcheck not {
 %    \end{macrocode}
 % Found an array (not executable) instead of a procedure. This is an ambiguous
 % component, resolve the interfaces depending on the input vector and
-% surrounding interfaces. This can change \PSvar{PlaneNum}.
+% surrounding interfaces. This can change \PSvar{IfcCnt}.
 %    \begin{macrocode}
       PushAmbCompPlanesOnStack
     } if
@@ -13058,14 +13197,15 @@ tx@OptexpDict begin
     strokeBeam {
       CurrUp draw CurrLow draw counttomark 1 add 6 roll
     } if
-    PN PlaneNum eq ret tir eq or {
+    PN IfcCnt eq ret tir eq or {
       DrawnSegm 0 gt currentdict /fillBeam known and { 
         fillBeam newpath 
         /DrawnSegm 0 def
       } if
       ret tir eq {
-        PlaneNum PN sub {pop} repeat
-        (Total internal reflection occured, this is not supported) Warning
+        IfcCnt PN sub {pop} repeat
+        (Total internal reflection occured, this is not supported) 
+        Warning
       } if
       exit
     } if
@@ -13096,6 +13236,7 @@ tx@OptexpDict begin
       /lastVecTmpLow /CurrVecLow load def
     } ifelse
   } if
+  DebugEnd
 } bind def
 %    \end{macrocode}
 % \end{macro}
@@ -13156,6 +13297,7 @@ tx@OptexpDict begin
 % \end{pssyntax}
 %    \begin{macrocode}
 /HandleInterface {
+  (HandleInterface) DebugBegin
   /Yin ED /Xin ED /Y0 ED /X0 ED /n2 ED /mode ED
   2 copy 2 copy LoadIfc
   6 -2 roll isCurved { CurvedInterface }{ PlainInterface } ifelse
@@ -13188,6 +13330,7 @@ tx@OptexpDict begin
   } {
     7 -2 roll pop pop
   } ifelse
+  DebugEnd
 } bind def
 %    \end{macrocode}
 % \end{macro}
@@ -13198,6 +13341,7 @@ tx@OptexpDict begin
 % \end{pssyntax}
 %    \begin{macrocode}
 /LoadIfc {
+  (LoadIfc) DebugBegin
   cvn load begin
     IfcName load begin
       X Y
@@ -13206,6 +13350,7 @@ tx@OptexpDict begin
       CompMtrx dtransform CM idtransform
     end
   end
+  DebugEnd
 } bind def
 %    \end{macrocode}
 % \end{macro}
@@ -13233,6 +13378,7 @@ tx@OptexpDict begin
 %   \end{pssyntax}
 %    \begin{macrocode}
 /PrearrangePlanes {
+  (PrearrangePlanes) DebugBegin
   counttomark /N ED
   /CompA ED dup /CompB ED
   CompA isFreeray {
@@ -13287,6 +13433,7 @@ tx@OptexpDict begin
     CompB /CompA CompB def
     counttomark 2 roll
   } for pop
+  DebugEnd
 } bind def
 %    \end{macrocode}
 % \end{macro}
@@ -13299,6 +13446,7 @@ tx@OptexpDict begin
 %   \end{pssyntax}
 %    \begin{macrocode}
 /AdjustRelRot {
+  (AdjustRelRot) DebugBegin
   exch dup cvn load /adjustRel known {
     dup dup 4 2 roll isAmbiguous { 
       exch pop (C)
@@ -13324,6 +13472,7 @@ tx@OptexpDict begin
   } {
     pop pop pop pop
   } ifelse
+  DebugEnd
 } bind def
 %    \end{macrocode}
 % \end{macro}
@@ -13342,6 +13491,7 @@ tx@OptexpDict begin
 %   \end{psarglist}
 %    \begin{macrocode}
 /PushAllPlanesOnStack {
+  (PushAllPlanesOnStack) DebugBegin
   counttomark 2 div cvi /@N ED
   1 1 @N {
 %    \end{macrocode}
@@ -13431,6 +13581,7 @@ tx@OptexpDict begin
       end
     } ifelse
   } for
+  DebugEnd
 } bind def
 %    \end{macrocode}
 % \end{macro}
@@ -13455,7 +13606,7 @@ tx@OptexpDict begin
 % \end{macro}
 % 
 % \begin{macro}{NodeName}
-% Construct the plane name from PlaneNum. This must be called within a dict of a
+% Construct the plane name from IfcNum. This must be called within a dict of a
 % optexpcomp, because the last node ends with (N) instead of the number and we must
 % know the plane count of the component.
 % \begin{pssyntax}
@@ -13692,6 +13843,7 @@ tx@OptexpDict begin
 %  If it would be total internal reflection, the output vector is (0, 0).
 %    \begin{macrocode}
 /RefractVec {
+  (RefractVec) DebugBegin
   TransformRefIndex exch TransformRefIndex exch div /n ED 
   /Ynorm ED /Xnorm ED
   NormalizeVec /Yin ED /Xin ED 
@@ -13712,6 +13864,7 @@ tx@OptexpDict begin
       Xnorm mul exch Ynorm mul VecAdd
     } ifelse
   } ifelse
+  DebugEnd
 } bind def
 %    \end{macrocode}
 % \end{macro}
@@ -13724,9 +13877,11 @@ tx@OptexpDict begin
 %   \end{pssyntax}
 %    \begin{macrocode}
 /ReflectVec {
+  (ReflectVec) DebugBegin
   /Ynorm ED /Xnorm ED NormalizeVec /Yin ED /Xin ED
   /costheta1 Xnorm Ynorm Xin neg Yin neg DotProd def
   Xin Yin 2 costheta1 mul dup Xnorm mul exch Ynorm mul VecAdd
+  DebugEnd
 } bind def
 %    \end{macrocode}
 % \end{macro}
@@ -13737,6 +13892,7 @@ tx@OptexpDict begin
 %   \end{pssyntax}
 %    \begin{macrocode}
 /CurvedInterface {
+  (CurvedInterface) DebugBegin
   2 copy /Yr ED /Xr ED 
   tx@Dict begin Pyth end /radius ED /Yp ED /Xp ED
   /X0n X0 Xp sub def /Y0n Y0 Yp sub def
@@ -13776,10 +13932,12 @@ tx@OptexpDict begin
     } {
       ReflectVec ok
     } ifelse /n1 n2 def
-    5 -2 roll 2 copy 7 2 roll X0 Y0 @ABVect Xin Yin DotProd 0 lt PN 1 gt and {
+    5 -2 roll 2 copy 7 2 roll X0 Y0 @ABVect Xin Yin DotProd 0 lt 
+    PN 1 gt and {
       pop missed
     } if
   } ifelse
+  DebugEnd
 } bind def
 %    \end{macrocode}
 % \end{macro}
@@ -13790,6 +13948,7 @@ tx@OptexpDict begin
 %   \end{pssyntax}
 %    \begin{macrocode}
 /PlainInterface {%
+  (PlainInterface) DebugBegin
   /dYp ED /dXp ED /Yp ED /Xp ED
   Xp Yp Xp dXp add Yp dYp add X0 Y0 X0 Xin add Y0 Yin add 
   @InterLines missed eq {
@@ -13802,10 +13961,12 @@ tx@OptexpDict begin
     } {
       ReflectVec ok
     } ifelse /n1 n2 def
-    5 -2 roll 2 copy 7 2 roll X0 Y0 @ABVect Xin Yin DotProd 0 lt PN 1 gt and {
+    5 -2 roll 2 copy 7 2 roll X0 Y0 @ABVect Xin Yin DotProd 0 lt 
+    PN 1 gt and {
       pop missed
     } if
   } ifelse
+  DebugEnd
 } bind def
 %    \end{macrocode}
 % \end{macro}
@@ -13924,6 +14085,7 @@ tx@OptexpDict begin
 % CompA/NodeA CombB/NodeB -> Coordinates of nodeA or the node of CompA which is nearest to nodeB
 %    \begin{macrocode}
 /NearestNode {
+  (NearestNode) DebugBegin
   dup xcheck not { nametostr } if /CompB ED
   dup xcheck not {
 %    \end{macrocode}
@@ -13955,6 +14117,7 @@ tx@OptexpDict begin
 %    \begin{macrocode}
     exec
   } ifelse
+  DebugEnd
 } bind def
 %    \end{macrocode}
 % \end{macro}
@@ -13967,6 +14130,7 @@ tx@OptexpDict begin
 % \end{pssyntax}
 %    \begin{macrocode}
 /RelFiberAngle {
+  (RelFiberAngle) DebugBegin
   /fiberalign ED
   dup xcheck not { nametostr } if /CompB ED
   dup xcheck not { nametostr } if /CompA ED
@@ -13990,7 +14154,11 @@ tx@OptexpDict begin
 %    \begin{macrocode}
       4 2 roll @ABVect 4 2 roll
       CompB 
-      fiberalign center eq { RelFiberAngle@center }{ RelFiberAngle@ref } ifelse
+      fiberalign center eq {
+        RelFiberAngle@center
+      }{
+        RelFiberAngle@ref
+      } ifelse
       2 copy exch atan
       7 3 roll 2 copy 9 -2 roll
       DotProd 0 gt 5 1 roll DotProd 0 gt xor { 180 add } if
@@ -14007,13 +14175,18 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % on stack: Xac-Xa Yac-Xa Xa Ya
 %    \begin{macrocode}
-    CompA fiberalign center eq { RelFiberAngle@center }{ RelFiberAngle@tref } ifelse
+    CompA fiberalign center eq {
+      RelFiberAngle@center
+    }{
+      RelFiberAngle@tref
+    } ifelse
     2 copy exch atan
 %    \end{macrocode}
 % Xac-Xa Yac-Ya XaB-XaA YaB-YaA angleTrefline
 %    \begin{macrocode}
     5 1 roll DotProd 0 gt { 180 add } if
   } ifelse
+  DebugEnd
 } bind def
 %    \end{macrocode}
 % \end{macro}
