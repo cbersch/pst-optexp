@@ -1363,13 +1363,13 @@
 \begin{pspicture}(3.2,5)
   \pnode(0,3){In}\pnode(1,3){BS}\pnode(3,3){M1}*\label{l:ex2-nodes1}*
   \pnode(1,5){M2}\pnode(1,1){PD}*\label{l:ex2-nodes2}*
-  \psset{mirrortype=extended, mirrordepth=0.2, bsstyle=plate, dettype=diode}*\label{l:ex2-set}*
+  \psset{mirrortype=extended, mirrordepth=0.2}*\label{l:ex2-set}*
   \begin{optexp}*\label{l:ex2-begin}*
-    \beamsplitter[compname=BS](In)(BS)(PD)*\label{l:ex2-bs}*
+    \beamsplitter[bsstyle=plate, compname=BS](In)(BS)(PD)*\label{l:ex2-bs}*
     \mirror[compname=M1](BS)(M1)(BS)*\label{l:ex2-m1}*
     \mirror[compname=M2, variable](BS)(M2)(BS)*\label{l:ex2-m2}*
     \lens[compname=L](BS)(PD)*\label{l:ex2-l}*
-    \optdetector[compname=Det](BS)(PD)*\label{l:ex2-det}*
+    \optdetector[compname=Det, dettype=diode](BS)(PD)*\label{l:ex2-det}*
     \addtopsstyle{Beam}{beamwidth=0.2, fillstyle=solid, fillcolor=green!20!white}*\label{l:ex2-style}*
     \drawwidebeam{(In)}{BS}{M1}{BS}{M2}{BS}{L}{Det}*\label{l:ex2-beam}*
   \end{optexp}
@@ -10130,7 +10130,7 @@
       \POE@drawcomponent{#4}{%
         \ifPOE@backlayer
           \pnode(0,0){\oenodeCenter{}}%
-          \newOptexpComp{{ 0 0 } { 0 1 } 0 0 trans {PlainIfc} 1 }%
+          \newOptexpComp{{0 0} {0 1} 0 0 trans {PlainIfc} 1 }%
         \fi
         \ifPOE@frontlayer
           #3
@@ -10155,7 +10155,7 @@
     \fi
     \POE@drawcomponent{#5}{%
       \pnode(0,0){\oenodeCenter{}}% 
-      \newOptexpComp{{ 0 0 } { 1 0 } 0 0 refl {PlainIfc} 1 }%
+      \newOptexpComp{{0 0} {1 0} 0 0 refl {PlainIfc} 1 }%
       #4
     }%
     \POE@drawInternalConnections
@@ -10380,7 +10380,7 @@
 % \begin{macro}{\tripole@nodes}
 %    \begin{macrocode}
 \def\tripole@nodes{%
-  \newOptexpComp{ {0 0} {1 0} @@x neg @@x refl {PlainIfc} 1}%
+  \newOptexpComp{{0 0} {1 0} @@x neg @@x refl {PlainIfc} 1}%
   \pnode(! \POE@dict{@@y0 @@x0}){\oenodeCenter{}}
 \ignorespaces}%
 %    \end{macrocode}
@@ -10439,11 +10439,11 @@
 %    \begin{macrocode}
 \def\mirror@nodes{%
    \newOptexpComp{%
-     { 0 0 } 
+     {0 0} 
      \ifdim\POE@key@mirrorradius pt=0pt
-       { 1 0 } \POE@key@mirrorwidth\space -0.5 mul dup neg refl {PlainIfc}
+       {1 0} \POE@key@mirrorwidth\space -0.5 mul dup neg refl {PlainIfc}
      \else
-       { 0 \POE@key@mirrorradius\space neg} 
+       {0 \POE@key@mirrorradius\space neg} 
        \POE@key@mirrorwidth\space -0.5 mul dup neg 
        refl {CurvedIfc}
      \fi
@@ -10545,8 +10545,8 @@
 %    \begin{macrocode}
 \def\thickmirror@nodes{%
    \newOptexpCompAmb{%
-     { 0 -0.2} {1 0} 0 0 trans {PlainIfc}
-     { 0 0 } { 1 0 } 0 0 refl {PlainIfc} 2 \POE@key@n
+     {0 -0.2} {1 0} 0 0 trans {PlainIfc}
+     {0 0} {1 0} 0 0 refl {PlainIfc} 2 \POE@key@n
    }%
 }%
 %    \end{macrocode}
@@ -11139,15 +11139,18 @@
 \def\pentaprism@nodes{%
   \edef\@sz{\POE@key@pentaprismsize\space}%
   \newOptexpComp{%
-    {\@sz 2 sqrt -2 mul div dup } {-1 1} 0 0 trans {PlainIfc}
+    {\@sz 2 sqrt -2 mul div dup } {-1 1} 
+    \@sz -0.5 mul dup neg trans {PlainIfc}
     {\@sz 2 sqrt div 67.5 cos \@sz mul 
       67.5 sin 2 mul div sub \@sz 2 div}
-    { 67.5 cos \@sz mul 67.5 sin div neg \@sz} 
-     0 0 refl {PlainIfc}
+    {67.5 cos \@sz mul 67.5 sin div neg \@sz} 
+     \@sz 22.5 cos div -0.5 mul dup neg refl {PlainIfc}
     {\@sz 2 sqrt div neg 67.5 cos \@sz mul 
       67.5 sin 2 mul div add \@sz 2 div}
-    { 67.5 cos \@sz mul 67.5 sin div \@sz} 0 0 refl {PlainIfc}
-    {\@sz 2 sqrt 2 mul div dup neg} {1 1} 0 0 trans {PlainIfc} 
+    {67.5 cos \@sz mul 67.5 sin div \@sz}
+     \@sz 22.5 cos div -0.5 mul dup neg refl {PlainIfc}
+    {\@sz 2 sqrt 2 mul div dup neg} {1 1} 
+    \@sz -0.5 mul dup neg trans {PlainIfc} 
     \POE@key@n
   }%
 }%
@@ -11178,21 +11181,22 @@
 %    \begin{macrocode}
 \def\optprism@nodes{%
   \edef\@sz{\POE@key@prismsize\space}%
-  \edef\@altan{\POE@key@prismangle\space 0.5 mul tan }%
+  \edef\@ang{\POE@key@prismangle\space 0.5 mul\space}%
   \edef\@hshift{%
     \ifx\POE@key@prismalign\POE@str@auto
-      \@sz 0.6 mul \@altan mul \POE@dict{OEangle} 0.5 mul tan div 
+      \@sz 0.6 mul \@ang tan mul \POE@dict{OEangle} 0.5 mul tan div 
     \else
       0
     \fi
   }%
   \newOptexpComp{%
-    {\@sz -0.6 mul \@altan mul \@hshift neg} 
-    {90 \POE@key@prismangle\space 0.5 mul sub dup cos exch sin} 
-    0 0 trans {PlainIfc}
-    {\@sz 0.6 mul \@altan mul \@hshift neg} 
-    {90 \POE@key@prismangle\space 0.5 mul add dup cos exch sin} 
-    0 0 trans {PlainIfc} \POE@key@n true }%
+    {\@sz -0.6 mul \@ang tan mul \@hshift neg} 
+    {90 \@ang sub dup cos exch sin} 
+    \@sz \@ang cos div dup -0.4 mul exch 0.6 mul trans {PlainIfc}
+    {\@sz 0.6 mul \@ang tan mul \@hshift neg} 
+    {90 \@ang add dup cos exch sin} 
+    \@sz \@ang cos div dup -0.4 mul exch 0.6 mul trans {PlainIfc} 
+    \POE@key@n true }%
   \pnode(! 0 \@hshift neg){\oenodeCenter{}}
 }%
 %    \end{macrocode}
@@ -11254,13 +11258,17 @@
 % \begin{macro}{\rightangleprism@nodes}
 %    \begin{macrocode}
 \def\rightangleprism@nodes{%
-  \edef\@sz{\POE@key@raprismsize\space 0.5 mul }%
+  \edef\@sz{\POE@key@raprismsize\space}%
   \edef\@ht{\POE@dict{OEangle 0.5 mul sin modA mul} }%
   \newOptexpComp{%
-    {\@ht neg \@ht \@sz sub} {1 0} 0 0 trans {PlainIfc}
-    {\@ht neg 0} {1 1} 0 0 refl {PlainIfc}
-    {\@ht 0} {1 -1} 0 0 refl {PlainIfc}
-    {\@ht dup \@sz sub } {1 0} 0 0 trans {PlainIfc} 
+    {\@ht neg \@ht \@sz 0.5 mul sub} {1 0} 
+    \@ht \@sz 0.5 mul sub \@ht trans {PlainIfc}
+    {\@ht neg 0} {1 1} 
+    \@ht 2 sqrt mul dup \@sz 2 sqrt div sub exch refl {PlainIfc}
+    {\@ht 0} {-1 1} 
+    \@ht 2 sqrt mul dup \@sz 2 sqrt div sub exch refl {PlainIfc}
+    {\@ht dup \@sz 0.5 mul sub } {1 0} 
+    \@ht neg \@sz 0.5 mul \@ht sub trans {PlainIfc} 
     \POE@key@n 
   }%
 \ignorespaces}%
@@ -11853,8 +11861,8 @@
 \def\fibercollimator@nodes{%
    \def\@sz{\POE@key@fibercolsize\space 0.5 mul }%
    \pnode(!\@sz neg 0){\oenodeIn{}}
-   \newOptexpComp{ {\@sz neg 0} {0 1} 0 0 trans {PlainIfc} 
-                   {\@sz 0} {0 1} 0 0 trans {PlainIfc} 1 }%
+   \newOptexpComp{{\@sz neg 0} {0 1} \@sz neg \@sz trans {PlainIfc} 
+                  {\@sz 0} {0 1} 0 0 trans {PlainIfc} 1 }%
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -11863,7 +11871,7 @@
 %    \begin{macrocode}
 \def\fibercollimator@comp{%
    \def\@sz{\POE@key@fibercolsize\space 0.5 mul }%
-   \pspolygon(! \@sz neg \getCLWH add \@sz neg)%
+   \pspolygon(!\@sz neg \getCLWH add \@sz neg)%
              (!\@sz 0)(!\@sz neg \getCLWH add \@sz)
 }%
 %    \end{macrocode}
