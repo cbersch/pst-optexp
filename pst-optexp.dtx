@@ -10103,7 +10103,6 @@
 % Define all free-ray tripoles
 %    \begin{macrocode}
 \newOptexpTripole{mirror}{}%
-\newOptexpTripole{thickmirror}{}%
 \newOptexpTripole[ref@angle=-135]{beamsplitter}{}%
 \newOptexpTripole{optgrating}{}%
 \def\optgrid{%
@@ -10115,7 +10114,6 @@
 \newOptexpTripole[ref@angle=-135]{pentaprism}{}%
 \newOptexpTripole[ref@angle=-135]{rightangleprism}{}%
 \newOptexpTripole[ref@angle=-135]{optprism}{}%
-\newOptexpTripole[ref@angle=-135]{couplingprism}{}%
 %    \end{macrocode}
 %
 % \begin{macro}{\optdipole}
@@ -10537,27 +10535,6 @@
       (! \@ht neg \getCLWH)%
       (! \@ht \getCLWH)
   \fi\fi
-}%
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\thickmirror@nodes}
-%    \begin{macrocode}
-\def\thickmirror@nodes{%
-   \newOptexpCompAmb{%
-     {0 -0.2} {1 0} 0 0 trans {PlainIfc}
-     {0 0} {1 0} 0 0 refl {PlainIfc} 2 \POE@key@n
-   }%
-}%
-%    \end{macrocode}
-% \end{macro}
-% 
-% \begin{macro}{\thickmirror@comp}
-%    \begin{macrocode}
-\def\thickmirror@comp{%
-  \psframe[linestyle=none, fillcolor=gray!20, fillstyle=solid]%
-    (-0.5, -0.2)(0.5,0)
-  \psline(-0.5, 0)(0.5, 0)
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -11217,38 +11194,6 @@
   \pspolygon(! \@sz neg \@altan mul \@sz -0.4 mul \@hshift sub)
             (! \@sz \@altan mul \@sz -0.4 mul \@hshift sub)
             (! 0 \@sz 0.6 mul \@hshift sub)
-}%
-%    \end{macrocode}
-% \end{macro}
-%
-% \subsubsection{couplingprism}
-%
-% \begin{macro}{\couplingprism@nodes}
-%    \begin{macrocode}
-\def\couplingprism@nodes{%
-  \edef\@sz{\POE@key@prismsize\space}%
-  \edef\@altan{\POE@key@prismangle\space 0.5 mul tan }%
-  \newOptexpCompAmb{%
-    {0 0} {1 0} 0 0 refl {PlainIfc}
-    {\@sz -0.5 mul \@altan mul \@sz -0.5 mul} 
-    {90 \POE@key@prismangle\space 0.5 mul add dup cos exch sin} 
-    0 0 trans {PlainIfc}
-    {\@sz 0.5 mul \@altan mul \@sz -0.5 mul} 
-    {90 \POE@key@prismangle\space 0.5 mul sub dup cos exch sin} 
-    0 0 trans {PlainIfc} 1 \POE@key@n true }%
-  \pnode(! 0 \@sz -0.5 mul){\oenodeCenter{}}
-}%
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\couplingprism@comp}
-%    \begin{macrocode}
-\def\couplingprism@comp{%
-  \edef\@sz{\POE@key@prismsize\space}%
-  \edef\@altan{\POE@key@prismangle\space 0.5 mul tan }%
-  \pspolygon(! \@sz neg \@altan mul 0)
-            (! \@sz \@altan mul 0)
-            (! 0 \@sz neg)
 }%
 %    \end{macrocode}
 % \end{macro}
