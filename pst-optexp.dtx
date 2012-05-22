@@ -3815,11 +3815,23 @@
 % \ifENGLISH\chapter{Hybrid components}\fi
 % \label{sec:hybridcomp}
 %
-% \ifGERMAN Dieses Kapitel beschreibt die Komponenten, die sowohl für
-% Freistrahl- als auch Faseroptik zu verwenden sind. Der optische Filter kann
-% auch für Freistrahl verwendet werden, wird mit den Voreinstellungen aber als
-% Faserkomponente gehandhabt. Der Faserkollimator hat nur eine Faser, die andere
-% Verbindung ist Freistrahl.\fi
+% \ifENGLISH This chapter describes the components which can be used
+% both for free-ray and fiber optics but which differ from these two
+% categories.
+%
+% The optical filter is connected by default with automatic fiber
+% connections, but can likewise be used with free-ray beams, in contrast
+% to the fiber components (\prettyref{chap:fibercomp}). The fiber
+% collimator has one interface only, the other connection is a fiber.
+% \fi \ifGERMAN Dieses Kapitel beschreibt die Komponenten, die sowohl
+% für Freistrahl- als auch Faseroptik zu verwenden sind, sich von diesen
+% aber etwas abgrenzen.
+%
+% Der optische Filter wird mit den Voreinstellungen aber als
+% Faserkomponente gehandhabt, kann im Gegensatz zu den reinen
+% Faserkomponenten (\prettyref{chap:fibercomp}) jedoch auch als
+% Freistrahlkomponente verwendet werden. Der Faserkollimator hat nur
+% eine Faser, die andere Verbindung ist Freistrahl.  \fi
 %
 % \ifGERMAN\section{Optischer Filter}\fi
 % \ifENGLISH\section{Optical filter}\fi
@@ -3852,6 +3864,7 @@
 % \fi
 \begin{LTXexample}
 \begin{pspicture}(3,1.5)
+  \psset[optexp]{usefiberstyle}
   \optfilter[filtertype=bandstop](0,1)(3,1){bandstop}
 \end{pspicture}
 \end{LTXexample}
@@ -3863,6 +3876,7 @@
 % \fi
 \begin{LTXexample}
 \begin{pspicture}(3,1.5)
+  \psset[optexp]{usefiberstyle}
   \optfilter[filtertype=lowpass](0,1)(3,1){lowpass}
 \end{pspicture}
 \end{LTXexample}
@@ -3874,6 +3888,7 @@
 % \fi
 \begin{LTXexample}
 \begin{pspicture}(3,1.5)
+  \psset[optexp]{usefiberstyle}
   \optfilter[filtertype=highpass](0,1)(3,1){highpass}
 \end{pspicture}
 \end{LTXexample}
@@ -3885,11 +3900,11 @@
 % \begin{stylelist}
 % \styleitem{FilterStyle}
 % \ifGERMAN Beinflusst das Aussehen der internen Filterlinien.\fi
-% \ifENGLISH Changes the style of the internal filter lines.\fi
+% \ifENGLISH Change the style of the internal filter lines.\fi
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}
+\begin{LTXexample}[morekeywords={[21]FilterStyle}]
 \begin{pspicture}(3,1.5)
   \newpsstyle{OptComp}{linewidth=2\pslinewidth}
   \optfilter(0,1)(1.5,1)
@@ -3936,18 +3951,6 @@
 %</ignore>
 % \fi
 % \end{ltxsyntax}
-% \begin{optionlist}
-% \numitem[0.3]{fibercolsize}
-% \ifGERMAN
-% Die Höhe bzw. Seitenlänge des Kollimators. Mit dem \opt{xunit} oder
-% \opt{yunit} Parameter kann das Verhältnis zwischen Höhe und Breite geändert
-% werden.
-% \fi
-% \ifENGLISH
-% The height and side length of the collimator. Use the \opt{xunit} or
-% \opt{yunit} parameter to change this relation.
-% \fi
-% \end{optionlist}
 % \ifGERMAN
 % Der Faserkollimator kann mit zwei, drei oder vier Punkten verwendet
 % werden. Bei zwei Punkten wird der Kollimator wie jeder andere Zweipol
@@ -4000,6 +4003,19 @@
 % \iffalse
 %</ignore>
 % \fi
+%
+% \begin{optionlist}
+% \numitem[0.3]{fibercolsize}
+% \ifGERMAN
+% Die Höhe bzw. Seitenlänge des Kollimators. Mit dem \opt{xunit} oder
+% \opt{yunit} Parameter kann das Verhältnis zwischen Höhe und Breite geändert
+% werden.
+% \fi
+% \ifENGLISH
+% The height and side length of the collimator. Use the \opt{xunit} or
+% \opt{yunit} parameter to change this relation.
+% \fi
+% \end{optionlist}
 %
 % \ifGERMAN\chapter{Spezielle Knoten}\fi
 % \ifENGLISH\chapter{Special nodes}\fi
