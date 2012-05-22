@@ -2567,14 +2567,6 @@
 % \end{ltxsyntax}
 % 
 % \begin{optionlist}
-%   \numitem{doveprismheight}
-%   \ifGERMAN Die Höhe des Prisma.\fi
-%   \ifENGLISH The prism height.\fi
-%
-%   \numitem{doveprismwidth}
-%   \ifGERMAN Die Länge der Grundseite des Prisma.\fi
-%   \ifENGLISH The length of the prism base edge.\fi
-%
 %   \optitem[0.6]{doveprismsize}{\prm{num}[ \prm{num}]}
 %   \ifGERMAN
 %   Die Höhe des Prismas, die Gesamtbreite ist das dreifache und die Winkel an
@@ -6834,18 +6826,27 @@
 % \begin{changelog}
 %
 %   \begin{release}{3.0}{2011-00-00}
+%   \item Removed deprecated lens code\see{cmd:lens}
 %   \item Added option \opt{phwidth}\see{cmd:pinhole}
 %   \item Modified option \opt{caxislength}\see{cmd:crystal}
 %   \item Added style \opt{CrystalCaxis}\see{cmd:crystal}
 %   \item Added style \opt{CrystalLamp}\see{cmd:crystal}
 %   \item Deprecated option \opt{lampscale}\see{cmd:crystal}
+%   \item Added option \opt{optboxsize}\see{cmd:optbox}
+%   \item Extended option \opt{detsize}\see{cmd:optdetector}
+%   \item Added style \opt{DetectorStyle}\see{cmd:optdetector}
+%   \item Extended option \opt{doveprismsize}\see{cmd:doveprism}
+%   \item Added style \opt{Polarization}\see{cmd:polarization}
+%   \item Deprecated option \opt{pollinewidth}\see{cmd:polarization}
+%   \item Removed option \opt{polwidth}\see{cmd:polarization}
+%   \item Removed option \opt{pol}\see{cmd:polarization}
+%   \item Added style \opt{VariableMirror}\see{cmd:mirror}
+%   \item Renamed \cs{optgrid} to \cs{optgrating}\see{cmd:optgrating}
+%   \item Renamed \opt{optgridwidth} to \opt{gratingwidth}\see{cmd:optgrating}
 %   \item Removed option \opt{labelrelative}\see{sec:labels}
 %   \item Removed option \opt{iwidth}\see{cmd:pinhole}
 %   \item Removed option \opt{owidth}\see{cmd:pinhole}
 %   \item Removed option \opt{bswidth}\see{cmd:beamsplitter}
-%   \item Removed option \opt{polwidth}\see{cmd:polarization}
-%   \item Removed option \opt{pol}\see{cmd:polarization}
-%   \item Removed old lens code\see{cmd:lens}
 %   \item Deprecated \cs{newOptexpDipoleNolabel}, use \cs{newOptexpDipole}\see{sec:newobj}
 %   \item Extended use of \opt{angle} and \opt{rotateref} to all components\see{sec:rotshift}
 %   \item Deprecated option \opt{refractiveindex}\see{sec:drawbeam}
@@ -7583,14 +7584,6 @@
 %    \end{macrocode}
 % Detector
 %    \begin{macrocode}
-\define@key[psset]{optexp}{detwidth}{%
-  \pst@checknum{#1}\POE@key@detwidth
-  \let\POE@key@detsize\@empty
-}
-\define@key[psset]{optexp}{detheight}{%
-  \pst@checknum{#1}\POE@key@detheight
-  \let\POE@key@detsize\@empty
-}
 \define@key[psset]{optexp}{detsize}{%
   \pst@expandafter\POE@psset@@detsize{#1} {} {} {}\@nil
 }%
@@ -7598,8 +7591,9 @@
   \ifx\\#2\\
     \pst@checknum{#1}\POE@key@detsize
   \else
-    \psset[optexp]{detwidth=#1}
-    \psset[optexp]{detheight=#2}
+    \let\POE@key@detsize\@empty
+    \pst@checknum{#1}\POE@key@detwidth
+    \pst@checknum{#2}\POE@key@detheight
   \fi
 }%
 \define@choicekey*+[psset]{optexp}{dettype}[\val\nr]{round,diode}%
@@ -7649,27 +7643,16 @@
 %    \end{macrocode}
 % Dove prism
 %    \begin{macrocode}
-\define@key[psset]{optexp}{doveprismheight}{%
-  \pst@checknum{#1}\POE@key@doveprismheight
-}
-\define@key[psset]{optexp}{doveprismwidth}{%
-  \pst@checknum{#1}\POE@key@doveprismwidth
-}
 \define@key[psset]{optexp}{doveprismsize}{%
   \pst@expandafter\POE@psset@@doveprismsize{#1} {} {} {}\@nil
 }%
 \def\POE@psset@@doveprismsize#1 #2 #3\@nil{%
-  \ifx.#1\relax\else
-    \psset[optexp]{doveprismwidth=#1}%
-  \fi
-  \edef\POE@temp{#2}%
-  \ifx\POE@temp\@empty
-    \ifx.#1\relax\else
-      \psset[optexp]{doveprismheight=#1}%
-      \pstFPmul\POE@key@doveprismwidth{3}{#1}
-    \fi
+  \ifx\\#2\\
+    \pst@checknum{#1}\POE@key@doveprismheight
+    \pstFPmul\POE@key@doveprismwidth{3}{#1}
   \else
-    \psset[optexp]{doveprismheight=#2}%
+    \pst@checknum{#1}\POE@key@doveprismwidth
+    \pst@checknum{#2}\POE@key@doveprismheight
   \fi
 }%
 \psset[optexp]{doveprismsize=0.6}%
