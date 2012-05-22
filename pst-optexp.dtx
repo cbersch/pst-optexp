@@ -18,7 +18,7 @@
 %<stylefile>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<stylefile>\ProvidesPackage{pst-optexp}
 %<*stylefile>
-    [2012/05/08 v3.0beta Optical experimental setups with PSTricks]
+    [2012/05/22 v3.0beta Optical experimental setups with PSTricks]
 %</stylefile>
 %
 %<*driver>
@@ -2051,7 +2051,13 @@
 % \label{chap:freeraycomp}
 %
 % \ifGERMAN \fi
-% \ifENGLISH Free-ray components can be connected by beams and support raytracing.\fi
+% \ifENGLISH This chapter describes all free-ray components and their
+% options. Free-ray components differ from fiber-components in that they provide
+% transmittive or reflective interfaces which can be used to raytrace
+% beams. They are divided in two types: components like lenses need only two
+% nodes for positioning, whereas e.g. mirrors required three nodes to determine
+% the orientation.
+% \fi
 %
 % \ifGERMAN\section{Linse}\fi
 % \ifENGLISH\section{Lens}\fi
@@ -2064,7 +2070,7 @@
 % \fi
 \begin{LTXexample}
 \begin{pspicture}(3,1.5)
-\lens[beam](0,1)(3,1){L}
+  \lens[beam](0,1)(3,1){L}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -2080,8 +2086,8 @@
 % \fi
 \begin{LTXexample}[morekeywords={[21]{lensheight}}]
 \begin{pspicture}(3,1.5)
-\lens[beam](0,1)(3,1){L1}
-\lens[lensheight=0.5](2,1)(3,1){L2}
+  \lens[beam](0,1)(3,1){L1}
+  \lens[lensheight=0.5](2,1)(3,1){L2}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -2170,11 +2176,10 @@
 % \fi
 % \optitem{lens}{\prm{radiusleft} [\prm{radiusright} [\prm{height} [\prm{width}]]]}
 % \ifGERMAN
-% Eine Option zum gleichzeitigen Setzen mehrerer Linsenparameter. Es müssen
-% nicht alle Werte gesetzt werden, die übrigen bleiben unverändert. 
+% Eine Option zum gleichzeitigen Setzen mehrerer Linsenparameter. Werte mittendrin können mit einem Punkt übersprungen und Werte am Ende können weggelassen werden (z.B. \opt{lens=. 1 1}).
 % \fi
 % \ifENGLISH
-% A convenience option to specify all lens parameters with a single option.
+% A convenience option to specify all lens parameters with a single option. Intermediate values can be skipped with a dot, values at the end can be omitted (e.g. \opt{lens=.\ 1 1}).
 % \fi
 % \iffalse
 %<*ignore>
@@ -2183,7 +2188,7 @@
 \begin{pspicture}(3,1.5)
   \lens[lens=1](0,1)(1,1){L1}
   \lens[lensradius=-2 1, beam](0,1)(3,1){L2}
-  \lens[lens=1 -0.5 0.7](2,1)(3,1){L3}
+  \lens[lens=2 -0.7 1.2](2,1)(3,1){L3}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -2259,7 +2264,7 @@
 % \end{ltxsyntax}
 % 
 % \begin{optionlist}
-% \numitem[1]{outerheight} \ifGERMAN Die Höhe der Lochblende.\fi\ifENGLISH The height of the pinhole.\fi
+% \numitem[1]{outerheight} \ifGERMAN Die Gesamthöhe der Lochblende.\fi\ifENGLISH The total height of the pinhole.\fi
 % \numitem[0.1]{innerheight} \ifGERMAN Die Höhe des Lochs.\fi\ifENGLISH The height of the hole.\fi
 % \optitem[2\nxLcs{pslinewidth}]{phlinewidth}{\prm{num} or \prm{dimen}}
 % \ifGERMAN \linewidthexplanation{der Lochblende}{Lochblende}\fi
@@ -2267,13 +2272,14 @@
 % 
 % \numitem[0]{phwidth} 
 % \ifGERMAN 
-% Das Pinhole wird plastischer gezeichnet, falls \nxLkeyword{phwidth}
-% ungleich Null ist. Bei einem negativen Wert wird die Form gespiegelt.
+% Die Lochblende wird plastischer gezeichnet, falls \nxLkeyword{phwidth} ungleich
+% Null ist. In diesem Fall wird \Lkeyword{phlinewidth} ignoriert. Bei einem
+% negativen Wert wird die Form gespiegelt.
 % \fi
 % \ifENGLISH
-% The pinhole is drawn in a more plastic style if the
-% \nxLkeyword{phwidth} is not zero. For negative values the shape is
-% mirrored.
+% The pinhole is drawn in a more plastic style if the \nxLkeyword{phwidth} is
+% not zero, in this case the \Lkeyword{phlinewidth} is ignored. For negative
+% values the shape is mirrored.
 % \fi 
 % \iffalse
 %<*ignore>
@@ -2299,7 +2305,7 @@
 % \fi
 \begin{LTXexample}
 \begin{pspicture}(3,1.3)
-\crystal[beam](0,1)(3,1){Crystal}
+  \crystal[beam](0,1)(3,1){Crystal}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -2317,12 +2323,23 @@
 % \ifENGLISH The height of the crystal.\fi
 %
 % \numitem[0.6]{caxislength}
-% \ifGERMAN Die Länge des Pfeils für die $c$-Achse, wird weggelassen falls die Länge \opt{0} ist.\fi
-% \ifENGLISH The length of the $c$-axis, is dropped when set to \opt{0}.\fi
+% \ifGERMAN Die Länge des Pfeils für die $c$-Achse, wird weggelassen falls die
+% Länge \opt{0} ist und gespiegelt falls der Wert negativ ist.
+% \fi
+% \ifENGLISH 
+% The length of the $c$-axis, is dropped when set to \opt{0} and is mirrored if
+% the values is negative.
+% \fi
 %
 % \boolitem[false]{caxisinv}
-% \ifGERMAN Invertiert die Richtung der $c$-Achse.\fi
-% \ifENGLISH Invert the direction of the $c$-axis.\fi
+% \ifGERMAN 
+% Invertiert die Richtung der $c$-Achse, alternativ kann auch gleich ein
+% negativer Wert für \Lkeyword{caxislength} genommen werden.
+% \fi
+% \ifENGLISH 
+% Invert the direction of the $c$-axis, this is equivalent to using a negative
+% \Lkeyword{caxislength}.
+% \fi
 %
 % \boolitem[false]{voltage}
 % \ifGERMAN Zeichnet einen Spannungsanschluss und ein Erdungszeichen.\fi
@@ -2332,7 +2349,7 @@
 % \fi
 \begin{LTXexample}[morekeywords={[21]{voltage}}]
 \begin{pspicture}(0,0.4)(3,1.5)
-\crystal[voltage, beam](0,1)(3,1)
+  \crystal[voltage, beam](0,1)(3,1)
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -2356,10 +2373,10 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}[morekeywords={[21]{voltage, caxisinv}}]
+\begin{LTXexample}[morekeywords={[21]{CrysalCaxis}}]
 \begin{pspicture}(0,0.5)(3,1.6)
-\addtopsstyle{CrystalCaxis}{linecolor=red}
-\crystal[beam](0,1)(3,1)
+  \newpsstyle{CrystalCaxis}{linecolor=red, arrows=->>}
+  \crystal[beam](0,1)(3,1)
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -2374,7 +2391,7 @@
 % \fi
 \begin{LTXexample}[morekeywords={[21]{lamp}}]
 \begin{pspicture}(0,0.4)(3,1.7)
-\crystal[lamp, beam](0,1)(3,1)
+  \crystal[lamp, beam](0,1)(3,1)
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -2387,7 +2404,7 @@
 % \fi
 \begin{LTXexample}[morekeywords={[21]{voltage, lamp}}]
 \begin{pspicture}(3,1.7)
-\crystal[fillstyle=solid, fillcolor=yellow!90!black, 
+  \crystal[fillstyle=solid, fillcolor=yellow!90!black, 
            label=1.2 -45, voltage, 
            lamp, beam](0,1)(3,1){SBN:Ce}
 \end{pspicture}
@@ -2514,7 +2531,7 @@
 % \fi
 \begin{LTXexample}[morekeywords={[21]{optdiode}}] 
 \begin{pspicture}(3,2)
-   \optdiode[beam](0,1)(3,1){Diode}
+  \optdiode[beam](0,1)(3,1){Diode}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -2624,7 +2641,7 @@
 % \fi
 \begin{LTXexample}[morekeywords={[21]{poltype}}] 
 \begin{pspicture}(0,-0.3)(3,4.3)
-  \psset{beam}
+  \psset[optexp]{beam}
   \begin{optexp}
   \polarization[poltype=parallel, abspos=0.5](0,4)(3,4)
   \polarization[poltype=perp, abspos=1](0,3)(3,3)
@@ -6787,6 +6804,11 @@
 % \begin{changelog}
 %
 %   \begin{release}{3.0}{2011-00-00}
+%   \item Added option \opt{phwidth}\see{cmd:pinhole}
+%   \item Modified option \opt{caxislength}\see{cmd:crystal}
+%   \item Added style \opt{CrystalCaxis}\see{cmd:crystal}
+%   \item Added style \opt{CrystalLamp}\see{cmd:crystal}
+%   \item Deprecated option \opt{lampscale}\see{cmd:crystal}
 %   \item Removed option \opt{labelrelative}\see{sec:labels}
 %   \item Removed option \opt{iwidth}\see{cmd:pinhole}
 %   \item Removed option \opt{owidth}\see{cmd:pinhole}
@@ -6799,7 +6821,6 @@
 %   \item Deprecated option \opt{refractiveindex}\see{sec:drawbeam}
 %   \item Renamed option \opt{refractiveindex} to \opt{n}\see{sec:drawbeam}
 %   \item Deprecated option \opt{conn}\see{sec:drawbeam}
-%   \item Deprecated option \opt{lampscale}\see{cmd:crystal}
 %   \end{release}
 %   \begin{release}{2.1}{2009-11-05}
 %   \item Added component \cs{optfiberpolarizer}\see{cmd:optfiberpolarizer}
@@ -7462,12 +7483,12 @@
   \addtopsstyle{CrystalLamp}{unit=\POE@key@lampscale}
   \PackageWarning{pst-optexp}{%
     Parameter 'lampscale' is deprecated, \MessageBreak
-    use style 'CrystalLamp'.}%
+    use style 'CrystalLamp' instead.}%
 }
 \psset[optexp]{%
   crystalwidth=1.4,
   crystalheight=0.6,
-  caxislength=0.6
+  caxislength=0.3
 }%
 %    \end{macrocode}
 % Box
@@ -10871,15 +10892,13 @@
       \rput(0, 0.4){\crystal@lamp}%
     }%
   \fi
-  \ifdim\POE@key@caxislength pt>0pt
-    \edef\@c@caxisL{\POE@key@caxislength\space 2 div }%
-    \ifPOE@caxisinv
-      \psline[style=CrystalCaxis](! 0 \@ht neg)%
-                                 (! 0 \@ht \@c@caxisL add)%
-    \else
-      \psline[style=CrystalCaxis](! 0 \@ht)%
-                                 (! 0 \@ht neg \@c@caxisL sub)%
-    \fi
+  \ifdim\POE@key@caxislength pt=0pt\else
+    \def\@cl{%
+      \POE@key@caxislength\space 
+      \ifPOE@caxisinv -1 mul\space\fi
+    }%
+    \psline[style=CrystalCaxis](! 0 \@cl \POE@dict{sign} \@ht mul)%
+                               (! 0 \@cl \POE@dict{sign} neg \@ht mul \@cl sub)%
   \fi
 \ignorespaces}%
 %    \end{macrocode}
