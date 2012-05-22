@@ -1627,7 +1627,7 @@
 % \iffalse
 %</ignore>
 % \fi
-% \boolitem{innerlabel}
+% \choitem{innerlabel}{true}
 % \ifGERMAN Das ist ein Alias für \opt{label=0 . . relative}\fi
 % \ifENGLISH This is an alias for \opt{label=0 . . relative}\fi
 % \end{optionlist}
@@ -1756,6 +1756,22 @@
 % \ifENGLISH
 % Rotate a component by an angle \prm{num} (in degree).
 % \fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[linerange={1-2,4-4,8-8}, morekeywords={[21]{angle}}]
+\begin{pspicture}(3,2)
+  \pnode(0,1){A}\pnode(2.7,1){B}
+  \optbox[addtoOptComp={style=Refline, linestyle=dashed}](A)(B)
+  \optbox[angle=20, innerlabel](A)(B){box}
+  \psline[style=Refline](\oenodeRefA{})(\oenodeRefB{})
+  \psdot(\oenodeRefA{})\uput[-90](\oenodeRefA{}){RefA}
+  \psdot(\oenodeRefB{})\uput[-90](\oenodeRefB{}){RefB}
+\end{pspicture}
+\end{LTXexample}
+%\iffalse
+%</ignore>
+%\fi
 %
 % \valitem[c]{rotateref}{refstring}
 % \ifGERMAN
@@ -1773,15 +1789,19 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}[morekeywords={[21]{rotateref}}]
+\begin{LTXexample}[linerange={1-2,4-4,8-8}, morekeywords={[21]{angle,rotateref}}]
 \begin{pspicture}(3,2)
-  \optbox[angle=20, beam, rotateref=l, 
-            label=0 . . relative](0,1)(3,1){box}
+  \pnode(0,1){A}\pnode(2.7,1){B}
+  \optbox[addtoOptComp={style=Refline, linestyle=dashed}](A)(B)
+  \optbox[angle=20, rotateref=bl, innerlabel](A)(B){box}
+  \psline[style=Refline](\oenodeRefA{})(\oenodeRefB{})
+  \psdot(\oenodeRefA{})\uput[-90](\oenodeRefA{}){RefA}
+  \psdot(\oenodeRefB{})\uput[-90](\oenodeRefB{}){RefB}
 \end{pspicture}
 \end{LTXexample}
-% \iffalse
+%\iffalse
 %</ignore>
-% \fi
+%\fi
 %
 % \numitem[0]{compshift} Shift a component perpendicular to its
 % reference line (see \prettyref{sec:refnode}). For reflective
@@ -1849,7 +1869,7 @@
 % \fi
 \begin{LTXexample}
 \begin{pspicture}(3,2)
-  \addtopsstyle{ExtendedMirror}{linecolor=red}
+  \addtopsstyle{ExtendedMirror}{hatchcolor=red}
   \mirror[mirrortype=extended, beam](0,0)(2,1.5)(0,2)
 \end{pspicture}
 \end{LTXexample}
@@ -2029,6 +2049,9 @@
 % \ifGERMAN\chapter{Freistrahl-Komponenten}\fi
 % \ifENGLISH\chapter{Free-ray components}\fi
 % \label{chap:freeraycomp}
+%
+% \ifGERMAN \fi
+% \ifENGLISH Free-ray components can be connected by beams and support raytracing.\fi
 %
 % \ifGERMAN\section{Linse}\fi
 % \ifENGLISH\section{Lens}\fi
@@ -5237,6 +5260,22 @@
 % \begin{ltxsyntax}
 %   \xLcs{optplane}\cmditem{optplane}(center)
 % \end{ltxsyntax}
+%
+% \ifGERMAN\subsection{Bekannte Einschränkungen}\fi
+% \ifENGLISH\subsection{Known limitations}\fi
+%
+% \ifGERMAN
+% \begin{itemize}
+% \item Erweiterte Pfeileigenschaften von \LPack{pstricks-add} wie
+%   z.B. \opt{ArrowInside} werden für Strahlen nicht unterstützt.
+% \end{itemize}
+% \fi
+% \ifENGLISH
+% \begin{itemize}
+% \item Extended arrow settings from \LPack{pstricks-add} like \opt{ArrowInside}
+%   are not supported for beam paths.
+% \end{itemize}
+% \fi
 % 
 % \ifGERMAN\section{Aufgeweitete Strahlen}\fi
 % \ifENGLISH\section{Drawing wide beams}\fi
@@ -7121,7 +7160,7 @@
   \edef\POE@key@labelref{#1}%
 }
 \define@choicekey*+[psset]{optexp}{innerlabel}%
-  [\val\nr]{true,false}[true]%
+  [\val\nr]{true}[true]%
   {\ifcase\nr\relax
      \psset[optexp]{labeloffset=0, labelref=relative}%
    \fi}
