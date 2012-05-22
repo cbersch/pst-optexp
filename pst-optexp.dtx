@@ -676,7 +676,7 @@
 %   }^^A
 %   \newpsstyle{Beam}{linecolor=red}
 %   \backlayer{\psline[style=Beam,ArrowInside=->, linewidth=2\pslinewidth, arrowinset=0](In)(\oenodeIn{3})(\oenodeOut{4})}
-%   \drawbeam[linewidth=2\pslinewidth, arrows=->, arrowinset=0, beamangle=-90, beamalign=absolute]{(\oenodeBeam{})}{8}{(Out)}  
+%   \drawbeam[linewidth=2\pslinewidth, arrows=->, arrowinset=0, beamangle=-90, beamalign=abs]{(\oenodeBeam{})}{8}{(Out)}  
 % \end{optexp}
 % \rput(4,4.5){^^A
 %   \psframe[fillstyle=solid,fillcolor=gray!70](-0.1, -0.6)(0.1, 0.7)
@@ -1221,7 +1221,7 @@
 % gezeichnet, der automatisch mit Fasern verbunden wird.
 % \fi
 % \ifENGLISH
-%
+% 
 % \fi
 % \iffalse
 %<*ignore>
@@ -1259,13 +1259,13 @@
   \psset{optboxwidth=0.7, labelstyle=\scriptsize}
   \optbox[position=start, label=0, fiber](A)(B){LD}
   \optmzm(B)(C)*\OFF*
-  \wdmsplitter[abspos=0.3, label=0.4](C)(D)(E){50\%}*\ON*
-\end{pspicture}*\OFF*
+  \wdmsplitter(C)(D)(E){50\%}%*\ON*
+\end{pspicture}%*\OFF*
 \end{LTXexample}
 % \iffalse
 %</ignore>
 % \fi
-%
+% 
 % \ifGERMAN 
 % An die Enden des Kopplers wird ein optischer Spektrumanalysator (OSA)
 % und eine Leistungsmessgerät (PD) gesetzt. Der \Lcs{optdetector} wird
@@ -4360,14 +4360,14 @@
 %    }
 % \end{pspicture}
 %
-% \boolitem[true]{globalnoderef}
+% \choitem[abs]{extnodealign}{rel,relative,abs,absolute}
 % \ifGERMAN
 % Die Bezeichnung von «oben» (\opt{t}) und den anderen Positionierungsparametern von
 % \Lkeyword{extnode} können global oder relativ zur Komponente betrachtet werden.
 %
 % In dem folgenden Beispiel ist der externe Knoten immer «oben rechts» (\opt{tr}) platziert,
 % unabhängig von der Reihenfolge der Referenzknoten
-% (\opt{globalnoderef=true}\xLkeyword{globalnoderef}).
+% (\opt{extnodealign=abs}).
 % \fi
 % \ifENGLISH 
 % The definition of «top» (\opt{t}) and the other \Lkeyword{extnode} refstring
@@ -4375,7 +4375,7 @@
 %
 % In the next example the external node is always placed «top right»,
 % independent of the actual order of the reference nodes
-% (\opt{globalnoderef=true}\xLkeyword{globalnoderef}). 
+% (\opt{extnodealign=abs}). 
 % \fi
 % \iffalse
 %<*ignore>
@@ -4383,9 +4383,9 @@
 \begin{LTXexample}
 \begin{pspicture}(-2,-2)(2,2)
   \psset{endbox, optboxsize=1 0.6, dotscale=1.5}
-  \psset{globalnoderef, extnode=tr}
+  \psset{extnodealign=abs, extnode=tr}
   \multido{\i=0+45}{8}{%
-    \optbox[label=0 . . relative](0,0)(1;\i){\i}
+    \optbox[innerlabel](0,0)(1;\i){\i}
     \psdot(\oenodeExt{})
   }
 \end{pspicture}
@@ -4397,12 +4397,12 @@
 % \ifGERMAN
 % In dem darauffolgenden Beispiel bezieht sich die
 % Positionierung relativ zur Verbindung zwischen Eingangs- und
-% Ausgangsreferenzknoten (\opt{globalnoderef=false}\xLkeyword{globalnoderef}).
-% \fi.
+% Ausgangsreferenzknoten (\opt{extnodealign=rel}).
+% \fi
 % \ifENGLISH
 % In the following example the position is relative
 % to the order of input and output reference node
-% (\opt{globalnoderef=false}\xLkeyword{globalnoderef}).
+% (\opt{extnodealign=rel}).
 % \fi
 % \iffalse
 %<*ignore>
@@ -4410,9 +4410,9 @@
 \begin{LTXexample}
 \begin{pspicture}(-2,-2)(2,2)
   \psset{endbox, optboxsize=1 0.6, dotscale=1.5}
-  \psset{globalnoderef=false, extnode=tr}
+  \psset{extnodealign=rel, extnode=tr}
   \multido{\i=0+45}{8}{%
-    \optbox[label=0 . . relative](0,0)(1;\i){\i}
+    \optbox[innerlabel](0,0)(1;\i){\i}
     \psdot(\oenodeExt{})
   }%
 \end{pspicture}
@@ -5168,7 +5168,7 @@
 %</ignore>
 % \fi
 % 
-% \choitem[relative]{beamalign}{relative, absolute}
+% \choitem[relative]{beamalign}{rel, relative, abs, absolute}
 % \ifGERMAN
 % \fi
 % \ifENGLISH
@@ -5189,7 +5189,7 @@
   \pnode(0,0.75){A}\pnode(3,0.75){B}
   \optbox[angle=10, showifcnodes](A)(B)
   \drawbeam{(A)}{}{(B)}
-  \drawbeam[linecolor=red, beamalign=absolute]{(A)}{}{(B)}
+  \drawbeam[linecolor=red, beamalign=abs]{(A)}{}{(B)}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -5785,7 +5785,7 @@
 %
 %   \numitem[0]{fiberangleA}
 %   \numitem[0]{fiberangleB}
-%   \choitem[tref]{fiberalign}{relative,center,absolute}
+%   \choitem[tref]{fiberalign}{rel,relative,center,abs,absolute}
 %   Set the reference for the fiber angles.
 %   \begin{valuelist}
 %   \item[relative] The fiber angles are relative to the transformed reference
@@ -6442,6 +6442,35 @@
 \end{pspicture}
 \end{LTXexample}
 
+\begin{LTXexample}[pos=t, caption={caption}]
+\begin{pspicture}(0.1,0.4)(10,5)
+  \psset[optexp]{lens=1 1 0.7, loadbeampoints}
+  \pnode(2,4){L}\pnode([Xnodesep=4]L){M}
+  \pnode([Xnodesep=1.5]M){IRSpec}\pnode([offset=-2.5]M){OSA}
+  \begin{optexp}
+  \optbox[position=start, innerlabel](L)(M){fs laser}
+  \lens[abspos=1](L)(M)
+  \optbox[abspos=1.85, optboxsize=0.7 0.15, fillstyle=solid, fillcolor=black](L)(M){sample}
+  \lens[abspos=2.7](L)(M)
+  \mirror[labelangle=45](L)(M)(OSA){flip mirror}
+  \optbox[position=end, optboxsize=3 1, innerlabel, compshift=-0.2](M)(IRSpec){IR spectrometer}
+  \lens[abspos=1](M)(OSA)
+  \optplane([offset=-1.5]M)
+  \newpsstyle{Fiber}{linewidth=2\pslinewidth}
+  \optfiber[fiberloopradius=0.2, fiberloopsep=0.2, label=1]([offset=-1.5]M)(OSA){MM fiber}
+  \optbox[position=end, innerlabel, optboxwidth=1.1](M)(OSA){OSA}
+  \newpsstyle{Beam}{linestyle=none, fillcolor=red, fillstyle=solid, raytrace=false}
+  \drawwidebeam[beamwidth=0.2, stopinside]{1-2}
+  \drawwidebeam[beamdiv=-25]{2-3}
+  \drawwidebeam[loadbeampoints=false, beamdiv=25]{3-4}
+  \drawwidebeam[startinside]{4-5}
+  \drawwidebeam[savebeampoints=false, beamalign=abs]{5-6}
+  \drawwidebeam[stopinside]{5}{7}
+  \drawwidebeam[beamdiv=-25]{7-8}
+\end{optexp}
+\end{pspicture}
+\end{LTXexample}
+
 %^^A An idea from <http://arxiv.org/abs/1112.5270>
 \enlargethispage{3cm}
 \begin{LTXexample}[pos=t, caption={caption}]
@@ -6546,8 +6575,9 @@
   \beamsplitter[compname=BS](SigIn)(BS)(Det2)
   \lens[abspos=0.5, compname=L2, n=2.1](Det2)(BS){$L_2$}
   \lens[abspos=0.5, compname=L1, n=2.1](Det1)(BS){$L_1$}
-  \optdetector[compname=Det1, extnode=c](BS)(Det1){PD1}
-  \optdetector[compname=Det2, extnode=c](BS)(Det2){PD2}
+  \psset[optexp]{extnodealign=rel, extnode=r}
+  \optdetector[compname=Det1](BS)(Det1){PD1}
+  \optdetector[compname=Det2](BS)(Det2){PD2}
   \addtopsstyle{Beam}{beamwidth=0.2, fillstyle=solid, 
                         fillcolor=green, opacity=0.2}
   \drawwidebeam{(SigIn)}{BS}{L2}{Det2}
@@ -6977,7 +7007,6 @@
 \newif\ifPOE@loadbeam
 \newif\ifPOE@beaminside
 \newif\ifPOE@raytrace
-\newif\ifPOE@globalnoderef
 \newif\ifPOE@pswarning
 %    \end{macrocode}
 % This is to check if \nxLkeyword{compname} is set inside or outside of a component. For this no boolean key is provided.
@@ -7248,7 +7277,18 @@
 %    \end{macrocode}
 % External node
 %    \begin{macrocode}
-\define@boolkey[psset]{optexp}[POE@]{globalnoderef}[true]{}%
+\define@choicekey+[psset]{optexp}{extnodealign}%
+  [\val\nr]{rel,abs,relative,absolute}%
+  {%
+    \ifcase\nr\relax
+      \let\POE@key@extnodealign\POE@str@relative
+    \or
+      \let\POE@key@extnodealign\POE@str@absolute
+    \else
+      \def\POE@key@extnodealign{#1}%
+    \fi
+  }%
+  {\PackageError{pst-optexp}{Unknown value '\val' for extnodealign.}}
 %    \end{macrocode}
 % This part was copied and adapted from \cs{psset@@ref} from pstricks.tex
 %    \begin{macrocode}
@@ -7278,7 +7318,7 @@
 \def\POE@getref@r{\def\POE@key@extnode@xref{1}}%
 \psset[optexp]{%
   extnode=\@empty, 
-  globalnoderef=true
+  extnodealign=abs
 }%
 %    \end{macrocode}
 % Set the rotation reference point. For this to work properly, the components
@@ -8137,8 +8177,16 @@
   \pst@checknum{#1}\POE@key@skipconn
 }%
 \define@choicekey+[psset]{optexp}{beamalign}%
-  [\val\nr]{relative,absolute}%
-  {\edef\POE@key@beamalign{#1}}%
+  [\val\nr]{rel,abs,relative,absolute}%
+  {%
+    \ifcase\nr\relax
+      \let\POE@key@beamalign\POE@str@relative
+    \or
+      \let\POE@key@beamalign\POE@str@absolute
+    \else
+      \def\POE@key@beamalign{#1}%
+    \fi
+  }%
   {\PackageError{pst-optexp}{Unknown value '\val' for beamalign.}}
 \psset[optexp]{%
   raytrace=true
@@ -8247,8 +8295,16 @@
   \pst@checknum{#1}\POE@key@fiberangleB
 }%
 \define@choicekey+[psset]{optexp}{fiberalign}%
-  [\val\nr]{relative,center,absolute}%
-  {\edef\POE@key@fiberalign{\val}}%
+  [\val\nr]{rel,abs,relative,center,absolute}%
+  {%
+    \ifcase\nr\relax
+      \let\POE@key@fiberalign\POE@str@relative
+    \or
+      \let\POE@key@fiberalign\POE@str@absolute
+    \else
+      \def\POE@key@fiberalign{#1}%
+    \fi
+  }%
   {\PackageError{pst-optexp}{Unknown value '\val' for fiberalign.}}%  
 \define@key[psset]{optexp}{fiberstyle}{%
   \@ifundefined{nc#1}%
@@ -8380,25 +8436,25 @@
                    \tx@UserCoor}{@@A}
         \fi
       \else\ifx\POE@key@stopnode\POE@str@auto
-        \POE@pnode{\POE@comps pop /N@@@A 
+        \POE@pnode{\POE@comps pop /N@@@A
                  \POE@dict{@GetCenter ToVec NearestNode} 
                  \tx@UserCoor}{@@B}
       \fi\fi
       \pst@getcoor{@@A}\POE@tempa
       \pst@getcoor{@@B}\POE@tempb
       \ifx\psk@angleA\relax
-        \ifx\POE@key@fiberalign\POE@str@fiberalign@abs
+        \ifx\POE@key@fiberalign\POE@str@absolute
           \psset{angleA=\POE@key@fiberangleA}%
         \else
           \psset{angleA=! \POE@dict{%
             \POE@tempb \POE@tempa \POE@comps exch 
             \POE@key@fiberalign\space RelFiberAngle
-            \POE@key@fiberangleA\space add}
+            \POE@key@fiberangleA\space add }
           }%
         \fi
       \fi
       \ifx\psk@angleB\relax
-        \ifx\POE@key@fiberalign\POE@str@fiberalign@abs
+        \ifx\POE@key@fiberalign\POE@str@absolute
           \psset{angleB=\POE@key@fiberangleB}%
         \else
           \psset{angleB=! \POE@dict{%
@@ -9581,7 +9637,7 @@
       \begin@OptexpObj
         \ifPOE@backlayer
           \POE@regNodes{##1}{##2}
-          \POE@globalnoderef
+          \POE@extnodealign
         \fi
         \POE@drawcomponent[#2]{##3}{\@nameuse{#2@ii}}
         \ifPOE@backlayer
@@ -9616,7 +9672,7 @@
       \begin@OptexpFiberObj
         \ifPOE@backlayer
           \POE@regNodes{##1}{##2}
-          \POE@globalnoderef
+          \POE@extnodealign
         \fi
         \POE@drawcomponent[#2]{##3}{\@nameuse{#2@ii}}
         \ifPOE@backlayer
@@ -9983,10 +10039,10 @@
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}{\POE@globalnoderef}
+% \begin{macro}{\POE@extnodealign}
 %    \begin{macrocode}
-\def\POE@globalnoderef{%
-  \ifPOE@globalnoderef
+\def\POE@extnodealign{%
+  \ifx\POE@key@extnodealign\POE@str@absolute
     \POE@Verb{%
       /N@\oenodeRefA{} @GetCenter /N@\oenodeRefB{} @GetCenter
       @ABVect exch
@@ -10209,7 +10265,7 @@
    \begin@OptexpObj
       \ifPOE@backlayer
         \POE@regNodes{#1}{#2}
-        \POE@globalnoderef
+        \POE@extnodealign
       \fi
       \POE@drawcomponent{#4}{%
         \ifPOE@backlayer
@@ -10275,7 +10331,7 @@
   \begin@OptexpFiberObj
     \ifPOE@backlayer
       \POE@regNodes{\POE@tempa}{\POE@tempb}%
-      \POE@globalnoderef
+      \POE@extnodealign
     \fi
     \POE@drawcomponent[fibercollimator]{#1}{%
        \pnode(0,0){\oenodeCenter{}}%
@@ -11745,7 +11801,7 @@
 \def\POE@coupler@comp{%
   \ifx\POE@key@couplertype\POE@str@couplertype@none
   \else\ifx\POE@key@couplertype\POE@str@couplertype@ellipse
-    \psellipse(!0 \POE@dict{@@y0})(! \POE@dict{@@x @@y})
+    \psellipse(! 0 \POE@dict{@@y0})(! \POE@dict{@@x @@y})
   \else
     \psframe[dimen=outer](!\POE@dict{@@x neg @@y0 @@y sub})%
                          (!\POE@dict{@@x @@y0 @@y add})%
@@ -12183,7 +12239,7 @@ tx@OptexpDict begin
 %   Constructs the coordinates of an external node based on values that have
 %   been set beforehand. \PSvar{xref} and \PSvar{yref} are the values which are
 %   defined by \opt{extnode} parameter. \PSvar{RefFac} is defined by parameter
-%   \opt{globalnoderef}, which determines it the reference of the external node
+%   \opt{extnodealign}, which determines it the reference of the external node
 %   position should be the global coordinate system, or the line between the
 %   reference nodes.
 % \begin{pssyntax}

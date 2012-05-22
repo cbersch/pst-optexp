@@ -1,0 +1,34 @@
+\documentclass{scrartcl}
+\usepackage[latin1]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{textcomp}
+\usepackage{pst-optexp}
+\begin{document}
+\begin{pspicture}(0.1,0.4)(10,5)
+  \psset{lens=1 1 0.7}
+  \pnode(2,4){L}\pnode([Xnodesep=4]L){M}\pnode([Xnodesep=1.5]M){IRSpec}
+  \pnode([offset=-2.5]M){OSA}
+  \begin{optexp}
+  \optbox[position=start, innerlabel](L)(M){fs laser}
+  \lens[abspos=1](L)(M)
+  \optbox[abspos=1.75, optboxsize=0.5 0.1, fillstyle=solid, fillcolor=black](L)(M){sample}
+  \lens[abspos=2.5](L)(M)
+  \mirror[labelangle=45](L)(M)(OSA){flip mirror}
+  \optbox[position=end, optboxwidth=3, innerlabel, compshift=-0.2](M)(IRSpec){IR spectrometer}
+  \lens[abspos=1](M)(OSA)
+  \optplane([offset=-1.5]M)
+  \optfiber[fiberloopradius=0.2, fiberloopsep=0.2, label=1, addtoFiber={linewidth=1.5\pslinewidth}]([offset=-1.5]M)(OSA){MM fiber}
+  \optbox[position=end, innerlabel, optboxwidth=1.1](M)(OSA){OSA}
+  \newpsstyle{Beam}{linestyle=none, fillcolor=red, fillstyle=solid, raytrace=false}
+  \psset[optexp]{loadbeampoints}
+  \drawwidebeam[beamwidth=0.2, stopinside]{1-2}
+  \drawwidebeam[beamdiv=-25]{2-3}
+  \drawwidebeam[loadbeampoints=false, beamdiv=25]{3-4}
+  \drawwidebeam[startinside]{4-5}
+  \drawwidebeam[savebeampoints=false, beamalign=absolute]{5-6}
+  \drawwidebeam[stopinside]{5}{7}
+  \drawwidebeam[beamdiv=-25]{7-8}
+\end{optexp}
+\end{pspicture}
+\end{document}
