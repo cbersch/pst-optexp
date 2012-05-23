@@ -1,0 +1,35 @@
+\documentclass{scrartcl}
+\usepackage[latin1]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{textcomp}
+\usepackage{pst-optexp}
+\begin{document}
+\begin{pspicture}[showgrid](0,0.7)(9.4,3.3)
+  \psset[optexp]{couplertype=rectangle, fiber=none, detsize=0.5 0.6}
+  \newpsobject{laser}{optbox}{optboxsize=1.5 0.6, innerlabel,position=start}
+  \pnode(1.5,3){L3}\pnode(1.5,2){L2}\pnode(1.5,1){L1}
+  \pnode(7,3){D3}\pnode(7,2){D2}\pnode(7,1){D1}
+  \laser(L1)(D1){Laser 1}\laser(L2)(D2){Laser 2}\laser(L3)(D3){Laser 3}
+  \psset[optexp]{position=0.2}
+  \wdmsplitter[coupleralign=b](L1)(D2)(D1)
+  \wdmsplitter(L2)(D3)(D1)
+  \wdmsplitter[coupleralign=t](L3)(D3)(D2)
+  \psset[optexp]{position=0.8}
+  \wdmcoupler[coupleralign=b](L2)(L1)(D1)
+  \wdmcoupler(L3)(L1)(D2)
+  \wdmcoupler[coupleralign=t](L3)(L2)(D3)
+  \optdetector[label=0.4 90 l](L1)(D1){Detector 1}
+  \optdetector[label=0.4 90 l](L2)(D2){Detector 2}
+  \optdetector[label=0.4 90 l](L3)(D3){Detector 3}
+  \drawfiber[linecolor=blue]{1}{4}{8}
+  \drawfiber[linecolor=blue, startnode=N]{4}{7}
+  \drawfiber[linecolor=green]{2}{5}{9}
+  \drawfiber[linecolor=green]{5}{7}
+  \drawfiber[linecolor=red]{3}{6}{8}
+  \drawfiber[linecolor=red, startnode=2]{6}{9}
+  \drawfiber[linecolor=yellow]{9}{12}
+  \drawfiber[linecolor=magenta]{8}{11}
+  \drawfiber[linecolor=cyan]{7}{10}
+\end{pspicture}
+\end{document}
