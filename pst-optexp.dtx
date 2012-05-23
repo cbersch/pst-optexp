@@ -3515,7 +3515,8 @@
 % \end{ltxsyntax}
 % 
 % \begin{optionlist}
-%   \numitem[0.6]{fiberpolsize} \sizeexplanation{\ifGERMAN des Polarisators\fi\ifENGLISH polarizer\fi}
+% \optitem[0.6]{fiberpolsize}{^^A
+%   \prm{num} \ifGERMAN oder \fi\ifENGLISH or \fi\prm{width} \prm{height}}
 % \end{optionlist}
 % 
 %
@@ -4017,7 +4018,8 @@
 % \fi
 %
 % \begin{optionlist}
-% \numitem[0.3]{fibercolsize}
+% \optitem[0.3]{fibercolsize}{^^A
+%   \prm{num} \ifGERMAN oder \fi\ifENGLISH or \fi\prm{width} \prm{height}}
 % \ifGERMAN
 % Die Höhe bzw. Seitenlänge des Kollimators. Mit dem \opt{xunit} oder
 % \opt{yunit} Parameter kann das Verhältnis zwischen Höhe und Breite geändert
@@ -4821,7 +4823,7 @@
 % \fi
 \begin{LTXexample}
 \begin{pspicture}(3,3)
-  \psset{position=end, optboxsize=0.5, bssize=0.5}
+  \psset{position=end, optboxsize=0.5 0.5, bssize=0.5}
   \optbox[compname=obj](0.5,0.5)(0.5,2.5){obj, 1}
   \beamsplitter(0.5,2.5)(0.5,1)(2.5,1){2}
   \optbox(0.5,1)(2.5,1){3}
@@ -6852,7 +6854,21 @@
 %   \item Renamed \opt{optgridtype} to \opt{gratingtype}\see{cmd:optgrating}
 %   \item Renamed \opt{optgridlinewidth} to \opt{gratinglinewidth}\see{cmd:optgrating}
 %   \item Added option \opt{prismalign}\see{cmd:optprism}
-
+%   \item Extended option \opt{optampsize}\see{cmd:optamp}
+%   \item Extended option \opt{optmzmsize}\see{cmd:optmzm}
+%   \item Added option \opt{polcontroltype}\see{cmd:polcontrol}
+%   \item Extended option \opt{isolatorsize}\see{cmd:optisolator}
+%   \item Added style \opt{IsolatorArrow}\see{cmd:optisolator}
+%   \item Extended option \opt{fdlsize}\see{cmd:fiberdelayline}
+%   \item Added style \opt{FdlArrow}\see{cmd:fiberdelayline}
+%   \item Extended option \opt{fiberpolsize}\see{cmd:optfiberpolarizer}
+%   \item Added component \cs{optcirculator}\see{cmd:optcirculator}
+%   \item Extended option \opt{couplersize}\see{cmd:optcoupler}
+%   \item Extended option \opt{couplertype}\see{cmd:optcoupler}
+%   \item Renamed option \opt{align} to \opt{coupleralign}\see{cmd:optcoupler}
+%   \item Added style \opt{VariableCoupler}\see{cmd:optcoupler}
+%   \item Added style \opt{FilterStyle}\see{cmd:optfilter}
+%   \item Extended option \opt{fibercolsize}\see{cmd:fibercollimator}
 %   \item Removed option \opt{labelrelative}\see{sec:labels}
 %   \item Removed option \opt{iwidth}\see{cmd:pinhole}
 %   \item Removed option \opt{owidth}\see{cmd:pinhole}
@@ -7554,16 +7570,12 @@
   \pst@expandafter\POE@psset@@optboxsize{#1} {} {} {}\@nil
 }%
 \def\POE@psset@@optboxsize#1 #2 #3\@nil{%
-  \edef\POE@temp{#1}%
-  \ifx\POE@temp\@empty\else
-    \psset[optexp]{optboxwidth=#1}%
+  \ifx\\#2\\
+    \PackageWarning{pst-optexp}{%
+      Parameter 'optboxsize' requires two numbers}%
   \fi
-  \edef\POE@temp{#2}%
-  \ifx\POE@temp\@empty
-    \psset[optexp]{optboxheight=#1}%
-  \else
-    \psset[optexp]{optboxheight=#2}%
-  \fi
+  \psset[optexp]{optboxwidth=#1}%
+  \psset[optexp]{optboxheight=#2}%
 }%
 \define@boolkey[psset]{optexp}[POE@]{endbox}[true]{}
 \define@boolkey[psset]{optexp}[POE@]{startbox}[true]{}
@@ -7911,8 +7923,17 @@
 % Fiber polarizer
 %    \begin{macrocode}
 \define@key[psset]{optexp}{fiberpolsize}{%
-  \pst@checknum{#1}\POE@key@fiberpolsize
-}
+  \pst@expandafter\POE@psset@@fiberpolsize{#1} {} {} {}\@nil
+}%
+\def\POE@psset@@fiberpolsize#1 #2 #3\@nil{%
+  \ifx\\#2\\
+    \pst@checknum{#1}\POE@key@fiberpolheight
+    \pstFPmul\POE@key@fiberpolwidth{1.6}{#1}
+  \else
+    \pst@checknum{#1}\POE@key@fiberpolwidth
+    \pst@checknum{#2}\POE@key@fiberpolheight
+  \fi
+}%
 \psset[optexp]{fiberpolsize=0.6}%
 %    \end{macrocode}
 % Optical switch
@@ -7948,8 +7969,17 @@
 % Fiber collimator 
 %    \begin{macrocode}
 \define@key[psset]{optexp}{fibercolsize}{%
-  \pst@checknum{#1}\POE@key@fibercolsize
-}
+  \pst@expandafter\POE@psset@@fibercolsize{#1} {} {} {}\@nil
+}%
+\def\POE@psset@@fibercolsize#1 #2 #3\@nil{%
+  \ifx\\#2\\
+    \pst@checknum{#1}\POE@key@fibercolheight
+    \pstFPmul\POE@key@fibercolwidth{0.866}{#1}
+  \else
+    \pst@checknum{#1}\POE@key@fibercolwidth
+    \pst@checknum{#2}\POE@key@fibercolheight
+  \fi
+}%
 \psset[optexp]{fibercolsize=0.3}%
 %    \end{macrocode}
 % Optical Circulator
@@ -11583,7 +11613,8 @@
 %    \begin{macrocode}
 \def\optfiberpolarizer@ref{%
   \POE@Verb{%
-    \POE@key@fiberpolsize\space dup 0.8 mul /@@x ED 0.5 mul /@@y ED 
+    /@@x \POE@key@fiberpolwidth\space 0.5 mul def
+    /@@y \POE@key@fiberpolheight\space 0.5 mul def
   }%
 }%
 %    \end{macrocode}
@@ -11592,8 +11623,8 @@
 % \begin{macro}{\optfiberpolarizer@comp}
 %    \begin{macrocode}
 \def\optfiberpolarizer@comp{%
-  \edef\@ht{\POE@key@fiberpolsize\space 0.5 mul }%
-  \edef\@wd{\POE@key@fiberpolsize\space 0.8 mul }%
+  \edef\@ht{\POE@key@fiberpolheight\space 0.5 mul }%
+  \edef\@wd{\POE@key@fiberpolwidth\space 0.8 mul }%
   \psframe[dimen=outer](! \@wd neg \@ht neg)(! \@wd \@ht)
   \psline(! \@wd neg 0.2 mul \@ht neg)(!\@wd 0.2 mul \@ht)
 \ignorespaces}%
@@ -11919,10 +11950,11 @@
 % \begin{macro}{\fibercollimator@nodes}
 %    \begin{macrocode}
 \def\fibercollimator@nodes{%
-   \def\@sz{\POE@key@fibercolsize\space 0.5 mul }%
-   \pnode(!\@sz neg 0){\oenodeIn{}}
-   \newOptexpComp{{\@sz neg 0} {0 1} \@sz neg \@sz trans {PlainIfc} 
-                  {\@sz 0} {0 1} 0 0 trans {PlainIfc} 1 }%
+  \def\@wd{\POE@key@fibercolwidth\space 0.5 mul }%
+  \def\@ht{\POE@key@fibercolheight\space 0.5 mul }%
+  \pnode(!\@wd neg 0){\oenodeIn{}}
+  \newOptexpComp{{\@wd neg 0} {0 1} \@ht neg \@ht trans {PlainIfc} 
+                 {\@wd 0} {0 1} 0 0 trans {PlainIfc} 1 }%
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -11930,9 +11962,10 @@
 % \begin{macro}{\fibercollimator@comp}
 %    \begin{macrocode}
 \def\fibercollimator@comp{%
-   \def\@sz{\POE@key@fibercolsize\space 0.5 mul }%
-   \pspolygon(!\@sz neg \getCLWH add \@sz neg)%
-             (!\@sz 0)(!\@sz neg \getCLWH add \@sz)
+  \def\@wd{\POE@key@fibercolwidth\space 0.5 mul }%
+  \def\@ht{\POE@key@fibercolheight\space 0.5 mul }%
+  \pspolygon(!\@wd neg \getCLWH add \@ht neg)%
+            (!\@wd 0)(!\@wd neg \getCLWH add \@ht)
 }%
 %    \end{macrocode}
 % \end{macro}
