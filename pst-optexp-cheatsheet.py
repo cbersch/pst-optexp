@@ -5,7 +5,6 @@ with open("pst-optexp.dtx") as f:
     data = ''.join(f.readlines())
 pat = re.compile(r'(\\[a-z]+item|\\[a-z]*desc)(?:\[[^\]]+\])?(\{[a-zA-Z0-9]+\}.*)$', re.M)
 
-# pat = re.compile('(?P<comm>(?:%\s*)?)(?:\\*\\\\ON\\*)?(\\\\begin{pspicture}[^\n]*\n)((?:(?P=comm)[^\n]*\n)*?)((?P=comm)\s*\\\\end{pspicture})', re.S)
 g = pat.findall(data)
 
 f = open("pst-optexp-cheatsheet.tex", "w")
@@ -16,14 +15,30 @@ f.write(r"""\documentclass[landscape]{scrartcl}
 \usepackage{lmodern} 
 \usepackage{amsmath, marvosym} 
 \usepackage{bera}
+\usepackage{xcolor}
+\definecolor{DOrange}{rgb}{1,.4,.2}%
 \usepackage{ltxdockit}
 \usepackage{multicol}
 \usepackage[margin=1cm]{geometry}
-\newenvironment*{cheatlist}
+\newenvironment*{cmdlist}
   {\list{}{%
+  \setlength{\parskip}{0pt}%
+  \setlength{\topsep}{0pt}%
     \setlength{\partopsep}{0pt}%
+    \setlength{\labelsep}{0pt}%
     \setlength{\labelwidth}{10pt}%
     \setlength{\leftmargin}{10pt}%
+    \setlength{\parsep}{0pt}%
+    \setlength{\itemsep}{0pt}}}
+  {\endlist}
+\renewenvironment*{optionlist}
+  {\list{}{%
+  \setlength{\parskip}{0pt}%
+  \setlength{\topsep}{0pt}%
+    \setlength{\partopsep}{0pt}%
+    \setlength{\labelsep}{0pt}%
+    \setlength{\labelwidth}{10pt}%
+    \setlength{\leftmargin}{20pt}%
     \setlength{\parsep}{0pt}%
     \setlength{\itemsep}{0pt}}}
   {\endlist}
@@ -38,7 +53,7 @@ f.write(r"""\documentclass[landscape]{scrartcl}
 \def\boolitem#1{\item[#1]=\ltd@verblist{true,false}}
 \def\envitem#1{\item[{\textbackslash begin\{#1\}\ldots\textbackslash end\{#1\}}]}
 \def\cmditem#1{%
-  \item[\textbackslash#1]%
+  \item[\textcolor{DOrange}{\textbackslash#1}]%
   \begingroup
   \ltd@syntaxsetup
   \ltxsyntaxfont
@@ -48,20 +63,39 @@ f.write(r"""\documentclass[landscape]{scrartcl}
 \newcommand{\dipoledesc}[1]{\cmditem{#1}[options](in)(out){label}}
 \newcommand{\tripoledesc}[1]{\cmditem{#1}[options](in)(center)(out){label}}
 \newcommand{\fiberdipoledesc}[1]{\cmditem{#1}[options](in)(out){label}}
-%\setlength{\parskip}{0pt}
-%\setlength{\topsep}{0pt}
 \begin{document}\ttfamily\small
 \begin{multicols}{3}
-\begin{cheatlist}
+\section*{Cheat sheet for pst-optexp (v3.0)}
 """)
-envopen=''
+
+cmdenv=False
+optenv=False
+
 for m in g:
     if m[0].startswith(r'\psargitem'):
         continue
-    if m[0] == r'\cmditem':
-        f.write(m[0] + m[1] + "\n")
+    if re.match(r'\\(cmditem|[a-z]+desc)', m[0]):
+        if optenv:
+            f.write("\\end{optionlist}\n\\vspace{7pt}%\n\n")
+            optenv = False
+        if not cmdenv:
+            f.write("\\begin{cmdlist}\n")
+            cmdenv = True
+    else:
+        if cmdenv:
+            f.write("\\end{cmdlist}\n")
+            cmdenv = False
+        if not optenv:
+            f.write("\\begin{optionlist}\n")
+            optenv = True
 
-f.write(r"""\end{cheatlist}
-\end{multicols}
+    f.write(m[0] + m[1] + "\n")
+
+if optenv:
+    f.write("\\end{optionlist}")
+elif cmdenv:
+    f.write("\\end{cmdlist}")
+
+f.write(r"""\end{multicols}
 \end{document}""")
 f.close()
