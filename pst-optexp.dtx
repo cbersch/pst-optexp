@@ -18,7 +18,7 @@
 %<stylefile>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<stylefile>\ProvidesPackage{pst-optexp}
 %<*stylefile>
-    [2012/05/22 v3.0beta Optical experimental setups with PSTricks]
+    [2012/05/24 v3.0beta Optical experimental setups with PSTricks]
 %</stylefile>
 %
 %<*driver>
@@ -6649,7 +6649,7 @@
 \optretplate[abspos=0.5](PBS2)(piezo){$\nicefrac{\lambda}{4}$}
 \mirror[mirrortype=piezo,labelangle=90](PBS2)(piezo)(PBS2){PZ}
 \lens[position=0.8,labelangle=180](PBS2)(BSBwd){L}
-\crystal[crystalwidth=1, crystalheight=0.5, voltage, lamp, fillstyle=solid, fillcolor=yellow!90!black, labeloffset=0.8](BSFwd)(BSBwd){SBN:Ce}
+\crystal[crystalsize=1 0.5, voltage, lamp, fillstyle=solid, fillcolor=yellow!90!black, labeloffset=0.8](BSFwd)(BSBwd){SBN:Ce}
 \beamsplitter(PBS)(BSFwd)(BSBwd){BS}
 \beamsplitter[labelangle=-90](PBS2)(BSBwd)(BSFwd){BS}
 \mirror(BSBwd)(M4f1)(M4f2){M}\mirror(M4f1)(M4f2)(M4f3){M}
@@ -6750,6 +6750,36 @@
   \drawwidebeam[beamangle=3, linecolor=blue!60!white]{3-6}
   \drawwidebeam[beamangle=-3, linecolor=red!60!white]{3-6}
 \end{optexp}
+\end{pspicture}
+\end{LTXexample}
+
+\begin{LTXexample}[pos=t, caption={caption}]
+\begin{pspicture}(0,0.7)(9.4,3.3)
+  \psset[optexp]{couplertype=rectangle, fiber=none, detsize=0.5 0.6}
+  \newpsobject{laser}{optbox}{optboxsize=1.5 0.6, innerlabel,position=start}
+  \pnode(1.5,3){L3}\pnode(1.5,2){L2}\pnode(1.5,1){L1}
+  \pnode(7,3){D3}\pnode(7,2){D2}\pnode(7,1){D1}
+  \laser(L1)(D1){Laser 1}\laser(L2)(D2){Laser 2}\laser(L3)(D3){Laser 3}
+  \psset[optexp]{position=0.2}
+  \wdmsplitter[coupleralign=b](L1)(D2)(D1)
+  \wdmsplitter(L2)(D3)(D1)
+  \wdmsplitter[coupleralign=t](L3)(D3)(D2)
+  \psset[optexp]{position=0.8}
+  \wdmcoupler[coupleralign=b](L2)(L1)(D1)
+  \wdmcoupler(L3)(L1)(D2)
+  \wdmcoupler[coupleralign=t](L3)(L2)(D3)
+  \optdetector[label=0.4 90 l](L1)(D1){Detector 1}
+  \optdetector[label=0.4 90 l](L2)(D2){Detector 2}
+  \optdetector[label=0.4 90 l](L3)(D3){Detector 3}
+  \drawfiber[linecolor=blue]{1}{4}{9}
+  \drawfiber[linecolor=blue, startnode=N]{4}{8}
+  \drawfiber[linecolor=green, stopnode=1]{2}{5}{9}
+  \drawfiber[linecolor=green, stopnode=2]{5}{7}
+  \drawfiber[linecolor=red]{3}{6}{7}
+  \drawfiber[linecolor=red, startnode=2]{6}{8}
+  \drawfiber[linecolor=cyan]{9}{12}
+  \drawfiber[linecolor=magenta]{8}{11}
+  \drawfiber[linecolor=yellow]{7}{10}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -7538,6 +7568,17 @@
 \define@key[psset]{optexp}{crystalheight}{%
   \pst@checknum{#1}\POE@key@crystalheight
 }
+\define@key[psset]{optexp}{crystalsize}{%
+  \pst@expandafter\POE@psset@@crystalsize{#1} {} {} {}\@nil
+}%
+\def\POE@psset@@crystalsize#1 #2 #3\@nil{%
+  \ifx\\#2\\
+    \PackageWarning{pst-optexp}{%
+      Parameter 'crystalsize' requires two numbers}%
+  \fi
+  \psset[optexp]{crystalwidth=#1}%
+  \psset[optexp]{crystalheight=#2}%
+}%
 \define@key[psset]{optexp}{caxislength}{%
   \pst@checknum{#1}\POE@key@caxislength
 }

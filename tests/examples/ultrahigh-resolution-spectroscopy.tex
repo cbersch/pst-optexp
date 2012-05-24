@@ -1,0 +1,23 @@
+% an idea from http://dx.doi.org/10.1109/LPT.2011.2157338
+\input ../testcases/header
+\begin{pspicture}[showgrid](12,7)
+  \pnode(1,5){L}\pnode([Xnodesep=5]L){CircIn}
+  \pnode([Xnodesep=1]CircIn){CircOut1}
+  \pnode([Xnodesep=0.5,offset=-1]CircIn){CircOut2}
+  \newpsstyle{Fiber}{linewidth=1.5\pslinewidth, linecolor=red}
+  \psset[optexp]{fiber=none, usefiberstyle}
+  \optbox[innerlabel, position=start, optboxsize=1 0.8](L)(CircIn){LD}
+  \optmzm[extnode=b, compname=MZM1, optmzmsize=1.2 0.8, abspos=0.8](L)(CircIn)
+  \optfilter[abspos=2](L)(CircIn)
+  \optbox[optboxsize=1 0.8, abspos=3.1, label=0](L)(CircIn){PM}
+  \optfiber[abspos=4.4](L)(CircIn)
+  \optcirculator[optcircangle=0 -90, compname=C](CircIn)(CircOut2)(CircOut1)
+  \pnode([offset=-2,Xnodesep=0.1]CircOut1){OSA}
+  \pnode([offset=-2,Xnodesep=-0.1]CircIn){PD}
+  \wdmsplitter[position=0.3](\oenode{2}{C})(OSA)(PD)
+  \optbox[optboxsize=0.6 1, label=0, position=end]([offset=0.1]OSA)(OSA){OSA}
+  \optbox[optboxsize=0.6 1, label=0, position=end]([offset=0.1]PD)(PD){PD}
+  \drawfiber[fiberalign=center, ncurv=1.2]{1}{2}{3}{4}{5}{6}{7}{8}
+  \drawfiber[ncurv=1.2]{7}{9}
+\end{pspicture}
+\end{document}
