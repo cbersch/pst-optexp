@@ -8729,7 +8729,8 @@
 %    \begin{macrocode}
 \def\POE@strokesinglebeam{%
   gsave 
-    Drawbeam 
+    /Lineto /lineto load def
+    \tx@Drawbeam 
     \tx@setlinejoin
     \pst@number\pslinewidth SLW
     \pst@usecolor\pslinecolor
@@ -8858,6 +8859,115 @@
 }%
 %    \end{macrocode}
 % \end{macro}
+%
+%    \begin{macrocode}
+\pst@def{Drawbeam}<
+%    \end{macrocode}
+% Remove trailing empty line parts.
+%    \begin{macrocode}
+    { counttomark 6 le {
+        exit
+      } if
+      3 index not {
+        pop pop pop 
+      }{ 
+        exit
+      } ifelse
+    } loop
+%    \end{macrocode}
+% Remove heading empty line parts. Note, that the first point must not have
+% 'draw = true', because it is the starting point which we have to move to.
+%    \begin{macrocode}
+    { counttomark 3 le {
+        exit
+      } if
+      counttomark 3 sub index not {
+        counttomark -3 roll pop pop pop
+      }{
+        exit
+      } ifelse
+    } loop
+%    \end{macrocode}
+%    \begin{macrocode}
+  counttomark 3 le {
+%    \end{macrocode}
+% first ray misses the next interface or is even parallel to the input interface.
+%    \begin{macrocode}
+    cleartomark
+  }{
+%    \end{macrocode}
+% This is the /Line definition from \opt{pstricks-add}, adapted to the beam path
+% structure which includes the boolean values to indicate if a line is drawn, or
+% if we use moveto. There was no way to patch the original definition and avoid
+% duplicating the code.
+%    \begin{macrocode}
+  counttomark 3 div cvi /N ED
+  (\psk@ArrowInside) length 0 gt { 
+    \ifx\psk@arrowA\arrowType@H   % do we have a Hook arrow at the beginning?
+      \pst@number\pshooklength  % yes 
+    \else
+      \psk@arrowsize\space CLW mul add dup \psk@arrowlength\space mul exch \psk@arrowinset mul neg add  
+    \fi
+    /arrowlength exch def 
+    6 copy pop				% copy all four values for the arrow line
+    /y1 ED /x1 ED pop /y2 ED /x2 ED 	% save them
+    /Alpha y2 y1 sub x2 x1 sub Atan def % the gradient of the line
+    pop 3 -1 roll 5 1 roll 
+    ArrowA 
+    x1 Alpha cos arrowlength mul add	% dx add
+    y1 Alpha sin arrowlength mul add	% dy add, to get the current point at the end of the arrow tip
+    5 -1 roll 3 1 roll true
+    /N N 1 sub def
+    N {
+      6 copy pop 
+      /y1 ED /x1 ED pop /y2 ED /x2 ED /draw ED
+      x1 y1
+      \psk@ArrowInsidePos\space 1 gt {
+        /Alpha y2 y1 sub x2 x1 sub Atan def
+        /ArrowPos \psk@ArrowInsideOffset\space def
+        /dArrowPos \psk@ArrowInsidePos\space abs def
+        \psk@ArrowInsideNo\space cvi {
+          /ArrowPos ArrowPos dArrowPos add def
+          x1 Alpha cos ArrowPos mul add
+          y1 Alpha sin ArrowPos mul add
+          6 index { ArrowInside } if
+          pop pop
+        } repeat
+      }{
+        /ArrowPos \psk@ArrowInsideOffset\space def
+        /dArrowPos \psk@ArrowInsideNo 1 gt {%
+          1.0 \psk@ArrowInsideNo 1.0 add div
+        }{\psk@ArrowInsidePos } ifelse def
+          \psk@ArrowInsideNo\space cvi {
+            /ArrowPos ArrowPos dArrowPos add def
+            x2 x1 sub ArrowPos mul x1 add
+            y2 y1 sub ArrowPos mul y1 add
+            6 index { ArrowInside } if
+            pop pop
+          } repeat
+      } ifelse
+      pop pop
+      draw {Lineto}{moveto} ifelse
+    } repeat
+  }{
+    pop 5 copy 3 -1 roll pop 
+    ArrowA pop pop pop pop
+    counttomark 3 idiv -1 2 {
+      pop {
+        lineto
+      }{
+        moveto
+      } ifelse
+    } for
+  } ifelse
+  {CP 4 2 roll ArrowB lineto pop pop } {moveto} ifelse
+%    \end{macrocode}
+% remove the mark
+%    \begin{macrocode}
+  pop
+  } ifelse
+>
+%    \end{macrocode}
 % 
 %    \begin{macrocode}
 \def\POE@getcomprange#1-#2\@nil{%
@@ -13088,36 +13198,6 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}{Drawbeam}
-% [ CompN ... Comp1 \PSproc{options} \PSproc{start point} \PSproc{input vector}
-%    \begin{macrocode}
-/Drawbeam {
-  counttomark 3 le {
-%    \end{macrocode}
-% first ray misses the next interface or is even parallel to the input interface.
-%    \begin{macrocode}
-    cleartomark
-  }{
-%    \end{macrocode}
-% Go to start point
-%    \begin{macrocode}
-    pop 5 copy 3 -1 roll pop ArrowA pop pop pop pop
-    counttomark 3 idiv -1 2 {
-      pop {
-        lineto
-      }{
-        moveto
-      } ifelse
-    } for
-    {CP 4 2 roll ArrowB lineto pop pop } {moveto} ifelse
-%    \end{macrocode}
-% remove the mark
-%    \begin{macrocode}
-    pop
-  } ifelse
-} bind def
-%    \end{macrocode}
-% \end{macro}
 % 
 % \begin{macro}{sign}
 %    \begin{macrocode}
