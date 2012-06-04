@@ -821,26 +821,6 @@
 % 2.x. Especially the \Lcs{drawbeam} macro was broken by design, so that
 % it was best to drop the old flaw as early as possible.
 % \fi
-% \begin{optionlist}
-%   \optitem[new]{namingscheme}{old, new} 
-%   \ifGERMAN
-%   In Version 2.x musste spezielle Komponentenknoten über ihren expliziten
-%   Namen angesprochen werden. Wenn Sie nur das alte Namensschema benötigen, da
-%   Sie direkt auf die Knoten zugegriffen haben, so genügt es
-%   \nxLkeyword{namingscheme=old} zu verwenden, die Paketoption
-%   \nxLoption{compat} wird dann nicht benötigt. Seit Version 3.0 werden Makros
-%   für den Zugriff auf die Komponentenknoten bereitgestellt, so dass das
-%   eigentlichen Namensschema unerheblich ist.
-%   \fi
-%   \ifENGLISH
-%   In version 2.x special component nodes had to be accessed by their explicit
-%   name. If you only need the old naming scheme, because you accessed internal
-%   nodes directly, then you can only set \nxLkeyword{namingscheme=old} and do
-%   not need to use the \nxLoption{compat} option. Since version 3.0 explicit
-%   macros are provided to access all special component nodes, so that the
-%   actual naming scheme does not matter.
-%   \fi
-% \end{optionlist}
 %
 % \section{Notation}\label{sec:notation}
 % \ifGERMAN
@@ -5722,8 +5702,8 @@
 %</ignore>
 % \fi
 % \begin{optionlist}
-%   \choitem[auto]{startnode}{auto, 1, 2, 3, 4, N}
-%   \choitem[auto]{stopnode}{auto, 1, 2, 3, 4, N}
+%   \choitem[auto]{startnode}{auto, N, 1, 2, \ldots}
+%   \choitem[auto]{stopnode}{auto, N, 1, 2, \ldots}
 %   \ifGERMAN Hiermit können die Start- und Stopknoten explizit gewählt werden.\fi
 %   \ifENGLISH Choose the start and stop node explicitely.\fi
 % \iffalse
@@ -6081,260 +6061,6 @@
 % into two macro. \nxLcs{component@nodes} contains the nodes and the Postscript
 % definition of the component interfaces. \nxLcs{component@comp} hold only the drawings.
 %
-%
-% \ifGERMAN\chapter{Zusatzinformationen}\fi
-% \ifENGLISH\chapter{Additional information}\fi
-%
-% \section{Internal component structure}
-% 
-% In order to understand properly how the automatic beam drawing actually works,
-% it is necessary to describe in more detail the internal component structure.
-% 
-% \begin{optionlist}
-% \boolitem[false]{showifcnodes}
-% \end{optionlist}
-% \begin{stylelist}
-% \styleitem{IfcNodeStyle}
-% \end{stylelist}
-% Every component type consists internally of interfaces which are defined by a
-% node on the optical axis, a plane vector or a curvature radius, and by its
-% optical characteristic (reflective or transmittive). The interface nodes can be
-% visualized for each component type with the \Lkeyword{showifcnodes}
-% parameter. 
-% 
-% \iffalse
-%<*ignore>
-% \fi
-\begin{LTXexample}
-\begin{pspicture}(4,3)
-  \psset{showifcnodes}
-  \optbox(0,2.5)(4,2.5){}
-  \doveprism(0,1.5)(4,1.5){}
-  \lens(0,0.5)(4,0.5){}
-  \mirror(0,0.5)(3.5,0.5)(3.5,3){}
-\end{pspicture}
-\end{LTXexample}
-% \iffalse
-%</ignore>
-% \fi
-% 
-% \medskip
-% 
-% \nxLcs{draw*beam} calculates the distance between the interface nodes of two
-% objects and connects the two nearest
-% 
-% \iffalse
-%<*ignore>
-% \fi
-\begin{LTXexample}
-\begin{pspicture}(-3,-3)(3,3)
-  \psset{optboxsize=0.6 0.5, labeloffset=0}
-  \multido{\i=0+60,\ii=1+1}{6}{%
-    \pnode(2.5;\i){A}
-    \optbox([Xnodesep=-1]A)([Xnodesep=1]A){\ii}
-  }
-  \optbox[compname=ref](-1,0)(1,0){ref}
-  \addtopsstyle{Beam}{arrows=->}
-  \multido{\i=1+1}{6}{\drawbeam{ref}{\i}}
-\end{pspicture}
-\end{LTXexample}
-% \iffalse
-%</ignore>
-% \fi
-%
-% \section{Overview of special nodes}
-% \subsection{External and rotation reference nodes}\label{sec:overview-extnode}
-%
-% \subsection{Interface nodes}\label{sec:overview-ifcnode}
-% Here, all available components and their interface nodes are listed. If
-% a node is labeled as «1, N», it means that both nodes are equal.
-% \bgroup \psset{unit=1.2}
-% \subsubsection*{Free-ray components}
-% \addtopsstyle{Beam}{arrows=->, arrowinset=0, arrowscale=1.5}
-% \newcommand{\showdipoleifc}[1]{%
-%   \begin{pspicture}(0,-0.5)(3,1) 
-%     \pnode(0,0.5){A}\pnode(3,0.5){B}
-%     \csname #1\endcsname(A)(B)
-%     \drawbeam{(A)}{}{(B)}
-%     \psdot(\oenodeIn{})\uput[-135](\oenodeIn{}){1}
-%     \psdot(\oenodeOut{})\uput[-45](\oenodeOut{}){N}
-%     \rput[bl](0,-0.4){\ttfamily\textbackslash #1}
-%   \end{pspicture}
-% }%
-% \newcommand{\showdipoleoneifc}[1]{%
-%   \begin{pspicture}(0,-0.5)(3,1) 
-%     \pnode(0,0.5){A}\pnode(3,0.5){B}
-%     \csname #1\endcsname(A)(B)
-%     \drawbeam{(A)}{}{(B)}
-%     \psdot(\oenodeIn{})\uput[-135](\oenodeIn{}){1, N}
-%     \rput[bl](0,-0.4){\ttfamily\textbackslash #1}
-%   \end{pspicture}
-% }%
-% \showdipoleifc{lens}\hspace{\fill}%
-% \showdipoleoneifc{optplate}\hspace{\fill}%
-% \showdipoleifc{optretplate}%
-% \bigskip
-%
-% \noindent\showdipoleoneifc{pinhole}\hspace{\fill}%
-% \showdipoleifc{crystal}\hspace{\fill}%
-% \showdipoleifc{optbox}
-% \bigskip
-%
-% \noindent
-% \begin{pspicture}(0, -0.5)(3,1)
-%   \pnode(0,0.5){A}\pnode(2.5,0.5){B}
-%   \optdetector(A)(B)
-%   \drawbeam{(A)}{}
-%   \psdot(\oenodeIn{})\uput[-135](\oenodeIn{}){1, N}
-%   \rput[bl](0,-0.4){\ttfamily\textbackslash optdetector}
-% \end{pspicture}%
-% \hspace{\fill}%
-% \bgroup
-% \addtopsstyle{Beam}{beaminside=false}%
-% \showdipoleifc{optdiode}\egroup%
-% \hspace{\fill}%
-% \begin{pspicture}(0,-0.5)(3,1) 
-%   \pnode(0,0.5){A}\pnode(3,0.5){B}
-%   \doveprism(A)(B)
-%   \drawbeam[raytrace=false]{(A)}{}{(B)}
-%   \psdot(\oenodeIn{})\uput[135](\oenodeIn{}){1}
-%   \psdot(\oenodeIfc{2}{})\uput[90](\oenodeIfc{2}{}){2}
-%   \psdot(\oenodeOut{})\uput[45](\oenodeOut{}){N}
-%   \rput[bl](0,-0.4){\ttfamily\textbackslash doveprism}
-% \end{pspicture}%
-%
-% \begin{pspicture}(3,1.5)
-%   \pnode(0,1){A}\pnode(2.5,1){B}\pnode(2.5,0){C}
-%   \mirror(A)(B)(C)
-%   \drawbeam{(A)}{}{(C)}
-%   \psdot(\oenodeIn{})\uput[-135](\oenodeIn{}){1, N}
-%   \rput[bl](0,0){\ttfamily\textbackslash mirror}
-% \end{pspicture}%
-% \hspace{\fill}%
-% \begin{pspicture}(3,1.5) 
-%   \pnode(0,1){A}\pnode(1.5,1){B}\pnode(3,0){C}
-%   \optprism(A)(B)(C)
-%   \drawbeam[raytrace=false]{(A)}{}{(C)}
-%   \psdot(\oenodeIn{})\uput[135](\oenodeIn{}){1}
-%   \psdot(\oenodeOut{})\uput[45](\oenodeOut{}){N}
-%   \rput[bl](0,0){\ttfamily\textbackslash optprism}
-% \end{pspicture}%
-% \hspace{\fill}%
-% \begin{pspicture}(3,1.5)
-%   \pnode(0,1){A}\pnode(2.5,1){B}\pnode(2.5,0){C}
-%   \optgrating(A)(B)(C)
-%   \drawbeam{(A)}{}{(C)}
-%   \psdot(\oenodeIn{})\uput[-135](\oenodeIn{}){1, N}
-%   \rput[bl](0,0){\ttfamily\textbackslash optgrating}
-% \end{pspicture}%
-% \bigskip
-%
-% \noindent
-% \begin{pspicture}(3,2.5)
-%   \pnode(0,1.5){A}\pnode(2.5,1.5){B}\pnode(2.5,0){C}
-%   \beamsplitter[bssize=1.2](A)(B)(C)
-%   \drawbeam{(A)}{}{(C)}
-%   \psdot(\oenodeIfc{1}{})\uput[135](\oenodeIfc{1}{}){1}
-%   \psdot(\oenodeIfc{2}{})\uput[-45](\oenodeIfc{2}{}){2}
-%   \psdot(\oenodeIfc{3}{})\uput[0](\oenodeIfc{3}{}){3}
-%   \psdot(\oenodeIfc{N}{})\uput[90](\oenodeIfc{N}{}){N}
-%   \psdot(\oenodeIfc{C}{})\uput[-135](\oenodeIfc{C}{}){C}
-%   \rput[bl](0,0){\ttfamily\textbackslash beamsplitter}
-% \end{pspicture}%
-% \hspace{\fill}%
-% \begin{pspicture}(3,2.5)
-%   \pnode(0,2){A}\pnode(2.5,1.5){B}\pnode(0,1){C}
-%   \rightangleprism[raprismsize=2](A)(B)(C)
-%   \drawbeam[arrows=->, arrowinset=0, arrowscale=1.5]{(A)}{}{(C)}
-%   \psdot(\oenodeIn{})\uput[135](\oenodeIn{}){1}
-%   \psdot(\oenodeIfc{2}{})\uput[45](\oenodeIfc{2}{}){2}
-%   \psdot(\oenodeIfc{3}{})\uput[-45](\oenodeIfc{3}{}){3}
-%   \psdot(\oenodeOut{})\uput[-135](\oenodeOut{}){N}
-%   \rput[bl](0,0){\ttfamily\textbackslash rightangleprism}
-% \end{pspicture}%
-% \hspace{\fill}%
-% \begin{pspicture}(3,2.5) 
-%   \pnode(0,1.5){A}\pnode(2.1,1.5){B}\pnode(2.1,0){C}
-%   \pentaprism[pentaprismsize=1](A)(B)(C)
-%   \drawbeam[arrows=->, arrowinset=0, arrowscale=1.5]{(A)}{}{(C)}
-%   \psdot(\oenodeIn{})\uput[135](\oenodeIn{}){1}
-%   \psdot(\oenodeIfc{2}{})\uput[0](\oenodeIfc{2}{}){2}
-%   \psdot(\oenodeIfc{3}{})\uput[90](\oenodeIfc{3}{}){3}
-%   \psdot(\oenodeOut{})\uput[-45](\oenodeOut{}){N}
-%   \rput[bl](0,0){\ttfamily\textbackslash pentaprism}
-% \end{pspicture}%
-%
-% \subsubsection*{Fiber components}
-% \newcommand{\showfdipoleifc}[1]{%
-%   \begin{pspicture}(0,-0.5)(3,1) 
-%     \pnode(0,0.5){A}\pnode(3,0.5){B}
-%     \csname #1\endcsname(A)(B)
-%     \psdot(\oenodeIn{})\uput[-135](\oenodeIn{}){1}
-%     \psdot(\oenodeOut{})\uput[-45](\oenodeOut{}){N}
-%     \rput[bl](0,-0.4){\ttfamily\textbackslash #1}
-%   \end{pspicture}%
-% }%
-% \addtopsstyle{Fiber}{ArrowInside=->, ArrowInsidePos=0.6, arrowscale=1.5, arrowinset=0}
-% \vspace*{5mm}%
-% \showfdipoleifc{optfiber}\hspace{\fill}%
-% \showfdipoleifc{optamp}\hspace{\fill}%
-% \showfdipoleifc{optmzm}%
-% \bigskip
-%
-% \noindent\showfdipoleifc{optfilter}\hspace{\fill}%
-% \showfdipoleifc{polcontrol}\hspace{\fill}%
-% \showfdipoleifc{optisolator}%
-% \bigskip
-%
-% \noindent\showfdipoleifc{optswitch}\hspace{\fill}%
-% \showfdipoleifc{fiberdelayline}\hspace{\fill}%
-% \showfdipoleifc{optfiberpolarizer}%
-% \bigskip
-%
-% \bgroup\psset{beam}
-% \noindent\showfdipoleifc{fibercollimator}\egroup
-% \hspace{\fill}%
-% \begin{pspicture}(0,-0.5)(3,1.4)
-%   \pnode(0,1){A}\pnode(3,1){B}\pnode(1.2,-0.1){C}
-%   \optcirculator(A)(C)(B)
-%   \psdot(\oenodeIn{})\uput[-135](\oenodeIn{}){1}
-%   \psdot(\oenodeIfc{2}{})\uput[-45](\oenodeIfc{2}{}){2}
-%   \psdot(\oenodeOut{})\uput[-45](\oenodeOut{}){N}
-%   \rput[bl](0,-0.4){\ttfamily\textbackslash optcirculator}
-% \end{pspicture}\hspace{\fill}%
-% \begin{pspicture}(3,1)
-% \end{pspicture}%
-% \bigskip
-%
-% \noindent
-% \begin{pspicture}(0,-0.5)(3,1.5)
-%   \pnode(0,0.75){A}\pnode(3,1.5){B}\pnode(3,0){C}
-%   \wdmsplitter[couplersize=0.5, couplersep=0.2](A)(B)(C)
-%   \psdot(\oenodeIn{})\uput[135](\oenodeIn{}){1}
-%   \psdot(\oenodeIfc{2}{})\uput[90](\oenodeIfc{2}{}){2}
-%   \psdot(\oenodeOut{})\uput[-90](\oenodeOut{}){N}
-%   \rput[bl](0,-0.4){\ttfamily\textbackslash wdmsplitter}
-% \end{pspicture}%
-% \hspace{\fill}%
-% \begin{pspicture}(0,-0.5)(3,1.5)
-%   \pnode(0,1.5){A}\pnode(0,0){B}\pnode(3,0.75){C}
-%   \wdmcoupler[couplersize=0.5, couplersep=0.2](A)(B)(C)
-%   \psdot(\oenodeIn{})\uput[90](\oenodeIn{}){1}
-%   \psdot(\oenodeIfc{2}{})\uput[-90](\oenodeIfc{2}{}){2}
-%   \psdot(\oenodeOut{})\uput[45](\oenodeOut{}){N}
-%   \rput[bl](0,-0.4){\ttfamily\textbackslash wdmcoupler}
-% \end{pspicture}%
-% \hspace{\fill}%
-% \begin{pspicture}(0,-0.5)(3,1.5)
-%   \pnode(0,1.5){A}\pnode(0,0){B}\pnode(3,1.5){C}\pnode(3,0){D}
-%   \optcoupler[couplersize=0.5, couplersep=0.2](A)(B)(C)(D)
-%   \psdot(\oenodeIn{})\uput[90](\oenodeIn{}){1}
-%   \psdot(\oenodeIfc{2}{})\uput[-90](\oenodeIfc{2}{}){2}
-%   \psdot(\oenodeIfc{3}{})\uput[90](\oenodeIfc{3}{}){3}
-%   \psdot(\oenodeOut{})\uput[-90](\oenodeOut{}){N}
-%   \rput[bl](0,-0.4){\ttfamily\textbackslash optcoupler}
-% \end{pspicture}%
-% \egroup
 %
 % \ifGERMAN
 %   \chapter{Beispiele}
@@ -6771,6 +6497,289 @@
 % \iffalse
 %</ignore>
 % \fi
+%
+%
+% \ifGERMAN\chapter{Zusatzinformationen}\fi
+% \ifENGLISH\chapter{Additional information}\fi
+%
+% \section{Internal component structure}
+% 
+% In order to understand properly how the automatic beam drawing actually works,
+% it is necessary to describe in more detail the internal component structure.
+% 
+% \begin{optionlist}
+% \boolitem[false]{showifcnodes}
+% \end{optionlist}
+% \begin{stylelist}
+% \styleitem{IfcNodeStyle}
+% \end{stylelist}
+% Every component type consists internally of interfaces which are defined by a
+% node on the optical axis, a plane vector or a curvature radius, and by its
+% optical characteristic (reflective or transmittive). The interface nodes can be
+% visualized for each component type with the \Lkeyword{showifcnodes}
+% parameter. 
+% 
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(4,3)
+  \psset{showifcnodes}
+  \optbox(0,2.5)(4,2.5){}
+  \doveprism(0,1.5)(4,1.5){}
+  \lens(0,0.5)(4,0.5){}
+  \mirror(0,0.5)(3.5,0.5)(3.5,3){}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+% 
+% \medskip
+% 
+% \nxLcs{draw*beam} calculates the distance between the interface nodes of two
+% objects and connects the two nearest
+% 
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(-3,-3)(3,3)
+  \psset{optboxsize=0.6 0.5, labeloffset=0}
+  \multido{\i=0+60,\ii=1+1}{6}{%
+    \pnode(2.5;\i){A}
+    \optbox([Xnodesep=-1]A)([Xnodesep=1]A){\ii}
+  }
+  \optbox[compname=ref](-1,0)(1,0){ref}
+  \addtopsstyle{Beam}{arrows=->}
+  \multido{\i=1+1}{6}{\drawbeam{ref}{\i}}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
+% \section{Overview of special nodes}
+% \subsection{External and rotation reference nodes}\label{sec:overview-extnode}
+%
+% \subsection{Interface nodes}\label{sec:overview-ifcnode}
+% Here, all available components and their interface nodes are listed. If
+% a node is labeled as «1, N», it means that both nodes are equal.
+% \bgroup \psset{unit=1.2}
+% \subsubsection*{Free-ray components}
+% \addtopsstyle{Beam}{arrows=->, arrowinset=0, arrowscale=1.5}
+% \newcommand{\showdipoleifc}[1]{%
+%   \begin{pspicture}(0,-0.5)(3,1) 
+%     \pnode(0,0.5){A}\pnode(3,0.5){B}
+%     \csname #1\endcsname(A)(B)
+%     \drawbeam{(A)}{}{(B)}
+%     \psdot(\oenodeIn{})\uput[-135](\oenodeIn{}){1}
+%     \psdot(\oenodeOut{})\uput[-45](\oenodeOut{}){N}
+%     \rput[bl](0,-0.4){\ttfamily\textbackslash #1}
+%   \end{pspicture}
+% }%
+% \newcommand{\showdipoleoneifc}[1]{%
+%   \begin{pspicture}(0,-0.5)(3,1) 
+%     \pnode(0,0.5){A}\pnode(3,0.5){B}
+%     \csname #1\endcsname(A)(B)
+%     \drawbeam{(A)}{}{(B)}
+%     \psdot(\oenodeIn{})\uput[-135](\oenodeIn{}){1, N}
+%     \rput[bl](0,-0.4){\ttfamily\textbackslash #1}
+%   \end{pspicture}
+% }%
+% \showdipoleifc{lens}\hspace{\fill}%
+% \showdipoleoneifc{optplate}\hspace{\fill}%
+% \showdipoleifc{optretplate}%
+% \bigskip
+%
+% \noindent\showdipoleoneifc{pinhole}\hspace{\fill}%
+% \showdipoleifc{crystal}\hspace{\fill}%
+% \showdipoleifc{optbox}
+% \bigskip
+%
+% \noindent
+% \begin{pspicture}(0, -0.5)(3,1)
+%   \pnode(0,0.5){A}\pnode(2.5,0.5){B}
+%   \optdetector(A)(B)
+%   \drawbeam{(A)}{}
+%   \psdot(\oenodeIn{})\uput[-135](\oenodeIn{}){1, N}
+%   \rput[bl](0,-0.4){\ttfamily\textbackslash optdetector}
+% \end{pspicture}%
+% \hspace{\fill}%
+% \bgroup
+% \addtopsstyle{Beam}{beaminside=false}%
+% \showdipoleifc{optdiode}\egroup%
+% \hspace{\fill}%
+% \begin{pspicture}(0,-0.5)(3,1) 
+%   \pnode(0,0.5){A}\pnode(3,0.5){B}
+%   \doveprism(A)(B)
+%   \drawbeam[raytrace=false]{(A)}{}{(B)}
+%   \psdot(\oenodeIn{})\uput[135](\oenodeIn{}){1}
+%   \psdot(\oenodeIfc{2}{})\uput[90](\oenodeIfc{2}{}){2}
+%   \psdot(\oenodeOut{})\uput[45](\oenodeOut{}){N}
+%   \rput[bl](0,-0.4){\ttfamily\textbackslash doveprism}
+% \end{pspicture}%
+%
+% \begin{pspicture}(3,1.5)
+%   \pnode(0,1){A}\pnode(2.5,1){B}\pnode(2.5,0){C}
+%   \mirror(A)(B)(C)
+%   \drawbeam{(A)}{}{(C)}
+%   \psdot(\oenodeIn{})\uput[-135](\oenodeIn{}){1, N}
+%   \rput[bl](0,0){\ttfamily\textbackslash mirror}
+% \end{pspicture}%
+% \hspace{\fill}%
+% \begin{pspicture}(3,1.5) 
+%   \pnode(0,1){A}\pnode(1.5,1){B}\pnode(3,0){C}
+%   \optprism(A)(B)(C)
+%   \drawbeam[raytrace=false]{(A)}{}{(C)}
+%   \psdot(\oenodeIn{})\uput[135](\oenodeIn{}){1}
+%   \psdot(\oenodeOut{})\uput[45](\oenodeOut{}){N}
+%   \rput[bl](0,0){\ttfamily\textbackslash optprism}
+% \end{pspicture}%
+% \hspace{\fill}%
+% \begin{pspicture}(3,1.5)
+%   \pnode(0,1){A}\pnode(2.5,1){B}\pnode(2.5,0){C}
+%   \optgrating(A)(B)(C)
+%   \drawbeam{(A)}{}{(C)}
+%   \psdot(\oenodeIn{})\uput[-135](\oenodeIn{}){1, N}
+%   \rput[bl](0,0){\ttfamily\textbackslash optgrating}
+% \end{pspicture}%
+% \bigskip
+%
+% \noindent
+% \begin{pspicture}(3,2.5)
+%   \pnode(0,1.5){A}\pnode(2.5,1.5){B}\pnode(2.5,0){C}
+%   \beamsplitter[bssize=1.2](A)(B)(C)
+%   \drawbeam{(A)}{}{(C)}
+%   \psdot(\oenodeIfc{1}{})\uput[135](\oenodeIfc{1}{}){1}
+%   \psdot(\oenodeIfc{2}{})\uput[-45](\oenodeIfc{2}{}){2}
+%   \psdot(\oenodeIfc{3}{})\uput[0](\oenodeIfc{3}{}){3}
+%   \psdot(\oenodeIfc{N}{})\uput[90](\oenodeIfc{N}{}){N}
+%   \psdot(\oenodeIfc{C}{})\uput[-135](\oenodeIfc{C}{}){C}
+%   \rput[bl](0,0){\ttfamily\textbackslash beamsplitter}
+% \end{pspicture}%
+% \hspace{\fill}%
+% \begin{pspicture}(3,2.5)
+%   \pnode(0,2){A}\pnode(2.5,1.5){B}\pnode(0,1){C}
+%   \rightangleprism[raprismsize=2](A)(B)(C)
+%   \drawbeam[arrows=->, arrowinset=0, arrowscale=1.5]{(A)}{}{(C)}
+%   \psdot(\oenodeIn{})\uput[135](\oenodeIn{}){1}
+%   \psdot(\oenodeIfc{2}{})\uput[45](\oenodeIfc{2}{}){2}
+%   \psdot(\oenodeIfc{3}{})\uput[-45](\oenodeIfc{3}{}){3}
+%   \psdot(\oenodeOut{})\uput[-135](\oenodeOut{}){N}
+%   \rput[bl](0,0){\ttfamily\textbackslash rightangleprism}
+% \end{pspicture}%
+% \hspace{\fill}%
+% \begin{pspicture}(3,2.5) 
+%   \pnode(0,1.5){A}\pnode(2.1,1.5){B}\pnode(2.1,0){C}
+%   \pentaprism[pentaprismsize=1](A)(B)(C)
+%   \drawbeam[arrows=->, arrowinset=0, arrowscale=1.5]{(A)}{}{(C)}
+%   \psdot(\oenodeIn{})\uput[135](\oenodeIn{}){1}
+%   \psdot(\oenodeIfc{2}{})\uput[0](\oenodeIfc{2}{}){2}
+%   \psdot(\oenodeIfc{3}{})\uput[90](\oenodeIfc{3}{}){3}
+%   \psdot(\oenodeOut{})\uput[-45](\oenodeOut{}){N}
+%   \rput[bl](0,0){\ttfamily\textbackslash pentaprism}
+% \end{pspicture}%
+%
+% \subsubsection*{Fiber components}
+% \newcommand{\showfdipoleifc}[1]{%
+%   \begin{pspicture}(0,-0.5)(3,1) 
+%     \pnode(0,0.5){A}\pnode(3,0.5){B}
+%     \csname #1\endcsname(A)(B)
+%     \psdot(\oenodeIn{})\uput[-135](\oenodeIn{}){1}
+%     \psdot(\oenodeOut{})\uput[-45](\oenodeOut{}){N}
+%     \rput[bl](0,-0.4){\ttfamily\textbackslash #1}
+%   \end{pspicture}%
+% }%
+% \addtopsstyle{Fiber}{ArrowInside=->, ArrowInsidePos=0.6, arrowscale=1.5, arrowinset=0}
+% \vspace*{5mm}%
+% \showfdipoleifc{optfiber}\hspace{\fill}%
+% \showfdipoleifc{optamp}\hspace{\fill}%
+% \showfdipoleifc{optmzm}%
+% \bigskip
+%
+% \noindent\showfdipoleifc{optfilter}\hspace{\fill}%
+% \showfdipoleifc{polcontrol}\hspace{\fill}%
+% \showfdipoleifc{optisolator}%
+% \bigskip
+%
+% \noindent\showfdipoleifc{optswitch}\hspace{\fill}%
+% \showfdipoleifc{fiberdelayline}\hspace{\fill}%
+% \showfdipoleifc{optfiberpolarizer}%
+% \bigskip
+%
+% \bgroup\psset{beam}
+% \noindent\showfdipoleifc{fibercollimator}\egroup
+% \hspace{\fill}%
+% \begin{pspicture}(0,-0.5)(3,1.4)
+%   \pnode(0,1){A}\pnode(3,1){B}\pnode(1.2,-0.1){C}
+%   \optcirculator(A)(C)(B)
+%   \psdot(\oenodeIn{})\uput[-135](\oenodeIn{}){1}
+%   \psdot(\oenodeIfc{2}{})\uput[-45](\oenodeIfc{2}{}){2}
+%   \psdot(\oenodeOut{})\uput[-45](\oenodeOut{}){N}
+%   \rput[bl](0,-0.4){\ttfamily\textbackslash optcirculator}
+% \end{pspicture}\hspace{\fill}%
+% \begin{pspicture}(3,1)
+% \end{pspicture}%
+% \bigskip
+%
+% \noindent
+% \begin{pspicture}(0,-0.5)(3,1.5)
+%   \pnode(0,0.75){A}\pnode(3,1.5){B}\pnode(3,0){C}
+%   \wdmsplitter[couplersize=0.5, couplersep=0.2](A)(B)(C)
+%   \psdot(\oenodeIn{})\uput[135](\oenodeIn{}){1}
+%   \psdot(\oenodeIfc{2}{})\uput[90](\oenodeIfc{2}{}){2}
+%   \psdot(\oenodeOut{})\uput[-90](\oenodeOut{}){N}
+%   \rput[bl](0,-0.4){\ttfamily\textbackslash wdmsplitter}
+% \end{pspicture}%
+% \hspace{\fill}%
+% \begin{pspicture}(0,-0.5)(3,1.5)
+%   \pnode(0,1.5){A}\pnode(0,0){B}\pnode(3,0.75){C}
+%   \wdmcoupler[couplersize=0.5, couplersep=0.2](A)(B)(C)
+%   \psdot(\oenodeIn{})\uput[90](\oenodeIn{}){1}
+%   \psdot(\oenodeIfc{2}{})\uput[-90](\oenodeIfc{2}{}){2}
+%   \psdot(\oenodeOut{})\uput[45](\oenodeOut{}){N}
+%   \rput[bl](0,-0.4){\ttfamily\textbackslash wdmcoupler}
+% \end{pspicture}%
+% \hspace{\fill}%
+% \begin{pspicture}(0,-0.5)(3,1.5)
+%   \pnode(0,1.5){A}\pnode(0,0){B}\pnode(3,1.5){C}\pnode(3,0){D}
+%   \optcoupler[couplersize=0.5, couplersep=0.2](A)(B)(C)(D)
+%   \psdot(\oenodeIn{})\uput[90](\oenodeIn{}){1}
+%   \psdot(\oenodeIfc{2}{})\uput[-90](\oenodeIfc{2}{}){2}
+%   \psdot(\oenodeIfc{3}{})\uput[90](\oenodeIfc{3}{}){3}
+%   \psdot(\oenodeOut{})\uput[-90](\oenodeOut{}){N}
+%   \rput[bl](0,-0.4){\ttfamily\textbackslash optcoupler}
+% \end{pspicture}%
+% \egroup
+%
+%
+% \ifGERMAN
+%   \chapter{Abwärtskompatibilität}
+% \fi
+% \ifENGLISH
+%   \chapter{Backward compatibility}
+% \fi 
+% \begin{optionlist}
+%   \optitem[new]{namingscheme}{old, new} 
+%   \ifGERMAN
+%   In Version 2.x musste spezielle Komponentenknoten über ihren expliziten
+%   Namen angesprochen werden. Wenn Sie nur das alte Namensschema benötigen, da
+%   Sie direkt auf die Knoten zugegriffen haben, so genügt es
+%   \nxLkeyword{namingscheme=old} zu verwenden, die Paketoption
+%   \nxLoption{compat} wird dann nicht benötigt. Seit Version 3.0 werden Makros
+%   für den Zugriff auf die Komponentenknoten bereitgestellt, so dass das
+%   eigentlichen Namensschema unerheblich ist.
+%   \fi
+%   \ifENGLISH
+%   In version 2.x special component nodes had to be accessed by their explicit
+%   name. If you only need the old naming scheme, because you accessed internal
+%   nodes directly, then you can only set \nxLkeyword{namingscheme=old} and do
+%   not need to use the \nxLoption{compat} option. Since version 3.0 explicit
+%   macros are provided to access all special component nodes, so that the
+%   actual naming scheme does not matter.
+%   \fi
+% \end{optionlist}
 %
 % \makeatletter
 % \bgroup
