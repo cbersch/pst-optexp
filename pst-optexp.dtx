@@ -148,6 +148,7 @@
 % spot is used in ltxdockit.sty
 \colorlet{spot}{sectioncolor}
 \newpsstyle{Refline}{linecolor=gray!60}
+\newpsstyle{CenterNode}{linecolor=blue, dotstyle=x, dotscale=1.5}
 \colorlet{Refline}{gray!60}
 \makeatletter
 % is identical to the changelog definition in ltxdockit.sty, but 
@@ -814,12 +815,18 @@
 %   bleiben. Insbesondere war die Funktionsweise des \Lcs{drawbeam}
 %   Makros grundlegend falsch konzipiert, so dass ein Wechsel zur neuen
 %   Funktionalität so schnell wie möglich erfolgen musste.
+%
+%   Eine genauere Zusammenstellung der Änderungen und Hinweise zur Migration von
+%   älteren Dokumenten finden Sie in \prettyref{chap:bwd-comp}.
 % \fi
 % \ifENGLISH
-% Version 3.0 introduced a lot of advanced features which made it too
-% difficult to maintain full backward compatibility with version
-% 2.x. Especially the \Lcs{drawbeam} macro was broken by design, so that
-% it was best to drop the old flaw as early as possible.
+% Version 3.0 introduced a lot of advanced features which made it too difficult
+% to maintain full backward compatibility with version 2.x. Especially the
+% \Lcs{drawbeam} macro was broken by design, so that it was best to drop the old
+% flaw as early as possible.
+%
+% You find a more detailed list of changes and information for migration of old
+% documents in \prettyref{chap:bwd-comp}.
 % \fi
 %
 % \section{Notation}\label{sec:notation}
@@ -1432,27 +1439,32 @@
 % \ifENGLISH\section{Labels}\fi
 % \label{sec:labels}
 %
-% \ifGERMAN Alle Komponenten können mit einer Beschriftung versehen
-% werden, deren Position und Ausrichtung genau angepasst werden
-% kann. Die Beschriftung ist für jede Komponente optional.
+% \ifGERMAN Alle Komponenten können mit einer Beschriftung versehen werden,
+% deren Position und Ausrichtung genau angepasst werden kann. Die Beschriftung
+% ist für jede Komponente optional. Sollten die vielfältigen Parameter nicht
+% ausreichend sein, können Sie den Beschriftungsknoten -- in einigen Beispielen
+% mit einem roten Punkt gekennzeichnet -- auch direkt verwenden (siehe
+% \prettyref{sec:labelnode}). 
 % \fi
-% \ifENGLISH All components may have a label which position and alignment can
-% be adjusted at will. The label is optional for every component.
+% \ifENGLISH All components may have a label which position and alignment can be
+% adjusted at will. The label is optional for every component. If the various
+% parameters are not sufficient, you can access the label node---marked as red
+% dot in some examples---directly (see \prettyref{sec:labelnode}).
 % \fi 
 %
 % \begin{optionlist}
 % \numitem[0.8]{labeloffset}
-% \ifGERMAN Der Abstand des Referenzknotens für die Beschriftung zum
-% Zentrum der Komponente.\fi
-% \ifENGLISH The offset of the label reference node from the component
-% center.\fi
+% \ifGERMAN Der Abstand des Referenzknotens für die Beschriftung (roter Punkt) zum
+% Zentrum der Komponente (blaues Kreuz).\fi
+% \ifENGLISH The offset of the label reference node (red dot) from the component
+% center (blue cross).\fi
 % \iffalse
 %<*ignore>
 % \fi
 \begin{LTXexample}[linerange={1-2,6-6}, morekeywords={[21]{labeloffset}}]
 \begin{pspicture}(3,1.8)
   \optbox[beam, labeloffset=1](0,1.5)(3,0.8){label}
-  \psdot[linecolor=blue](\oenodeCenter{})
+  \psdot[style=CenterNode](\oenodeCenter{})
   \psdot[linecolor=red](\oenodeLabel{})
   \ncline[arrows=<->, arrowinset=0, arrowscale=1.5]{\oenodeCenter{}}{\oenodeLabel{}}
 \end{pspicture}
@@ -1463,7 +1475,7 @@
 %
 % \valitem[\nxLcs{small}]{labelstyle}{macros}
 % \ifGERMAN Der Schriftstil der Beschriftungen.\fi
-% \ifENGLISH The textstyle that is used to typeset the label.\fi
+% \ifENGLISH The text style that is used to typeset the label.\fi
 % 
 % \valitem[c]{labelalign}{refstring}
 % \ifGERMAN Definiert die Ausrichtung der Beschriftung bezüglich des vorgesehenen Referenzknotens.\fi
@@ -1475,7 +1487,7 @@
 \begin{pspicture}(3,1.8)
   \psset{beam, labeloffset=1}
   \optbox[labelalign=bl](0,1.5)(3,0.8){label}
-  \psdot[linecolor=blue](\oenodeCenter{})
+  \psdot[style=CenterNode](\oenodeCenter{})
   \psdot[linecolor=red](\oenodeLabel{})
 \end{pspicture}
 \end{LTXexample}
@@ -1484,13 +1496,13 @@
 % \fi
 % \numitem[0]{labelangle}
 % \ifGERMAN
-% Der Rotationswinkel des Referenzknotens um das Zentrum. Der Nullpunkt
+% Der Rotationswinkel des Referenzknotens (roter Punkt) um das Zentrum (blaues Kreuz). Der Nullpunkt
 % hängt sowohl von dem jeweiligen Komponententypen und dem
 % Referenzsystem ab (siehe \nxLkeyword{labelref}).
 % \fi
 % \ifENGLISH
-% The rotation angle of the reference node around the component
-% center. The origin depends both on the component type and the
+% The rotation angle of the reference node (red dot) around the component
+% center (blue cross). The origin depends both on the component type and the
 % reference system (see \nxLkeyword{labelref}).
 % \fi
 %
@@ -1505,8 +1517,8 @@
   \beamsplitter[labelangle=-90](1,2)(1,1)(2,1){BS}
   \drawbeam[arrows=->]{1}{2}{(2,1)}
   \frontlayer{%
-    \psdot[linecolor=blue](\oenodeCenter{1})
-    \psdot[linecolor=blue](\oenodeCenter{2})
+    \psdot[style=CenterNode](\oenodeCenter{1})
+    \psdot[style=CenterNode](\oenodeCenter{2})
     \psdot[linecolor=red](\oenodeLabel{1})
     \psdot[linecolor=red](\oenodeLabel{2})
   }
@@ -1532,12 +1544,12 @@
 % 
 % \choitem[relgrav]{labelref}{relative, relgrav, global}
 % \ifGERMAN
-% Wählt das Bezugssystem für \nxLkeyword{labelangle} und die Orientierung der
+% Wählt das Bezugssystem für \Lkeyword{labelangle} und die Orientierung der
 % Beschriftung. Das genaue Verhalten kann am besten mit den drei folgenden
 % Beispielen erläutert werden.
 % \fi
 % \ifENGLISH
-% Set the reference coordinate system for the \nxLkeyword{labelangle} and the
+% Set the reference coordinate system for the \Lkeyword{labelangle} and the
 % orientation of the label text. The detailed behaviour is best illustrated
 % looking at the following three examples.
 % \fi
@@ -1545,16 +1557,16 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}[morekeywords={[21]{label}}]
+\begin{LTXexample}[morekeywords={[21]{labelref, relative}}]
 \begin{pspicture}(-2,-2)(2,2)
-  \psset{position=end, optboxsize=1 0.6, innerlabel}
+  \psset{position=end, optboxsize=1 0.6, labeloffset=0, labelref=relative}
   \multido{\i=0+45}{8}{%
     \optbox(0,0)(1;\i){\i}
   }
 \end{pspicture}
 \end{LTXexample}
 
-\begin{LTXexample}[morekeywords={[21]{labelref}}]
+\begin{LTXexample}[morekeywords={[21]{labelref, relgrav}}]
 \begin{pspicture}(-2,-2)(2,2)
   \psset{position=end, optboxsize=1 0.6, labelref=relgrav}
   \multido{\i=0+72}{5}{%
@@ -1563,7 +1575,7 @@
 \end{pspicture}
 \end{LTXexample}
 
-\begin{LTXexample}[morekeywords={[21]{labelref}}]
+\begin{LTXexample}[morekeywords={[21]{labelref, global}}]
 \begin{pspicture}(-2,-2)(2,2)
   \psset{position=end, optboxsize=1 0.6, labelref=global}
   \multido{\i=0+72}{5}{%
@@ -1579,16 +1591,16 @@
 % \ifGERMAN
 % Diese Option erlaubt die kompakte Definition mehrerer
 % Beschriftungsparameter. Es können bis zu vier Leerzeichen-getrennte
-% Argumente übergeben werden (\nxLkeyword{labeloffset},
-% \nxLkeyword{labelangle}, \nxLkeyword{labelalign} und
-% \nxLkeyword{labelref}). Mit einem Punkt kann eine Option übersprungen
+% Argumente übergeben werden (\Lkeyword{labeloffset},
+% \Lkeyword{labelangle}, \Lkeyword{labelalign} und
+% \Lkeyword{labelref}). Mit einem Punkt kann eine Option übersprungen
 % werden.
 % \fi
 % \ifENGLISH
 % Allows compact definition of several label parameters. It takes up to
-% four space-separated arguments (\nxLkeyword{labeloffset},
-% \nxLkeyword{labelangle}, \nxLkeyword{labelalign}, and
-% \nxLkeyword{labelref}). Unchanged intermediate arguments can be
+% four space-separated arguments (\Lkeyword{labeloffset},
+% \Lkeyword{labelangle}, \Lkeyword{labelalign}, and
+% \Lkeyword{labelref}). Unchanged intermediate arguments can be
 % skipped with a dot.
 % \fi
 % \iffalse
@@ -1623,16 +1635,17 @@
 % positioniert werden.
 % \fi
 % \ifENGLISH
-% All components but the tripoles can be positioned between their two
+% All components except the free-ray tripoles can be positioned between their two
 % reference nodes (\Lcs{oenodeRefA} and \Lcs{oenodeRefB}).
 % \fi
 % \begin{optionlist}
 %   \choitem{position}{\prm{num},start,end}
 %   \ifGERMAN 
-%   Falls der Wert eine Zahl ist, wird damit die relative Position der Mitte
-%   eines Objektes bezüglich seiner beiden Referenzknoten gesetzt. Das ist
-%   äquivalent zum \Lkeyword*{npos} Parameter von \Lcs*{ncput}, d.h. eine Zahl
-%   im Intervall $[0,1]$ (siehe \LPack{pst-node} Dokumentation).
+%   Ist der Wert eine Zahl, so wird damit die relative Position der Mitte eines
+%   Objektes (blaues Kreuz) bezüglich seiner beiden Referenzknoten (schwarze
+%   Punkte) gesetzt. Das ist äquivalent zum \Lkeyword*{npos} Parameter von
+%   \Lcs*{ncput}, d.h. eine Zahl im Intervall $[0,1]$ (siehe \LPack{pst-node}
+%   Dokumentation).
 %   \fi
 %   \ifENGLISH
 %   Controls the relative position of an object center between its two reference
@@ -1643,9 +1656,11 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}[morekeywords={[21]{position}}]
-\begin{pspicture}(3,1.5) 
+\begin{LTXexample}[morekeywords={[21]{position}}, linerange={1-2,5-5}]
+\begin{pspicture}(3,1.5)
   \lens[beam, position=0.8](0,1)(3,1){L}
+  \psdot(\oenodeRefA{})\psdot(\oenodeRefB{})
+  \psdot[style=CenterNode](\oenodeCenter{})
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -1654,7 +1669,7 @@
 %
 % \ifGERMAN 
 % Der Wert \opt{start} setzt ein Objekt an den Anfang, \opt{end} ans Ende der
-% Referenzlinie, so dass die entsprechende Grenzfläche auf dem Referenzknoten
+% Referenzlinie, so dass die entsprechende Grenzfläche auf dem Referenzknoten (schwarzer Punkt)
 % liegt, und nicht die Mitte des Objektes, wie es mit \opt{position=1}
 % bzw. \opt{position=0} der Fall wäre. Unter Verwendung von Zahlen wäre dieses
 % Verhalten deutlich schwieriger und weniger flexibel zu erreichen, da die Größe
@@ -1663,7 +1678,7 @@
 % \ifENGLISH
 % The values \opt{start} and \opt{end} place an object at the start or end of
 % the reference line, respectively. The respective object interface is placed on
-% the respective reference node instead of the object center which would be the
+% the respective reference node (black dot) instead of the object center which would be the
 % case for \opt{position=0} or \opt{position=1}. Achieving this with numerical
 % values would me more difficult and unflexible, because the object size and
 % shape must be taken into account.
@@ -1697,9 +1712,11 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}[morekeywords={[21]{abspos}}]
+\begin{LTXexample}[morekeywords={[21]{abspos}}, linerange={1-2,5-5}]
 \begin{pspicture}(3,1.5) 
   \lens[beam, abspos=1](0,1)(3,1){L}
+  \psdot(\oenodeRefA{})\psdot(\oenodeRefB{})
+  \psdot[style=CenterNode](\oenodeCenter{})
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -1715,25 +1732,29 @@
 %
 % \ifGERMAN
 % Alle Komponenten können versetzt und um verschiedene Bezugspunkte
-% gedreht werden. Beachten Sie, dass mit den Komponenten auch die
-% Grenzflächenknoten transformiert werden. Die transformierten
-% Referenzknoten sind als eigene Knoten verfügbar (siehe
-% \prettyref{sec:refnode}).
+% gedreht werden. 
+%
+% Beachten Sie, dass mit den Komponenten auch die Grenzflächenknoten
+% (\prettyref{sec:ifcnode}) transformiert werden, wodurch Verbindungen beinflußt
+% werden. Die transformierten Referenzknoten sind als eigene Knoten verfügbar
+% (\prettyref{sec:refnode}).
 % \fi
 % \ifENGLISH
 % All components can be shifted and rotated around different reference
-% nodes. Please note, that together with the components also their
-% interface nodes are transformed. The transformed reference nodes are
-% accessible as new nodes (see \prettyref{sec:refnode}).
-% \fi
+% nodes. 
+%
+% Please note, that together with the components also their interface nodes
+% (\prettyref{sec:ifcnode}) are transformed, which may impact the
+% connections. The transformed reference nodes are accessible as new nodes
+% (\prettyref{sec:refnode}).  \fi
 % 
 % \begin{optionlist}
 % \numitem[0]{angle}
 % \ifGERMAN
-% Dreht eine Komponente um den Winkel \prm{num} (in Grad).
+% Dreht eine Komponente um den Winkel \prm{num} (in Grad). Die Ausgangsposition ist grau gestrichelt eingezeichnet.
 % \fi
 % \ifENGLISH
-% Rotate a component by an angle \prm{num} (in degree).
+% Rotate a component by an angle \prm{num} (in degree). The original position is drawn gray dashed.
 % \fi
 % \iffalse
 %<*ignore>
@@ -1757,13 +1778,13 @@
 % Setzt den Bezugspunkt für die Drehung der Komponente. Bitte lesen Sie
 % \prettyref{sec:rotrefnode} für eine genauere Beschreibung und entnehmen Sie
 % \prettyref{sec:overview-extnode} die möglichen Bezugspunkte für alle
-% Komponenten.
+% Komponenten. Die Ausgangsposition ist grau gestrichelt eingezeichnet.
 % \fi
 % \ifENGLISH
 % Set the reference point for the rotation of the component. Please see
 % \prettyref{sec:rotrefnode} for a detailed explanation and
 % \prettyref{sec:overview-extnode} for a list of the possible reference nodes of
-% all components.
+% all components. The original position is drawn gray dashed.
 % \fi
 % \iffalse
 %<*ignore>
@@ -6759,7 +6780,8 @@
 % \fi
 % \ifENGLISH
 %   \chapter{Backward compatibility}
-% \fi 
+% \fi\label{chap:bwd-comp}
+%
 % \begin{optionlist}
 %   \optitem[new]{namingscheme}{old, new} 
 %   \ifGERMAN
