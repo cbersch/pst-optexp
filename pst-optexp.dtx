@@ -104,7 +104,7 @@
     optswitch, fiberdelayline, optfiberpolarizer, fibercollimator,
     optcoupler, wdmcoupler, wdmsplitter, optcirculator, drawbeam, 
     drawwidebeam, drawfiber, frontlayer, backlayer, newOptexpDipole,
-    newOptexpTripole, newOptexpFiberDipole}, %
+    newOptexpTripole, newOptexpFiberDipole,optplane}, %
   morekeywords = [22] {optexp},
   explpreset={%
     pos=l, width=-99pt, hsep=5mm, overhang=\codeoverhang,
@@ -605,10 +605,10 @@
 % \fi
 % }
 % \newcommand*{\newstylemsg}[1]{%
-% \ifGERMAN Analog zu \Lkeyword{addto#1}, nur wird der
+% \ifGERMAN Ähnlich wie \Lkeyword{addto#1}, nur wird der
 %   \Lstyle{#1}-Stil mit denen neuen Parametern überschrieben.
 % \fi
-% \ifENGLISH Analogous to \Lkeyword{addto#1}, but an existing
+% \ifENGLISH Similar to \Lkeyword{addto#1}, but an existing
 %   \Lstyle{#1} style is overwritten with the new parameter set.
 % \fi
 % }
@@ -1557,7 +1557,7 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}[morekeywords={[21]{labelref, relative}}]
+\begin{LTXexample}[morekeywords={[21]{labelref}}]
 \begin{pspicture}(-2,-2)(2,2)
   \psset{position=end, optboxsize=1 0.6, labeloffset=0, labelref=relative}
   \multido{\i=0+45}{8}{%
@@ -1566,7 +1566,7 @@
 \end{pspicture}
 \end{LTXexample}
 
-\begin{LTXexample}[morekeywords={[21]{labelref, relgrav}}]
+\begin{LTXexample}[morekeywords={[21]{labelref}}]
 \begin{pspicture}(-2,-2)(2,2)
   \psset{position=end, optboxsize=1 0.6, labelref=relgrav}
   \multido{\i=0+72}{5}{%
@@ -1575,7 +1575,7 @@
 \end{pspicture}
 \end{LTXexample}
 
-\begin{LTXexample}[morekeywords={[21]{labelref, global}}]
+\begin{LTXexample}[morekeywords={[21]{labelref}}]
 \begin{pspicture}(-2,-2)(2,2)
   \psset{position=end, optboxsize=1 0.6, labelref=global}
   \multido{\i=0+72}{5}{%
@@ -1669,30 +1669,31 @@
 %
 % \ifGERMAN 
 % Der Wert \opt{start} setzt ein Objekt an den Anfang, \opt{end} ans Ende der
-% Referenzlinie, so dass die entsprechende Grenzfläche auf dem Referenzknoten (schwarzer Punkt)
-% liegt, und nicht die Mitte des Objektes, wie es mit \opt{position=1}
-% bzw. \opt{position=0} der Fall wäre. Unter Verwendung von Zahlen wäre dieses
-% Verhalten deutlich schwieriger und weniger flexibel zu erreichen, da die Größe
-% und Form des Objektes berücksichtigt werden muss.
+% Referenzlinie, so dass die entsprechende Grenzfläche auf dem Referenzknoten
+% (schwarzer Punkt) liegt, und nicht die Mitte des Objektes (blaues Kreuz), wie
+% es mit \opt{position=1} bzw. \opt{position=0} der Fall wäre. Unter Verwendung
+% von Zahlen wäre dieses Verhalten deutlich schwieriger und weniger flexibel zu
+% erreichen, da die Größe und Form des Objektes berücksichtigt werden muss.
 % \fi
 % \ifENGLISH
 % The values \opt{start} and \opt{end} place an object at the start or end of
 % the reference line, respectively. The respective object interface is placed on
-% the respective reference node (black dot) instead of the object center which would be the
-% case for \opt{position=0} or \opt{position=1}. Achieving this with numerical
-% values would me more difficult and unflexible, because the object size and
-% shape must be taken into account.
+% the respective reference node (black dot) instead of the object center (blue
+% cross) which would be the case for \opt{position=0} or
+% \opt{position=1}. Achieving this with numerical values would me more difficult
+% and unflexible, because the object size and shape must be taken into account.
 % \fi
-%
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}[morekeywords={[21]{endbox}}]
+\begin{LTXexample}[morekeywords={[21]{position}}, linerange={1-4,8-8}]
 \begin{pspicture}(3,2)
   \pnode(1.5,1){A}\pnode(2.5,1){B}\psdot(A)\psdot(B)
   \optbox[position=start](A)(B)
   \lens[position=end](A)(B)
   \psline[style=Refline](A)(B)
+  \psdot[style=CenterNode](\oenodeCenter{1})
+  \psdot[style=CenterNode](\oenodeCenter{2})
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -1905,7 +1906,7 @@
 % \fi
 % \ifENGLISH
 % Affects the basic appearence of all optical components. Using standard
-% graphics parameters like e.g. \opt{linestyle} would change also the
+% graphics parameters like e.g.\ \opt{linestyle} would change also the
 % connections that are drawn together with the component
 % (\Lkeyword{beam}, \Lkeyword{fiber} etc.). Use the key
 % \Lkeyword{newOptComp} and \Lkeyword{addtoOptComp} to change the style
@@ -1944,12 +1945,12 @@
 %
 % \styleitem{OptionalStyle} 
 % \ifGERMAN
-% Der Stil wird zusätzlich zu \nxLkeyword{OptComp} auf Komponenten angewendet,
+% Der Stil wird zusätzlich zu \Lkeyword{OptComp} auf Komponenten angewendet,
 % die als \nxLkeyword{optional} markiert sind.
 % \fi
 % \ifENGLISH
-% This style is applied in addition to \nxLkeyword{OptComp} to components marked
-% as \nxLkeyword{optional}.
+% This style is applied in addition to \Lkeyword{OptComp} to components marked
+% as \Lkeyword{optional}.
 % \fi
 % \iffalse
 %<*ignore>
@@ -2055,9 +2056,10 @@
 % \ifENGLISH This chapter describes all free-ray components and their
 % options. Free-ray components differ from fiber-components in that they provide
 % transmittive or reflective interfaces which can be used to raytrace
-% beams. They are divided in two types: components like lenses need only two
-% nodes for positioning, whereas e.g. mirrors required three nodes to determine
-% the orientation.
+% beams. They are divided in two types: some components like lenses need only
+% two nodes for positioning (\ref{cmd:lens}--\ref{cmd:polarization}), whereas
+% e.g. mirrors require three nodes to determine the orientation
+% (\ref{cmd:mirror}--\ref{cmd:pentaprism}).
 % \fi
 %
 % \ifGERMAN\section{Linse}\fi
@@ -2078,6 +2080,14 @@
 %</ignore>
 % \fi
 % \end{ltxsyntax}
+%
+% \ifENGLISH A lens is usually defined by its height and the radii of the input
+% and output interfaces.
+% \fi
+% \ifGERMAN Eine Linse wird in der Regel durch ihre Höhe und die beiden Radien
+% der Eingangs- und Ausgangsflächen definiert.
+% \fi
+% 
 % \begin{optionlist}
 % \numitem[1]{lensheight} 
 % \ifGERMAN Setzt die Höhe der Linse.\fi
@@ -2175,7 +2185,7 @@
 % \iffalse
 %</ignore>
 % \fi
-% \optitem{lens}{\prm{radiusleft} [\prm{radiusright} [\prm{height} [\prm{width}]]]}
+% \optitem{lens}{\prm{radiusleft}[ \prm{radiusright}[ \prm{height}[ \prm{width}]]]}
 % \ifGERMAN
 % Eine Option zum gleichzeitigen Setzen mehrerer Linsenparameter. Werte mittendrin können mit einem Punkt übersprungen und Werte am Ende können weggelassen werden (z.B. \opt{lens=. 1 1}).
 % \fi
@@ -2268,7 +2278,9 @@
 % 
 % \begin{optionlist}
 % \numitem[1]{outerheight}
-% \ifGERMAN Die Gesamthöhe der Lochblende.\fi\ifENGLISH The total height of the pinhole.\fi
+% \ifGERMAN Die Gesamthöhe der Lochblende.\fi
+% \ifENGLISH The total height of the pinhole.\fi
+%
 % \numitem[0.1]{innerheight}
 % \ifGERMAN Die Höhe des Lochs.\fi\ifENGLISH The height of the hole.\fi
 % \optitem[2\nxLcs{pslinewidth}]{phlinewidth}{\prm{num} or \prm{dimen}}
@@ -2282,7 +2294,7 @@
 % negativen Wert wird die Form gespiegelt.
 % \fi
 % \ifENGLISH
-% The pinhole is drawn in a more plastic style if the \nxLkeyword{phwidth} is
+% The pinhole is drawn in a more plastic style if \nxLkeyword{phwidth} is
 % not zero, in this case the \Lkeyword{phlinewidth} is ignored. For negative
 % values the shape is mirrored.
 % \fi 
@@ -2292,7 +2304,7 @@
 \begin{LTXexample}[morekeywords={[21]{phwidth}}]
 \begin{pspicture}(3,1.5)
   \pinhole[beam, phwidth=-0.1](0,1)(1.5,1){neg}
-  \pinhole[beam, phwidth=0.05](1.5,1)(3,1){pos}
+  \pinhole[beam, phwidth=0.2](1.5,1)(3,1){pos}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -2328,14 +2340,35 @@
 % \ifENGLISH The height of the crystal.\fi
 %
 % \optitem{crystalsize}{\prm{width} \prm{height}}
-%
-% \numitem[0.6]{caxislength}
-% \ifGERMAN Die Länge des Pfeils für die $c$-Achse, wird weggelassen falls die
-% Länge \opt{0} ist und gespiegelt falls der Wert negativ ist.
+% \ifGERMAN Die Breite und Höhe des Kristalls, äquivalent zum Aufruf von
+% \Lkeyword{crystalwidth} und \Lkeyword{crystalheight}.
 % \fi
-% \ifENGLISH 
-% The length of the $c$-axis, is dropped when set to \opt{0} and is mirrored if
-% the values is negative.
+% \ifENGLISH The width and height of the crystal, is equivalent to calling both
+% \Lkeyword{crystalwidth} and \Lkeyword{crystalheight}.
+% \fi
+%
+% \numitem[0.3]{caxislength}
+% \ifGERMAN Die zusätzliche Länge des Pfeils für die $c$-Achse, wird weggelassen
+% falls die Länge \opt{0} ist und gespiegelt falls der Wert negativ ist. Die
+% Gesamtlänge ist \nxLkeyword{caxislength} plus \Lkeyword{crystalheight}.
+% \fi
+% \ifENGLISH The additional length of the $c$-axis, is dropped when set to
+% \opt{0} and is mirrored if the values is negative. The total length is
+% \nxLkeyword{caxislength} plus \Lkeyword{crystalheight}.
+% \fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[morekeywords={[21]{caxislength}}]
+\begin{pspicture}(0,0.4)(3,1.5)
+  \psset{crystalsize=0.5 0.8, label=-45 . l}
+  \crystal[position=0.2, caxislength=0.5](0,1)(3,1){pos}
+  \crystal[beam, caxislength=0](0,1)(3,1){0}
+  \crystal[position=0.8, caxislength=-0.5](0,1)(3,1){neg}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
 % \fi
 %
 % \boolitem[false]{caxisinv}
@@ -2391,8 +2424,8 @@
 % \fi
 %
 % \styleitem{CrystalLamp}
-% \ifGERMAN Der Stil für die Lampe.\fi
-% \ifENGLISH The style of the crysal lamp.\fi
+% \ifGERMAN Der Stil für die Hintergrundlampe.\fi
+% \ifENGLISH The style of the crystal background lamp.\fi
 % \iffalse
 %<*ignore>
 % \fi
@@ -2412,8 +2445,8 @@
 \begin{LTXexample}[morekeywords={[21]{voltage, lamp}}]
 \begin{pspicture}(3,1.7)
   \crystal[fillstyle=solid, fillcolor=yellow!90!black, 
-           label=1.2 -45, voltage, 
-           lamp, beam](0,1)(3,1){SBN:Ce}
+             label=1.2 -45, voltage, 
+             lamp, beam](0,1)(3,1){SBN:Ce}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -2449,12 +2482,10 @@
 %
 % \optitem{optboxsize}{\prm{width} \prm{height}}
 % \ifGERMAN Die Breite und Höhe der Box, äquivalent zum Aufruf von
-% \Lkeyword{optboxwidth} und \Lkeyword{optboxheight}. Wird nur ein Wert
-% angegeben, dann wird dieser für Breite und Höhe verwendet.
+% \Lkeyword{optboxwidth} und \Lkeyword{optboxheight}.
 % \fi
 % \ifENGLISH The width and height of the box, is equivalent to calling both
-% \Lkeyword{optboxwidth} and \Lkeyword{optboxheight}. If only a single value is
-% given it is used for both width and height.
+% \Lkeyword{optboxwidth} and \Lkeyword{optboxheight}.
 % \fi
 % \end{optionlist}
 % 
@@ -2475,17 +2506,29 @@
 %</ignore>
 % \fi
 % \end{ltxsyntax}
+%
+% \ifENGLISH The detector is always placed at the end of the reference line
+% (\Lkeyword{position}\opt{=end}). This settings cannot be changed.\fi
+% \ifGERMAN Der Detektor wird immer ans Ende der Referenzlinie platziert
+% (\Lkeyword{position}\opt{=end}). Diese Einstellung kann nicht verändert
+% werden.\fi
 % 
 % \begin{optionlist}
 % \optitem[0.8]{detsize}{\prm{num} or \prm{width} \prm{height}}
 %   \ifGERMAN 
-%   Das ist die Seitenlänge (\opt{diode}) bzw. der Durchmesser (\opt{round}) des Detektors.
+%   Wenn eine einzelne Zahl angegeben ist, dann ist das die Seitenlänge
+%   (\opt{diode}) bzw. der Durchmesser (\opt{round}) des Detektors. Werden zwei
+%   Zahlen angegeben, so sind das Breite und Höhe des Detektors. Beachten Sie,
+%   dass \opt{detsize=1} und \opt{detsize=1 1} für \opt{dettype=round} nicht dasselbe ist.
 %   \fi
 %   \ifENGLISH 
-%   This is the side length (\opt{diode}) or the diameter \opt{round} of the detector.
+%   If a single number is given it is the side length (\opt{diode}) or the
+%   diameter (\opt{round}) of the detector. Two numbers define the width and
+%   height of the detector. Note, that \opt{detsize=1} and \opt{detsize=1 1} are
+%   not equivalent for \opt{dettype=round}.
 %   \fi
 % 
-%   \choitem[round]{dettype}{round, diode} 
+% \choitem[round]{dettype}{round, diode} 
 %   \ifGERMAN
 %   Dieser Parameter bestimmt den Typ und damit das Aussehen des Detektors.
 %   \fi
@@ -2545,6 +2588,12 @@
 %</ignore>
 % \fi
 % \end{ltxsyntax}
+%
+% \ifENGLISH The optical diode has a default setting of
+% \Lkeyword{allowbeaminside}\opt{=false}.\fi
+% \ifGERMAN Die optische Diode hat die Voreinstellung
+% \Lkeyword{allowbeaminside}\opt{=false}.\fi
+%
 % \begin{optionlist}
 % \numitem[0.8]{optdiodesize}
 % \ifGERMAN 
@@ -2576,13 +2625,15 @@
 % \begin{optionlist}
 % \optitem[0.6]{doveprismsize}{\prm{num} or \prm{width} \prm{height}}
 %   \ifGERMAN
-%   Die Höhe des Prismas, die Gesamtbreite ist das dreifache und die Winkel an
-%   der Eingangs- und Ausgangsfläche betragen 45\textdegree.
+%   Wenn eine Zahl angegeben ist, dann ist das die Höhe des Prismas, die
+%   Gesamtbreite beträgt das dreifache. Zwei Zahlen geben Breite und Höhe des
+%   Doveprisma an. Die Winkel an der Eingangs- und Ausgangsfläche betragen immer
+%   45\textdegree.
 %   \fi
 %   \ifENGLISH
-%    The height of the prism, the total width is set to
-%   three times the height and the angles at the input and output faces are
-%   45\textdegree.
+%   A single number defines the height of the prism, the total width is set to
+%   three times the height. Two number define the width and height of the dove
+%   prism. The angles at the input and output faces are always 45\textdegree.
 %   \fi
 % \end{optionlist}
 %
@@ -2669,7 +2720,7 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}[morekeywords={[21]{mirror}}] 
+\begin{LTXexample}
 \begin{pspicture}(3,2)
   \mirror[beam](0,0)(1.8,1.5)(0,2){M}
 \end{pspicture}
@@ -2707,7 +2758,7 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}
+\begin{LTXexample}[morekeywords={[21]{mirrorradius}}]
 \begin{pspicture}(3,3)
   \psset{labeloffset=0.5}
   \mirror[mirrorradius=1](0,0)(1,2)(1.8,1){convex}
@@ -2721,27 +2772,29 @@
 % 
 % \choitem[normal]{mirrortype}{normal, piezo, extended}
 % \ifGERMAN
-%   Diese Parameter wählt die Spiegelart aus. Beachten Sie, dass der
-%   Anschlussdraht für den Piezospiegel nicht gezeichnet wird, falls
-%   \Lkeyword{extnode} verwendet wird.
+% Diese Parameter wählt die Spiegelart aus. Das Aussehen wird mit
+% \Lstyle{PiezoMirror} und \Lstyle{ExtendedMirror} gesteuert. Beachten Sie, dass
+% der Anschlussdraht für den Piezospiegel nicht gezeichnet wird, falls
+% \Lkeyword{extnode} verwendet wird.
 % \fi
 % \ifENGLISH
-% The \nxLkeyword{mirrortype} selects between different types of mirrors. Note,
-% that the default piece of wire is omitted when using \Lkeyword{extnode} with a
-% piezo mirror.
+% The \nxLkeyword{mirrortype} selects between different types of mirrors. The
+% style is controlled with \Lstyle{PiezoMirror} and
+% \Lstyle{ExtendedMirror}. Note, that the default piece of wire is omitted when
+% using \Lkeyword{extnode} with a piezo mirror.
 % \fi
 % 
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}
+\begin{LTXexample}[morekeywords={[21]{mirrortype}}]
 \begin{pspicture}(3,2)
   \mirror[mirrortype=extended,
             beam](0,0)(1.8,1.5)(0,2){ext}
 \end{pspicture}
 \end{LTXexample}
 
-\begin{LTXexample}
+\begin{LTXexample}[morekeywords={[21]{mirrortype}}]
 \begin{pspicture}(3,2)
 \mirror[mirrortype=piezo,
           beam](0,0)(1.8,1.5)(0,2){piezo}
@@ -2753,14 +2806,27 @@
 % 
 % \boolitem[false]{variable}
 % \ifGERMAN
-% Zeichnet einen verstellbaren Spiegel, der mit zwei zusätzlichen
-% gekrümmten Pfeilen an beiden Seiten angedeutet wird.
+% Zeichnet einen verstellbaren Spiegel, der mit zwei zusätzlichen gekrümmten
+% Pfeilen an beiden Seiten angedeutet wird. Das Aussehen, inklusive der Pfeile,
+% wird von \Lstyle{VariableMirror} vorgegeben.
 % \fi
 % \ifENGLISH
-% Draw an adjustable mirror which has two additional curved arrows on
-% both sides.
+% Draw an adjustable mirror which has two additional curved arrows on both
+% sides. The appearance including the arrow types is determined by
+% \Lstyle{VariableMirror}.
 % \fi
-% 
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[morekeywords={[21]{variable}}]
+\begin{pspicture}(3,2)
+  \mirror[beam, variable](0,0)(1.8,1.5)(0,2){var}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
 % \numitem[0.1]{mirrordepth} 
 % \ifGERMAN
 %   Die Gesamttiefe eines breiten Spiegels.
@@ -2771,7 +2837,7 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}
+\begin{LTXexample}[morekeywords={[21]{mirrortype, mirrordepth}}]
 \begin{pspicture}(3,2)
   \mirror[mirrortype=extended, mirrordepth=0.2,
             beam](0,0)(1.8,1.5)(0,2){}
@@ -2789,10 +2855,10 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}
+\begin{LTXexample}[morekeywords={[21]{mirrortype, ExtendedMirror}}]
 \begin{pspicture}(3,2)
   \newpsstyle{ExtendedMirror}{fillstyle=solid, 
-                                fillcolor=gray!50,
+                                fillcolor=Gold,
                                 linestyle=none}
   \mirror[mirrortype=extended,
             beam](0,0)(1.8,1.5)(0,2){ext}
@@ -2814,7 +2880,7 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}
+\begin{LTXexample}[morekeywords={[21]{mirrortype, PiezoMirror}}]
 \begin{pspicture}(3,2)
   \addtopsstyle{PiezoMirror}{xunit=2}
   \mirror[mirrortype=piezo,
@@ -2831,17 +2897,6 @@
 % \fi
 % \ifENGLISH
 % The style of the arrows of the variable mirror.
-% \fi
-% \iffalse
-%<*ignore>
-% \fi
-\begin{LTXexample}
-\begin{pspicture}(3,2)
-  \mirror[beam, variable](0,0)(1.8,1.5)(0,2){var}
-\end{pspicture}
-\end{LTXexample}
-% \iffalse
-%</ignore>
 % \fi
 % \end{stylelist}
 % 
@@ -2889,7 +2944,7 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}
+\begin{LTXexample}[morekeywords={[21]{bsstyle}}]
 \begin{pspicture}(3,2)
   \beamsplitter[bsstyle=plate, beam](0,1)(2,1)(2,0){BS}
 \end{pspicture}
@@ -2916,6 +2971,15 @@
 %</ignore>
 % \fi
 % \end{ltxsyntax}
+%
+% \ifENGLISH Before package version 3.0 this component was called
+% \Lcs{optgrid}. Since then this command name is deprecated and will be removed
+% in future versions.
+% \fi
+% \ifGERMAN Vor Paketversion 3.0 hieß diese Komponente \Lcs{optgrid}. Seitdem
+% ist diese Benennung veraltet und wird in zukünftigen Versionen entfernt
+% werden.
+% \fi
 % \begin{optionlist}
 % \numitem[1]{gratingwidth} 
 % \ifGERMAN Die Breite des Gitters.\fi
@@ -2939,10 +3003,10 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}
+\begin{LTXexample}[morekeywords={[21]{gratingdepth}}]
 \begin{pspicture}(3,2)
   \optgrating[gratingdepth=0.05, 
-               beam](0,2)(1.8,1.5)(0,0){grating}
+                beam](0,2)(1.8,1.5)(0,0){grating}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -2955,10 +3019,10 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}
+\begin{LTXexample}[morekeywords={[21]{gratingcount}}]
 \begin{pspicture}(3,2)
   \optgrating[gratingcount=3, 
-               beam](0,2)(1.8,1.5)(0,0){grating}
+                beam](0,2)(1.8,1.5)(0,0){grating}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -2975,10 +3039,10 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}
+\begin{LTXexample}[morekeywords={[21]{gratingtype}}]
 \begin{pspicture}(3,2)
   \optgrating[gratingtype=binary, 
-               beam](0,2)(1.8,1.5)(0,0){grating}
+                beam](0,2)(1.8,1.5)(0,0){grating}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -2995,7 +3059,7 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}
+\begin{LTXexample}[morekeywords={[21]{reverse}}]
 \begin{pspicture}(3,2)
   \optgrating[reverse, beam](0,2)(1.8,1.5)(0,0){grating}
 \end{pspicture}
@@ -3011,7 +3075,7 @@
 %
 % \begin{stylelist}
 % \item[\smash{%
-%   \begin{tabular}[t]{@{}r@{}}
+%   \begin{tabular}[t]{@{}l@{}}
 %     \Lkeyword*{optgridwidth}\\
 %     \Lkeyword*{optgridheight}\\
 %     \Lkeyword*{optgriddepth}\\
@@ -3019,8 +3083,12 @@
 %     \Lkeyword*{optgridtype}\\
 %     \Lkeyword*{optgridlinewidth}
 %   \end{tabular}}]^^A
-% \ifGERMAN Diese Parameter wurden in die entsprechenden \opt{grating*} Parameter umbenannt und seit Version 3.0 veraltet.\fi
-% \ifENGLISH These parameters were renamed to the respective \opt{grating*} parameters and are deprecated since version 3.0.\fi
+% \ifGERMAN Diese Parameter wurden in die entsprechenden \opt{grating*}
+%   Parameter umbenannt und seit Version 3.0 veraltet.
+% \fi
+% \ifENGLISH These parameters were renamed to the respective \opt{grating*}
+% parameters and are deprecated since version 3.0.
+% \fi
 % \vspace*{2cm}
 % \end{stylelist}
 % 
@@ -3186,6 +3254,16 @@
 % \ifGERMAN\chapter{Faseroptische Komponenten}\fi
 % \ifENGLISH\chapter{Fiber-optical components}\fi
 % \label{chap:fibercomp}
+%
+% \ifENGLISH This chapter describes all fiber-optical components and their
+% options. They differ from free-ray components in that they are connected by
+% default with fibers to their reference nodes, and that they cannot be used for
+% raytracing. Most components require only two reference nodes and are handled
+% like the free-ray dipoles. Some special components like couplers
+% (\prettyref{sec:coupler}) and circulators (\prettyref{sec:optcirculator}) are
+% treated differently.
+% \fi
+%
 % \psset{usefiberstyle}
 % \begin{optionlist}
 %   \boolitem{usefiberstyle} 
@@ -3194,14 +3272,13 @@
 %   hervorzuheben. Mit diesem Parameter werden z.B. die durchlässigen Teile
 %   eines Filter angezeigt und mit dem \Lstyle{Fiber}-Stil gezeichnet. In der
 %   Dokumentation ist dieses Verhalten angeschaltet um zu verdeutlichen, welche
-%   Teile hervorgehoben werden.
+%   Teile betroffen sind.
 %   \fi
 %   \ifENGLISH
-%   For some components it can be nice to highlight
-%   some internals. If \Lkeyword{usefiberstyle} is enabled, for examples the
-%   passing parts of the optical filter are drawn with the \Lstyle{Fiber}
-%   style. In the documentation this parameter is enabled to show the parts
-%   which would be highlighted.
+%   For some components it can be nice to highlight some internals. For example,
+%   if this option is enabled the passing parts of the optical filter are drawn
+%   with the \Lstyle{Fiber} style. In the documentation this parameter is
+%   enabled to show the parts which are affected.
 %   \fi
 % \end{optionlist}
 %
@@ -3294,12 +3371,16 @@
 % \begin{optionlist}
 % \optitem[0.8]{optampsize}{\prm{num} or \prm{width} \prm{height}}
 % \ifGERMAN 
-% Die Höhe bzw. die Seitenlänge des Verstärkers. Um das Verhältnis zwischen Höhe
-% und Breite zu ändern, verwenden Sie \opt{xunit} und \opt{yunit}.
+% Eine Zahl gibt die Seitenlänge des Verstärkers an, zwei Zahlen die Breite und
+% Höhe. Beachten Sie, dass \opt{optampsize=1} und \opt{optampsize=1 1} nicht
+% dasselbe Ergebnis liefern. Alternativ kann das Verhältnis zwischen Höhe und
+% Breite mit \opt{xunit} und \opt{yunit} geändert werden.
 % \fi
 % \ifENGLISH
-% The height and side length of the amplifier. To change the relation of width
-% and height, use \opt{xunit} and \opt{yunit}.
+% A single number gives the side length of the amplifier, two numbers the width
+% and height. Note, that \opt{optampsize=1} and \opt{optampsize=1 1} do not give
+% the same result. You may also change the relation of width and height with
+% \opt{xunit} and \opt{yunit}.
 % \fi
 % \end{optionlist}
 % 
@@ -3323,6 +3404,14 @@
 % 
 % \begin{optionlist}
 % \optitem[0.8]{optmzmsize}{\prm{num} or \prm{width} \prm{height}}
+% \ifGERMAN 
+% Eine Zahl gibt die Höhe des Modulators an, die Breite ist \opt{1.6} mal die
+% Höhe. Zwei Zahlen geben Breite und Höhe des Modulators direkt an.
+% \fi
+% \ifENGLISH
+% A single number gives the modulator height, the width is \opt{1.6} times the
+% height. Two numbers directly define width and height.
+% \fi
 % \end{optionlist}
 % 
 % \ifGERMAN\section{Polarisationssteller}\fi
@@ -3383,6 +3472,14 @@
 % 
 % \begin{optionlist}
 % \optitem[0.6]{isolatorsize}{\prm{num} or \prm{width} \prm{height}}
+% \ifGERMAN 
+% Eine Zahl gibt die Höhe des Isolators an, die Breite ist \opt{1.6} mal die
+% Höhe. Zwei Zahlen geben Breite und Höhe des Isolators direkt an.
+% \fi
+% \ifENGLISH
+% A single number gives the isolator height, the width is \opt{1.6} times the
+% height. Two numbers directly define width and height.
+% \fi
 % \end{optionlist}
 %
 % \begin{stylelist}
@@ -3469,6 +3566,14 @@
 % 
 % \begin{optionlist}
 % \optitem[0.6]{fdlsize}{\prm{num} or \prm{width} \prm{height}}
+% \ifGERMAN 
+% Eine Zahl gibt die Höhe der Komponente an, die Breite ist \opt{1.6} mal die
+% Höhe. Zwei Zahlen geben Breite und Höhe der Komponente direkt an.
+% \fi
+% \ifENGLISH
+% A single number gives the component height, the width is \opt{1.6} times the
+% height. Two numbers directly define width and height.
+% \fi
 % \end{optionlist}
 %
 % \begin{stylelist}
@@ -3522,7 +3627,7 @@
 %
 % \ifGERMAN\section{Optischer Zirkulator}\fi
 % \ifENGLISH\section{Optical circulator}\fi
-%
+% \label{sec:optcirculator}
 % \begin{ltxsyntax}
 % \xLfmultipole{optcirculator}%
 % \cmditem{optcirculator}(left)(bottom)(right){label}%
@@ -3548,15 +3653,15 @@
 %
 % \numitem[-160]{optcircangleA}
 % \ifGERMAN Der Startwinkel des internen Pfeils.\fi
-% \ifGERMAN The starting angle of the internal arrow.\fi
+% \ifENGLISH The starting angle of the internal arrow.\fi
 %
 % \numitem[-20]{optcircangleB}
 % \ifGERMAN Der Endwinkel des internen Pfeils.\fi
-% \ifGERMAN The ending angle of the internal arrow.\fi
+% \ifENGLISH The ending angle of the internal arrow.\fi
 %
 % \optitem{optcircangle}{\prm{num} \prm{num}}
 % \ifGERMAN Kurzschreibweise um beide Winkel gleichzeitig zu setzen.\fi
-% \ifENGLISH Short notation for specifying both angles.\fi
+% \ifENGLISH Short notation to specifying both angles.\fi
 % \iffalse
 %<*ignore>
 % \fi
@@ -3572,8 +3677,13 @@
 % 
 % \begin{stylelist}
 % \styleitem[unit=0.7, arrows=->, arrowinset=0]{OptCircArrow}
-% \ifGERMAN Der Stil für den internen Pfeil. Damit wird sowohl die Richtung des Pfeils als auch die Größe des Bogens bestimmt.\fi
-% \ifENGLISH The style of the internal arrow. It specifies the direction of the arrow and the size of the arc.\fi
+% \ifGERMAN 
+% Der Stil für den internen Pfeil. Damit wird sowohl die Richtung des Pfeils als
+% auch die Größe des Bogens bestimmt.
+% \fi
+% \ifENGLISH The style of the internal arrow. It specifies the direction of the
+% arrow and the size of the arc.
+% \fi
 % \iffalse
 %<*ignore>
 % \fi
@@ -3589,7 +3699,12 @@
 % \end{stylelist}
 %
 % \ifENGLISH
-% The circulator is positioned by default such, that the input and output fibers are orthogonal to each other, like shown in the example:
+% The circulator is positioned by default such that the input and output fibers
+% are orthogonal to each other, like shown in the example:
+% \fi
+% \ifGERMAN
+% Der Zirkulator wird so positioniert, dass Eingangs- und Ausgangsverbindung
+% senkrecht zueinander stehen, wie das folgende Beispiel verdeutlicht:
 % \fi
 % \iffalse
 %<*ignore>
@@ -3604,10 +3719,16 @@
 %</ignore>
 % \fi
 %
-% \ifENGLISH The positioning parameters (\prettyref{sec:positioning})
-% are not relative to the automatic position, but refer to the reference
-% nodes as usual. This implies, that the default position in this case
-% is not equivalent to \Lkeyword{position}\opt{=0.5}.  \fi
+% \ifENGLISH The positioning parameters (\prettyref{sec:positioning}) refer to
+% the reference nodes as usual and are not related to the automatic
+% position. This implies, that the default position is not equivalent to
+% \Lkeyword{position}\opt{=0.5}.
+% \fi
+% \ifGERMAN Die Positionierungsparameter (\prettyref{sec:positioning}) beziehen
+% sich wie üblich auf die Referenzknoten, und nicht auf die automatisch
+% bestimmte Position. Das bedeutet auch, dass die automatische Position
+% i.a. nicht mit \Lkeyword{position}\opt{=0.5} übereinstimmt.
+% \fi
 % \iffalse
 %<*ignore>
 % \fi
@@ -3672,6 +3793,16 @@
 % \end{ltxsyntax}
 % \begin{optionlist}
 % \optitem[0.2]{couplersize}{\prm{num} or \prm{width} \prm{height}}
+% \ifGERMAN 
+% Wird eine Zahl angegeben, so ist die Breite des Kopplers doppelt so groß, die
+% Höhe entspricht \opt{0.8} mal dem Wert. Mit zwei Zahlen werden Breite und Höhe
+% direkt angegeben.
+% \fi
+% \ifENGLISH
+% For a single number the width is twice this value, the height \opt{0.8} times
+% this value. Two numbers directly define width and height.
+% \fi
+%
 % \numitem[0.1]{couplersep} 
 % \ifGERMAN Der vertikale Abstand zwischen zwei Faserports.\fi
 % \ifENGLISH The vertical distance between two fiber ports.\fi
@@ -3688,7 +3819,7 @@
 %</ignore>
 % \fi
 % 
-% \choitem[ellipse]{couplertype}{none, ellipse, rectangle, crossswitch}
+% \choitem[ellipse]{couplertype}{none, ellipse, rectangle, cross}
 % \ifGERMAN Wählt zwischen unterschiedlichen Kopplertypen.\fi
 % \ifENGLISH Select between different coupler types.\fi
 % \iffalse
@@ -3698,11 +3829,11 @@
 \begin{pspicture}(3,4.5)
   \psset{labeloffset=0.5}
   \optcoupler[couplertype=none]%
-                (0,4.5)(0,3.5)(3,4.5)(3,3.5)
+                (0,4.5)(0,3.5)(3,4.5)(3,3.5){none}
   \optcoupler[couplertype=rectangle]%
-               (0,3)(0,2)(3,3)(3,2)
-  \optcoupler[couplertype=crossswitch]%
-               (0,1.5)(0,0.5)(3,1.5)(3,0.5)
+               (0,3)(0,2)(3,3)(3,2){rectangle}
+  \optcoupler[couplertype=cross]%
+               (0,1.5)(0,0.5)(3,1.5)(3,0.5){cross}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -3735,7 +3866,7 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}[morekeywords={[21]{couplersep}}]
+\begin{LTXexample}[morekeywords={[21]{variable}}]
 \begin{pspicture}(3,1)
   \optcoupler[variable](0,1)(0,0)(3,1)(3,0)
 \end{pspicture}
@@ -3847,7 +3978,7 @@
 %
 % \ifGERMAN\section{Optischer Filter}\fi
 % \ifENGLISH\section{Optical filter}\fi
-%
+% \psset{usefiberstyle}
 % \begin{ltxsyntax}
 % \fiberdipoledesc{optfilter}
 % \iffalse
@@ -3874,9 +4005,8 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}
+\begin{LTXexample}[morekeywords={[21]{filtertype}}]
 \begin{pspicture}(3,1.5)
-  \psset[optexp]{usefiberstyle}
   \optfilter[filtertype=bandstop](0,1)(3,1){bandstop}
 \end{pspicture}
 \end{LTXexample}
@@ -3886,9 +4016,8 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}
+\begin{LTXexample}[morekeywords={[21]{filtertype}}]
 \begin{pspicture}(3,1.5)
-  \psset[optexp]{usefiberstyle}
   \optfilter[filtertype=lowpass](0,1)(3,1){lowpass}
 \end{pspicture}
 \end{LTXexample}
@@ -3898,9 +4027,8 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}
+\begin{LTXexample}[morekeywords={[21]{filtertype}}]
 \begin{pspicture}(3,1.5)
-  \psset[optexp]{usefiberstyle}
   \optfilter[filtertype=highpass](0,1)(3,1){highpass}
 \end{pspicture}
 \end{LTXexample}
@@ -3929,7 +4057,12 @@
 % \fi
 % \end{stylelist}
 %
-% Verwendung als Freistrahlkomponenten:
+% \ifGERMAN Verwendung als Freistrahlkomponenten, \Lkeyword{allowbeaminside} ist
+% nicht voreingestellt:
+% \fi
+% \ifENGLISH Usage as free-ray component, \Lkeyword{allowbeaminside} is not
+% enabled by default:
+% \fi
 % \iffalse
 %<*ignore>
 % \fi
@@ -4018,14 +4151,17 @@
 %
 % \begin{optionlist}
 % \optitem[0.3]{fibercolsize}{\prm{num} or \prm{width} \prm{height}}
-% \ifGERMAN
-% Die Höhe bzw. Seitenlänge des Kollimators. Mit dem \opt{xunit} oder
-% \opt{yunit} Parameter kann das Verhältnis zwischen Höhe und Breite geändert
-% werden.
+% \ifGERMAN 
+% Eine Zahl gibt die Seitenlänge des Kollimators an, zwei Zahlen die Breite und
+% Höhe. Beachten Sie, dass \opt{fibercolsize=1} und \opt{fibercolsize=1 1} nicht
+% dasselbe Ergebnis liefern. Alternativ kann das Verhältnis zwischen Höhe und
+% Breite mit \opt{xunit} und \opt{yunit} geändert werden.
 % \fi
 % \ifENGLISH
-% The height and side length of the collimator. Use the \opt{xunit} or
-% \opt{yunit} parameter to change this relation.
+% A single number gives the side length of the collimator, two numbers the width
+% and height. Note, that \opt{fibercolsize=1} and \opt{fibercolsize=1 1} do not give
+% the same result. You may also change the relation of width and height with
+% \opt{xunit} and \opt{yunit}.
 % \fi
 % \end{optionlist}
 %
@@ -7126,7 +7262,7 @@
 \def\POE@str@couplertype@ellipse{ellipse}
 \def\POE@str@couplertype@elliptic{elliptic}
 \def\POE@str@couplertype@rectangle{rectangle}
-\def\POE@str@couplertype@crossswitch{crossswitch}
+\def\POE@str@couplertype@cross{cross}
 \def\POE@str@polcontroltype@linear{linear}
 \def\POE@str@polcontroltype@triangle{triangle}
 \def\POE@str@top{top}
@@ -8090,7 +8226,7 @@
   \pst@checknum{#1}\POE@key@couplersep
 }
 \define@choicekey+[psset]{optexp}{couplertype}%
-  [\val\nr]{none,elliptic,ellipse,crossswitch,rectangle}%
+  [\val\nr]{none,elliptic,ellipse,cross,rectangle}%
   {%
     \edef\POE@key@couplertype{#1}
     \ifx\POE@key@couplertype\POE@str@couplertype@elliptic
@@ -11792,7 +11928,7 @@
 %    \begin{macrocode}
 \def\optfiberpolarizer@comp{%
   \edef\@ht{\POE@key@fiberpolheight\space 0.5 mul }%
-  \edef\@wd{\POE@key@fiberpolwidth\space 0.8 mul }%
+  \edef\@wd{\POE@key@fiberpolwidth\space 0.5 mul }%
   \psframe[dimen=outer](! \@wd neg \@ht neg)(! \@wd \@ht)
   \psline(! \@wd neg 0.2 mul \@ht neg)(!\@wd 0.2 mul \@ht)
 \ignorespaces}%
@@ -11975,14 +12111,14 @@
   \else
     \psframe[dimen=outer](!\POE@dict{@@x neg @@y0 @@y sub})%
                          (!\POE@dict{@@x @@y0 @@y add})%
-    \ifx\POE@key@couplertype\POE@str@couplertype@crossswitch
+    \ifx\POE@key@couplertype\POE@str@couplertype@cross
       \psline(! \POE@dict{@@x -0.5 mul @@y0 @@y 0.5 mul sub})%
              (! \POE@dict{@@x 0.5 mul @@y0 @@y 0.5 mul add})%
       \psline(! \POE@dict{@@x -0.5 mul @@y0 @@y 0.5 mul add})%
              (! \POE@dict{@@x 0.5 mul @@y0 @@y 0.5 mul sub})%
     \fi
   \fi\fi
-  \ifx\POE@key@couplertype\POE@str@couplertype@crossswitch\else
+  \ifx\POE@key@couplertype\POE@str@couplertype@cross\else
     \ifPOE@variable
       \begingroup
 %    \end{macrocode}
