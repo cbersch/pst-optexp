@@ -58,6 +58,7 @@
            {ä}{{\"a}}1
            {ü}{{\"u}}1
 }
+\newpsstyle{Refline}{linecolor=gray!60}
 \newcommand\Lkeyword[1]{\texttt{#1}}
 \makeatletter
 \providecommand\ON{%
@@ -65,7 +66,23 @@
 }}
 \providecommand\OFF{\xdef\lst@alloverstyle##1{##1}}
 \makeatother
-\begin{document}
+\begin{document}\psset{unit=2}
+\begin{pspicture}[showgrid](0.3,0.1)(4.8,1.6)
+  \pnode(0.5,0.5){A}\pnode(4.5,0.5){B}
+  \optbox[compshift=0.5, angle=10, rotateref=tr, extnode={-0.5,1}](A)(B)
+  \psline[style=Refline](\oenodeTrefA{})(\oenodeTrefB{})
+  \psdot(\oenodeRefA{})\uput[-90](\oenodeRefA{}){RefA}
+  \psdot(\oenodeRefB{})\uput[-90](\oenodeRefB{}){RefB}
+  \psdot(\oenodeTrefA{})\uput[90](\oenodeTrefA{}){TrefA}
+  \psdot(\oenodeTrefB{})\uput[90](\oenodeTrefB{}){TrefB}
+  \psdot[linecolor=red](\oenodeOut{})\uput[80](\oenodeOut{}){\rput[l](0,0.1){Out}}
+  \psdot(\oenodeIn{})\uput[90](\oenodeIn{}){In}
+  \psdot(\oenodeCenter{})\uput[90](\oenodeCenter{}){Center}
+  \psdot(\oenodeRotref{})\uput[90](\oenodeRotref{}){Rotref}
+  \psdot(\oenodeExt{})\uput[90](\oenodeExt{}){Ext}
+  \psdot(\oenodeLabel{})\uput[90](\oenodeLabel{}){Label}
+\end{pspicture}
+\end{document}
 \begin{pspicture}(0,0.4)(3,1.5)
   \psset{crystalsize=0.5 0.8, label=-45 . l}
   \crystal[position=0.2, caxislength=0.5](0,1)(3,1){pos}
