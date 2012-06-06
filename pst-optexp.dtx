@@ -37,8 +37,13 @@
 \usepackage{array,booktabs,tabularx}
 \usepackage{ragged2e, calc}
 \newlength{\POEcaptionmargin}
-\usepackage[labelfont={small, color=DOrange}, singlelinecheck=false, justification=raggedright]{caption} 
-\DeclareCaptionFormat{poe}{\setlength{\POEcaptionmargin}{\widthof{#1}+5pt}\hspace*{-\POEcaptionmargin}#1\par}
+\usepackage[labelfont={small, color=DOrange}, 
+            singlelinecheck=false, 
+            justification=raggedright]{caption} 
+\DeclareCaptionFormat{poe}{%
+  \setlength{\POEcaptionmargin}{\widthof{#1}+5pt}%
+  \hspace*{-\POEcaptionmargin}#1\par
+}
 \captionsetup[lstlisting]{format=poe}
 \usepackage{nicefrac}
 \usepackage{pst-func}
@@ -90,7 +95,7 @@
   breakatwhitespace=true, %
   captionpos=t, %
   xleftmargin=1em, %
-  prebreak = {\raisebox{-1ex}[\ht\strutbox]{\kern0.5ex \Large\Righttorque}},
+  prebreak = {\raisebox{-1ex}[\ht\strutbox]{\kern0.5ex \large\Righttorque}},
   rulecolor=\color{black!20}, %
   texcsstyle = [20]\color{DDOrange},%!60!black},%{red!60!black}, %
   moretexcs = [20]{lens, optbox, oenode, oenodeIn, oenodeExt, oenodeOut,
@@ -105,9 +110,12 @@
     newOptexpTripole, newOptexpFiberDipole,optplane}, %
   morekeywords = [22] {optexp}, explpreset={%
     pos=l, width=-99pt, hsep=5mm, overhang=\codeoverhang, varwidth,
-    vsep=\bigskipamount, rframe={}}, } \lstdefinestyle{example}{explpreset={%
+    vsep=\bigskipamount, rframe={}}
+}
+\lstdefinestyle{example}{explpreset={%
     escapechar=*, pos=l, width=-99pt, hsep=5mm, overhang=\codeoverhang,
-    varwidth, vsep=\bigskipamount, rframe={}}} \makeatletter
+    varwidth, vsep=\bigskipamount, rframe={}}}
+\makeatletter
 \providecommand\ON{%
   \gdef\lst@alloverstyle##1{\textcolor{black!50}{\strut##1}%
 }}
@@ -457,7 +465,7 @@
 \addtopsstyle{Beam}{linewidth=1.5\pslinewidth}
 \EnableCrossrefs
 \CodelineIndex
-%%\OnlyDescription
+\OnlyDescription
 \begin{document}
   \DocInput{pst-optexp.dtx}
   \begin{otherlanguage}{english}
@@ -5255,6 +5263,34 @@
       \i\space 650 400 sub 59 div mul 400 add 
       tx@addDict begin wavelengthToRGB end }%
     \drawbeam[n=\i\space 650 400 sub 59 div mul 400 add Sellmaier]{-}%
+  }%
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
+% \item Using the numerical aperture of a pinhole as spectral filter.
+%
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[morekeywords = {[21]{n}}]
+\begin{pspicture}(0.3,0)(3.3,5.2)
+  \pnode(0.3,1){A}\pnode(2,1){B}\pnode(3,2){C}\pnode(2.5,5){D}
+  \optplane(A)
+  \optgrating[reverse](A)(B)(C)
+  \pinhole[phwidth=-0.1, innerheight=0.03, abspos=0.5](D)(B)
+  \optplate[position=end, plateheight=1.5](B)(D)
+  \definecolor[ps]{bl}{rgb}{%
+    tx@addDict begin Red Green Blue end}%
+  \drawbeam[linecolor=red]{1-2}
+  \addtopsstyle{Beam}{linecolor=bl, linewidth=0.4\pslinewidth}
+  \multido{\i=0+1}{60}{%
+    \pstVerb{%
+      \i\space 650 400 sub 59 div mul 400 add 
+      tx@addDict begin wavelengthToRGB end }%
+    \drawbeam[beamangle=\i\space 0.1 mul 3 sub]{2-}%
   }%
 \end{pspicture}
 \end{LTXexample}
