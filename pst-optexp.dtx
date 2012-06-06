@@ -2848,7 +2848,7 @@
 \begin{LTXexample}[morekeywords={[21]{mirrortype, mirrordepth}}]
 \begin{pspicture}(3,2)
   \mirror[mirrortype=extended, mirrordepth=0.2,
-            beam](0,0)(1.8,1.5)(0,2){}
+            beam](0,0)(1.8,1.5)(0,2)
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -5302,22 +5302,20 @@
 % \subsection{Initial conditions}
 %
 % \begin{optionlist}
-% \optitem[0]{beampos}{[\prm{x}] \prm{y}}
-%   This is the start position (\prm{x},
-%   \prm{y}) of the beam at the first interface. Both values are of \prm{psnum}
-%   type. If only one number is given then the $x$-coordinate is set to \opt{0}.
+% \optitem[0]{beampos}{[\prm{x} ]\prm{y}}
+% This is the start position (\prm{x}, \prm{y}) of the beam at the first
+% interface. Both values are of \prm{psnum} type. If a single number is given,
+% the $x$-coordinate is set to \opt{0}.
 %
 % \iffalse
 %<*ignore>
 % \fi
 \begin{LTXexample}[morekeywords = {[21]{beampos}}]
 \begin{pspicture}(4,3.8)
-  \pnode(1.5,0.5){A}\pnode(3.5,0.5){B}
-  \pnode(3.5,3.5){C} 
-  \optbox[position=end](B)(A){}
-  \psset{mirrortype=extended}
-  \mirror[mirrorradius=3](A)(B)(C){} 
-  \mirror(B)(C)(B){} 
+  \pnode(1.5,0.5){A}\pnode(3.5,0.5){B}\pnode(3.5,3.5){C} 
+  \optbox[position=end](B)(A)
+  \mirror[mirrortype=extended, mirrorradius=3](A)(B)(C)
+  \optplate[position=end](B)(C)
   \drawbeam[linecolor=red, beampos=-0.2]{1-3}
   \drawbeam[linecolor=blue, beampos=0]{1-3}
   \drawbeam[linecolor=green, beampos=0.2]{1-3}
@@ -5327,8 +5325,8 @@
 %</ignore>
 % \fi
 %
-%   The start position is relative to the respective interface node, which is
-%   illustrated in the following example. The beam position is fixed, but
+%   The start position is relative to the respective interface node, as it is
+%   illustrated in the following example. The beam start position is fixed, but
 %   depending on e.g. the \Lkeyword{beamangle}, the actual intersection with the
 %   curved interface is at different positions.
 % \iffalse
@@ -5349,26 +5347,28 @@
 %</ignore>
 % \fi
 %
+% Which interface the beam starts at is determined by the options
+% \Lkeyword{beaminsidefirst} and \Lkeyword{startinside}.
+%
 % \psnumitem[0]{beamangle}
 % \ifGERMAN
-% Der Anfangswinkel des Strahls. Dieser ist in der Regel relativ zu der Verbindung von der
-% ersten zur zweiten Komponente, mit \Lkeyword{beamalign} kann dieser Verhalten verändert werden.
+% Der Anfangswinkel des Strahls. Dieser ist in der Regel relativ zu der
+% Verbindung von der ersten zur zweiten Komponente, mit \Lkeyword{beamalign}
+% kann dieser Verhalten verändert werden.
 % \fi
 % \ifENGLISH
-% This is the start angle of the beam. Usually, it is relative to the connection between the first
-% two components, use \Lkeyword{beamalign} to change this.
+% This is the start angle of the beam. Usually, it is relative to the connection
+% between the first two components, use \Lkeyword{beamalign} to change this.
 % \fi
 % \iffalse
 %<*ignore>
 % \fi
 \begin{LTXexample}[morekeywords = {[21]{beamangle}}]
 \begin{pspicture}(4,4)
-  \pnode(1.5,0.5){A}\pnode(3.5,0.5){B}
-  \pnode(3.5,3.5){C} 
-  \psset{mirrortype=extended}
-  \optbox[position=end](B)(A){}
-  \mirror(A)(B)(C){} 
-  \mirror(B)(C)(B){} 
+  \pnode(1.5,0.5){A}\pnode(3.5,0.5){B}\pnode(3.5,3.5){C} 
+  \optbox[position=end](B)(A)
+  \mirror[mirrortype=extended](A)(B)(C)
+  \optplate[position=end](B)(C)
   \drawbeam[linecolor=red, beamangle=3]{-3}
   \drawbeam[linecolor=blue, beamangle=0]{1-}
   \drawbeam[linecolor=green, beamangle=-3]{-}
@@ -5387,7 +5387,7 @@
 %
 % A typical situation where an absolute angle is helpful is with rotated or
 % shifted components. By rotating or shifting a component, also its interface
-% nodes are rotated (see \prettyref{sec:rotshift}), which are used to determine
+% nodes are rotated (see \prettyref{sec:rotshift}), which are then used to determine
 % the input angle for relative alignment. Accordingly, in the following example,
 % the green beam with the relative alignment is not horizontal.
 % \fi
@@ -5408,14 +5408,19 @@
 %
 % \subsection{Internal beam path}
 %
+% A beam path is composed of rays between components, and rays inside the
+% components. These internal beams can be drawn or not, depending on some
+% options. Generally, the first, the last, and all other components are treated
+% separately.
 % 
 % \boolitem[true]{beaminside}
 % \ifGERMAN
 % Zeichne den Strahlengang innerhalb aller Komponenten mit Ausnahme der
-% ersten und letzten.
+% ersten und letzten. Diese werden von dieser Option nicht beeinflußt.
 % \fi
 % \ifENGLISH
-% Draw the internal beams in all components except for the first and last one.
+% Draw the internal beams in all intermediate components, the first and last
+% components are not affected.
 % \fi
 % \iffalse
 %<*ignore>
@@ -5427,8 +5432,8 @@
   \optretplate(1,1)(1,3)
   \pentaprism(1,3)(1,1)(2,1)
   \optbox[position=end](1,1)(2,1)
-  \drawbeam[beampos=-0.05, linecolor=red]{1}{2}{3}{4}
-  \drawbeam[beampos=0.05, beaminside=false]{1}{2}{3}{4}
+  \drawbeam[beampos=-0.05, linecolor=red]{-}
+  \drawbeam[beampos=0.05, beaminside=false]{-}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -5440,7 +5445,7 @@
 % Zeichne den Strahlengang innerhalb der ersten Komponenten.
 % \fi
 % \ifENGLISH
-% Draw the internal beams in the first component.
+% Draw the internal beams of the first component.
 % \fi
 % \iffalse
 %<*ignore>
@@ -5452,8 +5457,8 @@
   \optretplate(1,1)(1,3)
   \pentaprism(1,3)(1,1)(2,1)
   \optbox[position=end](1,1)(2,1)
-  \drawbeam[beampos=-0.05, linecolor=red]{1}{2}{3}{4}
-  \drawbeam[beampos=0.05, beaminsidefirst]{1}{2}{3}{4}
+  \drawbeam[beampos=-0.05, linecolor=red]{-}
+  \drawbeam[beampos=0.05, beaminsidefirst]{-}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -5465,7 +5470,7 @@
 % Zeichne den Strahlengang innerhalb der letzten Komponenten.
 % \fi
 % \ifENGLISH
-% Draw the internal beams in the last component.
+% Draw the internal beams of the last component.
 % \fi
 % \iffalse
 %<*ignore>
@@ -5477,8 +5482,8 @@
   \optretplate(1,1)(1,3)
   \pentaprism(1,3)(1,1)(2,1)
   \optbox[position=end](1,1)(2,1)
-  \drawbeam[beampos=-0.05, linecolor=red]{1}{2}{3}{4}
-  \drawbeam[beampos=0.05, beaminsidelast]{1}{2}{3}{4}
+  \drawbeam[beampos=-0.05, linecolor=red]{-}
+  \drawbeam[beampos=0.05, beaminsidelast]{-}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -5496,15 +5501,90 @@
 % (z.B. \Lcs{optfilter} und \Lcs{optdiode}, was sonst nicht möglich ist. 
 % \fi
 % \ifENGLISH
-% Draw the internal beams in all components except for the first and last one.
+% Define whether a beam is drawn inside a component. The option affects
+% components only and overwrites all settings of \Lkeyword{beaminside},
+% \Lkeyword{beaminsidefirst}, and \Lkeyword{beaminsidelast}. With this you can
+% forbid any internal beams for components where it does not make any sense
+% (e.g. \Lcs{optfilter} and \Lcs{optdiode}).
+% \fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[morekeywords = {[21]{allowbeaminside}}]
+\begin{pspicture}(3,2)
+  \psset{optboxwidth=0.5}
+  \pnode(0,1){A}\pnode(3,1){B}
+  \optbox[position=0.2](A)(B)
+  \optbox[position=0.4, allowbeaminside=false](A)(B)
+  \optbox[position=0.6](A)(B)
+  \optbox[position=0.8](A)(B)
+  \drawbeam{(A)}{-}{(B)}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+% \end{optionlist}
+%
+% \subsection{Connecting with nodes}
+%
+% As mentioned earlier in this chapter, beams can connect components and/or
+% nodes. For raytracing you need in general a plane, which imposes some problems
+% when connecting with nodes. This is handled such, that a temporary plane is
+% constructed, which goes through the specified node and is perpendicular to the
+% connection between the node and the preceeding component.
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(3,2)
+  \pnode(0,1){A}\pnode(2.5,1){B}
+  \lens[lens=3 3 2, n=2.5, abspos=0.5](A)(B)
+  \drawbeam[beampos=0.3]{(A)}{}{(B)}
+  \drawbeam{(A)}{}{(B)}
+  \drawbeam[beampos=-0.3]{(A)}{}{(B)}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
 % \fi
 %
-% \end{optionlist}
+% This is very handy in many cases, but does not allow to rotate the node planes
+% and can give again problems with shifted and rotated components (see
+% \prettyref{sec:rotshift}).
+%
+% For more flexibility, the package provides an «invisible» plane which can be
+% used for this purpose.
+%
 % \begin{ltxsyntax}
-%   \xLcs{optplane}\cmditem{optplane}(center)
+%   \xLcs{optplane}\cmditem{optplane}(center) 
+%
+%   The plane is defined with a single node only, the rotation around this node
+%   is defined with \Lkeyword{angle}. The angle is with respect to the default
+%   alignment, which is vertical.
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(3,2)
+  \pnode(0,1){A}\pnode(2.5,1){B}
+  \lens[lens=3 3 2, n=2.5, abspos=0.5](A)(B)
+  \optplane[angle=-30](B)
+  \drawbeam[beampos=0.3]{(A)}{-}
+  \drawbeam{(A)}{-}
+  \drawbeam[beampos=-0.3]{(A)}{-}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % \end{ltxsyntax}
 %
 % \subsection{Automatic connection}
+%
+% Beam can also be drawn at definition time of a component, which can be handy,
+% but allows only very elemental beams.
+%
 % \begin{optionlist}
 % \boolitem[false]{beam}
 % \ifGERMAN Kann als Option für jede Komponente verwendet werden, ist äquivalent zu\fi
@@ -5519,14 +5599,20 @@
 %
 % \valitem{conn}{string}
 % \ifGERMAN Diese Option wird nur aus Kompatibilitätsgründen noch bereitgestellt
-% und wird aus zukünftigen Versionen entfernt.\fi
-% \ifENGLISH This option is maintained for backward compatibility only and will be removed in future versions.\fi
+% und wird aus zukünftigen Versionen entfernt.
+% \fi
+% \ifENGLISH This option is maintained for backward compatibility only and will
+% be removed in future versions.
+%\fi
 % \end{optionlist}
 %
-% \subsection{Beam appearance}
+% \subsection{Beam appearance}\label{sec:beamapperance-single}
 %
 % \begin{stylelist}
-% \styleitem{Beam}
+%   \styleitem{Beam}
+%   The appearance of beams is controlled with this style. The optional argument
+%   of \Lcs*{drawbeam*} can also be used, these options overwrite settings from
+%   the \Lstyle{Beam} style.
 % \end{stylelist}
 %
 % \begin{optionlist}
@@ -5539,15 +5625,117 @@
 % \ifGERMAN\section{Aufgeweitete Strahlen}\fi
 % \ifENGLISH\section{Drawing wide beams}\fi
 % \label{sec:drawwidebeam}
-% 
+%
+% All information about single beams (see \prettyref{sec:drawbeam}) apply to
+% wide beams as well. Here, you find all additional information which apply to
+% wide beam only.
+%
 % \begin{ltxsyntax}
 %   \xLcs{drawwidebeam}\cmditem{drawwidebeam}[options]{obj$_1$}{obj$_2$}\ldots
 % \end{ltxsyntax}
 % \begin{optionlist}
 % \psnumitem[0]{beamwidth}
-% 
+% The initial beam width, measured at the initial position (defined with
+% \Lkeyword{beampos}) perpendicular to the beam direction.
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[morekeywords = {[21]{beamwidth}}]
+\begin{pspicture}(4,4)
+  \pnode(1.5,0.5){A}\pnode(3.5,0.5){B}\pnode(3.5,3.5){C} 
+  \optbox[position=end](B)(A)
+  \mirror[mirrortype=extended](A)(B)(C)
+  \optplate[position=end](B)(C)
+  \drawwidebeam[beamwidth=0.3]{-}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
 % \psnumitem[0]{beamdiv}
+% The total beam divergence at the starting position, given in degree. Positive
+% values give an expanding beam, negative values a contracting beam.
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[morekeywords = {[21]{beamdiv}}, linerange={1-8,11-11}]
+\begin{pspicture}(3,2)
+  \pnode(0,1){A}\pnode(3,1){B}
+  \psset{plateheight=2}
+  \optplate[position=start](A)(B)
+  \optplate[position=end](A)(B)
+  \addtopsstyle{Beam}{beamwidth=0.2}
+  \drawwidebeam[beampos=0.4, beamdiv=5]{-}
+  \drawwidebeam[beampos=-0.4, beamdiv=-5, linecolor=red]{-}
+  \rput[b](1.5,0){\footnotesize\ttfamily beamdiv < 0}
+  \rput[t](1.5,2){\footnotesize\ttfamily beamdiv > 0}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % \end{optionlist}
+%
+%
+% \subsection{Beam appearance}
+%
+% The appearance of wide beams can be controlled like that of single beams with
+% the optional argument or the \Lstyle{Beam} style (see
+% \prettyref{sec:beamapperance-single}).
+%
+% Wide beams have two marginal rays, which are drawn according to the line
+% settings, and may be filled.
+%
+% \begin{enumerate}
+% \item Only marginal rays
+%
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(3,2)
+  \pnode(0,0.5){A}\pnode(1,0.5){B}\pnode(2.8,2){C}
+  \mirror[mirrorwidth=1.5](A)(B)(C)
+  \drawwidebeam[beamwidth=0.4]{(A)}{}{(C)}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
+% \item Marginal rays, and with fill style.
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(3,2)
+  \pnode(0,0.5){A}\pnode(1,0.5){B}\pnode(2.8,2){C}
+  \mirror[mirrorwidth=1.5](A)(B)(C)
+  \addtopsstyle{Beam}{fillstyle=solid, fillcolor=red!50!white, linecolor=red}
+  \drawwidebeam[beamwidth=0.4]{(A)}{}{(C)}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
+% \item Only with fill style
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(3,2)
+  \pnode(0,0.5){A}\pnode(1,0.5){B}\pnode(2.8,2){C}
+  \mirror[mirrorwidth=1.5](A)(B)(C)
+  \addtopsstyle{Beam}{fillstyle=solid, fillcolor=red, opacity=0.3, linestyle=none}
+  \drawwidebeam[beamwidth=0.4]{(A)}{}{(C)}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+% \end{enumerate}
 %
 % \ifGERMAN\section{Fehlerbehandlung}\fi
 % \ifENGLISH\section{Error handling}\fi
@@ -5855,7 +6043,7 @@
 % \fi
 \begin{LTXexample}[morekeywords={[21]{fiber}}]
 \begin{pspicture}(3,2)
-  \optbox[fiber](0,1)(3,1){}
+  \optbox[fiber](0,1)(3,1)
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -5870,7 +6058,7 @@
 % \fi
 \begin{LTXexample}[morekeywords={[21]{fiber}}]
 \begin{pspicture}(3,2)
-  \wdmsplitter[fiber=br](0,1)(3,2)(3,0){}
+  \wdmsplitter[fiber=br](0,1)(3,2)(3,0)
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -5998,9 +6186,9 @@
 \optcoupler[fiber=l,
             addtoFiberIn1={angleA=0, ArrowInside=->},
             addtoFiberIn2={angleA=180, arrows=<-},
-            abspos=0.5, compname=Cpl](A)(B)(C)(D){}
-\optfiber[compname=Hnlf, abspos=1](C)(C|A){}
-\optamp[abspos=2, compname=Amp](D|B)(D){}
+            abspos=0.5, compname=Cpl](A)(B)(C)(D)
+\optfiber[compname=Hnlf, abspos=1](C)(C|A)
+\optamp[abspos=2, compname=Amp](D|B)(D)
 \drawfiber{Cpl}{Hnlf}
 \drawfiber[startnode=1, ncurv=1.2]{Hnlf}{Amp}
 \drawfiber{Cpl}{Amp}
@@ -6524,9 +6712,9 @@
 \optisolator[compshift=0.8, addtoFiberIn={angleA=180}, 
              addtoFiberOut={angleB=180}, label=0.5 . l]%
              (CplSig)(PC1in){isolator}
-\polcontrol[addtoFiberIn={arrows=|-}](PC1in)(PC1out){}
+\polcontrol[addtoFiberIn={arrows=|-}](PC1in)(PC1out)
 \optfiberpolarizer[labeloffset=0.6](PC1out)(PC2in){polarizer}
-\polcontrol[addtoFiberOut={arrows=-|}](PC2in)(PC2out){}
+\polcontrol[addtoFiberOut={arrows=-|}](PC2in)(PC2out)
 \wdmsplitter[labeloffset=0.3, coupleralign=bottom, addtoFiberIn={arrows=|-}, 
              addtoFiberOut1={arrows=->}, addtoFiberOut2={arrows=-|}]%
              (CplIn)(CplOut)(CplSig){95/5}
@@ -6591,7 +6779,7 @@
   \optretplate(BS1)(M1){P}
   \mirror(BS1)(M1)(PP){M}
   \lens[position=0.2](M1)(PP){L}
-  \pinhole(M1)(PP){}
+  \pinhole(M1)(PP)
   \lens[position=0.2](PP)(M1){L}
   \pentaprism(M1)(PP)(BS2){PP}
   \beamsplitter(PP)(BS2)(BS1){BS}
@@ -6789,10 +6977,10 @@
 \begin{LTXexample}
 \begin{pspicture}(4,3)
   \psset{showifcnodes}
-  \optbox(0,2.5)(4,2.5){}
-  \doveprism(0,1.5)(4,1.5){}
-  \lens(0,0.5)(4,0.5){}
-  \mirror(0,0.5)(3.5,0.5)(3.5,3){}
+  \optbox(0,2.5)(4,2.5)
+  \doveprism(0,1.5)(4,1.5)
+  \lens(0,0.5)(4,0.5)
+  \mirror(0,0.5)(3.5,0.5)(3.5,3)
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
