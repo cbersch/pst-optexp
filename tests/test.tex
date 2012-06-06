@@ -66,7 +66,9 @@
 }}
 \providecommand\OFF{\xdef\lst@alloverstyle##1{##1}}
 \makeatother
-\begin{document}\psset{unit=2}
+\begin{document}
+\begingroup
+\psset{unit=2}
 \begin{pspicture}[showgrid](0.3,0.1)(4.8,1.6)
   \pnode(0.5,0.5){A}\pnode(4.5,0.5){B}
   \optbox[compshift=0.5, angle=10, rotateref=tr, extnode={-0.5,1}](A)(B)
@@ -82,14 +84,15 @@
   \psdot(\oenodeExt{})\uput[90](\oenodeExt{}){Ext}
   \psdot(\oenodeLabel{})\uput[90](\oenodeLabel{}){Label}
 \end{pspicture}
-\end{document}
+\endgroup
+
 \begin{pspicture}(0,0.4)(3,1.5)
   \psset{crystalsize=0.5 0.8, label=-45 . l}
   \crystal[position=0.2, caxislength=0.5](0,1)(3,1){pos}
   \crystal[beam, caxislength=0](0,1)(3,1){0}
   \crystal[position=0.8, caxislength=-0.5](0,1)(3,1){neg}
 \end{pspicture}
-\end{document}
+
 \begin{pspicture}(1,1.2)(6.2,5)\psset{extnodealign=rel}
 \pnode(1,4){SigIn}\pnode(3,4){BS}\pnode(3,5){LO}
 \pnode(5,4){Det1}\pnode(3,2){Det2}
@@ -114,7 +117,7 @@
 \nccurve[angleA=90]{M}{\oenodeExt{Det1}}
 \nccurve[angleA=180, angleB=-90]{M}{\oenodeExt{Det2}}
 \end{pspicture}
-\end{document}
+
 \begin{pspicture}(6.4,3.2)
 \addtopsstyle{Fiber}{linecolor=red}\psset{fiber=none}
 \pnode(2.3,2.3){Lin}\pnode([Xnodesep=4.5]Lin){Det}
@@ -131,7 +134,7 @@
 \psset{arrows=->, arrowinset=0, arrowscale=1.5}
 \wire(PSin)(\oenodeExt{L})\wire(PSout)(\oenodeExt{EAM})
 \end{pspicture}
-\end{document}
+
 \begin{pspicture}(0.3,0.6)(5.5,7.8)
 \newOptexpTripole{reflslm}{}
 \makeatletter
@@ -164,7 +167,7 @@
   \drawwidebeam{8-11}{(Out)}\drawwidebeam[beaminsidefirst]{8}{12}
 \end{optexp}
 \end{pspicture}
-\end{document}
+
 \begin{pspicture}[showgrid](5,5)
   \optmzm(0,1)(5,1)
   \optmzm[optmzmsize=1 0.8](0,2.5)(5,2.5)
@@ -186,7 +189,7 @@
   \newpsstyle{DetectorStyle}{linewidth=0.5\pslinewidth}
   \optdetector[dettype=diode](0,1)(2,1)
 \end{pspicture}
-\end{document}
+
 \begin{pspicture}[showgrid](5,5)
   \optisolator[isolatorsize=2 0.5](0,0.5)(5,0.5)
   \psset[optexp]{isolatorsize=1}
@@ -205,7 +208,7 @@
   \drawwidebeam[fillcolor=red!25!white]{(In)}{Bs}{G}{Bs}{L}{Ph}{Out}
   \drawwidebeam[fillcolor=red!50!white, beamangle=-5]{G}{Bs}{L}{Ph}{Out}
 \end{pspicture}
-\end{document}
+
 \begin{pspicture}(5,2)
   \pnode(0.5,1){A}
   \pnode(4.5,1){B}
@@ -222,7 +225,7 @@
   \addtopsstyle{Beam}{raytrace=false}
   \drawwidebeam[beamwidth=0.2, beamdiv=4.6]{(A)}{1}{(B)}
 \end{pspicture}
-\end{document}
+
 \begin{pspicture}[showgrid](4,2.5)
   \pnode(1,2.5){In}\pnode(3,2.5){Out}
   \pnode(0,2){A}\pnode(4,2){B}\pnode(4,0){C}\pnode(0,0){D}
@@ -235,13 +238,13 @@
   \drawfiber[stopnode=1]{1}{2}
   \drawfiber[stopnode=1]{1}{3}
 \end{pspicture}
-\end{document}
+
 
 \begin{pspicture}(-0.2,0)(9,5)
 \makeatletter
 \def\LCLV@iii{%
-  \newOptexpComp{ {-0.12 0} {0 1} trans {PlaneIfc}
-                  {0.15 0} {0 1} trans {PlaneIfc} \POE@key@n}%
+  \newOptexpComp{ {-0.12 0} {0 1} -0.5 0.5 trans {PlainIfc}
+                  {0.15 0} {0 1} -0.5 0.5 trans {PlainIfc} \POE@key@n}%
   \psframe[fillstyle=solid,fillcolor=black,dimen=outer](-0.12,-0.5)(0,0.5)
   \psframe[fillstyle=solid,fillcolor=gray!50,dimen=outer](0,-0.5)(0.15,0.5)
 }%
@@ -267,7 +270,7 @@
   \drawwidebeam[loadbeampoints]{3}{2}{4-}{3}
 \end{optexp}
 \end{pspicture}
-\end{document}
+
 \begin{pspicture}(3,2)
   \pnode(0,1.5){A}\pnode(2,1.5){B}\pnode(3,0.5){C}
   \optprism(A)(B)(C)
@@ -283,7 +286,7 @@
 
 \begin{pspicture}(3,3)
   \pnode(1, 0.5){A}\pnode(2.5,0.5){B}\pnode(2.5,2){C}
-  \psset{fiber=none, optbox=1 0.6, label=0 . . relative}
+  \psset{fiber=none, optboxsize=1 0.6, label=0 . . relative}
   \optbox[endbox](B)(A){start}
   \optbox[endbox](B)(C){stop}
   \drawfiber[fiberstyle=diag, linearc=0.5]{1}{2}
@@ -362,12 +365,12 @@
   \drawfiber[fiberangleA=20, fiberangleB=-20]{1}{2}
 \end{pspicture}
 
-\bigskip
-\begin{pspicture}[showgrid](3,3)
-  \fiberbox[showifcnodes, fiberboxoutcount=3, fiberboxincount=2](0,1)(3,1)
-  \drawfiber[startnode=3]{}{(3,1.5)}
-  \drawfiber[linecolor=red]{}{(3,1.5)}
-\end{pspicture}
+%\bigskip
+%\begin{pspicture}[showgrid](3,3)
+%  \fiberbox[showifcnodes, fiberboxoutcount=3, fiberboxincount=2](0,1)(3,1)
+%  \drawfiber[startnode=3]{}{(3,1.5)}
+%  \drawfiber[linecolor=red]{}{(3,1.5)}
+%\end{pspicture}
 
 \begin{pspicture}[showgrid](3,3)
   \optbox[extnode={0.5,0.5}](0,1)(3,1)\psdot(\oenodeExt{})
@@ -438,14 +441,14 @@
 
 
 \begin{pspicture}(11,2)
-\psset{couplersize=0.5, couplertype=rectangular, couplersep=0.2}
+\psset{couplersize=0.5, couplertype=rectangle, couplersep=0.2}
 \optcoupler(0, 2)(0,0.7)(3,2)(3,0.7)
 \psdot(\oenodeRefA{})\uput[90](\oenodeRefA{}){RefA}
 \psdot(\oenodeRefB{})\uput[90](\oenodeRefB{}){RefB}
-\optcoupler[align=top](4, 2)(4,0.7)(7,2)(7,0.7)
+\optcoupler[coupleralign=top](4, 2)(4,0.7)(7,2)(7,0.7)
 \psdot(\oenodeRefA{})\uput[-90](\oenodeRefA{}){RefA}
 \psdot(\oenodeRefB{})\uput[-90](\oenodeRefB{}){RefB}
-\optcoupler[align=bottom](8, 2)(8,0.7)(11,2)(11,0.7)
+\optcoupler[coupleralign=bottom](8, 2)(8,0.7)(11,2)(11,0.7)
 \psdot(\oenodeRefA{})\uput[90](\oenodeRefA{}){RefA}
 \psdot(\oenodeRefB{})\uput[90](\oenodeRefB{}){RefB}
 \rput[b](1.5,0){\opt{align=none}}
@@ -691,7 +694,7 @@ Die erste Linse soll konkav gekrümmte Grenzflächen haben. Mit \Lkeyword{lensradi
   }%
   \newpsstyle{Beam}{linecolor=red}
   \backlayer{\psline[style=Beam,ArrowInside=->, linewidth=2\pslinewidth, arrowinset=0](In)(\oenodeIn{3})(\oenodeOut{4})}
-  \drawbeam[linewidth=2\pslinewidth, arrows=->, arrowinset=0, beamangle=-90, beamalign=absolute]{(\oenodeBeam)}{8}{(Out)}  
+  \drawbeam[linewidth=2\pslinewidth, arrows=->, arrowinset=0, beamangle=-90, beamalign=absolute]{(\oenodeBeam{})}{8}{(Out)}  
 \end{optexp}
 \rput(4,4.5){%
   \psframe[fillstyle=solid,fillcolor=gray!70](-0.1, -0.6)(0.1, 0.7)
@@ -737,13 +740,13 @@ Czerny-Turner monochromator
   \lens[abspos=1](A)(B)
   \addtopsstyle{Beam}{fillstyle=solid, fillcolor=green, opacity=0.3}
   \drawwidebeam[beamwidth=0.5]{(A)}{}
-  \psdot(\oenodeBeamUp)\psdot(\oenodeBeamLow)
-  \uput[90](\oenodeBeamUp){\rput[rb](0,0){BeamUp}}
-  \uput[-90](\oenodeBeamLow){\rput[rt](0,0){BeamLow}}
+  \psdot(\oenodeBeamUp{})\psdot(\oenodeBeamLow{})
+  \uput[90](\oenodeBeamUp{}){\rput[rb](0,0){BeamUp}}
+  \uput[-90](\oenodeBeamLow{}){\rput[rt](0,0){BeamLow}}
   \drawwidebeam[beamwidth=0.5, skipconn=1]{(A)}{}{(B)}
-  \psdot(\oenodeBeamUp)\psdot(\oenodeBeamLow)
-  \uput[90](\oenodeBeamUp){\rput[rb](0,0){BeamUp}}
-  \uput[-90](\oenodeBeamLow){\rput[rt](0,0){BeamLow}}
+  \psdot(\oenodeBeamUp{})\psdot(\oenodeBeamLow{})
+  \uput[90](\oenodeBeamUp{}){\rput[rb](0,0){BeamUp}}
+  \uput[-90](\oenodeBeamLow{}){\rput[rt](0,0){BeamLow}}
 \end{pspicture}
 
 \begin{pspicture}(4,3)
@@ -956,7 +959,7 @@ Czerny-Turner monochromator
 \end{LTXexample}
 
 \begin{pspicture}[showgrid=true](0,-0.5)(12,2.5)
-\psset{couplersize=0.5, couplertype=rectangular, couplersep=0.2}
+\psset{couplersize=0.5, couplertype=rectangle, couplersep=0.2}
 \wdmsplitter(0, 1)(3,2)(3,0)
 \psdot(\oenodeIfc{1}{})\uput[180](\oenodeIfc{1}{}){1}
 \psdot(\oenodeIfc{2}{})\uput[0](\oenodeIfc{2}{}){2}
