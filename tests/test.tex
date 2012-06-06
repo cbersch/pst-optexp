@@ -67,6 +67,41 @@
 \providecommand\OFF{\xdef\lst@alloverstyle##1{##1}}
 \makeatother
 \begin{document}
+\begin{pspicture*}[showgrid](0,2)(3.05,6)
+  \optplane(0,2)
+  \lens[lens=8 8 8, abspos=0.6](0.5,2)(3,2)
+  \optplate[position=1, plateheight=6](0.5,2)(3,2)
+  \drawbeam[beampos=3, linestyle=dashed]{-}
+  \drawbeam[beampos=3, savebeam]{1-2}
+  \drawbeam[loadbeam, linecolor=red]{2-3}
+  \drawbeam[loadbeam, startinside]{2-3}
+\end{pspicture*}
+\end{document}
+\begin{pspicture}(3.5,3.5)
+  \pnode(0,0.5){A}\pnode(2,0.5){B}\pnode(2,3){C}
+  \optgrating(A)(B)(C)
+  \addtopsstyle{Beam}{%
+    fillstyle=solid, fillcolor=green, opacity=0.3}
+  \drawwidebeam[savebeam, beamwidth=0.3]{(A)}{1}
+  \psset{savebeam=false, loadbeam}
+  \drawwidebeam[beamangle=-20]{1}{(C)}
+  \drawwidebeam{1}{(C)}
+  \drawwidebeam[beamangle=20]{1}{(C)}
+  \rput[b]([offset=0.2]C){0th}
+  \rput[b]([Xnodesep=-0.9, offset=0.2]C){1st}
+  \rput[b]([Xnodesep=0.9,offset=0.2]C){-1st}
+\end{pspicture}
+\end{document}
+\begin{pspicture}(3,2.7)
+  \pnode(0,1){A}\pnode(3,1){B}
+  \optplate[position=start](A)(B)
+  \lens[lens=4 4 2, abspos=0.5, n=2.5](A)(B)
+  \optplate[position=end, plateheight=0.5](A)(B)
+  \drawbeam{-}
+  \drawbeam[beampos=0.2]{-}
+  \drawbeam[beampos=0.4, linecolor=red]{-}
+\end{pspicture}
+\end{document}
 \begin{pspicture}[showgrid](3,2)
   \pnode(0,1){A}\pnode(2.5,1){B}
   \lens[lens=3 3 2, n=2.5, abspos=0.5](A)(B)
@@ -83,7 +118,7 @@
   \drawbeam{(A)}{-}
   \drawbeam[beampos=-0.3]{(A)}{-}
 \end{pspicture}
-\end{document}
+
 \begingroup
 \psset{unit=2}
 \begin{pspicture}[showgrid](0.3,0.1)(4.8,1.6)
