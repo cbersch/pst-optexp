@@ -18,7 +18,7 @@
 %<stylefile>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<stylefile>\ProvidesPackage{pst-optexp}
 %<*stylefile>
-    [2012/05/24 v3.0beta Optical experimental setups with PSTricks]
+    [2012/08/06 v3.0beta Optical experimental setups with PSTricks]
 %</stylefile>
 %
 %<*driver>
@@ -6028,7 +6028,8 @@
 % \ifENGLISH\section{Drawing fibers}\fi
 % \label{sec:drawfiber}
 %
-% All available components can be connected with fiber connections, the fiber-optical components are connected automatically.
+% All available components can be connected with fiber connections, the
+% fiber-optical components are connected automatically.
 %
 % \begin{ltxsyntax}
 %   \xLcs{drawfiber}\cmditem{drawfiber}[options]{obj$_1$}{obj$_2$}\ldots
@@ -6039,12 +6040,75 @@
 % possible. If you specify more than two arguments, you get connections 1--2,
 % 2--3, and so on.
 %
+% \subsection{Fiber appearance}\label{sec:fiberapperance}
+%
+% \begin{stylelist}
+%   \styleitem{Fiber}
+%   The appearance of fibers is controlled with this style. The optional argument
+%   of \Lcs{drawfiber} can used as well, these options overwrite settings from
+%   the \Lstyle{Fiber} style.
+% \end{stylelist}
+%
+% \begin{optionlist}
+%   \valitem{addtoFiber}{list}
+%     \addtostylemsg{Fiber}
+%   \valitem{newFiber}{list}
+%     \newstylemsg{Fiber}
+% 
+%   \valitem[curve]{fiberstyle}{string}
+%   \ifGERMAN
+%   \fi
+%   \ifENGLISH 
+%   The fibers are usually drawn as \Lcs*{nccurve}, but any type of node
+%   connection \nxLcs{nc}\prm{string} from \LPack{pst-node} can be selected with
+%   this parameter, see the \LPack{pst-node} documentation for possible
+%   values. The following examples show possible use cases,
+%   \prettyref{ex:transmission-loop} contains another typical use case.
+%   \fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[morekeywords={[21]fiberstyle}]
+\begin{pspicture}(3,3)
+  \pnode(1, 0.5){A}\pnode(2.5,0.5){B}\pnode(2.5,2){C}
+  \psset{fiber=none, optboxsize=1 0.6, innerlabel}
+  \optbox[position=start](A)(B){start}
+  \optbox[position=end](B)(C){stop}
+  \drawfiber[fiberstyle=diag, linearc=0.5]{1}{2}
+\end{pspicture}
+\end{LTXexample}
+
+\begin{LTXexample}[morekeywords={[21]fiberstyle}]
+\begin{pspicture}(4,2.5)
+  \pnode(1,2.5){In}\pnode(3,2.5){Out}
+  \pnode(0,2){A}\pnode(4,2){B}\pnode(4,0){C}\pnode(0,0){D}
+  \optcoupler[fiber=t, addtoFiber={ArrowInside=->}, coupleralign=b](In)(A)(Out)(B)
+  \psset{fiber=none}
+  \optamp[position=0.35](C)(D)
+  \optfiber[position=0.35](D)(C)
+  \drawfiber{2}{3}
+  \addtopsstyle{Fiber}{fiberstyle=bar, linearc=0.5, armA=1.5}
+  \drawfiber[stopnode=1]{1}{2}
+  \drawfiber[stopnode=1]{1}{3}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+% \end{optionlist}
+% 
+% \subsection{Fiber angles}\label{sec:drawfiber-angles}
+%
 % The fibers are usually drawn as \Lcs*{nccurve} connections, the angles at both
 % curve ends are determined automatically and depend on whether you connect a
 % component with a component, a node with a component, or a node with a node.
 % 
 % \minisec{Node with component}
-% A connection of a component with a node is what is used for automatic connections (see \prettyref{sec:drawfiber-auto}). Consider the following example for clarification of the curve alignment:
+%
+% A connection of a component with a node is what is used for automatic
+% connections (see \prettyref{sec:drawfiber-auto}). Consider the following
+% example for clarification of the curve alignment:
+%
 % \iffalse
 %<*ignore>
 % \fi
@@ -6065,9 +6129,33 @@
 %</ignore>
 % \fi
 % 
+% The angle at the component itself agrees with the transformed reference line.
 % The angle at the node corresponds to the angle of the reference line of the
-% component which it gets connected to. The angle at the component itself agrees
-% with the transformed reference line.
+% component which it gets connected to. The fiber is directed to the component
+% node, what is illustrated in the following example.
+%
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[linerange={1-1,4-4,7-14}]
+\begin{pspicture}(-2,-1.6)(2,2)
+  \psset[optexp]{optboxsize=1.6 0.8}
+  \addtopsstyle{Fiber}{ArrowInside=->, arrowscale=1.5}
+  \optbox[position=end](0,1)(0,0)
+  \psarc[fillstyle=solid,fillcolor=gray!20, linestyle=none](0,0){2}{0}{180}
+  \psline[linestyle=dashed]([Xnodesep=-2]\oenodeIn{})([Xnodesep=2]\oenodeIn{})
+  \addtopsstyle{Fiber}{linecolor=green!90!black}
+  \multido{\i=10+40}{5}{%
+    \drawfiber{(2;\i)}{}
+  }
+  \addtopsstyle{Fiber}{linecolor=red!90!black}
+  \drawfiber{(2;-20)}{}
+  \drawfiber{(2;200)}{}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 %
 % \minisec{Component with component}
 % This variant is very helpful to achieve smoother connections between
@@ -6075,7 +6163,8 @@
 % maybe in a loop or similar.
 %
 % In this case, the curve angles are determined by the component which the
-% respective curve end is connected to.
+% respective curve end is connected to. The fibers are always directed away from
+% the component center.
 %
 % \iffalse
 %<*ignore>
@@ -6099,15 +6188,6 @@
 %
 % These automatically calculated start and stop angles can be changed in a variety of ways.
 % \begin{optionlist}
-%   \numitem[0]{fiberangleA}
-%   An additive value for the starting angle, the total angle depends on
-%   \Lkeyword{fiberalign}. If this parameter is set to \opt{absolute}, then
-%   \Lkeyword{fiberangleA} is the total angle, otherwise its value is added to
-%   the calculated angle.
-%
-%   \numitem[0]{fiberangleB}
-%   Like \Lkeyword{fiberangleA}, but for the end angle.
-%
 %   \choitem[relative]{fiberalign}{rel,relative,center,abs,absolute}
 %   Set the reference for the fiber angles.
 %   \begin{valuelist}
@@ -6177,49 +6257,14 @@
 % \fi
 %   \end{valuelist}
 %
-%   \valitem[curve]{fiberstyle}{string}
-%   \ifGERMAN
-%   \fi
-%   \ifENGLISH 
-%   Select the type of node connection \nxLcs{nc}\prm{string} which is used by
-%   \Lcs{drawfiber}, see \LPack{pst-node} documentation for possible values. \prettyref{ex:transmission-loop} shows another use case.
-%   \fi
-% \iffalse
-%<*ignore>
-% \fi
-\begin{LTXexample}[morekeywords={[21]fiberstyle}]
-\begin{pspicture}(3,3)
-  \pnode(1, 0.5){A}\pnode(2.5,0.5){B}\pnode(2.5,2){C}
-  \psset{fiber=none, optboxsize=1 0.6, innerlabel}
-  \optbox[position=start](A)(B){start}
-  \optbox[position=end](B)(C){stop}
-  \drawfiber[fiberstyle=diag, linearc=0.5]{1}{2}
-\end{pspicture}
-\end{LTXexample}
-% \iffalse
-%</ignore>
-% \fi
+%   \numitem[0]{fiberangleA}
+%   An additive value for the starting angle, the total angle depends on
+%   \Lkeyword{fiberalign}. If this parameter is set to \opt{absolute}, then
+%   \Lkeyword{fiberangleA} is the total angle, otherwise its value is added to
+%   the calculated angle.
 %
-% \iffalse
-%<*ignore>
-% \fi
-\begin{LTXexample}[morekeywords={[21]fiberstyle}]
-\begin{pspicture}(4,2.5)
-  \pnode(1,2.5){In}\pnode(3,2.5){Out}
-  \pnode(0,2){A}\pnode(4,2){B}\pnode(4,0){C}\pnode(0,0){D}
-  \optcoupler[fiber=t, addtoFiber={ArrowInside=->}, coupleralign=bottom](In)(A)(Out)(B)
-  \psset{fiber=none}
-  \optamp[position=0.35](C)(D)
-  \optfiber[position=0.35](D)(C)
-  \drawfiber{2}{3}
-  \addtopsstyle{Fiber}{fiberstyle=bar, linearc=0.5, armA=1.5}
-  \drawfiber[stopnode=1]{1}{2}
-  \drawfiber[stopnode=1]{1}{3}
-\end{pspicture}
-\end{LTXexample}
-% \iffalse
-%</ignore>
-% \fi
+%   \numitem[0]{fiberangleB}
+%   Like \Lkeyword{fiberangleA}, but for the end angle.
 % 
 %   \choitem[auto]{startnode}{auto, N, 1, 2, \ldots}
 % \ifGERMAN Für die Verbindungen mit \Lcs{drawfiber} werden für üblicherweise
@@ -6233,6 +6278,7 @@
 %   \choitem[auto]{stopnode}{auto, N, 1, 2, \ldots}
 %   \ifGERMAN Genau wie \Lkeyword{startnode}, aber für den Stopknoten.\fi
 %   \ifENGLISH Like \Lkeyword{startnode}, but for the stop node.\fi
+% \end{optionlist}
 %
 % \begin{enumerate}
 % \item This example shows a situation, where choosing the nearest nodes is correct.
@@ -6252,7 +6298,9 @@
 %</ignore>
 % \fi
 %
-% \item In this case, the nearest connection is not well defined
+% \item In this case, the nearest connection is not well defined because two
+%   connections have the same length.
+%
 % \iffalse
 %<*ignore>
 % \fi
@@ -6269,7 +6317,11 @@
 %</ignore>
 % \fi
 %
-% \item use startnode
+% \item To select the desired connection, it can be enough to set either
+%   \Lkeyword{startnode} or \Lkeyword{stopnode}. With this you fix one node, the
+%   other is the one nearest to it. In rare cases it might be necessary to set
+%   both nodes.
+%
 % \iffalse
 %<*ignore>
 % \fi
@@ -6287,39 +6339,113 @@
 %</ignore>
 % \fi
 % 
-% \item Another example
+% \item Another example where you need to specify the startnode.
 %
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}[morekeywords={[21]startnode}]
+\begin{LTXexample}[morekeywords={[21]startnode}, caption={caption}, label={ex:nalm}]
 \begin{pspicture}(2.1,3)
-\pnode(0,0){A}\pnode(2,0){B}
-\pnode(0.3,3){C}\pnode(1.7,3){D}
-\psset{fiber=none}
-\optcoupler[fiber=l,
-            addtoFiberIn1={angleA=0, ArrowInside=->},
-            addtoFiberIn2={angleA=180, arrows=<-},
-            abspos=0.5, compname=Cpl](A)(B)(C)(D)
-\optfiber[compname=Hnlf, abspos=1](C)(C|A)
-\optamp[abspos=2, compname=Amp](D|B)(D)
-\drawfiber{Cpl}{Hnlf}
-\drawfiber[startnode=1, ncurv=1.2]{Hnlf}{Amp}
-\drawfiber{Cpl}{Amp}
+  \pnode(0,0){A}\pnode(2,0){B}
+  \pnode(0.3,3){C}\pnode(1.7,3){D}
+  \psset{fiber=none}
+  \optcoupler[fiber=l,
+                addtoFiberIn1={angleA=0, ArrowInside=->},
+                addtoFiberIn2={angleA=180, arrows=<-},
+                abspos=0.5, compname=Cpl](A)(B)(C)(D)
+  \optfiber[compname=Hnlf, abspos=1](C)(C|A)
+  \optamp[abspos=2, compname=Amp](D|B)(D)
+  \drawfiber{Cpl}{Hnlf}
+  \drawfiber[startnode=1, ncurv=1.2]{Hnlf}{Amp}
+  \drawfiber{Cpl}{Amp}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
 %</ignore>
 % \fi
 % \end{enumerate}
-% \end{optionlist}
 %
 % \subsection{Automatic fiber connections}\label{sec:drawfiber-auto}
 %
 % All fiber-optical components described in \prettyref{chap:fibercomp} are
-% connected automatically to their reference nodes with \Lcs*{pccurve}. The
-% styles of the fiber connections can be configured independently by the
-% styles shown in \prettyref{fig:fiberstyles}.
+% connected automatically to their reference nodes with a \Lcs*{nccurve}
+% connection, their behaviour is described in
+% \prettyref{sec:drawfiber-angles}. The fiber connections can be controlled in a
+% number of ways, without need to explicitely use \Lcs{drawfiber}. The styles of
+% the fiber connections can be configure independently, see
+% \prettyref{sec:drawfiber-auto-styles}.
+%
+% \begin{optionlist}
+% \choitem[all]{fiber}{none,all,i,o,\prm{refpoint}}
+% The free-ray components can also be connected with fibers, typical components
+% are \Lcs{optbox} and \Lcs{optdetector}. This parameter enables
+% automatic fiber connections also for them and you can choose which output
+% fibers are drawn. All fiber-components are affected by this parameter as well.
+%
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[morekeywords={[21]{fiber}}]
+\begin{pspicture}(3,2)
+  \optbox[fiber](0,1)(3,1)
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
+% The values \opt{t} and \opt{b} affect only components which have more than two
+% fibers, i.e \Lcs{optcirculator} and the couplers
+% (\prettyref{sec:coupler}). The value \opt{l} is equivalent to \opt{i} (for
+% input), \opt{r} is equivalent to \opt{o} (for output).
+%
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[morekeywords={[21]{fiber}}]
+\begin{pspicture}(3,1)
+  \optcoupler[fiber=t](0,1)(0,0)(3,1)(3,0)
+\end{pspicture}
+\end{LTXexample}
+
+\begin{LTXexample}[morekeywords={[21]{fiber}}]
+\begin{pspicture}(3,1)
+  \wdmsplitter[fiber=br](0,0.5)(3,1)(3,0)
+\end{pspicture}
+\end{LTXexample}
+
+\begin{LTXexample}[morekeywords={[21]{fiber}}]
+\begin{pspicture}(3,1)
+  \optbox[fiber=i](0,0.5)(3,0.5)
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
+%   \choitem[all]{fiber*}{none, all, \prm{refpoint}} Choose which output fiber
+%   connections to draw automatically. The values \opt{top} and \opt{bottom}
+%   affect only \Lcs{optcoupler} and \Lcs{wdmsplitter}.
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[morekeywords={[21]{fiber}}]
+\begin{pspicture}(4,2)
+  \psset{fiber*}
+  \optbox(0,1)(2,1)
+  \optmzm(2,1)(4,1)
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+% \end{optionlist}
+%
+%
+% \subsection{Appearance of automatic fiber connections}\label{sec:drawfiber-auto-styles}
+%
+% The styles of
+% the fiber connections can be configure independently.
 %
 % \begin{figure}\centering
 % \begin{pspicture}(12,4.4)
@@ -6369,7 +6495,6 @@
 %
 % \begin{stylelist}
 % \item[\smash{\begin{tabular}[t]{@{}r@{}}\opt{new}\prm{style}\\\opt{addto}\prm{style}\end{tabular}}]
-%   \xLkeyword{newFiber}\xLkeyword{addtoFiber}
 %   \xLkeyword{newFiberIn}\xLkeyword{addtoFiberIn}
 %   \xLkeyword{newFiberIn1}\xLkeyword{addtoFiberIn1}
 %   \xLkeyword{newFiberIn2}\xLkeyword{addtoFiberIn2}
@@ -6397,39 +6522,6 @@
 %</ignore>
 % \fi
 % \end{stylelist}
-%
-% \begin{optionlist}
-% \choitem[all]{fiber}{none,all,\prm{refpoint}}
-%   Some components can be used either for free-ray or
-%   fiber-optical setups (\Lcs{optbox}, \Lcs{optdetector}). The \nxLkeyword{fiber}
-%   parameter enables automatic fiber connections for them.
-% \iffalse
-%<*ignore>
-% \fi
-\begin{LTXexample}[morekeywords={[21]{fiber}}]
-\begin{pspicture}(3,2)
-  \optbox[fiber](0,1)(3,1)
-\end{pspicture}
-\end{LTXexample}
-% \iffalse
-%</ignore>
-% \fi
-%
-%   \choitem[all]{fiber*}{none, all, \prm{refpoint}} Choose which output fiber
-%   connections to draw automatically. The values \opt{top} and \opt{bottom}
-%   affect only \Lcs{optcoupler} and \Lcs{wdmsplitter}.
-% \iffalse
-%<*ignore>
-% \fi
-\begin{LTXexample}[morekeywords={[21]{fiber}}]
-\begin{pspicture}(3,2)
-  \wdmsplitter[fiber=br](0,1)(3,2)(3,0)
-\end{pspicture}
-\end{LTXexample}
-% \iffalse
-%</ignore>
-% \fi
-% \end{optionlist}
 %
 %
 % \ifGERMAN\section{Zeichenebenen}\fi
