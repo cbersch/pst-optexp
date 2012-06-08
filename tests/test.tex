@@ -66,7 +66,53 @@
 }}
 \providecommand\OFF{\xdef\lst@alloverstyle##1{##1}}
 \makeatother
+\colorlet{Refline}{gray!60}
+\newpsstyle{Refline}{linecolor=gray!60}
 \begin{document}
+\begin{pspicture}(4,3)
+  \pnode(0,0.5){A}\pnode(2,0.5){B}
+  \pnode([offset=1]B){C}\pnode(A|C){D}
+  \psset{label=0}
+  \optbox(A)(B){Box1}\optbox(C)(D){Box2}
+  \drawfiber{1}{2}
+\end{pspicture}
+
+\begin{pspicture}(3,2)
+  \addtopsstyle{Fiber}{arrowscale=1.3, arrows=->, arrowinset=0}
+  \optcirculator[fiber=t](0,0.5)(1.5,0)(3,2)
+  \drawfiber[linecolor=red]{}{(1.5,0)}
+  \drawfiber[fiberalign=center, linecolor=green]{}{(1.5,0)}
+\end{pspicture}
+
+\begin{pspicture}(0,-0.8)(7,0.8)
+  \pnode(0,0){A}\pnode(3,0){B}
+  \pnode(4,0){C}\pnode(7,0){D}
+  \optbox[angle=30](A)(B)
+  \optbox[angle=-30](C)(D)
+  \psline[style=Refline, linestyle=dashed](\oenodeTrefA{1})(\oenodeTrefB{1})
+  \psline[style=Refline, linestyle=dashed](\oenodeTrefA{2})(\oenodeTrefB{2})
+  \psline[style=Refline, linestyle=dashed](\oenodeRefA{1})(\oenodeRefB{2})
+  \psdot(\oenodeRefA{1})\psdot(\oenodeRefB{2})
+  \drawfiber[fiberalign=abs]{(A)}{1}{2}{(D)}
+\end{pspicture}
+\end{document}
+\begin{pspicture}(-1,0)(7,2.4)
+  \optbox[fiber, angle=30](0,1)(4,1)
+  \psdot(\oenodeRefA{})\psdot(\oenodeRefB{})
+  \psset{style=Refline, linestyle=dashed}
+  \psline(\oenodeTrefA{})(\oenodeTrefB{})
+\end{pspicture}
+
+\begin{pspicture}(-1,0)(7,2.4)
+  \optbox[fiber=l, angle=30](0,1)(3,1)
+  \psdot(\oenodeRefA{})
+  \psline[style=Refline, linestyle=dashed](\oenodeTrefA{})(\oenodeTrefB{})
+  \optbox[angle=-30, fiber=r](4,1)(7,1)
+  \psdot(\oenodeRefB{})
+  \psline[style=Refline, linestyle=dashed](\oenodeTrefA{})(\oenodeTrefB{})
+  \drawfiber{1}{2}
+\end{pspicture}
+\end{document}
 \begin{pspicture*}[showgrid](0,2)(3.05,6)
   \optplane(0,2)
   \lens[lens=8 8 8, abspos=0.6](0.5,2)(3,2)
@@ -754,14 +800,6 @@ Die erste Linse soll konkav gekrümmte Grenzflächen haben. Mit \Lkeyword{lensradi
     \psline[linewidth=0.5\pslinewidth](-0.1,\r)(0.1,\r)
   }%
 }
-\end{pspicture}
-
-\begin{pspicture}(4,3)
-  \pnode(0,0.5){A}\pnode(2,0.5){B}
-  \pnode([offset=1]B){C}\pnode(A|C){D}
-  \psset{label=0}
-  \optbox(A)(B){Box1}\optbox(C)(D){Box2}
-  \drawfiber{1}{2}
 \end{pspicture}
 
 Czerny-Turner monochromator

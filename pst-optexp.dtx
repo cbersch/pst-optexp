@@ -706,7 +706,7 @@
 % \ifENGLISH
 %   \chapter{Introduction}
 % \fi
-%
+% 
 % \ifGERMAN
 %   \section{Über das Paket}
 %   \LPack{pst-optexp} ist ein PSTricks-Paket zum Skizzieren optischer
@@ -2986,10 +2986,10 @@
 % \end{ltxsyntax}
 %
 % \ifENGLISH Before package version 3.0 this component was called
-% \Lcs{optgrid}. Since then this command name is deprecated and will be removed
+% \Lcs*{optgrid}. Since then this command name is deprecated and will be removed
 % in future versions.
 % \fi
-% \ifGERMAN Vor Paketversion 3.0 hieß diese Komponente \Lcs{optgrid}. Seitdem
+% \ifGERMAN Vor Paketversion 3.0 hieß diese Komponente \Lcs*{optgrid}. Seitdem
 % ist diese Benennung veraltet und wird in zukünftigen Versionen entfernt
 % werden.
 % \fi
@@ -5149,11 +5149,14 @@
 % Setzt den Brechungsindex relativ zum Hintergrund. Diese Option hat zwei
 % Anwendungsbereiche: zum einen kann der Index einer Komponente gesetzt werden,
 % zum anderen der Brechungsindex für einen Strahlengang:
+% \begin{enumerate}
+% \item
+% \item
+% \end{enumerate}
 % \fi
 % \ifENGLISH Sets the relative refractive index respect to the background. This
 % parameter has two scopes, you can either set the refractive index of each
 % component or of each beam ray: 
-% \end{optionlist}
 % \begin{enumerate}
 % \item Using \Lkeyword{n} as global parameter or as argument of a component,
 %   sets a fixed refractive index for each affected components, without further
@@ -5166,13 +5169,7 @@
 %   \Lkeyword{n} affect only the components and not the beams.
 % \end{enumerate}
 % \fi
-% \ifGERMAN
 % \end{optionlist}
-% \begin{enumerate}
-% \item
-% \item
-% \end{enumerate}
-% \fi
 %
 % The \prm{code} can in general be any Postscript code which evaluates to a
 % number, e.g. \opt{1.5}, or \opt{5 sqrt}. If the \prm{code} starts with a star
@@ -6026,17 +6023,296 @@
 % \fi
 % \end{optionlist}
 %
+% \newpage
 % \ifGERMAN\section{Faserverbindungen}\fi
 % \ifENGLISH\section{Drawing fibers}\fi
 % \label{sec:drawfiber}
-% 
-% Fiber-optical components are automatically connected to the reference
-% nodes. The style of all fiber connections can be configured
-% independently (see \prettyref{fig:fiberstyles}).
 %
-% This works quiet well if the components are aligned in series, but ceases to
-% give good result for more complicated situations (e.g. loop setups). In that
-% case individual fibers can be omitted and drawn separately.
+% All available components can be connected with fiber connections, the fiber-optical components are connected automatically.
+%
+% \begin{ltxsyntax}
+%   \xLcs{drawfiber}\cmditem{drawfiber}[options]{obj$_1$}{obj$_2$}\ldots
+% \end{ltxsyntax}
+% 
+% The \Lcs{drawfiber} command takes IDs or nodes as \prm{obj$_N$} arguments (see
+% \prettyref{sec:accessobj}), but ID ranges like with \Lcs{drawbeam} are not
+% possible. If you specify more than two arguments, you get connections 1--2,
+% 2--3, and so on.
+%
+% The fibers are usually drawn as \Lcs*{nccurve} connections, the angles at both
+% curve ends are determined automatically and depend on whether you connect a
+% component with a component, a node with a component, or a node with a node.
+% 
+% \minisec{Node with component}
+% A connection of a component with a node is what is used for automatic connections (see \prettyref{sec:drawfiber-auto}). Consider the following example for clarification of the curve alignment:
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[linerange={1-3,10-11}]
+\begin{pspicture}(-1,-0.7)(7,2.7)
+  \pnode(0,1){A}\pnode(6,1){B}
+  \optbox[angle=30](A)(B)
+  \psdot(\oenodeRefA{})\uput[180](\oenodeRefA{}){RefA}%
+  \psdot(\oenodeRefB{})\uput[0](\oenodeRefB{}){RefB}%
+  \psdot(\oenodeTrefA{})\uput[180](\oenodeTrefA{}){TrefA}%
+  \psdot(\oenodeTrefB{})\uput[0](\oenodeTrefB{}){TrefB}%
+  \psline[style=Refline, linestyle=dashed](\oenodeTrefA{})(\oenodeTrefB{})
+  \psline[style=Refline, linestyle=dashed](\oenodeRefA{})(\oenodeRefB{})
+  \drawfiber{(A)}{}{(B)}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+% 
+% The angle at the node corresponds to the angle of the reference line of the
+% component which it gets connected to. The angle at the component itself agrees
+% with the transformed reference line.
+%
+% \minisec{Component with component}
+% This variant is very helpful to achieve smoother connections between
+% components which are not aligned on the same reference line, but are arranged
+% maybe in a loop or similar.
+%
+% In this case, the curve angles are determined by the component which the
+% respective curve end is connected to.
+%
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[linerange={1-5,10-11}]
+\begin{pspicture}(0,-0.8)(7,0.8)
+  \pnode(0,0){A}\pnode(3,0){B}
+  \pnode(4,0){C}\pnode(7,0){D}
+  \optbox[angle=30](A)(B)
+  \optbox[angle=-30](C)(D)
+  \psline[style=Refline, linestyle=dashed](\oenodeTrefA{1})(\oenodeTrefB{1})
+  \psline[style=Refline, linestyle=dashed](\oenodeTrefA{2})(\oenodeTrefB{2})
+  \psline[style=Refline, linestyle=dashed](\oenodeRefA{1})(\oenodeRefB{2})
+  \psdot(\oenodeRefA{1})\psdot(\oenodeRefB{2})
+  \drawfiber{(A)}{1}{2}{(D)}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
+% These automatically calculated start and stop angles can be changed in a variety of ways.
+% \begin{optionlist}
+%   \numitem[0]{fiberangleA}
+%   An additive value for the starting angle, the total angle depends on
+%   \Lkeyword{fiberalign}. If this parameter is set to \opt{absolute}, then
+%   \Lkeyword{fiberangleA} is the total angle, otherwise its value is added to
+%   the calculated angle.
+%
+%   \numitem[0]{fiberangleB}
+%   Like \Lkeyword{fiberangleA}, but for the end angle.
+%
+%   \choitem[relative]{fiberalign}{rel,relative,center,abs,absolute}
+%   Set the reference for the fiber angles.
+%   \begin{valuelist}
+%   \item[relative] The fiber angles are relative to the component. When
+%     connecting a node to a component, the angle at the node is that of the
+%     component reference line. The angle at the component agrees with that of
+%     its transformed reference line.
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[linerange={1-5,10-11}]
+\begin{pspicture}(0,-0.8)(7,0.8)
+  \pnode(0,0){A}\pnode(3,0){B}
+  \pnode(4,0){C}\pnode(7,0){D}
+  \optbox[angle=30](A)(B)
+  \optbox[angle=-30](C)(D)
+  \psline[style=Refline, linestyle=dashed](\oenodeTrefA{1})(\oenodeTrefB{1})
+  \psline[style=Refline, linestyle=dashed](\oenodeTrefA{2})(\oenodeTrefB{2})
+  \psline[style=Refline, linestyle=dashed](\oenodeRefA{1})(\oenodeRefB{2})
+  \psdot(\oenodeRefA{1})\psdot(\oenodeRefB{2})
+  \drawfiber{(A)}{1}{2}{(D)}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
+% \item[center] The fiber angles, both at a node and at a component, are
+%   relative to the connection between the involved component node and the
+%   component center node. In most cases this is equivalent to \opt{relative},
+%   but necessary e.g. for \Lcs{optcirculator}. In the example, the green fiber
+%   shows the correct alignment, while the red one is with \opt{relative}
+%   alignment.
+%
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[morekeywords={[21]fiberalign}]
+\begin{pspicture}(3,2)
+  \addtopsstyle{Fiber}{arrowscale=1.3, arrows=->, arrowinset=0}
+  \optcirculator[fiber=t](0,0.5)(1.5,0)(3,2)
+  \drawfiber[linecolor=red]{}{(1.5,0)}
+  \drawfiber[fiberalign=center, linecolor=green]{}{(1.5,0)}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
+%     \item[absolute] The fiber angles are absolute, no automatic values are added.
+%
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[morekeywords={[21]fiberalign}, linerange={1-3,7-8}]
+\begin{pspicture}(0,-1)(4,1)
+  \pnode(0,0){A}\pnode(4,0){B}
+  \optbox[angle=30](A)(B)
+  \psline[style=Refline, linestyle=dashed](\oenodeTrefA{})(\oenodeTrefB{})
+  \psline[style=Refline, linestyle=dashed](\oenodeRefA{})(\oenodeRefB{})
+  \psdot(\oenodeRefA{})\psdot(\oenodeRefB{})
+  \drawfiber[fiberalign=abs, ncurv=1.5]{(A)}{}{(B)}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%   \end{valuelist}
+%
+%   \valitem[curve]{fiberstyle}{string}
+%   \ifGERMAN
+%   \fi
+%   \ifENGLISH 
+%   Select the type of node connection \nxLcs{nc}\prm{string} which is used by
+%   \Lcs{drawfiber}, see \LPack{pst-node} documentation for possible values. \prettyref{ex:transmission-loop} shows another use case.
+%   \fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[morekeywords={[21]fiberstyle}]
+\begin{pspicture}(3,3)
+  \pnode(1, 0.5){A}\pnode(2.5,0.5){B}\pnode(2.5,2){C}
+  \psset{fiber=none, optboxsize=1 0.6, innerlabel}
+  \optbox[position=start](A)(B){start}
+  \optbox[position=end](B)(C){stop}
+  \drawfiber[fiberstyle=diag, linearc=0.5]{1}{2}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[morekeywords={[21]fiberstyle}]
+\begin{pspicture}(4,2.5)
+  \pnode(1,2.5){In}\pnode(3,2.5){Out}
+  \pnode(0,2){A}\pnode(4,2){B}\pnode(4,0){C}\pnode(0,0){D}
+  \optcoupler[fiber=t, addtoFiber={ArrowInside=->}, coupleralign=bottom](In)(A)(Out)(B)
+  \psset{fiber=none}
+  \optamp[position=0.35](C)(D)
+  \optfiber[position=0.35](D)(C)
+  \drawfiber{2}{3}
+  \addtopsstyle{Fiber}{fiberstyle=bar, linearc=0.5, armA=1.5}
+  \drawfiber[stopnode=1]{1}{2}
+  \drawfiber[stopnode=1]{1}{3}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+% 
+%   \choitem[auto]{startnode}{auto, N, 1, 2, \ldots}
+% \ifGERMAN Für die Verbindungen mit \Lcs{drawfiber} werden für üblicherweise
+% die Knoten genommen, die sich am nächsten sind. Das passt häufig, aber nicht
+% immer. Hiermit kann der Startknoten explizit gewählt werden.
+% \fi
+% \ifENGLISH The connections with \Lcs{drawfiber} are drawn usually between the
+% two nodes which are closest to each other. This fits most of the time, but not
+% always. With this option you can choose the start node explicitely.
+% \fi
+%   \choitem[auto]{stopnode}{auto, N, 1, 2, \ldots}
+%   \ifGERMAN Genau wie \Lkeyword{startnode}, aber für den Stopknoten.\fi
+%   \ifENGLISH Like \Lkeyword{startnode}, but for the stop node.\fi
+%
+% \begin{enumerate}
+% \item This example shows a situation, where choosing the nearest nodes is correct.
+% 
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(3,2)
+  \pnode(-0.5,1){A}\pnode(1.5,1){B}\pnode(3.5,1){C}
+  \psset{label=0, optboxwidth=1}
+  \optbox(A)(B){Box1}\optbox(B)(C){Box2}
+  \drawfiber{1}{2}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
+% \item In this case, the nearest connection is not well defined
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(3,2)
+  \pnode(0,0.5){A}\pnode(3,0.5){B}
+  \pnode([offset=1]B){C}\pnode(A|C){D}
+  \psset{label=0}
+  \optbox(A)(B){Box1}\optbox(C)(D){Box2}
+  \drawfiber{1}{2}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
+% \item use startnode
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[morekeywords={[21]startnode}]
+\begin{pspicture}(2,2)
+  \pnode(0,0.5){A}\pnode(2,0.5){B}
+  \pnode([offset=1]B){C}\pnode(A|C){D}
+  \psset{label=0}
+  \optbox(A)(B){Box1}\optbox(C)(D){Box2}
+  \drawfiber[startnode=1]{1}{2}
+  \drawfiber[startnode=N, linecolor=black]{1}{2}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+% 
+% \item Another example
+%
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[morekeywords={[21]startnode}]
+\begin{pspicture}(2.1,3)
+\pnode(0,0){A}\pnode(2,0){B}
+\pnode(0.3,3){C}\pnode(1.7,3){D}
+\psset{fiber=none}
+\optcoupler[fiber=l,
+            addtoFiberIn1={angleA=0, ArrowInside=->},
+            addtoFiberIn2={angleA=180, arrows=<-},
+            abspos=0.5, compname=Cpl](A)(B)(C)(D)
+\optfiber[compname=Hnlf, abspos=1](C)(C|A)
+\optamp[abspos=2, compname=Amp](D|B)(D)
+\drawfiber{Cpl}{Hnlf}
+\drawfiber[startnode=1, ncurv=1.2]{Hnlf}{Amp}
+\drawfiber{Cpl}{Amp}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+% \end{enumerate}
+% \end{optionlist}
 %
 % \subsection{Automatic fiber connections}\label{sec:drawfiber-auto}
 %
@@ -6148,197 +6424,6 @@
 \begin{LTXexample}[morekeywords={[21]{fiber}}]
 \begin{pspicture}(3,2)
   \wdmsplitter[fiber=br](0,1)(3,2)(3,0)
-\end{pspicture}
-\end{LTXexample}
-% \iffalse
-%</ignore>
-% \fi
-% \end{optionlist}
-%
-% \minisec{Fiber angles}
-%
-% The angles of the fiber connections are calculated automatically from the
-% orientation of the component. The automatic connections are a special case of
-% \Lcs{drawfiber} from a node to a component, see
-% \prettyref{sec:drawfiber-manual} for detail.
-% 
-% \subsection{Manual fiber connections}\label{sec:drawfiber-manual}
-%
-% \begin{ltxsyntax}
-%   \xLcs{drawfiber}\cmditem{drawfiber}[Options]{Obj$_1$}{Obj$_2$}
-% \end{ltxsyntax}
-% 
-% \iffalse
-%<*ignore>
-% \fi
-\begin{LTXexample}[pos=t, linerange={1-2,10-12}]
-\begin{pspicture}(-1,0)(7,2.4)
-  \optbox[fiber, angle=20, rotateref=bl](0,1)(6,1)
-  \psdot(\oenodeRefA{})\uput[180](\oenodeRefA{}){RefA}%
-  \psdot(\oenodeRefB{})\uput[0](\oenodeRefB{}){RefB}%
-  \psdot(\oenodeRotref{})\uput[-90](\oenodeRotref{}){Rotref}%
-  \psdot(\oenodeTrefA{})\uput[180](\oenodeTrefA{}){TrefA}%
-  \psdot(\oenodeTrefB{})\uput[0](\oenodeTrefB{}){TrefB}%
-  \uput{0.5}[180](\oenodeTrefB{}){\textcolor{Refline}{reference line}}%
-  \psset{style=Refline, linestyle=dashed}
-  \psline(\oenodeTrefA{})(\oenodeTrefB{})
-  \psline(\oenodeRefA{})(\oenodeRefB{})
-\end{pspicture}
-\end{LTXexample}
-% \iffalse
-%</ignore>
-% \fi
-%
-% \iffalse
-%<*ignore>
-% \fi
-\begin{LTXexample}[pos=t, linerange={1-2,10-12}]
-\begin{pspicture}(-1,-0.1)(7,3.2)
-  \optbox[fiber, angle=-30, rotateref=t, compshift=0.5](0,1)(6,1)
-  \psdot(\oenodeRefA{})\uput[180](\oenodeRefA{}){RefA}%
-  \psdot(\oenodeRefB{})\uput[0](\oenodeRefB{}){RefB}%
-  \psdot(\oenodeRotref{})\uput[60](\oenodeRotref{}){Rotref}%
-  \psdot(\oenodeTrefA{})\uput[180](\oenodeTrefA{}){TrefA}%
-  \psdot(\oenodeTrefB{})\uput[0](\oenodeTrefB{}){TrefB}%
-  \uput{0.5}[180](\oenodeTrefB{}){\textcolor{Refline}{reference line}}%
-  \psset{linecolor=Refline, linestyle=dashed}
-  \psline(\oenodeTrefA{})(\oenodeTrefB{})
-  \psline(\oenodeRefA{})(\oenodeRefB{})
-\end{pspicture}
-\end{LTXexample}
-% \iffalse
-%</ignore>
-% \fi
-% 
-% \ifGERMAN Für die Verbindungen mit \Lcs{drawfiber} werden für üblicherweise
-% die Knoten genommen, die sich am nächsten sind. Das passt häufig, aber nicht
-% immer.
-% \fi
-% \ifENGLISH The connections with \Lcs{drawfiber} are drawn usually between the
-% two nodes which are closest to each other. This fits most of the time, but not
-% always.
-% \fi
-% \iffalse
-%<*ignore>
-% \fi
-\begin{LTXexample}
-\begin{pspicture}(3,2)
-  \pnode(-0.5,1){A}\pnode(1.5,1){B}\pnode(3.5,1){C}
-  \psset{label=0, optboxwidth=1}
-  \optbox(A)(B){Box1}\optbox(B)(C){Box2}
-  \drawfiber{1}{2}
-\end{pspicture}
-\end{LTXexample}
-
-\begin{LTXexample}
-\begin{pspicture}(3,2)
-  \pnode(0,0.5){A}\pnode(3,0.5){B}
-  \pnode([offset=1]B){C}\pnode(A|C){D}
-  \psset{label=0}
-  \optbox(A)(B){Box1}\optbox(C)(D){Box2}
-  \drawfiber{1}{2}
-\end{pspicture}
-\end{LTXexample}
-% \iffalse
-%</ignore>
-% \fi
-% \begin{optionlist}
-%   \choitem[auto]{startnode}{auto, N, 1, 2, \ldots}
-%   \choitem[auto]{stopnode}{auto, N, 1, 2, \ldots}
-%   \ifGERMAN Hiermit können die Start- und Stopknoten explizit gewählt werden.\fi
-%   \ifENGLISH Choose the start and stop node explicitely.\fi
-% \iffalse
-%<*ignore>
-% \fi
-\begin{LTXexample}
-\begin{pspicture}(2,2)
-  \pnode(0,0.5){A}\pnode(2,0.5){B}
-  \pnode([offset=1]B){C}\pnode(A|C){D}
-  \psset{label=0}
-  \optbox(A)(B){Box1}\optbox(C)(D){Box2}
-  \drawfiber[startnode=1]{1}{2}
-  \drawfiber[startnode=N, linecolor=black]{1}{2}
-\end{pspicture}
-\end{LTXexample}
-% \iffalse
-%</ignore>
-% \fi
-%
-% \iffalse
-%<*ignore>
-% \fi
-\begin{LTXexample}
-\begin{pspicture}(2.1,3)
-\pnode(0,0){A}\pnode(2,0){B}
-\pnode(0.3,3){C}\pnode(1.7,3){D}
-\psset{fiber=none}
-\optcoupler[fiber=l,
-            addtoFiberIn1={angleA=0, ArrowInside=->},
-            addtoFiberIn2={angleA=180, arrows=<-},
-            abspos=0.5, compname=Cpl](A)(B)(C)(D)
-\optfiber[compname=Hnlf, abspos=1](C)(C|A)
-\optamp[abspos=2, compname=Amp](D|B)(D)
-\drawfiber{Cpl}{Hnlf}
-\drawfiber[startnode=1, ncurv=1.2]{Hnlf}{Amp}
-\drawfiber{Cpl}{Amp}
-\end{pspicture}
-\end{LTXexample}
-% \iffalse
-%</ignore>
-% \fi
-%
-%   \numitem[0]{fiberangleA}
-%   \numitem[0]{fiberangleB}
-%   \choitem[tref]{fiberalign}{rel,relative,center,abs,absolute}
-%   Set the reference for the fiber angles.
-%   \begin{valuelist}
-%   \item[relative] The fiber angles are relative to the transformed reference
-%     line of the component.
-%   \item[center] The fiber angles are relative to the connection between the
-%     involved componente node and the component center node. In most cases this
-%     is equivalent to \opt{relative}, but necessary e.g. for
-%     \Lcs{optcirculator}.
-%     \item[absolute] The fiber angles are absolute.
-%   \end{valuelist}
-%
-%   \valitem[curve]{fiberstyle}{string}
-%   \ifGERMAN
-%   \fi
-%   \ifENGLISH 
-%   Select the type of node connection \nxLcs{nc}\prm{string} which is use by
-%   \Lcs{drawfiber}, see \LPack{pst-node} documentation for possible values. \prettyref{ex:transmission-loop} shows another use case.
-%   \fi
-% \iffalse
-%<*ignore>
-% \fi
-\begin{LTXexample}
-\begin{pspicture}(3,3)
-  \pnode(1, 0.5){A}\pnode(2.5,0.5){B}\pnode(2.5,2){C}
-  \psset{fiber=none, optboxsize=1 0.6, innerlabel}
-  \optbox[position=start](A)(B){start}
-  \optbox[position=end](B)(C){stop}
-  \drawfiber[fiberstyle=diag, linearc=0.5]{1}{2}
-\end{pspicture}
-\end{LTXexample}
-% \iffalse
-%</ignore>
-% \fi
-%
-% \iffalse
-%<*ignore>
-% \fi
-\begin{LTXexample}
-\begin{pspicture}(4,2.5)
-  \pnode(1,2.5){In}\pnode(3,2.5){Out}
-  \pnode(0,2){A}\pnode(4,2){B}\pnode(4,0){C}\pnode(0,0){D}
-  \optcoupler[fiber=t, addtoFiber={ArrowInside=->}, coupleralign=bottom](In)(A)(Out)(B)
-  \psset{fiber=none}
-  \optamp[position=0.35](C)(D)
-  \optfiber[position=0.35](D)(C)
-  \drawfiber{2}{3}
-  \addtopsstyle{Fiber}{fiberstyle=bar, linearc=0.5, armA=1.5}
-  \drawfiber[stopnode=1]{1}{2}
-  \drawfiber[stopnode=1]{1}{3}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -9006,8 +9091,9 @@
         \ifx\POE@key@stopnode\POE@str@auto
           \POE@pnode{\POE@comps exch \POE@dict{NearestNode} 
                    \tx@UserCoor}{@@A}
-          \POE@pnode{\POE@comps \POE@dict{NearestNode} 
-                   \tx@UserCoor}{@@B}
+          \POE@pnode{\POE@comps pop
+                     \POE@dict{/N@@@A @GetCenter ToVec NearestNode} 
+                     \tx@UserCoor}{@@B}
         \else
           \POE@pnode{\POE@comps exch pop /N@@@B 
                    \POE@dict{@GetCenter ToVec NearestNode} 
@@ -12692,10 +12778,10 @@
 %    \begin{macrocode}
 /tx@OptexpDict 200 dict def
 tx@OptexpDict begin
-/Debug false def
+/DebugOE false def
 /DebugDepth 0 def
 /DebugBegin { 
-  Debug {
+  DebugOE {
     /DebugProcName ED
     DebugDepth 2 mul string
     0 1 DebugDepth 2 mul 1 sub {
@@ -12710,7 +12796,7 @@ tx@OptexpDict begin
   } ifelse
 } bind def
 /DebugEnd {
-  Debug {
+  DebugOE {
     /DebugDepth DebugDepth 1 sub def
     DebugDepth 2 mul 2 add string
     0 1 DebugDepth 2 mul 1 sub {
@@ -12723,7 +12809,7 @@ tx@OptexpDict begin
   } if
 } bind def
 /DebugMsg { 
-  Debug {
+  DebugOE {
     DebugDepth 1 add 2 mul string
     0 1 DebugDepth 2 mul 1 add {
       dup 2 mod 0 eq { (|) }{( )} ifelse
