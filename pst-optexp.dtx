@@ -6690,6 +6690,10 @@
 % \fi
 % \end{ltxsyntax}
 %
+% These components can also be connected with beams and fibers, but do not
+% provide full access to all options. They define only a single interface which,
+% of course, does not respect the geometry of the individual drawings.
+%
 % If you want to use a custom component more often, you should define
 % it as a new component. For details on how to define your own components see
 % \prettyref{sec:newobj}.
@@ -6701,10 +6705,10 @@
 % \section{Customized versions of existing components}
 % \fi
 % \label{sec:customcomp}
-% The easiest way to define your own components is to use the
+% You can define a customized version of an existing component using the
 % \Lcs*{newpsobject} macro. With this you can define a new component using
-% predefined objects with a set of options. These options serve only as
-% default values and can be overridden when calling the macro. 
+% predefined objects with a set of options. These options serve only as default
+% values and can be overridden when calling the macro.
 % 
 % \iffalse
 %<*ignore>
@@ -6756,8 +6760,17 @@
 % \fi
 % 
 % \section{Defining new objects}\label{sec:newobj}
-% \nxLPack{pst-optexp} provides some high-level macros to
-% allow very convenient definition of your own custom components. 
+%
+% \nxLPack{pst-optexp} provides some high-level macros to allow very convenient
+% definition of your own custom components. 
+%
+% Note, that this part of the documentation is not complete. It roughly
+% describes the steps to define own components as of version 3.0. Some parts may
+% be subject to change which are not backward compatible.
+%
+% The old syntax of defining \Lcs*{mycomp@iii} is supported for backward
+% compatibility, but will be dropped soon. Please adapt your macros to the new
+% syntax.
 %
 % \begin{ltxsyntax}
 %   \xLcs{newOptexpDipole}\cmditem{newOptexpDipole}[fixopt]{name}{dftopt}
@@ -6766,7 +6779,7 @@
 % \end{ltxsyntax}
 %
 % These macros generate all organizing code for the components which handle the
-% positioning, label placement, rotation and shifting and the layering. In the
+% positioning, label placement, rotation and shifting, and the layering. In the
 % simplest case you only have to define the actual drawing of the component
 % outline.
 %
@@ -6776,12 +6789,18 @@
 % The actual process of creating a new component is split up in different parts,
 % depending on the component complexity and user requirements:
 % \begin{enumerate}
-% \item The component drawing, this is the only required part.
-% \item Support for layering (optional).
-% \item Support for \Lkeyword{rotateref} and \Lkeyword{extnode} (optional).
+% \item The component drawing (see \prettyref{sec:newobj-comp}), this is the only required part.
+% \item Support for layering (optional), see \prettyref{sec:newobj-nodes}.
+% \item Support for \Lkeyword{rotateref} and \Lkeyword{extnode} (optional, see \prettyref{sec:newobj-ref}).
 % \end{enumerate}
 %
-% \subsection{The component drawing}
+% \subsection{The component drawing}\label{sec:newobj-comp}
+%
+% You must define a macro which is called e.g. \Lcs*{mycomponent@comp}, which
+% contains the component drawings. See the following two examples for dipole and
+% tripole which show the orientation and position of the component coordinate
+% system.
+%
 % \iffalse
 %<*ignore>
 % \fi
@@ -6797,13 +6816,6 @@
 \drawbeam{(0,1)}{}{(3.5,1)}
 \end{pspicture}
 \end{LTXexample}
-% \iffalse
-%</ignore>
-% \fi
-%
-% \iffalse
-%<*ignore>
-% \fi
 \begin{LTXexample}[morekeywords={[21]{newOptexpTripole}}]
 \begin{pspicture}(3.5,3.7)
 \newOptexpTripole{mytripole}{labelangle=-60}
@@ -6819,16 +6831,14 @@
 % \iffalse
 %</ignore>
 % \fi
-% \medskip
 %
-% \subsection{Adding external node}
-%
-% \subsection{Layering support}
+% \subsection{Layering support}\label{sec:newobj-nodes}
 %
 % To support layering, the component nodes and the drawings must be separated
-% into two macro. \nxLcs{component@nodes} contains the nodes and the Postscript
-% definition of the component interfaces. \nxLcs{component@comp} hold only the drawings.
+% into two macro. \nxLcs{mycomponent@nodes} contains the nodes and the Postscript
+% definition of the component interfaces. \nxLcs{mycomponent@comp} hold only the drawings.
 %
+% \subsection{Adding external nodes}\label{sec:newobj-ref}
 %
 % \ifGERMAN
 %   \chapter{Beispiele}
@@ -10639,7 +10649,7 @@
         \fi
         \POE@drawcomponent[#2]{##3}{\@nameuse{#2@ii}}
         \ifPOE@backlayer
-          \POE@Verb{(1) (N) (\oenode{}{}) CorrectDipoleNodes }%
+          \POE@Verb{ (1) (N) (\oenode{}{}) CorrectDipoleIfc }%
           \POE@drawInternalConnections
         \fi
       \end@OptexpDipole
@@ -10674,7 +10684,7 @@
         \fi
         \POE@drawcomponent[#2]{##3}{\@nameuse{#2@ii}}
         \ifPOE@backlayer
-          \POE@Verb{(1) (N) (\oenode{}{}) CorrectDipoleNodes }%
+          \POE@Verb{ (1) (N) (\oenode{}{}) CorrectDipoleIfc }%
           \ifPOE@fiberpreset@
             \POE@drawPresetFibers
           \fi
@@ -10806,8 +10816,8 @@
     \POE@drawcomponent[optcoupler]{#5}{\@nameuse{optcoupler@ii}}
     \ifPOE@backlayer
       \POE@Verb{%
-        (1) (3) (\oenode{}{}) CorrectDipoleNodes 
-        (2) (N) (\oenode{}{}) CorrectDipoleNodes 
+        (1) (3) (\oenode{}{}) CorrectDipoleIfc 
+        (2) (N) (\oenode{}{}) CorrectDipoleIfc 
       }%
       \ifPOE@fiberpreset@
         \ifPOE@fiberpresetin@
@@ -10865,7 +10875,10 @@
     \fi
     \POE@drawcomponent[wdmsplitter]{#4}\wdmsplitter@ii
     \ifPOE@backlayer
-      \POE@Verb{(1) (N) (\oenode{}{}) CorrectDipoleNodes }%
+      \POE@Verb{%
+        (1) (2) (\oenode{}{}) CorrectDipoleIfc 
+        (1) (N) (\oenode{}{}) CorrectDipoleIfc 
+      }%
       \ifPOE@fiberpreset@
         \ifPOE@fiberpresetin@
           \drawfiber@{FiberIn}[stopnode=1]{(#1)}{\POE@key@compname}
@@ -10914,7 +10927,10 @@
     \fi
     \POE@drawcomponent[wdmcoupler]{#4}\wdmcoupler@ii
     \ifPOE@backlayer 
-      \POE@Verb{(1) (N) (\oenode{}{}) CorrectDipoleNodes }%
+      \POE@Verb{%
+        (1) (N) (\oenode{}{}) CorrectDipoleIfc 
+        (2) (N) (\oenode{}{}) CorrectDipoleIfc
+      }%
       \ifPOE@fiberpreset@
         \ifPOE@fiberpresetout@
           \drawfiber@{FiberOut}[startnode=N]{\POE@key@compname}{(#3)}
@@ -13098,6 +13114,25 @@ tx@OptexpDict begin
 } bind def
 %    \end{macrocode}
 % \end{macro}
+%
+% \begin{macro}{IfcCopy}
+%   Copy an interface \PSvar{from} to an interface \PSvar{to}, must be called
+%   within the respective component dictionary. This involves also copying the
+%   node associated with the interface.
+%   \begin{pssyntax}
+%     \PSvar{from} \PSvar{to} \PSop{CopyIfc}
+%   \end{pssyntax}
+%    \begin{macrocode}
+/IfcCopy { 
+  2 copy IfcName exch IfcName load dup
+  length dict copy def
+  name exch NodeName name 3 -1 roll NodeName 
+  tx@NodeDict begin
+    load dup length dict copy def
+  end
+} bind def
+%    \end{macrocode}
+% \end{macro}
 % 
 % \begin{macro}{calcNodes}
 %   Calculate the reference node coordinates for reflective components and
@@ -13554,7 +13589,7 @@ tx@OptexpDict begin
 % only a single plane is specified, create the aliases.
 %    \begin{macrocode}
       name (1) 3 -1 roll {sc} NewCompIfc 
-      (1) (N) IfcAlias
+      (1) (N) IfcCopy
   }{
     N -1 1 { %
       dup N eq { pop (N) }{inttostr} ifelse
@@ -13562,7 +13597,7 @@ tx@OptexpDict begin
     } for
   } ifelse
   ambiguous ambIfc 0 gt and { 
-    ambIfc N eq { (N) }{ ambIfc inttostr } ifelse (C) IfcAlias
+    ambIfc N eq { (N) }{ ambIfc inttostr } ifelse (C) IfcCopy
   } if
   end
   pop
@@ -13594,7 +13629,7 @@ tx@OptexpDict begin
 % only a single plane is specified, create the aliases.
 %    \begin{macrocode}
     {0 1} 0 0 trans name (1) {PlainIfc} {sc} NewCompIfc 
-    (1) (N) IfcAlias
+    (1) (N) IfcCopy
   }{
     N -1 1 {
       dup N eq { pop (N) }{inttostr} ifelse
@@ -13677,6 +13712,69 @@ tx@OptexpDict begin
       } {
         X Y
       } ifelse
+      CompMtrx transform CM itransform
+    end
+  end
+  DebugEnd
+} bind def
+%    \end{macrocode}
+% \end{macro}
+
+% \begin{macro}{GetIfcCenter}
+% Get the center node of a interface, either by specifying the name of the component and the interface number
+%   \begin{pssyntax}
+%     \PSvar{IfcNum} \PSstring{CompName} \PSop{GetIfcCenter} \PSvar{X Y}
+%   \end{pssyntax}
+% or by passing an interface procedure generated by \PSvar{PushAllPlanesOnStack}.
+%   \begin{pssyntax}
+%     \PSproc{Ifc} \PSop{GetIfcCenter} \PSvar{X Y}
+%   \end{pssyntax}
+%    \begin{macrocode}
+/GetIfcCenter {
+  (GetIfcCenter) DebugBegin
+  dup type /stringtype eq not {
+    dup xcheck not {
+%    \end{macrocode}
+% ambiguous
+%    \begin{macrocode}
+      0 get (C) exch
+    } {
+      exec pop pop pop
+    } ifelse
+  } if
+  cvn load begin
+    IfcName load begin
+      currentdict /RX known {
+        X RX sub Y RY sub
+      } {
+        X Y
+      } ifelse
+      CompMtrx transform CM itransform
+    end
+  end
+  DebugEnd
+} bind def
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{GetIfcCenterCorr}
+% Get the center node of a interface, either by specifying the name of the component and the interface number
+%   \begin{pssyntax}
+%     \PSvar{IfcNum} \PSstring{CompName} \PSop{GetIfcCenterCorr} \PSvar{X|XCorr Y|YCorr}
+%   \end{pssyntax}
+%    \begin{macrocode}
+/GetIfcCenterCorr {
+  (GetIfcCenterCorr) DebugBegin
+  cvn load begin
+    IfcName load begin
+      currentdict /XCorr known {
+        XCorr YCorr
+      }{
+        X Y
+      } ifelse
+      currentdict /RX known {
+        RX neg RY neg VecAdd
+      } if
       CompMtrx transform CM itransform
     end
   end
@@ -14664,7 +14762,7 @@ tx@OptexpDict begin
 % \end{pssyntax}
 %    \begin{macrocode}
 /IfcName {
-  dup N eq {
+  dup dup 1 eq not exch N eq and {
     pop (N)
   } {
     inttostr
@@ -15129,9 +15227,14 @@ tx@OptexpDict begin
 /NearestNodeTmp {
   exch /NodeB ED
   /dist -1 def
-  dup cvn load /N get 1 1 3 -1 roll {
+  dup cvn load /N get dup 1 eq {
+    [ exch (N) ]
+  } {
+    [ exch 1 1 3 -1 roll { } for ]
+  } ifelse
+  {
     2 copy pop 
-    GetIfcCenter 2 copy
+    GetIfcCenterCorr 2 copy
     NodeB @ABDist
     dist 0 lt {
       /dist ED
@@ -15144,7 +15247,7 @@ tx@OptexpDict begin
         pop pop pop
       } ifelse
     } ifelse
-  } for
+  } forall
   pop dist /node load
 } bind def
 %    \end{macrocode}
@@ -15166,7 +15269,7 @@ tx@OptexpDict begin
 % CompB is a component
 %    \begin{macrocode}
       /mindist -1 def
-      [ exch false GetInternalNodeNames ] 
+      [ exch false GetInternalNodeNames ]
       { @GetCenter ToVec
         CompA NearestNodeTmp 
         exch dup mindist ge mindist 0 ge and { 
@@ -15355,19 +15458,22 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{CorrectDipoleNodes}
-%   For a dipole which has two interface nodes (1) and (N) which are
-%   very close together ($\text{dist} < 10^{-7}$) or which coincide, the
-%   automatic angle estimation of the fiber connections does not work
-%   properly. So these nodes are separated as less as possible so that
-%   the NearestNode procedure estimates two different distances.
+% \begin{macro}{CorrectDipoleIfc}
+%   For a dipole which has two interface nodes (1) and (N) which are very close
+%   together ($\text{dist} < 10^{-7}$) or which coincide, the automatic angle
+%   estimation of the fiber connections does not work properly. So these
+%   interfaces are separated as less as possible so that the NearestNode
+%   procedure estimates two different distances. The changed nodes are saved
+%   only in the interface dictionaly as XCorr and YCorr. You must use these for
+%   the fiber connections.
 %   \begin{pssyntax}
-%     \PSstring{node1} \PSstring{node2} \PSstring{basename} \PSop{CorrectDipoleNodes}
+%     \PSstring{node1} \PSstring{node2} \PSstring{basename} \PSop{CorrectDipoleIfc}
 %   \end{pssyntax}
 %    \begin{macrocode}
-/CorrectDipoleNodes {
-  dup dup dup
-  6 -1 roll NodeName exch 5 -1 roll NodeName 2 copy 6 2 roll
+/CorrectDipoleIfc {
+  (CorrectDipoleIfc) DebugBegin
+  dup dup 3 copy
+  8 -1 roll dup 9 1 roll NodeName exch 7 -1 roll dup 7 1 roll NodeName
   gsave
     tx@Dict begin 
       STV CP T
@@ -15393,13 +15499,22 @@ tx@OptexpDict begin
 % approximately 8 digits, so in order to have an effect, the nodes must
 % be separated by $10^{-7}$ times the maximum coordinate value.
 %    \begin{macrocode}
-    8 -2 roll 2 copy abs exch abs max 2e-7 mul 3 1 roll 5 2 roll 
-    VecScale VecAdd ToVec 7 -1 roll @NewNode
-    4 2 roll 2 copy abs exch abs max -2e-7 mul 3 1 roll 5 2 roll 
-    VecScale VecAdd ToVec exch @NewNode
+    8 -2 roll abs exch abs max -1e-6 mul VecScale
+    8 -2 roll cvn load begin
+      IfcName load begin 
+        X Y VecAdd /YCorr exch def /XCorr exch def
+      end
+    end
+    4 2 roll abs exch abs max 1e-6 mul VecScale
+    4 2 roll cvn load begin
+      IfcName load begin
+        X Y VecAdd /YCorr exch def /XCorr exch def
+      end
+    end
   } {
-    8 { pop } repeat
+    10 { pop } repeat
   } ifelse
+  DebugEnd
 } bind def
 %    \end{macrocode}
 % \end{macro}
