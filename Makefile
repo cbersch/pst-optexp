@@ -95,14 +95,13 @@ ctan : dist arch-tds
 	tar cf $(PACKAGE).tar $(ARCHNAME_TDS).zip $(ARCHNAME).tar.gz
 
 clean :
-	$(RM) $(addprefix $(PACKAGE), \
-	      .dvi .ps .log .aux .bbl .blg .out .tmp .toc .idx .ind .ilg .gls .glg .glo -idx.idx -idx.ilg -idx.ind -doc.idx -doc.ilg -doc.ind .hd) \
-		$(addprefix $(PACKAGE)-DE, \
-	      .dvi .ps .log .aux .bbl .blg .out .tmp .toc .idx .ind .ilg .gls .glg .glo -idx.idx -idx.ilg -idx.ind -doc.idx -doc.ilg -doc.ind .hd) \
-		$(addprefix $(PACKAGE)-cheatsheet, \
-		  .tex .out .log .aux)
+	$(RM) $(foreach prefix, $(PACKAGE) $(PACKAGE)-DE $(PACKAGE)-cheatsheet, \
+	        $(addprefix $(prefix), .dvi .ps .log .aux .bbl .blg .out .tmp .toc \
+	           .idx .ind .ilg .gls .glg .glo .hd \
+	           -idx.idx -idx.ilg -idx.ind -doc.idx -doc.ilg -doc.ind .hd)) \
+	      $(PACKAGE)-cheatsheet.tex $(PACKAGE)-DE.dtx
 
 veryclean : clean
-	$(RM) $(PACKAGE).pdf $(PACKAGE)-DE.pdf $(PACKAGE)-cheatsheet.pdf $(PACKAGE).sty $(PACKAGE).pro $(PACKAGE).ist
+	$(RM) $(addprefix $(PACKAGE), .pdf -DE.pdf -cheatsheet.pdf .sty .pro .ist)
 
 # EOF
