@@ -15,13 +15,15 @@ ARCHFILES = $(PACKAGE).dtx $(PACKAGE).ins Makefile \
 
 PS2PDF = GS_OPTIONS=-dPDFSETTINGS=/prepress ps2pdf
 
-all : doc doc-DE
+all : doc doc-DE cheatsheet
 
 doc : $(PACKAGE).pdf
 
 doc-DE : $(PACKAGE)-DE.pdf
 
-dist : doc doc-DE
+cheatsheet: $(PACKAGE)-cheatsheet.pdf
+
+dist : doc doc-DE cheatsheet
 	tar chvzf $(ARCHNAME).tar.gz $(ARCHFILES)
 	@ echo
 	@ echo $(ARCHNAME).tar.gz
@@ -60,6 +62,12 @@ $(PACKAGE)-DE.dvi: L = ngerman
 %.pdf: %.ps
 	$(PS2PDF) $< $@
 
+$(PACKAGE)-cheatsheet.tex: $(PACKAGE)-cheatsheet.py
+	python $<
+
+$(PACKAGE)-cheatsheet.pdf: $(PACKAGE)-cheatsheet.tex
+	pdflatex $<
+
 $(PACKAGE).sty $(PACKAGE).pro $(PACKAGE).tex $(PACKAGE).ist: $(PACKAGE).ins $(PACKAGE).dtx
 	tex $<
 
@@ -75,8 +83,9 @@ arch-tds : Changes
 	cp pst-optexp.sty tds/tex/latex/pst-optexp/
 	cp pst-optexp.pro tds/dvips/pst-optexp/
 	cp Changes pst-optexp.pdf pst-optexp-DE.pdf \
-          README pst-optexp.ist tds/doc/latex/pst-optexp/
-	cp pst-optexp.dtx pst-optexp.ins Makefile \
+          README pst-optexp.ist pst-optexp-cheatsheet.pdf \
+	  tds/doc/latex/pst-optexp/
+	cp pst-optexp.dtx pst-optexp.ins Makefile pst-optexp-cheatsheet.py \
 	  tds/source/latex/pst-optexp/
 	cd tds ; zip -r ../$(ARCHNAME_TDS).zip tex doc source dvips
 	cd ..
@@ -89,9 +98,11 @@ clean :
 	$(RM) $(addprefix $(PACKAGE), \
 	      .dvi .ps .log .aux .bbl .blg .out .tmp .toc .idx .ind .ilg .gls .glg .glo -idx.idx -idx.ilg -idx.ind -doc.idx -doc.ilg -doc.ind .hd) \
 		$(addprefix $(PACKAGE)-DE, \
-	      .dvi .ps .log .aux .bbl .blg .out .tmp .toc .idx .ind .ilg .gls .glg .glo -idx.idx -idx.ilg -idx.ind -doc.idx -doc.ilg -doc.ind .hd)
+	      .dvi .ps .log .aux .bbl .blg .out .tmp .toc .idx .ind .ilg .gls .glg .glo -idx.idx -idx.ilg -idx.ind -doc.idx -doc.ilg -doc.ind .hd) \
+		$(addprefix $(PACKAGE)-cheatsheet, \
+		  .tex .out .log .aux)
 
 veryclean : clean
-	$(RM) $(PACKAGE).pdf $(PACKAGE)-DE.pdf $(PACKAGE).sty $(PACKAGE).pro $(PACKAGE).ist
+	$(RM) $(PACKAGE).pdf $(PACKAGE)-DE.pdf $(PACKAGE)-cheatsheet.pdf $(PACKAGE).sty $(PACKAGE).pro $(PACKAGE).ist
 
 # EOF
