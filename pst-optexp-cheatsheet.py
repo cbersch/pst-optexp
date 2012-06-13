@@ -60,9 +60,9 @@ f.write(r"""\documentclass[landscape]{scrartcl}
   \let\@tempa\@empty
   \ltd@parseargs}
 \makeatother
-\newcommand{\dipoledesc}[1]{\cmditem{#1}[options](in)(out){label}}
-\newcommand{\tripoledesc}[1]{\cmditem{#1}[options](in)(center)(out){label}}
-\newcommand{\fiberdipoledesc}[1]{\cmditem{#1}[options](in)(out){label}}
+\newcommand{\dipoledesc}[1]{\cmditem{#1}[opt](in)(out){label}}
+\newcommand{\tripoledesc}[1]{\cmditem{#1}[opt](in)(center)(out){label}}
+\newcommand{\fiberdipoledesc}[1]{\cmditem{#1}[opt](in)(out){label}}
 \begin{document}\ttfamily\small
 \begin{multicols}{3}
 \section*{Cheat sheet for pst-optexp (v3.0)}
