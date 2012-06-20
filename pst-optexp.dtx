@@ -18,7 +18,7 @@
 %<stylefile>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<stylefile>\ProvidesPackage{pst-optexp}
 %<*stylefile>
-    [2012/08/06 v3.0beta Optical experimental setups with PSTricks]
+    [2012/06/20 v3.0beta Optical experimental setups with PSTricks]
 %</stylefile>
 %
 %<*driver>
@@ -40,14 +40,13 @@
 \newlength{\POEcaptionheight}
 \usepackage[labelfont={color=DOrange}, 
             singlelinecheck=false, 
-            justification=raggedright,
-            skip=0pt]{caption} 
+            justification=raggedright]{caption} 
 \DeclareCaptionFormat{poe}{%
   \setlength{\POEcaptionmargin}{\widthof{#1}+7pt}%
   \setlength{\POEcaptionheight}{\heightof{#1}+3pt}%
   \hspace*{-\POEcaptionmargin}#1\par\vspace*{-\POEcaptionheight}%
 }
-\captionsetup[lstlisting]{format=poe}
+\captionsetup[lstlisting]{format=poe, skip=0pt}
 \usepackage{nicefrac}
 \usepackage{pst-func}
 \usepackage{pst-optexp}
@@ -239,7 +238,7 @@
      \let\styleitem\POE@styleitem}%
   {\endlist}
 
-\def\ltd@optionlist{%\let\styleitem\POE@styleitem
+\def\ltd@optionlist{%
   \let\optitem\POE@optitem
   \let\valitem\POE@valitem
   \let\choitem\POE@choitem
@@ -559,18 +558,6 @@
 %   \renewcommand*\lstlistingname{Ex.}
 % \fi
 %
-% \newcommand*{\sizeexplanation}[2][1.6]{% 
-%   \ifGERMAN 
-%     Die Höhe #2, die Breite ist \opt{#1} mal die Höhe. Mit
-%     dem \opt{xunit} oder \opt{yunit} Parameter kann dieses Verhältnis
-%     geändert werden.
-%   \fi
-%   \ifENGLISH
-%     The height of the #2, the width is \opt{#1} times the
-%     height. Use the \opt{xunit} or \opt{yunit} parameter to change this
-%     relation.
-%   \fi
-% }
 % \newcommand{\refpointexplanation}{%
 %   \ifGERMAN
 %   Analog zum Referenzpunkt von \nxLcs{rput}, kann jede Kombination von
@@ -710,9 +697,14 @@
 % 
 % \ifGERMAN
 %   \section{Über das Paket}
+%
 %   \LPack{pst-optexp} ist ein PSTricks-Paket zum Skizzieren optischer
 %   Versuchsaufbauten. Dafür werden viele unterschiedliche Freistrahl- und
-%   Faseroptische Komponenten bereitgestellt.
+%   Faser-Komponenten bereitgestellt, deren Ausrichtung, Positionierung und
+%   Beschriftung einfach und flexibel umgesetzt werden kann. Die Komponente
+%   können dann mit Fasern oder Lichtstrahlen verbunden werden, wobei auch
+%   realistische Strahlengänge mit Raytracing möglich sind.
+
 % \fi 
 % \ifENGLISH
 %   \section{About the package}
@@ -825,7 +817,7 @@
 %   Funktionalität so schnell wie möglich erfolgen musste.
 %
 %   Eine genauere Zusammenstellung der Änderungen und Hinweise zur Migration von
-%   älteren Dokumenten finden Sie in \prettyref{chap:bwd-comp}.
+%   älteren Dokumenten finden Sie in \prettyref{sec:bwd-comp}.
 % \fi
 % \ifENGLISH
 % Version 3.0 introduced a lot of advanced features which made it too difficult
@@ -878,12 +870,13 @@
 % \fi
 % \ifGERMAN\fi
 % \ifENGLISH
-% I thank all the people of the PSTricks mailinglist for the continuous
-% help, especially Herbert Vo\ss. Thanks also to Christine Römer, which
-% convinced my with her article in the german DTK to provide a german
-% translation of the documentation. The documentation style is a mixture
-% of the \opt{pst-doc} class (Herbert Vo\ss) and the \opt{ltxdockit}
-% package for the \opt{biblatex} documentation (Philipp Lehman).
+% I thank all the people of the PSTricks mailinglist for the continuous help,
+% especially Herbert Vo\ss. Thanks also to various package authors from which I
+% learned and adopted code for this package. Christine Römer convinced my with
+% her article in the german DTK to provide a german translation of the
+% documentation. The documentation style is a mixture of the \opt{pst-doc} class
+% (Herbert Vo\ss) and the \opt{ltxdockit} package for the \opt{biblatex}
+% documentation (Philipp Lehman).
 % \fi
 %
 % \ifGERMAN
@@ -893,11 +886,15 @@
 %   \chapter{Basic ideas}
 % \fi\label{chap:basics}
 %
-% \ifGERMAN Dieses Kapitel zeigt die grundlegenden Ideen und Konzepte, die in diesem Paket
-% stecken. Angefangen von elementaren Beispielen, bis hin zu größeren Aufbauten
-% wird die angedachte Vorgehensweise für das Erstellen von umfassenden
-% Experimentskizzen erläutert. Eine vollständige Referenz aller Macros und
-% Optionen finden Sie in \prettyref{chap:generalparam}--\ref{chap:custom}.
+% \ifGERMAN Dieses Kapitel zeigt die grundlegenden Ideen und Konzepte, die in
+% diesem Paket stecken. Anhand von elementaren Beispielen werden die
+% Grundfunktionen wie Ausrichtung, Positionierung (\ref{sec:intro-comp}) und
+% Beschriftung (\ref{sec:intro-label}) von Komponenten sowie deren Verbindung
+% mit Strahlen (\ref{sec:intro-beam}) oder Fasern (\ref{sec:intro-fiber})
+% vorgestellt. In \prettyref{sec:step-by-step} wird Schritt für Schritt die
+% angedachte Vorgehensweise für das Erstellen von umfassenden Experimentskizzen
+% erläutert. Eine vollständige Referenz aller Makros und deren Parameter finden
+% Sie in \prettyref{chap:generalparam}--\ref{chap:custom}.
 %
 % Ein Versuchsaufbau besteht aus Komponenten, die anhand ihrer Referenzknoten
 % positioniert, verschoben und gedreht werden können und optional eine
@@ -906,19 +903,22 @@
 %
 % \ifGERMAN\section{Die Komponenten}\fi
 % \ifENGLISH\section{The components}\fi
+% \label{sec:intro-comp}
 %
 % \ifGERMAN Eine Komponente wird anhand der Knoten, die bei ihrere Definition
-% angegeben werden, -- den Referenzknoten --, platziert. Im folgenden Beispiel
-% wird die Linse mittig auf die Verbindungslinie zwischen den Knoten
+% angegeben werden -- den Referenzknoten -- platziert. Im folgenden Beispiel
+% wird eine Linse mittig auf die Verbindungslinie zwischen den Knoten
 % \prm{A} und \prm{B} gesetzt: 
 % \fi
 %\iffalse
 %<*ignore>
 %\fi
-\begin{LTXexample}
+\begin{LTXexample}[linerange={1-3,6-6}]
 \begin{pspicture}[showgrid=true](0,-0.3)(3,2)
   \pnode(0,1){A}\pnode(3,1){B}
   \lens(A)(B)
+  \psset{style=Refline}\color{Refline}
+  \psdot(A)\uput[90](A){A}\psdot(B)\uput[90](B){B}
 \end{pspicture}
 \end{LTXexample}
 %\iffalse
@@ -931,24 +931,27 @@
 %\iffalse
 %<*ignore>
 %\fi
-\begin{LTXexample}[morekeywords={[21]{abspos}}]
+\begin{LTXexample}[morekeywords={[21]{abspos, position}}, linerange={1-4,7-7}]
 \begin{pspicture}[showgrid=true](0,-0.3)(3,2)
-  \pnode(0,1){A}\pnode(3,1){B}
+  \pnode(0,1){A}\pnode(1.5,1){B}
   \lens[abspos=0.5](A)(B)
+  \optbox[position=end](A)(B)
+  \psset{style=Refline}\color{Refline}
+  \psdot(A)\uput[90](A){A}\psdot(B)\uput[135](B){B}
 \end{pspicture}
 \end{LTXexample}
 %\iffalse
 %</ignore>
 %\fi 
 % \ifGERMAN Die Komponenten lassen sich allgemein in zwei Kategorien
-% unterteilen: Die Freistrahl-Komponenten und die faseroptischen
-% Komponenten. Diese unterscheiden sich nur bezüglich ihrer
-% Verbindungsmöglichkeiten (Faserverbindungen (\prettyref{sec:intro-fiber-conn})
-% oder Lichtstrahlen (\prettyref{sec:intro-freeray-conn})).
+% unterteilen: Freistrahl- und Faser-Komponenten. Diese unterscheiden sich in
+% erster Linie bezüglich ihrer Verbindungsmöglichkeiten, Faserverbindungen
+% (\prettyref{sec:intro-fiber}) oder Lichtstrahlen (\prettyref{sec:intro-beam}).
 % \fi
 %
 % \ifGERMAN\section{Beschriftungen}\fi
 % \ifENGLISH\section{Labels}\fi
+% \label{sec:intro-label}
 %
 % \ifGERMAN Jede Komponente kann eine Beschriftung erhalten, die relativ zur
 % Komponente platziert werden kann. 
@@ -956,11 +959,14 @@
 %\iffalse
 %<*ignore>
 %\fi
-\begin{LTXexample}[morekeywords={[21]{labeloffset}}]
-\begin{pspicture}[showgrid=true](3,2)
-  \pnode(2,1){A}\pnode(3,1){B}
-  \lens(A)(B){lens}
-  \optbox[position=start, labeloffset=0](A)(B){box}
+\begin{LTXexample}[morekeywords={[21]{labelangle, labelref, labeloffset}}, linerange={1-5,8-8}]
+\begin{pspicture}[showgrid=true](3,3)
+  \pnode(0,2.5){A}\pnode(2,2.5){B}\pnode(2,1.5){C}
+  \mirror[labelangle=-45](A)(B)(C){M}
+  \optbox[position=start, labeloffset=0, labelref=relative](C)(B){box}
+  \drawbeam{(A)}{1}{2}
+  \psset{style=Refline}\color{Refline}
+  \psdot(A)\uput[90](A){A}\psdot(B)\uput[-135](B){B}\psdot(C)\uput[45](C){C}
 \end{pspicture}
 \end{LTXexample}
 %\iffalse
@@ -969,7 +975,7 @@
 %
 % \ifGERMAN\section{Freistrahl-Verbindungen}\fi
 % \ifENGLISH\section{Free-ray connections}\fi
-% \label{sec:intro-freeray-conn}
+% \label{sec:intro-beam}
 %
 % \ifGERMAN
 % Freistrahlkomponenten können mit Lichtstrahlen verbunden werden. 
@@ -977,10 +983,11 @@
 %
 % \ifGERMAN\section{Faserverbindungen}\fi
 % \ifENGLISH\section{Fiber connections}\fi
-% \label{sec:intro-fiber-conn}
+% \label{sec:intro-fiber}
 %
 % \ifGERMAN\section{Schritt-für-Schritt-Beispiele}\fi
 % \ifENGLISH\section{Step-by-step examples}\fi
+% \label{sec:step-by-step}
 %
 % \iffalse
 %<*ignore>
@@ -6397,7 +6404,7 @@
 %   none.
 %
 %   Components which have more than one input or output fiber
-%   (\hyperref[sec:couplers]{couplers} and \Lcs{optcirculator}) allow also
+%   (\hyperref[sec:coupler]{couplers} and \Lcs{optcirculator}) allow also
 %   values \opt{t} and \opt{b}, possibly in combination with \opt{i}, \opt{o},
 %   \opt{r}, or \opt{l}.
 %
@@ -6492,7 +6499,7 @@
 % the \Lstyle{Fiber} style. Style \Lstyle{FiberIn} applies to all input fibers,
 % it inherits from \Lstyle{Fiber}. If the component has more than one input
 % fibers, these are assigned the style \Lstyle{FiberIn1} and \Lstyle{FiberIn2}
-% which inherit from \Lstyle{FiberIn}. See \prettyref{fig:fiberstyle} for an
+% which inherit from \Lstyle{FiberIn}. See \prettyref{fig:fiberstyles} for an
 % inheritance diagram of the styles. You must have in mind, that this
 % inheritance is effective only if you use \Lcs*{addtopsstyle} to change the
 % styles (see also below).
@@ -7525,14 +7532,15 @@
 %
 %
 % \ifGERMAN
-%   \chapter{Abwärtskompatibilität}
+%   \section{Abwärtskompatibilität}
 % \fi
 % \ifENGLISH
-%   \chapter{Backward compatibility}
-% \fi\label{chap:bwd-comp}
+%   \section{Backward compatibility}
+% \fi\label{sec:bwd-comp}
 %
+% \subsection{General parameters}
 % \begin{optionlist}
-%   \optitem[new]{namingscheme}{old, new} 
+%   \optitem*[new]{namingscheme}{old, new} 
 %   \ifGERMAN
 %   In Version 2.x musste spezielle Komponentenknoten über ihren expliziten
 %   Namen angesprochen werden. Wenn Sie nur das alte Namensschema benötigen, da
@@ -7540,7 +7548,7 @@
 %   \nxLkeyword{namingscheme=old} zu verwenden, die Paketoption
 %   \nxLoption{compat} wird dann nicht benötigt. Seit Version 3.0 werden Makros
 %   für den Zugriff auf die Komponentenknoten bereitgestellt, so dass das
-%   eigentlichen Namensschema unerheblich ist.
+%   eigentlichen Namensschema unerheblich ist, siehe \prettyref{sec:objnodes}
 %   \fi
 %   \ifENGLISH
 %   In version 2.x special component nodes had to be accessed by their explicit
@@ -7548,9 +7556,97 @@
 %   nodes directly, then you can only set \nxLkeyword{namingscheme=old} and do
 %   not need to use the \nxLoption{compat} option. Since version 3.0 explicit
 %   macros are provided to access all special component nodes, so that the
-%   actual naming scheme does not matter.
+%   actual naming scheme does not matter, see \prettyref{sec:objnodes}.
 %   \fi
+%
+%   \poeitem{\smash{\begin{tabular}{@{}r@{}}endbox\\angle\\rotateref\end{tabular}}}
+%   \ifENGLISH These options now affect all components.\fi
+%   \ifGERMAN Diese Parameter wirken sich jetzt auf alle Komponenten aus.\fi
 % \end{optionlist}
+%
+% \subsection{Beam connections}
+%
+% In version 2.x, beam connections could be internal, that is the connections
+% were specified together with the compent (e.g. \Lkeyword{beam}), or external
+% with an additional call of \Lcs{drawbeam}. The main reason for internal
+% connections was the aesthetic aspect of drawing the beam behind the component,
+% but also convenience played a role. Drawing the beam behind the component is
+% possible with layering (\prettyref{sec:layers}) since 3.0.
+%
+% Some of the variants of internal beam connections can be used also in 3.0:
+%
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[linerange={1-3,5-5}]
+\begin{pspicture}(3,2)
+  \pnode(0,1){A}\pnode(3,1){B}
+  \optbox[beam](A)(B)
+  \rput[b]([offset=-0.9]\oenodeCenter{}){\ttfamily conn=o-i, conn=i-o}
+\end{pspicture}
+\end{LTXexample}
+
+\begin{LTXexample}[linerange={1-3,5-5}]
+\begin{pspicture}(3,2)
+  \pnode(0,1){A}\pnode(3,1){B}
+  \optbox[beam, beaminside=false](A)(B)
+  \rput[b]([offset=-0.9]\oenodeCenter{}){\ttfamily conn=o-o}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
+% Other internal connections need an additional \Lcs{drawbeam} call, and if you
+% want to move the beam behind the component, the code must be wrapped in a
+% \Lenv{optexp} environment. Except for this, external connection are equivalent:
+%
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[linerange={1-4,6-6}]
+\begin{pspicture}(3,2)
+  \pnode(0,1){A}\pnode(3,1){B}
+  \optbox(A)(B)
+  \drawbeam{(A)}{}
+  \rput[b]([offset=-0.9]\oenodeCenter{}){\ttfamily conn=o-, conn=a-}
+\end{pspicture}
+\end{LTXexample}
+
+\begin{LTXexample}[linerange={1-3,5-6}]
+\begin{pspicture}(3,2)
+  \pnode(0,1){A}\pnode(3,1){B}
+  \optbox(A)(B)
+  \rput[b]([offset=-0.9]\oenodeCenter{}){\ttfamily conn=-o, conn=-b}
+  \drawbeam{}{(B)}
+\end{pspicture}
+\end{LTXexample}
+
+\begin{LTXexample}[linerange={1-4,6-8}]
+\begin{pspicture}(3,2)
+  \pnode(0,1){A}\pnode(3,1){B}
+  \begin{optexp}
+    \optbox(A)(B)
+    \rput[b]([offset=-0.9]\oenodeCenter{}){\ttfamily conn=i-, A-}
+    \drawbeam[beaminsidelast]{(A)}{}
+  \end{optexp}
+\end{pspicture}
+\end{LTXexample}
+
+\begin{LTXexample}[linerange={1-4,6-8}]
+\begin{pspicture}(3,2)
+  \pnode(0,1){A}\pnode(3,1){B}
+  \begin{optexp}
+    \optbox(A)(B)
+    \rput[b]([offset=-0.9]\oenodeCenter{}){\ttfamily conn=-i, conn=-B}
+    \drawbeam[beaminsidefirst]{}{(B)}
+  \end{optexp}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
 %
 % \makeatletter
 % \bgroup
@@ -7598,14 +7694,15 @@
 % Pakets von Bedeutung sind. Änderungen, die eher technischer Natur sind und für
 % den Nutzer des Pakets nicht relevant sind und das Verhalten des Pakets nicht
 % ändern, werden nicht aufgeführt. Wenn ein Eintrag der Versionsgeschichte ein
-% Feature als \emph{improved} oder \emph{extended} bekannt gibt, so bedeutet dies,
-% dass eine Modifikation die Syntax und das Verhalten des Pakets nicht
+% Feature als \emph{improved} oder \emph{extended} bekannt gibt, so bedeutet
+% dies, dass eine Modifikation die Syntax und das Verhalten des Pakets nicht
 % beeinflusst, oder das es für ältere Versionen kompatibel ist. Einträge, die
-% als \emph{modified}, \emph{renamed}, oder \emph{removed} deklariert sind,
-% verlangen besondere Aufmerksamkeit. Diese bedeuten, dass eine Modifikation
-% Änderungen in bereits existierenden Stilen oder Dokumenten mit sich zieht. Die
+% als \emph{deprecated}, \emph{modified}, \emph{renamed}, oder \emph{removed}
+% deklariert sind, verlangen besondere Aufmerksamkeit. Diese bedeuten, dass eine
+% Modifikation Änderungen in existierenden Dokumenten mit sich ziehen kann. Die
 % Zahlen an der rechten Seite stehen für die relevante Stelle dieser
-% Dokumentation.
+% Dokumentation, zusätzliche Informationen zur Migration von älteren Dokumenten
+% sind in \prettyref{sec:bwd-comp} zu finden.
 % \fi
 % \ifENGLISH
 % \chapter{Revision history}
@@ -7617,16 +7714,21 @@
 % or \emph{extended}, this indicates a modification which either does not affect
 % the syntax and behavior of the package or is syntactically backwards
 % compatible (such as the addition of an optional argument to an existing
-% command). Entries stating that a feature has been \emph{modified},
-% \emph{renamed}, or \emph{removed} demand attention. They indicate a
-% modification which may require changes to existing styles or documents in
-% some, hopefully rare, cases. The numbers on the right indicate the relevant
-% section of this manual.
+% command). Entries stating that a feature has been \emph{deprecated},
+% \emph{modified}, \emph{renamed}, or \emph{removed} demand attention. They
+% indicate a modification which may require changes to existing documents. The
+% numbers on the right indicate the relevant section of this manual, more
+% information regarding backward compatibility can be found in
+% \prettyref{sec:bwd-comp}.
 % \fi
 %
 % \begin{changelog}
 %
 %   \begin{release}{3.0}{2011-00-00}
+%   \item Modified naming of component nodes\see{sec:objnodes}
+%   \item Modified beam connections\see{sec:drawbeam}
+%   \item Added fiber connections\see{sec:drawfiber}
+%   \item Added layering of components and connections\see{sec:layers}
 %   \item Removed deprecated lens code\see{cmd:lens}
 %   \item Added option \opt{phwidth}\see{cmd:pinhole}
 %   \item Modified option \opt{caxislength}\see{cmd:crystal}
@@ -7670,7 +7772,10 @@
 %   \item Removed option \opt{owidth}\see{cmd:pinhole}
 %   \item Removed option \opt{bswidth}\see{cmd:beamsplitter}
 %   \item Deprecated \cs{newOptexpDipoleNolabel}, use \cs{newOptexpDipole}\see{sec:newobj}
-%   \item Extended use of \opt{angle} and \opt{rotateref} to all components\see{sec:rotshift}
+%   \item Modified \opt{angle} and \opt{rotateref} to affect all components\see{sec:rotshift}
+%   \item Modified \opt{endbox} to affect all components\see{sec:positioning}
+%   \item Extended \opt{position} by values \opt{start} and \opt{end}\see{sec:positioning}
+%   \item Extended \opt{abspos} by values \opt{start} and \opt{end}\see{sec:positioning}
 %   \item Deprecated option \opt{refractiveindex}\see{sec:drawbeam}
 %   \item Renamed option \opt{refractiveindex} to \opt{n}\see{sec:drawbeam}
 %   \item Deprecated option \opt{conn}\see{sec:drawbeam}
