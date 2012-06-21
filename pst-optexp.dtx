@@ -1962,7 +1962,10 @@
 %\fi
 %
 % \numitem[0]{compshift} 
-% \ifGERMAN\fi
+% \ifGERMAN Verschiebt eine Komponente vertikal bezüglich ihrer Referenzlinie
+% (siehe \prettyref{sec:refnode}). Reflektive Komponenten werden entlang der
+% reflektiven Grenzfläche verschoben.
+% \fi
 % \ifENGLISH
 % Shift a component perpendicular to its reference line (see
 % \prettyref{sec:refnode}). For reflective components it is shifted along the
@@ -2217,7 +2220,15 @@
 % \ifENGLISH\chapter{Free-ray components}\fi
 % \label{chap:freeraycomp}
 %
-% \ifGERMAN\fi
+% \ifGERMAN In diesem Kapitel werden alle Freistrahl-Komponenten und deren
+% Parameter beschrieben. Freistrahl-Komponenten können, im Gegensatz zu
+% Faserkomponenten, transmittive und reflektive Grenzflächen haben, die für
+% Raytracing von Lichtstrahlen verwendet werden können. Es gibt zwei
+% unterschiedlichen Komponententypen: manche benötigen nur zwei Knoten um
+% positioniert zu werden (\ref{cmd:lens}--\ref{cmd:polarization}), wohingegen
+% z.B. Spiegel drei Knoten benötigen um korrekt ausgerichtet zu werden
+% (\ref{cmd:mirror}--\ref{cmd:pentaprism}).
+% \fi
 % \ifENGLISH This chapter describes all free-ray components and their
 % options. Free-ray components differ from fiber-components in that they provide
 % transmittive or reflective interfaces which can be used to raytrace
@@ -3309,13 +3320,11 @@
 %
 % \choitem[auto]{prismalign}{auto,center}
 % \ifENGLISH Sets the vertical alignment of the prism with respect to the
-% «reflection» node. For \opt{center}, the prism center coincides with this
-% node. For \opt{auto}, the prism is shifted vertically to the reflection plane
-% such that input and output interface nodes lay on the connections between the
-% reflection node and the input reference node or output reference,
-% respectively.
+% «reflection» node. See the following examples for explanation.
 % \fi
-% \ifGERMAN\fi
+% \ifGERMAN Wählt die vertikale Ausrichtung des Prisma bezüglich des
+% «Reflektionsknoten». Siehe folgende Beispiele zur Erklärung.
+% \fi
 % \iffalse
 %<*ignore>
 % \fi
@@ -3433,7 +3442,14 @@
 % (\prettyref{sec:coupler}) and circulators (\prettyref{sec:optcirculator}) are
 % treated differently.
 % \fi
-% \ifGERMAN\fi
+% \ifGERMAN In diesem Kapitel werden alle Faserkomponenten und deren Parameter
+% beschrieben. Diese werden automatisch über Fasern mit ihren Referenzknoten
+% verbunden und können nicht mit Lichtstrahlen verbunden werden. Die meisten
+% Komponenten benötigen nur zwei Referenzknoten und werden wie die
+% Freistrahlzweipole behandelt. Manche spezielle Komponenten wie Kopper
+% (\ref{sec:coupler}) und Zirkulatoren (\ref{cmd:optcirculator})
+% werden anders ausgerichtet.
+% \fi
 %
 % \psset{usefiberstyle}
 % \begin{optionlist}
@@ -3929,7 +3945,9 @@
 % \ifENGLISH\section{Fiber coupler}\fi
 % \label{sec:coupler}
 % 
-% \ifGERMAN\fi
+% \ifGERMAN Es stehen drei Faserkoppler zur Verfügung, die alle die gleichen
+% Formen und Parameter verwenden.
+% \fi
 % \ifENGLISH The package provides three fiber couplers, which all share the same
 % shapes and parameters.
 % \fi
@@ -4147,17 +4165,17 @@
 % \ifENGLISH\chapter{Hybrid components}\fi
 % \label{sec:hybridcomp}
 %
-% \ifENGLISH This chapter describes the components which can be used
-% both for free-ray and fiber optics but which differ from these two
-% categories.
+% \ifENGLISH This chapter describes the components which can be used both for
+% free-ray and fiber optics but which differ from these two categories.
 %
-% The optical filter is connected by default with automatic fiber
-% connections, but can likewise be used with free-ray beams, in contrast
-% to the fiber components (\prettyref{chap:fibercomp}). The fiber
-% collimator has one interface only, the other connection is a fiber.
-% \fi \ifGERMAN Dieses Kapitel beschreibt die Komponenten, die sowohl
-% für Freistrahl- als auch Faseroptik zu verwenden sind, sich von diesen
-% aber etwas abgrenzen.
+% The optical filter is connected by default with automatic fiber connections,
+% but can likewise be used with free-ray beams, in contrast to the fiber
+% components (\prettyref{chap:fibercomp}). The fiber collimator has one
+% interface only, the other connection is a fiber.
+% \fi
+% \ifGERMAN Dieses Kapitel beschreibt die Komponenten, die sowohl für
+% Freistrahl- als auch Faseroptik zu verwenden sind, sich von diesen aber etwas
+% abgrenzen.
 %
 % Der optische Filter wird mit den Voreinstellungen aber als
 % Faserkomponente gehandhabt, kann im Gegensatz zu den reinen
@@ -4165,7 +4183,6 @@
 % Freistrahlkomponente verwendet werden. Der Faserkollimator hat nur
 % eine Faser, die andere Verbindung ist Freistrahl. 
 % \fi
-% \ifGERMAN\fi
 %
 % \ifGERMAN\section{Optischer Filter}\fi
 % \ifENGLISH\section{Optical filter}\fi
@@ -5124,12 +5141,20 @@
 % between nodes and components, the nodes must be enclosed in parenthesis within
 % the brackets.
 % \fi
-% \ifGERMAN\fi
+% \ifGERMAN
+% Alle Makros für Verbindungen akzeptieren entweder eine ID (siehe
+% \prettyref{sec:namingobj}) oder einen PSTricks-Knoten als Argument, die als
+% \prm{obj$_1$}, \prm{obj$_2$}, \ldots \prm{obj$_N$} bezeichnet werden. Um
+% zwischen Knoten und Komponenten unterscheiden zu können, müssen Knoten in
+% runde Klammern innerhalb der geschweiften Klammern eingeschlossen werden.
+% \fi
 %
 % \begin{enumerate}
 % \item 
-% \ifGERMAN Auf alle Komponenten kann unter Verwendung der ID zugegriffen werden. \fi
-% \ifENGLISH All components can be accessed via their ID.\fi
+%   \ifGERMAN Auf alle Komponenten kann unter Verwendung der ID zugegriffen
+%   werden.
+% \fi
+%   \ifENGLISH All components can be accessed via their ID.\fi
 % \iffalse
 %<*ignore>
 % \fi
@@ -5236,7 +5261,13 @@
 % single beams only. For options specific to wide beams, please see
 % \prettyref{sec:drawwidebeam}.
 % \fi
-% \ifGERMAN\fi
+% \ifGERMAN Es gibt mehrere Möglichkeiten Komponenten und Knoten mit Strahlen zu
+% verbinden, diese können entweder einfache Linien, oder ausgedehnte Strahlen
+% sein. Die meisten Parameter haben für beide Typen dieselbe Bedeutung, daher
+% beschränken sich die entsprechenden Beispiele auf die einfachen Strahlen. Die
+% Parameter die nur ausgedehnte Strahlen betreffen, werden in
+% \prettyref{sec:drawwidebeam} beschrieben.
+% \fi
 %
 % \begin{ltxsyntax}
 %   \xLcs{drawbeam}\cmditem{drawbeam}[options]{obj$_1$}{obj$_2$}\ldots
@@ -5249,7 +5280,14 @@
 %   components, the nodes must be enclosed in parenthesis within the
 %   brackets. For more information about naming see \prettyref{sec:namingobj}.
 %   \fi
-%   \ifGERMAN\fi
+
+%   \ifGERMAN Diese beiden Makros sind für Strahlverbindungen zuständig, sie
+%   akzeptieren eine variable Anzahl an Argumenten (mindestens zwei), die
+%   entweder eine ID, ein \Lkeyword{compname}, oder ein PSTricks-Knoten sein
+%   können. Um zwischen Knoten und Komponenten unterscheiden zu können, müssen
+%   Knoten in runde Klammern innerhalb der geschweiften Klammern eingeschlossen
+%   werden.
+%   \fi
 % \end{ltxsyntax}
 %
 % \subsection{Raytracing}
@@ -5268,7 +5306,21 @@
 % optimize the visual effects of the beam path, and not stick with its
 % physically correct values.
 % \fi
-% \ifGERMAN\fi
+% \ifGERMAN
+% Der Strahlengang durch die Komponenten kann mit zwei unterschiedlichen
+% Methoden ermittelt werden: über den Brechungsindex und das Snelliussche
+% Brechungsgesetzt, oder indem die Komponenten unabhängig von ihren optischen
+% Eigenschaften einfach verbunden werden.
+%
+% Behalten Sie immer im Hinterkopf, dass diese Paket für \emph{Skizzen}
+% optischer Aufbauten ist und daher keine vollständige Umgebung zur
+% Strahlverfolgung bereitstellt. Abweichungen vom physikalisch richtigen Weg
+% können in vielen Fällen erwünscht sein: Winkel und Divergenzen werden häufig
+% extremer dargestellt um bestimmte Effekte hervorzuheben. Daher sollten Sie den
+% Brechungsindex (siehe \prettyref{sec:n}) lediglich as Mittel zur Optimierung
+% des gewünschten Lichtweges sehen und nicht zu sehr an den physikalisch
+% richtigen Werten festhalten.
+% \fi
 %
 % \begin{optionlist}
 %   \boolitem[true]{raytrace}
@@ -5280,16 +5332,31 @@
 %   In most cases, the «connect» mode is equivalent to «raytracing» with
 %   \Lkeyword{n}\opt{=1}, except for \Lcs{optprism} and \Lcs{doveprism}, where
 %   the interface nodes (\prettyref{sec:ifcnode}) are simply connected. 
-%
 %   See the following two example for the differences between the tracing modes
 %   using these two components. The interface nodes are highlighted for clarity.
 %
 %   The raytraced beam with \Lkeyword{n}\opt{=1} (blue) passes the component
 %   without changing its direction, the refraction for \Lkeyword{n}\opt{=1.5} is
-%   calculated, and the «connect» beam just passes through the two interface
-%   nodes.
+%   calculated (red), and the «connect» beam (green) just passes through the two
+%   interface nodes.
 %   \fi
-%   \ifENGLISH\fi
+%   \ifGERMAN
+%   Wählt die Methode der Strahlverfolgung, mit \opt{true} wird der
+%   Brechungsindex («raytracing») verwendet, \opt{false} verbindet die
+%   Komponente lediglich («connet» Variante).
+%
+%   In vielen Fällen ist «connect» identisch mit «raytracing» für
+%   \Lkeyword{n}\opt{=1}, außer für \Lcs{optprism} oder \Lcs{doveprism} bei
+%   denen die Grenzflächenknoten (\prettyref{sec:ifcnode}) dann einfach nur
+%   verbunden werden.  Die folgenden beiden Beispiele zeigen die Unterschiede
+%   der beiden Methoden für diese Komponenten. Die Grenzflächenknoten sind zum
+%   besseren Verständnis hervorgehoben.
+%
+%   Der «raytracing» Strahl mit \Lkeyword{n}\opt{=1} (blau) wird durch die
+%   Komponente transmittiert ohne die Richtung zu verändern, für
+%   \Lkeyword{n}\opt{=1} (rot) wird die Brechung an den Grenzflächen berechnet,
+%   und der «connect» Strahl (grün) durchläuft genau die Grenzflächenknoten.
+%   \fi
 %
 %\iffalse
 %<*ignore>
@@ -5315,7 +5382,12 @@
 % because it is not refracted and stops therefore at the first interface (see
 % \prettyref{sec:error-handling}).
 % \fi
-% \ifGERMAN\fi
+% \ifGERMAN
+% Das \Lcs{doveprism} wird im Prinzip genauso behandelt wie das \Lcs{optprism},
+% der «raytracing» Strahl mit \Lkeyword{n}\opt{=1} (blau) trifft wegen fehlender
+% Brechung die zweite Grenzfläche nicht, und endet daher an der ersten
+% Grenzflächen (siehe \prettyref{sec:error-handling}).
+% \fi
 %
 %\iffalse
 %<*ignore>
@@ -5343,10 +5415,13 @@
 % \ifENGLISH
 % The raytracing depends on the refractive index, which may be set for each
 % component separately. The refractive index is always relative to the
-% background which has a constant value for the whole sketch, i.e. negative
-% refraction can be achieved for $n < 1$.
+% background which has a constant value for the whole sketch.
 % \fi
-% \ifGERMAN\fi
+% \ifGERMAN
+% Das Raytracing wird durch den Brechungsindex bestimmt, der für jede Komponente
+% einzeln gesetzt werden kann. Der Wert ist relativ zum Hintergrund, für den ein
+% konstanter Wert für die gesamte Skizze angenommen wird.
+% \fi
 %
 % \begin{optionlist}
 % \valitem[1.5]{n}{code}
@@ -5355,8 +5430,16 @@
 % Anwendungsbereiche: zum einen kann der Index einer Komponente gesetzt werden,
 % zum anderen der Brechungsindex für einen Strahlengang:
 % \begin{enumerate}
-% \item
-% \item
+% \item Wird \Lkeyword{n} als globaler Parameter oder als Komponentenparameter
+%   verwendet, so wird der Index für alle betroffenen Komponenten gesetzt. Ohne
+%   weitere Änderungen wird jeder Lichtstrahl diese Werte verwenden.
+% \item Als Parameter zu \Lcs{drawbeam} oder \Lcs{drawwidebeam} can der
+%   Brechungsindex der Komponenten für einzelne Strahlengänge überschrieben oder
+%   geändert werden. Das kann sehr nützlich sein, um z.B. chromatische
+%   Dispersion zu illustrieren. Soll die Änderung global für alle oder mehrere
+%   Lichtstrahlen wirksam sein, so muss der gewünschte Wert dem
+%   \Lstyle{Beam}-Stil hinzugefügt werden, da globale Definitionen von
+%   \Lkeyword{n} nur die Komponenten betreffen.
 % \end{enumerate}
 % \fi
 % \ifENGLISH Sets the relative refractive index respect to the background. This
@@ -5389,7 +5472,20 @@
 % In the following you find several examples about the different aspects of
 % using \Lkeyword{n}.
 % \fi
-% \ifGERMAN\fi
+% \ifGERMAN
+% Der \prm{code} kann jeglicher Postscript-Code sein, der zu einer Zahl
+% ausgewertet werden kann, also z.B. \opt{1.5} oder \opt{5 sqrt}. Beginnt
+% \prm{code} mit einem \opt{*}, so wird der Code als algebraischer
+% Ausdruck\fnurl{http://mirror.ctan.org/graphics/pstricks/base/doc/pst-news08.pdf}
+% ausgewertet, d.h. \opt{*sqrt(5)} ist äquivalent zu \opt{5 sqrt}. Innerhalb von
+% \prm{code} kann mit \opt{n} auf den vordefinierten Brechungsindex der
+% Komponenten zugegriffen werden, es kann also eine Änderung relativ zum
+% ursprünglichen Wert erzielt werden. Mit \opt{n=n 1.01 mul} kann \opt{n}
+% z.B. um ein Prozent geändert werden.
+%
+% In den folgenden Beispielen werden diese unterschiedlichen Möglichkeiten von
+% \Lkeyword{n} gezeigt.
+% \fi
 %
 % \begin{enumerate}
 % \item 
@@ -5398,7 +5494,12 @@
 %   $\sqrt{5}$ gives the ideal output direction which is the same as the input
 %   direction.
 %   \fi
-%   \ifGERMAN\fi
+%   \ifGERMAN
+%   Setze den Brechungsindex einer Komponente. Interessanterweise ist ein
+%   Brechungsindex von $\sqrt{5}$ der ideale Wert für die Standardform des
+%   \Lcs{doveprism}, der Ausgangsstrahl verläuft also parallel zum
+%   Eingangsstrahl.
+%   \fi
 %
 % \iffalse
 %<*ignore>
@@ -5419,7 +5520,10 @@
 %   components (green), the other one overwrites it with a value of \opt{2}
 %   (red).
 %   \fi
-%   \ifGERMAN\fi
+%   \ifGERMAN
+%   Ein Strahl (grün) verwendet die voreingestellten Werte der Komponenten, der
+%   rote überschreibt diese mit \opt{2}.
+%   \fi
 % \iffalse
 %<*ignore>
 % \fi
@@ -5444,7 +5548,10 @@
 %   \ifENGLISH Now, the red beam uses the default refractive index of the component,
 %   the yellow beam adds \opt{0.5} to the default index.
 %   \fi
-%   \ifGERMAN\fi
+%   \ifGERMAN
+%   Der rote Strahl verwendet die voreingestellten Werte, der grüne ändert diese
+%   um \opt{0.5}.
+%   \fi
 % \iffalse
 %<*ignore>
 % \fi
@@ -5469,7 +5576,13 @@
 %   equation\fnurl{http://en.wikipedia.org/wiki/Sellmeier_equation} for
 %   different wavelengths.
 %   \fi
-%   \ifGERMAN\fi
+%   \ifGERMAN
+%   Mit dynamischer Anpassung von \Lkeyword{n} kann chromatische Dispersion sehr
+%   gut emuliert werden. Hier wird die Dispersion eines Prisma gezeigt, der
+%   Brechungsindex wird mit der Sellmaier
+%   Gleichung\fnurl{http://en.wikipedia.org/wiki/Sellmeier_equation} für die
+%   unterschiedlichen Wellenlängen berechnet. 
+%   \fi
 % \iffalse
 %<*ignore>
 % \fi
@@ -5496,7 +5609,7 @@
 %
 % \item 
 % \ifENGLISH Using the numerical aperture of a pinhole as spectral filter.\fi
-% \ifGERMAN\fi
+% \ifGERMAN Die numerische Apertur einer Lochblende als spektraler Filter.\fi
 %
 % \iffalse
 %<*ignore>
@@ -5535,7 +5648,11 @@
 % interface. Both values are of \prm{psnum} type. If a single number is given,
 % the $x$-coordinate is set to \opt{0}.
 % \fi
-% \ifGERMAN\fi
+% \ifGERMAN
+% Die Startposition (\prm{x}, \prm{y}) des Strahls an der ersten
+% Grenzfläche. Beide Zahlen sind vom Typ \prm{psnum}. Wird eine einzelne Zahl
+% angegeben, wird die $x$-Koordinate auf \opt{0} gesetzt.
+% \fi
 %
 % \iffalse
 %<*ignore>
@@ -5560,7 +5677,12 @@
 % but depending on e.g. the \Lkeyword{beamangle}, the actual intersection with
 % the curved interface is at different positions.
 % \fi
-% \ifGERMAN\fi
+% \ifGERMAN
+% Die Startposition ist relativ zum entsprechenden Grenzflächenknoten, wie im
+% folgenden Beispiel gezeigt wird. Die Startposition ist fest, abhängig z.B. von
+% \Lkeyword{beamangle} kann der eigentliche Schnittpunkt mit der ersten
+% Grenzfläche jedoch anders sein.
+% \fi
 %
 % \iffalse
 %<*ignore>
@@ -5584,7 +5706,10 @@
 % Which interface the beam starts at is determined by the options
 % \Lkeyword{beaminsidefirst} and \Lkeyword{startinside}.
 % \fi
-% \ifGERMAN\fi
+% \ifGERMAN
+% An welcher Grenzfläche der ersten Komponente gestartet wird hängt von
+% \Lkeyword{beaminsidefirst} und \Lkeyword{startinside} ab.
+% \fi
 %
 % \psnumitem[0]{beamangle}
 % \ifGERMAN
@@ -5615,7 +5740,18 @@
 % \fi
 % 
 % \choitem[relative]{beamalign}{rel, relative, abs, absolute}
-% \ifGERMAN\fi
+% \ifGERMAN
+% Gibt vor, ob der Winkel \Lkeyword{beamangle} relativ zu der Verbindung
+% zwischen den ersten beiden Komponenten ist, oder ob es sich um einen absoluten
+% Winkel handelt.
+%
+% Ein absoluter Winkel kann sehr hilfreich sein, falls eine der beiden ersten
+% Komponenten gedreht oder verschoben wurde. Dabei werden die
+% Grenzflächenknoten, auf die sich ein relativer Winkel bezieht, ebenfalls
+% transformiert (siehe \prettyref{sec:rotshift}). In dem folgenden Beispiel
+% verläuft daher der grüne Strahl mit der relativen Ausrichtung nicht
+% horizontal.
+% \fi
 % \ifENGLISH
 % Select whether the \Lkeyword{beamangle} is relative to the connection between
 % the first two components, or if it is an absolute angle.
@@ -5650,7 +5786,12 @@
 % options. Generally, the first, the last, and all other components are treated
 % separately.
 % \fi
-% \ifGERMAN\fi
+% \ifGERMAN
+% Ein Strahlengang setzt sich aus Strahlen zwischen den Komponenten und
+% innerhalb der Komponenten zusammen. Ob diese internen Strahl gezeichnet
+% werden, kann mit mehreren Parametern festgelegt werden. Die erste, letzte und
+% die übrigen Komponenten werden separat gehandhabt.
+% \fi
 % 
 % \boolitem[true]{beaminside}
 % \ifGERMAN
@@ -5769,13 +5910,19 @@
 % \ifGERMAN\subsection{Verbinden mit Knoten}\fi
 %
 % \ifENGLISH
-% As mentioned earlier in this chapter, beams can connect components and/or
+% As mentioned earlier in this chapter, beams can connect components also with
 % nodes. For raytracing you need in general a plane, which imposes some problems
 % when connecting with nodes. This is handled such, that a temporary plane is
 % constructed, which goes through the specified node and is perpendicular to the
 % connection between the node and the preceeding component.
 % \fi
-% \ifGERMAN\fi
+% \ifGERMAN
+% Wie vorher schon einmal erwähnt können Komponenten auch mit Knoten verbunden
+% werden. Für Raytracing wird in der Regel eine Ebene benötigt, was ein Problem
+% hinsichtlich der Knoten darstellt. Das wird so gehandhabt, das eine temporäre
+% Ebene durch den Knoten definiert wird, die vertikal zur Verbindung zwischen
+% dem Knoten und der vorangegangenen Komponente steht.
+% \fi
 % \iffalse
 %<*ignore>
 % \fi
@@ -5800,7 +5947,12 @@
 % For more flexibility, the package provides an «invisible» plane which can be
 % used for this purpose.
 % \fi
-% \ifGERMAN\fi
+% \ifGERMAN
+% Das ist in vielen Fällen sehr praktisch, kann aber wiederum unerwünschte
+% Ergebnisse bei gedrehten und verschobenen Komponenten ergeben und die
+% Ebenenausrichtung kann nicht beliebig gesetzt werden.  Das kann mit einer
+% unsichtbaren Ebene erreicht werden, die mit \Lcs{optplane} definiert wird.
+% \fi
 %
 % \begin{ltxsyntax}
 %   \xLcs{optplane}\cmditem{optplane}(center) 
