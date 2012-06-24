@@ -111,7 +111,8 @@
     fibercollimator, optcoupler, wdmcoupler, wdmsplitter, optcirculator,
     drawbeam, drawwidebeam, drawfiber, frontlayer, backlayer, newOptexpDipole,
     newOptexpTripole, newOptexpFiberDipole,optplane}, %
-  morekeywords = [22] {optexp}, explpreset={%
+  morekeywords = [22] {optexp}, 
+  explpreset={%
     pos=l, width=-99pt, hsep=5mm, overhang=\codeoverhang, varwidth,
     vsep=\bigskipamount, rframe={}},
   extendedchars=true,
@@ -871,11 +872,12 @@
 % \ifENGLISH
 % I thank all the people of the PSTricks mailinglist for the continuous help,
 % especially Herbert Voß. Thanks also to various package authors from which I
-% learned and adopted code for this package. Christine Römer convinced my with
-% her article in the german DTK\footnote{Pakete in Deutsch dokumentieren. in Die
-% TeXnische Komödie. Heft 2/2011, S. 28-35.} to provide a german translation of
-% the documentation. The documentation style is a mixture of the \opt{pst-doc}
-% class (Herbert Voß) and the \opt{ltxdockit} package for the \opt{biblatex}
+% learned and adopted code for this package, Florent Chervet, Rolf Niepraschk
+% and Heiko Oberdiek. Christine Römer convinced my with her article in the
+% german DTK\footnote{Pakete in Deutsch dokumentieren. in Die TeXnische
+% Komödie. Heft 2/2011, S. 28-35.} to provide a german translation of the
+% documentation. The documentation style is a mixture of the \opt{pst-doc} class
+% (Herbert Voß) and the \opt{ltxdockit} package for the \opt{biblatex}
 % documentation (Philipp Lehman).
 % \fi
 %
@@ -1184,7 +1186,7 @@
 \catcode`\*=13
 \def*{}%
 \begin{LTXexample}[style=example, linerange={1-4,6-6}]
-*\ON*\begin{pspicture}[showgrid](5,2)
+*\ON*\begin{pspicture}[showgrid](0,-0.3)(5,2.3)
   \pnode(0,1){A}\pnode(3.5,1){B}*\OFF*
   \lens[lensradius=-0.7,
           abspos=1](A)(B){concave}*\ON*
@@ -1210,7 +1212,7 @@
 \catcode`\*=13
 \def*{}%
 \begin{LTXexample}[style=example, linerange={1-6,9-9}]
-*\ON*\begin{pspicture}[showgrid](5,2)
+*\ON*\begin{pspicture}[showgrid](0,-0.3)(5,2.3)
   \pnode(0,1){A}\pnode(3.5,1){B}
   \lens[lensradius=-0.7, 
           abspos=1](A)(B){concave}*\OFF*
@@ -1240,7 +1242,7 @@
 \catcode`\*=13
 \def*{}%
 \begin{LTXexample}[style=example, linerange={1-7,10-10}]
-*\ON*\begin{pspicture}[showgrid](5,2)
+*\ON*\begin{pspicture}[showgrid](0,-0.3)(5,2.3)
   \pnode(0,1){A}\pnode(3.5,1){B}
   \lens[lensradius=-0.7,
           abspos=1](A)(B){concave}
@@ -5962,7 +5964,10 @@
 %   is defined with \Lkeyword{angle}. The angle is with respect to the default
 %   alignment, which is vertical.
 %   \fi
-%   \ifGERMAN\fi
+%   \ifGERMAN Die Ebene wird durch lediglich einen Knoten definiert, die Drehung
+%   darum kann mit \Lkeyword{angle} angegeben werden. Der Winkel ist relativ zur
+%   ursprünglichen, vertikalen Ausrichtung.
+%   \fi
 % \iffalse
 %<*ignore>
 % \fi
@@ -5988,7 +5993,10 @@
 % Beam can also be drawn at definition time of a component, which can be handy,
 % but allows only very elemental beams.
 % \fi
-% \ifGERMAN\fi
+% \ifGERMAN Lichtstrahlen können auch zusammen mit der Komponentendefinition
+% gezeichnet werden. Das kann für einfache Strahlengänge sehr praktisch sein,
+% ist aber sehr unflexibel.
+% \fi
 %
 % \begin{optionlist}
 % \boolitem[false]{beam}
@@ -6028,7 +6036,11 @@
 %   of \Lcs*{drawbeam*} can also be used, these options overwrite settings from
 %   the \Lstyle{Beam} style.
 %   \fi
-%   \ifGERMAN\fi
+%   \ifGERMAN
+%   Das Aussehen der Lichtstrahlen kann mit diesem Stil gesteuert werden. Das
+%   optionale Argument von \Lcs*{draw*beam} kann ebenfalls dafür verwendet
+%   werden und überschreibt die Einstellungen des \Lstyle{Beam}-Stils.
+%   \fi
 % \end{stylelist}
 %
 % \begin{optionlist}
@@ -6047,7 +6059,11 @@
 % wide beams as well. Here, you find all additional information which apply to
 % wide beam only.
 % \fi
-% \ifGERMAN\fi
+% \ifGERMAN
+% Alle Informationen über einfache Strahlen (siehe \prettyref{sec:drawbeam})
+% betreffen auch aufgeweitete Strahlen. Hier werden nur zusätzliche
+% Einstellmöglichkeiten aufgeweiteter Strahlen behandelt.
+% \fi
 %
 % \begin{ltxsyntax}
 %   \xLcs{drawwidebeam}\cmditem{drawwidebeam}[options]{obj$_1$}{obj$_2$}\ldots
@@ -6058,7 +6074,9 @@
 % \ifENGLISH The initial beam width, measured at the initial position (defined
 % with \Lkeyword{beampos}) perpendicular to the beam direction.
 % \fi
-% \ifGERMAN\fi
+% \ifGERMAN Die Anfangsstrahlbreite an der mit \Lkeyword{beampos} angegebenen
+% Position, gemessen vertikal zur Verbindungslinie zur nächsten Komponente
+% \fi
 % \iffalse
 %<*ignore>
 % \fi
@@ -6080,7 +6098,10 @@
 % degree. Positive values give an expanding beam, negative values a contracting
 % beam.
 % \fi
-% \ifGERMAN\fi
+% \ifGERMAN Die Strahldivergenz an der Startposition, angegeben in
+% Grad. Positive Werte ergebenen einen expandierenden Strahl, negative einen
+% kontrahierenden.
+% \fi
 % \iffalse
 %<*ignore>
 % \fi
@@ -6113,7 +6134,13 @@
 % Wide beams have two marginal rays, which are drawn according to the line
 % settings, and may be filled.
 % \fi
-% \ifGERMAN\fi
+% \ifGERMAN Das Aussehen aufgeweiteter Strahlen kann genauso wie bei einfachen
+% Strahlen über \Lstyle{Beam} oder das optionale Argument vorgegeben werden
+% (siehe \prettyref{sec:beamappearance-single}).
+%
+% Breite Strahlen bestehen aus zwei Randstrahlen, die gemäß der
+% Linieneinstellungen gezeichnet werden, und können zusätzlich gefüllt werden.
+% \fi
 %
 % \begin{enumerate}
 % \item 
@@ -6195,7 +6222,10 @@
 %   \ifENGLISH A beam misses an interface. The red beam in the following example
 %   misses the last plane and is truncated.
 %   \fi
-%   \ifGERMAN\fi
+%   \ifGERMAN Ein Strahl trifft eine Grenzfläche nicht. Der rote Strahl in dem
+%   folgenden Beispiel verpasst die letzte Grenzfläche und endet daher an der
+%   vorhergehenden.
+%   \fi
 % \iffalse
 %<*ignore>
 % \fi
@@ -6220,7 +6250,11 @@
 %   reflected, but this is not supported, and the beam is truncated at the
 %   interface where the total internal reflection occurs.
 %   \fi
-%   \ifGERMAN\fi
+%   \ifGERMAN Totale interne Reflektion tritt an einer Grenzfläche auf, die
+%   nicht dafür vorgesehen ist. Der rote Strahl im folgenden Beispiel würde
+%   reflektiert werden, aber das wird für diese Komponente nicht unterstützt und
+%   der Strahl endet an der total reflektierenden Grenzfläche.
+%   \fi
 % \iffalse
 %<*ignore>
 % \fi
@@ -6254,7 +6288,10 @@
 %   standard output if a beam misses an interface or if total internal
 %   reflection occured at some point.
 %   \fi
-%   \ifGERMAN\fi
+%   \ifGERMAN Um eine Fehlersuche zu vereinfachen kann ein Hinweis ausgegeben
+%   werden sobald ein Strahlengang vorzeitig beendet wird weil entweder eine
+%   Grenzfläche verpasst wird, oder totale interne Reflektion auftritt.
+%\fi
 % \end{optionlist}
 % 
 % \ifGERMAN\section{Angepasste Strahlen}\fi
@@ -6434,7 +6471,14 @@
 %   (see blue beam). The dashed line helps to understand the correct beam path
 %   through the lens.
 %   \fi
-%   \ifGERMAN\fi
+%   \ifGERMAN Mit dem Parameter \Lkeyword{beaminsidefirst} kann eingestellt
+%   werden, ob der interne Strahlengang in der erste Komponente gezeichnet
+%   wird. Für angepasste Strahlengänge kann es aber notwendig sein dem internen
+%   Strahlengang in der ersten Komponente zu folgen ohne diesen zu zeichnen,
+%   z.B. wenn der vorangegangene Strahl an der ersten Grenzfläche schon endet.
+%   
+%   Im folgenden Beispiel wird der einfallende grüne Strahl falsch durch den roten Strahl fortgesetzt, da der grüne an der linken Grenzfläche endet, der rote aber annimmt, dass die fälschlicherweie
+%   \fi
 %
 % \iffalse
 %<*ignore>
@@ -6458,7 +6502,9 @@
 %   \ifENGLISH This option is equivalent to \Lkeyword{startinside}, but refers
 %   to the last component.
 %   \fi
-%   \ifGERMAN\fi
+%   \ifGERMAN Äquivalent zu \Lkeyword{startinside}, bezieht sich aber auf die
+%   letzte Komponenten.
+%   \fi
 % \iffalse
 %<*ignore>
 % \fi
@@ -6486,7 +6532,10 @@
 % All available components can be connected with fiber connections, the
 % fiber-optical components are connected automatically.
 % \fi
-% \ifGERMAN\fi
+% \ifGERMAN
+% Alle Komponenten können mit Fasern verbunden werden, die Faserkomponenten
+% werden automatisch verbunden.
+% \fi
 %
 % \begin{ltxsyntax}
 %   \xLcs{drawfiber}\cmditem{drawfiber}[options]{obj$_1$}{obj$_2$}\ldots
@@ -6501,7 +6550,12 @@
 % The automatic fiber connections are drawn internally with \Lcs{drawfiber}
 % commands from each reference node to the component.
 % \fi
-% \ifGERMAN\fi
+% \ifGERMAN
+% Das \Lcs{drawfiber} Makro kann IDs oder Knoten als \prm{obj$_N$} Argumente
+% verarbeiten (siehe \prettyref{sec:accessobj}), aber ID-Intervalle wie bei
+% \Lcs*{draw*beam} sind nicht möglich. Werden mehr als zwei Argumente
+% mitgegeben, werden die Verbindunge 1--2, 2--3, usw. gezeichnet.
+% \fi
 %
 % \ifENGLISH\subsection{Fiber angles}\fi
 % \ifGERMAN\subsection{Faserwinkel}\fi
@@ -6512,7 +6566,12 @@
 % curve ends are determined automatically and depend on whether you connect a
 % component with a component, or a component with a node.
 % \fi
-% \ifGERMAN\fi
+% \ifGERMAN
+% Üblicherweise werden Fasern als \Lcs*{nccurve} Verbindungen gezeichnet, die
+% Winkel an beiden Kurvenenden werden automatisch bestimmt und hängen davon ab,
+% ob eine Komponente mit einer anderen Komponente oder einem Knoten verbunden
+% wird.
+% \fi
 % 
 % \ifENGLISH\minisec{Component with node}\fi
 % \ifGERMAN\minisec{Kompnente mit Knoten}\fi
@@ -6522,7 +6581,12 @@
 % connections (see \prettyref{sec:drawfiber-auto}). Consider the following
 % example for clarification of the curve alignment:
 % \fi
-% \ifGERMAN\fi
+% \ifGERMAN
+% Eine Verbindung zwischen einer Komponente und einem Knoten ist das, was bei
+% automatischen Verbindungen verwendet wird (siehe
+% \prettyref{sec:drawfiber-auto}). Folgendes Beispiel erläutert die Ausrichtung
+% der Kurve:
+% \fi
 %
 % \iffalse
 %<*ignore>
@@ -6550,7 +6614,12 @@
 % component which it gets connected to. The fiber is directed to the component
 % node, what is illustrated in the following example.
 % \fi
-% \ifGERMAN\fi
+% \ifGERMAN
+% Der Winkel an der Komponente entspricht dem der transformierten
+% Referenzlinie. Der Winkel an dem Knoten entspricht dem der ursprünglichen
+% Referenzlinie der Komonente zu der die Verbindung geht. Die Faser ist in
+% Richtung des entsprechenden Komponentenknotens orientiert.
+% \fi
 %
 % \iffalse
 %<*ignore>
@@ -6587,7 +6656,15 @@
 % respective curve end is connected to. The fibers are always directed away from
 % the component center.
 % \fi
-% \ifGERMAN\fi
+% \ifGERMAN
+% Diese Variante ist sehr nützlich um glattere Verbindungen zwischen Komponenten
+% zu erreichen, die nicht auf derselben Referenzlinie positioniert sind, sondern
+% z.B. in einer Schleife.
+%
+% In diesem Fall werden die Kurvenwinkel von der Komponente bestimmt, mit der
+% das jeweilige Ende verbunden ist. Die Fasern zeigen immer von der
+% Komponentenmitte weg.
+% \fi
 %
 % \iffalse
 %<*ignore>
@@ -6612,13 +6689,17 @@
 % \ifENGLISH These automatically calculated start and stop angles can be changed
 % in a variety of ways.
 % \fi
-% \ifGERMAN\fi
+% \ifGERMAN
+% Diese automatisch berechneten Winkel können vielfältig manipuliert werden.
+% \fi
 %
 % \begin{optionlist}
 %   \choitem[relative]{fiberalign}{rel,relative,center,abs,absolute}
 %   \ifENGLISH Set the reference for the fiber angles.
 %   \fi
-%   \ifGERMAN\fi
+%   \ifGERMAN
+%   Wählt die Referenz für die Faserwinkel.
+%   \fi
 %   \begin{valuelist}
 %   \item[relative] 
 %     \ifENGLISH The fiber angles are relative to the component. When
@@ -6626,7 +6707,12 @@
 %     component reference line. The angle at the component agrees with that of
 %     its transformed reference line.
 %     \fi
-%     \ifGERMAN\fi
+%     \ifGERMAN
+%     Die Faserwinkel sind relativ zur Komponente. Wird ein Knoten mit der
+%     Komponente verbunden, so entspricht der Winkel am Knoten dem der
+%     Referenzlinie der Komponente. Der Winkel an der Komponente entspricht dem
+%     der transformierten Referenzlinie.
+%     \fi
 % \iffalse
 %<*ignore>
 % \fi
@@ -6655,7 +6741,13 @@
 %   shows the correct alignment, while the red one is with \opt{relative}
 %   alignment.
 %   \fi
-%   \ifGERMAN\fi
+%   \ifGERMAN
+%   Die Winkel sowohl am Knoten als auch an der Komponente sind relativ zu der
+%   Verbindung zwischen dem betroffenen Komponentenknoten und der
+%   Komponentenmitte. Meistens ist das äquivalent zu \opt{relative}, wird aber
+%   z.B. für \Lcs{optcirculator} benötigt. In dem Beispiel hat die grüne Faser
+%   die korrekte Ausrichtung, während der rote \opt{relative} ausgerichtet wird.
+%   \fi
 %
 % \iffalse
 %<*ignore>
@@ -6675,7 +6767,10 @@
 % \item[absolute] 
 %   \ifENGLISH The fiber angles are absolute, no automatic values are added.
 %   \fi
-%   \ifGERMAN\fi
+%   \ifGERMAN
+%   Die Faserwinkel werden als absolute Werte angegeben, die automatischen
+%   Winkel werden nicht berücksichtigt.
+%   \fi
 %
 % \iffalse
 %<*ignore>
@@ -6701,11 +6796,16 @@
 %   \Lkeyword{fiberangleA} is the total angle, otherwise its value is added to
 %   the calculated angle.
 %   \fi
-%   \ifGERMAN\fi
+%   \ifGERMAN
+%   Ein additiver Wert für den Anfangswinkel, der gesamte Winkel hängt von
+%   \Lkeyword{fiberalign} ab. Ist dieser auf \opt{absolute} eingestellt, so ist
+%   \Lkeyword{fiberangleA} der absolute Winkel, andernfalls wird der Wert zu dem
+%   automatisch berechneten Winkel hinzuaddiert.
+%   \fi
 %
 %   \numitem[0]{fiberangleB}
 %   \ifENGLISH Like \Lkeyword{fiberangleA}, but for the end angle.\fi
-%   \ifGERMAN\fi
+%   \ifGERMAN Wie \Lkeyword{fiberangleB}, aber für den Endwinkel.\fi
 % 
 %   \choitem[auto]{startnode}{auto, N, 1, 2, \ldots}
 %   \ifGERMAN Für die Verbindungen mit \Lcs{drawfiber} werden für üblicherweise
@@ -6726,14 +6826,18 @@
 % The following examples show some use cases for \Lkeyword{startnode} and
 % \Lkeyword{stopnode}.
 % \fi
-% \ifGERMAN\fi
+% \ifGERMAN
+% Die folgenden Beispiele zeigen Anwendungsmöglichkeiten für
+% \Lkeyword{startnode} und \Lkeyword{stopnode}.
+% \fi
 %
 % \begin{enumerate}
 % \item 
 %   \ifENGLISH This example shows a situation, where choosing the nearest nodes
 %   is correct.
 %   \fi
-%   \ifGERMAN\fi
+%   \ifGERMAN In diesem Fall ist der nächstgelegene Knoten auch der richtige.
+%   \fi
 % 
 % \iffalse
 %<*ignore>
@@ -6754,7 +6858,10 @@
 %   \ifENGLISH In this case, the nearest connection is not well defined because
 %   two connections have the same length.
 %   \fi
-%   \ifGERMAN\fi
+%   \ifGERMAN
+%   Hier ist der kürzeste Abstand nicht eindeutig definiert, da es zwei
+%   Verbindungen mit dergleichen Länge gibt.
+%   \fi
 %
 % \iffalse
 %<*ignore>
@@ -6778,7 +6885,13 @@
 %   other is the one nearest to it. In rare cases it might be necessary to set
 %   both nodes.
 %   \fi
-%   \ifGERMAN\fi
+%   \ifGERMAN
+%   Um die gewünschte Verbindung zu wählen kann es ausreichend sein entweder
+%   \Lkeyword{startnode} oder \Lkeyword{stopnode} zu setzen. Ist ein Knoten fest
+%   vorgegeben, wird der anderen wieder als der mit dem kürzesten Abstand
+%   gewählt. Nur in Ausnahmefällen sollte es notwendig sein beide Knoten
+%   explizit anzugegeben.
+%   \fi
 %
 % \iffalse
 %<*ignore>
@@ -6798,8 +6911,12 @@
 % \fi
 % 
 % \item 
-% \ifENGLISH Another example where you need to specify the startnode.\fi
-% \ifGERMAN\fi
+%   \ifENGLISH Another example where you need to specify the
+%   \Lkeyword{startnode}.
+%   \fi
+%   \ifGERMAN Ein weiteres Beispiel, bei dem \Lkeyword{startnode} vorgegeben
+%   werden muss.
+%   \fi
 %
 % \iffalse
 %<*ignore>
@@ -6836,7 +6953,11 @@
 %   argument of \Lcs{drawfiber} can used as well, these options overwrite
 %   settings from the \Lstyle{Fiber} style.
 %   \fi
-%   \ifGERMAN\fi
+%   \ifGERMAN
+%   Das Aussehen der Fasern durch diesen Stil vorgegeben. Das optionale Argument
+%   von \Lcs{drawfiber} kann ebenfalls verwendet werden, die entsprechenden
+%   Parameter überschreiben die Einstellungen von \Lstyle{Fiber}.
+%   \fi
 %
 %   \valitem{addtoFiber}{list}
 %     \addtostylemsg{Fiber}
@@ -6845,7 +6966,14 @@
 %     \newstylemsg{Fiber}
 % 
 %   \valitem[curve]{fiberstyle}{string}
-%   \ifGERMAN\fi
+%   \ifGERMAN
+%   Die Fasern werden in der Regel als \Lcs*{nccurve} gezeichnet, aber eine
+%   beliebige andere Knotenverbindung \nxLcs{nc}\prm{string} des
+%   \LPack{pst-node} Paketes kann ausgewählt werden, lesen Sie die entsprechende
+%   Dokumentation für mögliche Werte. In den folgenden Beispielen werden
+%   Anwendungsmöglichkeiten gezeigt, eine weitere ist in
+%   \prettyref{ex:transmission-loop} zu sehen.
+%   \fi
 %   \ifENGLISH 
 %   The fibers are usually drawn as \Lcs*{nccurve}, but any type of node
 %   connection \nxLcs{nc}\prm{string} from \LPack{pst-node} can be selected with
@@ -6891,15 +7019,22 @@
 % \label{sec:drawfiber-auto}
 %
 % \ifENGLISH
-% All fiber-optical components described in \prettyref{chap:fibercomp} are
-% connected automatically to their reference nodes with a \Lcs*{nccurve}
-% connection, their behaviour is described in
-% \prettyref{sec:drawfiber-angles}. The fiber connections can be controlled in a
-% number of ways, without need to explicitely use \Lcs{drawfiber}. The styles of
-% the fiber connections can be configure independently, see
+% All fiber components described in \prettyref{chap:fibercomp} are connected
+% automatically to their reference nodes with \Lcs{drawfiber}, their behaviour
+% is descibed in \prettyref{sec:drawfiber-angles}. The fiber connections can be
+% controlled in a number of ways, without need to explicitely use
+% \Lcs{drawfiber}. The styles of the fiber connections can be configure
+% independently, see \prettyref{sec:drawfiber-auto-styles}.
+% \fi
+% \ifGERMAN
+% Alle Faserkomponenten, die in \prettyref{chap:fibercomp} beschrieben werden,
+% werden automatisch mit \Lcs{drawfiber} mit ihren Referenzknoten verbunden, das
+% Verhalten ist in \prettyref{sec:drawfiber-angles} beschrieben. Die
+% automatischen Faserverbindungen können umfangreich kontrolliert werden, ohne
+% explizit \Lcs{drawfiber} zu benutzen. Das Aussehen jeder Verbindung kann
+% ebenfalls separat konfiguriert werden, siehe
 % \prettyref{sec:drawfiber-auto-styles}.
 % \fi
-% \ifGERMAN\fi
 %
 % \begin{optionlist}
 %   \choitem[all]{fiber}{[*+]none,all,i,o,\prm{refpoint}} 
@@ -6922,13 +7057,33 @@
 %
 %   See the following examples for some variants.
 %   \fi
-%   \ifGERMAN\fi
+%   \ifGERMAN
+%   Dieser Parameter gibt an, welche Faserverbindungen gezeichnet werden. Der
+%   Parameter kann nur die Faserkomponenten betreffen (falls ein \opt{*}
+%   vorangestellt ist), nur die Freistrahlkomponenten (\opt{+} wird
+%   vorangestellt), oder alle Komponenten. Typische Freistrahlkomponenten, die
+%   häufig als Faserkomponenten verwendet werden, sind \Lcs{optbox} und
+%   \Lcs{optdetector}.
+%
+%   Es können alle Verbindungen gezeichnet werden (\opt{all}), keine
+%   (\opt{none}), oder es können bestimmte ausgewählt werden. Die Werte \opt{i}
+%   (\opt{l} ist äquivalent) zeichnet nur die Eingangsfasern, \opt{o}
+%   (bzw. \opt{r}) alle ausgehenden Fasern. Diese Angaben sind ausschließend,
+%   d.h. mit \opt{io} werden keine Verbindungen gezeichnet.
+%
+%   Komponenten, die über mehr als einen Eingang oder Ausgang verfügen
+%   (\hyperref[sec:coupler]{Koppler} und \Lcs{optcirculator}) erlauben
+%   weitergehende Auswahl mit \opt{t} und \opt{b}, möglicherweise in Verbindung
+%   mit \opt{i}, \opt{o}, \opt{l} und \opt{r}.
+% 
+%   Die folgenden Beispiele zeigen einige Möglichkeiten.
+%   \fi
 % \end{optionlist}
 %
 % \begin{enumerate}
 % \item 
 %   \ifENGLISH Enable fiber connections for free-ray components.\fi
-%   \ifGERMAN\fi
+%   \ifGERMAN Zeichne Fasern nur für Freistrahlkomponenten.\fi
 %
 % \iffalse
 %<*ignore>
@@ -6946,7 +7101,10 @@
 %   \ifENGLISH Draw only the input fiber of a fiber component (\Lcs{optmzm}),
 %   the free-ray component (\Lcs{optbox}) is not affected.
 %   \fi
-%   \ifGERMAN\fi
+%   \ifGERMAN Nur die Eingangsverbindung einer Faserkomponente (\Lcs{optmzm})
+%   wird gezeichnet, die Freistrahlkomponente (\Lcs{optbox}) bleibt
+%   unbeeinflusst.
+%   \fi
 %
 % \iffalse
 %<*ignore>
@@ -6966,7 +7124,9 @@
 %   \ifENGLISH Draw only the output fiber of a free-ray component
 %   (\Lcs{optbox}), but all connections of the fiber component (\Lcs{optmzm}).
 %   \fi
-%   \ifGERMAN\fi
+%   \ifGERMAN Von der Freistahlkomponente wird nur die Ausgangsverbindung
+%   gezeichnet, die Faserkomponente erhält jedoch alle Verbindungen.
+%   \fi
 %
 % \iffalse
 %<*ignore>
@@ -6987,7 +7147,11 @@
 %   more than two fibers, i.e \Lcs{optcirculator} and the couplers
 %   (\prettyref{sec:coupler}).
 %   \fi
-%   \ifGERMAN\fi
+%   \ifGERMAN
+%   Die Werte \opt{t} und \opt{b} betreffen nur die Komponenten mit mehr als
+%   zwei Verbindungen, also \Lcs{optcirculator} und die Koppler
+%   (\prettyref{sec:coupler}).
+%   \fi
 %
 % \iffalse
 %<*ignore>
@@ -7020,20 +7184,30 @@
 % \label{sec:drawfiber-auto-styles}
 %
 % \ifENGLISH
-% The styles of the fiber connections can be configure independently, the basic
-% style is \Lstyle{Fiber}, which is described in
+% The styles of all automatic fiber connections can be configured independently,
+% they are all derived from the basic \Lsyle{Fiber} style which is described in
 % \prettyref{sec:fiberappearance}.
 %
-% All automatic fiber connections have individual styles which are derived from
-% the \Lstyle{Fiber} style. Style \Lstyle{FiberIn} applies to all input fibers,
-% it inherits from \Lstyle{Fiber}. If the component has more than one input
-% fibers, these are assigned the style \Lstyle{FiberIn1} and \Lstyle{FiberIn2}
-% which inherit from \Lstyle{FiberIn}. See \prettyref{fig:fiberstyles} for an
-% inheritance diagram of the styles. You must have in mind, that this
-% inheritance is effective only if you use \Lcs*{addtopsstyle} to change the
-% styles (see also below).
+% Style \Lstyle{FiberIn} applies to all input fibers, it inherits from
+% \Lstyle{Fiber}. If the component has more than one input fibers, these are
+% assigned the style \Lstyle{FiberIn1} and \Lstyle{FiberIn2} which inherit from
+% \Lstyle{FiberIn}. See \prettyref{fig:fiberstyles} for an inheritance diagram
+% of the styles. You must have in mind, that this inheritance is effective only
+% if you use \Lcs*{addtopsstyle} to change the styles (see also below).
 % \fi
-% \ifGERMAN\fi
+% \ifGERMAN
+% Die Stile aller automatischen Faserverbindungen können separat konfiguriert
+% werden, die zugrundeliegende Stil ist immer \Lstyle{Fiber}, der in
+% \prettyref{sec:fiberapearance} beschrieben ist.
+%
+% Der Stil \Lstyle{FiberIn} bezieht sich auf alle Eingangsfasern und erbt alle
+% Eigenschaften von \Lstyle{Fiber}. Hat eine Komponente zwei davon, so können
+% diese mit \Lstyle{FiberIn1} und \Lstyle{FiberIn2} angesprochen werden, die
+% alles von \Lstyle{FiberIn} übernehmen. Siehe \prettyref{fig:fiberstyles} für
+% ein Vererbungsdiagramm der Faserstile. Beachten Sie, dass diese Vererbung nur
+% erhalten bleibt, falls die Stile nur mit \Lcs*{addtopsstyle} oder den
+% entsprechenden \opt{addto}\prm{style} Parametern verändert werden.
+% \fi
 %
 % \begin{figure}\centering
 % \begin{pspicture}(0,-0.2)(12,4.4)
@@ -7050,34 +7224,57 @@
 %   }%
 %   \rput[l](-1,0|T-0){\ifGERMAN Grundstil\fi\ifENGLISH parent style\fi}
 %   \rput[l](-1,0|T-0-0){%
-%     \ifGERMAN\parbox{\widthof{ausgehende Fasern}}{%
-%       \RaggedRight eingehende und ausgehende Fasern}\fi
-%     \ifENGLISH\parbox{\widthof{outgoing fibers}}{%
-%       \RaggedRight incoming and outgoing fibers}\fi}
+%     \ifGERMAN
+%       \parbox{\widthof{ausgehende Fasern}}{%
+%         \RaggedRight eingehende und ausgehende Fasern%}
+%     \fi
+%     \ifENGLISH
+%       \parbox{\widthof{outgoing fibers}}{%
+%         \RaggedRight incoming and outgoing fibers}%
+%     \fi
+%   }
 %   \rput[t](! \psGetNodeCenter{T-0-0-0} \psGetNodeCenter{T-0-0-1}
-%      T-0-0-0.x T-0-0-1.x add 2 div T-0-0-0.y 0.4 sub){%
-%      \ifGERMAN\parbox{\widthof{Obere(1) oder untere(2)}}{\RaggedRight Obere(1) oder untere(2) eingehende Faser.}\fi
-%      \ifENGLISH\parbox{\widthof{Upper(1) or lower(2)}}{\RaggedRight Upper(1) or lower(2) incoming fiber.}\fi}
+%              T-0-0-0.x T-0-0-1.x add 2 div T-0-0-0.y 0.4 sub){%
+%     \ifGERMAN
+%       \parbox{\widthof{Obere(1) oder untere(2)}}{%
+%         \RaggedRight Obere(1) oder untere(2) eingehende Faser.}%
+%     \fi
+%     \ifENGLISH
+%       \parbox{\widthof{Upper(1) or lower(2)}}{%
+%         \RaggedRight Upper(1) or lower(2) incoming fiber.}%
+%     \fi
+%   }
 %   \rput[t](! \psGetNodeCenter{T-0-1-0} \psGetNodeCenter{T-0-1-1}
-%      T-0-1-0.x T-0-1-1.x add 2 div T-0-1-0.y 0.4 sub){%
-%      \ifGERMAN\parbox{\widthof{Obere(1) oder untere(2)}}{\RaggedRight Obere(1) oder untere(2) ausgehende Faser.}\fi
-%      \ifENGLISH\parbox{\widthof{Upper(1) or lower(2)}}{\RaggedRight Upper(1) or lower(2) outgoing fiber.}\fi}
+%              T-0-1-0.x T-0-1-1.x add 2 div T-0-1-0.y 0.4 sub){%
+%     \ifGERMAN
+%       \parbox{\widthof{Obere(1) oder untere(2)}}{%
+%         \RaggedRight Obere(1) oder untere(2) ausgehende Faser.}%
+%     \fi
+%     \ifENGLISH
+%       \parbox{\widthof{Upper(1) or lower(2)}}{%
+%         \RaggedRight Upper(1) or lower(2) outgoing fiber.}%
+%     \fi
+%   }
 % }%
 % \end{pspicture}
 % \ifGERMAN
 % \caption{Vererbungsdiagramm der PS-Stile für die automatischen
-%   Faserverbindungen. Sie sollten diese Stile mit \protect\Lcs*{addtopsstyle}
-%   ändern um die Vererbungslinie beizubehalten.}%
-% \fi
+% Faserverbindungen. Sie sollten diese Stile mit \protect\Lcs*{addtopsstyle}
+% oder den entsprechenden \opt{addto}\prm{style} Parametern ändern um die
+% Vererbungslinie beizubehalten.}%
+% \fi 
 % \ifENGLISH
 % \caption{Inheritance diagram for the psstyles used for the automatic fiber
-%   connections. These styles should be changed with \protect\Lcs*{addtopsstyle}
-%   to preserve the inheritance.}%
+% connections. These styles should be changed with \protect\Lcs*{addtopsstyle}
+% or the respective \opt{addto}\prm{style} options to preserve the
+% inheritance.}%
 % \fi
 % \label{fig:fiberstyles}
-% \xLstyle{Fiber}\xLstyle{FiberIn}\label{prm:FiberIn}%
-% \xLstyle{FiberIn1}\label{prm:FiberIn1}\xLstyle{FiberIn2}\label{prm:FiberIn2}%
-% \xLstyle{FiberOut}\label{prm:FiberOut}\xLstyle{FiberOut1}\label{prm:FiberOut1}%
+% \xLstyle{FiberIn}\label{prm:FiberIn}%
+% \xLstyle{FiberIn1}\label{prm:FiberIn1}%
+% \xLstyle{FiberIn2}\label{prm:FiberIn2}%
+% \xLstyle{FiberOut}\label{prm:FiberOut}%
+% \xLstyle{FiberOut1}\label{prm:FiberOut1}%
 % \xLstyle{FiberOut2}\label{prm:FiberOut2}%
 % \end{figure}
 %
@@ -7091,10 +7288,15 @@
 %   \xLkeyword{newFiberOut2}\xLkeyword{addtoFiberOut2} 
 %   \ifENGLISH For every style two appropriate keys \opt{new}\prm{style} and
 %   \opt{addto}\prm{style} are provided which can be used to change the styles
-%   for single objects. This can be used to define own components with
+%   for single objects. This can be used to define own components (\prettyref{sec:customcomp}) with
 %   respectively changed fiber connections or to avoid explicit grouping.
 %   \fi
-%   \ifGERMAN\fi
+%   \ifGERMAN Für jeden Faserstil werden zwei Parameter \opt{new}\prm{style} und
+%   \opt{addto}\prm{style} bereitgestellt, mit denen die Stile für einzelne
+%   Komponenten verändert werden können. Damit können neuen Komponenten
+%   definiert werden (\prettyref{sec:customcomp}), die andere Faserverbindungen
+%   voreingestellt haben, oder um explizite Gruppierung zu vermeiden.
+% \fi
 %
 % \iffalse
 %<*ignore>
@@ -7126,7 +7328,15 @@
 % To circumvent this, we provide the \Lenv{optexp} environment, inside which all
 % connections are drawn behind the components.
 % \fi
-% \ifGERMAN\fi
+% \ifGERMAN
+% Die Reihenfolge der Konstruktion einer Skizze ist die, dass zuerst die
+% Komponenten definiert werden müssen, bevor diese verbunden werden können. Das
+% beinhaltet aber, dass alle Verbindungen über die Komponenten gezeichnet
+% werden, was nicht erwünscht sein muss.
+%
+% Um das zu vermeiden, wird die \Lenv{optepx}-Umgebung bereitgestellt, innerhalb
+% derer alle Verbindungen hinter die Komponenten gelegt werden.
+% \fi
 %
 % \begin{ltxsyntax}
 %   \envitem{optexp}
@@ -7159,7 +7369,18 @@
 % use the following two commands to define code parts which are executed only
 % once.
 % \fi
-% \ifGERMAN\fi
+% \ifGERMAN
+% Beachten Sie, dass das erreicht wird, indem der gesamte Code innerhalb der
+% Umgebung doppelt ausgeführt wird. Das funktioniert mit allen
+% \LPack{pst-optexp} Makros die sich intern darum kümmern, dass nichts doppelt
+% gezeichnet wird, sondern nur in geänderter Reihenfolge. Alle anderen
+% Zeichnungen und Texte werden zweimal gezeichnet, was zu unschönen Ergebnissen
+% aufgrund geänderten Antialiasing führen kann.
+%
+% Um zu verhindern, dass anderer Code doppelt ausgeführt wird, muss dieser
+% entweder außerhalb der \Lenv{optexp}-Umgebung definiert werden, oder eins der
+% beiden folgenden Makros verwendet werden.
+%  \fi
 %
 % \begin{ltxsyntax}
 %   \cmditem{backlayer}{code} 
@@ -7177,7 +7398,9 @@
 % In this example, the text is put on top of the frame although the text is
 % defined first: 
 % \fi
-% \ifGERMAN\fi
+% \ifGERMAN In diesem Beispiel wird der Text über dem Rechteck angezeigt, obwohl
+% der Text zuerst definiert wird:
+% \fi
 %
 % \iffalse
 %<*ignore>
@@ -7246,12 +7469,13 @@
 % These components can also be connected with beams and fibers, but do not
 % provide full access to all options. They define only a single interface which,
 % of course, does not respect the geometry of the individual drawings.
-%
-% If you want to use a custom component more often, you should define
-% it as a new component. For details on how to define your own components see
-% \prettyref{sec:newobj}.
 % \fi
-% \ifGERMAN\fi
+% \ifGERMAN
+% Diese Komponenten können sowohl mit Fasern als auch mit Strahlen verbunden
+% werden, können aber nicht deren volles Potential ausschöpfen. Sie haben nur
+% eine einzelne Grenzfläche, die die Geometry der benutzerdefinierten Zeichnung
+% natürlich nicht berücksichtigen kann.
+% \fi
 %
 % \ifGERMAN
 % \section{Benutzerdefinierte Version existierender Komponenten}
@@ -7267,7 +7491,11 @@
 % predefined objects with a set of options. These options serve only as default
 % values and can be overridden when calling the macro.
 % \fi
-% \ifGERMAN\fi
+% \ifGERMAN
+% Sie können eine benutzerdefinierte Version einer existierenden Komponente mit
+% \Lcs*{newobject} definieren, die z.B. andere Voreinstellungen hat und ein
+% anderes Aussehen hat.
+% \fi
 %
 % \iffalse
 %<*ignore>
@@ -7334,7 +7562,19 @@
 % compatibility, but will be dropped soon. Please adapt your macros to the new
 % syntax.
 % \fi
-% \ifGERMAN\fi
+% \ifGERMAN
+% \nxLPack{pst-optexp} stellt einige Benutzermakros zur Verfügung, mit denen
+% sehr bequem neue, eigene Komponenten definiert werden können.
+%
+% Beachten Sie, dass dieser Teil der Dokumentation nicht vollständig ist. Die
+% notwendigen Schritte zur Definition neuer Komponenten in Version 3.0 werden
+% grob beschrieben, können sich aber noch ändern und sind nicht zwangsläufig
+% rückwärts kompatibel.
+%
+% The alte Syntax mit \Lcs*{mycomp@iii} wird noch unterstützt, gilt aber als
+% veraltet und wird in zukünftigen Versionen entfernt werden. Bitte passen Sie
+% ihre vorhandenen Makros entsprechen an.
+% \fi
 %
 % \begin{ltxsyntax}
 %   \xLcs{newOptexpDipole}\cmditem{newOptexpDipole}[fixopt]{name}{dftopt}
@@ -7354,12 +7594,32 @@
 % The actual process of creating a new component is split up in different parts,
 % depending on the component complexity and user requirements:
 % \begin{enumerate}
-% \item The component drawing (see \prettyref{sec:newobj-comp}), this is the only required part.
-% \item Support for layering (optional).
-% \item Support for \Lkeyword{rotateref}.
+% \item The component drawing (see \prettyref{sec:newobj-comp}), this is the
+%   only required part.
+% \item Support for layering (optional)
+% \item Optional support for \Lkeyword{rotateref}, external nodes and
+%   \Lkeyword{position}\opt{=start|end}.
 % \end{enumerate}
 % \fi
-% \ifGERMAN\fi
+% \ifGERMAN
+% Diese Makros erzeugen den Code für die Positionierung, Drehung, Beschriftung
+% und die Ebenenverwaltung. Im enfachsten Fall müssen Sie lediglich die
+% eigentliche Zeichnung der Komponente erstellen.
+%
+% Seit Version 3.0 ist das Makro \Lcs*{newOptexpDipoleNolabel} überflüssig, da
+% seitdem die Beschriftung für alle Komponenten optional ist.
+% 
+% Die Definition der neuen Komponenten kann in unterschiedliche Schritte
+% eingeteilt werden, je nach Komplexittät und Anforderung des Benutzers:
+%
+% \begin{enumerate}
+% \item Die Zeichnung (siehe \prettyref{sec:newobj-comp}), das ist der einzige
+%   erforderliche Schritt.
+% \item Unterstützung des Layering (optional).
+% \item Unterstützung für \Lkeyword{rotateref}, externe Knoten und
+%   \Lkeyword{position}\opt{=start|end}.
+% \end{enumerate}
+% \fi
 %
 % \ifENGLISH\subsection{The component drawing}\fi
 % \ifGERMAN\subsection{Die Zeichnung der Komponente}\fi
@@ -7371,7 +7631,10 @@
 % tripole which show the orientation and position of the component coordinate
 % system.
 % \fi
-% \ifGERMAN\fi
+% \ifGERMAN Sie müssen ein Makro \Lcs*{mycomponent@comp} definierent, welches
+% die Zeichnung enthält. In den folgenden Beispielen sehen Sie die Ausrichtung
+% und Position des Koordinatensystems für einen Zweipol und einen Dreipol
+% \fi
 %
 % \iffalse
 %<*ignore>
@@ -7847,18 +8110,10 @@
 % \ifENGLISH\section{Internal component structure}\fi
 % \ifGERMAN\section{Interne Struktur der Komponenten}\fi
 % 
-% \ifENGLISH
-% In order to understand properly how the automatic beam drawing actually works,
-% it is necessary to describe in more detail the internal component structure.
-% \fi
-% \ifGERMAN\fi
-%
 % \begin{optionlist}
 % \boolitem[false]{showifcnodes}
-% \end{optionlist}
-% \begin{stylelist}
 % \styleitem{IfcNodeStyle}
-% \end{stylelist}
+% \end{optionlist}
 %
 % \ifENGLISH
 % Every component type consists internally of interfaces which are defined by a
@@ -7867,7 +8122,12 @@
 % visualized for each component type with the \Lkeyword{showifcnodes}
 % parameter. 
 % \fi
-% \ifGERMAN\fi
+% \ifGERMAN
+% Jede Komponente besteht aus Grenzflächen, die über einen Knoten auf der
+% optischen Achse, einen Ebenevektor bzw. einen Krümmungsradius, und ihre
+% optische Eigenschaft (reflektiv oder transmittiv) definiert ist. Die
+% Grenzflächenknoten können mit \Lkeyword{showifcnodes} angezeigt werden.
+% \fi
 % 
 % \iffalse
 %<*ignore>
@@ -7888,10 +8148,14 @@
 % \medskip
 %
 % \ifENGLISH 
-% \nxLcs{draw*beam} calculates the distance between the interface nodes of two
-% objects and connects the two nearest
+% \nxLcs{draw*beam}\xLcs{drawbeam}\xLcs{drawwidebeam} calculates the distance
+% between the interface nodes of two objects and connects the two nearest
 % \fi
-% \ifGERMAN\fi
+% \ifGERMAN
+% \nxLcs{draw*beam}\xLcs{drawbeam}\xLcs{drawwidebeam} berechnet den Abstand
+% zwischen den Grenzflächenknoten zweier Komponenten und verbindet die beiden
+% nächstgelegenen. 
+% \fi
 % 
 % \iffalse
 %<*ignore>
@@ -7931,7 +8195,10 @@
 % a node is labeled as «1, N», it means that both nodes are equal.
 % \bgroup \psset{unit=1.2}
 % \fi
-% \ifGERMAN\fi
+% \ifGERMAN Hier sind alle Komponenten und deren Grenzflächenknoten
+% aufgelistet. Ist ein Knoten mit «1, N» beschriftet, dann fallen beide
+% Knoten zusammen.
+% \fi
 %
 % \ifENGLISH\subsubsection*{Free-ray components}\fi
 % \ifGERMAN\subsubsection*{Freistrahlkomponenten}\fi
@@ -8017,7 +8284,7 @@
 %
 % \noindent
 % \begin{pspicture}(3,2.5)
-%   \pnode(0,1.5){A}\pnode(2.5,1.5){B}\pnode(2.5,0){C}
+%   \pnode(0,1.5){A}\pnode(2.5,1.5){B}\pnode(2.5,0.4){C}
 %   \beamsplitter[bssize=1.2](A)(B)(C)
 %   \drawbeam{(A)}{}{(C)}
 %   \psdot(\oenodeIfc{1}{})\uput[135](\oenodeIfc{1}{}){1}
@@ -8040,7 +8307,7 @@
 % \end{pspicture}%
 % \hspace{\fill}%
 % \begin{pspicture}(3,2.5) 
-%   \pnode(0,1.5){A}\pnode(2.1,1.5){B}\pnode(2.1,0){C}
+%   \pnode(0,1.5){A}\pnode(2.1,1.5){B}\pnode(2.1,0.4){C}
 %   \pentaprism[pentaprismsize=1](A)(B)(C)
 %   \drawbeam[arrows=->, arrowinset=0, arrowscale=1.5]{(A)}{}{(C)}
 %   \psdot(\oenodeIn{})\uput[135](\oenodeIn{}){1}
@@ -8084,7 +8351,7 @@
 % \hspace{\fill}%
 % \begin{pspicture}(0,-0.5)(3,1.4)
 %   \pnode(0,1){A}\pnode(3,1){B}\pnode(1.2,-0.1){C}
-%   \optcirculator(A)(C)(B)
+%   \optcirculator(A)(B)(C)
 %   \psdot(\oenodeIn{})\uput[-135](\oenodeIn{}){1}
 %   \psdot(\oenodeIfc{2}{})\uput[-45](\oenodeIfc{2}{}){2}
 %   \psdot(\oenodeOut{})\uput[-45](\oenodeOut{}){N}
@@ -8167,7 +8434,7 @@
 %
 % \ifENGLISH
 % In version 2.x, beam connections could be internal, that is the connections
-% were specified together with the compent (e.g. \Lkeyword{beam}), or external
+% were specified together with the compent (\Lkeyword{beam} or \Lkeyword*{conn}), or external
 % with an additional call of \Lcs{drawbeam}. The main reason for internal
 % connections was the aesthetic aspect of drawing the beam behind the component,
 % but also convenience played a role. Drawing the beam behind the component is
@@ -8175,7 +8442,19 @@
 %
 % Some of the variants of internal beam connections can be used also in 3.0:
 % \fi
-% \ifGERMAN\fi
+% \ifGERMAN
+% In Version 2.x konnten Strahlverbindungen intern sein, d.h. die Verbindung
+% wurde zusammen mit der Komponenten definiert (z.B. mit \Lkeyword{beam}, oder
+% \Lkeyword*{conn}) oder extern über einen separaten Aufruf von \Lcs{drawbeam}.
+% Der Hauptgrund für die internen Verbindungen war der ästhetische Aspekt,
+% zuerst die Verbindung und dann die Komponente darüber zu zeichnen, aber
+% Bequemlichkeit spielte auch eine Rolle. Seit Version 3.0 kann die Reihenfolge
+% von Verbindungen und Komponenten über Ebenen geregelt werden
+% (\prettyref{sec:layers}).
+%
+% Manche Varianten für interne Strahlverbindungen können auch in 3.0 verwendet
+% werden:
+% \fi
 %
 % \iffalse
 %<*ignore>
@@ -8204,6 +8483,12 @@
 % want to move the beam behind the component, the code must be wrapped in a
 % \Lenv{optexp} environment. Except for this, external connection are equivalent:
 % \fi
+% \ifGERMAN
+% Andere Verbindungen können nur über einen zusätzlichen \Lcs{drawbeam} Aufruf
+% erreicht werden, falls die Verbindung dann hinter der Komponente sein soll,
+% musst der beteiligte Code in eine \Lenv{optexp}-Umgebung geschachtelt
+% werden. Außer diesem Aspekt sind die separaten Verbindungen äquivalent:
+%\fi
 %
 % \iffalse
 %<*ignore>
@@ -13136,7 +13421,7 @@
 \def\optmzm@comp{%
   \bgroup
     \ifPOE@usefiberstyle
-      \psset{style=Fiber}
+      \psset{style=Fiber, arrows=-, ArrowInside=-}
     \fi
     \psline(! \POE@dict{@@x} neg 0)(! \POE@dict{@@x} -0.7 mul 0)%
            (! \POE@dict{@@x} -0.4 mul \POE@dict{@@y} 0.6 mul)%
@@ -13275,11 +13560,11 @@
 \def\polcontrol@comp{%
   \edef\@sz{\POE@key@polcontrolsize\space}%
   \ifPOE@optexpenv
-    \psline[style=Fiber](\oenodeIn{})(\oenodeOut{})
+    \psline[style=Fiber, arrows=-, ArrowInside=-](\oenodeIn{})(\oenodeOut{})
   \fi
   \bgroup
     \ifPOE@usefiberstyle
-      \psset{style=Fiber}%
+      \psset{style=Fiber, arrows=-, ArrowInside=-}%
     \fi
     \ifx\POE@key@polcontroltype\POE@str@polcontroltype@linear
       \multips(! -2 \@sz mul \@sz)(! 2 \@sz mul 0){3}{%
@@ -13292,7 +13577,7 @@
     \fi
   \egroup
   \ifPOE@optexpenv\else
-    \psline[style=Fiber](\oenodeIn{})(\oenodeOut{})
+    \psline[style=Fiber, arrows=-, ArrowInside=-](\oenodeIn{})(\oenodeOut{})
   \fi  
 \ignorespaces}%
 %    \end{macrocode}
@@ -13365,7 +13650,7 @@
   \pstVerb{tx@Dict begin /@lw \getCLW def end}%
   \bgroup
     \ifPOE@usefiberstyle
-      \psset{style=Fiber}
+      \psset{style=Fiber, arrows=-, ArrowInside=-}
     \fi
     \psline[arrows=-](! \POE@dict{@@x} neg 0)%
                      (! \POE@dict{@@x} -0.6 mul @lw sub 0)%
