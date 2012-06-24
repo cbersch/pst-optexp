@@ -1,5 +1,3 @@
-# Makefile for pst-optexp -- Christoph Bersch, 2011-10-11, usenet@bersch.net
-
 .SUFFIXES : .tex .ltx .dvi .ps .pdf .eps
 
 PACKAGE = pst-optexp
@@ -28,14 +26,11 @@ dist : doc doc-DE cheatsheet
 	@ echo
 	@ echo $(ARCHNAME).tar.gz
 
-$(PACKAGE)-DE.dtx: $(PACKAGE).dtx
-	cp $< $(basename $@).dtx
-
 $(PACKAGE).dvi: L = english
 $(PACKAGE)-DE.dvi: L = ngerman
-%.dvi: %.dtx $(PACKAGE).sty $(PACKAGE).ist $(PACKAGE).pro
-	$(LATEX) '\newcommand*{\mainlang}{$(L)}\input{$(basename $@).dtx}'
-	$(LATEX) '\newcommand*{\mainlang}{$(L)}\input{$(basename $@).dtx}'
+%.dvi: $(PACKAGE).dtx $(PACKAGE).sty $(PACKAGE).ist $(PACKAGE).pro
+	$(LATEX) -jobname=$(basename $@) '\newcommand*{\mainlang}{$(L)}\input{$(basename $@).dtx}'
+	$(LATEX) -jobname=$(basename $@) '\newcommand*{\mainlang}{$(L)}\input{$(basename $@).dtx}'
 	splitindex -m "" $(basename $@).idx
 	if test -e $(basename $@)-idx.idx; then \
 	  makeindex -s gind.ist -t $(basename $@)-idx.ilg \
@@ -45,7 +40,7 @@ $(PACKAGE)-DE.dvi: L = ngerman
 	  makeindex -s pst-optexp.ist -t $(basename $@)-doc.ilg \
 	  	-o $(basename $@)-doc.ind $(basename $@)-doc.idx; \
 	fi
-	$(LATEX) '\newcommand*{\mainlang}{$(L)}\input{$(basename $@).dtx}'
+	$(LATEX) -jobname=$(basename $@) '\newcommand*{\mainlang}{$(L)}\input{$(basename $@).dtx}'
 	splitindex -m "" $(basename $@).idx
 	if test -e $(basename $@)-idx.idx; then \
 	  makeindex -s gind.ist -t $(basename $@)-idx.ilg \
@@ -55,7 +50,7 @@ $(PACKAGE)-DE.dvi: L = ngerman
 	  makeindex -s pst-optexp.ist -t $(basename $@)-doc.ilg \
 	  	-o $(basename $@)-doc.ind $(basename $@)-doc.idx; \
 	fi
-	$(LATEX) '\newcommand*{\mainlang}{$(L)}\input{$(basename $@).dtx}'
+	$(LATEX) -jobname=$(basename $@) '\newcommand*{\mainlang}{$(L)}\input{$(basename $@).dtx}'
 
 %.ps: %.dvi
 	dvips $< 
@@ -99,9 +94,7 @@ clean :
 	        $(addprefix $(prefix), .dvi .ps .log .aux .bbl .blg .out .tmp .toc \
 	           .idx .ind .ilg .gls .glg .glo .hd \
 	           -idx.idx -idx.ilg -idx.ind -doc.idx -doc.ilg -doc.ind .hd)) \
-	      $(PACKAGE)-cheatsheet.tex $(PACKAGE)-DE.dtx
+	      $(PACKAGE)-cheatsheet.tex
 
 veryclean : clean
 	$(RM) $(addprefix $(PACKAGE), .pdf -DE.pdf -cheatsheet.pdf .sty .pro .ist)
-
-# EOF
