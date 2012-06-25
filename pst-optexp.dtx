@@ -2500,6 +2500,44 @@
 % \fi
 % \end{optionlist}
 % 
+%
+% \ifGERMAN\section{Box}\fi
+% \ifENGLISH\section{Box}\fi
+% 
+% \begin{ltxsyntax}
+% \dipoledesc{optbox}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(3,2)
+  \optbox[beam](0,0)(3,2){box}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+% \end{ltxsyntax}
+% 
+% \begin{optionlist}
+% \numitem[1.4]{optboxwidth}
+% \ifGERMAN Die Breite der Box.\fi
+% \ifENGLISH The width of the box.\fi
+%
+% \numitem[0.8]{optboxheight}
+% \ifGERMAN Die Höhe der Box.\fi
+% \ifENGLISH The height of the box.\fi
+%
+% \optitem{optboxsize}{\prm{width} \prm{height}}
+% \ifGERMAN Die Breite und Höhe der Box, äquivalent zum Aufruf von
+% \Lkeyword{optboxwidth} und \Lkeyword{optboxheight}.
+% \fi
+% \ifENGLISH The width and height of the box, is equivalent to calling both
+% \Lkeyword{optboxwidth} and \Lkeyword{optboxheight}.
+% \fi
+% \end{optionlist}
+%
+%
 % \ifGERMAN\section{Kristall}\fi
 % \ifENGLISH\section{Crystal}\fi
 %
@@ -2640,44 +2678,6 @@
 % \iffalse
 %</ignore>
 % \fi
-% 
-% \medskip
-% 
-% \ifGERMAN\section{Box}\fi
-% \ifENGLISH\section{Box}\fi
-% 
-% \begin{ltxsyntax}
-% \dipoledesc{optbox}
-% \iffalse
-%<*ignore>
-% \fi
-\begin{LTXexample}
-\begin{pspicture}(3,2)
-  \optbox[beam](0,0)(3,2){box}
-\end{pspicture}
-\end{LTXexample}
-% \iffalse
-%</ignore>
-% \fi
-% \end{ltxsyntax}
-% 
-% \begin{optionlist}
-% \numitem[1.4]{optboxwidth}
-% \ifGERMAN Die Breite der Box.\fi
-% \ifENGLISH The width of the box.\fi
-%
-% \numitem[0.8]{optboxheight}
-% \ifGERMAN Die Höhe der Box.\fi
-% \ifENGLISH The height of the box.\fi
-%
-% \optitem{optboxsize}{\prm{width} \prm{height}}
-% \ifGERMAN Die Breite und Höhe der Box, äquivalent zum Aufruf von
-% \Lkeyword{optboxwidth} und \Lkeyword{optboxheight}.
-% \fi
-% \ifENGLISH The width and height of the box, is equivalent to calling both
-% \Lkeyword{optboxwidth} and \Lkeyword{optboxheight}.
-% \fi
-% \end{optionlist}
 % 
 % \ifGERMAN\section{Detektor}\fi
 % \ifENGLISH\section{Detector}\fi
@@ -7185,7 +7185,7 @@
 %
 % \ifENGLISH
 % The styles of all automatic fiber connections can be configured independently,
-% they are all derived from the basic \Lsyle{Fiber} style which is described in
+% they are all derived from the basic \Lstyle{Fiber} style which is described in
 % \prettyref{sec:fiberappearance}.
 %
 % Style \Lstyle{FiberIn} applies to all input fibers, it inherits from
@@ -8229,8 +8229,8 @@
 % \bigskip
 %
 % \noindent\showdipoleoneifc{pinhole}\hspace{\fill}%
-% \showdipoleifc{crystal}\hspace{\fill}%
-% \showdipoleifc{optbox}
+% \showdipoleifc{optbox}\hspace{\fill}%
+% \showdipoleifc{crystal}
 % \bigskip
 %
 % \noindent
@@ -13217,18 +13217,25 @@
 % 
 % \subsubsection{doveprism}
 %
+% \begin{macro}{doveprism@ref}
+%    \begin{macrocode}
+\def\doveprism@ref{%
+  \POE@Verb{/@@x \POE@key@doveprismwidth\space 0.5 mul def
+            /@@y \POE@key@doveprismheight\space 0.5 mul def}%
+}%
+%    \end{macrocode}
+% \end{macro}
 % \begin{macro}{\doveprism@nodes}
 %    \begin{macrocode}
 \def\doveprism@nodes{%
   \newOptexpComp{%
-    /@wd \POE@key@doveprismwidth\space 0.5 mul def
-    /@htsq \POE@key@doveprismheight\space 2 sqrt div def
-    {@wd neg \POE@key@doveprismheight\space 0.5 mul add 0} {1 1} 
+    /@htsq @@y 2 sqrt mul def
+    {@@x neg @@y add 0} {1 1} 
     @htsq neg @htsq trans {PlainIfc}
-    {0 \POE@key@doveprismheight\space -0.5 mul} {1 0} 
-    \POE@key@doveprismwidth\space -0.5 mul dup neg
+    {0 @@y neg} {1 0} 
+    @@x neg dup neg
     refl {PlainIfc}
-    {@wd \POE@key@doveprismheight\space 0.5 mul sub 0} {-1 1} 
+    {@@x @@y sub 0} {-1 1} 
     @htsq neg @htsq trans {PlainIfc} 
     \POE@key@n true 
   }%
@@ -13376,14 +13383,18 @@
 %
 % \subsubsection{optfiber}
 %
+% \begin{macro}{optfiber@ref}
+%    \begin{macrocode}
+\def\optfiber@ref{%
+  \POE@Verb{/@@x \POE@key@fiberloopsep\space\POE@key@fiberloops\space
+      1 sub mul 0.5 mul def }%
+}%
+%    \end{macrocode}
+% \end{macro}
 % \begin{macro}{\optfiber@nodes}
 %    \begin{macrocode}
 \def\optfiber@nodes{%
-  \newOptexpFiberComp{%
-    {\POE@key@fiberloopsep\space\POE@key@fiberloops\space
-      1 sub mul -0.5 mul 0}
-    {\POE@key@fiberloopsep\space\POE@key@fiberloops\space
-      1 sub mul 0.5 mul 0}}%
+  \newOptexpFiberComp{{@@x neg 0} {@@x 0}}%
 \ignorespaces}%
 %    \end{macrocode}
 % \end{macro}
@@ -13519,13 +13530,19 @@
 %
 %\subsubsection{optamp}
 %
+% \begin{macro}{optamp@ref}
+%    \begin{macrocode}
+\def\optamp@ref{%
+  \POE@Verb{/@@x \POE@key@optampwidth\space 0.5 mul def
+            /@@y \POE@key@optampheight\space 0.5 mul def
+          }%
+}%
+%    \end{macrocode}
+% \end{macro}
 % \begin{macro}{\optamp@nodes}
 %    \begin{macrocode}
 \def\optamp@nodes{%
-  \newOptexpFiberComp{%
-    {\POE@key@optampwidth\space -0.5 mul 0}
-    {\POE@key@optampwidth\space 0.5 mul 0}
-  }%
+  \newOptexpFiberComp{{@@x neg 0} {@@x 0}}%
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -13542,15 +13559,21 @@
 %
 %\subsubsection{polcontrol}
 %
+% \begin{macro}{polcontrol@ref}
+%    \begin{macrocode}
+\def\polcontrol@ref{%
+  \ifx\POE@key@polcontroltype\POE@str@polcontroltype@linear
+    \POE@Verb{/@@x \POE@key@polcontrolsize\space 2 mul def}%
+  \else
+    \POE@Verb{/@@x \POE@key@polcontrolsize\space 1.5 mul def}%
+  \fi
+}%
+%    \end{macrocode}
+% \end{macro}
 % \begin{macro}{\polcontrol@nodes}
 %    \begin{macrocode}
 \def\polcontrol@nodes{%
-  \ifx\POE@key@polcontroltype\POE@str@polcontroltype@linear
-    \def\@sz{\POE@key@polcontrolsize\space 2 mul\space}%
-  \else
-    \def\@sz{\POE@key@polcontrolsize\space 1.5 mul\space}%
-  \fi
-  \newOptexpFiberComp{{\@sz neg 0} {\@sz 0}}%
+  \newOptexpFiberComp{{@@x neg 0} {@@x 0}}%
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -13924,11 +13947,18 @@
 % \end{macro}
 %
 % \subsubsection{optcirculator}
+%
+% \begin{macro}{optcirculator@ref}
+%    \begin{macrocode}
+\def\optcirculator@ref{%
+  \POE@Verb{\POE@key@optcircsize\space 0.5 mul dup /@@x ED /@@y ED }%
+}%
+%    \end{macrocode}
+% \end{macro}
 % \begin{macro}{\optcirculator@nodes}
 %    \begin{macrocode}
 \def\optcirculator@nodes{%
-  \edef\@sz{\POE@key@optcircsize\space 0.5 mul }%
-  \newOptexpFiberComp{{\@sz neg 0} {0 \@sz neg}{\@sz 0}}%
+  \newOptexpFiberComp{{@@x neg 0} {0 @@y neg} {@@x 0}}%
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -13947,14 +13977,21 @@
 % \end{macro}
 % 
 % \subsubsection{fibercollimator}
+%
+% \begin{macro}{fibercollimator@ref}
+%    \begin{macrocode}
+\def\fibercollimator@ref{%
+  \POE@Verb{/@@x \POE@key@fibercolwidth\space 0.5 mul def
+            /@@y \POE@key@fibercolheight\space 0.5 mul def}%
+}%
+%    \end{macrocode}
+% \end{macro}
 % \begin{macro}{\fibercollimator@nodes}
 %    \begin{macrocode}
 \def\fibercollimator@nodes{%
-  \def\@wd{\POE@key@fibercolwidth\space 0.5 mul }%
-  \def\@ht{\POE@key@fibercolheight\space 0.5 mul }%
-  \pnode(!\@wd neg 0){\oenodeIn{}}
-  \newOptexpComp{{\@wd neg 0} {0 1} \@ht neg \@ht trans {PlainIfc} 
-                 {\@wd 0} {0 1} 0 0 trans {PlainIfc} 1 }%
+  \pnode(!\POE@dict{@@x neg} 0){\oenodeIn{}}
+  \newOptexpComp{{@@x neg 0} {0 1} @@y neg @@y trans {PlainIfc} 
+                 {@@x 0} {0 1} 0 0 trans {PlainIfc} 1 }%
 }%
 %    \end{macrocode}
 % \end{macro}
