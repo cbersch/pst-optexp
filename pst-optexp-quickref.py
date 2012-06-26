@@ -7,7 +7,7 @@ pat = re.compile(r'(\\[a-z]+item|\\[a-z]*desc)(?:\[[^\]]+\])?(\{[a-zA-Z0-9]+\}.*
 
 g = pat.findall(data)
 
-f = open("pst-optexp-cheatsheet.tex", "w")
+f = open("pst-optexp-quickref.tex", "w")
 
 f.write(r"""\documentclass[landscape]{scrartcl}
 \usepackage[latin1]{inputenc} 

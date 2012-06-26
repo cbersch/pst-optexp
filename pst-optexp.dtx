@@ -128,8 +128,8 @@
 \makeatother
 \colorlet{sectioncolor}{DOrange}
 \addtokomafont{sectioning}{\color{sectioncolor}}
-\addtokomafont{subsection}{\Large}
-\addtokomafont{subsubsection}{\Large}
+%%\addtokomafont{subsection}{\Large}
+%%\addtokomafont{subsubsection}{\Large}
 \usepackage[automark,nouppercase]{scrpage2}
 \pagestyle{scrheadings}
 \clearscrheadings
@@ -891,10 +891,12 @@
 % \ifGERMAN Dieses Kapitel zeigt die grundlegenden Ideen und Konzepte, die in
 % diesem Paket stecken. Anhand von elementaren Beispielen werden die
 % Grundfunktionen wie Ausrichtung, Positionierung (\ref{sec:intro-comp}) und
-% Beschriftung (\ref{sec:intro-label}) von Komponenten sowie deren Verbindung
-% mit Strahlen (\ref{sec:intro-beam}) oder Fasern (\ref{sec:intro-fiber})
-% vorgestellt. In \prettyref{sec:step-by-step} wird Schritt für Schritt die
-% angedachte Vorgehensweise für das Erstellen von umfassenden Experimentskizzen
+% Beschriftung (\ref{sec:intro-label}) von Komponenten beschrieben. Anschließen
+% wird deren Verbindung mit Strahlen (\ref{sec:intro-beam}) oder Fasern
+% (\ref{sec:intro-fiber}) vorgestellt. 
+%
+% In \prettyref{sec:step-by-step} wird Schritt für Schritt die angedachte
+% Vorgehensweise für das Erstellen von umfassenden Experimentskizzen
 % erläutert. Eine vollständige Referenz aller Makros und deren Parameter finden
 % Sie in \prettyref{chap:generalparam}--\ref{chap:custom}.
 %
@@ -903,7 +905,22 @@
 % Beschriftung erhalten. Anschließen werden die Komponenten mit Lichtstrahlen
 % oder Fasern verbunden.
 % \fi
-% \ifENGLISH\fi
+% \ifENGLISH
+% This chapter show the basic ideas and concepts of this package. Starting with
+% simple examples, basic functionality such as alignment, positioning
+% (\ref{sec:intro-comp}) and labelling (\ref{sec:intro-label}) of components is
+% presented. Following, the connection of components with beam rays
+% (\ref{sec:intro-beam}) or fiber (\ref{sec:intro-fiber}) is demonstrated.
+%
+% In \prettyref{sec:step-by-step} several propositions for preparing large
+% experimental sketches are illustrated step by step. For a complete reference
+% of all macros and their parameters, see
+% \prettyref{chap:generalparam}--\ref{chap:custom}.
+%
+% A drawing consists of components, which can be positioned, shifted and rotated
+% based on their reference nodes, and may have an optional label. Then, the
+% components are connected with beam rays or fibers.
+% \fi
 %
 % \ifGERMAN\section{Die Komponenten}\fi
 % \ifENGLISH\section{The components}\fi
@@ -914,7 +931,11 @@
 % wird eine Linse mittig auf die Verbindungslinie zwischen den Knoten
 % \prm{A} und \prm{B} gesetzt: 
 % \fi
-% \ifENGLISH\fi
+% \ifENGLISH
+% A component is positioned according to its reference nodex, which are used for
+% its definition. In the following examples, the lens is placed centered between
+% nodes \prm{A} and \prm{B}:
+% \fi
 %\iffalse
 %<*ignore>
 %\fi
@@ -935,7 +956,11 @@
 % z.B. \Lkeyword{abspos} beinflusst werden (siehe dazu \prettyref{sec:rotshift}
 % und \prettyref{sec:positioning}).
 % \fi
-% \ifENGLISH\fi
+% \ifENGLISH
+% This position can be changed with a number of parameters, such as
+% \Lkeyword{abspos} (for more see \prettyref{sec:rotshift} and
+% \prettyref{sec:positioning}).
+% \fi
 %\iffalse
 %<*ignore>
 %\fi
@@ -954,10 +979,16 @@
 %
 % \ifGERMAN Die Komponenten lassen sich allgemein in zwei Kategorien
 % unterteilen: Freistrahl- und Faser-Komponenten. Diese unterscheiden sich in
-% erster Linie bezüglich ihrer Verbindungsmöglichkeiten, Faserverbindungen
-% (\prettyref{sec:intro-fiber}) oder Lichtstrahlen (\prettyref{sec:intro-beam}).
+% erster Linie bezüglich ihrer Verbindungsmöglichkeiten: Freistrahlkomponenten
+% können sowohl mit Lichtstrahlen als auch mit Fasern verbunden werden,
+% wohingegen Faserkomponenten nur Faserverbindungen erlauben.
 % \fi
-% \ifENGLISH\fi
+% \ifENGLISH
+% The components can be divided in two categories: free-ray and fiber
+% components. These differ only in their connection possibilities: Free-ray
+% components can have fiber or free-ray connections, whereas fiber components
+% support fiber connections only.
+% \fi
 %
 % \ifGERMAN\section{Beschriftungen}\fi
 % \ifENGLISH\section{Labels}\fi
@@ -966,7 +997,9 @@
 % \ifGERMAN Jede Komponente kann eine Beschriftung erhalten, die relativ zur
 % Komponente platziert werden kann. 
 % \fi
-% \ifENGLISH\fi
+% \ifENGLISH Every component can have a label, which can be positioned relative
+% to the component.
+% \fi
 %\iffalse
 %<*ignore>
 %\fi
@@ -995,9 +1028,18 @@
 % realistischen Berechnungen doch viele Möglichkeiten offen gehalten.
 %
 % Im einfachsten Fall wird eine einzelne Linie gezeichnet, deren optischer Weg
-% über den Brechungsindex \Lkeyword{n} bestimmt wird.
+% über den Brechungsindex \Lkeyword{n} und das Snelliussche Brechungsgesetz
+% bestimmt wird.
 % \fi
-% \ifENGLISH\fi
+% \ifENGLISH
+% Free-ray components can be connected with beam rays, which path can be
+% calculated by raytracing. Besides the realistic tracing possibilities, there
+% are many ways to manipulate the beam paths as you are dealing with a package
+% for \emph{sketching} experimental setups.
+%
+% In the simplest case a single line is drawn, which optical path is determined
+% by the refractive index \Lkeyword{n} and Snell's law.
+% \fi
 % \iffalse
 %<*ignore>
 % \fi
@@ -1014,10 +1056,11 @@
 %</ignore>
 % \fi
 %
-% \ifGERMAN
-% Die Strahlen können mit beliebigen Strichlierungen und Pfeilen dekoriert werden.
+% \ifGERMAN Die Strahlen können mit beliebigen Strichlierungen und Pfeilen
+% dekoriert werden.
 % \fi
-% \ifENGLISH\fi
+% \ifENGLISH The beams can be decorated with arbitrary dashs and arrows.
+% \fi
 % \iffalse
 %<*ignore>
 % \fi
@@ -1034,7 +1077,8 @@
 % \fi
 %
 % \ifGERMAN Ebenfalls können ausgedehnte Strahlen gezeichnet werden.\fi
-% \ifENGLISH\fi
+% \ifENGLISH You can also draw wide beams.\fi
+% \fi
 % \iffalse
 %<*ignore>
 % \fi
@@ -1054,7 +1098,10 @@
 % müssen alle beteiligten Komponenten und Strahlen in eine
 % \Lenv{optexp}-Umgebung gepackt werden.
 % \fi
-% \ifENGLISH\fi
+% \ifENGLISH The beams can also lay behind the components. For this you must
+% enclose all respective components and rays in a \Lenv{optexp}-Umgebung.
+%
+% \fi
 % \iffalse
 %<*ignore>
 % \fi
@@ -1081,7 +1128,11 @@
 % (\Lcs{drawfiber}). Hiermit bestehen weitreichende Möglichkeiten die Faser
 % automatisch an die Komponentenausrichtung anzupassen.
 % \fi
-% \ifENGLISH\fi
+% \ifENGLISH
+% Fibers (\Lcs{drawfiber}) are another possibility of connecting
+% components. Here, you have several way of automatically adapting the fiber
+% connection to the component alignment.
+% \fi
 % \iffalse
 %<*ignore>
 % \fi
@@ -1101,7 +1152,9 @@
 % \ifGERMAN Üblicherweise werden Fasern mit einer \Lcs*{nccurve} Verbindung
 % gezeichnet, jede andere Knotenverbindung ist aber ebenfalls möglich.
 % \fi
-% \ifENGLISH\fi
+% \ifENGLISH Usually, the fibers are drawn as \Lcs*{nccurve}, other node
+% connections are possible as well.
+% \fi
 % \iffalse
 %<*ignore>
 % \fi
@@ -1127,7 +1180,7 @@
 % In diesem ersten Beispiel werden alle Komponenten auf einer Verbindungslinie
 % verteilt und mit einem Strahl verbunden.
 %
-% Zuerst werden der Anfangsknoten \opt{A} und der Endknoten \opt{B}
+% Zuerst werden der Anfangsknoten \prm{A} und der Endknoten \prm{B}
 % definiert. Die erste \Lcs{optbox} wird an den Anfang platziert, die
 % Wellenplatte und der Polarisator werden innerhalb der Verbindungslinie
 % positioniert. Der Parameter \Lkeyword{position} erwartet Werte zwischen
@@ -1136,7 +1189,18 @@
 %
 % Zuletzt werden alle Komponenten mit einem einfachen Lichtstrahl verbunden.
 % \fi
-% \ifENGLISH\fi
+% \ifENGLISH
+% In this first example, all components are distributed on a single line and
+% connected with a beam.
+%
+% First we define the start node \prm{A} and the stop node \prm{B}. The first
+% \Lcs{optbox} is positioned at the start, the wave plate and the polarizer are
+% positioned inbetween the nodes. The parameter \Lkeyword{position} expects a
+% value between \opt{0} and \opt{1} which refere to the length of the reference
+% line. The detector is positioned at the end of the line.
+%
+% Finally, all components are connected with a simple beam ray.
+% \fi
 % \iffalse
 %<*ignore>
 % \fi
@@ -1173,12 +1237,23 @@
 % gekennzeichnet, desweiteren dient ein Koordinatengitter der Orientierung.
 %
 % Die erste Linse soll konkav gekrümmte Grenzflächen haben. Mit
-% \Lkeyword{lensradius} werden die Krümmungen der rechten und linken
-% Fläche auf denselben Wert gesetzt, ein negativer Wert ergibt eine
-% konkave Krümmung. Die Linse wird mit \Lkeyword{abspos} eine Einheit
-% vom \prm{A}-Knoten entfernt positioniert.
+% \Lkeyword{lensradius} werden die Radien der linken und rechten Fläche auf
+% negative Werte gesetzt, was eine konkave Krümmung ergibt. Die Linse wird mit
+% \Lkeyword{abspos} eine Einheit vom \prm{A}-Knoten entfernt positioniert.
 % \fi
-% \ifENGLISH\fi
+% \ifENGLISH
+% This example describes a simple setup with a concave and a convex lens and the
+% raytracing through them.
+%
+% First, we define the reference nodes \prm{A} and \prm{B} which are used for
+% alignment of the components. For better overview, these nodes are highlighted
+% as well as a grid is drawn.
+%
+% The first lens should have concave interfaces. With \Lkeyword{lensradius} the
+% interface radii are set to negative values, which corresponds to concave
+% curvature. The lens is positioned with \Lkeyword{abspos} one unit from \prm{A}
+% node.
+% \fi
 % \iffalse
 %<*ignore>
 % \fi
@@ -1204,7 +1279,11 @@
 % positioniert. Die Linsenhöhe wird mit \Lkeyword{lensheight}
 % eingestellt.
 % \fi
-% \ifENGLISH\fi
+% \ifENGLISH
+% The second lens has a convex curvature (\Lkeyword{lensradius} is positive) and
+% is positioned \opt{2.6} units apart from \prm{A}. Parameter
+% \Lkeyword{lensheight} sets the total height of the lens.
+% \fi
 % \iffalse
 %<*ignore>
 % \fi
@@ -1234,7 +1313,12 @@
 % Beschriftung wird mit \Lkeyword{labeloffset} in die Mitte der Komponente
 % gelegt.
 % \fi
-% \ifENGLISH\fi
+% \ifENGLISH
+% The beam rays are supposed to end at the CCD camera which is drawn as a
+% \Lcs{optbox}. With \Lkeyword{position}\opt{=start} the box is positioned at
+% the start of the reference line from \prm{A} to \prm{B}. The label is put at
+% the center of the component (\Lkeyword{labeloffset}).
+% \fi
 % \iffalse
 %<*ignore>
 % \fi
@@ -8186,6 +8270,77 @@
 % \ifGERMAN\subsection{Externe und Rotationsreferenzknoten}\fi
 % \label{sec:overview-extnode}
 %
+% \ifENGLISH
+% Here, you find all possible external (\prettyref{sec:extnode}) and rotation
+% reference nodes (\prettyref{sec:rotrefnode}) for all components.
+% \fi
+% \ifGERMAN
+% Hier finden Sie eine Übersicht über alle möglichen externen Knoten
+% (\prettyref{sec:extnode}) und Rotationsknoten (\prettyref{sec:rotrefnode})
+% aller Komponenten.
+% \fi
+%
+% \newpsstyle{ExtNodeStyle}{dotstyle=B+, dotangle=45, linewidth=2\pslinewidth, linecolor=DOrange}
+% \makeatletter
+% \newcommand{\testextnodes}[3][]{%
+%   \begin{pspicture}(3,2)
+%   \@nameuse{#2}[#1]#3
+%   \rput[t](1.5,0.9){\ttfamily\small
+%     \ifx\\#1\\\relax
+%     \begin{tabular}{@{}c@{}}\textbackslash #2\end{tabular}
+%     \else\begin{tabular}{@{}c@{}}\textbackslash #2\\ #1\end{tabular}\fi}
+%   \POE@extnodes[style=ExtNodeStyle,#1]{#2}
+%   \end{pspicture}
+% }%
+% \makeatother
+%
+% \ifENGLISH\subsubsection*{Free-ray components}\fi
+% \ifGERMAN\subsubsection*{Freistrahlkomponenten}\fi
+%
+% \testextnodes{lens}{(0,1.5)(3,1.5)}
+% \testextnodes[lensradius=-1]{lens}{(0,1.5)(3,1.5)}
+% \testextnodes{optplate}{(0,1.5)(3,1.5)}
+% \testextnodes{optretplate}{(0,1.5)(3,1.5)}
+% \testextnodes[phwidth=0.2]{pinhole}{(0,1.5)(3,1.5)}
+% \testextnodes{optbox}{(0,1.5)(3,1.5)}
+% \testextnodes{crystal}{(0,1.5)(3,1.5)}
+% \testextnodes{optdetector}{(0,1.5)(2,1.5)}
+% \testextnodes[dettype=diode]{optdetector}{(0,1.5)(2,1.5)}
+% \testextnodes{optdiode}{(0,1.5)(3,1.5)}
+% \testextnodes{doveprism}{(0,1.5)(3,1.5)}
+% \testextnodes{mirror}{(0,1.5)(2,1.5)(2,0)}
+% \bgroup
+% \addtopsstyle{PiezoMirror}{unit=1.5}
+% \testextnodes[mirrortype=piezo]{mirror}{(0,1.5)(2,1.5)(2,0)}
+% \egroup
+% \bgroup
+% \addtopsstyle{ExtendedMirror}{fillstyle=solid, mirrordepth=0.2, fillcolor=gray!40}
+% \testextnodes[mirrortype=extended]{mirror}{(0,1.5)(2,1.5)(2,0)}
+% \egroup
+% \testextnodes{optprism}{(0,1.5)(1.5,1.5)(3,1)}
+% \testextnodes{optgrating}{(0,1.5)(2,1.5)(2,0)}
+% \testextnodes{beamsplitter}{(0,1.5)(2,1.5)(2,0)}
+% \testextnodes[bsstyle=plate]{beamsplitter}{(0,1.5)(2,1.5)(2,0)}
+% \testextnodes{rightangleprism}{(0,1.5)(2.5,1)(0,0.5)}
+% \testextnodes{pentaprism}{(0,1.3)(2,1.3)(2,0)}
+%
+% \ifENGLISH\subsubsection*{Fiber components}\fi
+% \ifGERMAN\subsubsection*{Faserkomponenten}\fi
+%
+% \testextnodes{optfiber}{(0,1)(3,1)}
+% \testextnodes{optamp}{(0,1.5)(3,1.5)}
+% \testextnodes{optmzm}{(0,1.5)(3,1.5)}
+% \testextnodes{optfilter}{(0,1.5)(3,1.5)}
+% \testextnodes{polcontrol}{(0,1.5)(3,1.5)}
+% \testextnodes{optisolator}{(0,1.5)(3,1.5)}
+% \testextnodes{optswitch}{(0,1.5)(3,1.5)}
+% \testextnodes{fiberdelayline}{(0,1.5)(3,1.5)}
+% \testextnodes{optfiberpolarizer}{(0,1.5)(3,1.5)}
+% \testextnodes{fibercollimator}{(0,1.5)(3,1.5)}
+% \testextnodes{optcirculator}{(0,1.6)(3,1.6)(1.5,0.9)}
+% \testextnodes[couplersize=0.5 0.3]{optcoupler}{(0,2)(0,1)(3,2)(3,1)}
+%
+%
 % \ifENGLISH\subsection{Interface nodes}\fi
 % \ifGERMAN\subsection{Grenzflächenknoten}\fi
 % \label{sec:overview-ifcnode}
@@ -8193,7 +8348,6 @@
 % \ifENGLISH
 % Here, all available components and their interface nodes are listed. If
 % a node is labeled as «1, N», it means that both nodes are equal.
-% \bgroup \psset{unit=1.2}
 % \fi
 % \ifGERMAN Hier sind alle Komponenten und deren Grenzflächenknoten
 % aufgelistet. Ist ein Knoten mit «1, N» beschriftet, dann fallen beide
@@ -12480,6 +12634,12 @@
 %    \end{macrocode}
 % \end{macro}
 % 
+% \begin{macro}{POE@setref}
+%    \begin{macrocode}
+\let\POE@setref\POE@Verb
+%    \end{macrocode}
+% \end{macro}
+% 
 % \begin{macro}{POE@transformnode}
 %   Transform node \opt{\#1} according to the positioning parameters
 %   (\opt{compshift}, \opt{position}, and \opt{abspos}) with respect to the
@@ -12511,6 +12671,36 @@
     \POE@dict{[ (\oenode{}{}) false GetInternalBeamNodes %]
       counttomark 2 idiv { Dot } repeat
       pop}
+    }%
+  \end@SpecialObj
+}%
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{POE@extnodes}
+%    \begin{macrocode}
+\def\POE@extnodes{\pst@object{POE@extnodes}}
+\def\POE@extnodes@i#1{%
+  \begin@SpecialObj
+    \let\POE@setref\addto@pscode
+    \addto@pscode{\pst@optexpdict InitOptexpComp }
+    \@ifundefined{#1@ref}{}{\@nameuse{#1@ref}}%
+    \solid@star%
+    \addto@pscode{
+      \psk@dotsize
+      \@nameuse{psds@\psk@dotstyle}
+      @@x 0 eq { [0] }{ [ @@x neg 0 @@x ] } ifelse
+      {
+        @@y 0 eq { [0] }{ [@@y neg 0 @@y ] } ifelse
+        {
+          exch dup 3 1 roll
+          @@x0 add exch @@y0 add \tx@ScreenCoor
+          /\oenode{}{} load begin CompMtrx end transform CM itransform
+          Dot
+        } forall
+        pop
+      } forall
+      end
     }%
   \end@SpecialObj
 }%
@@ -12560,16 +12750,16 @@
 %    \begin{macrocode}
 \def\mirror@ref{%
   \ifx\POE@key@mirrortype\POE@str@mirrortype@piezo
-    \POE@Verb{/@@y0 \pst@number\psyunit def}%
+    \POE@setref{/@@y0 \pst@number\psyunit def}%
     \bgroup
       \psset{style=PiezoMirror}
-      \POE@Verb{%
+      \POE@setref{%
         \pst@number\psyunit @@y0 div 
         \POE@key@mirrorwidth\space 0.5 mul mul 2.5 div /@@y0 ED
       }%
     \egroup
   \else\ifdim\POE@key@mirrorradius pt=0pt
-    \POE@Verb{/@@x \POE@key@mirrorwidth\space 0.5 mul def}%
+    \POE@setref{/@@x \POE@key@mirrorwidth\space 0.5 mul def}%
   \fi\fi
 }%
 %    \end{macrocode}
@@ -12718,7 +12908,7 @@
       \space add
     \space}%
   \fi
-  \POE@Verb{%
+  \POE@setref{%
     /@@y \POE@key@lensheight\space 0.5 mul def
     /@@x \@th 0.5 mul def
   }%
@@ -12823,7 +13013,7 @@
 % \begin{macro}{\pinhole@ref}
 %    \begin{macrocode}
 \def\pinhole@ref{%
-  \POE@Verb{/@@y \POE@key@outerheight\space 0.5 mul def}%
+  \POE@setref{/@@y \POE@key@outerheight\space 0.5 mul def}%
 \ignorespaces}%
 %    \end{macrocode}
 % \end{macro}
@@ -12871,6 +13061,11 @@
 % 
 % \subsubsection{beamsplitter}
 %
+% \begin{macro}{\beamsplitter@ref}
+%    \begin{macrocode}
+\def\beamsplitter@ref{%
+  \POE@setref{/@@x \POE@key@bssize\space 0.5 sqrt mul def }%
+}%
 % \begin{macro}{\beamsplitter@nodes}
 %    \begin{macrocode}
 \def\beamsplitter@nodes{%
@@ -13011,7 +13206,7 @@
 % \begin{macro}{\optgrating@ref}
 %    \begin{macrocode}
 \def\optgrating@ref{%
-  \POE@Verb{/@@x \POE@key@gratingwidth\space 0.5 mul def}%
+  \POE@setref{/@@x \POE@key@gratingwidth\space 0.5 mul def}%
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -13060,7 +13255,7 @@
 % \begin{macro}{\optbox@ref}
 %    \begin{macrocode}
 \def\optbox@ref{%
-  \POE@Verb{%
+  \POE@setref{%
     /@@x \POE@key@optboxwidth\space 0.5 mul def
     /@@y \POE@key@optboxheight\space 0.5 mul def
   }%
@@ -13083,7 +13278,7 @@
 % \begin{macro}{\optplate@ref}
 %    \begin{macrocode}
 \def\optplate@ref{%
-  \POE@Verb{/@@y \POE@key@plateheight\space 0.5 mul def }%
+  \POE@setref{/@@y \POE@key@plateheight\space 0.5 mul def }%
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -13103,12 +13298,12 @@
 %    \begin{macrocode}
 \def\optdetector@ref{%
   \ifx\POE@key@detsize\@empty
-    \POE@Verb{%
+    \POE@setref{%
       /@@y \POE@key@detheight\space 0.5 mul def
       /@@x \POE@key@detwidth\space 0.5 mul def
     }%
   \else
-    \POE@Verb{%
+    \POE@setref{%
       /@@y \POE@key@detsize\space 0.5 mul def
       /@@x \POE@key@detsize\space 0.5 mul
       \ifx\POE@key@dettype\POE@str@dettype@round 0.5 mul\fi
@@ -13170,7 +13365,7 @@
 % \begin{macro}{\optretplate@ref}
 %    \begin{macrocode}
 \def\optretplate@ref{%
-   \POE@Verb{%
+   \POE@setref{%
      /@@y \POE@key@plateheight\space 0.5 mul def
      /@@x \POE@key@platewidth\space 0.5 mul def
    }%
@@ -13194,7 +13389,7 @@
 % \begin{macro}{\optdiode@ref}
 %    \begin{macrocode}
 \def\optdiode@ref{%
-  \POE@Verb{%
+  \POE@setref{%
     \POE@key@optdiodesize\space 0.5 mul dup /@@y ED /@@x ED 
   }%
 }%
@@ -13220,8 +13415,8 @@
 % \begin{macro}{doveprism@ref}
 %    \begin{macrocode}
 \def\doveprism@ref{%
-  \POE@Verb{/@@x \POE@key@doveprismwidth\space 0.5 mul def
-            /@@y \POE@key@doveprismheight\space 0.5 mul def}%
+  \POE@setref{/@@x \POE@key@doveprismwidth\space 0.5 mul def
+              /@@y \POE@key@doveprismheight\space 0.5 mul def}%
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -13386,7 +13581,7 @@
 % \begin{macro}{optfiber@ref}
 %    \begin{macrocode}
 \def\optfiber@ref{%
-  \POE@Verb{/@@x \POE@key@fiberloopsep\space\POE@key@fiberloops\space
+  \POE@setref{/@@x \POE@key@fiberloopsep\space\POE@key@fiberloops\space
       1 sub mul 0.5 mul def }%
 }%
 %    \end{macrocode}
@@ -13419,7 +13614,7 @@
 % \begin{macro}{\optmzm@ref}
 %    \begin{macrocode}
 \def\optmzm@ref{%
-  \POE@Verb{%
+  \POE@setref{%
     /@@x \POE@key@optmzmwidth\space 0.5 mul def
     /@@y \POE@key@optmzmheight\space 0.5 mul def
   }%
@@ -13454,7 +13649,7 @@
 % \begin{macro}{\optfilter@ref}
 %    \begin{macrocode}
 \def\optfilter@ref{%
-  \POE@Verb{\POE@key@filtersize\space 0.5 mul dup /@@y ED /@@x ED }%
+  \POE@setref{\POE@key@filtersize\space 0.5 mul dup /@@y ED /@@x ED }%
 }%
 \let\optfilter@nodes\dipole@nodes
 %    \end{macrocode}
@@ -13533,7 +13728,7 @@
 % \begin{macro}{optamp@ref}
 %    \begin{macrocode}
 \def\optamp@ref{%
-  \POE@Verb{/@@x \POE@key@optampwidth\space 0.5 mul def
+  \POE@setref{/@@x \POE@key@optampwidth\space 0.5 mul def
             /@@y \POE@key@optampheight\space 0.5 mul def
           }%
 }%
@@ -13563,9 +13758,9 @@
 %    \begin{macrocode}
 \def\polcontrol@ref{%
   \ifx\POE@key@polcontroltype\POE@str@polcontroltype@linear
-    \POE@Verb{/@@x \POE@key@polcontrolsize\space 2 mul def}%
+    \POE@setref{/@@x \POE@key@polcontrolsize\space 2 mul def}%
   \else
-    \POE@Verb{/@@x \POE@key@polcontrolsize\space 1.5 mul def}%
+    \POE@setref{/@@x \POE@key@polcontrolsize\space 1.5 mul def}%
   \fi
 }%
 %    \end{macrocode}
@@ -13611,7 +13806,7 @@
 % \begin{macro}{\optisolator@ref}
 %    \begin{macrocode}
 \def\optisolator@ref{%
-  \POE@Verb{%
+  \POE@setref{%
     /@@x \POE@key@isolatorwidth\space 0.5 mul def
     /@@y \POE@key@isolatorheight\space 0.5 mul def
   }%
@@ -13635,7 +13830,7 @@
 % \begin{macro}{\optfiberpolarizer@ref}
 %    \begin{macrocode}
 \def\optfiberpolarizer@ref{%
-  \POE@Verb{%
+  \POE@setref{%
     /@@x \POE@key@fiberpolwidth\space 0.5 mul def
     /@@y \POE@key@fiberpolheight\space 0.5 mul def
   }%
@@ -13659,7 +13854,7 @@
 % \begin{macro}{\optswitch@ref}
 %    \begin{macrocode}
 \def\optswitch@ref{%
-  \POE@Verb{\POE@key@switchsize\space 0.5 mul dup /@@y ED /@@x ED }%
+  \POE@setref{\POE@key@switchsize\space 0.5 mul dup /@@y ED /@@x ED }%
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -13707,7 +13902,7 @@
 % \begin{macro}{\fiberdelayline@ref}
 %    \begin{macrocode}
 \def\fiberdelayline@ref{%
-  \POE@Verb{%
+  \POE@setref{%
     /@@y \POE@key@fdlheight\space 0.5 mul def
     /@@x \POE@key@fdlwidth\space 0.5 mul def
   }%
@@ -13760,7 +13955,7 @@
 % \begin{macro}{\POE@coupler@ref}
 %    \begin{macrocode}
 \def\POE@coupler@ref{%
-  \POE@Verb{%
+  \POE@setref{%
     /@@y0
     \ifx\POE@key@coupleralign\POE@str@top
       \POE@key@couplersep\space -0.5 mul
@@ -13770,20 +13965,12 @@
       0
     \fi\fi
     def
-    \ifx\POE@key@couplersize\@empty
-      \POE@key@couplersize
-    \else
-      \POE@key@couplerwidth
-    \fi
-    \space 0.5 mul /@@x ED
+    /@@x \POE@key@couplerwidth\space 0.5 mul def
     \ifx\POE@key@couplertype\POE@str@couplertype@none
       \POE@key@couplersep
     \else
-      \ifx\POE@key@couplersize\@empty
-        \POE@key@couplersize\space 0.2 mul
-      \else
-        \POE@key@couplerheight\space 0.5 mul
-    \fi\fi
+      \POE@key@couplerheight\space 0.5 mul
+    \fi
     \space /@@y ED
   }%
 }%
@@ -13801,7 +13988,7 @@
   \POE@coupler@ref
   \ifx\POE@key@couplertype\POE@str@couplertype@none
     \ifx\POE@key@coupleralign\POE@str@center
-      \POE@Verb{/@@y 0 def }%
+      \POE@setref{/@@y 0 def }%
     \fi
   \fi
 }%
@@ -13951,7 +14138,7 @@
 % \begin{macro}{optcirculator@ref}
 %    \begin{macrocode}
 \def\optcirculator@ref{%
-  \POE@Verb{\POE@key@optcircsize\space 0.5 mul dup /@@x ED /@@y ED }%
+  \POE@setref{\POE@key@optcircsize\space 0.5 mul dup /@@x ED /@@y ED }%
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -13981,8 +14168,9 @@
 % \begin{macro}{fibercollimator@ref}
 %    \begin{macrocode}
 \def\fibercollimator@ref{%
-  \POE@Verb{/@@x \POE@key@fibercolwidth\space 0.5 mul def
-            /@@y \POE@key@fibercolheight\space 0.5 mul def}%
+  \POE@setref{%
+    /@@x \POE@key@fibercolwidth\space 0.5 mul def
+    /@@y \POE@key@fibercolheight\space 0.5 mul def}%
 }%
 %    \end{macrocode}
 % \end{macro}

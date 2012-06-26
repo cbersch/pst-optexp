@@ -13,15 +13,15 @@ ARCHFILES = $(PACKAGE).dtx $(PACKAGE).ins Makefile \
 
 PS2PDF = GS_OPTIONS=-dPDFSETTINGS=/prepress ps2pdf
 
-all : doc doc-DE cheatsheet
+all : doc doc-DE quickref
 
 doc : $(PACKAGE).pdf
 
 doc-DE : $(PACKAGE)-DE.pdf
 
-cheatsheet: $(PACKAGE)-cheatsheet.pdf
+quickref: $(PACKAGE)-quickref.pdf
 
-dist : doc doc-DE cheatsheet
+dist : doc doc-DE quickref
 	tar chvzf $(ARCHNAME).tar.gz $(ARCHFILES)
 	@ echo
 	@ echo $(ARCHNAME).tar.gz
@@ -57,10 +57,10 @@ $(PACKAGE)-DE.dvi: L = ngerman
 %.pdf: %.ps
 	$(PS2PDF) $< $@
 
-$(PACKAGE)-cheatsheet.tex: $(PACKAGE)-cheatsheet.py
+$(PACKAGE)-quickref.tex: $(PACKAGE)-quickref.py
 	python $<
 
-$(PACKAGE)-cheatsheet.pdf: $(PACKAGE)-cheatsheet.tex
+$(PACKAGE)-quickref.pdf: $(PACKAGE)-quickref.tex
 	pdflatex $<
 
 $(PACKAGE).sty $(PACKAGE).pro $(PACKAGE).tex $(PACKAGE).ist: $(PACKAGE).ins $(PACKAGE).dtx
@@ -78,9 +78,9 @@ arch-tds : Changes
 	cp pst-optexp.sty tds/tex/latex/pst-optexp/
 	cp pst-optexp.pro tds/dvips/pst-optexp/
 	cp Changes pst-optexp.pdf pst-optexp-DE.pdf \
-          README pst-optexp.ist pst-optexp-cheatsheet.pdf \
+          README pst-optexp.ist pst-optexp-quickref.pdf \
 	  tds/doc/latex/pst-optexp/
-	cp pst-optexp.dtx pst-optexp.ins Makefile pst-optexp-cheatsheet.py \
+	cp pst-optexp.dtx pst-optexp.ins Makefile pst-optexp-quickref.py \
 	  tds/source/latex/pst-optexp/
 	cd tds ; zip -r ../$(ARCHNAME_TDS).zip tex doc source dvips
 	cd ..
@@ -90,11 +90,11 @@ ctan : dist arch-tds
 	tar cf $(PACKAGE).tar $(ARCHNAME_TDS).zip $(ARCHNAME).tar.gz
 
 clean :
-	$(RM) $(foreach prefix, $(PACKAGE) $(PACKAGE)-DE $(PACKAGE)-cheatsheet, \
+	$(RM) $(foreach prefix, $(PACKAGE) $(PACKAGE)-DE $(PACKAGE)-quickref, \
 	        $(addprefix $(prefix), .dvi .ps .log .aux .bbl .blg .out .tmp .toc \
 	           .idx .ind .ilg .gls .glg .glo .hd \
 	           -idx.idx -idx.ilg -idx.ind -doc.idx -doc.ilg -doc.ind .hd)) \
-	      $(PACKAGE)-cheatsheet.tex
+	      $(PACKAGE)-quickref.tex
 
 veryclean : clean
-	$(RM) $(addprefix $(PACKAGE), .pdf -DE.pdf -cheatsheet.pdf .sty .pro .ist)
+	$(RM) $(addprefix $(PACKAGE), .pdf -DE.pdf -quickref.pdf .sty .pro .ist)
