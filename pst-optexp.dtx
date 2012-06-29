@@ -18,7 +18,7 @@
 %<stylefile>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<stylefile>\ProvidesPackage{pst-optexp}
 %<*stylefile>
-    [2012/06/20 v3.0beta Optical experimental setups with PSTricks]
+    [2012/06/29 v3.0RC1 Optical experimental setups with PSTricks]
 %</stylefile>
 %
 %<*driver>
@@ -868,7 +868,17 @@
 % \ifENGLISH
 %   \section{Acknowledgements}
 % \fi
-% \ifGERMAN\fi
+% \ifGERMAN
+% Ich danke Allen von der PSTricks-Mailingliste für ihre Hilfe, insbesondere
+% Herbert Voß. Mein Dank gilt ebenfalls unterschiedlichen Paketauthoren, von
+% denen ich Code kopiert und viel gelernt habe: Florent Chervet, Rolf Niepraschk
+% und Heiko Oberdiek. Christine Römer hat mich mit ihrem Artikel in der
+% DTK\footnote{Pakete in Deutsch dokumentieren. in Die TeXnische Komödie. Heft
+% 2/2011, S. 28-35.} überzeugt, auch eine deutsche Dokumentation
+% bereitzustellen. Der Dokumentationsstil ist eine Mischung aus der
+% \opt{pst-doc} Klasse (Herbert Voß) und dem \opt{ltxdockit} Paket für die
+% \opt{biblatex} documentation (Philipp Lehmann).
+% \fi
 % \ifENGLISH
 % I thank all the people of the PSTricks mailinglist for the continuous help,
 % especially Herbert Voß. Thanks also to various package authors from which I
@@ -1349,7 +1359,12 @@
 % Linsenparameter in diesem Beispiel wurden so gewählt das bei
 % kollimiertem Eingangsstrahl auch der Ausgangsstrahl kollimiert ist.
 % \fi
-% \ifENGLISH\fi
+% \ifENGLISH
+% Finally, a wide beam with an initial beam width of \opt{0.2} without
+% divergence is sent through the components. The beam path is calculated by
+% raytracing. The lens parameters in this example were set such, that output
+% beam is collimated.
+% \fi
 % \iffalse
 %<*ignore>
 % \fi
@@ -1377,7 +1392,10 @@
 % eingestellt, und kann z.B. mit einer halbtransparenten Füllung
 % versehen werden.
 % \fi
-% \ifENGLISH\fi
+% \ifENGLISH
+% The appearance of the beam can be changed via the \Lstyle{Beam} style, and may
+% have a semitransparent fill pattern.
+% \fi
 % \iffalse
 %<*ignore>
 % \fi
@@ -1424,7 +1442,18 @@
 % kann. Die Breite dieser und aller folgenden \Lcs{optbox} wird auf
 % \opt{0.7} geändert.
 % \fi
-% \ifENGLISH\fi
+% \ifENGLISH
+
+% This example shows how to setup a fiber drawing with automatic fiber
+% connections.
+%
+% Again, the reference nodes are shown for better orientation. In contrast to
+% the previous example, here we need more reference nodes, because the
+% components are connected directly with them.
+%
+% The laser is set at the start. The label offset is set with the \Lkeyword{label} parameter, which would allow setting all label parameters at once. A \Lcs{optbox} is originally a free-ray component, so that the automatic fiber
+
+% \fi
 % \iffalse
 %<*ignore>
 % \fi
@@ -1448,7 +1477,9 @@
 % Als nächstes wird ein Mach-Zehnder-Modulator ohne Beschriftung
 % gezeichnet, der automatisch mit Fasern verbunden wird.
 % \fi
-% \ifENGLISH\fi
+% \ifENGLISH The Mach--Zehner modulator is drawn without label and connected
+% automatically with fibers.
+% \fi
 % \iffalse
 %<*ignore>
 % \fi
@@ -1471,7 +1502,10 @@
 % gezeichnet. Der Koppler wird zwischen dem Eingangsknoten und dem
 % Mittelpunkt der beiden Ausgangsknoten ausgerichtet. 
 % \fi
-% \ifENGLISH\fi
+% \ifENGLISH Then, we draw a fiber coupler with one input and two output
+% fibers. The coupler is positioned between the input node and the center of the
+% two output nodes.
+% \fi
 % \iffalse
 %<*ignore>
 % \fi
@@ -1501,7 +1535,16 @@
 % Die Schreibweise \opt{(A|E)} nimmt die $x$-Koordinate von \prm{A} und die
 % $y$-Koordinate von \prm{E}.
 % \fi
-% \ifENGLISH\fi
+% \ifENGLISH
+% At the ends of the coupler we put an optical spectrum analyzer (OSA) an a
+% power meter (PD). The \Lcs{optdetector} is always set at the end of the
+% reference line, it has \Lkeyword{position} preset to \opt{end}. These two
+% components are drawn without fibers, because their end nodes coincide with the
+% two output of the coupler.
+%
+% The notation \opt{(A|E)} uses the $x$-coordinate of \prm{A} and the
+% $y$-coordinate of \prm{E}.
+% \fi
 % \iffalse
 %<*ignore>
 % \fi
@@ -1542,7 +1585,20 @@
 % Ringstrukturen wie z.B. Faserlasern kann das nachträgliche Verbinden
 % mit \Lcs{drawfiber} von Vorteil sein.
 % \fi 
-% \ifENGLISH\fi
+% \ifENGLISH
+% This example has the same result as the previous one, but is constructed
+% differently.
+%
+% This time we do not use the automatic fiber connections, but draw all
+% components first and connect them afterwards with fibers. For this we need
+% less reference nodes, the fiber connections are suppressed with
+% \Lkeyword{fiber}\opt{=none}.
+%
+% The fibers are drawn at last with \Lcs{drawfiber}. The result is identical
+% with Ex.~\ref{ex:fiber-setup}. The choice of the procedure depends on personal
+% preferences, for loop setups, like for fiber laser, it looks better if the
+% fibers are drawn after the components with \Lcs{drawfiber}.
+% \fi
 % \iffalse
 %<*ignore>
 % \fi
@@ -1575,7 +1631,10 @@
 % (Spiegel) sowie Elemente eingesetzt, die sowohl transmittieren als
 % auch reflektieren (Strahlteiler).
 % \fi
-% \ifENGLISH\fi
+% \ifENGLISH
+% In this example we use lenses, reflektive elements (mirrors) and components
+% which can be either tranmittive or reflective (beamsplitter).
+% \fi
 %
 % \begingroup
 % \catcode`\*=13
@@ -1628,7 +1687,25 @@
 % Lichtstrahlen hinter die Komponenten gelegt, sodass diese nicht
 % verdeckt werden.
 % \fi
-% \ifENGLISH\fi
+% \ifENGLISH
+% We start with definition of the reference nodes
+% (\prettyref{l:ex2-nodes1}--\ref{l:ex2-nodes2}). Then, some basic parameters
+% are set (\prettyref{l:ex2-set}): the appearance of the mirrors, the beam
+% splitter and the detector.
+%
+% Following, all components are positioned
+% (\prettyref{l:ex2-bs}--\ref{l:ex2-det}). The reflective ones need three
+% reference nodes, the input node, the node where the reflective interface is
+% situated, and the output node. Then, the appearance of the beam is set
+% (\prettyref{l:ex2-style}), and the beam is drawn (\prettyref{l:ex2-beam}).
+%
+% In this example, all components have a name (\Lkeyword{compname}), which can
+% be used instead of the numerical IDs for the raytracing. This can simplify
+% follwing the beam path.
+%
+% All components and beams are enclosed in a \Lenv{optexp} environment. Inside
+% of this, all beams are drawn behind the components.
+% \fi
 %
 % \newpage
 % \ifGERMAN\subsection{Gitterreflexion}\fi
@@ -6390,7 +6467,13 @@
 % Strahlen zu nutzen, so dass man abschnittsweise die Divergenz und die
 % Ausbreitungsrichtung definieren kann.
 % \fi
-% \ifENGLISH\fi
+% \ifENGLISH
+% With an appropriate choice of refractive index and component parameter
+% (e.g. lens curvature) all kind of beam paths could be realised, although it
+% might be very cumbersome. To simplify this, we provide the possibility to use
+% the end points of on beam path as starting points for the next beam which
+% allows partwise definition of the beam divergence, angle and direction.
+% \fi
 %
 % \begin{optionlist}
 %   \choitem[true]{savebeampoints}{true,false,\prm{int}}
@@ -8263,8 +8346,15 @@
 % \ifENGLISH\section{Overview of special nodes}\fi
 % \ifGERMAN\section{Übersicht der Spezialknoten}\fi
 %
-% \ifENGLISH\fi
-% \ifGERMAN\fi
+% \ifENGLISH In this section you find overviews of all special nodes which
+% each component provides. The possible positions for external and rotation
+% reference nodes, and the interface nodes.
+% \fi
+% \ifGERMAN
+% In diesem Abschnitt finden sie Übersichten für alle Spezialknoten, die von
+% allen Komponenten bereitgestellt werden: die möglichen Positionen für externe
+% und Rotationsknoten, und the Grenzflächenknoten.
+% \fi
 %
 % \ifENGLISH\subsection{External and rotation reference nodes}\fi
 % \ifGERMAN\subsection{Externe und Rotationsreferenzknoten}\fi
@@ -8552,8 +8642,18 @@
 %   \section{Backward compatibility}
 % \fi\label{sec:bwd-comp}
 % 
-% \ifENGLISH\fi
-% \ifGERMAN\fi
+% \ifENGLISH In this section you find a comprehensive listing of the behaviour
+% which changed in version 3.0 with respect to version 2.1. Not all changes are
+% backward compatible, you find here what you must note when upgrading and how
+% you must change old documents to work correctly with the newer version.
+% \fi
+% \ifGERMAN
+% In diesem Abschnitt finden Sie eine umfangreiche Auflistung aller Änderungen
+% in Version 3.0 bezüglich Version 2.1, die nicht abwärts kompatibel sind. Sie
+% finden ebenfalls Informationen was Sie bei einem Wechsel zur neuen Version
+% beachten müssen, und was sie bei älteren Dokumenten gegebenenfalls ändern
+% müssen um mit der neuen Version korrekt zu funktionieren.
+% \fi
 %
 % \ifENGLISH\subsection{General parameters}\fi
 % \ifGERMAN\subsection{Allgemeine Parameter}\fi
