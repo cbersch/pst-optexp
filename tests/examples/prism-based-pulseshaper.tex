@@ -7,47 +7,46 @@
 \usepackage{graphicx}
 \usepackage{pst-optexp}
 \begin{document}
-\begin{pspicture}[showgrid=true](-0.2,0.1)(8.2,5.3)
+\begin{pspicture}(-0.2,0.1)(8.2,5.3)
   \pnode(0,3){M1}
   \pnode(8,3){M2}
   \pnode(8,0.5){In}
   \pnode(6.5,0.5){Min}
   \pnode(6.5,3){Pin}
   \pnode(4.5,3){Min2}
-  \pnode(1.5, 0.5){Mout}
-  \pnode(1.5,3){Pout}
+  \pnode(1.3, 0.5){Mout}
+  \pnode(1.3,3){Pout}
   \pnode(3.5,3){Mout2}
   \pnode(0,0.5){Out}
-  \definecolor[ps]{bl}{rgb}{tx@addDict begin Red Green Blue end}%
+  \definecolor[ps]{bl}{rgb}{tx@addDict begin Red Green Blue end}
   \addtopsstyle{Beam}{linecolor=bl, linejoin=1}
   \psset{mirrortype=extended, mirrordepth=0.15}
-  \newpsstyle{ExtendedMirror}{linestyle=none, hatchwidth=0.5\pslinewidth, hatchsep=1.2\pslinewidth,%
-                fillstyle=hlines}%
-              
+  \newpsstyle{ExtendedMirror}{linestyle=none, hatchwidth=0.5\pslinewidth, hatchsep=1.2\pslinewidth,
+                fillstyle=hlines}
   \begin{optexp}
-  \mirror[mirrorwidth=4, mirrorradius=10.4](M2)(M1)(M2){}
-  \mirror[mirrorwidth=4, mirrorradius=10.4](M1)(M2)(M1){}
-  \mirror(In)(Min)(Pin){}
-  \optprism[n=1.85](Min)(Pin)(Min2){}
-  \mirror[compshift=0.4](Pin)(Min2)(Pin){}
-  \mirror[compshift=-0.4](Pout)(Mout2)(Pout){}
-  \optprism[n=1.85, compshift=0.15](Mout2)(Pout)(Mout){}
-  \mirror(Pout)(Mout)(Out){}
+  \mirror[mirrorwidth=4, mirrorradius=11.](M2)(M1)(M2)
+  \mirror[mirrorwidth=4, mirrorradius=10.4](M1)(M2)(M1)
+  \mirror(In)(Min)(Pin)
+  \optprism[n=1.85, addtoOptComp={linewidth=1.5\pslinewidth}](Min)(Pin)(Min2)
+  \mirror[compshift=-0.4](Pin)(Min2)(Pin)
+  \mirror[compshift=0.4](Pout)(Mout2)(Pout)
+  \optprism[n=1.85, linewidth=1.5\pslinewidth](Mout2)(Pout)(Mout)
+  \mirror(Pout)(Mout)(Out)
   \multido{\i=0+1}{40}{%
     \pstVerb{%
       \i\space 650 400 sub 39 div mul 400 add 
       tx@addDict begin wavelengthToRGB end }%
-    \drawbeam[n=n 0.002 \i\space mul sub]{(In)}{3-5}{2}{1}{6-8}{(Out)}
+    \drawbeam[n={-0.002 \i\space mul n add}]{(In)}{3-5}{2}{1}{6-7}
   }%
-  \newpsstyle{Beam}{}
-  \psline[ArrowInside=->, linewidth=2\pslinewidth, arrowinset=0](In)(\oenodeIn{@3})(\oenodeOut{@4})
-  \drawbeam[beamangle=0.2865,beampos=0.1,addtoBeam={arrows=<-, linewidth=2\pslinewidth, arrowinset=0}]{([Xnodesep=-0.2]Out)}{8}{7}
+  \newpsstyle{Beam}{linecolor=red}
+  \backlayer{\psline[style=Beam,ArrowInside=->, linewidth=2\pslinewidth, arrowinset=0](In)(\oenodeIn{3})(\oenodeOut{4})}
+  \drawbeam[linewidth=2\pslinewidth, arrows=->, arrowinset=0, loadbeampoints, beaminsidefirst, n=1.9325]{7-8}{(Out)}  
 \end{optexp}
 \rput(4,4.5){%
   \psframe[fillstyle=solid,fillcolor=gray!70](-0.1, -0.6)(0.1, 0.7)
   \multido{\r=-0.5+0.1}{12}{%
     \psline[linewidth=0.5\pslinewidth](-0.1,\r)(0.1,\r)
   }%
-}%
+}
 \end{pspicture}
 \end{document}
