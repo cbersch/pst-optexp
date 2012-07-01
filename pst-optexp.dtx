@@ -669,11 +669,11 @@
 %     \pstVerb{^^A
 %       \i\space 650 400 sub 39 div mul 400 add 
 %       tx@addDict begin wavelengthToRGB end }^^A
-%     \drawbeam[n={-0.002 \i\space mul n add}, beaminsidelast]{(In)}{3-5}{2}{1}{6-7}
+%     \drawbeam[n={-0.002 \i\space mul n add}]{(In)}{3-5}{2}{1}{6-7}
 %   }^^A
 %   \newpsstyle{Beam}{linecolor=red}
 %   \backlayer{\psline[style=Beam,ArrowInside=->, linewidth=2\pslinewidth, arrowinset=0](In)(\oenodeIn{3})(\oenodeOut{4})}
-%   \drawbeam[linewidth=2\pslinewidth, arrows=->, arrowinset=0, beamangle=-90, beamalign=abs]{(\oenodeBeam{})}{8}{(Out)}  
+%   \drawbeam[linewidth=2\pslinewidth, arrows=->, arrowinset=0, loadbeampoints, beaminsidefirst, n=1.9325]{7-8}{(Out)}  
 % \end{optexp}
 % \rput(4,4.5){^^A
 %   \psframe[fillstyle=solid,fillcolor=gray!70](-0.1, -0.6)(0.1, 0.7)
@@ -5576,6 +5576,37 @@
 % \iffalse
 %</ignore>
 % \fi
+%
+% \boolitem[true]{useNA}
+% \ifGERMAN Ein Strahlengang wird abgebrochen, falls eine Komponente nicht
+% getroffen wird. Für manche Zwecke, z.B. zum Ermitteln des richtigen
+% Brechungsindex, kann es sinnvoll sein, wenn die numerische Apertur eine
+% Komponente nicht berücksichtigt wird. In dem folgenden Beispiel wird der
+% rote Strahl gezeichnet, obwohl er außerhalb der gezeichneten Spiegelfläche
+% liegt.
+% \fi
+% \ifENGLISH The beam path is interrupted if an interface is missed. In some
+% cases, e.g. to estimate the correct refractive index for a ray trace, it can
+% be useful if the numerical aperture of the components is not considered. The
+% red beam in the following example is drawn, although it hits the mirror
+% outside the drawn mirror surface.
+% \fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(3,2)
+  \pnode(0,0.5){A}\pnode(2.5,0.5){B}\pnode(2.5,2){C}
+  \mirror(A)(B)(C)
+  \psset{useNA=false}
+  \drawbeam{(A)}{}{(C)}
+  \drawbeam[linecolor=red, beamangle=10]{(A)}{}{(C)}  
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
 % \end{optionlist}
 %
 % \ifENGLISH\subsection{Refractive index}\fi
@@ -9094,6 +9125,7 @@
 \newif\ifPOE@beaminside
 \newif\ifPOE@raytrace
 \newif\ifPOE@pswarning
+\newif\ifPOE@useNA
 %    \end{macrocode}
 % This is to check if \nxLkeyword{compname} is set inside or outside of a component. For this no boolean key is provided.
 %    \begin{macrocode}
@@ -10243,6 +10275,7 @@
 \define@boolkey[psset]{optexp}[POE@]{beaminside}[true]{}%
 \define@boolkey[psset]{optexp}[POE@]{allowbeaminside}[true]{}%
 \define@boolkey[psset]{optexp}[POE@]{raytrace}[true]{}%
+\define@boolkey[psset]{optexp}[POE@]{useNA}[true]{}%
 \define@key[psset]{optexp}{skipconn}{%
   \pst@checknum{#1}\POE@key@skipconn
 }%
@@ -10260,6 +10293,7 @@
   {\PackageError{pst-optexp}{Unknown value '\val' for beamalign.}}
 \psset[optexp]{%
   raytrace=true
+  ,useNA=true
   ,startinside=false
   ,stopinside=false
   ,allowbeaminside=true
@@ -10650,6 +10684,7 @@
          relative
        \fi def
      /skipconn \POE@key@skipconn\space def
+     /useNA \ifPOE@useNA true \else false \fi def
   }%
 }%
 %    \end{macrocode}
@@ -15791,7 +15826,7 @@ tx@OptexpDict begin
 %
 % Check if X0' Y0' are within the numerical aperture of the interface
 %    \begin{macrocode}
-  dup missed eq not {
+  dup missed eq not useNA and {
     7 3 roll 2 copy 9 2 roll
     4 2 roll 2 copy
     %% X0' Y0' Xout Yout status X0' Y0' IfcNum CompName IfcNum CompName
