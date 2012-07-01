@@ -3,7 +3,8 @@ import re
 
 with open("pst-optexp.dtx") as f:
     data = ''.join(f.readlines())
-pat = re.compile(r'(\\[a-z]+item|\\[a-z]*desc)(?:\[[^\]]+\])?(\{[a-zA-Z0-9]+\}.*)$', re.M)
+pat = re.compile((r'(\\[a-z]+item|\\[a-z]*desc)(?:\[[^\]]+\])?(\{[a-zA-Z0-9]+\}.*$)'
+                  r'|(\\ifGERMAN\s*\\chapter)') , re.MULTILINE)
 
 g = pat.findall(data)
 
@@ -81,6 +82,13 @@ for m in g:
         if not cmdenv:
             f.write("\\begin{cmdlist}\n")
             cmdenv = True
+    elif re.match(r'\\ifGERMAN', m[2]):
+        if optenv:
+            f.write("\\end{optionlist}\n\\vspace{7pt}%\n\n")
+            optenv = False
+        elif cmdenv:
+            f.write("\\end{cmdlist}\n\\vspace{7pt}%\n\n")
+            cmdenv = False
     else:
         if cmdenv:
             f.write("\\end{cmdlist}\n")
