@@ -13684,20 +13684,37 @@
 %
 % \subsubsection{rightangleprism}
 %
+% \begin{macro}{\rightangleprism@ref}
+%    \begin{macrocode}
+\def\rightangleprism@ref{%
+  \POE@setref{%
+    tx@EcldDict begin
+      OEangle 0.5 mul
+      { x sin modA mul } 
+      { OEangle x sub sin modB mul }
+      NewtonSolving pop
+    end
+    /@htA exch def
+    OEangle 0.5 mul exch sub /dOEangle exch def
+    /@OEtrafo {dOEangle matrix rotate dtransform } bind def
+  }%
+}%
+%    \end{macrocode}
+% \end{macro}
 % \begin{macro}{\rightangleprism@nodes}
 %    \begin{macrocode}
 \def\rightangleprism@nodes{%
   \edef\@sz{\POE@key@raprismsize\space}%
   \edef\@ht{\POE@dict{OEangle 0.5 mul sin modA mul} }%
   \newOptexpComp{%
-    {\@ht neg \@ht \@sz 0.5 mul sub} {1 0} 
-    \@ht \@sz 0.5 mul sub \@ht trans {PlainIfc}
-    {\@ht neg 0} {1 1} 
-    \@ht 2 sqrt mul dup \@sz 2 sqrt div sub exch refl {PlainIfc}
-    {\@ht 0} {-1 1} 
-    \@ht 2 sqrt mul dup \@sz 2 sqrt div sub exch refl {PlainIfc}
-    {\@ht dup \@sz 0.5 mul sub } {1 0} 
-    \@ht neg \@sz 0.5 mul \@ht sub trans {PlainIfc} 
+    {@htA neg @htA \@sz 0.5 mul sub @OEtrafo} {1 0 @OEtrafo} 
+    @htA \@sz 0.5 mul sub @htA trans {PlainIfc}
+    {@htA neg 0 @OEtrafo} {1 1 @OEtrafo} 
+    @htA 2 sqrt mul dup \@sz 2 sqrt div sub exch refl {PlainIfc}
+    {@htA 0 @OEtrafo} {-1 1 @OEtrafo} 
+    @htA 2 sqrt mul dup \@sz 2 sqrt div sub exch refl {PlainIfc}
+    {@htA dup \@sz 0.5 mul sub @OEtrafo} {1 0 @OEtrafo} 
+    @htA neg \@sz 0.5 mul @htA sub trans {PlainIfc} 
     \POE@key@n 
   }%
 \ignorespaces}%
@@ -13708,10 +13725,9 @@
 %    \begin{macrocode}
 \def\rightangleprism@comp{%
   \edef\@sz{\POE@key@raprismsize\space 0.5 mul }%
-  \edef\@ht{\POE@dict{OEangle 0.5 mul sin modA mul} }%
-  \pspolygon(! \@sz neg \@ht \@sz sub)
-            (! \@sz \@ht \@sz sub)
-            (! 0 \@ht)%
+  \pspolygon(!\POE@dict{\@sz neg @htA \@sz sub @OEtrafo})
+            (!\POE@dict{\@sz @htA \@sz sub @OEtrafo})
+            (! 0 \POE@dict{@htA @OEtrafo})%
 \ignorespaces}%
 %    \end{macrocode}
 % \end{macro}
@@ -14490,8 +14506,8 @@ tx@OptexpDict begin
 % \begin{macro}{calcNodes}
 %   Calculate the reference node coordinates for reflective components and
 %   stores them as \PSvar{X@A}, \PSvar{Y@A}, \PSvar{X@B} and \PSvar{Y@B}. Some
-%   other values (\PSvar{modA} and \PSvar{OEangle}) are also stored for some
-%   special components
+%   other values (\PSvar{modA}, \PSvar{modB}, and \PSvar{OEangle}) are also
+%   stored for some special components
 % \begin{pssyntax}
 %   \PSvar{XB} \PSvar{YB} \PSvar{XA} \PSvar{YA} \PSvar{XG} \PSvar{YG} \PSop{calcNodes}
 % \end{pssyntax}
@@ -14509,6 +14525,7 @@ tx@OptexpDict begin
 %    \begin{macrocode}
   /modA a def
   /b bx by Pyth def
+  /modB b def
   /cx ax a div bx b div add def
   /cy ay a div by b div add def
   /c@tmp cx cy Pyth def
@@ -14549,6 +14566,7 @@ tx@OptexpDict begin
     /Y@A Y@B def
     /X@B exch def
     /Y@B exch def
+    modA modB /modA exch def /modB exch def
   } if
   DebugEnd
 } bind def
