@@ -13061,9 +13061,12 @@
         \end@ClosedObj
       \egroup
     \fi
-    \begin@OpenObj
-      \addto@pscode{\POE@dict{ \@ht \@r rightCurvedIfc \@postcode }}%
-    \end@OpenObj
+    \bgroup
+      \psset{linewidth=\POE@key@mirrorlinewidth}
+      \begin@OpenObj
+        \addto@pscode{\POE@dict{ \@ht \@r rightCurvedIfc \@postcode }}%
+      \end@OpenObj
+    \egroup
 %    \end{macrocode}
 % convex mirrors
 %    \begin{macrocode}
@@ -13082,28 +13085,27 @@
         \end@ClosedObj
       \egroup
     \fi
-   \begin@OpenObj
-     \addto@pscode{\POE@dict{ \@ht \@r rightCurvedIfc \@postcode }}%
-   \end@OpenObj
+    \bgroup
+      \psset{linewidth=\POE@key@mirrorlinewidth}
+      \begin@OpenObj
+        \addto@pscode{\POE@dict{ \@ht \@r rightCurvedIfc \@postcode }}%
+      \end@OpenObj
+    \egroup
   \else
 %    \end{macrocode}
 % plain mirror 
 %    \begin{macrocode}
     \edef\@ht{\POE@key@mirrorwidth\space 0.5 mul }%
-    \ifPOE@variable
-      \psarc[style=VariableMirror](! \@ht 0.4 sub 0){0.6}{-20}{20}
-      \psarc[style=VariableMirror](! 0.4 \@ht sub 0){0.6}{160}{200}
-     \fi
-     \ifx\POE@key@mirrortype\POE@str@mirrortype@piezo
-       \psframe[style=PiezoMirror,
-                dimen=outer](! \@ht 4 div 0)%
-                            (! \@ht -4 div \@ht 2.5 div)
-       \ifx\POE@key@extnode\@empty
-         \psbezier(! 0 \@ht 2.5 div)%
-                  (! 0 \@ht 1.5 div)%
-                  (! \@ht 2 div \@ht 2 div)%
-                  (! \@ht 4 div \@ht)
-       \fi
+    \ifx\POE@key@mirrortype\POE@str@mirrortype@piezo
+      \psframe[style=PiezoMirror,
+               dimen=outer](! \@ht 4 div 0)%
+                           (! \@ht -4 div \@ht 2.5 div)
+      \ifx\POE@key@extnode\@empty
+        \psbezier(! 0 \@ht 2.5 div)%
+                 (! 0 \@ht 1.5 div)%
+                 (! \@ht 2 div \@ht 2 div)%
+                 (! \@ht 4 div \@ht)
+      \fi
     \else\ifx\POE@key@mirrortype\POE@str@mirrortype@extended
       \psframe[style=ExtendedMirror]%
         (! \@ht neg \POE@key@mirrordepth\space )%
@@ -13117,6 +13119,24 @@
       (! \@ht neg \getCLWH)%
       (! \@ht \getCLWH)
   \fi\fi
+  \ifPOE@variable
+    \psarc[style=VariableMirror]%
+      (! \POE@key@mirrorwidth\space 0.5 mul 0.4 sub 
+         \ifdim\POE@key@mirrorradius pt=0pt
+           0
+         \else
+           \POE@key@mirrorradius\space dup \POE@dict{sign} neg exch
+           \POE@key@mirrorwidth\space  0.5 mul \POE@dict{capHeight} mul
+         \fi){0.6}{-20}{20}
+    \psarc[style=VariableMirror]%
+      (! 0.4 \POE@key@mirrorwidth\space 0.5 mul sub
+         \ifdim\POE@key@mirrorradius pt=0pt
+           0
+         \else
+           \POE@key@mirrorradius\space dup \POE@dict{sign} neg exch
+           \POE@key@mirrorwidth\space  0.5 mul \POE@dict{capHeight} mul
+         \fi){0.6}{160}{200}
+   \fi
 }%
 %    \end{macrocode}
 % \end{macro}
