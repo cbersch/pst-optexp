@@ -29,8 +29,8 @@ dist : doc doc-DE quickref
 $(PACKAGE).dvi: L = english
 $(PACKAGE)-DE.dvi: L = ngerman
 %.dvi: $(PACKAGE).dtx $(PACKAGE).sty $(PACKAGE).ist $(PACKAGE).pro
-	$(LATEX) -jobname=$(basename $@) '\newcommand*{\mainlang}{$(L)}\input{$(basename $@).dtx}'
-	$(LATEX) -jobname=$(basename $@) '\newcommand*{\mainlang}{$(L)}\input{$(basename $@).dtx}'
+	$(LATEX) -jobname=$(basename $@) '\newcommand*{\mainlang}{$(L)}\input{$(PACKAGE).dtx}'
+	$(LATEX) -jobname=$(basename $@) '\newcommand*{\mainlang}{$(L)}\input{$(PACKAGE).dtx}'
 	splitindex -m "" $(basename $@).idx
 	if test -e $(basename $@)-idx.idx; then \
 	  makeindex -s gind.ist -t $(basename $@)-idx.ilg \
@@ -40,7 +40,7 @@ $(PACKAGE)-DE.dvi: L = ngerman
 	  makeindex -s pst-optexp.ist -t $(basename $@)-doc.ilg \
 	  	-o $(basename $@)-doc.ind $(basename $@)-doc.idx; \
 	fi
-	$(LATEX) -jobname=$(basename $@) '\newcommand*{\mainlang}{$(L)}\input{$(basename $@).dtx}'
+	$(LATEX) -jobname=$(basename $@) '\newcommand*{\mainlang}{$(L)}\input{$(PACKAGE).dtx}'	
 	splitindex -m "" $(basename $@).idx
 	if test -e $(basename $@)-idx.idx; then \
 	  makeindex -s gind.ist -t $(basename $@)-idx.ilg \
@@ -50,7 +50,7 @@ $(PACKAGE)-DE.dvi: L = ngerman
 	  makeindex -s pst-optexp.ist -t $(basename $@)-doc.ilg \
 	  	-o $(basename $@)-doc.ind $(basename $@)-doc.idx; \
 	fi
-	$(LATEX) -jobname=$(basename $@) '\newcommand*{\mainlang}{$(L)}\input{$(basename $@).dtx}'
+	$(LATEX) -jobname=$(basename $@) '\newcommand*{\mainlang}{$(L)}\input{$(PACKAGE).dtx}'
 
 %.ps: %.dvi
 	dvips $< 
