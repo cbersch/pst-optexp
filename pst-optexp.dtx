@@ -3123,18 +3123,16 @@
 %</ignore>
 % \fi
 % 
-% \choitem[normal]{mirrortype}{normal, piezo, extended}
+% \choitem[normal]{mirrortype}{normal, piezo, extended, semitrans}
 % \ifGERMAN
 % Diese Parameter wählt die Spiegelart aus. Das Aussehen wird mit
-% \Lstyle{PiezoMirror} und \Lstyle{ExtendedMirror} gesteuert. Beachten Sie, dass
-% der Anschlussdraht für den Piezospiegel nicht gezeichnet wird, falls
-% \Lkeyword{extnode} verwendet wird.
+% \Lstyle{PiezoMirror}, \Lstyle{ExtendedMirror} und \Lstyle{SemitransMirror}
+% gesteuert.
 % \fi
 % \ifENGLISH
 % The \nxLkeyword{mirrortype} selects between different types of mirrors. The
-% style is controlled with \Lstyle{PiezoMirror} and
-% \Lstyle{ExtendedMirror}. Note, that the default piece of wire is omitted when
-% using \Lkeyword{extnode} with a piezo mirror.
+% style is controlled with \Lstyle{PiezoMirror}, \Lstyle{ExtendedMirror}, and
+% \Lstyle{SemitransMirror}.
 % \fi
 % 
 % \iffalse
@@ -3146,11 +3144,57 @@
             beam](0,0)(1.8,1.5)(0,2){ext}
 \end{pspicture}
 \end{LTXexample}
-
+% \iffalse
+%</ignore>
+% \fi
+%
+% \ifGERMAN Beachten Sie, dass der Anschlussdraht für den Piezospiegel nicht
+% gezeichnet wird, falls \Lkeyword{extnode} verwendet wird.
+% \fi
+% \ifENGLISH Note, that the default piece of wire is omitted when using
+% \Lkeyword{extnode} with a piezo mirror.
+% \fi
+% \iffalse
+%<*ignore>
+% \fi
 \begin{LTXexample}[morekeywords={[21]{mirrortype}}]
 \begin{pspicture}(3,2)
 \mirror[mirrortype=piezo,
           beam](0,0)(1.8,1.5)(0,2){piezo}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
+% \ifGERMAN Ein halbdurchlässiger Spiegel (\opt{semitrans}) hat, im Gegensatz zu
+% den anderen Spiegeltypen, zwei Grenzflächen, deren Abstand und Position vom
+% Wert und Vorzeichen von \Lkeyword{mirrordepth} abhängt. Beachten Sie, dass
+% keine gekrümmten Spiegel dieses Typs möglich sind.
+% \fi
+% \ifENGLISH A semi-transparent mirror (\opt{semitrans}) has two interfaces, in
+% contrast to the other mirror types. Their distance and position depends on the
+% value and sign of \Lkeyword{mirrordepth}. Note, that this type does not
+% support curved mirrors.
+% \fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[morekeywords={[21]{mirrortype, mirrordepth}}]
+\begin{pspicture}[showgrid](3,3)
+  \mirror[mirrortype=semitrans](0,2)(2,2)(2,0)
+  \drawbeam{(0,2)}{}{(2,0)}
+  \drawbeam[linecolor=red]{(3,2)}{}{(3,3)}
+  \drawbeam[beampos=0.05, linecolor=blue]{(0,2)}{}{(3,2)}
+\end{pspicture}
+\end{LTXexample}
+
+\begin{LTXexample}[morekeywords={[21]{mirrortype, mirrordepth}}]
+\begin{pspicture}[showgrid](3,3)
+  \mirror[mirrortype=semitrans, mirrordepth=-0.15](0,2)(2,2)(2,0)
+  \drawbeam{(0,2)}{}{(2,0)}
+  \drawbeam[linecolor=red]{(3,2)}{}{(3,3)}
+  \drawbeam[beampos=0.05, linecolor=blue]{(0,2)}{}{(3,2)}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -5850,7 +5894,8 @@
 % \end{enumerate}
 %
 % \begin{optionlist}
-%   \valitem{refractiveindex}{code}\deprecatedmsg{\Lkeyword{n}}
+%   \valitem{refractiveindex}{code}
+%   \deprecatedmsg{\Lkeyword{n}}
 % \end{optionlist}
 %
 % \ifENGLISH\subsection{Initial conditions}\fi
@@ -8951,6 +8996,7 @@
 %   \item Removed option \opt{polwidth}\see{cmd:polarization}
 %   \item Removed option \opt{pol}\see{cmd:polarization}
 %   \item Added style \opt{VariableMirror}\see{cmd:mirror}
+%   \item Added mirror type \opt{semitrans}\see{prm:mirrortype}
 %   \item Renamed \cs{optgrid} to \cs{optgrating}\see{cmd:optgrating}
 %   \item Renamed \opt{optgridwidth} to \opt{gratingwidth}\see{cmd:optgrating}
 %   \item Renamed \opt{optgridheight} to \opt{gratingheight}\see{cmd:optgrating}
@@ -9182,6 +9228,7 @@
 \def\POE@str@mirrortype@piezo{piezo}
 \def\POE@str@mirrortype@plain{plain}
 \def\POE@str@mirrortype@extended{extended}
+\def\POE@str@mirrortype@semitrans{semitrans}
 \def\POE@str@gratingtype@blazed{blazed}
 \def\POE@str@gratingtype@binary{binary}
 \def\POE@str@relative{relative}
@@ -9298,6 +9345,7 @@
 \newpsstyle{VariableMirror}{%
   linewidth=0.8\pslinewidth, arrowinset=0, arrowscale=0.8, arrows=<->
 }
+\newpsstyle{SemitransMirror}{linestyle=none, fillstyle=solid,fillcolor=black!30}%
 \newpsstyle{PiezoMirror}{fillstyle=solid,fillcolor=black!30}%
 \newpsstyle{IsolatorArrow}{linewidth=2\pslinewidth, arrowinset=0}
 \newpsstyle{CrystalCaxis}{%
@@ -9829,7 +9877,7 @@
   \edef\POE@key@mirrorlinewidth{#1}%
 }
 \define@choicekey*[psset]{optexp}{mirrortype}%
-  [\val\nr]{piezo,extended,plain}{%
+  [\val\nr]{piezo,extended,plain,semitrans}{%
   \edef\POE@key@mirrortype{#1}%
 }
 \define@key[psset]{optexp}{mirrordepth}{%
@@ -10317,6 +10365,9 @@
     \fi
   }%
   {\PackageError{pst-optexp}{Unknown value '\val' for beamalign.}}
+\define@key[psset]{optexp}{ArrowInsideMinLength}{%
+  \def\POE@key@ArrowInsideMinLength{#1}%
+}%
 \psset[optexp]{%
   raytrace=true
   ,useNA=true
@@ -10337,6 +10388,7 @@
   ,beamdiv=0
   ,n=1.5
   ,skipconn=0
+  ,ArrowInsideMinLength=0.2
 }%
 %    \end{macrocode}
 %
@@ -11076,7 +11128,8 @@
 % pinhole which has three interfaces instead of one so that it can be used as
 % real spatial filter.
 %    \begin{macrocode}
-      x1 y1 x2 y2 @ABDist arrowlength ge {
+      x1 y1 x2 y2 @ABDist 
+      \POE@key@ArrowInsideMinLength\space\pst@number\psunit mul ge {
         x1 y1
         \psk@ArrowInsidePos\space 1 gt {
           /Alpha y2 y1 sub x2 x1 sub Atan def
@@ -12944,17 +12997,34 @@
 % \begin{macro}{\mirror@nodes}
 %    \begin{macrocode}
 \def\mirror@nodes{%
-   \newOptexpComp{%
-     {0 0} 
-     \ifdim\POE@key@mirrorradius pt=0pt
-       {1 0} \POE@key@mirrorwidth\space -0.5 mul dup neg refl {PlainIfc}
-     \else
-       {0 \POE@key@mirrorradius\space neg} 
-       \POE@key@mirrorwidth\space -0.5 mul dup neg 
-       refl {CurvedIfc}
-     \fi
-     1 %
-   }%
+  \ifdim\POE@key@mirrorradius pt=0pt
+    \ifx\POE@key@mirrortype\POE@str@mirrortype@semitrans
+      \newOptexpCompAmb{%
+        {0 0} {1 0} 
+        \POE@key@mirrorwidth\space -0.5 mul dup neg 
+        refl {PlainIfc}
+        {0 \POE@key@mirrordepth} {1 0} 
+        \POE@key@mirrorwidth\space -0.5 mul dup neg 
+        trans {PlainIfc}
+        \ifdim\POE@key@mirrordepth pt<0pt 12 6 roll 2 \else 1 \fi
+      \POE@key@n }%
+    \else
+      \newOptexpComp{%
+        {0 0} {1 0} 
+        \POE@key@mirrorwidth\space -0.5 mul dup neg 
+        refl {PlainIfc} 1 }%
+    \fi
+  \else
+    \newOptexpComp{%
+      {0 0} {0 \POE@key@mirrorradius\space neg} 
+      \POE@key@mirrorwidth\space -0.5 mul dup neg 
+      refl {CurvedIfc} 1 }%
+    \ifx\POE@key@mirrortype\POE@str@mirrortype@semitrans
+      \PackageWarning{pst-optexp}{%
+        Mirrortype 'semitrans' does not support curved\MessageBreak
+        mirror, falling back to 'plain' type.}%
+    \fi
+  \fi
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -13023,8 +13093,8 @@
     \ifPOE@variable
       \psarc[style=VariableMirror](! \@ht 0.4 sub 0){0.6}{-20}{20}
       \psarc[style=VariableMirror](! 0.4 \@ht sub 0){0.6}{160}{200}
-     \fi%
-     \ifx\POE@key@mirrortype\POE@str@mirrortype@piezo%
+     \fi
+     \ifx\POE@key@mirrortype\POE@str@mirrortype@piezo
        \psframe[style=PiezoMirror,
                 dimen=outer](! \@ht 4 div 0)%
                             (! \@ht -4 div \@ht 2.5 div)
@@ -13032,13 +13102,17 @@
          \psbezier(! 0 \@ht 2.5 div)%
                   (! 0 \@ht 1.5 div)%
                   (! \@ht 2 div \@ht 2 div)%
-                  (! \@ht 4 div \@ht)%
+                  (! \@ht 4 div \@ht)
        \fi
-    \else\ifx\POE@key@mirrortype\POE@str@mirrortype@extended%
+    \else\ifx\POE@key@mirrortype\POE@str@mirrortype@extended
       \psframe[style=ExtendedMirror]%
-         (! \@ht neg \POE@key@mirrordepth\space )%
-         (! \@ht 0)%
-    \fi\fi
+        (! \@ht neg \POE@key@mirrordepth\space )%
+        (! \@ht 0)
+    \else\ifx\POE@key@mirrortype\POE@str@mirrortype@semitrans
+      \psframe[style=SemitransMirror]%
+        (! \@ht neg \POE@key@mirrordepth\space )%
+        (! \@ht 0)
+    \fi\fi\fi
     \psline[linewidth=\POE@key@mirrorlinewidth]%
       (! \@ht neg \getCLWH)%
       (! \@ht \getCLWH)
