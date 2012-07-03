@@ -3483,11 +3483,20 @@
 %
 % \choitem[auto]{prismalign}{auto,center}
 % \ifENGLISH Sets the vertical alignment of the prism with respect to the
-% «reflection» node. See the following examples for explanation.
+% «reflection» node. For \opt{auto}, the prism is shifted such, that the
+% interface nodes lay on the connection between the respective reference node
+% and the «reflection» node. If the value is \opt{center}, the «reflection» node
+% coincides with the component center. See the following examples for
+% further explanation.
 % \fi
 % \ifGERMAN Wählt die vertikale Ausrichtung des Prisma bezüglich des
-% «Reflektionsknoten». Siehe folgende Beispiele zur Erklärung.
+% «Reflektionsknoten». Ist der Wert \opt{auto}, so wird das Prisma so
+% verschoben, dass die Grenzflächenknoten auf der Verbindungslinie zwischen dem
+% entsprechenden Referenzknoten und dem «Reflektionsknoten» liegen. Für
+% \opt{center} fällt der «Reflektionsknoten» mit der Komponentenmitte
+% zusammen. Siehe die folgende Beispiele zur weiteren Erklärung.
 % \fi
+%
 % \iffalse
 %<*ignore>
 % \fi
@@ -3553,9 +3562,11 @@
 %<*ignore>
 % \fi
 \begin{LTXexample}
-\begin{pspicture}(3,2)
-  \psdot(1.8,1.2)
-  \rightangleprism[beam](0,1.25)(1.8,1.2)(0,0.75){RA}
+\begin{pspicture}(3.5,2)
+  \pnode(0,2){A}\pnode(2.5,0.5){G}\pnode(0,1.5){B}
+  \begin{optexp}
+  \rightangleprism[beam, showifcnodes, showoptdots](A)(G)(B){RA}
+  \end{optexp}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -5390,8 +5401,8 @@
 % \item[\parbox{2em}{\texttt{x-y}}] Von \opt{x} bis \opt{y}, ist \opt{x} größer
 %   als \opt{y}, so wird heruntergezählt.
 % \item[\parbox{2em}{\texttt{x-}}] Von \opt{x} bis zur letzten Komponente.
-% \item[\parbox{2em}{\texttt{-y}}] Von der ersten Komponente bis \opt{y}.
-% \item[\parbox{2em}{\texttt{-}}] Verbinde alle Komponenten.
+% \item[\parbox{2em}{\texttt{\hphantom{x}-y}}] Von der ersten Komponente bis \opt{y}.
+% \item[\parbox{2em}{\texttt{\hphantom{x}-}}] Verbinde alle Komponenten.
 % \end{description}
 % \fi
 % \ifENGLISH For \Lcs{drawbeam} and \Lcs{drawwidebeam} you can also specify a
@@ -5400,8 +5411,8 @@
 % \item[\parbox{2em}{\texttt{x-y}}] From \opt{x} to \opt{y}, if \opt{x} is
 %   greater than \opt{y}, the numbers are decremented.
 % \item[\parbox{2em}{\texttt{x-}}] From \opt{x} to the last component.
-% \item[\parbox{2em}{\texttt{-y}}] From the first component to \opt{y}.
-% \item[\parbox{2em}{\texttt{-}}] Connect all components.
+% \item[\parbox{2em}{\texttt{\hphantom{x}-y}}] From the first component to \opt{y}.
+% \item[\parbox{2em}{\texttt{\hphantom{x}-}}] Connect all components.
 % \end{description}
 % \fi
 % \iffalse
@@ -5450,7 +5461,6 @@
 %   components, the nodes must be enclosed in parenthesis within the
 %   brackets. For more information about naming see \prettyref{sec:namingobj}.
 %   \fi
-
 %   \ifGERMAN Diese beiden Makros sind für Strahlverbindungen zuständig, sie
 %   akzeptieren eine variable Anzahl an Argumenten (mindestens zwei), die
 %   entweder eine ID, ein \Lkeyword{compname}, oder ein PSTricks-Knoten sein
@@ -5460,7 +5470,7 @@
 %   \fi
 % \end{ltxsyntax}
 %
-% \subsection{Raytracing}
+% \subsection{Raytracing}\label{sec:raytracing}
 % \ifENGLISH
 % The beam connection macros support two modes of tracing the beam across the
 % optical components: one is to use refractive indices and Snell's law to
@@ -5838,6 +5848,10 @@
 %</ignore>
 % \fi
 % \end{enumerate}
+%
+% \begin{optionlist}
+%   \valitem{refractiveindex}{code}\deprecatedmsg{\Lkeyword{n}}
+% \end{optionlist}
 %
 % \ifENGLISH\subsection{Initial conditions}\fi
 % \ifGERMAN\subsection{Anfangsbedingungen}\fi
@@ -8681,20 +8695,30 @@
 % \fi\label{sec:bwd-comp}
 % 
 % \ifENGLISH In this section you find a comprehensive listing of the behaviour
-% which changed in version 3.0 with respect to version 2.1. Not all changes are
-% backward compatible, you find here what you must note when upgrading and how
-% you must change old documents to work correctly with the newer version.
+% which changed in a version compared to the previous one and which is not
+% backward compatible. Here you find also information on what you must note when
+% upgrading and how you must change old documents to work correctly with the
+% newer version.
 % \fi
 % \ifGERMAN
 % In diesem Abschnitt finden Sie eine umfangreiche Auflistung aller Änderungen
-% in Version 3.0 bezüglich Version 2.1, die nicht abwärts kompatibel sind. Sie
-% finden ebenfalls Informationen was Sie bei einem Wechsel zur neuen Version
-% beachten müssen, und was sie bei älteren Dokumenten gegebenenfalls ändern
-% müssen um mit der neuen Version korrekt zu funktionieren.
+% in einer Version bezüglich der Vorgängerversion, die nicht abwärts kompatibel
+% sind. Sie finden ebenfalls Informationen was Sie bei einem Wechsel zur neuen
+% Version beachten müssen, und was sie bei älteren Dokumenten gegebenenfalls
+% ändern müssen um mit der neuen Version korrekt zu funktionieren.  \fi
+%
+%
+% \subsection{Version 3.0}
+%
+% \ifENGLISH The changes in version 3.0 compared to version 2.1 which are not
+% backward compatible.
+% \fi
+% \ifGERMAN The Änderungen in Version 3.0 gegenüber Version 2.1, die nicht
+% abwärtskompatibel sind.
 % \fi
 %
-% \ifENGLISH\subsection{General parameters}\fi
-% \ifGERMAN\subsection{Allgemeine Parameter}\fi
+% \ifENGLISH\subsubsection{General parameters}\fi
+% \ifGERMAN\subsubsection{Allgemeine Parameter}\fi
 %
 % \begin{optionlist}
 %   \optitem*[new]{namingscheme}{old, new} 
@@ -8721,16 +8745,17 @@
 %   \ifGERMAN Diese Parameter wirken sich jetzt auf alle Komponenten aus.\fi
 % \end{optionlist}
 %
-% \ifENGLISH\subsection{Beam connections}\fi
-% \ifGERMAN\subsection{Strahlverbindungen}\fi
+% \ifENGLISH\subsubsection{Beam connections}\fi
+% \ifGERMAN\subsubsection{Strahlverbindungen}\fi
 %
 % \ifENGLISH
 % In version 2.x, beam connections could be internal, that is the connections
-% were specified together with the compent (\Lkeyword{beam} or \Lkeyword*{conn}), or external
-% with an additional call of \Lcs{drawbeam}. The main reason for internal
-% connections was the aesthetic aspect of drawing the beam behind the component,
-% but also convenience played a role. Drawing the beam behind the component is
-% possible with layering (\prettyref{sec:layers}) since 3.0.
+% were specified together with the compent (\Lkeyword{beam} or
+% \Lkeyword*{conn}), or external with an additional call of \Lcs{drawbeam}. The
+% main reason for internal connections was the aesthetic aspect of drawing the
+% beam behind the component, but also convenience played a role. Drawing the
+% beam behind the component is possible with layering (\prettyref{sec:layers})
+% since 3.0.
 %
 % Some of the variants of internal beam connections can be used also in 3.0:
 % \fi
@@ -8919,6 +8944,7 @@
 %   \item Added option \opt{optboxsize}\see{cmd:optbox}
 %   \item Extended option \opt{detsize}\see{cmd:optdetector}
 %   \item Added style \opt{DetectorStyle}\see{cmd:optdetector}
+%   \item Removed deprecated \cs{detector}, use \cs{optdetector}\see{cmd:optdetector}
 %   \item Extended option \opt{doveprismsize}\see{cmd:doveprism}
 %   \item Added style \opt{Polarization}\see{cmd:polarization}
 %   \item Deprecated option \opt{pollinewidth}\see{cmd:polarization}
@@ -8933,6 +8959,7 @@
 %   \item Renamed \opt{optgridtype} to \opt{gratingtype}\see{cmd:optgrating}
 %   \item Renamed \opt{optgridlinewidth} to \opt{gratinglinewidth}\see{cmd:optgrating}
 %   \item Added option \opt{prismalign}\see{cmd:optprism}
+%   \item Modified faulty alignment of \cs{rightangleprism}\see{cmd:rightangleprism}
 %   \item Extended option \opt{optampsize}\see{cmd:optamp}
 %   \item Extended option \opt{optmzmsize}\see{cmd:optmzm}
 %   \item Added option \opt{polcontroltype}\see{cmd:polcontrol}
@@ -8957,8 +8984,7 @@
 %   \item Modified \opt{endbox} to affect all components\see{sec:positioning}
 %   \item Extended \opt{position} by values \opt{start} and \opt{end}\see{sec:positioning}
 %   \item Extended \opt{abspos} by values \opt{start} and \opt{end}\see{sec:positioning}
-%   \item Deprecated option \opt{refractiveindex}\see{sec:drawbeam}
-%   \item Renamed option \opt{refractiveindex} to \opt{n}\see{sec:drawbeam}
+%   \item Deprecated option \opt{refractiveindex}\see{prm:refractiveindex}
 %   \item Deprecated option \opt{conn}\see{sec:drawbeam}
 %   \end{release}
 %   \begin{release}{2.1}{2009-11-05}
@@ -12764,7 +12790,7 @@
 % Show some special dots for debugging
 %    \begin{macrocode}
   \ifPOE@debug@showoptdots
-    \ifPOE@backlayer
+    \ifPOE@frontlayer
       \psdot[linecolor=red](\oenodeCenter{})
       \psdot[linecolor=red, dotstyle=x, dotscale=1.5](\oenodeLabel{})
       \psdot[linecolor=black](\oenodeRefA{})
@@ -12776,7 +12802,7 @@
     \fi
   \fi
   \ifPOE@debug@showifcnodes
-    \ifPOE@backlayer
+    \ifPOE@frontlayer
       \POE@ifcnodes[style=IfcNodeStyle]
     \fi
   \fi
