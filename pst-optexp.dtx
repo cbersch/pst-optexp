@@ -11021,8 +11021,8 @@
 %    \end{macrocode}
 % This is the /Line definition from \opt{pstricks-add}, adapted to the beam path
 % structure which includes the boolean values to indicate if a line is drawn, or
-% if we use moveto. There was no way to patch the original definition and avoid
-% duplicating the code.
+% if we use moveto. There was no way to patch the original definition to account
+% for the moveto parts and avoid duplicating the code.
 %    \begin{macrocode}
   counttomark 3 div cvi /N ED
   (\psk@ArrowInside) length 0 gt { 
@@ -11044,32 +11044,40 @@
     N {
       6 copy pop 
       /y1 ED /x1 ED pop /y2 ED /x2 ED /draw ED
-      x1 y1
-      \psk@ArrowInsidePos\space 1 gt {
-        /Alpha y2 y1 sub x2 x1 sub Atan def
-        /ArrowPos \psk@ArrowInsideOffset\space def
-        /dArrowPos \psk@ArrowInsidePos\space abs def
-        \psk@ArrowInsideNo\space cvi {
-          /ArrowPos ArrowPos dArrowPos add def
-          x1 Alpha cos ArrowPos mul add
-          y1 Alpha sin ArrowPos mul add
-          6 index { ArrowInside } if
-          pop pop
-        } repeat
-      }{
-        /ArrowPos \psk@ArrowInsideOffset\space def
-        /dArrowPos \psk@ArrowInsideNo 1 gt {%
-          1.0 \psk@ArrowInsideNo 1.0 add div
-        }{\psk@ArrowInsidePos } ifelse def
+%    \end{macrocode}
+% Check for line segment length and draw the arrow only, if the segment is long
+% enough. This is in first place to avoid drawing an inside arrow for the
+% pinhole which has three interfaces instead of one so that it can be used as
+% real spatial filter.
+%    \begin{macrocode}
+      x1 y1 x2 y2 @ABDist arrowlength ge {
+        x1 y1
+        \psk@ArrowInsidePos\space 1 gt {
+          /Alpha y2 y1 sub x2 x1 sub Atan def
+          /ArrowPos \psk@ArrowInsideOffset\space def
+          /dArrowPos \psk@ArrowInsidePos\space abs def
           \psk@ArrowInsideNo\space cvi {
             /ArrowPos ArrowPos dArrowPos add def
-            x2 x1 sub ArrowPos mul x1 add
-            y2 y1 sub ArrowPos mul y1 add
+            x1 Alpha cos ArrowPos mul add
+            y1 Alpha sin ArrowPos mul add
             6 index { ArrowInside } if
             pop pop
           } repeat
-      } ifelse
-      pop pop
+        }{
+          /ArrowPos \psk@ArrowInsideOffset\space def
+          /dArrowPos \psk@ArrowInsideNo 1 gt {%
+            1.0 \psk@ArrowInsideNo 1.0 add div
+          }{\psk@ArrowInsidePos } ifelse def
+            \psk@ArrowInsideNo\space cvi {
+              /ArrowPos ArrowPos dArrowPos add def
+              x2 x1 sub ArrowPos mul x1 add
+              y2 y1 sub ArrowPos mul y1 add
+              6 index { ArrowInside } if
+              pop pop
+            } repeat
+        } ifelse
+        pop pop
+      } if
       draw {Lineto}{moveto} ifelse
     } repeat
   }{
