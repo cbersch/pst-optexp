@@ -10,7 +10,7 @@ g = pat.findall(data)
 
 pat = re.compile(r'\\item\s*(.*?)(?:\\see{[^}]*})?$', re.MULTILINE)
 
-with open("Changes.automatic", "w") as f:
+with open("Changes", "w") as f:
     for release in g:
         f.write("%-5s%s\n" % (release[0], release[1]))
 

@@ -66,6 +66,9 @@ $(PACKAGE)-quickref.pdf: $(PACKAGE)-quickref.tex
 $(PACKAGE).sty $(PACKAGE).pro $(PACKAGE).tex $(PACKAGE).ist: $(PACKAGE).ins $(PACKAGE).dtx
 	tex $<
 
+Changes: Changes.py $(PACKAGE).dtx
+	python $<
+
 arch : Changes
 	zip $(ARCHNAME).zip $(ARCHFILES)
 
