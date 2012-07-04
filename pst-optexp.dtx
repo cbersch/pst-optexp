@@ -2294,6 +2294,9 @@
 %</ignore>
 % \fi
 %
+% \styleitem{VariableStyle} 
+% \ifGERMAN Der Stil der Pfeile für verstellbare componenten (\Lcs{mirror} und \Lcs{optgrating}).\fi
+% \ifENGLISH The style of the arrows of variable components (\Lcs{optgrating} and \Lcs{mirror}).\fi
 % \end{stylelist}
 %
 % \begin{optionlist}
@@ -3182,12 +3185,12 @@
 % \ifGERMAN
 % Zeichnet einen verstellbaren Spiegel, der mit zwei zusätzlichen gekrümmten
 % Pfeilen an beiden Seiten angedeutet wird. Das Aussehen, inklusive der Pfeile,
-% wird von \Lstyle{VariableMirror} vorgegeben.
+% wird von \Lstyle{VariableStyle} vorgegeben.
 % \fi
 % \ifENGLISH
 % Draw an adjustable mirror which has two additional curved arrows on both
 % sides. The appearance including the arrow types is determined by
-% \Lstyle{VariableMirror}.
+% \Lstyle{VariableStyle}.
 % \fi
 % \iffalse
 %<*ignore>
@@ -3268,10 +3271,6 @@
 % \ifENGLISH
 % This style defines the appearance of the \opt{semitrans} mirror.
 % \fi
-%
-% \styleitem{VariableMirror} 
-% \ifGERMAN Der Stil der Pfeiles des verstellbaren Spiegels.\fi
-% \ifENGLISH The style of the arrows of the variable mirror.\fi
 % \end{stylelist}
 % 
 % \ifGERMAN\section{Strahlteiler}\fi
@@ -6291,6 +6290,39 @@
 %     \addtostylemsg{Beam}
 %   \valitem{newBeam}{list}
 %     \newstylemsg{Beam}
+%
+%   \psnumitem[0.2]{ArrowInsideMinLength}
+%   \ifGERMAN 
+%   \Lcs*{draw*beam} verwendet auch die Option \Lkeyword*{ArrowInside} aus
+%   \LPack{pstricks-add}. In dem Fall wird für alle Strahlsegmente ein Pfeil
+%   gezeichnet, was häufig für die internen, kurzen Strahlengänge unerwünscht
+%   ist. Mit \Lkeyword{ArrowInsideMinLength} kann angegeben werden ab welcher
+%   Mindestlänge eines Strahlsegmentes die Pfeil gezeichnet werden. In dem
+%   folgenden Beispiel ist der Wert so gewählt, dass nur der untere interne
+%   Strahl einen Pfeil hat (siehe auch \prettyref{ex:czerny-turner}).
+%   \fi
+%   \ifENGLISH 
+%   \Lcs*{draw*beam} uses also the option \Lkeyword*{ArrowInside} aus
+%   \LPack{pstricks-add}. In this case the arrows would be drawn for every beam
+%   segment, which is often undesired for the internal, short beam
+%   paths. \Lkeyword{ArrowInsideMinLength} sets a minimum segment length, below
+%   which noch internal arrows are drawn. In the following example the value is
+%   selected such that only the lower internal beam has an arrow (see also
+%   \prettyref{ex:czerny-turner}).
+%   \fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[morekeywords={[21]{ArrowInsideMinLength}}]
+\begin{pspicture}(3,2)
+  \optprism(0,1)(2,1)(3,0.5)
+  \drawwidebeam[beamwidth=0.4, ArrowInside=->, ArrowInsideMinLength=0.5, arrowscale=1.5, raytrace=false]{(0,1)}{}{(3,0.5)}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
 % \end{optionlist}
 %
 % \ifGERMAN\section{Aufgeweitete Strahlen}\fi
@@ -7925,52 +7957,34 @@
 % \iffalse
 %<*ignore>
 % \fi
+\enlargethispage{1cm}
 \begin{LTXexample}[pos=t, caption={caption}]
-\begin{pspicture}(10.4,1.7)
-\newpsobject{mybox}{optbox}{position=end, label=0, optboxwidth=1.2}
-\addtopsstyle{Beam}{linewidth=2\pslinewidth}
-\pnode(1.2,1){Start}\pnode(9.2,1){CCD}
-\begin{optexp}
-\mybox(CCD)(Start){Laser}\mybox(Start)(CCD){CCD}
-\polarization[poltype=perp,abspos=0.5](Start)(CCD)
-\optretplate[abspos=1](Start)(CCD){$\nicefrac{\lambda}{2}$}
-\lens[lens=0.4 0.4 0.5,abspos=2](Start)(CCD){$L_1$}
-\lens[abspos=4](Start)(CCD){$L_2$}
-\optplate[abspos=6, platelinewidth=3\pslinewidth](Start)(CCD){SLM}
-\optplate[abspos=6.5, labelangle=180](Start)(CCD){PF}
-\polarization[abspos=6.7](Start)(CCD)
-\lens[abspos=7](Start)(CCD){$L_3$}
-\drawbeam{1}{2}
+\begin{pspicture}(0.1,0.4)(10,4.5)
+  \psset[optexp]{lens=1 1 0.7, loadbeampoints}
+  \pnode(2,4){L}\pnode([Xnodesep=4]L){M}
+  \pnode([Xnodesep=1.5]M){IRSpec}\pnode([offset=-2.5]M){OSA}
+  \begin{optexp}
+  \optbox[position=start, innerlabel, optboxwidth=1.8](L)(M){fs laser}
+  \lens[abspos=1](L)(M)
+  \optbox[abspos=1.85, optboxsize=0.7 0.15, fillstyle=solid, fillcolor=black](L)(M){sample}
+  \lens[abspos=2.7](L)(M)
+  \mirror[labelangle=45](L)(M)(OSA){flip mirror}
+  \optbox[position=end, optboxsize=3.2 1, innerlabel, compshift=-0.2](M)(IRSpec){IR spectrometer}
+  \lens[abspos=1](M)(OSA)
+  \optplane([offset=-1.5]M)
+  \optfiber[fiberloopradius=0.2, fiberloopsep=0.2, label=1, newFiber={linewidth=1.5\pslinewidth}]([offset=-1.5]M)(OSA){MM fiber}
+  \optbox[position=end, innerlabel, optboxwidth=1.1](M)(OSA){OSA}
+  \newpsstyle{Beam}{linestyle=none, fillcolor=red, fillstyle=solid, raytrace=false}
+  \drawwidebeam[beamwidth=0.2, stopinside]{1-2}
+  \drawwidebeam[beamdiv=-25]{2-3}
+  \drawwidebeam[loadbeampoints=false, beamdiv=25]{3-4}
+  \drawwidebeam[startinside]{4-5}
+  \drawwidebeam[savebeampoints=false, beamalign=abs]{5-6}
+  \drawwidebeam[stopinside]{5}{7}
+  \drawwidebeam[beamdiv=-25]{7-8}
 \end{optexp}
 \end{pspicture}
 \end{LTXexample}
-\bigskip
-
-\begin{LTXexample}[pos=t, caption={caption}]
-\begin{pspicture}(10.4,1.7)
-\newpsobject{mybox}{optbox}{position=end, label=0, optboxwidth=1.2}
-\pnode(1.2,1){Start}\pnode(9.2,1){CCD}
-\begin{optexp}
-\mybox(CCD)(Start){Laser}
-\polarization[poltype=perp,abspos=0.5](Start)(CCD)
-\optretplate[abspos=1](Start)(CCD){$\nicefrac{\lambda}{2}$}
-\lens[lens=0.4 0.4 0.5,abspos=2](Start)(CCD){$L_1$}
-\pinhole[phwidth=0.05, abspos=2.35, labelangle=180](Start)(CCD){iris}
-\lens[abspos=4](Start)(CCD){$L_2$}
-\optplate[abspos=6,platelinewidth=3\pslinewidth](Start)(CCD){SLM}
-\optplate[abspos=6.5,labelangle=180](Start)(CCD){PF}
-\lens[abspos=7](Start)(CCD){$L_3$}\mybox(Start)(CCD){CCD}
-\polarization[abspos=6.7, polsize=0.8](Start)(CCD)
-\psset{loadbeampoints}
-\addtopsstyle{Beam}{fillstyle=solid,fillcolor=green, opacity=0.3}
-\drawwidebeam[beamwidth=0.1, stopinside]{1}{4}
-\drawwidebeam[beamdiv=-20]{4}{6}
-\drawwidebeam[stopinside]{6-9}
-\drawwidebeam[beamdiv=-30]{9-10}
-\end{optexp}
-\end{pspicture}
-\end{LTXexample}
-\bigskip
 
 \begin{LTXexample}[pos=t, caption={caption}]
 \begin{pspicture}(-4.2,-1)(3,3)
@@ -7978,7 +7992,7 @@
 \newpsstyle{Beam}{linewidth=2\pslinewidth, linecolor=red!90!black}
 \begin{optexp}
   \optbox[optboxwidth=2.2, labeloffset=0, position=start](LOut)(Grat){diode laser}
-  \mirror[variable](Grat)(Mvar)(Grat){M$_\mathrm{var}$}
+  \mirror[variable, label=0.5](Grat)(Mvar)(Grat){M$_\mathrm{var}$}
   \optretplate[position=0.3](LOut)(Grat){$\nicefrac{\lambda}{4}$}
   \optgrating(LOut)(Grat)(Out){grating}
   \drawbeam[arrows=->]{1}{3}{4}{(Out)}
@@ -8004,35 +8018,53 @@
 \drawbeam{-}
 \end{pspicture}
 \end{LTXexample}
+\bigskip
 
+\enlargethispage{2cm}
 \begin{LTXexample}[pos=t, caption={caption}]
-\begin{pspicture}(0.1,0.4)(10,5)
-  \psset[optexp]{lens=1 1 0.7, loadbeampoints}
-  \pnode(2,4){L}\pnode([Xnodesep=4]L){M}
-  \pnode([Xnodesep=1.5]M){IRSpec}\pnode([offset=-2.5]M){OSA}
-  \begin{optexp}
-  \optbox[position=start, innerlabel](L)(M){fs laser}
-  \lens[abspos=1](L)(M)
-  \optbox[abspos=1.85, optboxsize=0.7 0.15, fillstyle=solid, fillcolor=black](L)(M){sample}
-  \lens[abspos=2.7](L)(M)
-  \mirror[labelangle=45](L)(M)(OSA){flip mirror}
-  \optbox[position=end, optboxsize=3 1, innerlabel, compshift=-0.2](M)(IRSpec){IR spectrometer}
-  \lens[abspos=1](M)(OSA)
-  \optplane([offset=-1.5]M)
-  \newpsstyle{Fiber}{linewidth=2\pslinewidth}
-  \optfiber[fiberloopradius=0.2, fiberloopsep=0.2, label=1]([offset=-1.5]M)(OSA){MM fiber}
-  \optbox[position=end, innerlabel, optboxwidth=1.1](M)(OSA){OSA}
-  \newpsstyle{Beam}{linestyle=none, fillcolor=red, fillstyle=solid, raytrace=false}
-  \drawwidebeam[beamwidth=0.2, stopinside]{1-2}
-  \drawwidebeam[beamdiv=-25]{2-3}
-  \drawwidebeam[loadbeampoints=false, beamdiv=25]{3-4}
-  \drawwidebeam[startinside]{4-5}
-  \drawwidebeam[savebeampoints=false, beamalign=abs]{5-6}
-  \drawwidebeam[stopinside]{5}{7}
-  \drawwidebeam[beamdiv=-25]{7-8}
+\begin{pspicture}(10.4,1.7)
+\pnode(1.2,1){Start}\pnode(9.2,1){CCD}
+\begin{optexp}
+\optbox[position=end, label=0, optboxwidth=1.2](CCD)(Start){Laser}
+\optbox[position=end, label=0, optboxwidth=1.2](Start)(CCD){CCD}
+\polarization[poltype=perp,abspos=0.5](Start)(CCD)
+\optretplate[abspos=1](Start)(CCD){$\nicefrac{\lambda}{2}$}
+\lens[lens=0.4 0.4 0.5,abspos=2](Start)(CCD){$L_1$}
+\lens[abspos=4](Start)(CCD){$L_2$}
+\optplate[abspos=6, platelinewidth=3\pslinewidth](Start)(CCD){SLM}
+\optplate[abspos=6.5, labelangle=180](Start)(CCD){PF}
+\polarization[abspos=6.7](Start)(CCD)
+\lens[abspos=7](Start)(CCD){$L_3$}
+\drawbeam[linewidth=2\pslinewidth]{1}{2}
 \end{optexp}
 \end{pspicture}
 \end{LTXexample}
+\medskip
+
+\begin{LTXexample}[pos=t, caption={caption}]
+\begin{pspicture}(10.4,1.7)
+\pnode(1.2,1){Start}\pnode(9.2,1){CCD}
+\begin{optexp}
+\optbox[position=start, label=0, optboxwidth=1.2](Start)(CCD){Laser}
+\polarization[poltype=perp,abspos=0.5](Start)(CCD)
+\optretplate[abspos=1](Start)(CCD){$\nicefrac{\lambda}{2}$}
+\lens[lens=0.4 0.4 0.5,abspos=2](Start)(CCD){$L_1$}
+\pinhole[phwidth=0.05, abspos=2.35, labelangle=180](Start)(CCD){iris}
+\lens[abspos=4](Start)(CCD){$L_2$}
+\optplate[abspos=6,platelinewidth=3\pslinewidth](Start)(CCD){SLM}
+\optplate[abspos=6.5,labelangle=180](Start)(CCD){PF}
+\lens[abspos=7](Start)(CCD){$L_3$}
+\optbox[position=end, label=0, optboxwidth=1.2](Start)(CCD){CCD}
+\polarization[abspos=6.7, polsize=0.8](Start)(CCD)
+\addtopsstyle{Beam}{fillstyle=solid, fillcolor=green!40!white, loadbeampoints}
+\drawwidebeam[beamwidth=0.1, stopinside]{1}{4}
+\drawwidebeam[beamdiv=-20]{4}{6}
+\drawwidebeam[stopinside]{6-9}
+\drawwidebeam[beamdiv=-30]{9-10}
+\end{optexp}
+\end{pspicture}
+\end{LTXexample}
+\bigskip
 
 %^^A An idea from <http://arxiv.org/abs/1112.5270>
 \enlargethispage{3cm}
@@ -8149,8 +8181,7 @@
   \drawbeam{LO}{BS}{L1}{Det1}
   \drawbeam[beaminsidefirst]{BS}{L2}{Det2}
 \end{optexp}
-\cnodeput([Xnodesep=0.5, offset=-0.5]\oenodeExt{Det1}|\oenodeExt{Det2})%
-           {M}{\rule{3mm}{1pt}}
+\cnodeput[framesep=5pt]([Xnodesep=0.5, offset=-0.5]\oenodeExt{Det1}|\oenodeExt{Det2}){M}{\rule{2.5mm}{1pt}}
 \psset{arrows=<-, arrowscale=1.5, arrowinset=0}
 \nccurve[angleA=90]{M}{\oenodeExt{Det1}}
 \nccurve[angleA=180, angleB=-90]{M}{\oenodeExt{Det2}}
@@ -8161,6 +8192,7 @@
 \begin{LTXexample}[pos=t, caption={caption}]
 \begin{pspicture}(-0.2,0)(9,5)
 \makeatletter
+\newOptexpDipole{LCLV}{}
 \def\LCLV@nodes{%
   \newOptexpComp{ {-0.12 0} {0 1} -0.5 0.5 trans {PlainIfc}
                   {0.15 0} {0 1} -0.5 0.5 trans {PlainIfc} \POE@key@n}%
@@ -8170,7 +8202,7 @@
   \psframe[fillstyle=solid,fillcolor=gray!50,dimen=outer](0,-0.5)(0.15,0.5)
 }%
 \makeatother
-\newOptexpDipole{LCLV}{}\psset{lens=1.2 0 1.2, n=1.72}
+\psset[optexp]{lens=1.2 0 1.2, n=1.72}
 \addtopsstyle{Beam}{fillstyle=solid, fillcolor=green, opacity=0.3}
 \pnode(2.4,1){BS1}\pnode([offset=3]BS1){M1}
 \pnode([Xnodesep=5.5]M1){PP}\pnode(PP|BS1){BS2}
@@ -8296,56 +8328,52 @@
 \end{LTXexample}
 \bigskip
 
-\begin{LTXexample}[pos=t, caption={caption}]
-\begin{pspicture}(0,-1)(8,4)
+\begin{LTXexample}[pos=t, caption={caption}, label={ex:czerny-turner}, linerange={1-19,24-24}]
+\begin{pspicture}(0,-1.5)(8,4)
 \psframe[fillstyle=solid,fillcolor=gray!90,linestyle=none](0,-1)(8.5,4)
-\addtopsstyle{OptComp}{linecolor=white}\newpsstyle{Beam}{}
+\addtopsstyle{OptComp}{linecolor=white}
+\newpsstyle{Beam}{ArrowInside=->, linejoin=2, arrowscale=1.3, arrowinset=0}
 \addtopsstyle{ExtendedMirror}{hatchcolor=white, hatchsep=0.5\pslinewidth}
 \pnode(0,3){A}\pnode(8,3){B}\pnode(3,1.5){C}\pnode(8,0){D}\pnode(0,0){E}%
-\psset{linewidth=1.5\pslinewidth, mirrorradius=13,  mirrorwidth=1.5, gratingwidth=1.5, mirrortype=extended, phwidth=0.07, outerheight=1.5}%
+\psset{linewidth=1.5\pslinewidth, mirrorradius=13,  mirrorwidth=1.5, gratingwidth=1.3, mirrortype=extended, phwidth=0.1, outerheight=1.5}%
 \begin{optexp}
   \pinhole[position=0.2](A)(B)%
   \mirror(A)(B)(C)
-  \optgrating[reverse, angle=15](B)(C)(D)
+  \optgrating[reverse, angle=15, variable](B)(C)(D)
   \mirror(C)(D)(E)
   \pinhole[position=0.8](D)(E)
-  \drawwidebeam[ArrowInside=->, beamwidth=0.2, linecolor=white,
-                  beamdiv=0.1 8 0.2 mul atan neg 2 mul]{(A)}{1-3}
+  \drawwidebeam[ArrowInsidePos=0.3, beamwidth=0.2, linecolor=white, beamdiv=-7.15]{(A)}{1-3}
   \psset{loadbeampoints, savebeampoints=false}%
-  \drawwidebeam[linecolor=green!60!white]{3-5}{(E)}
-  \drawwidebeam[beamangle=3, linecolor=blue!60!white]{3-6}
-  \drawwidebeam[beamangle=-3, linecolor=red!60!white]{3-6}
+  \drawwidebeam[ArrowInsidePos=0.6, beamangle=3, linecolor=blue!60!white]{3-6}
+  \drawwidebeam[ArrowInsidePos=0.7, linecolor=green!60!white, arrows=->, ArrowInsideMinLength=2]{3-5}{(E)}
+  \drawwidebeam[ArrowInsidePos=0.8, beamangle=-3, linecolor=red!60!white]{3-6}
 \end{optexp}
+\rput[lb](0,-1.5){\footnotesize
+  \ifGERMAN Angepasst von \fi
+  \ifENGLISH Adapted from \fi
+  \url{http://de.wikipedia.org/w/index.php?title=Datei:Czerny-turner.png}}
 \end{pspicture}
 \end{LTXexample}
 
 \begin{LTXexample}[pos=t, caption={caption}]
 \begin{pspicture}(0,0.7)(9.4,3.3)
   \psset[optexp]{couplertype=rectangle, fiber=none, detsize=0.5 0.6}
-  \newpsobject{laser}{optbox}{optboxsize=1.5 0.6, innerlabel,position=start}
-  \pnode(1.5,3){L3}\pnode(1.5,2){L2}\pnode(1.5,1){L1}
-  \pnode(7,3){D3}\pnode(7,2){D2}\pnode(7,1){D1}
-  \laser(L1)(D1){Laser 1}\laser(L2)(D2){Laser 2}\laser(L3)(D3){Laser 3}
-  \psset[optexp]{position=0.2}
-  \wdmsplitter[coupleralign=b](L1)(D2)(D1)
-  \wdmsplitter(L2)(D3)(D1)
-  \wdmsplitter[coupleralign=t](L3)(D3)(D2)
-  \psset[optexp]{position=0.8}
-  \wdmcoupler[coupleralign=b](L2)(L1)(D1)
-  \wdmcoupler(L3)(L1)(D2)
-  \wdmcoupler[coupleralign=t](L3)(L2)(D3)
-  \optdetector[label=0.4 90 l](L1)(D1){Detector 1}
-  \optdetector[label=0.4 90 l](L2)(D2){Detector 2}
-  \optdetector[label=0.4 90 l](L3)(D3){Detector 3}
-  \drawfiber[linecolor=blue]{1}{4}{9}
-  \drawfiber[linecolor=blue, startnode=N]{4}{8}
-  \drawfiber[linecolor=green, stopnode=1]{2}{5}{9}
-  \drawfiber[linecolor=green, stopnode=2]{5}{7}
-  \drawfiber[linecolor=red]{3}{6}{7}
-  \drawfiber[linecolor=red, startnode=2]{6}{8}
-  \drawfiber[linecolor=cyan]{9}{12}
-  \drawfiber[linecolor=magenta]{8}{11}
-  \drawfiber[linecolor=yellow]{7}{10}
+  \pnode(1.5,0){L}\pnode(7,0){D}
+  \multido{\i=1+1}{3}{%
+    \optbox[optboxsize=1.5 0.6, innerlabel,position=start](L|0,\i)(D|0,\i){Laser \i}
+    \wdmsplitter[position=0.2](L|0,\i)(D|0,\i)(D|0,\i)
+    \wdmcoupler[position=0.8](L|0,\i)(L|0,\i)(D|0,\i)
+    \optdetector[label=0.4 90 l](L|0,\i)(D|0,\i){Detector \i}
+  }%
+  \drawfiber[linecolor=blue, startnode=N]{1}{2}{7}
+  \drawfiber[linecolor=blue]{2}{11}
+  \drawfiber[linecolor=green, stopnode=1]{5}{6}{11}
+  \drawfiber[linecolor=green, stopnode=2]{6}{3}
+  \drawfiber[linecolor=red]{9}{10}{3}
+  \drawfiber[linecolor=red, startnode=2]{10}{7}
+  \drawfiber[linecolor=cyan]{11}{12}
+  \drawfiber[linecolor=magenta]{7}{8}
+  \drawfiber[linecolor=yellow]{3}{4}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -8982,7 +9010,7 @@
 %   \item Deprecated option \opt{pollinewidth}\see{cmd:polarization}
 %   \item Removed option \opt{polwidth}\see{cmd:polarization}
 %   \item Removed option \opt{pol}\see{cmd:polarization}
-%   \item Added style \opt{VariableMirror}\see{cmd:mirror}
+%   \item Added style \opt{VariableStyle}\see{cmd:mirror}
 %   \item Added mirror type \opt{semitrans}\see{prm:mirrortype}
 %   \item Renamed \cs{optgrid} to \cs{optgrating}\see{cmd:optgrating}
 %   \item Renamed \opt{optgridwidth} to \opt{gratingwidth}\see{cmd:optgrating}
@@ -9328,7 +9356,7 @@
   linestyle=none, hatchwidth=0.5\POE@key@mirrorlinewidth,
   hatchsep=1.4\POE@key@mirrorlinewidth, fillstyle=hlines
 }%
-\newpsstyle{VariableMirror}{%
+\newpsstyle{VariableStyle}{%
   linewidth=0.8\pslinewidth, arrowinset=0, arrowscale=0.8, arrows=<->
 }
 \newpsstyle{SemitransMirror}{linestyle=none, fillstyle=solid,fillcolor=black!30}%
@@ -13106,7 +13134,7 @@
       (! \@ht \getCLWH)
   \fi\fi
   \ifPOE@variable
-    \psarc[style=VariableMirror]%
+    \psarc[style=VariableStyle]%
       (! \POE@key@mirrorwidth\space 0.5 mul 0.4 sub 
          \ifdim\POE@key@mirrorradius pt=0pt
            0
@@ -13114,7 +13142,7 @@
            \POE@key@mirrorradius\space dup \POE@dict{sign} neg exch
            \POE@key@mirrorwidth\space  0.5 mul \POE@dict{capHeight} mul
          \fi){0.6}{-20}{20}
-    \psarc[style=VariableMirror]%
+    \psarc[style=VariableStyle]%
       (! 0.4 \POE@key@mirrorwidth\space 0.5 mul sub
          \ifdim\POE@key@mirrorradius pt=0pt
            0
@@ -13502,6 +13530,14 @@
       }%
     }%
   \fi\fi
+  \ifPOE@variable
+    \psarc[style=VariableStyle]%
+      (! \POE@key@gratingwidth\space 0.5 mul 0.4 sub
+         \POE@key@gratingheight\space 0.5 mul){0.6}{-20}{20}
+    \psarc[style=VariableStyle]%
+      (! 0.4 \POE@key@gratingwidth\space 0.5 mul sub
+         \POE@key@gratingheight\space 0.5 mul){0.6}{160}{200}
+   \fi
 \ignorespaces}%
 %    \end{macrocode}
 % \end{macro}
@@ -16890,8 +16926,7 @@ tx@OptexpDict begin
   dup xcheck {
     exch pop exec
   } {
-    nametostr exch nametostr NodeName
-    @GetCenter
+    nametostr exch nametostr exch GetIfcCenter
   } ifelse
 } bind def
 %    \end{macrocode}
