@@ -128,8 +128,6 @@
 \makeatother
 \colorlet{sectioncolor}{DOrange}
 \addtokomafont{sectioning}{\color{sectioncolor}}
-%%\addtokomafont{subsection}{\Large}
-%%\addtokomafont{subsubsection}{\Large}
 \usepackage[automark,nouppercase]{scrpage2}
 \pagestyle{scrheadings}
 \clearscrheadings
@@ -141,7 +139,6 @@
 \setheadsepline{.4pt}[\color{DOrange}]
 \setheadwidth[0pt]{text}
 \setfootwidth[0pt]{text}
-%
 \makeatletter
 \patchcmd{\l@chapter}{1.5em}{2em}{}{}
 \renewcommand*\l@section{\bprot@dottedtocline{1}{1.5em}{3.0em}}
@@ -149,48 +146,14 @@
 \newrobustcmd*{\fnurl}[1][]{\hyper@normalise\ltd@fnurl{#1}}
 \def\ltd@fnurl#1#2{\footnote{#1\hyper@linkurl{\Hurl{#2}}{#2}}}
 \makeatother
-%
 \usepackage{csquotes}
 \MakeAutoQuote{«}{»}
-% spot is used in ltxdockit.sty
+%^^A spot is used in ltxdockit.sty
 \colorlet{spot}{sectioncolor}
 \newpsstyle{Refline}{linecolor=gray!70}
 \newpsstyle{CenterNode}{linecolor=blue, dotstyle=x, dotscale=1.5}
 \colorlet{Refline}{gray!70}
-\makeatletter
-% is identical to the changelog definition in ltxdockit.sty, but 
-% does also set \parsep to 0pt.
-\renewenvironment*{changelog}
-  {\list{}{%
-     \setlength{\leftmargin}{0pt}%
-     \setlength{\itemsep}{0pt}%
-     \renewcommand*{\makelabel}[1]{##1\hss}%
-     \raggedright\changelogfont}%
-   \def\release##1##2{%
-     \@release{##1}{##2}%
-     \list{}{%
-       \setlength{\leftmargin}{1.5em}%
-       \setlength{\itemindent}{-1.5em}%
-       \setlength{\itemsep}{0pt}%
-       \setlength{\parsep}{0pt}%
-     }%
-     \samepage
-     \begingroup
-     \def\item{\endgroup\item\@itempenalty\z@}}%
-   \def\endrelease{\endlist}%
-   \def\@release##1##2{%
-     \begingroup
-     \changeloglabelfont
-     \item\relax
-     \ltd@pdfbookmark{##1}{##1 (##2)}%
-     ##1\quad##2\par\nobreak
-     \endgroup}
-   \def\see##1{%
-     \leaders\hbox{$\m@th\mkern4.5mu\hbox{.}\mkern4.5mu$}%
-     \hfill\makebox[3em][l]{\ref{##1}}}}
-  {\endlist}
-\makeatother
-% Fonts definitions used in ltxdockit.sty
+%^^A Fonts definitions used in ltxdockit.sty
 \renewcommand*{\verbatimfont}{\ttfamily}
 \renewcommand*{\displayverbfont}{\ttfamily}
 \renewcommand*{\marglistfont}{\spotcolor\sffamily\small}
@@ -202,8 +165,8 @@
 \renewcommand*{\changeloglabelfont}{\spotcolor\sffamily\bfseries}
 
 \makeatletter
-% an idea from GL to provide links inside the listings to the pst-optexp commands: 
-% <https://groups.google.com/groups/search?as_umsgid=4d89ee49%240%2418590%24426a74cc%40news.free.fr>
+%^^A an idea from GL to provide links inside the listings to the pst-optexp commands: 
+%^^A <https://groups.google.com/groups/search?as_umsgid=4d89ee49%240%2418590%24426a74cc%40news.free.fr>
 \providerobustcmd*\ifrefundefined [1]{%
   \begingroup%
     \csname @safe@activestrue\endcsname%
@@ -2548,6 +2511,20 @@
 % \iffalse
 %</ignore>
 % \fi
+%
+% \boolitem[false]{thicklens}
+% \ifENGLISH This option was necessary up to version 2.1 in order to draw a
+% thick lens of width \Lkeyword{lenswidth} instead of using the calculate lens
+% width. This option is superfluous as of version 3.0, setting
+% \Lkeyword{lenswidth} to a positive value automatically switches to draw a
+% thick lens.
+% \fi
+% \ifGERMAN Diese Option was bis zu Version 2.1 notwendig um dicke Linsen der
+% Breite \Lkeyword{lenswidth} zu zeichnen, anstatt die berechnete Breite zu
+% verwenden. Seit Version 3.0 ist diese Option überflüssig, da dicke Linsen
+% gezeichnet werden, sobald \Lkeyword{lenswidth} auf einen positiven Wert
+% gesetzt wird.
+% \fi
 % \end{optionlist}
 % 
 % \ifGERMAN\section{Optisches Plättchen}\fi
@@ -3282,6 +3259,14 @@
 \end{LTXexample}
 % \iffalse
 %</ignore>
+% \fi
+%
+% \styleitem{SemitransMirror} 
+% \ifGERMAN 
+% Der Stil für den \opt{semitrans} Spiegel.
+% \fi
+% \ifENGLISH
+% This style defines the appearance of the \opt{semitrans} mirror.
 % \fi
 %
 % \styleitem{VariableMirror} 
@@ -6285,7 +6270,7 @@
 %
 % \ifENGLISH\subsection{Beam appearance}\fi
 % \ifGERMAN\subsection{Strahlaussehen}\fi
-% \label{sec:beamapperance-single}
+% \label{sec:beamappearance-single}
 %
 % \begin{stylelist}
 %   \styleitem{Beam}
@@ -6387,7 +6372,7 @@
 % \ifENGLISH
 % The appearance of wide beams can be controlled like that of single beams with
 % the optional argument or the \Lstyle{Beam} style (see
-% \prettyref{sec:beamapperance-single}).
+% \prettyref{sec:beamappearance-single}).
 %
 % Wide beams have two marginal rays, which are drawn according to the line
 % settings, and may be filled.
@@ -7462,7 +7447,7 @@
 % \ifGERMAN
 % Die Stile aller automatischen Faserverbindungen können separat konfiguriert
 % werden, die zugrundeliegende Stil ist immer \Lstyle{Fiber}, der in
-% \prettyref{sec:fiberapearance} beschrieben ist.
+% \prettyref{sec:fiberappearance} beschrieben ist.
 %
 % Der Stil \Lstyle{FiberIn} bezieht sich auf alle Eingangsfasern und erbt alle
 % Eigenschaften von \Lstyle{Fiber}. Hat eine Komponente zwei davon, so können
@@ -8974,7 +8959,7 @@
 % \fi
 %
 % \begin{changelog}
-%
+%\patchcmd{\release}{\setlength{\itemsep}{0pt}}{\setlength{\itemsep}{0pt}\setlength{\parsep}{0pt}}{}{}
 %   \begin{release}{3.0}{2012-00-00}
 %   \item Modified beam connections with \cs{drawbeam} to support raytracing\see{cmd:drawbeam}
 %   \item Added wide beam with \cs{drawwidebeam}\see{cmd:drawwidebeam}

@@ -8,7 +8,7 @@ ARCHNAME = $(PACKAGE)-$(shell date +"%y%m%d")
 ARCHNAME_TDS = $(PACKAGE).tds
 
 ARCHFILES = $(PACKAGE).dtx $(PACKAGE).ins Makefile \
-            README Changes \
+            README Changes $(PACKAGE)-quickref.pdf \
             $(PACKAGE).pdf $(PACKAGE)-DE.pdf
 
 PS2PDF = GS_OPTIONS=-dPDFSETTINGS=/prepress ps2pdf
@@ -21,7 +21,7 @@ doc-DE : $(PACKAGE)-DE.pdf
 
 quickref: $(PACKAGE)-quickref.pdf
 
-dist : doc doc-DE quickref
+dist : doc doc-DE quickref Changes
 	tar chvzf $(ARCHNAME).tar.gz $(ARCHFILES)
 	@ echo
 	@ echo $(ARCHNAME).tar.gz
@@ -81,9 +81,9 @@ arch-tds : Changes
 	cp pst-optexp.sty tds/tex/latex/pst-optexp/
 	cp pst-optexp.pro tds/dvips/pst-optexp/
 	cp Changes pst-optexp.pdf pst-optexp-DE.pdf \
-          README pst-optexp.ist pst-optexp-quickref.pdf \
+          README pst-optexp-quickref.pdf \
 	  tds/doc/latex/pst-optexp/
-	cp pst-optexp.dtx pst-optexp.ins Makefile pst-optexp-quickref.py \
+	cp pst-optexp.dtx pst-optexp.ins Makefile \
 	  tds/source/latex/pst-optexp/
 	cd tds ; zip -r ../$(ARCHNAME_TDS).zip tex doc source dvips
 	cd ..
@@ -94,10 +94,10 @@ ctan : dist arch-tds
 
 clean :
 	$(RM) $(foreach prefix, $(PACKAGE) $(PACKAGE)-DE $(PACKAGE)-quickref, \
-	        $(addprefix $(prefix), .dvi .ps .log .aux .bbl .blg .out .tmp .toc \
-	           .idx .ind .ilg .gls .glg .glo .hd \
+	        $(addprefix $(prefix), .dvi .ps .log .aux .bbl .blg .out .tmp \
+	           .toc .idx .ind .ilg .hd \
 	           -idx.idx -idx.ilg -idx.ind -doc.idx -doc.ilg -doc.ind .hd)) \
 	      $(PACKAGE)-quickref.tex
 
 veryclean : clean
-	$(RM) $(addprefix $(PACKAGE), .pdf -DE.pdf -quickref.pdf .sty .pro .ist)
+	$(RM) $(addprefix $(PACKAGE), .pdf -DE.pdf -quickref.pdf .sty .pro .ist) Changes
