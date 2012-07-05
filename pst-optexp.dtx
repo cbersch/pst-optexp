@@ -2401,21 +2401,21 @@
 % \fi
 % \end{optionlist}
 % 
-% \ifGERMAN\chapter{Freistrahl-Komponenten}\fi
+% \ifGERMAN\chapter{Freistrahlkomponenten}\fi
 % \ifENGLISH\chapter{Free-ray components}\fi
 % \label{chap:freeraycomp}
 %
-% \ifGERMAN In diesem Kapitel werden alle Freistrahl-Komponenten und deren
-% Parameter beschrieben. Freistrahl-Komponenten können, im Gegensatz zu
+% \ifGERMAN In diesem Kapitel werden alle Freistrahlkomponenten und deren
+% Parameter beschrieben. Freistrahlkomponenten können, im Gegensatz zu
 % Faserkomponenten, transmittive und reflektive Grenzflächen haben, die für
 % Raytracing von Lichtstrahlen verwendet werden können. Es gibt zwei
-% unterschiedlichen Komponententypen: manche benötigen nur zwei Knoten um
+% unterschiedliche Komponententypen: manche benötigen nur zwei Knoten um
 % positioniert zu werden (\ref{cmd:lens}--\ref{cmd:polarization}), wohingegen
 % z.B. Spiegel drei Knoten benötigen um korrekt ausgerichtet zu werden
 % (\ref{cmd:mirror}--\ref{cmd:pentaprism}).
 % \fi
 % \ifENGLISH This chapter describes all free-ray components and their
-% options. Free-ray components differ from fiber-components in that they provide
+% options. Free-ray components differ from fiber components in that they provide
 % transmittive or reflective interfaces which can be used to raytrace
 % beams. They are divided in two types: some components like lenses need only
 % two nodes for positioning (\ref{cmd:lens}--\ref{cmd:polarization}), whereas
@@ -2442,11 +2442,11 @@
 % \fi
 % \end{ltxsyntax}
 %
-% \ifENGLISH A lens is usually defined by its height and the radii of the input
-% and output interfaces.
+% \ifENGLISH A lens is defined by its height and the radii of the input and
+% output interfaces.
 % \fi
-% \ifGERMAN Eine Linse wird in der Regel durch ihre Höhe und die beiden Radien
-% der Eingangs- und Ausgangsflächen definiert.
+% \ifGERMAN Eine Linse wird durch ihre Höhe und die beiden Radien der Eingangs-
+% und Ausgangsflächen definiert.
 % \fi
 % 
 % \begin{optionlist}
@@ -2478,7 +2478,7 @@
 % 
 % \numitem[1]{lensradiusright} 
 % \ifGERMAN
-% Dasgleiche wie \Lkeyword{lensradiusleft}, nur für die rechte Grenzfläche.
+% Das Gleiche wie \Lkeyword{lensradiusleft}, nur für die rechte Grenzfläche.
 % \fi
 % \ifENGLISH
 % Same as \Lkeyword{lensradiusleft} but for the right surface.
@@ -2497,7 +2497,7 @@
 %</ignore>
 % \fi
 % 
-% \optitem{lensradius}{\prm{left} \prm{right}}
+% \optitem{lensradius}{\prm{left}[ \prm{right}]}
 % \ifGERMAN
 % Setzt die linke und rechte Linsenkrümmung. Wird nur ein Wert angegeben, so
 % wird dieser für beide Krümmungen verwendet.
@@ -2522,14 +2522,14 @@
 % \ifGERMAN
 % Üblicherweise werden nur die Höhe und die beiden Radien für die
 % Konstruktion der Linse verwendet, die Mittenbreite wird automatisch
-% berechnet. Wenn \nxLkeyword{lenswidth} auf einen Wert größer Null gesetzt wird,
+% berechnet. Wenn \Lkeyword{lenswidth} auf einen Wert größer Null gesetzt wird,
 % wird diese Breite verwendet. Das ist nur sinnvoll, wenn dicke Linsen
 % gezeichnet werden sollen, da es andernfalls für zu kleine Werte zu unschönen
 % Ergebnissen führt.
 % \fi
 % \ifENGLISH
 % Usually only the height and the two radii are used to construct the lens,
-% the width is calculated automatically. For \nxLkeyword{lenswidth} greater
+% the width is calculated automatically. For \Lkeyword{lenswidth} greater
 % than zero, this width is used instead. This is only useful if you want to draw
 % thick lenses and it can give ugly results if the value is choosen too
 % small.
@@ -2578,7 +2578,7 @@
 % \Lkeyword{lenswidth} to a positive value automatically switches to draw a
 % thick lens.
 % \fi
-% \ifGERMAN Diese Option was bis zu Version 2.1 notwendig um dicke Linsen der
+% \ifGERMAN Diese Option was bis Version 2.1 notwendig um dicke Linsen der
 % Breite \Lkeyword{lenswidth} zu zeichnen, anstatt die berechnete Breite zu
 % verwenden. Seit Version 3.0 ist diese Option überflüssig, da dicke Linsen
 % gezeichnet werden, sobald \Lkeyword{lenswidth} auf einen positiven Wert
@@ -2639,6 +2639,14 @@
 % \numitem[0.1]{platewidth}
 % \ifGERMAN Die Breite des Plättchens.\fi
 % \ifENGLISH The width of the plate.\fi
+%
+% \optitem{platesize}{\prm{width} \prm{height}}
+% \ifGERMAN Die Breite und Höhe des Plättchens, äquivalent zum Aufruf von
+% \Lkeyword{platewidth} und \Lkeyword{plateheight}.
+% \fi
+% \ifENGLISH The width and height of the plate, is equivalent to calling both
+% \Lkeyword{platewidth} and \Lkeyword{plateheight}.
+% \fi
 % \end{optionlist}
 % 
 % \ifGERMAN\section{Lochblende}\fi
@@ -2669,17 +2677,17 @@
 % \ifENGLISH The height of the hole.\fi
 %
 % \optitem[2\nxLcs{pslinewidth}]{phlinewidth}{\prm{num} or \prm{dimen}}
-% \ifGERMAN \linewidthexplanation{der Lochblende}{Lochblende}\fi
+% \ifGERMAN \linewidthexplanation{der Lochblende}{Lochblenden}\fi
 % \ifENGLISH \linewidthexplanation{pinhole}{pinholes}\fi
 % 
 % \numitem[0]{phwidth} 
 % \ifGERMAN 
-% Die Lochblende wird plastischer gezeichnet, falls \nxLkeyword{phwidth} ungleich
-% Null ist. In diesem Fall wird \Lkeyword{phlinewidth} ignoriert. Bei einem
-% negativen Wert wird die Form gespiegelt.
+% Die Lochblende wird plastischer gezeichnet, falls \Lkeyword{phwidth}
+% ungleich Null ist. In diesem Fall wird \Lkeyword{phlinewidth} ignoriert. Bei
+% einem negativen Wert wird die Form gespiegelt.
 % \fi
 % \ifENGLISH
-% The pinhole is drawn in a more plastic style if \nxLkeyword{phwidth} is
+% The pinhole is drawn in a more plastic style if \Lkeyword{phwidth} is
 % not zero, in this case the \Lkeyword{phlinewidth} is ignored. For negative
 % values the shape is mirrored.
 % \fi 
@@ -2773,11 +2781,11 @@
 % \numitem[0.3]{caxislength}
 % \ifGERMAN Die zusätzliche Länge des Pfeils für die $c$-Achse, wird weggelassen
 % falls die Länge \opt{0} ist und gespiegelt falls der Wert negativ ist. Die
-% Gesamtlänge ist \nxLkeyword{caxislength} plus \Lkeyword{crystalheight}.
+% Gesamtlänge ist \Lkeyword{caxislength} plus \Lkeyword{crystalheight}.
 % \fi
 % \ifENGLISH The additional length of the $c$-axis, is dropped when set to
 % \opt{0} and is mirrored if the values is negative. The total length is
-% \nxLkeyword{caxislength} plus \Lkeyword{crystalheight}.
+% \Lkeyword{caxislength} plus \Lkeyword{crystalheight}.
 % \fi
 % \iffalse
 %<*ignore>
@@ -2796,12 +2804,12 @@
 %
 % \boolitem[false]{caxisinv}
 % \ifGERMAN 
-% Invertiert die Richtung der $c$-Achse, alternativ kann auch gleich ein
-% negativer Wert für \Lkeyword{caxislength} genommen werden.
+% Invertiert die Richtung der $c$-Achse, ist äquivalent zu einem
+% Vorzeichenwechsel von \Lkeyword{caxislength}.
 % \fi
 % \ifENGLISH 
-% Invert the direction of the $c$-axis, this is equivalent to using a negative
-% \Lkeyword{caxislength}.
+% Invert the direction of the $c$-axis, this is equivalent to changing the sign
+% of \Lkeyword{caxislength}.
 % \fi
 %
 % \boolitem[false]{voltage}
@@ -2820,13 +2828,13 @@
 % \fi
 %
 % \boolitem[false]{lamp}
-% \ifGERMAN Zeichne eine Lampe neben den Kristall.\fi
+% \ifGERMAN Zeichnet eine Lampe neben den Kristall.\fi
 % \ifENGLISH Draw a lamp near the crystal.\fi
 %
 % \numitem{lampscale}
 % \ifGERMAN Skalierung der Lampe.\fi
 % \ifENGLISH Scaling of the lamp.\fi
-% \deprecatedmsg{\Lstyle{CrystalLamp}}
+% \deprecatedmsg{\ifGERMAN den Stil \fi\ifENGLISH style \fi\Lstyle{CrystalLamp}}
 % \end{optionlist}
 %
 % \begin{stylelist}
@@ -3074,7 +3082,7 @@
 % \optitem[0.7\nxLcs{pslinewidth}]{pollinewidth}{\prm{num} or \prm{dimen}}
 % \ifGERMAN \linewidthexplanation{des Polarisationszeichens}{Polarisationszeichen}\fi
 % \ifENGLISH \linewidthexplanation{polarisation sign}{polarisation signs}\fi
-% \deprecatedmsg{\Lstyle{Polarization}}
+% \deprecatedmsg{\ifGERMAN den Stil \fi\ifENGLISH style \fi\Lstyle{Polarization}}
 %
 % \choitem[parallel]{poltype}{parallel, perp, misc, lcirc, rcirc}
 % \ifGERMAN Dieser Parameter wählt die Polarizationsart aus.\fi
@@ -3159,7 +3167,7 @@
 %</ignore>
 % \fi
 % 
-% \choitem[normal]{mirrortype}{normal, piezo, extended, semitrans}
+% \choitem[plain]{mirrortype}{plain, piezo, extended, semitrans}
 % \ifGERMAN
 % Diese Parameter wählt die Spiegelart aus. Das Aussehen wird mit
 % \Lstyle{PiezoMirror}, \Lstyle{ExtendedMirror} und \Lstyle{SemitransMirror}
@@ -3217,20 +3225,22 @@
 %<*ignore>
 % \fi
 \begin{LTXexample}[morekeywords={[21]{mirrortype, mirrordepth}}]
-\begin{pspicture}[showgrid](3,3)
-  \mirror[mirrortype=semitrans](0,2)(2,2)(2,0)
-  \drawbeam{(0,2)}{}{(2,0)}
-  \drawbeam[linecolor=red]{(3,2)}{}{(3,3)}
-  \drawbeam[beampos=0.05, linecolor=blue]{(0,2)}{}{(3,2)}
+\psset{unit=1.5}
+\begin{pspicture}(2,2)
+  \mirror[mirrortype=semitrans](0,1)(1,1)(1,0)
+  \drawbeam{(0,1)}{}{(1,0)}
+  \drawbeam[linecolor=red]{(2,1)}{}{(1,2)}
+  \drawbeam[beampos=0.05, linecolor=blue]{(0,1)}{}{(2,1)}
 \end{pspicture}
 \end{LTXexample}
 
 \begin{LTXexample}[morekeywords={[21]{mirrortype, mirrordepth}}]
-\begin{pspicture}[showgrid](3,3)
-  \mirror[mirrortype=semitrans, mirrordepth=-0.15](0,2)(2,2)(2,0)
-  \drawbeam{(0,2)}{}{(2,0)}
-  \drawbeam[linecolor=red]{(3,2)}{}{(3,3)}
-  \drawbeam[beampos=0.05, linecolor=blue]{(0,2)}{}{(3,2)}
+\psset{unit=1.5}
+\begin{pspicture}(2,2)
+  \mirror[mirrortype=semitrans, mirrordepth=-0.15](0,1)(1,1)(1,0)
+  \drawbeam{(0,1)}{}{(1,0)}
+  \drawbeam[linecolor=red]{(2,1)}{}{(1,2)}
+  \drawbeam[beampos=0.05, linecolor=blue]{(0,1)}{}{(2,1)}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -3477,7 +3487,7 @@
 % 
 % \boolitem[false]{reverse} 
 % \ifGERMAN
-%   Invertiere die Steigung des Blazegitters.
+%   Invertiert die Steigung des Blazegitters.
 % \fi
 % \ifENGLISH
 %   Reverse the slope of the grooves of the \opt{blazed} grating.
@@ -3509,8 +3519,9 @@
 %     \Lkeyword*{optgridtype}\\
 %     \Lkeyword*{optgridlinewidth}
 %   \end{tabular}}]^^A
+% \noindent
 % \ifGERMAN Diese Parameter wurden in die entsprechenden \opt{grating*}
-%   Parameter umbenannt und seit Version 3.0 veraltet.
+%   Parameter umbenannt und sind seit Version 3.0 veraltet.
 % \fi
 % \ifENGLISH These parameters were renamed to the respective \opt{grating*}
 % parameters and are deprecated since version 3.0.
@@ -3556,7 +3567,7 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}
+\begin{LTXexample}[morekeywords={[21]prismangle}]
 \begin{pspicture}(3,2)
   \optprism[prismangle=30, beam](0,1)(2,1)(3,0){Prism}
 \end{pspicture}
@@ -3567,16 +3578,16 @@
 %
 % \choitem[auto]{prismalign}{auto,center}
 % \ifENGLISH Sets the vertical alignment of the prism with respect to the
-% «reflection» node. For \opt{auto}, the prism is shifted such, that the
-% interface nodes lay on the connection between the respective reference node
-% and the «reflection» node. If the value is \opt{center}, the «reflection» node
-% coincides with the component center. See the following examples for
-% further explanation.
+% «reflection» node \prm{center}. For \opt{auto}, the prism is shifted such,
+% that the interface nodes lay on the connection between the respective
+% reference node and the «reflection» node. If the value is \opt{center}, the
+% «reflection» node coincides with the component center. See the following
+% examples for further explanation.
 % \fi
 % \ifGERMAN Wählt die vertikale Ausrichtung des Prisma bezüglich des
-% «Reflektionsknoten». Ist der Wert \opt{auto}, so wird das Prisma so
-% verschoben, dass die Grenzflächenknoten auf der Verbindungslinie zwischen dem
-% entsprechenden Referenzknoten und dem «Reflektionsknoten» liegen. Für
+% «Reflektionsknoten» \prm{center}. Ist der Wert \opt{auto}, so wird das Prisma
+% so verschoben, dass die Grenzflächenknoten auf der Verbindungslinie zwischen
+% dem entsprechenden Referenzknoten und dem «Reflektionsknoten» liegen. Für
 % \opt{center} fällt der «Reflektionsknoten» mit der Komponentenmitte
 % zusammen. Siehe die folgende Beispiele zur weiteren Erklärung.
 % \fi
@@ -3587,26 +3598,25 @@
 \begin{pspicture}(13,3)
   \footnotesize
   \pnode(0,0){A}\pnode(3,1.8){B}\pnode(6,0){C}
-  \psdot(A)\uput[90](A){A}
-  \psdot(B)\uput[90](B){B}
-  \psdot(C)\uput[90](C){C}
+  \psdot(A)\uput[90](A){\prm{in}}
+  \psdot(B)\uput[90](B){\prm{center}}
+  \psdot(C)\uput[90](C){\prm{out}}
   \optprism[prismsize=2](A)(B)(C)
   \psline[style=Refline, linestyle=dashed](A)(B)(C)
-  \newpsstyle{IfcDot}{dotstyle=+, linecolor=red, linewidth=1.5\pslinewidth}
-  \psdot[style=IfcDot](\oenodeCenter{})\uput{0.1}[-90](\oenodeCenter{}){\prm{center}}
-  \psdot[style=IfcDot](\oenodeIn{})\uput{0.1}[150](\oenodeIn{}){\prm{in}}
-  \psdot[style=IfcDot](\oenodeOut{})\uput{0.1}[30](\oenodeOut{}){\prm{out}}
+  \newpsstyle{IfcDot}{dotstyle=+, linecolor=red, dotscale=1.5}
+  \psdot[style=CenterNode](\oenodeCenter{})
+  \psdot[style=IfcDot](\oenodeIn{})
+  \psdot[style=IfcDot](\oenodeOut{})
   \rput[b](\oenodeCenter{}|0,0){\opt{prismalign=auto}}
   \pnode(7,0){A}\pnode(10,1.8){B}\pnode(13,0){C}
-  \psdot(A)\uput[90](A){A}
-  \psdot(B)\uput[90](B){B}
-  \psdot(C)\uput[90](C){C}
+  \psdot(A)\uput[90](A){\prm{in}}
+  \psdot(B)\uput[90](B){\prm{center}}
+  \psdot(C)\uput[90](C){\prm{out}}
   \optprism[prismsize=2, prismalign=center](A)(B)(C)
   \psline[style=Refline, linestyle=dashed](A)(B)(C)
-  \newpsstyle{IfcDot}{dotstyle=+, linecolor=red, linewidth=1.5\pslinewidth}
-  \psdot[style=IfcDot](\oenodeCenter{})\uput{0.1}[-90](\oenodeCenter{}){\prm{center}}
-  \psdot[style=IfcDot](\oenodeIn{})\uput{0.1}[150](\oenodeIn{}){\prm{in}}
-  \psdot[style=IfcDot](\oenodeOut{})\uput{0.1}[30](\oenodeOut{}){\prm{out}}
+  \psdot[style=CenterNode](\oenodeCenter{})
+  \psdot[style=IfcDot](\oenodeIn{})
+  \psdot[style=IfcDot](\oenodeOut{})
   \rput[b](\oenodeCenter{}|0,0){\opt{prismalign=center}}
 \end{pspicture}
 % \iffalse
@@ -9844,8 +9854,7 @@
     \PackageWarning{pst-optexp}{%
       Parameter 'optboxsize' requires two numbers}%
   \fi
-  \psset[optexp]{optboxwidth=#1}%
-  \psset[optexp]{optboxheight=#2}%
+  \psset[optexp]{optboxwidth=#1, optboxheight=#2}%
 }%
 \define@boolkey[psset]{optexp}[POE@]{endbox}[true]{}
 \define@boolkey[psset]{optexp}[POE@]{startbox}[true]{}
@@ -9872,6 +9881,16 @@
 \define@key[psset]{optexp}{platewidth}{%
   \pst@checknum{#1}\POE@key@platewidth
 }
+\define@key[psset]{optexp}{platesize}{%
+  \pst@expandafter\POE@psset@@platesize{#1} {} {} {}\@nil
+}%
+\def\POE@psset@@platesize#1 #2 #3\@nil{%
+  \ifx\\#2\\
+    \PackageWarning{pst-optexp}{%
+      Parameter 'platesize' requires two numbers}%
+  \fi
+  \psset[optexp]{platewidth=#1, plateheight=#2}%
+}%
 \psset[optexp]{platewidth=0.1}%
 %    \end{macrocode}
 % Detector
@@ -13100,7 +13119,14 @@
         {0 \POE@key@mirrordepth} {1 0} 
         \POE@key@mirrorwidth\space -0.5 mul dup neg 
         trans {PlainIfc}
-        \ifdim\POE@key@mirrordepth pt<0pt 12 6 roll 2 \else 1 \fi
+        \POE@key@mirrordepth\space -1e-5 lt {
+          12 6 roll 2
+        } {
+          \POE@key@mirrordepth\space 1e-5 lt {
+            6 {pop} repeat
+          } if
+          1
+        } ifelse
       \POE@key@n }%
     \else
       \newOptexpComp{%
@@ -13209,9 +13235,13 @@
         (! \@ht neg \POE@key@mirrordepth\space )%
         (! \@ht 0)
     \fi\fi\fi
-    \psline[linewidth=\POE@key@mirrorlinewidth]%
-      (! \@ht neg \getCLWH)%
-      (! \@ht \getCLWH)
+    \ifx\POE@key@mirrortype\POE@str@mirrortype@semitrans
+      \psline[linewidth=\POE@key@mirrorlinewidth]%
+        (! \@ht neg 0)(! \@ht 0)
+    \else
+      \psline[linewidth=\POE@key@mirrorlinewidth]%
+        (! \@ht neg \getCLWH)(! \@ht \getCLWH)
+    \fi
   \fi\fi
   \ifPOE@variable
     \psarc[style=VariableStyle]%
@@ -13579,8 +13609,12 @@
 %    \begin{macrocode}
 \def\optgrating@comp{%
   \edef\@cnt{\POE@key@gratingcount\space}%
-  \edef\@wd{\POE@key@gratingwidth\space 2 div }%
-  \edef\@ht{\POE@key@gratingheight\space}%
+  \edef\@wd{\POE@key@gratingwidth\space 0.5 mul }%
+  \ifdim\POE@key@gratingheight pt<\POE@key@gratingdepth pt
+    \edef\@ht{\POE@key@gratingdepth\space}%
+  \else
+    \edef\@ht{\POE@key@gratingheight\space}%
+  \fi
   \edef\@dp{\POE@key@gratingdepth\space}%
   \edef\@step{\POE@key@gratingwidth\space\@cnt div }%
   \ifx\POE@key@gratingtype\POE@str@gratingtype@blazed
