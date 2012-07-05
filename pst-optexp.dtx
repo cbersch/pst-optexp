@@ -50,7 +50,6 @@
 \usepackage{nicefrac}
 \usepackage{pst-func}
 \usepackage{pst-optexp}
-\psset[optexp]{pswarning=false}
 \usepackage{pst-circ}
 \usepackage[makeindex]{splitidx}
 \usepackage{hypdoc}
@@ -6430,7 +6429,7 @@
 % with \Lkeyword{beampos}) perpendicular to the beam direction.
 % \fi
 % \ifGERMAN Die Anfangsstrahlbreite an der mit \Lkeyword{beampos} angegebenen
-% Position, gemessen vertikal zur Verbindungslinie zur nächsten Komponente
+% Position, gemessen vertikal zur Verbindungslinie zur nächsten Komponente.
 % \fi
 % \iffalse
 %<*ignore>
@@ -6638,7 +6637,7 @@
 % \fi
 %
 % \begin{optionlist}
-%   \boolitem[true]{pswarning} 
+%   \boolitem[false]{pswarning} 
 %   \ifENGLISH To simplify debugging, you can print a message to
 %   standard output if a beam misses an interface or if total internal
 %   reflection occured at some point.
@@ -6838,7 +6837,11 @@
 %   Strahlengang in der ersten Komponente zu folgen ohne diesen zu zeichnen,
 %   z.B. wenn der vorangegangene Strahl an der ersten Grenzfläche schon endet.
 %   
-%   Im folgenden Beispiel wird der einfallende grüne Strahl falsch durch den roten Strahl fortgesetzt, da der grüne an der linken Grenzfläche endet, der rote aber annimmt, dass die fälschlicherweie
+%   Im folgenden Beispiel wird der einfallende grüne Strahl falsch durch den
+%   roten Strahl fortgesetzt, da der grüne an der linken Grenzfläche endet, der
+%   rote aber fälschlicherweise annimmt, dass der Endzustand sich auf die rechte
+%   Grenzfläche bezieht. Dem blauen Strahl wird nun mit \Lkeyword{startinside}
+%   mitgeteilt, dass der Endzustand sich auf die linke Grenzfläche bezieht.
 %   \fi
 %
 % \iffalse
@@ -6849,6 +6852,7 @@
   \optplane(0,2)
   \lens[lens=8 8 8, abspos=0.6, n=1.8](0.5,2)(3,2)
   \optplate[position=1, plateheight=6](0.5,2)(3,2)
+  \psset{savebeam=false}
   \drawbeam[beampos=3, linestyle=dashed]{-}
   \drawbeam[beampos=3, savebeam]{1-2}
   \drawbeam[loadbeam, linecolor=red]{2-3}
@@ -6874,9 +6878,11 @@
   \optplane(0,2)
   \lens[lens=8 8 8, abspos=0.6, n=1.8](0.5,2)(3,2)
   \optplate[position=1, plateheight=6](0.5,2)(3,2)
+  \psset{savebeam=false}
   \drawbeam[beampos=3, linestyle=dashed]{-}
   \drawbeam[beampos=3, savebeam, stopinside]{1-2}
   \drawbeam[loadbeam, linecolor=blue]{2-3}
+  \drawbeam[loadbeam, startinside, linecolor=red]{2-3}
 \end{pspicture*}
 \end{LTXexample}
 % \iffalse
@@ -6884,7 +6890,7 @@
 % \fi
 % \end{optionlist}
 %
-% \newpage
+%
 % \ifGERMAN\section{Faserverbindungen}\fi
 % \ifENGLISH\section{Drawing fibers}\fi
 % \label{sec:drawfiber}
@@ -9719,7 +9725,7 @@
 % Error handling.
 %    \begin{macrocode}
 \define@boolkey[psset]{optexp}[POE@]{pswarning}[true]{}
-\psset[optexp]{pswarning=true}%
+\psset[optexp]{pswarning=false}%
 %    \end{macrocode}
 %
 % \subsection{Free-ray component parameters}
