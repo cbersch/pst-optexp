@@ -73,7 +73,7 @@ cmdenv=False
 optenv=False
 
 for m in g:
-    if m[0].startswith(r'\psargitem'):
+    if m[0].startswith(r'\psargitem') or m[0].startswith(r'\poeitem'):
         continue
     if re.match(r'\\(cmditem|[a-z]+desc)', m[0]):
         if optenv:

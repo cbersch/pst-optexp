@@ -18,7 +18,7 @@
 %<stylefile>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<stylefile>\ProvidesPackage{pst-optexp}
 %<*stylefile>
-    [2012/07/08 v3.0RC1 Optical experimental setups with PSTricks]
+    [2012/07/09 v3.0 Optical experimental setups with PSTricks]
 %</stylefile>
 %
 %<*driver>
@@ -8615,17 +8615,18 @@
 % \end{optionlist}
 %
 % \ifENGLISH
-% Every component type consists internally of interfaces which are defined by a
-% node on the optical axis, a plane vector or a curvature radius, and by its
-% optical characteristic (reflective or transmittive). The interface nodes can be
-% visualized for each component type with the \Lkeyword{showifcnodes}
-% parameter. 
+% Every component consists internally of interfaces which are defined by a node
+% on the optical axis, a plane vector or a curvature radius, and by its optical
+% characteristics (reflective or transmittive, or both e.g. for
+% \Lcs{beamsplitter}). The interface nodes can be visualized for each component
+% with the \Lkeyword{showifcnodes} parameter.
 % \fi
 % \ifGERMAN
 % Jede Komponente besteht aus Grenzflächen, die über einen Knoten auf der
 % optischen Achse, einen Ebenevektor bzw. einen Krümmungsradius, und ihre
-% optische Eigenschaft (reflektiv oder transmittiv) definiert ist. Die
-% Grenzflächenknoten können mit \Lkeyword{showifcnodes} angezeigt werden.
+% optische Eigenschaft (reflektiv oder transmittiv, oder beides für
+% z.B. \Lcs{beamsplitter}) definiert ist. Die Grenzflächenknoten können mit
+% \Lkeyword{showifcnodes} angezeigt werden.
 % \fi
 % 
 % \iffalse
@@ -8648,7 +8649,8 @@
 %
 % \ifENGLISH 
 % \nxLcs{draw*beam}\xLcs{drawbeam}\xLcs{drawwidebeam} calculates the distance
-% between the interface nodes of two objects and connects the two nearest
+% between the interface nodes of two components and connects the two nearest
+% to each other.
 % \fi
 % \ifGERMAN
 % \nxLcs{draw*beam}\xLcs{drawbeam}\xLcs{drawwidebeam} berechnet den Abstand
@@ -8694,7 +8696,17 @@
 %
 % \ifENGLISH
 % Here, you find all possible external (\prettyref{sec:extnode}) and rotation
-% reference nodes (\prettyref{sec:rotrefnode}) for all components.
+% reference nodes (\prettyref{sec:rotrefnode}) for all components. Displayed are
+% all possible combinations of \opt{t}, \opt{c}, or \opt{b} with \opt{l},
+% \opt{c}, or \opt{r}. Not all components support all combinations, e.g. a plain
+% \Lcs{mirror} ignores \opt{t} and \opt{b} and an \Lcs{optplate} ignores \opt{l}
+% and \opt{r}.
+%
+% Instead of these values also fractional parts can be used: \opt{t} corresponds
+% to $+1\cdot\Delta y$, \opt{b} corresponds to $-1\cdot\Delta y$, \opt{l}
+% corresponds to $-1\cdot\Delta x$, and \opt{r} corresponds to $+1\cdot\Delta
+% x$. In the following example the point $(0.5\Delta x, 1.2\Delta y)$ is
+% provided as external node.
 % \fi
 % \ifGERMAN
 % Hier finden Sie eine Übersicht über alle möglichen externen Knoten
@@ -8704,8 +8716,7 @@
 % \opt{r}. Es sind nicht immer alle Möglichkeiten vorhanden, so können \opt{t}
 % und \opt{b} ignoriert werden (z.B. bei \Lcs{mirror}), oder auch \opt{r} und
 % \opt{l} (z.B. bei \Lcs{optplate}).
-% \fi
-% \ifGERMAN
+% 
 % Anstelle dieser Werte können auch Bruchteile davon verwendet werden: \opt{t}
 % entspricht $+1\cdot\Delta y$, \opt{b} entspricht $-1\cdot\Delta y$, \opt{l}
 % entspricht $-1\cdot\Delta x$ und \opt{r} entspricht $+1\cdot\Delta x$. Im
@@ -8715,7 +8726,7 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}
+\begin{LTXexample}[morekeywords={[21]extnode}]
 \begin{pspicture}(3,1)
   \optbox[extnode={0.5,1.2}, beam](0,0.5)(3,0.5)
   \psdot(\oenodeExt{})
@@ -9026,7 +9037,7 @@
 % \begin{optionlist}
 %   \optitem*[new]{namingscheme}{old, new} 
 %   \ifGERMAN
-%   In Version 2.1 musste spezielle Komponentenknoten über ihren expliziten
+%   In Version 2.1 mussten spezielle Komponentenknoten über ihren expliziten
 %   Namen angesprochen werden. Wenn Sie das alte Namensschema benötigen, da Sie
 %   direkt auf die Knoten zugegriffen haben, so müssen Sie
 %   \nxLkeyword{namingscheme=old} verwenden. Seit Version 3.0 werden Makros für
@@ -9061,7 +9072,6 @@
 %   war, jetzt aber nur mit \Lkeyword{extnode}\opt{=r}. Alle anderen Werte
 %   setzen den Knoten an andere Stellen.
 %   \fi
-
 % \end{optionlist}
 %
 % \ifENGLISH\subsubsection{Beam connections}\fi
@@ -9251,17 +9261,23 @@
 %\patchcmd{\release}{\setlength{\itemsep}{0pt}}{\setlength{\itemsep}{0pt}\setlength{\parsep}{0pt}}{}{}
 %   \begin{release}{3.0}{2012-00-00}
 %   \item Modified beam connections with \cs{drawbeam} to support raytracing\see{cmd:drawbeam}
-%   \item Added wide beam with \cs{drawwidebeam}\see{cmd:drawwidebeam}
+%   \item Added wide beams with \cs{drawwidebeam}\see{cmd:drawwidebeam}
 %   \item Added \cs{drawfiber} for fiber connections\see{cmd:drawfiber}
-%   \item Added layering of components and connections\see{sec:layers}
-%   \item Modified naming of component nodes\see{sec:objnodes}
-%   \item Removed deprecated lens code which used \opt{lenswidth} and \opt{lensheight} for construction\see{cmd:lens}
+%   \item Added \opt{optexp} environment for layering of components and connections\see{sec:layers}
 %   \item Added german documentation
+%   \item Modified naming of component nodes\see{sec:objnodes}
+%   \item Modified \opt{extnode} to work with more components\see{prm:extnode}
+%   \item Modified \opt{angle} and \opt{rotateref} to affect all components\see{sec:rotshift}
+%   \item Modified \opt{endbox} to affect all components\see{sec:positioning}
+%   \item Extended \opt{position} by values \opt{start} and \opt{end}\see{sec:positioning}
+%   \item Extended \opt{abspos} by values \opt{start} and \opt{end}\see{sec:positioning}
+%   \item Removed deprecated lens code which used \opt{lenswidth} and \opt{lensheight} for construction\see{cmd:lens}
+%   \item Added option \opt{platesize}\see{prm:platesize}
 %   \item Added option \opt{phwidth}\see{cmd:pinhole}
 %   \item Modified option \opt{caxislength}\see{cmd:crystal}
+%   \item Deprecated option \opt{lampscale}\see{cmd:crystal}
 %   \item Added style \opt{CrystalCaxis}\see{cmd:crystal}
 %   \item Added style \opt{CrystalLamp}\see{cmd:crystal}
-%   \item Deprecated option \opt{lampscale}\see{cmd:crystal}
 %   \item Added option \opt{optboxsize}\see{cmd:optbox}
 %   \item Extended option \opt{detsize}\see{cmd:optdetector}
 %   \item Added style \opt{DetectorStyle}\see{cmd:optdetector}
@@ -9302,12 +9318,9 @@
 %   \item Removed deprecated option \opt{owidth}\see{cmd:pinhole}
 %   \item Removed deprecated option \opt{bswidth}\see{cmd:beamsplitter}
 %   \item Deprecated \cs{newOptexpDipoleNolabel}, use \cs{newOptexpDipole}\see{sec:newobj}
-%   \item Modified \opt{angle} and \opt{rotateref} to affect all components\see{sec:rotshift}
-%   \item Modified \opt{endbox} to affect all components\see{sec:positioning}
-%   \item Extended \opt{position} by values \opt{start} and \opt{end}\see{sec:positioning}
-%   \item Extended \opt{abspos} by values \opt{start} and \opt{end}\see{sec:positioning}
 %   \item Deprecated option \opt{refractiveindex}\see{prm:refractiveindex}
 %   \item Deprecated option \opt{conn}\see{sec:drawbeam}
+%   \item Extended option \opt{fiber}\see{prm:fiber}
 %   \end{release}
 %   \begin{release}{2.1}{2009-11-05}
 %   \item Added component \cs{optfiberpolarizer}\see{cmd:optfiberpolarizer}
