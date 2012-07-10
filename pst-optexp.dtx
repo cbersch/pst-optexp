@@ -18,7 +18,7 @@
 %<stylefile>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<stylefile>\ProvidesPackage{pst-optexp}
 %<*stylefile>
-    [2012/07/09 v3.0 Optical experimental setups with PSTricks]
+    [2012/07/09 v3.1alpha Optical experimental setups with PSTricks]
 %</stylefile>
 %
 %<*driver>
@@ -4439,6 +4439,25 @@
 % \rput[b](10.5,0){\opt{coupleralign=bottom}}
 % \end{pspicture}
 % \end{center}
+%
+%
+% \ifGERMAN\section{Faserbox}\fi
+% \ifENGLISH\section{Fiber box}\fi
+%
+% \begin{ltxsyntax}
+% \xLfmultipole{fiberbox}%
+% \cmditem{fiberbox}(in)(out){label}
+% \cmditem*{fiberbox}(tl)(bl)(tr)(br){label}
+% \end{ltxsyntax}
+%
+% \begin{optionlist}
+%   \numitem[0.6]{fiberboxwidth}
+%   \numitem[{}]{fiberboxheight}
+%   \optitem{fiberboxsize}{\prm{num} or \prm{width} \prm{height}}
+%   \numitem[0.2]{fiberboxsepin}
+%   \numitem[0.2]{fiberboxsepout}
+%   \optitem[2x3]{fiberboxcount}{\prm{N}x\prm{M}}
+% \end{optionlist}
 % \psset{usefiberstyle=false}
 %
 % \ifGERMAN\chapter{Hybridkomponenten}\fi
@@ -9258,6 +9277,9 @@
 %
 % \begin{changelog}
 %\patchcmd{\release}{\setlength{\itemsep}{0pt}}{\setlength{\itemsep}{0pt}\setlength{\parsep}{0pt}}{}{}
+%   \begin{release}{3.1}{2012-00-00}
+%   \item Added \cs{fiberbox}\see{cmd:fiberbox}
+%   \end{release}
 %   \begin{release}{3.0}{2012-07-09}
 %   \item Modified beam connections with \cs{drawbeam} to support raytracing\see{cmd:drawbeam}
 %   \item Added wide beams with \cs{drawwidebeam}\see{cmd:drawwidebeam}
@@ -10535,6 +10557,54 @@
   coupleralign=center,
   couplertype=elliptic
 }%
+%    \end{macrocode}
+%
+% \subsection{Fiber box}
+%
+%    \begin{macrocode}
+\define@key[psset]{optexp}{fiberboxheight}{%
+  \pst@checknum{#1}\POE@key@fiberboxheight
+}%
+\define@key[psset]{optexp}{fiberboxwidth}{%
+  \pst@checknum{#1}\POE@key@fiberboxwidth
+}%
+\define@key[psset]{optexp}{fiberboxsize}{%
+  \pst@expandafter\POE@psset@@fiberboxsize{#1} {} {} {}\@nil
+}%
+\def\POE@psset@@fiberboxsize#1 #2 #3\@nil{%
+  \psset[optexp]{fiberboxwidth=#1}
+  \ifx\\#2\\
+    \let\POE@key@fiberboxheight\@empty
+  \else
+    \psset[optexp]{fiberboxheight=#2}
+  \fi
+}%
+\define@key[psset]{optexp}{fiberboxsepin}{%
+  \def\POE@key@fiberboxsepin{#1}
+}%
+\define@key[psset]{optexp}{fiberboxsepout}{%
+  \def\POE@key@fiberboxsepout{#1}%
+}%
+\define@key[psset]{optexp}{fiberboxcount}{%
+  \pst@expandafter\POE@psset@@fiberboxcount#1\@nil
+}%
+\def\POE@psset@@fiberboxcount#1x#2\@nil{%
+  \ifx\\#1\\
+    \def\POE@key@fiberboxcountin{1}%
+  \else
+    \def\POE@key@fiberboxcountin{#1}%
+  \fi
+  \ifx\\#2\\
+    \def\POE@key@fiberboxcountout{1}%
+  \else
+    \def\POE@key@fiberboxcountout{#2}
+  \fi
+}%
+\psset[optexp]{%
+  fiberboxsize=0.6,
+  fiberboxsepin=0.2,
+  fiberboxsepout=0.2,
+  fiberboxcount=2x3}
 %    \end{macrocode}
 % \subsection{Beam-connection parameters}
 % The keys related to the \cs{draw*} macros.
@@ -12675,6 +12745,75 @@
 %    \end{macrocode}
 % \end{macro}
 %
+% \begin{macro}{\optcirculator}
+%    \begin{macrocode}
+\def\fiberbox{\pst@object{fiberbox}}%
+\def\fiberbox@i(#1)(#2){%
+  \@ifnextchar(%)
+    {\fiberbox@@i@(#1)(#2)}%
+    {\fiberbox@@i@(#1)(#2)()()}%
+}%
+\def\fiberbox@@i@(#1)(#2)(#3)(#4){%
+  \@ifnextchar\bgroup%
+    {\fiberbox@i@(#1)(#2)(#3)(#4)}%
+    {\fiberbox@i@(#1)(#2)(#3)(#4){}}%
+}%
+\def\fiberbox@i@(#1)(#2)(#3)(#4)#5{%
+    \ifPOE@backlayer
+      \ifx\\#3#4\\
+        \POE@regNodes{#1}{#2}
+        \POE@Verb{/@@inht 0 def /@@outht 0 def}%
+      \else
+        \pst@getcoor{#1}\POE@tempa%
+        \pst@getcoor{#2}\POE@tempb%
+        \pst@getcoor{#3}\POE@tempc%
+        \pst@getcoor{#4}\POE@tempd%
+        \pnode(!\POE@tempa \POE@tempb 
+                \POE@dict{VecAdd 0.5 VecScale}
+                \tx@UserCoor){\oenodeRefA{}}
+        \pnode(!\POE@tempc \POE@tempd
+                \POE@dict{VecAdd 0.5 VecScale}
+                \tx@UserCoor){\oenodeRefB{}}
+        \POE@Verb{%
+            /N@\oenodeRefA{} @GetCenter
+            /N@\oenodeRefB{} @GetCenter @ABVect NormalizeVec 
+            90 matrix rotate dtransform 2 copy
+            \pst@nodedict \POE@tempa \POE@tempb end @ABVect 
+            \tx@UserCoor DotProd abs dup /@@inht ED
+            \pst@nodedict \POE@tempc \POE@tempd end @ABVect 
+            \tx@UserCoor DotProd abs dup /@@outht ED
+          }%
+      \fi
+    \fi
+    \POE@drawcomponent[fiberbox]{#5}\fiberbox@ii
+    \ifPOE@backlayer
+      \ifx\\#3#4\\\else
+        \ifPOE@fiberpreset@
+          \ifPOE@fiberpresetin@
+            \ifPOE@fiberpresetin@top
+              \drawfiber@{FiberIn1}{(#1)}{\POE@key@compname}
+            \fi
+            \ifPOE@fiberpresetin@bottom
+              \drawfiber@{FiberIn2}{(#2)}{\POE@key@compname}
+            \fi
+          \fi
+          \ifPOE@fiberpresetout@
+            \ifPOE@fiberpresetout@top
+              \drawfiber@{FiberOut1}{\POE@key@compname}{(#3)}
+            \fi
+            \ifPOE@fiberpresetout@bottom
+              \drawfiber@{FiberOut2}{\POE@key@compname}{(#4)}
+            \fi
+          \fi
+        \fi
+      \fi
+    \fi
+  \end@OptexpObj
+}%
+\fiberdipole@iimacro{fiberbox}%
+%    \end{macrocode}
+% \end{macro}
+%
 % \begin{macro}{\POE@calcNodes}
 %   Some of the components need three points to be positioned. 
 %   These are:
@@ -14551,6 +14690,57 @@
 %    \end{macrocode}
 % \end{macro}
 % 
+% \subsubsection{fiberbox}
+% \begin{macro}{fiberbox@ref}
+%    \begin{macrocode}
+\def\fiberbox@ref{%
+  \POE@setref{%
+    /@@x \POE@key@fiberboxwidth\space 0.5 mul def
+    @@inht 0 eq @@outht 0 eq and {
+      /@@inht \POE@key@fiberboxcountin\space\POE@key@fiberboxsepin\space mul def
+      /@@outht \POE@key@fiberboxcountout\space\POE@key@fiberboxsepout\space mul def
+    } if
+    @@inht \POE@key@fiberboxcountin\space dup 1 add 3 1 roll div mul
+    @@outht \POE@key@fiberboxcountout\space dup 1 add 3 1 roll div mul
+    max 
+    \ifx\POE@key@fiberboxheight\@empty
+      0.5 mul /@@y exch def
+    \else
+      \POE@key@fiberboxheight\space dup @@inht @@outht max gt {
+        exch
+      } if pop 0.5 mul /@@y exch def
+    \fi
+  }%
+}%
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\fiberbox@nodes}
+%    \begin{macrocode}
+\def\fiberbox@nodes{%
+  \newOptexpFiberComp{%
+    0 1 \POE@key@fiberboxcountin\space 1 sub {
+      \POE@key@fiberboxcountin\space 1 sub 0.5 mul dup 3 1 roll sub exch
+      0 gt {
+        @@inht \POE@key@fiberboxcountin\space 1 sub div mul
+      } if
+      @@x neg exch ToVec
+    } for
+    0 1 \POE@key@fiberboxcountout\space 1 sub {
+      \POE@key@fiberboxcountout\space 1 sub 0.5 mul dup 3 1 roll sub exch
+      0 gt {
+        @@outht \POE@key@fiberboxcountout\space 1 sub div mul
+      } if
+      @@x exch ToVec
+    } for
+  }
+}%
+\def\fiberbox@comp{%
+  \psframe(!\POE@dict{@@x neg @@y neg})(!\POE@dict{@@x @@y})
+}%
+%    \end{macrocode}
+% \end{macro}
+%
+%
 % \subsubsection{optcoupler}
 % \begin{macro}{\optcoupler@nodes}
 %    \begin{macrocode}
