@@ -9277,8 +9277,8 @@
 %
 % \begin{changelog}
 %\patchcmd{\release}{\setlength{\itemsep}{0pt}}{\setlength{\itemsep}{0pt}\setlength{\parsep}{0pt}}{}{}
-%   \begin{release}{3.1}{2012-00-00}
-%   \item Added \cs{fiberbox}\see{cmd:fiberbox}
+%   \begin{release}{3.0x}{0000-00-00}
+%   \item Modified \cs{fibercollimator} to have \opt{allowbeaminside=false} by default\see{cmd:fibercollimator}
 %   \end{release}
 %   \begin{release}{3.0}{2012-07-09}
 %   \item Modified beam connections with \cs{drawbeam} to support raytracing\see{cmd:drawbeam}
@@ -11010,6 +11010,14 @@
     \let\psk@angleA\relax
     \let\psk@angleB\relax
     \use@par
+    \let\POE@angleA\psk@angleA
+    \let\POE@angleB\psk@angleB
+    \ifx\psk@angleA\relax
+      \def\psk@angleA{0 }%
+    \fi
+    \ifx\psk@angleB\relax
+      \def\psk@angleB{0 }%
+    \fi
     \def\POE@tempa{#1}
     \ifx\POE@tempa\@empty
       \edef\POE@comps{/\oenode{}{}\space}
@@ -11052,7 +11060,7 @@
       \fi\fi
       \pst@getcoor{@@A}\POE@tempa
       \pst@getcoor{@@B}\POE@tempb
-      \ifx\psk@angleA\relax
+      \ifx\POE@angleA\relax
         \ifx\POE@key@fiberalign\POE@str@absolute
           \psset{angleA=\POE@key@fiberangleA}%
         \else
@@ -11063,7 +11071,7 @@
           }%
         \fi
       \fi
-      \ifx\psk@angleB\relax
+      \ifx\POE@angleB\relax
         \ifx\POE@key@fiberalign\POE@str@absolute
           \psset{angleB=\POE@key@fiberangleB}%
         \else
@@ -13157,6 +13165,7 @@
   \@ifnextchar\bgroup{\fibercollimator@v}{\fibercollimator@v{}}%
 }%
 \def\fibercollimator@v#1{%
+  \addbefore@par{allowbeaminside=false}%
   \begin@OptexpFiberObj
     \ifPOE@backlayer
       \POE@regNodes{\POE@tempa}{\POE@tempb}%
