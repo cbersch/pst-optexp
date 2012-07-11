@@ -4235,6 +4235,7 @@
 % \begin{ltxsyntax}
 % \xLfmultipole{optcoupler}%
 % \cmditem{optcoupler}(tl)(bl)(tr)(br){label}
+% \cmditem*{optcoupler}(in)(out){label}
 % \iffalse
 %<*ignore>
 % \fi
@@ -4249,6 +4250,7 @@
 %
 % \xLfmultipole{wdmcoupler}%
 % \cmditem{wdmcoupler}(tl)(bl)(r){label}
+% \cmditem*{wdmcoupler}(in)(out){label}
 % \iffalse
 %<*ignore>
 % \fi
@@ -4263,6 +4265,7 @@
 %
 % \xLfmultipole{wdmsplitter}%
 % \cmditem{wdmsplitter}(l)(tr)(br){label}
+% \cmditem*{wdmsplitter}(in)(out){label}
 % \iffalse
 %<*ignore>
 % \fi
@@ -4273,6 +4276,22 @@
 \end{LTXexample}
 % \iffalse
 %</ignore>
+% \fi
+%
+% \ifGERMAN
+% Jeder Koppler hat eine Variante, die nur zwei Knoten benötigt, einen Eingangs-
+% und einen Ausgangsknoten. \Lcs{optcoupler} verwendet jeden dieser Knoten
+% zweimal, \Lcs{wdmsplitter} verwendet den Knoten \prm{out} zweimal und
+% \Lcs{wdmcoupler} verwendet \prm{in} zweimal. Das kann sehr praktisch sein,
+% wenn man für einen Koppler die automatischen Verbindungen nicht verwendet,
+% sondern die Komponente manuell verbindet.
+% \fi
+% \ifENGLISH 
+% Every coupler has a variant which needs only two nodes, one input and one
+% output node. For \Lcs{optcoupler}, both nodes are used twice,
+% \Lcs{wdmsplitter} uses node \prm{out} twice, and \Lcs{wdmcoupler} uses node
+% \prm{in} twice. This can be very useful if you do not use the automatic
+% connections but connect the components manually.
 % \fi
 % \end{ltxsyntax}
 % \begin{optionlist}
@@ -12466,10 +12485,15 @@
 % \begin{macro}{\POE@newfiberquadrupole}
 %    \begin{macrocode}
 \def\optcoupler{\pst@object{optcoupler}}%
-\def\optcoupler@i(#1)(#2)(#3)(#4){%
+\def\optcoupler@i(#1)(#2){%
+  \@ifnextchar(%)
+    {\optcoupler@@i@(#1)(#2)}%
+    {\optcoupler@@i@(#1)(#1)(#2)(#2)}%
+}%
+\def\optcoupler@@i@(#1)(#2)(#3)(#4){%
   \@ifnextchar\bgroup%
-    {\@nameuse{optcoupler@i@}(#1)(#2)(#3)(#4)}%
-    {\@nameuse{optcoupler@i@}(#1)(#2)(#3)(#4){}}%
+    {\optcoupler@i@(#1)(#2)(#3)(#4)}%
+    {\optcoupler@i@(#1)(#2)(#3)(#4){}}%
 }%
 \def\optcoupler@i@(#1)(#2)(#3)(#4)#5{%
   \begin@OptexpFiberObj
@@ -12532,7 +12556,12 @@
 % \begin{macro}{\wdmsplitter}
 %    \begin{macrocode}
 \def\wdmsplitter{\pst@object{wdmsplitter}}%
-\def\wdmsplitter@i(#1)(#2)(#3){%
+\def\wdmsplitter@i(#1)(#2){%
+  \@ifnextchar(%)
+    {\wdmsplitter@@i@(#1)(#2)}%
+    {\wdmsplitter@@i@(#1)(#2)(#2)}%
+}%
+\def\wdmsplitter@@i@(#1)(#2)(#3){%
   \@ifnextchar\bgroup%
     {\wdmsplitter@i@(#1)(#2)(#3)}%
     {\wdmsplitter@i@(#1)(#2)(#3){}}%
@@ -12584,7 +12613,12 @@
 % \begin{macro}{\wdmcoupler}
 %    \begin{macrocode}
 \def\wdmcoupler{\pst@object{wdmcoupler}}%
-\def\wdmcoupler@i(#1)(#2)(#3){%
+\def\wdmcoupler@i(#1)(#2){%
+  \@ifnextchar(%)
+    {\wdmcoupler@@i@(#1)(#2)}%
+    {\wdmcoupler@@i@(#1)(#1)(#2)}%
+}%
+\def\wdmcoupler@@i@(#1)(#2)(#3){%
   \@ifnextchar\bgroup%
     {\wdmcoupler@i@(#1)(#2)(#3)}%
     {\wdmcoupler@i@(#1)(#2)(#3){}}%
