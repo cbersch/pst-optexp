@@ -9258,6 +9258,9 @@
 %
 % \begin{changelog}
 %\patchcmd{\release}{\setlength{\itemsep}{0pt}}{\setlength{\itemsep}{0pt}\setlength{\parsep}{0pt}}{}{}
+%   \begin{release}{3.0x}{0000-00-00}
+%   \item Modified \cs{fibercollimator} to have \opt{allowbeaminside=false} by default\see{cmd:fibercollimator}
+%   \end{release}
 %   \begin{release}{3.0}{2012-07-09}
 %   \item Modified beam connections with \cs{drawbeam} to support raytracing\see{cmd:drawbeam}
 %   \item Added wide beams with \cs{drawwidebeam}\see{cmd:drawwidebeam}
@@ -13011,6 +13014,7 @@
   \@ifnextchar\bgroup{\fibercollimator@v}{\fibercollimator@v{}}%
 }%
 \def\fibercollimator@v#1{%
+  \addbefore@par{allowbeaminside=false}%
   \begin@OptexpFiberObj
     \ifPOE@backlayer
       \POE@regNodes{\POE@tempa}{\POE@tempb}%
