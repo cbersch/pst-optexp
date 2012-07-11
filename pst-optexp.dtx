@@ -12759,6 +12759,7 @@
     {\fiberbox@i@(#1)(#2)(#3)(#4){}}%
 }%
 \def\fiberbox@i@(#1)(#2)(#3)(#4)#5{%
+  \begin@OptexpFiberObj
     \ifPOE@backlayer
       \ifx\\#3#4\\
         \POE@regNodes{#1}{#2}
@@ -12778,10 +12779,16 @@
             /N@\oenodeRefA{} @GetCenter
             /N@\oenodeRefB{} @GetCenter @ABVect NormalizeVec 
             90 matrix rotate dtransform 2 copy
-            \pst@nodedict \POE@tempa \POE@tempb end @ABVect 
-            \tx@UserCoor DotProd abs dup /@@inht ED
-            \pst@nodedict \POE@tempc \POE@tempd end @ABVect 
-            \tx@UserCoor DotProd abs dup /@@outht ED
+            \pst@nodedict   
+              /GetCenterOrig /GetCenter load def
+              /GetCenter { begin X Y end } def
+              \POE@tempa \POE@tempb @ABVect
+              \tx@UserCoor DotProd abs 3 1 roll
+              \POE@tempc \POE@tempd @ABVect 
+              \tx@UserCoor DotProd abs 
+              /GetCenter /GetCenterOrig load def
+            end
+            /@@outht ED /@@inht ED
           }%
       \fi
     \fi
@@ -14719,14 +14726,14 @@
 \def\fiberbox@nodes{%
   \newOptexpFiberComp{%
     0 1 \POE@key@fiberboxcountin\space 1 sub {
-      \POE@key@fiberboxcountin\space 1 sub 0.5 mul dup 3 1 roll sub exch
+      \POE@key@fiberboxcountin\space 1 sub 0.5 mul dup 3 -1 roll sub exch
       0 gt {
         @@inht \POE@key@fiberboxcountin\space 1 sub div mul
       } if
       @@x neg exch ToVec
     } for
     0 1 \POE@key@fiberboxcountout\space 1 sub {
-      \POE@key@fiberboxcountout\space 1 sub 0.5 mul dup 3 1 roll sub exch
+      \POE@key@fiberboxcountout\space 1 sub 0.5 mul dup 3 -1 roll sub exch
       0 gt {
         @@outht \POE@key@fiberboxcountout\space 1 sub div mul
       } if
