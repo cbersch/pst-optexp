@@ -10943,6 +10943,14 @@
     \let\psk@angleA\relax
     \let\psk@angleB\relax
     \use@par
+    \let\POE@angleA\psk@angleA
+    \let\POE@angleB\psk@angleB
+    \ifx\psk@angleA\relax
+      \def\psk@angleA{0 }%
+    \fi
+    \ifx\psk@angleB\relax
+      \def\psk@angleB{0 }%
+    \fi
     \def\POE@tempa{#1}
     \ifx\POE@tempa\@empty
       \edef\POE@comps{/\oenode{}{}\space}
@@ -10985,7 +10993,7 @@
       \fi\fi
       \pst@getcoor{@@A}\POE@tempa
       \pst@getcoor{@@B}\POE@tempb
-      \ifx\psk@angleA\relax
+      \ifx\POE@angleA\relax
         \ifx\POE@key@fiberalign\POE@str@absolute
           \psset{angleA=\POE@key@fiberangleA}%
         \else
@@ -10996,7 +11004,7 @@
           }%
         \fi
       \fi
-      \ifx\psk@angleB\relax
+      \ifx\POE@angleB\relax
         \ifx\POE@key@fiberalign\POE@str@absolute
           \psset{angleB=\POE@key@fiberangleB}%
         \else
