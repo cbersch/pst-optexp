@@ -4235,7 +4235,6 @@
 % \begin{ltxsyntax}
 % \xLfmultipole{optcoupler}%
 % \cmditem{optcoupler}(tl)(bl)(tr)(br){label}
-% \cmditem*{optcoupler}(in)(out){label}
 % \iffalse
 %<*ignore>
 % \fi
@@ -4250,7 +4249,6 @@
 %
 % \xLfmultipole{wdmcoupler}%
 % \cmditem{wdmcoupler}(tl)(bl)(r){label}
-% \cmditem*{wdmcoupler}(in)(out){label}
 % \iffalse
 %<*ignore>
 % \fi
@@ -4265,7 +4263,6 @@
 %
 % \xLfmultipole{wdmsplitter}%
 % \cmditem{wdmsplitter}(l)(tr)(br){label}
-% \cmditem*{wdmsplitter}(in)(out){label}
 % \iffalse
 %<*ignore>
 % \fi
@@ -4276,22 +4273,6 @@
 \end{LTXexample}
 % \iffalse
 %</ignore>
-% \fi
-%
-% \ifGERMAN
-% Jeder Koppler hat eine Variante, die nur zwei Knoten benötigt, einen Eingangs-
-% und einen Ausgangsknoten. \Lcs{optcoupler} verwendet jeden dieser Knoten
-% zweimal, \Lcs{wdmsplitter} verwendet den Knoten \prm{out} zweimal und
-% \Lcs{wdmcoupler} verwendet \prm{in} zweimal. Das kann sehr praktisch sein,
-% wenn man für einen Koppler die automatischen Verbindungen nicht verwendet,
-% sondern die Komponente manuell verbindet.
-% \fi
-% \ifENGLISH 
-% Every coupler has a variant which needs only two nodes, one input and one
-% output node. For \Lcs{optcoupler}, both nodes are used twice,
-% \Lcs{wdmsplitter} uses node \prm{out} twice, and \Lcs{wdmcoupler} uses node
-% \prm{in} twice. This can be very useful if you do not use the automatic
-% connections but connect the components manually.
 % \fi
 % \end{ltxsyntax}
 % \begin{optionlist}
@@ -4391,7 +4372,40 @@
 % The style of the arrow of the variable coupler.
 % \fi
 % \end{stylelist}
-% 
+%
+% \ifGERMAN
+% Jeder Koppler hat eine Variante, die nur zwei Knoten benötigt, einen Eingangs-
+% und einen Ausgangsknoten. \Lcs{optcoupler} verwendet jeden dieser Knoten
+% zweimal, \Lcs{wdmsplitter} verwendet den Knoten \prm{out} zweimal und
+% \Lcs{wdmcoupler} verwendet \prm{in} zweimal. Das kann sehr praktisch sein,
+% wenn man für einen Koppler die automatischen Verbindungen nicht verwendet,
+% sondern die Komponente manuell verbindet.
+% \fi
+% \ifENGLISH 
+% Every coupler has a variant which needs only two nodes, one input and one
+% output node. For \Lcs{optcoupler}, both nodes are used twice,
+% \Lcs{wdmsplitter} uses node \prm{out} twice, and \Lcs{wdmcoupler} uses node
+% \prm{in} twice. This can be very useful if you do not use the automatic
+% connections but connect the components manually.
+% \fi
+%
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(4,2)
+  \pnode(0,1){A}\pnode(4,1){B}
+  \psset[optexp]{fiber=none}
+  \wdmsplitter[position=0.2, coupleralign=b](A)(B)
+  \wdmcoupler[position=0.8, coupleralign=t](A)(B)
+  \drawfiber{(A)}{1}{2}{(B)}
+  \drawfiber{1}{([offset=0.5, Xnodesep=1]\oenodeIfc{2}{1})}
+  \drawfiber{([offset=-0.5, Xnodesep=-1]\oenodeIfc{2}{2})}{2}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % \ifGERMAN\subsection{Eingangs- und Ausgangsknoten}\fi
 % \ifENGLISH\subsection{Input and output nodes}\fi
 % \label{sec:coupler-nodes}
