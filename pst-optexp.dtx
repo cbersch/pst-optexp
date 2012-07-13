@@ -107,10 +107,9 @@
     polarization, mirror, beamsplitter, optgrating, optprism, rightangleprism,
     pentaprism, optdipole, optripole, optfiber, optamp, optmzm, optfilter,
     polcontrol, optisolator, optswitch, fiberdelayline, optfiberpolarizer,
-    fibercollimator, optcoupler, wdmcoupler, wdmsplitter, optcirculator,
+    fibercollimator, optcoupler, wdmcoupler, wdmsplitter, optcirculator, fiberbox,
     drawbeam, drawwidebeam, drawfiber, frontlayer, backlayer, newOptexpDipole,
     newOptexpTripole, newOptexpFiberDipole,optplane}, %
-  morekeywords = [22] {optexp}, 
   explpreset={%
     pos=l, width=-99pt, hsep=5mm, overhang=\codeoverhang, varwidth,
     vsep=\bigskipamount, rframe={}},
@@ -4449,10 +4448,72 @@
 % \cmditem{fiberbox}(in)(out){label}
 % \cmditem*{fiberbox}(tl)(bl)(tr)(br){label}
 % \end{ltxsyntax}
+% 
+% \ifGERMAN\fi
+% \ifENGLISH 
+%  
+% A \Lcs{fiberbox} can be positioned either with two, or four nodes. If only two
+% nodes are used, the separation between the components input and output nodes
+% must be specified manually (see \Lkeyword{fiberboxsepin} and
+% \Lkeyword{fiberboxsepout}). Only the side of the component is connected
+% automatically which has a single node (see \Lkeyword{fiberboxcount}).
+% \fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(3,2)
+  \fiberbox[fiberboxcount=1x2, showifcnodes](0,1)(3,1)
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
+% \ifGERMAN\fi
+% \ifENGLISH
+% When four nodes are used, the interface nodes and their separation are
+% determined automatically. The first input interface node is aligned with
+% \prm{tl}, the last input node is aligned with \prm{bl}, all other input nodes
+% are equally distributed between these. The output nodes are handled accordingly.
+% \fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(3,2)
+  \fiberbox[fiberboxcount=3x4, showifcnodes](0,1.5)(0,0.5)(3,2)(3,0)
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 %
 % \begin{optionlist}
 %   \numitem[0.6]{fiberboxwidth}
-%   \numitem[{}]{fiberboxheight}
+%   \ifGERMAN Die Breite der Faserbox.\fi
+%   \ifENGLISH The width of the fiber box.\fi
+%
+%   \numitem[0]{fiberboxheight}
+%   \ifGERMAN Die Höhe der Faserbox. Ist die Höhe kleiner als der Platz der von
+%   den Eingangs- und Ausgangsknoten benötigt wird, dann wird die Höhe
+%   automatisch berechnet.
+%   \fi
+%   \ifENGLISH\fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(3,2.5)
+  \psset[optexp]{innerlabel, fiberboxwidth=1, fiberboxcount=1x2}
+  \fiberbox(0,2)(0,2)(3,2.5)(3,1.5){auto}
+  \fiberbox[fiberboxheight=1.1](0,0.5)(0,0.5)(3,1)(3,0){fix}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
 %   \optitem{fiberboxsize}{\prm{num} or \prm{width} \prm{height}}
 %   \numitem[0.2]{fiberboxsepin}
 %   \numitem[0.2]{fiberboxsepout}
@@ -10584,9 +10645,9 @@
 \def\POE@psset@@fiberboxsize#1 #2 #3\@nil{%
   \psset[optexp]{fiberboxwidth=#1}
   \ifx\\#2\\
-    \let\POE@key@fiberboxheight\@empty
+    \psset[optexp]{fiberboxheight=0}%
   \else
-    \psset[optexp]{fiberboxheight=#2}
+    \psset[optexp]{fiberboxheight=#2}%
   \fi
 }%
 \define@key[psset]{optexp}{fiberboxsepin}{%
@@ -12796,6 +12857,14 @@
 }%
 \def\fiberbox@i@(#1)(#2)(#3)(#4)#5{%
   \begin@OptexpFiberObj
+    \ifnum\POE@key@fiberboxcountin=1
+      \ifnum\POE@key@fiberboxcountout=1
+        \ifdim\POE@key@fiberboxheight pt=0pt
+          \PackageError{pst-optexp}{%
+            Cannot determine fiberboxheight automatically}
+        \fi
+      \fi
+    \fi
     \ifPOE@backlayer
       \ifx\\#3#4\\
         \POE@regNodes{#1}{#2}
@@ -12830,7 +12899,27 @@
     \fi
     \POE@drawcomponent[fiberbox]{#5}\fiberbox@ii
     \ifPOE@backlayer
-      \ifx\\#3#4\\\else
+      \ifx\\#3#4\\
+%    \end{macrocode}
+% Connect only, if the fiberbox has a single related interface node.
+%    \begin{macrocode}
+        \ifPOE@fiberpreset@
+          \ifnum\POE@key@fiberboxcountin=1
+            \ifPOE@fiberpresetin@
+              \drawfiber@{FiberIn}{(#1)}{\POE@key@compname}
+            \fi
+          \fi
+          \ifnum\POE@key@fiberboxcountout=1
+            \ifPOE@fiberpresetout@
+              \drawfiber@{FiberOut}{\POE@key@compname}{(#2)}
+            \fi
+          \fi
+        \fi
+      \else
+%    \end{macrocode}
+% If four nodes are specified, connect all of them with the respective interface
+% nodes they are aligned to.
+%    \begin{macrocode}
         \ifPOE@fiberpreset@
           \ifPOE@fiberpresetin@
             \ifPOE@fiberpresetin@top
@@ -14747,13 +14836,9 @@
     @@inht \POE@key@fiberboxcountin\space dup 1 add 3 1 roll div mul
     @@outht \POE@key@fiberboxcountout\space dup 1 add 3 1 roll div mul
     max 
-    \ifx\POE@key@fiberboxheight\@empty
-      0.5 mul /@@y exch def
-    \else
-      \POE@key@fiberboxheight\space dup @@inht @@outht max gt {
-        exch
-      } if pop 0.5 mul /@@y exch def
-    \fi
+    \POE@key@fiberboxheight\space dup @@inht @@outht max gt {
+      exch
+    } if pop 0.5 mul /@@y exch def
   }%
 }%
 %    \end{macrocode}
@@ -14779,7 +14864,7 @@
   }
 }%
 \def\fiberbox@comp{%
-  \psframe(!\POE@dict{@@x neg @@y neg})(!\POE@dict{@@x @@y})
+  \psframe[dimen=outer](!\POE@dict{@@x neg @@y neg})(!\POE@dict{@@x @@y})
 }%
 %    \end{macrocode}
 % \end{macro}
