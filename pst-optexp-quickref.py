@@ -66,8 +66,11 @@ f.write(r"""\documentclass[landscape]{scrartcl}
 \newcommand{\fiberdipoledesc}[1]{\cmditem{#1}[opt](in)(out){label}}
 \begin{document}\ttfamily\small
 \begin{multicols}{3}
-\section*{Cheat sheet for pst-optexp (v3.0)}
 """)
+
+v = re.findall("%<\*stylefile>\s*\[[0-9/]+\s*(v[0-9.]+).*?\]", data)
+
+f.write("\\section*{Cheat sheet for pst-optexp (%s)}\n" % (v[0]))
 
 cmdenv=False
 optenv=False
