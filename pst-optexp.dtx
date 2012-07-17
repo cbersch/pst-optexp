@@ -4449,40 +4449,74 @@
 % \cmditem*{fiberbox}(tl)(bl)(tr)(br){label}
 % \end{ltxsyntax}
 % 
-% \ifGERMAN\fi
-% \ifENGLISH 
-%  
-% A \Lcs{fiberbox} can be positioned either with two, or four nodes. If only two
-% nodes are used, the separation between the components input and output nodes
-% must be specified manually (see \Lkeyword{fiberboxsepin} and
-% \Lkeyword{fiberboxsepout}). Only the side of the component is connected
-% automatically which has a single node (see \Lkeyword{fiberboxcount}).
+% \ifGERMAN 
+
+% Eine \Lcs{fiberbox} kann entweder mit zwei, oder mit vier Knoten
+% positioniert werden. Die Wahl beeinflusst die Position der Komponente
+% und der Komponentenknoten und die automatischen Faserverbindungen.
+%
+% Werden nur zwei Knoten verwendet, dann sind das die Referenzknoten und
+% der Abstand zwischen zwei benachbarten Eingangs- oder Ausgangsknoten
+% muss manuell angegeben werden (siehe \Lkeyword{fiberboxsepin} und
+% \Lkeyword{fiberboxsepout}). Nur die Seiten der Komponente wird
+% automatische mit Fasern verbunden, die nur einen einzigen Knoten hat
+% (siehe \Lkeyword{fiberboxcount} und das folgende Beispiel).
 % \fi
+% \ifENGLISH 
+% A \Lcs{fiberbox} can be positioned either with two, or four nodes which
+% affects the positioning of the component and the interface nodes, and the
+% automatic fiber connections.
+% 
+% If only two nodes are used these are the reference nodes and the separation
+% between the components input and output nodes must be specified manually (see
+% \Lkeyword{fiberboxsepin} and \Lkeyword{fiberboxsepout}). Only the side of the
+% component is connected automatically which has a single node only (see
+% \Lkeyword{fiberboxcount} and the following example).
+% \fi
+%
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}
+\begin{LTXexample}[linerange={1-2,5-5}]
 \begin{pspicture}(3,2)
   \fiberbox[fiberboxcount=1x2, showifcnodes](0,1)(3,1)
+  \psdot(\oenodeRefA{})\uput[90](\oenodeRefA{}){RefA}
+  \psdot(\oenodeRefB{})\uput[90](\oenodeRefB{}){RefB}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
 %</ignore>
 % \fi
 %
-% \ifGERMAN\fi
+% \ifGERMAN 
+% Werden vier Knoten verwendet, dann wird die Lage der Komponentenknoten
+% und deren Abstand automatisch bestimmt. Die Komponente wird zwischen
+% der Mitte der beiden Eingangsknoten und der Mitte der beiden
+% Ausgangsknoten positioniert. Der erste Eingangsknoten wird an dem
+% \prm{tl}-Knoten ausgerichtet, der letzte Eingangsknoten an dem
+% \prm{bl}-Knoten. Die übrigen Eingangsknoten werden dazwischen
+% gleichverteilt. Die Ausgangsknoten werden entsprechend behandelt. Die
+% vier angegebenen Knoten werden automatisch mit den jeweils
+% zugeordneten Komponentenknoten verbunden.
+% \fi
 % \ifENGLISH
-% When four nodes are used, the interface nodes and their separation are
-% determined automatically. The first input interface node is aligned with
-% \prm{tl}, the last input node is aligned with \prm{bl}, all other input nodes
-% are equally distributed between these. The output nodes are handled accordingly.
+% When four nodes are used the interface nodes and their separation are
+% determined automatically. The component is positioned between the
+% center of the two input and the center of the two output nodes. The
+% first input interface node is aligned with the \prm{tl} node, the last
+% input node is aligned with \prm{bl}, all other input nodes are equally
+% distributed between these. The output nodes are handled
+% accordingly. The four specified nodes are connected automatically to
+% the component, each with the interface node it is aligned to.
 % \fi
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}
+\begin{LTXexample}[linerange={1-2,5-5}]
 \begin{pspicture}(3,2)
-  \fiberbox[fiberboxcount=3x4, showifcnodes](0,1.5)(0,0.5)(3,2)(3,0)
+  \fiberbox[fiberboxcount=3x4, showifcnodes](0.5,1.6)(0,0.4)(2.5,2)(3,0)
+  \psdot(\oenodeRefA{})\uput[90](\oenodeRefA{}){RefA}
+  \psdot(\oenodeRefB{})\uput[90](\oenodeRefB{}){RefB}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -4490,35 +4524,83 @@
 % \fi
 %
 % \begin{optionlist}
-%   \numitem[0.6]{fiberboxwidth}
+%   \numitem[1]{fiberboxwidth}
 %   \ifGERMAN Die Breite der Faserbox.\fi
 %   \ifENGLISH The width of the fiber box.\fi
 %
 %   \numitem[0]{fiberboxheight}
-%   \ifGERMAN Die Höhe der Faserbox. Ist die Höhe kleiner als der Platz der von
-%   den Eingangs- und Ausgangsknoten benötigt wird, dann wird die Höhe
-%   automatisch berechnet.
+%   \ifGERMAN Die Höhe der Faserbox. Ist die Höhe kleiner als der Platz
+%   der von den Eingangs- oder Ausgangsknoten benötigt wird, dann wird
+%   die Höhe automatisch berechnet. Die berechnete Höhe ist
+%   $\text{max}\,(\text{sepin}\times(\text{N}-1),
+%   \text{sepout}\times(\text{M}-1))$.
 %   \fi
-%   \ifENGLISH\fi
+%   \ifENGLISH The height of the fiber box. If the height is lower than
+%   the space required by the input or output nodes, it is calculated
+%   automatically. The calculated height is 
+%   $\text{max}\,(\text{sepin}\times(\text{N}-1),
+%   \text{sepout}\times(\text{M}-1))$. 
+%   \fi
 % \iffalse
 %<*ignore>
 % \fi
 \begin{LTXexample}
-\begin{pspicture}(3,2.5)
+\begin{pspicture}(3,2.8)
   \psset[optexp]{innerlabel, fiberboxwidth=1, fiberboxcount=1x2}
   \fiberbox(0,2)(0,2)(3,2.5)(3,1.5){auto}
-  \fiberbox[fiberboxheight=1.1](0,0.5)(0,0.5)(3,1)(3,0){fix}
+  \fiberbox[fiberboxheight=1.05](0,0.5)(0,0.5)(3,1)(3,0){fix}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
 %</ignore>
 % \fi
 %
-%   \optitem{fiberboxsize}{\prm{num} or \prm{width} \prm{height}}
+%   \optitem{fiberboxsize}{\prm{width} \prm{height}}
+%   \ifGERMAN Die Breite und Höhe der Faserbox, ist äquivalent zum Aufruf von
+%   \Lkeyword{fiberboxwidth} und \Lkeyword{fiberboxheight}.
+%   \fi
+%   \ifENGLISH The width and height of the fiber box, is equivalent to calling
+%   both \Lkeyword{fiberboxwidth} and \Lkeyword{fiberboxheight}.
+%   \fi
+%
 %   \numitem[0.2]{fiberboxsepin}
+%   \ifGERMAN Der Abstand zwischen zwei Eingangsknoten. Dieser Wert wird nur
+%   verwendet, falls die Faserbox mit zwei Knoten positioniert wird. Ansonsten
+%   wird der Abstand automatisch ermittelt wird.
+%   \fi
+%   \ifENGLISH The separation between two input nodes. This value is
+%   used only if the fiber box is positioned with two nodes. Otherwise
+%   the separation is calculated automatically.
+%   \fi
+%
 %   \numitem[0.2]{fiberboxsepout}
-%   \optitem[2x3]{fiberboxcount}{\prm{N}x\prm{M}}
+%   \ifGERMAN Analog zu \Lkeyword{fiberboxsepin}, aber für die Ausgangsknoten.\fi
+%   \ifENGLISH Equivalent to \Lkeyword{fiberboxsepout}, but for the output nodes.\fi
+%
+%   \optitem[2x2]{fiberboxcount}{\prm{N}x\prm{M}}
+%   \ifGERMAN Anzahl der Eingangs- (\prm{N}) und Ausgangsknoten (\prm{M}).\fi
+%   \ifENGLISH Number of input (\prm{N}) and output nodes (\prm{M}).\fi
 % \end{optionlist}
+%
+% \ifGERMAN Für bestimmte Parameterkombinationen ist eine \Lcs{fiberbox}
+% äquivalent zu einer \Lcs{optbox}.
+% \fi
+% \ifENGLISH For certain parameter configurations a \Lcs{fiberbox} is
+% equivalent to an \Lcs{optbox}.
+% \fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(0,0.3)(3,2.6)
+  \psset[optexp]{label=0.6}
+  \fiberbox[fiberboxsize=1.2 0.6, fiberboxcount=1x1](0,2.5)(3,2.5){fiberbox}
+  \optbox[optboxsize=1.2 0.6, fiber](0,1)(3,1){optbox}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % \psset{usefiberstyle=false}
 %
 % \ifGERMAN\chapter{Hybridkomponenten}\fi
@@ -8883,6 +8965,7 @@
 % \testextnodes{fibercollimator}{(0,1.5)(3,1.5)}
 % \testextnodes{optcirculator}{(0,1.6)(3,1.6)(1.5,0.9)}
 % \testextnodes[couplersize=0.5 0.3]{optcoupler}{(0,2)(0,1)(3,2)(3,1)}
+% \testextnodes{fiberbox}{(0,1.75)(0,1.25)(3,1.75)(3,1.25)}
 %
 %
 % \ifENGLISH\subsection{Interface nodes}\fi
@@ -9047,7 +9130,7 @@
 % \bgroup\psset{beam}
 % \noindent\showfdipoleifc{fibercollimator}\egroup
 % \hspace{\fill}%
-% \begin{pspicture}(0,-0.5)(3,1.4)
+% \begin{pspicture}(0,-0.5)(3,1.5)
 %   \pnode(0,1){A}\pnode(3,1){B}\pnode(1.2,-0.1){C}
 %   \optcirculator(A)(B)(C)
 %   \psdot(\oenodeIn{})\uput[-135](\oenodeIn{}){1}
@@ -9055,8 +9138,15 @@
 %   \psdot(\oenodeOut{})\uput[-45](\oenodeOut{}){N}
 %   \rput[bl](0,-0.4){\ttfamily\textbackslash optcirculator}
 % \end{pspicture}\hspace{\fill}%
-% \begin{pspicture}(3,1)
-% \end{pspicture}%
+% \begin{pspicture}(0,-0.5)(3,1.5)
+%   \fiberbox[fiberboxcount=2x3](0,0.95)(0,0.45)(3,1.2)(3,0.2)
+%   \psdot(\oenodeIn{})\uput[135](\oenodeIn{}){1}
+%   \psdot(\oenodeIfc{2}{})\uput[-135](\oenodeIfc{2}{}){2}
+%   \psdot(\oenodeIfc{3}{})\uput[45](\oenodeIfc{3}{}){3}
+%   \psdot(\oenodeIfc{4}{})\uput[0](\oenodeIfc{4}{}){4}
+%   \psdot(\oenodeOut{})\uput[-45](\oenodeOut{}){N}
+%   \rput[bl](0,-0.4){\ttfamily\textbackslash fiberbox}
+% \end{pspicture}
 % \bigskip
 %
 % \noindent
@@ -9347,9 +9437,11 @@
 %
 % \begin{changelog}
 %\patchcmd{\release}{\setlength{\itemsep}{0pt}}{\setlength{\itemsep}{0pt}\setlength{\parsep}{0pt}}{}{}
-%   \begin{release}{3.0x}{0000-00-00}
-%   \item Modified \cs{fibercollimator} to have \opt{allowbeaminside=false} by default\see{cmd:fibercollimator}
+%   \begin{release}{3.1}{0000-00-00}
+%   \item Added component \cs{fiberbox}\see{cmd:fiberbox}
 %   \item Extended connection macros to not required curly braces around node parenthesis any more\see{sec:namingobj}
+%   \item Modified \cs{fibercollimator} to have \opt{allowbeaminside=false} by default\see{cmd:fibercollimator}
+%   \item Fixed a bug concerning node expressions with \cs{drawfiber}
 %   \end{release}
 %   \begin{release}{3.0}{2012-07-09}
 %   \item Modified beam connections with \cs{drawbeam} to support raytracing\see{cmd:drawbeam}
@@ -10672,10 +10764,10 @@
   \fi
 }%
 \psset[optexp]{%
-  fiberboxsize=0.6,
+  fiberboxsize=1,
   fiberboxsepin=0.2,
   fiberboxsepout=0.2,
-  fiberboxcount=2x3}
+  fiberboxcount=2x2}
 %    \end{macrocode}
 % \subsection{Beam-connection parameters}
 % The keys related to the \cs{draw*} macros.
