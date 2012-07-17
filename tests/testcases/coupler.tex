@@ -11,6 +11,7 @@
 \bigskip
 
 \subsection{Alignment of \textbackslash optcoupler types}
+\begingroup
 \psset[optexp]{coupleralign=center}
 \begin{pspicture}[showgrid](-0.2,-0.2)(3.2,1.2)
   \pnode(0,1){A}\pnode(0,0){B}\pnode(3,1){C}\pnode(3,0){D}
@@ -28,8 +29,10 @@
   \pnode(0,1){A}\pnode(0,0){B}\pnode(3,1){C}\pnode(3,0){D}
   \optcoupler[couplertype=cross](A)(B)(C)(D)
 \end{pspicture}
+\endgroup
 \bigskip
 
+\begingroup
 \psset[optexp]{coupleralign=top}
 \begin{pspicture}[showgrid](-0.2,-0.2)(3.2,1.2)
   \pnode(0,1){A}\pnode(0,0){B}\pnode(3,1){C}\pnode(3,0){D}
@@ -47,8 +50,10 @@
   \pnode(0,1){A}\pnode(0,0){B}\pnode(3,1){C}\pnode(3,0){D}
   \optcoupler[couplertype=cross](A)(B)(C)(D)
 \end{pspicture}
+\endgroup
 \bigskip
 
+\begingroup
 \psset[optexp]{coupleralign=bottom}
 \begin{pspicture}[showgrid](-0.2,-0.2)(3.2,1.2)
   \pnode(0,1){A}\pnode(0,0){B}\pnode(3,1){C}\pnode(3,0){D}
@@ -66,8 +71,10 @@
   \pnode(0,1){A}\pnode(0,0){B}\pnode(3,1){C}\pnode(3,0){D}
   \optcoupler[couplertype=cross](A)(B)(C)(D)
 \end{pspicture}
+\endgroup
 
 \subsection{Alignment of \textbackslash wdmcoupler types}
+\begingroup
 \psset[optexp]{coupleralign=center}
 \begin{pspicture}[showgrid](-0.2,-0.2)(3.2,1.2)
   \psset{couplertype=none}
@@ -89,8 +96,10 @@
   \pnode(0,1){A}\pnode(0,0){B}\pnode(3,0.5){C}
   \wdmcoupler(A)(B)(C)
 \end{pspicture}
+\endgroup
 \bigskip
 
+\begingroup
 \psset[optexp]{coupleralign=top}
 \begin{pspicture}[showgrid](-0.2,-0.2)(3.2,1.2)
   \psset{couplertype=none}
@@ -112,8 +121,10 @@
   \pnode(0,1){A}\pnode(0,0){B}\pnode(3,1){C}
   \wdmcoupler(A)(B)(C)
 \end{pspicture}
+\endgroup
 \bigskip
 
+\begingroup
 \psset[optexp]{coupleralign=bottom}
 \begin{pspicture}[showgrid](-0.2,-0.2)(3.2,1.2)
   \psset{couplertype=none}
@@ -135,8 +146,10 @@
   \pnode(0,1){A}\pnode(0,0){B}\pnode(3,0){C}
   \wdmcoupler(A)(B)(C)
 \end{pspicture}
+\endgroup
 
 \subsection{Alignment of \textbackslash wdmsplitter types}
+\begingroup
 \psset[optexp]{coupleralign=center}
 \begin{pspicture}[showgrid](-0.2,-0.2)(3.2,1.2)
   \psset{couplertype=none}
@@ -158,8 +171,10 @@
   \pnode(0,0.5){A}\pnode(3,1){B}\pnode(3,0){C}
   \wdmsplitter(A)(B)(C)
 \end{pspicture}
+\endgroup
 \bigskip
 
+\begingroup
 \psset[optexp]{coupleralign=top}
 \begin{pspicture}[showgrid](-0.2,-0.2)(3.2,1.2)
   \psset{couplertype=none}
@@ -181,8 +196,10 @@
   \pnode(0,1){A}\pnode(3,1){B}\pnode(3,0){C}
   \wdmsplitter(A)(B)(C)
 \end{pspicture}
+\endgroup
 \bigskip
 
+\begingroup
 \psset[optexp]{coupleralign=bottom}
 \begin{pspicture}[showgrid](-0.2,-0.2)(3.2,1.2)
   \psset{couplertype=none}
@@ -203,4 +220,35 @@
   \psset{couplertype=cross}
   \pnode(0,0){A}\pnode(3,1){B}\pnode(3,0){C}
   \wdmsplitter(A)(B)(C)
+\end{pspicture}
+\endgroup
+
+\subsection{Using only two nodes for coupler}
+\begin{pspicture}[showgrid](3,2)
+  \pnode(0,1){A}\pnode(3,1){B}
+  \optcoupler[coupleralign=t](A)(B)
+  \drawfiber[linecolor=red]{([offset=0.5]A)}{}{([offset=0.5]B)}
+  \drawfiber[linecolor=red]{([offset=-0.5]A)}{}{([offset=-0.5]B)}
+\end{pspicture}
+\begin{pspicture}[showgrid](3,2)
+  \pnode(0,1){A}\pnode(3,1){B}
+  \optcoupler(A)(B)
+  \drawfiber[linecolor=red]{([offset=0.5]A)}{}{([offset=0.5]B)}
+  \drawfiber[linecolor=red]{([offset=-0.5]A)}{}{([offset=-0.5]B)}
+\end{pspicture}
+\begin{pspicture}[showgrid](3,2)
+  \pnode(0,1){A}\pnode(3,1){B}
+  \optcoupler[coupleralign=b](A)(B)
+  \drawfiber[linecolor=red]{([offset=0.5]A)}{}{([offset=0.5]B)}
+  \drawfiber[linecolor=red]{([offset=-0.5]A)}{}{([offset=-0.5]B)}
+\end{pspicture}
+
+\begin{pspicture}(4,2)
+  \pnode(0,1){A}\pnode(4,1){B}
+  \psset[optexp]{fiber=none}
+  \wdmsplitter[position=0.2, coupleralign=b](A)(B)
+  \wdmcoupler[position=0.8, coupleralign=t](A)(B)
+  \drawfiber{(A)}{1}{2}{(B)}
+  \drawfiber{1}{([offset=0.5, Xnodesep=1]\oenodeIfc{2}{1})}
+  \drawfiber{([offset=-0.5, Xnodesep=-1]\oenodeIfc{2}{2})}{2}
 \end{pspicture}
