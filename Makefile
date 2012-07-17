@@ -22,7 +22,10 @@ doc-DE : $(PACKAGE)-DE.pdf
 quickref: $(PACKAGE)-quickref.pdf
 
 dist : doc doc-DE quickref Changes
-	tar chvzf $(ARCHNAME).tar.gz $(ARCHFILES)
+	mkdir -p pst-optexp
+	cp $(ARCHFILES) pst-optexp
+	tar chvzf $(ARCHNAME).tar.gz pst-optexp
+	rm -rf pst-optexp
 	@ echo
 	@ echo $(ARCHNAME).tar.gz
 
