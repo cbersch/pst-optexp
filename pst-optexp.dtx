@@ -8856,6 +8856,30 @@
 \end{pspicture}
 \end{LTXexample}
 
+\begin{LTXexample}[vsep=10mm, pos=t, caption={caption}]
+\begin{pspicture}(13.6,2.6)
+  \psset[optexp]{labeloffset=1, mirrorwidth=0.5, optboxwidth=2}
+  \pnode(2,1){Laser}\pnode(12,2){Film}\pnode(Film|Laser){Ref}
+  \begin{optexp}
+    \optbox[position=start](Laser)(Ref){HeNe-Laser}
+    \pinhole[abspos=0.8](Laser)(Ref){Blende}
+    \optbox[abspos=2.5](Laser)(Ref){Raumfilter}
+    \lens[fillstyle=solid, fillcolor={[rgb]{0.87,0.91,0.93}}](Laser)(Ref){Linse}
+    \mirror[label=1 30]([offset=0.2]Laser)([offset=0.2]Ref)(Film){%
+      \begin{tabular}{l}Spiegel\\(fest)\end{tabular}}
+    \opttripole[label=0.4 180](Ref)(Film)(Ref){%
+      \psframe(0.5,1\pslinewidth)(-0.5,5\pslinewidth)
+      \psline[linewidth=2\pslinewidth](0.5,0)(-0.5,0)
+    }{Film}
+    \newpsstyle{Beam}{linewidth=2\pslinewidth, linecolor=red!90!black, beamalign=absolute}
+    \drawbeam{1-4}
+    \drawbeam[beampos=0.2]{4-6}
+    \mirror[variable, label=0.8 -30]([offset=-0.2]Laser)([offset=-0.2, Xnodesep=-0.7]Ref)(Film){var. Spiegel}
+    \drawbeam[beampos=-0.2]{4}{7}{6}
+  \end{optexp}
+\end{pspicture}
+\end{LTXexample}
+
 \begin{LTXexample}[pos=t, linerange={1-1}, caption={caption}]
 
 \begin{pspicture}(12.3,8.6)
@@ -11378,11 +11402,11 @@
     \ifPOE@backlayer
       \ifx\POE@key@startnode\POE@str@auto\else
         \POE@pnode{/\POE@key@startnode\space \POE@comps exch pop 
-          \POE@dict{getsubnode} \tx@UserCoor}{@@A}
+          \POE@dict{GetIfcOrNodeCoord} \tx@UserCoor}{@@A}
       \fi
       \ifx\POE@key@stopnode\POE@str@auto\else
         \POE@pnode{/\POE@key@stopnode\space \POE@comps pop 
-                 \POE@dict{getsubnode} \tx@UserCoor}{@@B}
+                 \POE@dict{GetIfcOrNodeCoord} \tx@UserCoor}{@@B}
       \fi
       \ifx\POE@key@startnode\POE@str@auto
         \ifx\POE@key@stopnode\POE@str@auto
@@ -17674,7 +17698,12 @@ tx@OptexpDict begin
 % \end{macro}
 % 
 % \begin{macro}{NearestNode}
-% CompA/NodeA CombB/NodeB -> Coordinates of nodeA or the node of CompA which is nearest to nodeB
+%   Get the coordinates of the node of \PSvar{CompA} which is nearest to
+%   \PSvar{CompB}/\PSvar{NodeB}, or push the coordinates of
+%   \PSvar{NodeA} on stack if it is already a node.
+%   \begin{pssyntax}
+%     \PSvar{CompA/NodeA} \PSvar{CompB/NodeB} \PSop{NearestNode} \PSvar{X Y}
+%   \end{pssyntax}
 %    \begin{macrocode}
 /NearestNode {
   (NearestNode) DebugBegin
@@ -17749,6 +17778,7 @@ tx@OptexpDict begin
       fiberalign center eq {
         RelFiberAngle@center
       }{
+        3 1 roll pop pop
         RelFiberAngle@ref
       } ifelse
       2 copy exch atan
@@ -17770,6 +17800,7 @@ tx@OptexpDict begin
     CompA fiberalign center eq {
       RelFiberAngle@center
     }{
+      3 1 roll pop pop
       RelFiberAngle@tref
     } ifelse
     2 copy exch atan
@@ -17784,12 +17815,12 @@ tx@OptexpDict begin
 % \end{macro}
 % 
 % \begin{macro}{/RelFiberAngle@ref}
+% Calculate the vector of the reference line of \PSvar{CompA}.
 % \begin{pssyntax}
-%   \PSvar{Xa Ya CompA} \PSop{RelFiberAngle@ref} \PSvar{dX dY}
+%   \PSstring{CompA} \PSop{RelFiberAngle@ref} \PSvar{dX dY}
 % \end{pssyntax}
 %    \begin{macrocode}
 /RelFiberAngle@ref {
-  3 1 roll pop pop
   dup (A) NodeName exch (B) NodeName
   @GetCenter 3 -1 roll @GetCenter @ABVect 
 } bind def
@@ -17799,11 +17830,10 @@ tx@OptexpDict begin
 % \begin{macro}{/RelFiberAngle@tref}
 % Same as \PSname{RelFiberAngle@ref} but uses the transformed reference nodes.
 % \begin{pssyntax}
-%   \PSvar{Xa Ya CompA} \PSop{RelFiberAngle@ref} \PSvar{dX dY}
+%   \PSvar{CompA} \PSop{RelFiberAngle@ref} \PSvar{dX dY}
 % \end{pssyntax}
 %    \begin{macrocode}
 /RelFiberAngle@tref {
-  3 1 roll pop pop
   dup (TrefA) NodeName exch (TrefB) NodeName
   @GetCenter 3 -1 roll @GetCenter @ABVect 
 } bind def
@@ -17811,6 +17841,11 @@ tx@OptexpDict begin
 % \end{macro}
 %
 % \begin{macro}{/RelFiberAngle@center}
+%   Calculate the vector from the center node of \PSvar{CompA} to the
+%   node \PSstring{Xa, Ya}.
+% \begin{pssyntax}
+%   \PSvar{Xa Ya CompA} \PSop{RelFiberAngle@center} \PSvar{dX dY}
+% \end{pssyntax}
 %    \begin{macrocode}
 /RelFiberAngle@center {
   (Center) NodeName @GetCenter 4 2 roll @ABVect
@@ -17818,10 +17853,12 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{getsubnode}
-% subname node/name  -> coordinates
+% \begin{macro}{GetIfcOrNodeCoord}
+%   \begin{pssyntax}
+%     \PSstring{IfcNum} \PSstring{CompName}/\PSproc{node} \PSop{GetIfcOrNodeCoord} \PSvar{x y}
+%   \end{pssyntax}
 %    \begin{macrocode}
-/getsubnode {
+/GetIfcOrNodeCoord {
   dup xcheck {
     exch pop exec
   } {
