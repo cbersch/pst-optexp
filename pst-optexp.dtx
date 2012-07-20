@@ -8880,6 +8880,28 @@
 \end{pspicture}
 \end{LTXexample}
 
+\begin{LTXexample}[pos=t, caption={caption}]
+\begin{pspicture}(6.6,2.4)
+  \psset{mirrorwidth=0.6, useNA=false, beaminsidefirst}
+  \pnode(0,2){In}\pnode(1,2){BS}\pnode(1,0.5){M1}\pnode(2,1){M2}\pnode(6,1.5){Det}
+  \mirror[mirrortype=semitrans, n=1](In)(BS)(M1)
+  \mirror[label=0.4 180 . absolute](BS)(M1)(M2|M1)
+  \mirror(M1)(M2|M1)(M2)
+  \mirror(M2|M1)(M2)([Xnodesep=1]M2)
+  \optbox[abspos=2](BS)([offset=0.5]Det)
+  \lens[lens=4 4 2, n=3.3]([Xnodesep=-3]Det)(Det)
+  \optbox[optboxsize=0.2 0.6, n=1](\oenodeOut{6})(Det)
+  \optplate[linestyle=none](\oenodeOut{7})(Det)
+  \optdetector[detsize=0.6 0.6, fillstyle=solid,fillcolor=blue](\oenodeOut{6})(Det)
+  \newpsstyle{Beam}{linewidth=1.5\pslinewidth}
+  \drawbeam[linecolor=blue]{7-9}
+  \addtopsstyle{Beam}{linecolor=red}
+  \drawbeam(In){1-4}{6-8}
+  \drawbeam{1}{5-8}
+  \psline[arrows=<->, arrowinset=0]([offset=0.2]\oenodeLabel{2})([offset=-0.2]\oenodeLabel{2})
+\end{pspicture}
+\end{LTXexample}
+
 \begin{LTXexample}[pos=t, linerange={1-1}, caption={caption}]
 
 \begin{pspicture}(12.3,8.6)
