@@ -1835,7 +1835,7 @@
 %</ignore>
 % \fi
 % 
-% \choitem[relgrav]{labelref}{relative, relgrav, global}
+% \choitem[relgrav]{labelref}{relative, relgrav, global, absolute}
 % \ifGERMAN
 % Wählt das Bezugssystem für \Lkeyword{labelangle} und die Orientierung der
 % Beschriftung.
@@ -1891,7 +1891,7 @@
 %</ignore>
 % \fi
 %
-%   \item[global]
+%   \item[global, absolute]
 %   \ifGERMAN Die Beschriftung ist unabhängig von der Komponentenausrichtung.\fi
 %   \ifENGLISH The label is independent of the component alignment.\fi
 % \iffalse
@@ -10077,9 +10077,18 @@
 \define@key[psset]{optexp}{labelalign}{%
   \def\POE@key@labelalign{#1}%
 }
-\define@key[psset]{optexp}{labelref}{%
-  \edef\POE@key@labelref{#1}%
-}
+\define@choicekey+[psset]{optexp}{labelref}%
+  [\val\nr]{absolute,relative,relgrav,global}%
+  {%
+    \ifcase\nr\relax
+      \let\POE@key@labelref\POE@str@labelref@global
+    \else
+      \def\POE@key@labelref{#1}%
+    \fi
+  }{%
+    \PackageError{pst-optexp}%
+      {Unknown value '\POE@key@labelref' for labelref}%
+}%
 \define@choicekey*+[psset]{optexp}{innerlabel}%
   [\val\nr]{true}[true]%
   {\ifcase\nr\relax
@@ -13335,7 +13344,7 @@
 \def\POE@nlput@i(#1)(#2)#3#4{%
   \begin@SpecialObj
   \POE@LDNode(#1)(#2){#3}
-  \pcline[linestyle=none](temp@nlputA)(temp@nlputB)%
+  \pcline[linestyle=none,fillstyle=none, arrows=-, ArrowInside=-](temp@nlputA)(temp@nlputB)%
   \ncput[npos=0.5]{#4}%
   \end@SpecialObj}
 %    \end{macrocode}
@@ -13418,7 +13427,17 @@
 %    \end{macrocode}
 % Put the label only if it's not empty.
 %    \begin{macrocode}
-  \ifx\POE@temp\@empty\else
+  \ifx\POE@temp\@empty
+%    \end{macrocode}
+% Place the correct 'global' label node when the label is empty.
+%    \begin{macrocode}
+    \ifx\POE@key@labelref\POE@str@labelref@global
+      \nput[labelsep=\POE@key@labeloffset]%
+        {\POE@key@labelangle}%
+        {\oenodeCenter{}}%
+        {\pnode(0,0){\oenodeLabel{}}}%
+    \fi
+  \else
 %    \end{macrocode}
 % For \opt{global} positioning, the label is placed in global coordinate system
 % with respect to the center node.
@@ -13459,7 +13478,7 @@
               { /yA ED /xA ED /yB ED /xB ED} ifelse
           } ifelse
       } if >%
-      \ncline[linestyle=none,fillstyle=none, npos=]%
+      \ncline[linestyle=none,fillstyle=none, npos=, arrows=-, ArrowInside=-]%
              {\POE@trefnodeA}{\POE@trefnodeB}%
       \ifx\POE@key@position\@empty
         \ifx\POE@key@abspos\@empty
@@ -13674,7 +13693,7 @@
     \psset[optexp]{abspos={\POE@dict{ @@x0 neg @@x sub }}}%
   \fi\fi
   \POE@disablepos
-  \ncline[linestyle=none,fillstyle=none,npos=]%
+  \ncline[linestyle=none,fillstyle=none,npos=,arrows=-,ArrowInside=-]%
     {\POE@refnodeA}{\POE@refnodeB}%
 %    \end{macrocode}
 % Positioning of the component
