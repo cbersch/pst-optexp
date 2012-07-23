@@ -13214,20 +13214,18 @@
                 \POE@dict{VecAdd 0.5 VecScale}
                 \tx@UserCoor){\oenodeRefB{}}
         \POE@Verb{%
+          gsave
+            STV CP T 
             /N@\oenodeRefA{} @GetCenter
             /N@\oenodeRefB{} @GetCenter @ABVect NormalizeVec 
             90 matrix rotate dtransform 2 copy
-            \pst@nodedict   
-              /GetCenterOrig /GetCenter load def
-              /GetCenter { begin X Y end } def
-              \POE@tempa \POE@tempb @ABVect
-              \tx@UserCoor DotProd abs 3 1 roll
-              \POE@tempc \POE@tempd @ABVect 
-              \tx@UserCoor DotProd abs 
-              /GetCenter /GetCenterOrig load def
-            end
-            /@@outht ED /@@inht ED
-          }%
+            \POE@tempa \POE@tempb @ABVect
+            \tx@UserCoor DotProd abs 3 1 roll
+            \POE@tempc \POE@tempd @ABVect 
+            \tx@UserCoor DotProd abs 
+          grestore
+          /@@outht ED /@@inht ED
+        }%
       \fi
     \fi
     \POE@drawcomponent[fiberbox]{#5}\fiberbox@ii
