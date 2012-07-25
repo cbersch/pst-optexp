@@ -5635,11 +5635,63 @@
 % \ifGERMAN\section{Strahlvektor}\fi
 % \ifENGLISH\section{Beam vector}\fi
 %
+% \ifGERMAN Zusätzlich zu den Strahlknoten (siehe
+% \prettyref{sec:beamnode}) kann auf Postscript-Ebene auf die normierten
+% Strahlvektoren der letzten gespeicherten Strahlen (siehe
+% \Lkeyword{savebeam}) zugegriffen werden.
+%
+% Auch hier wird zwischen Einzelstrahlen, und oberem bzw. unterem Strahl
+% unterschieden.
+% \fi
 % \begin{ltxsyntax}
 %   \cmditem{oeBeamVec}{num}
 %   \cmditem{oeBeamVecUp}{num}
 %   \cmditem{oeBeamVecLow}{num}
 % \end{ltxsyntax}
+%
+% \ifGERMAN Das kann dazu genutzt werden, um z.B. die Polarisation eines
+% Strahls zu kennzeichnen. Im folgenden Beispiel wird ein neuer Knoten
+% \prm{C} definiert, indem mit \Lcs*{nodexn} der Endpunkt des Strahls
+% entlang seiner Trajektorie verschoben wird.
+% \fi
+% 
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[linerange={1-7,9-9}]
+\begin{pspicture}(3,3)
+  \pnode(0,1.5){A}\pnode(3,1.5){B}
+  \lens[abspos=1, lens=5 5 3, n=2.1](A)(B)
+  \optplane(B)
+  \drawbeam[beampos=1](A){1-2}
+  \nodexn{(\oenodeBeam{})-2(!\oeBeamVec{})}{C}
+  \polarization(C)(\oenodeBeam{})
+  \psdot(C)\uput[45](C){C}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
+% \ifGERMAN Das kann natürlich ebenfalls auf den oberen und unteren
+% Strahl angewendet werden. \fi
+%
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(3,2)
+  \pnode(0,1){A}\pnode(3,1){B}
+  \optbox[optboxsize=2 1, angle=20](A)(B)
+  \drawbeam[beaminsidelast, beamalign=abs](A){1}
+  \nodexn{(\oenodeBeam{})-1(!\oeBeamVec{})}{C}
+  \psdot(C)\uput[45](C){C}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
 % \iffalse
 %<*ignore>
 % \fi
@@ -11841,13 +11893,15 @@
         /N@\oenodeBeam{\POE@key@savebeampoints}\space 4 -1 roll
       } if 
       savebeam currentdict /lastVecTmp known and dup {
-        /lastVec\POE@key@savebeampoints\space lastVecTmp 4 -1 roll
+        /prevVec\POE@key@savebeampoints\space
+        currentdict /prevVecTmp known { prevVecTmp }{ 0 0 } ifelse
+        /lastVec\POE@key@savebeampoints\space lastVecTmp 7 -1 roll
       } if
     }%
   \fi
   \end@BeamObj
   \POE@Verb{%
-    { tx@OptexpDict begin ToVec def end } if
+    { tx@OptexpDict begin ToVec def ToVec def end } if
     { \tx@NodeScale @NewNode } if 
   }%
 }%
@@ -11982,14 +12036,20 @@
     savebeam and
     currentdict /lastVecTmpLow known and
     currentdict /lastVecTmpUp known and dup {
+      /prevVecLow\POE@key@savebeampoints\space /prevVecUp\POE@key@savebeampoints\space
+      currentdict /prevVecLow known currentdict /prevVecUp known and {
+        prevVecLow 3 -1 roll prevVecUp
+      } { 
+        0 0 3 -1 roll 0 0
+      } ifelse
       /lastVecLow\POE@key@savebeampoints\space lastVecTmpLow
       /lastVecUp\POE@key@savebeampoints\space lastVecTmpUp
-      7 -1 roll
+      13 -1 roll
     } if
   }%
   \end@BeamObj
   \POE@Verb{%
-    { tx@OptexpDict begin ToVec def ToVec def end } if
+    { tx@OptexpDict begin 4 { ToVec def } repeat end } if
     { \tx@NodeScale @NewNode @NewNode } if 
   }%
 }%
@@ -12670,7 +12730,7 @@
 %    \begin{macrocode}
 \def\oe@BeamVec#1#2{%
   \POE@dict{%
-    /lastVec#1\ifx\\#2\\1\else#2\fi\space dup
+    /prevVec#1\ifx\\#2\\1\else#2\fi\space dup
     currentdict exch known { load exec }{ pop 0 0 } ifelse
   }%
 }%
@@ -16821,7 +16881,12 @@ tx@OptexpDict begin
     counttomark 3 roll
     /PrevCenter /CurrCenter load def
     /lastBeamPointTmp /Curr load def
-    /lastVecTmp /CurrVec load def
+    currentdict /lastVecTmp known {
+      /prevVecTmp /lastVecTmp load def
+      /lastVecTmp /CurrVec load def
+    } {
+      /CurrVec load dup /lastVecTmp ED /prevVecTmp ED
+    } ifelse
     /PrevMode Mode def
     CompName cvn load /correct get /PrevCorrect ED
     PN IfcCnt eq {
@@ -17086,6 +17151,9 @@ tx@OptexpDict begin
     /DrawnSegm 0 def
   } if
   ret missed eq not {
+    currentdict /lastVecTmpUp known currentdict /lastVecTmpLow known and dup {
+      /lastVecTmpUp load /lastVecTmpLow load 3 -1 roll
+    } if
     CurrUp CurrLow @ABVect 
     CurrVecUp CurrVecLow 3 -1 roll add 3 1 roll add exch
     4 -1 roll mul 3 1 roll mul sub 1e-7 gt {
@@ -17102,6 +17170,10 @@ tx@OptexpDict begin
       /lastVecTmpUp /CurrVecUp load def
       /lastVecTmpLow /CurrVecLow load def
     } ifelse
+    not {
+      /lastVecTmpUp load /lastVecTmpLow load
+    } if
+    /prevVecLow ED /prevVecUp ED
   } if
   DebugEnd
 } bind def
