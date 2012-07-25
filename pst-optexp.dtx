@@ -10568,6 +10568,32 @@
 }%
 \psset[optexp]{doveprismsize=0.6}%
 %    \end{macrocode}
+% Glan-Thompson polarizer
+%    \begin{macrocode}
+\define@key[psset]{optexp}{glanthompsongap}{%
+  \pst@checknum{#1}\POE@key@glanthompsongap
+}%
+\define@key[psset]{optexp}{glanthompsonwidth}{%
+  \pst@checknum{#1}\POE@key@glanthompsonwidth
+}%
+\define@key[psset]{optexp}{glanthompsonheight}{%
+  \pst@checknum{#1}\POE@key@glanthompsonheight
+}%
+\define@key[psset]{optexp}{glanthompsonsize}{%
+  \pst@expandafter\POE@psset@@glanthompsonsize{#1} {} {} {}\@nil
+}%
+\def\POE@psset@@glanthompsonsize#1 #2 #3\@nil{%
+  \ifx\\#2\\
+    \PackageWarning{pst-optexp}{%
+      Parameter 'glanthompsonsize' requires two numbers}%
+  \fi
+  \psset[optexp]{glanthompsonwidth=#1, glanthompsonheight=#2}%
+}%
+\psset[optexp]{%
+  glanthompsongap=0,
+  glanthompsonsize=1 0.5
+}%
+%    \end{macrocode}
 % Beamsplitter
 %    \begin{macrocode}
 \define@key[psset]{optexp}{bssize}{%
@@ -13543,6 +13569,7 @@
 \newOptexpDipole[endbox]{optdetector}{}%
 \newOptexpDipole{optdiode}{allowbeaminside=false}%
 \newOptexpDipole{doveprism}{}%
+\newOptexpDipole{glanthompson}{}%
 %    \end{macrocode}
 % 
 % Define all free-ray tripoles
@@ -14669,7 +14696,61 @@
 \ignorespaces}%
 %    \end{macrocode}
 % \end{macro}
+%
+% \subsubsection{glanthompson}
+%
+% \begin{macro}{\glanthompson@ref}
+%    \begin{macrocode}
+\def\glanthompson@ref{%
+  \POE@setref{/@@x \POE@key@glanthompsonwidth\space 0.5 mul def
+    /@@y \POE@key@glanthompsonheight\space 0.5 mul def
+  }%
+}%      
+%    \end{macrocode}
+% \end{macro}
 % 
+% \begin{macro}{\glanthompson@nodes}
+%    \begin{macrocode}
+\def\glanthompson@nodes{%
+  \ifdim\POE@key@glanthompsongap pt>0pt
+    \newOptexpCompAmb{%
+      {@@x neg 0} {0 1} @@x neg @@x trans {PlainIfc}
+      {@@x 0} {0 1} @@x neg @@x trans {PlainIfc}
+      {0 @@y neg} {1 0} @@y neg @@y trans {PlainIfc}
+      {\POE@key@glanthompsongap\space -0.5 mul 0} {@@x neg @@y} 0 0 trans {PlainIfc}
+      4 \POE@key@n
+    }
+  \else
+    \newOptexpCompAmb{%
+      {@@x neg 0} {0 1} @@x neg @@x trans {PlainIfc}
+      {@@x 0} {0 1} @@x neg @@x trans {PlainIfc}
+      {0 @@y neg} {1 0} @@y neg @@y trans {PlainIfc}
+      {0 @@y} {1 0} @@y neg @@y trans {PlainIfc}
+      {0 0} {@@x neg @@y} 0 0 trans {PlainIfc}
+      5 \POE@key@n
+    }
+  \fi
+}%      
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\glanthompson@comp}
+%    \begin{macrocode}
+\def\glanthompson@comp{%
+  \ifdim\POE@key@glanthompsongap pt>0pt
+    \pspolygon(!\POE@dict{@@x neg @@y})%
+              (!\POE@dict{@@x neg @@y neg})%
+              (!\POE@dict{@@x \POE@key@glanthompsongap\space sub @@y neg})
+    \pspolygon(!\POE@dict{@@x neg \POE@key@glanthompsongap\space add @@y})%
+              (!\POE@dict{@@x @@y})%
+              (!\POE@dict{@@x @@y neg})%
+  \else
+    \psframe(!\POE@dict{@@x neg @@y neg})(!\POE@dict{@@x @@y})
+    \psline[arrows=cc-cc](!\POE@dict{@@x neg @@y})(!\POE@dict{@@x @@y neg})
+  \fi
+}%      
+%    \end{macrocode}
+% \end{macro}
 % \subsubsection{pentaprism}
 %
 % \begin{macro}{\pentaprism@nodes}
