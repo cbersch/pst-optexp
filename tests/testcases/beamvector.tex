@@ -1,11 +1,31 @@
 \begin{pspicture}[showgrid](3,3)
   \pnode(0,1.5){A}\pnode(3,1.5){B}
   \lens[abspos=1, lens=5 5 3, n=2.1](A)(B)
+  \optplane(B)
+  \drawbeam[beampos=1](A){1-2}
+  \nodexn{(\oenodeBeam{})-2(!\oeBeamVec{})}{C}
+  \polarization(U)(\oenodeBeam{})
+  \psdot(C)\uput[45](C){C}
+\end{pspicture}
+\bigskip
+
+\begin{pspicture}[showgrid](3,2)
+  \pnode(0,1){A}\pnode(3,1){B}
+  \optbox[optboxsize=2 2, angle=20](A)(B)
+  \drawbeam[beaminsidelast, beamalign=abs](A){1}
+  \nodexn{(\oenodeBeam{})-1(!\oeBeamVec{})}{C}
+  \psdot(C)\uput[45](C){C}
+\end{pspicture}
+\bigskip
+
+\begin{pspicture}[showgrid](3,3)
+  \pnode(0,1.5){A}\pnode(3,1.5){B}
+  \lens[abspos=1, lens=5 5 3, n=2.1](A)(B)
   \optplane[angle=90](B)
   \drawwidebeam[beamwidth=2](A){1-2}
-  \nodexn{(\oenodeBeamUp{})-2(!\oeBeamVecUp{})}{C}
-  \nodexn{(\oenodeBeamLow{})-2(!\oeBeamVecLow{})}{D}
-  \psdot(C)\uput[45](C){C}\psdot(D)\uput[-45](D){D}
-  \polarization(C)(\oenodeBeamUp{})
-  \polarization(D)(\oenodeBeamLow{})
+  \nodexn{(\oenodeBeamUp{})-2(!\oeBeamVecUp{})}{U}
+  \nodexn{(\oenodeBeamLow{})-2(!\oeBeamVecLow{})}{L}
+  \polarization(U)(\oenodeBeamUp{})
+  \polarization(L)(\oenodeBeamLow{})
+  \psdot(U)\uput[45](U){U}\psdot(L)\uput[-45](L){L}
 \end{pspicture}
