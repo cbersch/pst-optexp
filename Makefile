@@ -60,7 +60,7 @@ $(PACKAGE)-DE.dvi: L = ngerman
 %.pdf: %.ps
 	$(PS2PDF) $< $@
 
-$(PACKAGE)-quickref.tex: $(PACKAGE)-quickref.py
+$(PACKAGE)-quickref.tex: $(PACKAGE)-quickref.py $(PACKAGE).dtx
 	python $<
 
 $(PACKAGE)-quickref.pdf: $(PACKAGE)-quickref.tex
