@@ -9355,6 +9355,7 @@
 % \testextnodes[dettype=diode]{optdetector}{(0,1.5)(2,1.5)}
 % \testextnodes{optdiode}{(0,1.5)(3,1.5)}
 % \testextnodes{doveprism}{(0,1.5)(3,1.5)}
+% \testextnodes[glanthompsongap=0.15]{glanthompson}{(0,1.5)(3,1.5)}
 % \bgroup
 % \addtopsstyle{PiezoMirror}{unit=1.5}
 % \testextnodes[mirrortype=piezo]{mirror}{(0,1.5)(2,1.5)(2,0)}
@@ -9474,7 +9475,7 @@
 %   \psdot(\oenodeOut{})\uput[45](\oenodeOut{}){N}
 %   \rput[bl](0,0){\ttfamily\textbackslash optprism}
 % \end{pspicture}%
-% \hspace{\fill}%
+% \hspace{\fill}% 
 % \begin{pspicture}(3,1.5)
 %   \pnode(0,1){A}\pnode(2.5,1){B}\pnode(2.5,0){C}
 %   \optgrating(A)(B)(C)
@@ -9482,9 +9483,20 @@
 %   \psdot(\oenodeIn{})\uput[-135](\oenodeIn{}){1, N}
 %   \rput[bl](0,0){\ttfamily\textbackslash optgrating}
 % \end{pspicture}%
-% \bigskip
 %
-% \noindent
+% \begin{pspicture}(0,-0.5)(3,1.7) 
+%   \pnode(0,0.7){A}\pnode(3,0.7){B}
+%   \glanthompson[glanthompsonsize=1.8 1, glanthompsongap=0.2](A)(B)
+%   \drawbeam(A){}(B)
+%   \psdot(\oenodeIn{})\uput[135](\oenodeIn{}){1}
+%   \psdot(\oenodeIfc{2}{})\uput[45](\oenodeIfc{2}{}){2}
+%   \psdot(\oenodeIfc{3}{})\uput[30](\oenodeIfc{3}{}){3,C}
+%   \psdot(\oenodeIfc{4}{})\uput[150](\oenodeIfc{4}{}){4}
+%   \psdot(\oenodeOut{})\uput[45](\oenodeOut{}){N}
+%   \rput[bl](0,-0.4){\ttfamily\textbackslash glanthompson}
+% \end{pspicture}%
+% \hspace{\fill}%
+%
 % \begin{pspicture}(3,2.5)
 %   \pnode(0,1.5){A}\pnode(2.5,1.5){B}\pnode(2.5,0.4){C}
 %   \beamsplitter[bssize=1.2](A)(B)(C)
@@ -14963,10 +14975,10 @@
   \newOptexpCompAmb{%
     {@@x neg 0} {0 1} @@x neg @@x trans {PlainIfc}
     {@@x 0} {0 1} @@x neg @@x trans {PlainIfc}
+    {\POE@key@glanthompsongap\space -0.5 mul 0} {@@x neg @@y} 0 0 trans {PlainIfc}
     {0 @@y neg} {1 0} @@y neg @@y trans {PlainIfc}
     {0 @@y} {1 0} @@y neg @@y trans {PlainIfc}
-    {\POE@key@glanthompsongap\space -0.5 mul 0} {@@x neg @@y} 0 0 trans {PlainIfc}
-    5 \POE@key@n
+    3 \POE@key@n
   }
 }%      
 %    \end{macrocode}
