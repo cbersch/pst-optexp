@@ -9135,6 +9135,65 @@
 
 \begin{LTXexample}[pos=t, linerange={1-1}, caption={caption}]
 
+\scriptsize
+\psset{%
+  labelstyle=\scriptsize, 
+  labeloffset=0.5, 
+  optboxheight=0.6
+}%
+\newpsstyle{Fiber}{linecolor=red!70!black, linewidth=1.5\pslinewidth, arrowscale=1.2, arrowinset=0}
+\begin{pspicture}(8.8,5.6)
+  \pnode(2.8, 3.4){SwIn}
+  \pnode([Xnodesep=1]SwIn){LoopIn}
+  \pnode([offset=-1,]LoopIn){LoopInsIn}
+  \pnode([offset=-1,Xnodesep=2]LoopIn){LoopInsOut}
+  \pnode(LoopInsOut|LoopIn){LoopOut}
+  \optswitch[compname=LSw, label=. 180 b](SwIn)(LoopIn){load switch}
+  \optcoupler[addtoFiber={ArrowInside=->, ArrowInsidePos=0.7}](LoopIn)(LoopInsIn)(LoopOut)(LoopInsOut){50/50}
+  \optbox[labelstyle=\tiny, 
+          position=end, fiber, 
+          label=0, optboxsize=1.2 1](LoopOut)([Xnodesep=0.1]LoopOut){%
+            \parbox{1.2\psxunit}{\centering Linear\\Optical\\Sampling}%
+  }%
+  \pnode([Xnodesep=2.8]LoopInsOut){TR}
+  \pnode([offset=-2]TR){BR}
+  \pnode([Xnodesep=-1.5]LoopInsIn){TL}
+  \pnode(TL|BR){BL}
+  \psset[optexp]{fiber=none}
+  \optisolator[isolatorsize=0.5, abspos=1](LoopInsOut)(TR){isolator}% 4
+  \optbox[optboxsize=0.8 0.6, label=0, extnode=t, compname=PM, abspos=2](LoopInsOut)(TR){PM}
+  \drawfiber(LoopInsOut){4}{5}
+  \optfiber[label=0.2 . t, abspos=4](BL)(BR){fiber}
+  \drawfiber[fiberstyle=bar, angleA=0, startnode=N, linearc=0.5, armA=0.6]{5}{6}
+  \optamp[labelalign=b, abspos=3.8](BR)(BL){EDFA}
+  \optfilter[label=. 180 b, usefiberstyle, abspos=1](BL)(BR){OBPF}
+  \drawfiber{6}{7}{8}
+  \optswitch[labelalign=t, abspos=1, fiber=o](TL)(LoopInsIn){unload switch}
+  \drawfiber[angleA=180, linearc=0.5, armA=0.6, startnode=1, fiberstyle=bar]{8}{9}
+  \optbox[optboxwidth=0.8, extnode=t, compname=Mod, labeloffset=0](SwIn)([Xnodesep=-2.8]SwIn){MOD}
+  \optbox[endbox, optboxwidth=0.6, labeloffset=0]([Xnodesep=-3]SwIn)([Xnodesep=-2.5]SwIn){LD}
+  \drawfiber{}{Mod}
+  \drawfiber[arrows=->]{Mod}{LSw}
+  %
+  \psline[arrows=->]([offset=1]\oenodeExt{PM})(\oenodeExt{PM})
+  \pnode([offset=1.2, Xnodesep=-1]\oenodeExt{Mod}){Osci}
+  \oscillator[output=none, unit=0.8, linewidth=0.666\pslinewidth](Osci){}{}
+  \uput{0.5}[90](Osci){SYN}
+  \newpsstyle{Fiber}{}
+  \optbox[compname=PG, extnode=b, abspos=0.6, fiber=i, optboxsize=0.8 0.8, label=0.5 180 b]([Xnodesep=0.4]Osci)(\oenodeExt{PM}|Osci){PG}
+  \rput(\oenodeCenter{}){\psplot[plotpoints=200]{-0.3}{0.3}{2.7182818 x 0.05 div 2 exp neg exp 0.3 mul 0.15 sub}}
+  \optfilter[label=0.5 180 b, abspos=1, fiber=i](\oenodeOut{PG})(\oenodeExt{PM}|Osci){BPF}
+  \rput[r]([offset=0.4, Xnodesep=0.2]\oenodeOut{}){\psplot[plotpoints=200]{0}{1}{360 3.14159 div x 6 mul mul sin 2 exp 0.3 mul 0.15 sub}}
+  \ncangle[angleA=-90, angleB=90, arrows=->, armB=0.5]{\oenodeExt{PG}}{\oenodeExt{Mod}}
+  \ncangle[angleB=90, arrows=->]{\oenodeOut{}}{\oenodeExt{PM}}
+  \rput([Xnodesep=0.1, offset=0.2]\oenodeIn{Mod}){%
+    \psplot[plotpoints=200, unit=0.7]{0}{1}{2.7182818 x 0.5 sub 0.08 div 2 exp neg exp 0.5 mul}%
+  }%
+\end{pspicture}
+\end{LTXexample}
+
+\begin{LTXexample}[pos=t, linerange={1-1}, caption={caption}]
+
 \begin{pspicture}(12.3,8.6)
 \makeatletter
 \def\slm@comp{\psframe[dimen=outer](-0.5,0)(0.5,0.1)}%
