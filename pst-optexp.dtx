@@ -9133,6 +9133,49 @@
 \end{pspicture}
 \end{LTXexample}
 
+\enlargethispage{110pt}
+\begin{LTXexample}[pos=t, caption={caption}]%http://dx.doi.org/10.1364/OL.37.000930
+\psset[optexp]{optboxsize=1 0.8, usefiberstyle}
+\begin{pspicture}(13.5,4.7)
+\pnode(1,3.2){Scan}\pnode([offset=-1.6]Scan){Sat}
+\pnode([Xnodesep=5]Scan){ScanCpl}\pnode(ScanCpl|Sat){SatCpl}
+\pnode([Xnodesep=1.5,offset=-0.8]ScanCpl){Cpl}\pnode([Xnodesep=5]Cpl){PD}
+\pnode([Xnodesep=2.5, offset=-1.6]Cpl){Pump}\psset[optexp]{fiber=none}
+\optbox[position=start, label=0](Scan)(ScanCpl){Scan}
+\optmzm[abspos=1, compname=M1, extnode=t](Scan)(ScanCpl)
+\optmzm[abspos=2.5, compname=M2, extnode=t](Scan)(ScanCpl)
+\optamp[abspos=3.7](Scan)(ScanCpl)
+\polcontrol[abspos=4.5, fiber=o](Scan)(ScanCpl)
+\drawfiber{1}{2}{3}{4}{5}
+\optbox[position=start, compname=S, extnode=b, label=0](Sat)(SatCpl){Sat}
+\optmzm[abspos=1.75, compname=M3, extnode=b](Sat)(SatCpl)
+\optamp[abspos=3.7](Sat)(SatCpl)
+\polcontrol[abspos=4.5, fiber=o](Sat)(SatCpl)
+\drawfiber{6}{7}{8}{9}
+\wdmcoupler[fiber=i](ScanCpl)(SatCpl)(Cpl)
+\optisolator[position=0.1](Cpl)(Pump|Cpl)
+\optfiber[position=0.6](Cpl)(Pump|Cpl)
+\addtopsstyle{OptCircArrow}{arrows=<-}
+\optcirculator[optcircangle=0 -90](Cpl)(PD)(Pump)
+\wdmsplitter[position=0.8, coupleralign=t](Cpl)(PD)
+\optbox[position=end, label=0, compname=Pd, extnode=t](Cpl)(PD){PD}
+\optbox[position=end, label=0, compshift=-1.5](Cpl)(PD){OSA}
+\optamp[fiber](Pump)(\oenodeIfc{2}{13})
+\optbox[position=start, optboxsize=0.8 1.2, label=0 . . absolute](Pump)(Pump|Cpl){Pump}
+\drawfiber{10}{11}{12}{13}{14}{15}\drawfiber{14}{16}
+% electrical stuff
+\newpsstyle{Fiber}{}\psset[optexp]{label=0}
+\optbox[compshift=0.7, optboxsize=2.5 0.8](\oenodeExt{M2})(\oenodeExt{Pd}|\oenodeExt{M2}){Lock-In Amp}
+\ncangle[angleA=90, angleB=180, linearc=0.3]{\oenodeExt{M2}}{\oenodeIn{}}
+\ncangle[angleB=90, linearc=0.3]{\oenodeOut{}}{\oenodeExt{Pd}}
+\psset[optexp]{fiber=all, optboxsize=0.8 1, position=start}
+\optbox(\oenodeExt{S}|Pump)(\oenodeExt{S}){\psline(-0.3,-0.2)(0.3,0.2)(0.3,-0.2)}
+\optbox(\oenodeExt{M3}|Pump)(\oenodeExt{M3}){\psline(-0.3,-0.2)(0,0.2)(0.3,-0.2)}
+\oscillator[output=none, unit=0.75, linewidth=0.666\pslinewidth]([offset=1]\oenodeExt{M1}){}{}
+\psline(\oenodeExt{M1})([offset=0.4]\oenodeExt{M1})
+\end{pspicture}
+\end{LTXexample}
+
 \begin{LTXexample}[pos=t, linerange={1-1}, caption={caption}]
 
 \scriptsize
