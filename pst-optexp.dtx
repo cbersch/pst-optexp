@@ -18,7 +18,7 @@
 %<stylefile>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<stylefile>\ProvidesPackage{pst-optexp}
 %<*stylefile>
-    [2012/07/26 v3.2 Optical experimental setups with PSTricks]
+    [2012/07/31 v3.3alpha Optical experimental setups with PSTricks]
 %</stylefile>
 %
 %<*driver>
@@ -6688,6 +6688,41 @@
 % \iffalse
 %</ignore>
 % \fi
+%
+% \boolitem[false]{forcebeaminside}
+% \ifGERMAN
+% Wenn auf \opt{true} gesetzt, wird der Strahlengang innerhalb der
+% betroffenen Komponenten immer gezeichnet wird, unabhängig von allen
+% anderen Strahleinstellungen mit \Lkeyword{beaminside},
+% \Lkeyword{beaminsidefirst} und \Lkeyword{beaminsidelast}. Damit kann
+% der Strahl innerhalb einzelner Komponenten gezeichnet werden, auch
+% wenn alle anderen Komponenten in dem Strahlengang keinen internen
+% Strahl haben sollen.
+% \fi
+% \ifENGLISH
+% Forces to draw a beam inside a component. The option affects
+% components only and overwrites all settings of \Lkeyword{beaminside},
+% \Lkeyword{beaminsidefirst}, and \Lkeyword{beaminsidelast} if set to
+% \opt{true}. With this you can force an internal beams for single
+% components within a beam path.
+% \fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[morekeywords = {[21]{forcebeaminside}}]
+\begin{pspicture}(3,2)
+  \psset{optboxwidth=0.5}
+  \pnode(0,1){A}\pnode(3,1){B}
+  \optbox[position=0.2](A)(B)
+  \optbox[position=0.4, forcebeaminside](A)(B)
+  \optbox[position=0.6](A)(B)
+  \optbox[position=0.8](A)(B)
+  \drawbeam[beaminside=false](A){-}(B)
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % \end{optionlist}
 %
 % \ifENGLISH\subsection{Connecting with nodes}\fi
@@ -9116,10 +9151,10 @@
 \end{LTXexample}
 
 \begin{LTXexample}[pos=t, caption={caption}, label={ex:glan-thompson}]
-\newpsobject{perppol}{polarization}{poltype=perp, linecolor=green!90!black, polsize=1}
-\newpsobject{parallelpol}{polarization}{poltype=parallel, linecolor=red, polsize=0.8}
-\newpsstyle{Polarization}{arrowinset=0, arrowscale=1.2}
 \begin{pspicture}(-1,-0.5)(8,1.5)
+  \newpsobject{perppol}{polarization}{poltype=perp, linecolor=green!90!black, polsize=1}
+  \newpsobject{parallelpol}{polarization}{poltype=parallel, linecolor=red, polsize=0.8}
+  \newpsstyle{Polarization}{arrowinset=0, arrowscale=1.2}
   \pnode(0,1){A}\pnode(8,1){B}\pnode(4,-0.5){C}
   \glanthompson[glanthompsongap=0.2, glanthompsonsize=2 1](A)(B)
   \optplane(B)\optplane[angle=90](C)
@@ -9178,9 +9213,10 @@
 
 \begin{LTXexample}[pos=t, linerange={1-1}, caption={caption}]
 
-\psset{labeloffset=0.5, optboxsize=1 0.8, arrowscale=1.2, arrowinset=0, unit=1.1}
-\newpsstyle{Fiber}{linecolor=red!70!black, linewidth=1.5\pslinewidth}
+\psset{unit=1.1}
 \begin{pspicture}(9.3,5.8)
+  \psset{labeloffset=0.5, optboxsize=1 0.8, arrowscale=1.2, arrowinset=0}
+  \newpsstyle{Fiber}{linecolor=red!70!black, linewidth=1.5\pslinewidth}
   \pnode(1, 3.4){LD}\pnode([Xnodesep=3.2]LD){LoopIn}\pnode([offset=-1]LoopIn){LoopInsIn}
   \pnode([offset=-1,Xnodesep=2]LoopIn){LoopInsOut}\pnode(LoopInsOut|LoopIn){LoopOut}
   \optswitch[compname=LSw, label=. 180 b, abspos=2.7, fiber=o](LD)(LoopIn){load switch}
@@ -9982,6 +10018,10 @@
 % \begin{changelog}
 %\patchcmd{\release}{\setlength{\itemsep}{0pt}}{\setlength{\itemsep}{0pt}\setlength{\parsep}{0pt}}{}{}
 %   ^^A Do not wrap lines inside the \items, otherwise Changes.py does not work properly
+%   \begin{release}{x.x}{0000-00-00}
+%   \item Added option \opt{forcebeaminside}\see{prm:forcebeaminside}
+%   \item Added more examples\see{sec:examples}
+%   \end{release}
 %   \begin{release}{3.2}{2012-07-26}
 %   \item Added component \cs{glanthompson}\see{cmd:glanthompson}
 %   \item Added access to beam vectors with \cs{oeBeamVec}, \cs{oeBeamVecUp} and \cs{oeBeamVecLow}\see{cmd:oeBeamVec}
@@ -11465,6 +11505,7 @@
 }%
 \define@boolkey[psset]{optexp}[POE@]{beaminside}[true]{}%
 \define@boolkey[psset]{optexp}[POE@]{allowbeaminside}[true]{}%
+\define@boolkey[psset]{optexp}[POE@]{forcebeaminside}[true]{}%
 \define@boolkey[psset]{optexp}[POE@]{raytrace}[true]{}%
 \define@boolkey[psset]{optexp}[POE@]{useNA}[true]{}%
 \define@key[psset]{optexp}{skipconn}{%
@@ -11494,6 +11535,7 @@
   ,startinside=false
   ,stopinside=false
   ,allowbeaminside=true
+  ,forcebeaminside=false
   ,beaminside=true
   ,beaminsidefirst=false
   ,beaminsidelast=false
@@ -12899,9 +12941,11 @@
 \def\newOptexpComp@#1#2{%
   \POE@Verb{%
     \tx@NodeScale
-    [ #1 #2 \ifPOE@allowbeaminside true \else false \fi
-      (\oenode{}{}) {\tx@ScreenCoor} 
-      NewOptexpComp
+    [ #1 #2 
+    \ifPOE@allowbeaminside true \else false \fi
+    \ifPOE@forcebeaminside true \else false \fi
+    (\oenode{}{}) {\tx@ScreenCoor} 
+    NewOptexpComp
   }%
 \ignorespaces}%
 %    \end{macrocode}
@@ -16316,6 +16360,7 @@ tx@OptexpDict begin
   6 dict dup 3 1 roll def begin
     /ambiguous false def
     /allowbeaminside false def
+    /forcebeaminside false def
     /name ED
     /correct false def
 %    \end{macrocode}
@@ -16469,8 +16514,9 @@ tx@OptexpDict begin
 % \end{psarglist}
 %
 % \begin{pssyntax}
-%   \PSvar{[} \PSproc{x y} \PSproc{dx dy | rx ry} \PSvar{NAlow NAup} \PSvar{type}
-%   \PSproc{\ldots Ifc} \PSvar{\ldots{} [n] correct? amb? allowbeaminside?} 
+%   \PSvar{[} \PSproc{x y} \PSproc{dx dy | rx ry} \PSvar{NAlow NAup} 
+%   \PSvar{type} \PSproc{\ldots Ifc} 
+%   \PSvar{\ldots{} [n] correct? amb? allowbeaminside? forcebeaminside?} 
 %   \PSstring{CompName} \PSproc{scaling} \PSop{NewOptexpComp}
 % \end{pssyntax}
 %    \begin{macrocode}
@@ -16480,6 +16526,7 @@ tx@OptexpDict begin
   gsave
   12 dict dup 3 1 roll def begin
   /name ED
+  /forcebeaminside ED
   /allowbeaminside ED
   /ambiguous ED
   dup type /booleantype eq not { false } if /correct ED
@@ -17602,7 +17649,12 @@ tx@OptexpDict begin
         beaminside
       } ifelse
     } ifelse 
-    exch load dup dup /allowbeaminside get 4 -1 roll and 
+    exch load dup dup 
+    /forcebeaminside get {
+      3 -1 roll pop true
+    } {
+      dup /allowbeaminside get 4 -1 roll and 
+    } ifelse
     /drawinside ED
     /ambiguous get {
       /name get drawinside [ 3 1 roll ]
