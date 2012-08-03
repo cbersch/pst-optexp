@@ -1,20 +1,21 @@
 \documentclass{scrartcl}
 \usepackage{pst-optexp}
 % setup according to http://dx.doi.org/10.1364/AOP.1.000308 Fig. 37
-\begin{document}
+\begin{document}\scriptsize
 \definecolor[ps]{bl}{rgb}{tx@addDict begin Red Green Blue end}
 \addtopsstyle{SemitransMirror}{linestyle=solid, linewidth=0.7\pslinewidth}
 \newpsstyle{ExtendedMirror}{style=SemitransMirror}
-\psset[optexp]{mirrortype=extended, mirrorwidth=0.7, n=1}
+\psset[optexp]{mirrortype=extended, mirrorwidth=0.7, n=1, gratingalign=c}
 \newpsstyle{Beam}{linecolor=red!80!black, linewidth=1.5\pslinewidth}
-\begin{pspicture}[showgrid](-2,0)(10,6)
+\begin{pspicture}(-2,0)(8.3,5.9)
   \pnode(-2,0.5){In}\pnode(8,0.5){G1}\pnode([Xnodesep=-1.5, offset=1.3]G1){G2}\pnode(G1|G2){MG}
   \pnode([Xnodesep=1,offset=1]In){M1}
   \pnode([Xnodesep=5]In){M}
-  \mirror[mirrortype=semitrans, mirrorlinewidth=0.7\pslinewidth, labelangle=-90](In)([Xnodesep=-3]G1)(M1){Etalon}
+  \begin{optexp}
+  \mirror[mirrortype=semitrans, mirrorlinewidth=0.7\pslinewidth, label=0.6 -90](In)([Xnodesep=-3]G1)(M1){Etalon}
   \optgrating[angle=40](In)(G1)(G2)
   \optgrating[reverse, angle=40](G1)(G2)(MG)
-  \mirror[mirrorwidth=1](G2)(MG)(G2)
+  \mirror[mirrorwidth=1, label=1 135](G2)(MG)(G2){Stretcher}
   \multido{\i=0+1}{40}{%
     \pstVerb{%
       \i\space 650 400 sub 39 div mul 400 add 
@@ -35,15 +36,23 @@
   \mirror[angle=1.5](M3)(M4)(CM)
   \mirror[mirrorradius=3.5, angle=2](M4)(CM)(SM)
   \mirror(G1)(M)(CM)
-  \optretplate[plateheight=0.5, abspos=1.5](M)(CM)
-  \optbox[optboxsize=0.3 0.5, position=0.25](CM)(SM)
+  \optretplate[plateheight=0.5, abspos=1.5, label=0.6](M)(CM){$\lambda/2$}
+  \optbox[optboxsize=0.3 0.5, position=0.25, fillstyle=solid, fillcolor=yellow!90!black](CM)(SM){\begin{tabular}{@{}c@{}}nonlinear\\crystal\end{tabular}}
   \pinhole[phwidth=0.1](CM)(SM)
   \lens[lens=0.7 0.7 0.7, position=0.55, n=1.2](CM)(SM)
   \lens[lens=0.7 0.7 0.7, position=0.85, n=1.25](CM)(SM)
   \mirror(CM)(SM)(S)
-  \optbox[position=end, optboxsize=1 1.5, compshift=0.5](SM)(S)
+  \optbox[position=end, optboxsize=0.8 1.9, compshift=0.6, label=0](SM)(S){Spectrometer}
   \drawwidebeam{1}{5-9}{12-13}
   \drawwidebeam[beamangle=-1.9]{10-11}{9}{12-13}
   \drawwidebeam[beamwidth=0, beamdiv=4, fillcolor=blue!50]{12-17}
+  \end{optexp}
+  % now put the pulses
+  \newpsstyle{Pulse}{linecolor=red!90!black, linewidth=1.5\pslinewidth, plotpoints=200}
+  \newpsstyle{Arrow}{arrowinset=0, arrowscale=1.2, linewidth=2\pslinewidth, linecolor=red!90!black}
+  \rput([Xnodesep=0.3,offset=0.1]In){%
+    \psplot[style=Pulse]{-0.3}{0.3}{2.7182818 x 0.1 div 2 exp neg exp 0.8 mul}
+    \psline[arrows=->, style=Arrow](0,-0.4)(1,-0.4)}
+  \rput([Xnodesep=1.5,offset=-0.3]\oenodeCenter{1}){\psline[arrows=<->, style=Arrow](-0.7,0)(0.7,0)}
 \end{pspicture}
 \end{document}
