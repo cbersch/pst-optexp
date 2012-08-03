@@ -3596,6 +3596,31 @@
 % \iffalse
 %</ignore>
 % \fi
+%
+% \choitem[top]{gratingalign}{t, top, c, center} 
+% \ifGERMAN 
+% Wählt, ob die Reflektionsebene auf den Gitterspitzen (\opt{bottom}), oder in der Mitte des Gitters (\opt{center}) liegt .
+% \fi
+% \ifENGLISH
+% Selects if the reflection plane resides on \opt{top} of the grating or in its \opt{center}.
+% \fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[morekeywords={[21]{gratingalign}}]
+\begin{pspicture}(3,2)
+\pnode(0.5,0){A}\pnode(0.5,1.5){B}\pnode(2,1.5){C}\pnode(2,0){D}
+\psset{unit=1.5, labeloffset=0.4}
+\begin{optexp}
+  \optgrating[gratingalign=top](A)(B)(C){top}
+  \optgrating[gratingalign=center](B)(C)(D){center}
+  \drawwidebeam[fillstyle=solid, fillcolor=green!50, beamwidth=0.5](A){-}(D)
+\end{optexp}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % 
 % \boolitem[false]{reverse} 
 % \ifGERMAN
@@ -11067,6 +11092,17 @@
 \define@key[psset]{optexp}{gratinglinewidth}{%
   \edef\POE@key@gratinglinewidth{#1}%
 }
+\define@choicekey+[psset]{optexp}{gratingalign}%
+  [\val\nr]{t,c,top,center}%
+  {%
+    \ifcase\nr\relax
+      \let\POE@key@gratingalign\POE@str@top
+    \or
+      \let\POE@key@gratingalign\POE@str@center
+    \else
+      \def\POE@key@gratingalign{#1}%
+    \fi}%
+  {\PackageError{pst-optexp}{Unknown value '\val' for gratingalign.}}
 \define@boolkey[psset]{optexp}[POE@]{reverse}[true]{}
 \psset[optexp]{%
   gratingcount=10,
@@ -11075,6 +11111,7 @@
   gratingdepth=0.075,
   gratingtype=blazed,
   gratinglinewidth=0.7\pslinewidth,
+  gratingalign=t
 }%
 %    \end{macrocode}
 % Penta prism
@@ -14848,7 +14885,17 @@
   \else
     \edef\@ht{\POE@key@gratingheight\space}%
   \fi
-  \edef\@dp{\POE@key@gratingdepth\space}%
+%    \end{macrocode}
+% Shift the grating by its depth if gratingalign is set to 'center'.
+%    \begin{macrocode}
+  \ifx\POE@key@gratingalign\POE@str@top
+    \edef\@dp{\POE@key@gratingdepth\space}%
+    \edef\@bl{0 }%
+  \else
+    \edef\@dp{0 }%
+    \edef\@bl{\POE@key@gratingdepth\space neg }%
+    \edef\@ht{\@ht \POE@key@gratingdepth\space sub }%
+  \fi
   \edef\@step{\POE@key@gratingwidth\space\@cnt div }%
   \ifx\POE@key@gratingtype\POE@str@gratingtype@blazed
     \pscustom[linewidth=\POE@key@gratinglinewidth, linejoin=1]{%
@@ -14858,23 +14905,24 @@
         \psline[liftpen=1]%
           (! \@wd neg \i\space \@step mul add \@dp)%
           (! \@wd neg \i\space 
-             \ifPOE@reverse\else 1 add \fi \@step mul add 0)%
+             \ifPOE@reverse\else 1 add \fi \@step mul add \@bl)%
           (! \@wd neg \i\space 1 add \@step mul add \@dp)%
       }%
       \closepath
     }%
   \else\ifx\POE@key@gratingtype\POE@str@gratingtype@binary
-    \pscustom[linewidth=\POE@key@gratinglinewidth]{%
+    \pscustom[linewidth=\POE@key@gratinglinewidth, linejoin=1]{%
       \psline[liftpen=1](! \@wd \@dp)(! \@wd \@ht)%
                         (! \@wd neg \@ht)(! \@wd neg \@dp)%
       \multido{\i=0+1}{\POE@key@gratingcount}{%
         \psline[liftpen=1]%
           (! \@wd neg \i\space \@step mul add \@dp)%
-          (! \@wd neg \i\space \@step mul add 0)%
-          (! \@wd neg \i\space 0.5 add \@step mul add 0)%
+          (! \@wd neg \i\space \@step mul add \@bl)%
+          (! \@wd neg \i\space 0.5 add \@step mul add \@bl)%
           (! \@wd neg \i\space 0.5 add \@step mul add \@dp)%
           (! \@wd neg \i\space 1 add \@step mul add \@dp)%
       }%
+      \closepath
     }%
   \fi\fi
   \ifPOE@variable
