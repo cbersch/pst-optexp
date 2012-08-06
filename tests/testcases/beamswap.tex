@@ -15,41 +15,6 @@
 \end{pspicture}
 \bigskip
 
-% start multido at 1e-4
-\begin{pspicture}[showgrid](-3,-3)(3,3)
-  \newpsstyle{Beam}{fillstyle=solid, fillcolor=green!40}
-  \multido{\r=0.0001+90}{4}{%
-    \optplate[position=end](1;\r)(3;\r)
-    \drawwidebeam[beamdiv=5, beamwidth=0.2](1;\r){}\psdot(\oenodeBeamUp{})
-    }
-\end{pspicture}\hspace{\fill}
-\begin{pspicture}[showgrid](-3,-3)(3,3)
-  \newpsstyle{Beam}{fillstyle=solid, fillcolor=green!40}
-  \multido{\r=0.0001+90}{4}{%
-    \optplate[position=end](1;\r)(3;\r)
-    \drawwidebeam[beamdiv=-20, beamwidth=0.2](1;\r){}\psdot(\oenodeBeamUp{})
-    }
-\end{pspicture}
-\bigskip
-
-% start multido at -1e-4
-\begin{pspicture}[showgrid](-3,-3)(3,3)
-  \newpsstyle{Beam}{fillstyle=solid, fillcolor=green!40}
-  \multido{\r=-0.0001+90}{4}{%
-    \optplate[position=end](1;\r)(3;\r)
-    \drawwidebeam[beamdiv=5, beamwidth=0.2](1;\r){}\psdot(\oenodeBeamUp{})
-    }
-\end{pspicture}\hspace{\fill}
-\begin{pspicture}[showgrid](-3,-3)(3,3)
-  \newpsstyle{Beam}{fillstyle=solid, fillcolor=green!40}
-  \multido{\r=-0.0001+90}{4}{%
-    \optplate[position=end](1;\r)(3;\r)
-    \drawwidebeam[beamdiv=-20, beamwidth=0.2](1;\r){}\psdot(\oenodeBeamUp{})
-    }
-\end{pspicture}
-
-\newpage
-
 \begin{pspicture}[showgrid](-3,-3)(3,3)
   \psset{plateheight=2}
   \newpsstyle{Beam}{fillstyle=solid, fillcolor=green!40}
@@ -70,4 +35,52 @@
     \drawwidebeam[loadbeampoints, beamdiv=-45]{\ia-\ib}\psdot(\oenodeBeamUp{})
   }
 \end{pspicture}
+\newpage
+
+
+\begin{pspicture}[showgrid](-3.4,-3.4)(3.4,3.4)
+  \newpsstyle{Beam}{fillstyle=solid, fillcolor=green!40}
+  \multido{\ra=0+90,\rb=-20+90,\rc=20+90,\ia=1+2,\ib=2+2}{4}{%
+    \mirror(1;\rb)(3;\ra)(1;\rc)
+    \optplate[position=end](3;\ra)(1;\rc)
+    \drawwidebeam[beamwidth=0.2](1;\rb){\ia}
+    \backlayer{\psdot[dotscale=2](\oenodeBeamUp{})}
+    \drawwidebeam[loadbeampoints,beamdiv=-15]{\ia-\ib}
+    \backlayer{\psdot[dotscale=2](\oenodeBeamUp{})}
+  }
+\end{pspicture}\hspace{\fill}
+\begin{pspicture}[showgrid](-3.4,-3.4)(3.4,3.4)
+  \newpsstyle{Beam}{fillstyle=solid, fillcolor=green!40}
+  \multido{\ra=0+90,\rb=-20+90,\rc=20+90,\ia=1+2,\ib=2+2}{4}{%
+    \mirror(1;\rb)(3;\ra)(1;\rc)
+    \optplate[position=end](3;\ra)(1;\rc)
+    \drawwidebeam[beamwidth=0.2](1;\rb){\ia}
+    \backlayer{\psdot[dotscale=2](\oenodeBeamUp{})}
+    \drawwidebeam[loadbeampoints,beamdiv=10]{\ia-\ib}
+    \backlayer{\psdot[dotscale=2](\oenodeBeamUp{})}
+  }
+\end{pspicture}
 \bigskip
+
+\begin{pspicture}[showgrid](-3.4,-3.4)(3.4,3.4)
+  \newpsstyle{Beam}{fillstyle=solid, fillcolor=green!40}
+  \multido{\ra=0+90,\rb=30+90,\ia=1+2,\ib=2+2}{4}{%
+    \mirror(1;\ra)(3;\ra)(1;\rb)
+    \optplate[position=end](3;\ra)(1;\rb)
+    \drawwidebeam[beamwidth=0.2](1;\ra){\ia}
+    \backlayer{\psdot[dotscale=2](\oenodeBeamUp{})}
+    \drawwidebeam[loadbeampoints,beamdiv=-15]{\ia-\ib}
+    \backlayer{\psdot[dotscale=2](\oenodeBeamUp{})}
+  }
+\end{pspicture}\hspace{\fill}
+\begin{pspicture}[showgrid](-3.4,-3.4)(3.4,3.4)
+  \newpsstyle{Beam}{fillstyle=solid, fillcolor=green!40}
+  \multido{\ra=0+90,\rb=30+90,\ia=1+2,\ib=2+2}{4}{%
+    \mirror(1;\ra)(3;\ra)(1;\rb)
+    \optplate[position=end](3;\ra)(1;\rb)
+    \drawwidebeam[beamwidth=0.2](1;\ra){\ia}
+    \backlayer{\psdot[dotscale=2](\oenodeBeamUp{})}
+    \drawwidebeam[loadbeampoints,beamdiv=10]{\ia-\ib}
+    \backlayer{\psdot[dotscale=2](\oenodeBeamUp{})}
+  }
+\end{pspicture}
