@@ -17319,6 +17319,12 @@ tx@OptexpDict begin
   currentdict /lastBeamPointTmpUp known and {
     /lastBeamPointTmpLow load /CurrLow ED
     /lastBeamPointTmpUp load /CurrUp ED
+%    \end{macrocode}
+% The lower and upper beam vectors must possibly swapped if the
+% intersection points are loaded from a previous beam, but the beam
+% divergence is specified manually for this beam only. We must make
+% sure, that negative divergence gives a contracting beam.
+%    \begin{macrocode}
     loadbeam not beamdiv 0 eq not and {
       CurrVecLow CurrVecUp Chirality 
       CurrLow CurrUp @ABVect CurrVecLow CurrVecUp VecAdd Chirality 0 lt { neg } if
@@ -17327,6 +17333,9 @@ tx@OptexpDict begin
       } if
     } if
   } {
+%    \end{macrocode}
+% Transform the beam vectors relative to the connection between the first two interfaces.
+%    \begin{macrocode}
     counttomark 2 ge {
       2 copy /StartLow load TransformStartPos /CurrLow ED
       2 copy /StartUp load TransformStartPos /CurrUp ED
@@ -17472,7 +17481,9 @@ tx@OptexpDict begin
     } if
     PN 1 eq {
 %    \end{macrocode}
-% PN == 1
+% At the first interface, we only determine the actual intersection
+% points with the interfaces, the beam vectors are not changed and must
+% be reset to the previous values.
 %    \begin{macrocode}
       /CurrVecUp /PrevVecUp load def
       /CurrVecLow /PrevVecLow load def
@@ -17511,20 +17522,24 @@ tx@OptexpDict begin
       /lastVecTmpUp load /lastVecTmpLow load 3 -1 roll
     } if
 %    \end{macrocode}
-% Check if Up and Low must be swapped for next beam. 
+% Check if Up and Low must be swapped for next beam. This depends both
+% on the relative orientation (chirality) of the incoming beam vector
+% and the vector between the two intersection points CurrUp and CurrLow,
+% and the direction of the beam vector.
+%
+% The intersection points are swapped if the angle of the beam vector is
+% between $90°+\epsilon$ and $-90°+\epsilon$ and the chirality is
+% positive, or if the beam vector points to the right, positive
+% half-circle and the chirality is negative. The $\epsilon$ is
+% introduced to get the correct order for $\pm 90°$ despite numerical
+% errors.
 %    \begin{macrocode}
     CurrLow CurrUp @ABVect % from Low to Up
-    PrevVecUp PrevVecLow VecAdd 4 copy
-    2 copy 6 2 roll
-    Chirality 0 gt
-    3 1 roll 2 copy pop -1e-5 lt
-    3 1 roll exch 1e-5 lt exch 0 lt and or and 
-    5 1 roll
+    PrevVecUp PrevVecLow VecAdd
     2 copy 6 2 roll
     Chirality 0 lt
-    3 1 roll 2 copy pop 1e-5 gt
-    3 1 roll exch -1e-5 gt exch 0 gt and or and
-    or {
+    3 1 roll 2 copy pop -1e-5 lt
+    3 1 roll exch 1e-5 lt exch 0 lt and or xor {
 %    \end{macrocode}
 % swap upper and lower beam points for next beam
 %    \begin{macrocode}
