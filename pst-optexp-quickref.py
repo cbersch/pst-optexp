@@ -68,7 +68,8 @@ f.write(r"""\documentclass[landscape]{scrartcl}
 \begin{multicols}{3}
 """)
 
-v = re.findall("%<\*stylefile>\s*\[[0-9/]+\s*(v[0-9.]+).*?\]", data)
+# Extract the current version number
+v = re.findall("%<\*stylefile>\s*\[[0-9/]+\s*(v[0-9.]+[^\s]*).*?\]", data)
 
 f.write("\\section*{Cheat sheet for pst-optexp (%s)}\n" % (v[0]))
 
