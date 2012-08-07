@@ -6964,6 +6964,28 @@
 % upper limit is defined.
 % \fi
 % \end{optionlist}
+% 
+% \ifGERMAN \Lkeyword*{ArrowInside} kann auch verwendet werden ohne dass
+% ein Linientyp definiert ist.
+% \fi
+% \ifENGLISH \Lkeyword*{ArrowInside} can be used also without a
+% linestyle.
+% \fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(0,0)(3.5,2)
+  \pnode(0,1.5){A}\pnode(2,1.5){B}\pnode(2.8,0){C}
+  \mirror[mirrorwidth=1.2, mirrortype=extended](A)(B)(C)
+  \newpsstyle{Beam}{linecolor=green, linestyle=none, fillstyle=solid, fillcolor=green, opacity=0.2}
+  \drawwidebeam[beamwidth=0.5](A){}(C)
+  \drawbeam[ArrowInside=->, arrowscale=2.5, ArrowFill=false, linewidth=1.5\pslinewidth, ArrowInsidePos=0.9, ArrowInsideMaxLength=1.8](A){}(C)
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 %
 % \ifGERMAN\section{Aufgeweitete Strahlen}\fi
 % \ifENGLISH\section{Drawing wide beams}\fi
@@ -10238,6 +10260,7 @@
 %   \begin{release}{3.3}{2012-08-07}
 %   \item Added option \opt{gratingalign}\see{prm:gratingalign}
 %   \item Added option \opt{forcebeaminside}\see{prm:forcebeaminside}
+%   \item Improved \cs{drawbeam} and \cs{drawwidebeam} to be able to use \opt{ArrowInside} without linestyle\see{prm:ArrowInsideMaxLength}
 %   \item Fixed orientation of \cs{oenodeBeamUp} and \cs{oenodeBeamLow}\see{cmd:oenodeBeamUp}
 %   \item Fixed some trailing spaces
 %   \item Added more examples\see{sec:examples}
