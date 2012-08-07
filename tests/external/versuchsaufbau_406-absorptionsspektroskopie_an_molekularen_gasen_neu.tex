@@ -1,0 +1,48 @@
+\documentclass{article}
+\usepackage{pst-optexp}
+\thispagestyle{empty}
+\begin{document}
+\begin{pspicture}(0.2,0.5)(8.2,9.4)
+  \makeatletter
+  \newOptexpDipole{plasmareaktor}{}
+  \def\plasmareaktor@comp{%
+    \psframe[dimen=outer](-1.2,-0.6)(1.2,0.6)
+    \psframe[fillstyle=solid, fillcolor=blue!40, linestyle=none](-1.2,-0.5)(-1.1,0.5)
+    \psframe[fillstyle=solid, fillcolor=blue!40, linestyle=none](1.1,-0.5)(1.2,0.5)}%
+  \def\plasmareaktor@ref{\POE@setref{/@@x 1.2 def /@@y 0.5 def}}%
+  \makeatother
+  \pnode(1,2){DL}\pnode([offset=1]DL){OAP}
+  \pnode([Xnodesep=1.5]OAP){ST}
+  \pnode([offset=-1.5]ST){SP4}
+  \pnode([Xnodesep=4]SP4){SP3}
+  \pnode([offset=3.5]SP3){JL}
+  \pnode([Xnodesep=1]SP3|ST){SP1}
+  \pnode([Xnodesep=1]ST|JL){SP2}
+  \pnode([Xnodesep=2,offset=4]SP2){Det}
+  \psset[optexp]{optboxsize=1.5 0.9, labeloffset=0.6}
+  \begin{optexp}
+    \optbox[position=start, innerlabel](DL)(OAP){\begin{tabular}{@{}c@{}}Dioden-\\laser\end{tabular}}
+    \psset[optexp]{mirrortype=extended}
+    \mirror[mirrorradius=2](DL)(OAP)(ST){OAP}
+    \psset[optexp]{variable}
+    \beamsplitter[bssize=0.4, labelangle=-45](SP4)(ST)(SP1){ST}
+    \optplate[abspos=1, plateheight=0.7](ST)(SP1){CP}
+    \mirror(ST)(SP1)(SP2){SP1}
+    \mirror(SP1)(SP2)(Det){SP2}
+    \plasmareaktor[label=-0.7 . b relative](SP2)(Det){Plasmareaktor}
+    \optdetector[labelalign=l](SP2)(Det){Detektor}
+    \optbox[position=end, innerlabel](SP3)(JL){\begin{tabular}{@{}c@{}}Justage-\\laser\end{tabular}}
+    \mirror(SP4)(SP3)(JL){SP3}
+    \mirror(ST)(SP4)(SP3){SP4}
+    \psset{linewidth=2\pslinewidth}
+    \drawbeam[linecolor=blue, beampos=0.03]{1-2}
+    \drawbeam[beamalign=abs, loadbeampoints, linecolor=blue]{2-8}
+    \drawbeam[linecolor=red, beampos=-0.03]{9-11}{3-8}
+  \end{optexp}
+  \pnode(6,7){NaCl}
+  \psset{linestyle=dashed, arrows=->, arrowscale=1.5}
+  \ncline[nodesepA=0.1, nodesepB=0.2]{NaCl}{\oenodeIn{7}}
+  \ncline[nodesepA=0.1, nodesepB=0.3]{NaCl}{\oenodeOut{7}}
+  \rput[l](NaCl){NaCl-Fenster}
+\end{pspicture}
+\end{document}
