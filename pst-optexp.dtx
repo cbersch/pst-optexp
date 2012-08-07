@@ -18,7 +18,7 @@
 %<stylefile>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<stylefile>\ProvidesPackage{pst-optexp}
 %<*stylefile>
-    [2012/08/06 v3.3alpha Optical experimental setups with PSTricks]
+    [2012/08/07 v3.3 Optical experimental setups with PSTricks]
 %</stylefile>
 %
 %<*driver>
@@ -5631,6 +5631,33 @@
 % \iffalse
 %</ignore>
 % \fi
+%
+% \ifGERMAN Bei einer Reflektion können ebenfalls die Rollen vertauscht werden.\fi
+% \ifENGLISH After a reflection the roles can also be exchanged.\fi
+%
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[linerange={1-6,8-8,15-15}]
+\begin{pspicture}(0,-1)(4,2)
+  \pnode(0,1.5){A}\pnode(2,1.5){B}\pnode(2.8,0){C}
+  \mirror[mirrorwidth=1.2, mirrortype=extended](A)(B)(C)
+  \addtopsstyle{Beam}{%
+    fillstyle=solid, fillcolor=green, opacity=0.3}
+  \drawwidebeam[beamwidth=0.5](A){}
+  \pnode(\oenodeBeamUp{}){Up1}\pnode(\oenodeBeamLow{}){Low1}
+  \drawwidebeam[loadbeam]{}(C)
+  \psdot(\oenodeBeamUp{})\psdot(\oenodeBeamLow{})
+  \uput[90](\oenodeBeamUp{}){\rput[lb](0,0){BeamUp}}
+  \uput[-90](\oenodeBeamLow{}){BeamLow}
+  \psdot(Up1)\psdot(Low1)
+  \uput[90](Up1){\rput[lb](0,0){BeamUp}}
+  \uput[0](Low1){\rput[l](0,0){BeamLow}}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % \end{ltxsyntax}
 %
 % \ifGERMAN
@@ -5725,7 +5752,7 @@
   \lens[abspos=1, lens=5 5 3, n=2.1](A)(B)
   \optplane(B)
   \drawbeam[beampos=1](A){1-2}
-  \nodexn{(\oenodeBeam{})-2(!\oeBeamVec{})}{C}
+  \nodexn{(\oenodeBeam{})-1.5(!\oeBeamVec{})}{C}
   \polarization(C)(\oenodeBeam{})
   \psdot(C)\uput[45](C){C}
 \end{pspicture}
@@ -5754,7 +5781,7 @@
   \drawbeam[beaminsidelast, beamalign=abs](A){1}
   \nodexn{(\oenodeBeam{})-(!\oeBeamVec{})}{C}
   \psdot(C)\uput[-90](C){C}
-  \psline[linecolor=red, linestyle=dashed, dash=2pt 2pt](A|\oenodeBeam{})(B|\oenodeBeam{})
+  \psline[linecolor=red, linestyle=dashed, dash=2pt 2pt, arrows=->, arrowscale=1.5](A|\oenodeBeam{})(B|\oenodeBeam{})
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -5772,7 +5799,7 @@
 \begin{LTXexample}[linerange={1-9,11-11}]
 \begin{pspicture}(3,3)
   \pnode(0,1.5){A}\pnode(3,1.5){B}
-  \lens[abspos=1, lens=5 5 3, n=2.1](A)(B)
+  \lens[abspos=1, lens=5 5 3, n=2.0](A)(B)
   \optplane[angle=90](B)
   \drawwidebeam[beamwidth=2](A){1-2}
   \nodexn{(\oenodeBeamUp{})-2(!\oeBeamVecUp{})}{U}
@@ -5787,7 +5814,7 @@
 % \fi
 % 
 % \ifGERMAN Ein weiteres Beispiel finden Sie in \prettyref{ex:glan-thompson}.\fi
-% \ifENGLISH For another example please see \prettyref{ex:glan-thompson}.\fi
+% \ifENGLISH For another example see \prettyref{ex:glan-thompson}.\fi
 %
 %
 % \ifGERMAN\section{Knotenübersicht}\fi
@@ -6718,15 +6745,16 @@
 % \ifGERMAN
 % Wenn auf \opt{true} gesetzt, wird der Strahlengang innerhalb der
 % betroffenen Komponenten immer gezeichnet wird, unabhängig von allen
-% anderen Strahleinstellungen mit \Lkeyword{beaminside},
-% \Lkeyword{beaminsidefirst} und \Lkeyword{beaminsidelast}. Damit kann
-% der Strahl innerhalb einzelner Komponenten gezeichnet werden, auch
-% wenn alle anderen Komponenten in dem Strahlengang keinen internen
-% Strahl haben sollen.
+% anderen Strahleinstellungen mit \Lkeyword{allowbeaminside},
+% \Lkeyword{beaminside}, \Lkeyword{beaminsidefirst} und
+% \Lkeyword{beaminsidelast}. Damit kann der Strahl innerhalb einzelner
+% Komponenten gezeichnet werden, auch wenn alle anderen Komponenten in
+% dem Strahlengang keinen internen Strahl haben sollen.
 % \fi
 % \ifENGLISH
 % Forces to draw a beam inside a component. The option affects
-% components only and overwrites all settings of \Lkeyword{beaminside},
+% components only and overwrites all settings of
+% \Lkeyword{allowbeaminside}, \Lkeyword{beaminside},
 % \Lkeyword{beaminsidefirst}, and \Lkeyword{beaminsidelast} if set to
 % \opt{true}. With this you can force an internal beams for single
 % components within a beam path.
@@ -9645,6 +9673,7 @@
 % \ifENGLISH\subsubsection*{Free-ray components}\fi
 % \ifGERMAN\subsubsection*{Freistrahlkomponenten}\fi
 %
+% \begingroup
 % \addtopsstyle{Beam}{arrows=->, arrowinset=0, arrowscale=1.5}
 % \newcommand{\showdipoleifc}[1]{%
 %   \begin{pspicture}(0,-0.5)(3,1) 
@@ -9769,6 +9798,7 @@
 %   \psdot(\oenodeOut{})\uput[-45](\oenodeOut{}){N}
 %   \rput[bl](0,0){\ttfamily\textbackslash pentaprism}
 % \end{pspicture}%
+% \endgroup
 %
 % \ifENGLISH\subsubsection*{Fiber components}\fi
 % \ifGERMAN\subsubsection*{Faserkomponenten}\fi
@@ -9871,6 +9901,79 @@
 % Version beachten müssen, und was sie bei älteren Dokumenten gegebenenfalls
 % ändern müssen um mit der neuen Version korrekt zu funktionieren.  \fi
 %
+%
+% \subsection{Version 3.3}\label{sec:bwd-comp-3.3}
+%
+% \ifGERMAN\subsubsection{Strahlknoten}\fi
+% \ifENGLISH\subsubsection{Beam nodes}\fi
+%
+% \ifGERMAN Vor Version 3.3 sind the Strahlknoten \Lcs{oenodeBeamUp} und
+% \Lcs{oenodeBeamLow} nicht korrekt ausgerichtet gewesen, «upper» und
+% «lower» war immer relativ zur Strahlrichtung (analog zu
+% \Lkeyword{extnodealign}\opt{=relative}).
+%
+% Das konnte zu Problemen führen wenn \Lkeyword{loadbeampoints} zusammen
+% mit \Lkeyword{beamdiv} verwendet wurde, da das Vorzeichen von
+% \Lkeyword{beamdiv} nicht eindeutig kontrahierenden bzw. expandierenden
+% Strahlen zugeordnet war.
+%
+% Seit Version 3.3 werden die Strahlknoten analog zu
+% \Lkeyword{extnodealign}\opt{=absolute} definiert und die Zuordnung
+% eines negativen \Lkeyword{beamdiv} mit kontrahierenden Strahlen sowie
+% positiven \Lkeyword{beamdiv} mit expandierenden Strahlen ist immer
+% gültig. In den folgenden beiden Beispielen ist immer der
+% \Lcs{oenodeBeamUp} gekennzeichnet.
+% \fi
+% \ifENGLISH Before version 3.3 the beam nodes 
+% \Lcs{oenodeBeamUp} and \Lcs{oenodeBeamLow} were not swapped correctly
+% and the orientation of «upper» and «lower» was only relative to the
+% beam direction (equivalent to
+% \Lkeyword{extnodealign}\opt{=relative}). 
+%
+% This could lead to problems when using \Lkeyword{loadbeampoints} with
+% \Lkeyword{beamdiv}. In that case the sign of \Lkeyword{beamdiv} was
+% not unambiguously associated with contracting or expanding beam.
+% 
+% As of version 3.3 the beam nodes are arranged according to
+% \Lkeyword{extnodealign}\opt{=absolute} and the association of negative
+% \Lkeyword{beamdiv} with a contracting and positive \Lkeyword{beamdiv}
+% with an expanding beam is always valid. In the following two examples
+% all \Lcs{oenodeBeamUp} are marked.
+% \fi
+%
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(-2,-2)(2,2)
+  \addtopsstyle{Beam}{fillstyle=solid, fillcolor=green!40}
+  \multido{\i=0+90,\ia=1+2,\ib=2+2}{4}{%
+    \optplate[position=end](0.3;\i)(1;\i)
+    \optplate[position=end, plateheight=1.5](1;\i)(2;\i)
+    \drawwidebeam[beamwidth=0.2](0.3;\i){\ia}
+    \pnode(\oenodeBeamUp{}){Up}
+    \drawwidebeam[loadbeampoints, beamdiv=45]{\ia-\ib}
+    \psdot(Up)\psdot(\oenodeBeamUp{})
+  }
+\end{pspicture}
+\end{LTXexample}
+
+\begin{LTXexample}
+\begin{pspicture}(-2,-2)(2,2)
+  \addtopsstyle{Beam}{fillstyle=solid, fillcolor=green!40}
+  \multido{\i=0+90,\ia=1+2,\ib=2+2}{4}{%
+    \optplate[position=end](0.3;\i)(1;\i)
+    \optplate[position=end](1;\i)(2;\i)
+    \drawwidebeam[beamwidth=0.2](0.3;\i){\ia}
+    \pnode(\oenodeBeamUp{}){Up}
+    \drawwidebeam[loadbeampoints, beamdiv=-45]{\ia-\ib}
+    \psdot(Up)\psdot(\oenodeBeamUp{})
+  }
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 %
 % \subsection{Version 3.0}\label{sec:bwd-comp-3.0}
 %
@@ -10132,7 +10235,7 @@
 % \begin{changelog}
 %\patchcmd{\release}{\setlength{\itemsep}{0pt}}{\setlength{\itemsep}{0pt}\setlength{\parsep}{0pt}}{}{}
 %   ^^A Do not wrap lines inside the \items, otherwise Changes.py does not work properly
-%   \begin{release}{x.x}{0000-00-00}
+%   \begin{release}{3.3}{2012-08-07}
 %   \item Added option \opt{gratingalign}\see{prm:gratingalign}
 %   \item Added option \opt{forcebeaminside}\see{prm:forcebeaminside}
 %   \item Fixed orientation of \cs{oenodeBeamUp} and \cs{oenodeBeamLow}\see{cmd:oenodeBeamUp}
