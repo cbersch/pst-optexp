@@ -97,7 +97,7 @@
   belowcaptionskip=0pt,%
   abovecaptionskip=0pt,%
   xleftmargin=1em, %
-  prebreak = {\raisebox{-1ex}[\ht\strutbox]{\kern0.5ex \large\Righttorque}},
+  prebreak = {\raisebox{-0.5ex}[\ht\strutbox]{\kern0.5ex\large\Righttorque}},
   rulecolor=\color{black!20}, %
   texcsstyle = [20]\color{DDOrange},%!60!black},%{red!60!black}, %
   moretexcs = [20]{lens, optbox, oenode, oenodeIn, oenodeExt, oenodeOut,
@@ -8521,23 +8521,88 @@
 % \fi
 % \end{ltxsyntax}
 %
-% \begin{optionlist}
-%   \optitem[0 0]{optdipolesize}{\prm{width}[ \prm{height}]}
-%   \optitem[0 0]{optdipoleoffset}{\prm{x}[ \prm{y}]}
-%   \optitem[0 0]{opttripolesize}{\prm{width}[ \prm{height}]}
-%   \optitem[0 0]{opttripoleoffset}{\prm{x}[ \prm{y}]}
-% \end{optionlist}
 % \ifENGLISH
-% These components can also be connected with beams and fibers, but do not
-% provide full access to all options. They define only a single interface which,
-% of course, cannot respect the geometry of the individual drawings.
+% These components can also be connected with beams and fibers, but do
+% not provide full access to all options. \Lcs{opttripole} defines a
+% single reflective interface, whereas \Lcs{optdipole} can have two
+% transmittive interfaces:
 % \fi
 % \ifGERMAN
-% Diese Komponenten können sowohl mit Fasern als auch mit Strahlen verbunden
-% werden, können aber nicht deren volles Potential ausschöpfen. Sie haben nur
-% eine einzelne Grenzfläche, die die Geometrie der benutzerdefinierten Zeichnung
-% natürlich nicht berücksichtigen kann.
+% Diese Komponenten können sowohl mit Fasern als auch mit Strahlen
+% verbunden werden, können aber nicht deren volles Potential
+% ausschöpfen. \Lcs{opttripole} definiert eine einzelne reflektive
+% Grenzfläche, \Lcs{optdipole} kann zwei transmittive Grenzflächen haben:
 % \fi
+%
+% \begin{optionlist}
+%   \optitem[0 0]{optdipolesize}{\prm{width}[ \prm{height}]}
+%   \ifGERMAN 
+%   Hiermit können zwei transmittierende Grenzflächen für
+%   \Lcs{optdipole} definiert werden, die sich bei
+%   $(\pm 0.5\text{\prm{width}}, 0)$ befinden.
+%   \fi
+%   \ifENGLISH
+%   With this option you can define two transmittive interfaces for
+%   \Lcs{optdipole}, which are placed at $(\pm 0.5\text{\prm{width}}, 0)$.
+%   \fi
+%
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[morekeywords={[21]optdipolesize}]
+\begin{pspicture}(3,2)
+\pnode(0,1){A}\pnode(3,1){B}
+\optdipole[optdipolesize=1, showifcnodes](A)(B){%
+  \psframe[fillstyle=solid,fillcolor=black!30](-0.5,-0.5)(-0.3,0.5)
+  \psframe(-0.5,-0.5)(0.5,0.5)}{label}
+\drawwidebeam[beamwidth=0.3, beaminside=false](A){}(B)
+\drawbeam[beaminside=false, linecolor=red](A){}(B)
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
+% \ifGERMAN Wenn zusätzlich eine Höhe \prm{height} ungleich Null
+% angegeben wird, so wird diese als Apertur für das Raytracing genommen
+% (siehe \Lkeyword{useNA}). Im folgenden Beispiel ist die Höhe gleich
+% \opt{0.2} und damit kleiner als der aufgeweitete Strahl der deshalb
+% anders als im vorangegangenen Beispiel nicht gezeichnet wird.
+% \fi
+% \ifENGLISH 
+% If also a \prm{height} greater than zero is set, this is used as size
+% of the numerical aperture for ray tracing (see \Lkeyword{useNA}). In
+% the following example the height is set to \opt{0.2} which is smaller
+% than the wide beam which is not drawn, in contrast to the previous
+% example.
+% \fi
+%
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[morekeywords={[21]optdipolesize}]
+\begin{pspicture}(3,2)
+\pnode(0,1){A}\pnode(3,1){B}
+\optdipole[optdipolesize=1 0.2, showifcnodes](A)(B){%
+  \psframe[fillstyle=solid,fillcolor=black!30](-0.5,-0.5)(-0.3,0.5)
+  \psframe(-0.5,-0.5)(0.5,0.5)}{label}
+\drawwidebeam[beamwidth=0.3, beaminside=false](A){}(B)
+\drawbeam[beaminside=false, linecolor=red](A){}(B)
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
+% \ifGERMAN  
+% Weitere Beispiel sind \prettyref{ex:lclv} und
+% \prettyref{ex:absspektr}.
+% \fi
+% \ifENGLISH 
+% Further examples are \prettyref{ex:lclv} and
+% \prettyref{ex:absspektr}.
+% \fi
+% \end{optionlist}
 %
 % \ifGERMAN
 % \section{Benutzerdefinierte Version existierender Komponenten}
@@ -8846,15 +8911,9 @@
 \end{LTXexample}
 \bigskip
 
-\enlargethispage{3cm}
-\begin{LTXexample}[pos=t, linerange={1-31,36-36}, caption={caption}]
-\begin{pspicture}(0.3,-0.1)(5.5,7.8)
-\newOptexpTripole{reflslm}{}
-\makeatletter
-\def\reflslm@comp{%
-  \psframe[fillstyle=solid,fillcolor=gray!50](-0.3,0)(0.3,0.2)
-  \psline(-0.3,0.1)(-0.5,0.1)(-0.5,0.5)(0.5,0.5)(0.5,0.1)(0.3,0.1)}%
-\makeatother
+\enlargethispage{2cm}
+\begin{LTXexample}[pos=t, linerange={1-27,32-32}, caption={caption}]
+\begin{pspicture}(0.3,-0.1)(5.5,8.2)
 \pnode(2,7){L}\pnode(2,5.8){Pbs}\pnode([Xnodesep=1]Pbs){Blk1}\pnode(2,2.3){Bs}
 \pnode([Xnodesep=-1]Bs){Blk2}\pnode([Xnodesep=3.5]Bs){Out}\pnode(2,1.3){Slm}
 \begin{optexp}
@@ -8872,7 +8931,9 @@
   \mirror[labeloffset=0.4](Bs)(Blk2)(Bs){B}
   \lens[abspos=1, lensradius=1.4](Bs)(Out){L}
   \lens[abspos=2.8, lens=0.7 0.7 0.7, n=2](Bs)(Out){L}
-  \reflslm(Bs)(Slm)(Bs){SLM}
+  \opttripole(Bs)(Slm)(Bs){%
+    \psframe[fillstyle=solid,fillcolor=gray!50](-0.3,0)(0.3,0.2)
+    \psline(-0.3,0.1)(-0.5,0.1)(-0.5,0.5)(0.5,0.5)(0.5,0.1)(0.3,0.1)}{SLM}
   \addtopsstyle{Beam}{linestyle=none, fillstyle=solid, fillcolor=green!70!black}
   \drawwidebeam[beamwidth=0.1]{1-4}
   \drawwidebeam[beamwidth=0.1, beaminsidefirst, beaminsidelast]{3}{5-8}
@@ -8981,9 +9042,9 @@
 \begin{optexp}
   \optbox[label=0, position=start, optboxwidth=1.6]([Xnodesep=-1]BS1)(BS1){Nd:YAG}
   \beamsplitter[compname=BS](BS2)(BS1)(M1){BS}
-  \optdipole[position=0.2, compname=LCLV, optdipolesize=0.27, optdipoleoffset=0.015](BS1)(BS2){%
-    \psframe[fillstyle=solid,fillcolor=black,dimen=outer](-0.12,-0.5)(0,0.5)
-    \psframe[fillstyle=solid,fillcolor=gray!50,dimen=outer](0,-0.5)(0.15,0.5)
+  \optdipole[position=0.2, compname=LCLV, optdipolesize=0.28 1](BS1)(BS2){%
+    \psframe[fillstyle=solid,fillcolor=black,dimen=outer](-0.14,-0.5)(-0.02,0.5)
+    \psframe[fillstyle=solid,fillcolor=gray!50,dimen=outer](-0.02,-0.5)(0.14,0.5)
   }{LCLV}
   \optretplate(BS1)(M1){P}
   \mirror(BS1)(M1)(PP){M}
@@ -9187,7 +9248,7 @@
     \lens[fillstyle=solid, fillcolor={[rgb]{0.87,0.91,0.93}}](Laser)(Ref){Linse}
     \mirror[label=1 30]([offset=0.2]Laser)([offset=0.2]Ref)(Film){%
       \begin{tabular}{l}Spiegel\\(fest)\end{tabular}}
-    \opttripole[label=0.4 180](Ref)(Film)(Ref){%
+    \opttripole[label=0.4](Ref)(Film)(Ref){%
       \psframe(0.5,1\pslinewidth)(-0.5,5\pslinewidth)
       \psline[linewidth=2\pslinewidth](0.5,0)(-0.5,0)
     }{Film}
@@ -9376,10 +9437,6 @@
 \begin{LTXexample}[pos=t, linerange={1-1}, caption={caption}]
 
 \begin{pspicture}(0,-0.5)(12.3,8.6)
-\makeatletter
-\def\slm@comp{\psframe[dimen=outer](-0.5,0)(0.5,0.1)}%
-\makeatother
-\newOptexpTripole{slm}{}
 \newpsobject{laser}{optbox}{position=start, innerlabel}
 \psset[optexp]{lens=2, phwidth=0.07, outerheight=0.6}
 \pnode(1,7){L}\pnode([offset=-6]L){PSLM}
@@ -9391,9 +9448,9 @@
   \lens[abspos=1.2, lens=0.5 0.5 0.4, n=2.5, labelangle=-10](L)(PSLM){MO}
   \pinhole[abspos=1.4, labelangle=10](L)(PSLM){PH}
   \lens[abspos=2.3](L)(PSLM){L}
-  \slm[labeloffset=0.5](L)(PSLM)(ASLM){PSLM}
+  \opttripole[label=0.5](L)(PSLM)(ASLM){\psframe[dimen=outer](-0.5,0)(0.5,0.1)}{PSLM}
   \lens[label=0.6 -40](PSLM)(ASLM){L}
-  \slm[labeloffset=0.5](PSLM)(ASLM)(ML){ASLM}
+  \opttripole[label=0.5](PSLM)(ASLM)(ML){\psframe[dimen=outer](-0.5,0)(0.5,0.1)}{ASLM}
   \lens[position=0.45, labelangle=180](ASLM)(ML){L}
   \optretplate[labelangle=180, position=0.55](ASLM)(ML){$\lambda/2$}
   \optplate[labelangle=180, position=0.62](ASLM)(ML){P}
@@ -9962,6 +10019,17 @@
 %
 % \subsection{Version 3.3}\label{sec:bwd-comp-3.3}
 %
+% \begin{optionlist}
+%   \poeitem{\textbackslash opttripole}
+%   \ifGERMAN Der Ausgangswinkel für die Beschriftung des
+%   \Lcs{opttripole} wurde um 180° geändert um konsistent zu den anderen
+%   Dreipolen zu sein.
+%   \fi
+%   \ifENGLISH Changed the reference angle for the label of the
+%   \Lcs{opttripole} to be consistent with the other tripoles.
+%   \fi
+% \end{optionlist}
+%
 % \ifGERMAN\subsubsection{Strahlknoten}\fi
 % \ifENGLISH\subsubsection{Beam nodes}\fi
 %
@@ -10294,6 +10362,9 @@
 %\patchcmd{\release}{\setlength{\itemsep}{0pt}}{\setlength{\itemsep}{0pt}\setlength{\parsep}{0pt}}{}{}
 %   ^^A Do not wrap lines inside the \items, otherwise Changes.py does not work properly
 %   \begin{release}{3.3}{2012-08-07}
+%   \item Extended \cs{opttripole} and \cs{optdipole}\see{cmd:optdipole}
+%   \item Modified reference angle for label of \cs{opttripole}\see{sec:bwd-comp-3.3}
+%   \item Added option \opt{optdipolesize} to support two interfaces for \cs{optdipole}\see{prm:optdipolesize}
 %   \item Added option \opt{gratingalign}\see{prm:gratingalign}
 %   \item Added option \opt{forcebeaminside}\see{prm:forcebeaminside}
 %   \item Improved \cs{drawbeam} and \cs{drawwidebeam} to be able to use \opt{ArrowInside} without linestyle\see{prm:ArrowInsideMaxLength}
@@ -11417,45 +11488,7 @@
   \fi
   \pst@checknum{#1}\POE@key@optdipolewidth
 }%
-\define@key[psset]{optexp}{optdipoleoffset}{%
-  \pst@expandafter\POE@psset@@optdipoleoffset{#1} {} {} {}\@nil
-}%
-\def\POE@psset@@optdipoleoffset#1 #2 #3\@nil{%
-  \ifx\\#2\\
-    \def\POE@key@optdipoleoffsety{0}%
-  \else
-    \pst@checknum{#2}\POE@key@optdipoleoffsety
-  \fi
-  \pst@checknum{#1}\POE@key@optdipoleoffsetx
-}%
-\define@key[psset]{optexp}{opttripolesize}{%
-  \pst@expandafter\POE@psset@@opttripolesize{#1} {} {} {}\@nil
-}%
-\def\POE@psset@@opttripolesize#1 #2 #3\@nil{%
-  \ifx\\#2\\
-    \def\POE@key@opttripoleheight{0}%
-  \else
-    \pst@checknum{#2}\POE@key@opttripoleheight
-  \fi
-  \pst@checknum{#1}\POE@key@opttripolewidth
-}%
-\define@key[psset]{optexp}{opttripoleoffset}{%
-  \pst@expandafter\POE@psset@@opttripoleoffset{#1} {} {} {}\@nil
-}%
-\def\POE@psset@@opttripoleoffset#1 #2 #3\@nil{%
-  \ifx\\#2\\
-    \def\POE@key@opttripoleoffsety{0}%
-  \else
-    \pst@checknum{#2}\POE@key@opttripoleoffsety
-  \fi
-  \pst@checknum{#1}\POE@key@opttripoleoffsetx
-}%
-\psset[optexp]{%
-  optdipolesize=0 0,
-  optdipoleoffset=0 0,
-  opttripolesize=0 0,
-  opttripoleoffset=0 0
-}%
+\psset[optexp]{optdipolesize=0 0}%
 % \subsection{Parameters of fiber-optical components}
 % \subsubsection{fiber}
 %    \begin{macrocode}
@@ -14338,7 +14371,12 @@
 % \begin{macro}{\optdipole}
 %    \begin{macrocode}
 \def\optdipole{\pst@object{optdipole}}
-\def\optdipole@i(#1)(#2)#3#4{%
+\def\optdipole@i(#1)(#2)#3{%
+  \@ifnextchar\bgroup%
+    {\optdipole@i@(#1)(#2){#3}}%
+    {\optdipole@i@(#1)(#2){#3}{}}%
+}%
+\def\optdipole@i@(#1)(#2)#3#4{%
    \begin@OptexpObj
       \ifPOE@backlayer
         \POE@regNodes{#1}{#2}
@@ -14367,8 +14405,6 @@
   \POE@setref{%
     /@@x \POE@key@optdipolewidth\space 0.5 mul def
     /@@y \POE@key@optdipoleheight\space 0.5 mul def
-    /@@x0 \POE@key@optdipoleoffsetx\space def
-    /@@y0 \POE@key@optdipoleoffsety\space def
   }%
 }%
 %    \end{macrocode}
@@ -14377,15 +14413,20 @@
 % \begin{macro}{\opttripole}
 %    \begin{macrocode}
 \def\opttripole{\pst@object{opttripole}}
-\def\opttripole@i(#1)(#2)(#3)#4#5{%
+\def\opttripole@i(#1)(#2)(#3)#4{%
+  \@ifnextchar\bgroup%
+    {\opttripole@i@(#1)(#2)(#3){#4}}%
+    {\opttripole@i@(#1)(#2)(#3){#4}{}}%
+}%
+\def\opttripole@i@(#1)(#2)(#3)#4#5{%
+  \addafter@par{ref@angle=180}
   \begin@OptexpTripole
     \ifPOE@backlayer   
-      \POE@regNodes{#1}{#3}%
       \POE@calcNodes{#1}{#2}{#3}%
+      \POE@regNodes{#1}{#3}%
     \fi
-    \POE@drawcomponent[opttripole]{#5}{%
+    \POE@drawcomponent{#5}{%
       \ifPOE@backlayer
-        \pnode(!\POE@dict{@@x0 @@y0}){\oenodeCenter{}}% 
         \tripole@nodes
       \fi
       \ifPOE@frontlayer
@@ -14400,19 +14441,6 @@
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}{\opttripole@ref}
-%    \begin{macrocode}
-\def\opttripole@ref{%
-  \POE@setref{%
-    /@@x \POE@key@opttripolewidth\space 0.5 mul def
-    /@@y \POE@key@opttripolewidth\space 0.5 mul def
-    /@@x0 \POE@key@opttripoleoffsetx\space def
-    /@@y0 \POE@key@opttripoleoffsety\space def
-  }%
-}%
-%    \end{macrocode}
-% \end{macro}
-%
 % \begin{macro}{\fibercollimator}
 %    \begin{macrocode}
 \def\fibercollimator{\pst@object{fibercollimator}}
