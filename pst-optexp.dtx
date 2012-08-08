@@ -8521,6 +8521,12 @@
 % \fi
 % \end{ltxsyntax}
 %
+% \begin{optionlist}
+%   \optitem[0 0]{optdipolesize}{\prm{width}[ \prm{height}]}
+%   \optitem[0 0]{optdipoleoffset}{\prm{x}[ \prm{y}]}
+%   \optitem[0 0]{opttripolesize}{\prm{width}[ \prm{height}]}
+%   \optitem[0 0]{opttripoleoffset}{\prm{x}[ \prm{y}]}
+% \end{optionlist}
 % \ifENGLISH
 % These components can also be connected with beams and fibers, but do not
 % provide full access to all options. They define only a single interface which,
@@ -8966,19 +8972,8 @@
 \end{LTXexample}
 \bigskip
 
-\begin{LTXexample}[pos=t, caption={caption}]
+\begin{LTXexample}[pos=t, caption={caption}, label={ex:lclv}]
 \begin{pspicture}(-0.2,0)(9,5)
-\makeatletter
-\newOptexpDipole{LCLV}{}
-\def\LCLV@nodes{%
-  \newOptexpComp{ {-0.12 0} {0 1} -0.5 0.5 trans {PlainIfc}
-                  {0.15 0} {0 1} -0.5 0.5 trans {PlainIfc} \POE@key@n}%
-}%
-\def\LCLV@comp{%
-  \psframe[fillstyle=solid,fillcolor=black,dimen=outer](-0.12,-0.5)(0,0.5)
-  \psframe[fillstyle=solid,fillcolor=gray!50,dimen=outer](0,-0.5)(0.15,0.5)
-}%
-\makeatother
 \psset[optexp]{lens=1.2 0 1.2, n=1.72}
 \addtopsstyle{Beam}{fillstyle=solid, fillcolor=green, opacity=0.3}
 \pnode(2.4,1){BS1}\pnode([offset=3]BS1){M1}
@@ -8986,7 +8981,10 @@
 \begin{optexp}
   \optbox[label=0, position=start, optboxwidth=1.6]([Xnodesep=-1]BS1)(BS1){Nd:YAG}
   \beamsplitter[compname=BS](BS2)(BS1)(M1){BS}
-  \LCLV[position=0.2, compname=LCLV](BS1)(BS2){LCLV}
+  \optdipole[position=0.2, compname=LCLV, optdipolesize=0.27, optdipoleoffset=0.015](BS1)(BS2){%
+    \psframe[fillstyle=solid,fillcolor=black,dimen=outer](-0.12,-0.5)(0,0.5)
+    \psframe[fillstyle=solid,fillcolor=gray!50,dimen=outer](0,-0.5)(0.15,0.5)
+  }{LCLV}
   \optretplate(BS1)(M1){P}
   \mirror(BS1)(M1)(PP){M}
   \lens[position=0.2](M1)(PP){L}
@@ -9289,6 +9287,42 @@
 \ifGERMAN Angepasst von \fi
 \ifENGLISH Adapted from \fi
 \doiurl{10.1364/OL.37.000930}}%
+\end{pspicture}
+\end{LTXexample}
+
+\enlargethispage{70pt}
+\begin{LTXexample}[pos=t, caption={caption}, label={ex:absspektr}]
+\begin{pspicture}(0.2,0.5)(9,7.4)
+  \pnode(1,2){DL}\pnode([offset=0.5]DL){OAP}\pnode([Xnodesep=2]OAP){ST}
+  \pnode([offset=-1.4]ST){SP4}\pnode([Xnodesep=4]SP4){SP3}
+  \pnode([offset=3]SP3){JL}\pnode([Xnodesep=1]SP3|ST){SP1}
+  \pnode([Xnodesep=1]ST|JL){SP2}\pnode([Xnodesep=1.5,offset=3]SP2){Det}
+  \psset[optexp]{optboxsize=1.5 0.9, labeloffset=0.6}
+  \begin{optexp}
+    \optbox[position=start, innerlabel](DL)(OAP){\parbox{1.5\psunit}{\centering Dioden-\\laser}}
+    \psset[optexp]{mirrortype=extended}
+    \mirror[mirrorradius=2](DL)(OAP)(ST){OAP}
+    \psset[optexp]{variable}
+    \beamsplitter[bssize=0.4, labelangle=-45](SP4)(ST)(SP1){ST}
+    \optplate[abspos=1, plateheight=0.7](ST)(SP1){CP}
+    \mirror(ST)(SP1)(SP2){SP1}\mirror(SP1)(SP2)(Det){SP2}
+    \optdipole[label=-0.7 . b relative, optdipolesize=2, position=0.6](SP2)(Det){%
+      \psframe[dimen=outer](-1,-0.6)(1,0.6)
+      \psset{fillstyle=solid, fillcolor=blue!40, linestyle=none}
+      \psframe(-1,-0.5)(-0.9,0.5)\psframe(0.9,-0.5)(1,0.5)}{Plasmareaktor}
+    \optdetector[label=. 30 l](SP2)(Det){Detektor}
+    \optbox[position=end, innerlabel](SP3)(JL){\parbox{1.5\psunit}{\centering Justage-\\laser}}
+    \mirror(SP4)(SP3)(JL){SP3}\mirror(ST)(SP4)(SP3){SP4}
+    \psset{linewidth=2\pslinewidth}
+    \drawbeam[linecolor=blue, beampos=0.03]{1-2}
+    \drawbeam[beamalign=abs, loadbeampoints, linecolor=blue]{2-8}
+    \drawbeam[linecolor=red, beampos=-0.03]{9-11}{3-8}
+  \end{optexp}
+  \pnode([Xnodesep=1.2,offset=-0.6]\oenodeIn{8}){NaCl}
+  \psset{linestyle=dashed, arrows=->, arrowscale=1.5}
+  \ncline[nodesepA=0.1, nodesepB=0.2]{NaCl}{\oenodeIn{7}}
+  \ncline[nodesepA=0.1, nodesepB=0.3]{NaCl}{\oenodeOut{7}}
+  \rput[l](NaCl){NaCl-Fenster}
 \end{pspicture}
 \end{LTXexample}
 
@@ -11369,6 +11403,59 @@
   prismalign=auto
 }%
 %    \end{macrocode}
+%
+% Optdipole and Opttripole
+%    \begin{macrocode}
+\define@key[psset]{optexp}{optdipolesize}{%
+  \pst@expandafter\POE@psset@@optdipolesize{#1} {} {} {}\@nil
+}%
+\def\POE@psset@@optdipolesize#1 #2 #3\@nil{%
+  \ifx\\#2\\
+    \def\POE@key@optdipoleheight{0}%
+  \else
+    \pst@checknum{#2}\POE@key@optdipoleheight
+  \fi
+  \pst@checknum{#1}\POE@key@optdipolewidth
+}%
+\define@key[psset]{optexp}{optdipoleoffset}{%
+  \pst@expandafter\POE@psset@@optdipoleoffset{#1} {} {} {}\@nil
+}%
+\def\POE@psset@@optdipoleoffset#1 #2 #3\@nil{%
+  \ifx\\#2\\
+    \def\POE@key@optdipoleoffsety{0}%
+  \else
+    \pst@checknum{#2}\POE@key@optdipoleoffsety
+  \fi
+  \pst@checknum{#1}\POE@key@optdipoleoffsetx
+}%
+\define@key[psset]{optexp}{opttripolesize}{%
+  \pst@expandafter\POE@psset@@opttripolesize{#1} {} {} {}\@nil
+}%
+\def\POE@psset@@opttripolesize#1 #2 #3\@nil{%
+  \ifx\\#2\\
+    \def\POE@key@opttripoleheight{0}%
+  \else
+    \pst@checknum{#2}\POE@key@opttripoleheight
+  \fi
+  \pst@checknum{#1}\POE@key@opttripolewidth
+}%
+\define@key[psset]{optexp}{opttripoleoffset}{%
+  \pst@expandafter\POE@psset@@opttripoleoffset{#1} {} {} {}\@nil
+}%
+\def\POE@psset@@opttripoleoffset#1 #2 #3\@nil{%
+  \ifx\\#2\\
+    \def\POE@key@opttripoleoffsety{0}%
+  \else
+    \pst@checknum{#2}\POE@key@opttripoleoffsety
+  \fi
+  \pst@checknum{#1}\POE@key@opttripoleoffsetx
+}%
+\psset[optexp]{%
+  optdipolesize=0 0,
+  optdipoleoffset=0 0,
+  opttripolesize=0 0,
+  opttripoleoffset=0 0
+}%
 % \subsection{Parameters of fiber-optical components}
 % \subsubsection{fiber}
 %    \begin{macrocode}
@@ -14257,10 +14344,10 @@
         \POE@regNodes{#1}{#2}
         \POE@extnodealign
       \fi
-      \POE@drawcomponent{#4}{%
+      \POE@drawcomponent[optdipole]{#4}{%
         \ifPOE@backlayer
-          \pnode(0,0){\oenodeCenter{}}%
-          \newOptexpComp{{0 0} {0 1} 0 0 trans {PlainIfc} 1 }%
+          \pnode(!\POE@dict{@@x0 @@y0}){\oenodeCenter{}}%
+          \dipole@nodes
         \fi
         \ifPOE@frontlayer
           #3
@@ -14270,6 +14357,19 @@
         \POE@drawInternalConnections
       \fi
    \end@OptexpObj
+}%
+%    \end{macrocode}
+% \end{macro}
+%  
+% \begin{macro}{\optdipole@ref}
+%    \begin{macrocode}
+\def\optdipole@ref{%
+  \POE@setref{%
+    /@@x \POE@key@optdipolewidth\space 0.5 mul def
+    /@@y \POE@key@optdipoleheight\space 0.5 mul def
+    /@@x0 \POE@key@optdipoleoffsetx\space def
+    /@@y0 \POE@key@optdipoleoffsety\space def
+  }%
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -14283,17 +14383,36 @@
       \POE@regNodes{#1}{#3}%
       \POE@calcNodes{#1}{#2}{#3}%
     \fi
-    \POE@drawcomponent{#5}{%
-      \pnode(0,0){\oenodeCenter{}}% 
-      \newOptexpComp{{0 0} {1 0} 0 0 refl {PlainIfc} 1 }%
-      #4
+    \POE@drawcomponent[opttripole]{#5}{%
+      \ifPOE@backlayer
+        \pnode(!\POE@dict{@@x0 @@y0}){\oenodeCenter{}}% 
+        \tripole@nodes
+      \fi
+      \ifPOE@frontlayer
+        #4
+      \fi
     }%
-    \POE@drawInternalConnections
+    \ifPOE@backlayer
+      \POE@drawInternalConnections
+    \fi
   \end@OptexpTripole
 }%
 %    \end{macrocode}
 % \end{macro}
 % 
+% \begin{macro}{\opttripole@ref}
+%    \begin{macrocode}
+\def\opttripole@ref{%
+  \POE@setref{%
+    /@@x \POE@key@opttripolewidth\space 0.5 mul def
+    /@@y \POE@key@opttripolewidth\space 0.5 mul def
+    /@@x0 \POE@key@opttripoleoffsetx\space def
+    /@@y0 \POE@key@opttripoleoffsety\space def
+  }%
+}%
+%    \end{macrocode}
+% \end{macro}
+%
 % \begin{macro}{\fibercollimator}
 %    \begin{macrocode}
 \def\fibercollimator{\pst@object{fibercollimator}}
@@ -14398,7 +14517,9 @@
       \fi
     \fi
   }%
-  \@ifundefined{#1@ref}{}{\@nameuse{#1@ref}}%
+  \ifx\\#1\\\else
+    \@ifundefined{#1@ref}{}{\@nameuse{#1@ref}}%
+  \fi
   \ifPOE@endbox
     \psset[optexp]{abspos={%
       \POE@dict{%
