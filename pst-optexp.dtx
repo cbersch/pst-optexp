@@ -11346,8 +11346,16 @@
   \pst@checknum{#1}\POE@key@mirrordepth
 }
 \define@key[psset]{optexp}{mirrorradius}{%
+  \pst@expandafter\POE@psset@@mirrorradius{#1} {} {} {}\@nil
+}%
+\def\POE@psset@@mirrorradius#1 #2 #3\@nil{%
   \pst@checknum{#1}\POE@key@mirrorradius
-}
+  \ifx\\#2\\
+    \def\POE@key@mirrorradiusB{}%
+  \else
+    \pst@checknum{#2}\POE@key@mirrorradiusB
+  \fi
+}%
 \define@boolkey[psset]{optexp}[POE@]{variable}[true]{}
 \psset[optexp]{%
   mirrorwidth=1,
@@ -13323,6 +13331,33 @@
 %    \end{macrocode}
 % \section{Components}
 %
+%    \begin{macrocode}
+\def\POE@useifccode{%
+  \POE@Verb{%
+    [ \pst@code
+    \ifPOE@allowbeaminside true \else false \fi
+    \ifPOE@forcebeaminside true \else false \fi
+    (\oenode{}{}) {\tx@ScreenCoor}
+    NewOptexpComp
+  }%
+  \gdef\pst@code{}%
+}%
+\def\begin@CompIfc{%
+  \begingroup
+}%
+\def\end@CompIfc{%
+  \addto@pscode{ false }%
+  \POE@useifccode
+  \endgroup
+  \ignorespaces
+}%
+\def\end@AmbCompIfc{%
+  \addto@pscode{ true }%
+  \POE@useifccode
+  \endgroup
+  \ignorespaces
+}%
+%    \end{macrocode}
 % \begin{macro}{\newOptexpComp@}
 %    \begin{macrocode}
 \def\newOptexpComp@#1#2{%
@@ -14751,6 +14786,11 @@
         \POE@setref{\POE@key@mirrordepth\space 0.5 mul dup /@@y0 ED /@@y ED}
       \fi
     \fi
+  \else
+    \POE@setref{/@@x \POE@key@mirrorwidth\space 0.5 mul def}%
+    \ifx\POE@key@mirrortype\POE@str@mirrortype@plain\else
+      \POE@setref{\POE@key@mirrordepth\space 0.5 mul dup /@@y0 ED /@@y ED}
+    \fi
   \fi
 }%
 %    \end{macrocode}
@@ -14759,40 +14799,69 @@
 % \begin{macro}{\mirror@nodes}
 %    \begin{macrocode}
 \def\mirror@nodes{%
+  \begin@CompIfc
+%    \end{macrocode}
+% Add this one reflective interface in any case
+%    \begin{macrocode}
   \ifdim\POE@key@mirrorradius pt=0pt
-    \ifx\POE@key@mirrortype\POE@str@mirrortype@semitrans
-      \newOptexpCompAmb{%
-        {0 0} {1 0} 
-        \POE@key@mirrorwidth\space -0.5 mul dup neg 
-        refl {PlainIfc}
-        {0 \POE@key@mirrordepth} {1 0} 
-        \POE@key@mirrorwidth\space -0.5 mul dup neg 
-        trans {PlainIfc}
-        \POE@key@mirrordepth\space -1e-5 lt {
-          12 6 roll 2
-        } {
-          \POE@key@mirrordepth\space 1e-5 lt {
-            6 {pop} repeat
-          } if
-          1
-        } ifelse
-      \POE@key@n }%
-    \else
-      \newOptexpComp{%
-        {0 0} {1 0} 
-        \POE@key@mirrorwidth\space -0.5 mul dup neg 
-        refl {PlainIfc} 1 }%
-    \fi
+    \addto@pscode{%
+      {0 0} {1 0} 
+      \POE@key@mirrorwidth\space -0.5 mul dup neg 
+      refl {PlainIfc} }%
   \else
-    \newOptexpComp{%
+    \addto@pscode{%
       {0 0} {0 \POE@key@mirrorradius\space neg} 
       \POE@key@mirrorwidth\space -0.5 mul dup neg 
-      refl {CurvedIfc} 1 }%
-    \ifx\POE@key@mirrortype\POE@str@mirrortype@semitrans
-      \PackageWarning{pst-optexp}{%
-        Mirrortype 'semitrans' does not support curved\MessageBreak
-        mirror, falling back to 'plain' type.}%
-    \fi
+      refl {CurvedIfc} }%
+  \fi
+%    \end{macrocode}
+% A second interface exists only for semitrans mirrors
+%    \begin{macrocode}
+  \ifx\POE@key@mirrortype\POE@str@mirrortype@semitrans
+%    \end{macrocode}
+% if no second mirror radius was specified, use the same curvature of the first interface.
+%    \begin{macrocode}
+    \ifx\POE@key@mirrorradiusB\@empty 
+      \ifdim\POE@key@mirrorradius pt=0pt
+        \addto@pscode{%
+          {0 \POE@key@mirrordepth} {1 0} 
+          @@x neg @@x trans {PlainIfc} }%
+      \else
+        \addto@pscode{%
+          {0 \POE@key@mirrordepth}
+          {0 \POE@key@mirrorradius\space neg}
+          \POE@key@mirrorwidth\space -0.5 mul dup neg
+          trans {CurvedIfc} }%
+      \fi
+    \else
+%    \end{macrocode}
+% the second interface is plain if it should not have the curvature of the first interface.
+%    \begin{macrocode}
+      \addto@pscode{%
+        {0 \POE@key@mirrordepth
+        dup \POE@key@mirrorradius\space mul 0 lt {
+          dup sign \POE@key@mirrorradius\space @@x capHeight mul add
+        } if} 
+       {1 0} @@x neg @@x trans {PlainIfc} }%
+     \fi
+%    \end{macrocode}
+% Rearrange the two interfaces depending on the sign of mirrordepth
+%    \begin{macrocode}
+    \addto@pscode{%
+      \ifdim\POE@key@mirrordepth pt<-0.0001pt
+        12 6 roll 2
+      \else
+        \ifdim\POE@key@mirrordepth pt< 0.0001pt
+          6 {pop} repeat
+        \fi
+        1
+      \fi
+      \POE@key@n
+    }%
+    \end@AmbCompIfc
+  \else
+    \addto@pscode{1 }%
+    \end@CompIfc
   \fi
 }%
 %    \end{macrocode}
@@ -14812,55 +14881,7 @@
   \edef\@extpostcode{%
     neg \@dp add 5 -1 roll exch 5 2 roll 90 add exch 90 add %
   }%
-%    \end{macrocode}
-% concave mirrors
-%    \begin{macrocode}
-  \ifdim\POE@key@mirrorradius pt<0pt
-    \ifx\POE@key@mirrortype\POE@str@mirrortype@extended
-%    \end{macrocode}
-% extended concave mirror
-%    \begin{macrocode}
-      \bgroup
-        \psset{style=ExtendedMirror}
-        \begin@ClosedObj
-          \addto@pscode{%
-            \pst@optexpdict \@ht \@r rightCurvedIfc \@postcode  
-            \@ht \@r rightCurvedIfc \@extpostcode arc
-            closepath end}%
-        \end@ClosedObj
-      \egroup
-    \fi
-    \bgroup
-      \psset{linewidth=\POE@key@mirrorlinewidth}
-      \begin@OpenObj
-        \addto@pscode{\POE@dict{ \@ht \@r rightCurvedIfc \@postcode }}%
-      \end@OpenObj
-    \egroup
-%    \end{macrocode}
-% convex mirrors
-%    \begin{macrocode}
-  \else\ifdim\POE@key@mirrorradius pt>0pt
-    \ifx\POE@key@mirrortype\POE@str@mirrortype@extended
-%    \end{macrocode}
-% extended convex mirror
-%    \begin{macrocode}
-      \bgroup
-        \psset{style=ExtendedMirror}
-        \begin@ClosedObj
-          \addto@pscode{%
-            \pst@optexpdict \@ht \@r rightCurvedIfc \@postcode
-            \@ht \@r rightCurvedIfc \@extpostcode arcn
-            closepath end}%
-        \end@ClosedObj
-      \egroup
-    \fi
-    \bgroup
-      \psset{linewidth=\POE@key@mirrorlinewidth}
-      \begin@OpenObj
-        \addto@pscode{\POE@dict{ \@ht \@r rightCurvedIfc \@postcode }}%
-      \end@OpenObj
-    \egroup
-  \else
+  \ifdim\POE@key@mirrorradius pt=0pt
 %    \end{macrocode}
 % plain mirror 
 %    \begin{macrocode}
@@ -14891,7 +14912,61 @@
       \psline[linewidth=\POE@key@mirrorlinewidth]%
         (! \@ht neg \getCLWH)(! \@ht \getCLWH)
     \fi
-  \fi\fi
+  \else
+%    \end{macrocode}
+% concave/convex mirror
+%    \begin{macrocode}
+    \ifdim\POE@key@mirrorradius pt<0pt
+      \def\POE@temparc{arc }
+    \else
+      \def\POE@temparc{arcn }
+    \fi
+    \ifodd
+      \ifx\POE@key@mirrortype\POE@str@mirrortype@extended 1
+      \else\ifx\POE@key@mirrortype\POE@str@mirrortype@semitrans 1
+      \else 0
+      \fi\fi
+%    \end{macrocode}
+% extended or semitrans mirrortype
+%    \begin{macrocode}
+      \bgroup
+      \ifx\POE@key@mirrortype\POE@str@mirrortype@extended
+        \psset{style=ExtendedMirror}
+      \else\ifx\POE@key@mirrortype\POE@str@mirrortype@semitrans
+        \psset{style=SemitransMirror}
+      \fi\fi
+        \begin@ClosedObj
+          \addto@pscode{%
+            \pst@optexpdict \@ht \@r rightCurvedIfc \@postcode
+            \ifx\POE@key@mirrorradiusB\@empty
+              \@ht \@r rightCurvedIfc \@extpostcode \POE@temparc
+            \else
+              0 \@dp
+%    \end{macrocode}
+% For positive mirrorradius and positive mirror depth, add the cap
+% height so that mirrordepth is the minimum mirror depth. For both
+% negative radius and depth, subtract the cap height.
+%    \begin{macrocode}
+              \POE@key@mirrordepth\space\POE@key@mirrorradius\space
+              mul 0 gt {
+                dup sign \@r \@ht capHeight mul add
+              } if
+              rlineto 2 \@ht mul 0 rlineto
+            \fi
+            closepath end}%
+        \end@ClosedObj
+      \egroup
+    \fi
+%    \end{macrocode}
+% draw the reflective interface
+%    \begin{macrocode}
+    \bgroup
+      \psset{linewidth=\POE@key@mirrorlinewidth}
+      \begin@OpenObj
+        \addto@pscode{\POE@dict{ \@ht \@r rightCurvedIfc \@postcode }}%
+      \end@OpenObj
+    \egroup
+  \fi
   \ifPOE@variable
     \psarc[style=VariableStyle]%
       (! \POE@key@mirrorwidth\space 0.5 mul 0.4 sub 
@@ -16629,7 +16704,7 @@ tx@OptexpDict begin
 %   Analogous to \PSname{leftCurvedIfc} for «right» interfaces, defines
 %   \PSname{ArcR} for later use.
 % \begin{pssyntax}
-%   \PSvar{h R2} \PSop{leftCurvedIfc} \PSvar{y |R2| alpha\textunderscore b
+%   \PSvar{h R2} \PSop{rightCurvedIfc} \PSvar{y |R2| alpha\textunderscore b
 %     alpha\textunderscore t R2}
 % \end{pssyntax}
 %    \begin{macrocode}
@@ -17349,7 +17424,7 @@ tx@OptexpDict begin
       name GetRefIndex
       trans draw ] cvx
       IfcCntTmp IfcCnt gt { exch } if
-    } {
+    }{
 %    \end{macrocode}
 % check the mode of the ambiguous interface
 %    \begin{macrocode}
@@ -17358,7 +17433,11 @@ tx@OptexpDict begin
       CurrVecTmp (C) name GetPlaneVec NormalVec outToPlane 
       GetIfcCenter (C) name GetIfcCenter @ABVect DotProd
       0 lt { trans } { refl } ifelse % mode
-      draw ] cvx 
+%    \end{macrocode}
+% if the ambiguous interface is the first, always draw to it
+%    \begin{macrocode}
+      IfcCntTmp IfcCnt eq { true }{ draw } ifelse
+      ] cvx 
 %    \end{macrocode}
 % now check which is the outgoing plane
 %    \begin{macrocode}
