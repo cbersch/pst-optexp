@@ -18,7 +18,7 @@
 %<stylefile>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<stylefile>\ProvidesPackage{pst-optexp}
 %<*stylefile>
-    [2012/08/07 v3.3 Optical experimental setups with PSTricks]
+    [2012/08/15 v3.3 Optical experimental setups with PSTricks]
 %</stylefile>
 %
 %<*driver>
@@ -3252,7 +3252,7 @@
 % \ifGERMAN \linewidthexplanation{des Spiegels}{Spiegel}\fi
 % \ifENGLISH \linewidthexplanation{mirror}{mirrors}\fi
 %
-% \numitem[0]{mirrorradius} 
+% \optitem[0]{mirrorradius}{\prm{radius}[ 0]} 
 % \ifGERMAN
 % Diese Parameter setzt die Krümmung des Spiegels. Null ergibt einen
 % ebenen, ein negativer Radius einen konvexen und ein positiver Radius
@@ -3269,10 +3269,59 @@
 % \fi
 \begin{LTXexample}[morekeywords={[21]{mirrorradius}}]
 \begin{pspicture}(3,3)
-  \psset{labeloffset=0.5}
+  \psset[optexp]{labeloffset=0.5}
   \mirror[mirrorradius=1](0,0)(1,2)(1.8,1){convex}
   \mirror[mirrorradius=-1](1,2)(1.8,1)(2.5,3){concave}
-  \drawbeam(0,0){1}{2}(2.5,3)
+  \drawbeam(0,0){-}(2.5,3)
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
+% \ifGERMAN Wird kein zweiter Wert angegeben, so ist die Krümmung der
+% zweiten Fläche eines \opt{extended} oder \opt{semitrans} Spiegels die
+% Gleiche wie bei der Hauptgrenzfläche (siehe vorheriges Beispiel). Wird
+% die Null als zweiter Wert angegeben (andere Werte werden nicht
+% unterstützt), so ist die zweite Fläche flach:
+% \fi
+% \ifENGLISH If no second value is specified, the curvature of the
+% second interface of an \opt{extended} or \opt{semitrans} mirror is the
+% same as that of the main interface (see previous example). If zero is
+% given as second value (other values are not supported), the second
+% interface is plain.
+% \fi
+%
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[morekeywords={[21]{mirrorradius}}]
+\begin{pspicture}(3,3)
+  \mirror[mirrorradius=1 0, mirrortype=semitrans](0,0)(1,2)(1.8,1){convex}
+  \mirror[mirrorradius=-1 0, mirrortype=extended](1,2)(1.8,1)(2.5,3){concave}
+  \drawbeam(0,0){-}(2.5,3)
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
+% \ifGERMAN Die Angabe von \Lkeyword{mirrordepth} bezieht sich immer auf
+% die Mindesttiefe des Spiegels.
+% \fi
+% \ifENGLISH The value of \Lkeyword{mirrordepth} always refers to the
+% minimum depth of the mirror.
+% \fi
+%
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[morekeywords={[21]{mirrorradius, mirrordepth}}]
+\begin{pspicture}(3,3)
+  \psset[optexp]{mirrordepth=0.2}
+  \mirror[mirrorradius=1 0, mirrortype=semitrans](0,0)(1,2)(1.8,1){convex}
+  \mirror[mirrorradius=-1 0, mirrortype=extended](1,2)(1.8,1)(2.5,3){concave}
+  \drawbeam(0,0){-}(2.5,3)
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -3325,13 +3374,11 @@
 %
 % \ifGERMAN Ein halbdurchlässiger Spiegel (\opt{semitrans}) hat, im Gegensatz zu
 % den anderen Spiegeltypen, zwei Grenzflächen, deren Abstand und Position vom
-% Wert und Vorzeichen von \Lkeyword{mirrordepth} abhängt. Beachten Sie, dass
-% keine gekrümmten Spiegel dieses Typs möglich sind.
+% Wert und Vorzeichen von \Lkeyword{mirrordepth} abhängt.
 % \fi
 % \ifENGLISH A semi-transparent mirror (\opt{semitrans}) has two interfaces, in
 % contrast to the other mirror types. Their distance and position depends on the
-% value and sign of \Lkeyword{mirrordepth}. Note, that this type does not
-% support curved mirrors.
+% value and sign of \Lkeyword{mirrordepth}.
 % \fi
 % \iffalse
 %<*ignore>
@@ -9526,7 +9573,7 @@
   \mirror(M1)(M2)(M3)
   \mirror(M2)(M3)(M4)
   \mirror[compname=M4, angle=1.5](M3)(M4)(CM)
-  \mirror[mirrorradius=3.5, angle=2, compname=CM](M4)(CM)(SM)
+  \mirror[mirrorradius=3.5 0, angle=2, compname=CM](M4)(CM)(SM)
   \mirror(G1)(M)(CM)
   \optretplate[plateheight=0.5, abspos=1.5, label=0.6](M)(CM){$\lambda/2$}
   \optbox[optboxsize=0.3 0.5, position=0.25, fillstyle=solid, fillcolor=yellow!90!black](CM)(SM){\begin{tabular}{@{}c@{}}nonlinear\\crystal\end{tabular}}
@@ -10361,14 +10408,16 @@
 % \begin{changelog}
 %\patchcmd{\release}{\setlength{\itemsep}{0pt}}{\setlength{\itemsep}{0pt}\setlength{\parsep}{0pt}}{}{}
 %   ^^A Do not wrap lines inside the \items, otherwise Changes.py does not work properly
-%   \begin{release}{3.3}{2012-08-07}
+%   \begin{release}{3.3}{2012-08-15}
 %   \item Extended \cs{opttripole} and \cs{optdipole}\see{cmd:optdipole}
 %   \item Modified reference angle for label of \cs{opttripole}\see{sec:bwd-comp-3.3}
 %   \item Added option \opt{optdipolesize} to support two interfaces for \cs{optdipole}\see{prm:optdipolesize}
 %   \item Added option \opt{gratingalign}\see{prm:gratingalign}
 %   \item Added option \opt{forcebeaminside}\see{prm:forcebeaminside}
+%   \item Extended option \opt{mirrorradius}\see{prm:mirrorradius}
 %   \item Improved \cs{drawbeam} and \cs{drawwidebeam} to be able to use \opt{ArrowInside} without linestyle\see{prm:ArrowInsideMaxLength}
 %   \item Fixed orientation of \cs{oenodeBeamUp} and \cs{oenodeBeamLow}\see{cmd:oenodeBeamUp}
+%   \item Fixed a bug related to \opt{beaminside} and ambiguous components.
 %   \item Fixed some trailing spaces
 %   \item Added more examples\see{sec:examples}
 %   \end{release}
@@ -11354,6 +11403,10 @@
     \def\POE@key@mirrorradiusB{}%
   \else
     \pst@checknum{#2}\POE@key@mirrorradiusB
+    \ifdim\POE@key@mirrorradiusB pt=0pt\else
+      \PackageWarning{optexp}{%
+        The second value for option 'mirrorradius' must be 0.}%
+    \fi
   \fi
 }%
 \define@boolkey[psset]{optexp}[POE@]{variable}[true]{}
