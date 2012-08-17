@@ -18,7 +18,7 @@
 %<stylefile>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<stylefile>\ProvidesPackage{pst-optexp}
 %<*stylefile>
-    [2012/08/15 v3.3 Optical experimental setups with PSTricks]
+    [2012/08/17 v3.3 Optical experimental setups with PSTricks]
 %</stylefile>
 %
 %<*driver>
@@ -41,12 +41,16 @@
 \usepackage[labelfont={color=DOrange}, 
             singlelinecheck=false, 
             justification=raggedright]{caption} 
-\DeclareCaptionFormat{poe}{%
+\DeclareCaptionFormat{poenocaption}{%
   \setlength{\POEcaptionmargin}{\widthof{#1}+7pt}%
   \setlength{\POEcaptionheight}{\heightof{#1}+3pt}%
   \hspace*{-\POEcaptionmargin}#1\par\vspace*{-\POEcaptionheight}%
-}
-\captionsetup[lstlisting]{format=poe, skip=0pt}
+}%
+\DeclareCaptionFormat{poecaption}{%
+  \setlength{\POEcaptionmargin}{\widthof{#1}+7pt}%
+  \hspace*{-\POEcaptionmargin}#1#2#3\par
+}%
+\captionsetup[lstlisting]{format=poenocaption}
 \usepackage{nicefrac}
 \usepackage{pst-func}
 \usepackage{pst-optexp}
@@ -3405,6 +3409,14 @@
 % \iffalse
 %</ignore>
 % \fi
+%
+% \ifGERMAN Eine negative Spiegeltiefe \Lkeyword{mirrordepth} ist
+% äquivalent zu einer positiven Tiefe kombiniert mit
+% \Lkeyword{angle}\opt{=180}.
+% \fi
+% \ifENGLISH A negative \Lkeyword{mirrordepth} is equivalent to a
+% positive depth combined with \Lkeyword{angle}\opt{=180}. 
+% \fi
 % 
 % \boolitem[false]{variable}
 % \ifGERMAN
@@ -3645,11 +3657,17 @@
 %
 % \choitem[top]{gratingalign}{t, top, c, center} 
 % \ifGERMAN 
-% Wählt, ob die Reflektionsebene auf den Gitterspitzen (\opt{bottom}), oder in der Mitte des Gitters (\opt{center}) liegt .
+% Wählt, ob die Reflektionsebene auf den Gitterspitzen (\opt{top}), oder
+% in der Mitte des Gitters (\opt{center}) liegt. Wählt man \opt{center}
+% aus, macht es Sinn die \Lenv{optexp}-Umgebung oder eine
+% halbtransparente Strahlfüllung zu verwenden.
 % \fi
 % \ifENGLISH
-% Selects if the reflection plane resides on \opt{top} of the grating or in its \opt{center}.
+% Selects if the reflection plane resides on \opt{top} of the grating or
+% in its \opt{center}. If you choose \opt{center}, you should use the
+% \Lenv{optexp} environment or a semitransparent beam filling. 
 % \fi
+%
 % \iffalse
 %<*ignore>
 % \fi
@@ -5703,6 +5721,15 @@
 \end{LTXexample}
 % \iffalse
 %</ignore>
+% \fi
+%
+% \ifGERMAN 
+% Beachten Sie, dass sich die Orientierung von «oben» und «unten» in
+% Version 3.3 geändert hat, siehe \prettyref{sec:bwd-comp-3.3}.
+% \fi
+% \ifENGLISH
+% Note, that the orientation of «upper» and «lower» changed with version
+% 3.3, for more details see \prettyref{sec:bwd-comp-3.3}.
 % \fi
 % \end{ltxsyntax}
 %
@@ -8959,8 +8986,10 @@
 \bigskip
 
 \enlargethispage{2cm}
-\begin{LTXexample}[pos=t, linerange={1-27,32-32}, caption={caption}]
-\begin{pspicture}(0.3,-0.1)(5.5,8.2)
+\begingroup
+\captionsetup[lstlisting]{format=poecaption}
+\begin{LTXexample}[pos=t, caption={\ifGERMAN Angepasst von \fi\ifENGLISH Adapted from \fi\arxivurl{1112.5270v2}}]
+\begin{pspicture}(0.3,0.4)(5.5,8.3)
 \pnode(2,7){L}\pnode(2,5.8){Pbs}\pnode([Xnodesep=1]Pbs){Blk1}\pnode(2,2.3){Bs}
 \pnode([Xnodesep=-1]Bs){Blk2}\pnode([Xnodesep=3.5]Bs){Out}\pnode(2,1.3){Slm}
 \begin{optexp}
@@ -8987,12 +9016,9 @@
   \psset{savebeampoints=false, loadbeampoints}
   \drawwidebeam{8-11}(Out)\drawwidebeam[beaminsidefirst]{8}{12}
 \end{optexp}
-\rput[lb](0.3,-0.1){\footnotesize
-  \ifGERMAN Angepasst von \fi
-  \ifENGLISH Adapted from \fi
-  \arxivurl{1112.5270v2}}
 \end{pspicture}
 \end{LTXexample}
+\endgroup
 
 \begin{LTXexample}[pos=t, caption={caption}]
 \begin{pspicture}(6.4,3.2)
@@ -9015,10 +9041,10 @@
 
 \enlargethispage{1cm}
 \begin{LTXexample}[pos=t, caption={caption}]
-\begin{pspicture}(0.4,0.6)(8.2,3.5)
+\begin{pspicture}(0.2,0.6)(8.2,3.5)
 \pnode(2,3){Laser}\pnode(2,1){PwMeter}\pnode(6,3){CplTop}\pnode(6,1){CplBot}
 \psset{arrowscale=1.5, arrowinset=0}
-\optbox[position=start, optboxsize=1.6 1, labeloffset=0](Laser)([Xnodesep=0.1]Laser){%
+\optbox[position=start, optboxsize=1.8 1, labeloffset=0](Laser)([Xnodesep=0.1]Laser){%
   \begin{tabular}{@{}c@{}}Nd:YAG\\[-0.4ex]cw laser\end{tabular}}
 \optcoupler[addtoFiberIn1={ArrowInside=->}, addtoFiberIn2={ArrowInside=-<},
             labeloffset=0.4](Laser)(PwMeter)(CplTop)(CplBot){WDM}
@@ -9029,7 +9055,7 @@
 \end{LTXexample}
 
 \begin{LTXexample}[pos=t, caption={caption}]
-\begin{pspicture}(0.9,0.9)(10.4,5.9)
+\begin{pspicture}(0.9,0.9)(10.4,6.1)
 \psset{arrowscale=1.5, arrowinset=0}
 \pnode(2,5){PC1in}\pnode(4,5){PC1out}\pnode(6,5){PC2in}
 \pnode(8,5){PC2out}\pnode(2,2){CplSig}\pnode(5,2){CplIn}
@@ -9046,7 +9072,7 @@
 \wdmcoupler[addtoFiberIn1={ArrowInside=->}, addtoFiberIn2={angleA=0}, 
             addtoFiberOut={angleB=0,arrows=-|}, ncurv=0.9, 
             coupleralign=bottom, compshift=0.8](Pump)(PC2out)(PumpSig){pump}
-\optbox[position=start, innerlabel](Pump)([offset=-0.1]Pump){980~nm}
+\optbox[position=start, innerlabel, optboxwidth=1.6](Pump)([offset=-0.1]Pump){980~nm}
 \optfiber[fiberloops=2, labeloffset=0.4](CplIn)(PumpSig){Er$^+$-doped}
 \end{pspicture}
 \end{LTXexample}
@@ -9221,8 +9247,10 @@
 \end{pspicture}
 \end{LTXexample}
 
-\begin{LTXexample}[pos=t, caption={caption}, label={ex:czerny-turner}, linerange={1-19,24-24}]
-\begin{pspicture}(0,-1.5)(8,4)
+\begingroup
+\captionsetup[lstlisting]{format=poecaption}
+\begin{LTXexample}[pos=t, caption={\ifGERMAN Angepasst von \fi\ifENGLISH Adapted from \fi\href{http://de.wikipedia.org/w/index.php?title=Datei:Czerny-turner.png}{Wikipedia}}, label={ex:czerny-turner}]
+\begin{pspicture}(0,-1)(8.5,4)
 \psframe[fillstyle=solid,fillcolor=gray!90,linestyle=none](0,-1)(8.5,4)
 \addtopsstyle{OptComp}{linecolor=white}
 \newpsstyle{Beam}{ArrowInside=->, linejoin=2, arrowscale=1.3, arrowinset=0}
@@ -9241,12 +9269,9 @@
   \drawwidebeam[ArrowInsidePos=0.7, linecolor=green!60!white, arrows=->, ArrowInsideMinLength=2]{3-5}(E)
   \drawwidebeam[ArrowInsidePos=0.8, beamangle=-3, linecolor=red!60!white]{3-6}
 \end{optexp}
-\rput[lb](0,-1.5){\footnotesize
-  \ifGERMAN Angepasst von \fi
-  \ifENGLISH Adapted from \fi
-  \scriptsize\url{http://de.wikipedia.org/w/index.php?title=Datei:Czerny-turner.png}}
 \end{pspicture}
 \end{LTXexample}
+\endgroup
 
 \begin{LTXexample}[pos=t, caption={caption}]
 \begin{pspicture}(0,0.7)(9.4,3.3)
@@ -9284,7 +9309,9 @@
 \end{pspicture}
 \end{LTXexample}
 
-\begin{LTXexample}[vsep=10mm, pos=t, caption={caption}]
+\begingroup
+\captionsetup[lstlisting]{format=poecaption}
+\begin{LTXexample}[vsep=10mm, pos=t, caption={\ifENGLISH Adapted from \fi\ifGERMAN Angepasst von \fi\href{http://www.semibyte.de/wp/graphicslibrary/gl-physics/versuchsaufbauten-f-praktikum/}{semibyte.de}}]
 \begin{pspicture}(13.6,2.6)
   \psset[optexp]{labeloffset=1, mirrorwidth=0.5, optboxwidth=2}
   \pnode(2,1){Laser}\pnode(12,2){Film}\pnode(Film|Laser){Ref}
@@ -9307,6 +9334,7 @@
   \end{optexp}
 \end{pspicture}
 \end{LTXexample}
+\endgroup
 
 \begin{LTXexample}[pos=t, caption={caption}]
 \begin{pspicture}(0,0.2)(6.6,3.1)
@@ -9352,8 +9380,10 @@
 \end{LTXexample}
 
 \enlargethispage{110pt}
-\begin{LTXexample}[pos=t, caption={caption}, linerange={1-38,43-43}]
-\begin{pspicture}(13.5,4.7)
+\begingroup
+\captionsetup[lstlisting]{format=poecaption}%
+\begin{LTXexample}[pos=t, caption={\ifGERMAN Angepasst von \fi\ifENGLISH Adapted from \fi\doiurl{10.1364/OL.37.000930}}]
+\begin{pspicture}(0,0.2)(13.5,4.7)
 \psset[optexp]{optboxsize=1 0.8, usefiberstyle}
 \pnode(1,3.2){Scan}\pnode([offset=-1.6]Scan){Sat}
 \pnode([Xnodesep=5]Scan){ScanCpl}\pnode(ScanCpl|Sat){SatCpl}
@@ -9391,15 +9421,14 @@
 \optbox(\oenodeExt{M3}|Pump)(\oenodeExt{M3}){\psline(-0.3,-0.2)(0,0.2)(0.3,-0.2)}
 \oscillator[output=none, unit=0.75, linewidth=0.666\pslinewidth]([offset=1]\oenodeExt{M1}){}{}
 \psline(\oenodeExt{M1})([offset=0.4]\oenodeExt{M1})
-\rput[lb](3.7,-0.1){\footnotesize
-\ifGERMAN Angepasst von \fi
-\ifENGLISH Adapted from \fi
-\doiurl{10.1364/OL.37.000930}}%
 \end{pspicture}
 \end{LTXexample}
+\endgroup
 
-\enlargethispage{70pt}
-\begin{LTXexample}[pos=t, caption={caption}, label={ex:absspektr}]
+\enlargethispage{100pt}
+\begingroup
+\captionsetup[lstlisting]{format=poecaption}
+\begin{LTXexample}[pos=t, caption={\ifENGLISH Adapted from \fi\ifGERMAN Angepasst von \fi\href{http://www.semibyte.de/wp/graphicslibrary/gl-physics/versuchsaufbauten-f-praktikum/}{semibyte.de}}, label={ex:absspektr}]
 \begin{pspicture}(0.2,0.5)(9,7.4)
   \pnode(1,2){DL}\pnode([offset=0.5]DL){OAP}\pnode([Xnodesep=2]OAP){ST}
   \pnode([offset=-1.4]ST){SP4}\pnode([Xnodesep=4]SP4){SP3}
@@ -9433,6 +9462,7 @@
   \rput[l](NaCl){NaCl-Fenster}
 \end{pspicture}
 \end{LTXexample}
+\endgroup
 
 \begin{LTXexample}[pos=t, linerange={1-1}, caption={caption}]
 
@@ -9481,9 +9511,11 @@
 \end{pspicture}
 \end{LTXexample}
 
-\begin{LTXexample}[pos=t, linerange={1-1}, caption={caption}]
+\begingroup
+\captionsetup[lstlisting]{format=poecaption}
+\begin{LTXexample}[pos=t, linerange={1-1}, caption={\ifGERMAN Angepasst von \fi\ifENGLISH Adapted from \fi\doiurl{10.1364/OL.37.000797}}]
 
-\begin{pspicture}(0,-0.5)(12.3,8.6)
+\begin{pspicture}(12.3,8.8)
 \newpsobject{laser}{optbox}{position=start, innerlabel}
 \psset[optexp]{lens=2, phwidth=0.07, outerheight=0.6}
 \pnode(1,7){L}\pnode([offset=-6]L){PSLM}
@@ -9531,14 +9563,13 @@
   \drawwidebeam[loadbeampoints=false, beamwidth=0.1, savebeampoints]{2}{19-21}
   \drawwidebeam{21-23}{16-18}
 \end{optexp}
-\rput[lb](0,-0.5){\footnotesize
-\ifGERMAN Angepasst von \fi
-\ifENGLISH Adapted from \fi
-\doiurl{10.1364/OL.37.000797}}
 \end{pspicture}
 \end{LTXexample}
+\endgroup
 
-\begin{LTXexample}[pos=t, linerange={1-1}, caption={caption}]
+\begingroup
+\captionsetup[lstlisting]{format=poecaption}
+\begin{LTXexample}[pos=t, linerange={1-1}, caption={\ifGERMAN Angepasst von \fi\ifENGLISH Adapted from \fi\doiurl{10.1364/AOP.1.000308}, \ifGERMAN Abb. \fi\ifENGLISH Fig. \fi 37}]
 
 \begin{pspicture}(-2,-0.2)(8.3,5.9)
   \scriptsize
@@ -9612,12 +9643,9 @@
   \nlput[nrot=:U](BeamF)(BeamE){1.9}{%
     \rput(0,0.05){\addtopsstyle{Pulse}{linecolor=blue!50!red!50}\mypulse
     \rput(-0.7,0){\addtopsstyle{Pulse}{linecolor=blue!50}\mypulse}}}%
-  \rput[lb](-2,-1){\footnotesize
-  \ifGERMAN Angepasst von \fi
-  \ifENGLISH Adapted from \fi
-  \doiurl{10.1364/AOP.1.000308}, \ifGERMAN Abb. \fi\ifENGLISH Fig. \fi 37} 
 \end{pspicture}
 \end{LTXexample}
+\endgroup
 % \iffalse
 %</ignore>
 % \fi
@@ -10408,7 +10436,7 @@
 % \begin{changelog}
 %\patchcmd{\release}{\setlength{\itemsep}{0pt}}{\setlength{\itemsep}{0pt}\setlength{\parsep}{0pt}}{}{}
 %   ^^A Do not wrap lines inside the \items, otherwise Changes.py does not work properly
-%   \begin{release}{3.3}{2012-08-15}
+%   \begin{release}{3.3}{2012-08-17}
 %   \item Extended \cs{opttripole} and \cs{optdipole}\see{cmd:optdipole}
 %   \item Modified reference angle for label of \cs{opttripole}\see{sec:bwd-comp-3.3}
 %   \item Added option \opt{optdipolesize} to support two interfaces for \cs{optdipole}\see{prm:optdipolesize}
