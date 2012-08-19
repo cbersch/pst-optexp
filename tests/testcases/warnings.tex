@@ -1,0 +1,23 @@
+\psset{beaminsidefirst, beaminsidelast}
+\begin{pspicture}[showgrid](5,2)
+  \pnode(0,1){A}\pnode(5,1){B}
+  \lens(A)(B)\lens(0,2)(5,2)
+  \psset[optexp]{pswarning}
+  \pstverb{(no warnings---------------------) == }
+  \drawbeam(A){1}(B)
+  \pstverb{(OE@blubb unknown--------------------) == }
+  \drawbeam[beampos=0.2, linecolor=red](A){blubb}(B)
+\end{pspicture}
+
+\begin{pspicture}[showgrid](5,2)
+  \pnode(0,1){A}\pnode(2,1){B}\pnode(5,1){C}
+  \lens(A)(B)\optmzm[fiber=none](B)(C)
+  \psset[optexp]{pswarning}
+  \pstverb{(no warnings---------------------) == }
+  \drawbeam(A){1}(B)
+  \pstverb{(fiber comp--------------------) == }
+  \drawbeam[beampos=0.2, linecolor=red]{1-2}
+  \drawbeam[beampos=-0.2, linecolor=red]{2-1}
+  \pstverb{(only one fiber comp-----------) == }
+  \drawbeam{2}
+\end{pspicture}
