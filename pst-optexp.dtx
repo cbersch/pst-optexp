@@ -18,7 +18,7 @@
 %<stylefile>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<stylefile>\ProvidesPackage{pst-optexp}
 %<*stylefile>
-    [2012/08/17 v3.3 Optical experimental setups with PSTricks]
+    [2012/08/17 v3.4alpha Optical experimental setups with PSTricks]
 %</stylefile>
 %
 %<*driver>
@@ -681,7 +681,7 @@
 %
 % \ifGERMAN
 %   \section{Anforderungen}
-%   \LPack{pst-optexp} Version 3.0 benötigt \LaTeX{} und aktuelle Versionen der
+%   \LPack{pst-optexp} Version 3.4 benötigt \LaTeX{} und aktuelle Versionen der
 %   Pakete \LPack{pst-node}, \LPack{pstricks-add}, \LPack{multido},
 %   \LPack{pst-eucl} und \LPack{environ}.
 %
@@ -693,7 +693,7 @@
 % \fi
 % \ifENGLISH
 %   \section{Requirements}
-%   \LPack{pst-optexp} version 3.0 requires \LaTeX{} and recent versions of
+%   \LPack{pst-optexp} version 3.4 requires \LaTeX{} and recent versions of
 %   \LPack{pst-node}, \LPack{multido}, \LPack{pstricks-add},
 %   \LPack{pst-eucl}, and \LPack{environ}. 
 %
@@ -916,7 +916,7 @@
 %<*ignore>
 %\fi
 \begin{LTXexample}[linerange={1-3,6-6}]
-\begin{pspicture}[showgrid=true](0,-0.3)(3,2.3)
+\begin{pspicture}[showgrid](0,-0.3)(3,2.3)
   \pnode(0,1){A}\pnode(3,1){B}
   \lens(A)(B)
   \psset{style=Refline}\color{Refline}
@@ -930,22 +930,23 @@
 % \ifGERMAN
 % Diese Positionierung kann anhand von unterschiedlichen Parametern, wie
 % z.B. \Lkeyword{abspos} beinflusst werden (siehe dazu
-% \prettyref{sec:positioning} und \prettyref{sec:rotshift}). Die Linse wird nun
-% \opt{0.5} Einheiten entfernt vom Knoten \prm{A} platziert, die Box sitzt am
-% Ende der Referenzlinie $\overline{AB}$.
+% \prettyref{sec:positioning} und \prettyref{sec:rotshift}). Im
+% folgenden Beispiel wird die Linse \opt{0.5} Einheiten vom Knoten
+% \prm{A} entfernt platziert, die Box sitzt am Ende der Referenzlinie
+% $\overline{AB}$.
 % \fi
 % \ifENGLISH
 % This position can be changed with a number of parameters, such as
 % \Lkeyword{abspos} (see \prettyref{sec:positioning} and
-% \prettyref{sec:rotshift}). The lens is positioned \opt{0.5} units apart from
-% node \prm{A}, the box is placed at the end of the reference line
-% $\overline{AB}$.
+% \prettyref{sec:rotshift}). In the next example, the lens is positioned
+% \opt{0.5} units apart from node \prm{A}, the box is placed at the end
+% of the reference line $\overline{AB}$.
 % \fi
 %\iffalse
 %<*ignore>
 %\fi
 \begin{LTXexample}[morekeywords={[21]{abspos, position}}, linerange={1-4,7-7}]
-\begin{pspicture}[showgrid=true](0,-0.3)(3,2.3)
+\begin{pspicture}[showgrid](0,-0.3)(3,2.3)
   \pnode(0,1){A}\pnode(1.5,1){B}
   \lens[abspos=0.5](A)(B)
   \optbox[position=end](A)(B)
@@ -958,7 +959,7 @@
 %\fi 
 %
 % \ifGERMAN Die Komponenten lassen sich allgemein in zwei Kategorien
-% unterteilen: Freistrahl- und Faserkomponenten. Diese unterscheiden sich in
+% unterteilen: Faser- und Freistrahlkomponenten. Diese unterscheiden sich in
 % erster Linie bezüglich ihrer Verbindungsmöglichkeiten: Freistrahlkomponenten
 % können sowohl mit Lichtstrahlen als auch mit Fasern verbunden werden,
 % wohingegen Faserkomponenten nur Faserverbindungen erlauben.
@@ -984,7 +985,7 @@
 %<*ignore>
 %\fi
 \begin{LTXexample}[morekeywords={[21]{labelangle, labelref, labeloffset}}, linerange={1-5,8-8}]
-\begin{pspicture}[showgrid=true](0,-0.3)(3,3.3)
+\begin{pspicture}[showgrid](0,-0.3)(3,3.3)
   \pnode(0,2.5){A}\pnode(2,2.5){B}\pnode(2,1.5){C}
   \mirror[labelangle=-45](A)(B)(C){M}
   \optbox[position=start, labeloffset=0, labelref=relative](C)(B){box}
@@ -1004,7 +1005,7 @@
 % \ifGERMAN
 % Freistrahlkomponenten können mit Lichtstrahlen verbunden werden, deren Weg mit
 % Raytracing berechnet werden kann. Da es sich um ein Paket zum
-% \emph{Skizzieren} experimenteller Aufbauten handelt, werde hier trotz der
+% \emph{Skizzieren} experimenteller Aufbauten handelt, werden hier trotz der
 % realistischen Berechnungen viele Möglichkeiten offen gehalten den Strahlengang
 % zu manipulieren.
 %
@@ -1033,13 +1034,14 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}
+\begin{LTXexample}[linerange={1-5,8-8}]
 \begin{pspicture}[showgrid](0,-0.3)(3,2.3)
-  \pnode(1.5,1){A}\pnode(3,1){B}
-  \optbox[position=start](A)(B)
-  \lens[n=2](A)(B)
-  \drawbeam{1}{2}(B)
-  \drawbeam[beampos=0.2, linecolor=red]{1}{2}(B)
+  \pnode(0,1){A}\pnode(3,1){B}
+  \lens[n=2, lensradius=2 2, lensheight=1.5](A)(B)
+  \drawbeam(A){1}(B)
+  \drawbeam[beampos=0.4, linecolor=red](A){1}(B)
+  \psset{style=Refline}\color{Refline}
+  \psdot(A)\uput[-90](A){A}\psdot(B)\uput[90](B){B}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -1054,12 +1056,13 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}
+\begin{LTXexample}[linerange={1-4,7-7}]
 \begin{pspicture}[showgrid](0,-0.3)(3,2.3)
-  \pnode(1.5,1){A}\pnode(3,1){B}
-  \optbox[position=start](A)(B)
-  \lens[n=2](A)(B)
-  \drawbeam[beamangle=10, ArrowInside=->, arrows=-|, beaminside=false]{1}{2}(B)
+  \pnode(0,1){A}\pnode(3,1){B}
+  \lens[n=2, lens=2 2 1.5](A)(B)
+  \drawbeam[beamangle=10, ArrowInside=->, arrows=-|, beaminside=false](A){1}(B)
+  \psset{style=Refline}\color{Refline}
+  \psdot(A)\uput[90](A){A}\psdot(B)\uput[-90](B){B}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -1076,12 +1079,14 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}
+\begin{LTXexample}[linerange={1-5,8-8}]
 \begin{pspicture}[showgrid](0,-0.3)(3,2.3)
-  \pnode(1.5,1){A}\pnode(3,1){B}
-  \optbox[position=start](A)(B)
+  \pnode(0.5,1){A}\pnode(3,1){B}
+  \optbox[position=start, optboxsize=0.5 1](A)(B)
   \lens[n=2](A)(B)
-  \drawwidebeam[beamwidth=0.2, fillstyle=solid, fillcolor=green!40]{1}{2}(B)
+  \drawwidebeam[beamwidth=0.2, fillstyle=solid, fillcolor=green!40]{1-2}(B)
+  \psset{style=Refline}\color{Refline}
+  \psdot(A)\uput[45](A){A}\psdot(B)\uput[135](B){B}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -1384,7 +1389,7 @@
 % \fi
 % \ifENGLISH
 % The appearance of the beam can be changed via the \Lstyle{Beam} style, and may
-% have a e.g. semitransparent fill pattern.
+% have e.g. a semitransparent fill pattern.
 % \fi
 % \iffalse
 %<*ignore>
@@ -1412,7 +1417,7 @@
 %
 % \ifGERMAN\subsection{Faseraufbau}\fi
 % \ifENGLISH\subsection{Fiber setup}\fi
-% \label{ex:fiber-setup}
+% \label{sec:fiber-setup}
 %
 % \ifGERMAN
 % Dieses Beispiel zeigt, wie ein faseroptischer Aufbau mit automatisch
@@ -1453,7 +1458,7 @@
 % \catcode`\*=13
 % \def*{}%
 \begin{LTXexample}[style=example, linerange={1-5,7-7}]
-*\ON*\begin{pspicture}[showgrid=true](4.7,2)
+*\ON*\begin{pspicture}[showgrid](4.7,2)
   \pnode(0.7,1){A}\pnode(1,1){B}\pnode(2.8,1){C}
   \pnode(4,1.5){D}\pnode(4,0.5){E}*\OFF*
   \psset{optboxwidth=0.7, labelstyle=\scriptsize}
@@ -1476,7 +1481,7 @@
 %<*ignore>
 % \fi
 \begin{LTXexample}[style=example, linerange={1-6,8-8}]
-*\ON*\begin{pspicture}[showgrid=true](4.7,2)
+*\ON*\begin{pspicture}[showgrid](4.7,2)
   \pnode(0.7,1){A}\pnode(1,1){B}\pnode(2.8,1){C}
   \pnode(4,1.5){D}\pnode(4,0.5){E}
   \psset{optboxwidth=0.7, labelstyle=\scriptsize}
@@ -1502,7 +1507,7 @@
 %<*ignore>
 % \fi
 \begin{LTXexample}[style=example, linerange={1-7,9-9}]
-*\ON*\begin{pspicture}[showgrid=true](4.7,2)
+*\ON*\begin{pspicture}[showgrid](4.7,2)
   \pnode(0.7,1){A}\pnode(1,1){B}\pnode(2.8,1){C}
   \pnode(4,1.5){D}\pnode(4,0.5){E}
   \psset{optboxwidth=0.7, labelstyle=\scriptsize}
@@ -1540,7 +1545,7 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}[style=example, caption={caption}, linerange={1-9,11-11}]
+\begin{LTXexample}[style=example, caption={caption}, label={ex:fiber-setup}, linerange={1-9,11-11}]
 *\ON*\begin{pspicture}[showgrid](4.7,2)
   \pnode(0.7,1){A}\pnode(1,1){B}\pnode(2.8,1){C}
   \pnode(4,1.5){D}\pnode(4,0.5){E}
@@ -1559,7 +1564,6 @@
 %
 % \ifGERMAN\subsection{Faseraufbau (Alternative)}\fi
 % \ifENGLISH\subsection{Fiber setup (alternative)}\fi
-% \label{ex:fiber-setup-alt}
 %
 % \ifGERMAN
 % Dieses Beispiel ist vom Ergebnis her identisch mit dem vorangegangenen
@@ -11055,15 +11059,15 @@
 %    \end{macrocode}
 % Use the old naming scheme which was used in version 2.x.
 %    \begin{macrocode}
-    \edef\POE@str@basicname@default{tempNode}
-    \edef\POE@str@basicname@prefix{}
-    \gdef\POE@str@basicname@sep{Intern}
-    \edef\POE@str@extnode@postfix{ExtNode}
+    \edef\POE@str@basicname@default{tempNode}%
+    \edef\POE@str@basicname@prefix{}%
+    \gdef\POE@str@basicname@sep{Intern}%
+    \edef\POE@str@extnode@postfix{ExtNode}%
   \or
-    \edef\POE@str@basicname@default{@}
-    \edef\POE@str@basicname@prefix{OE@}
-    \gdef\POE@str@basicname@sep{}
-    \edef\POE@str@extnode@postfix{Ext}
+    \edef\POE@str@basicname@default{}%
+    \edef\POE@str@basicname@prefix{OE@}%
+    \gdef\POE@str@basicname@sep{}%
+    \edef\POE@str@extnode@postfix{Ext}%
   \fi
 }%
 \psset[optexp]{namingscheme=new}%
@@ -13265,18 +13269,18 @@
 \def\oenode#1#2{%
   \POE@str@basicname@prefix%
   \ifx\\#2\\%
-    \ifnum9<1\POE@getlastcompname%
-      \POE@str@basicname@default%
-      \POE@getlastcompname%
-    \else%
-      \POE@getlastcompname%
-      \POE@str@basicname@sep%
-    \fi%
-  \else%
-    \ifnum9<1#2%
-      \POE@str@basicname@default%
+    \ifnum9<1\POE@getlastcompname\space%
+      \POE@str@basicname@default
+      \POE@getlastcompname
+    \else
+      \POE@getlastcompname
+      \POE@str@basicname@sep
+    \fi
+  \else
+    \ifnum9<1#2
+      \POE@str@basicname@default
       #2%
-    \else%
+    \else
       #2\POE@str@basicname@sep%
     \fi%
   \fi%
@@ -16636,7 +16640,16 @@ tx@OptexpDict begin
 %   \opt{pswarning}.
 %    \begin{macrocode}
 /PrintWarning {
-  (Warning: ) exch strcat ==
+  (Warning pst-optexp: ) exch strcat ==
+} bind def
+/CompUnknownWarning {
+  (Component ') exch strcat (' unknown) strcat PrintWarning
+} bind def
+/OneFiberCompWarning {
+  (Found only one fiber component in beam path, drawing no beam) PrintWarning
+} bind def
+/FiberCompWarning {
+  (Found a fiber component in beam path, stopping beam path) PrintWarning
 } bind def
 %    \end{macrocode}
 % \end{macro}
@@ -17603,7 +17616,7 @@ tx@OptexpDict begin
   currentdict /lastVecTmp known {
     lastVecTmp beamangle matrix rotate dtransform ToVec
   } {
-    beamalign relative eq counttomark 2 ge and {
+    counttomark 2 ge beamalign relative eq and {
       2 copy /InVec load TransformInVec
     } {
       /InVec load
@@ -18135,9 +18148,16 @@ tx@OptexpDict begin
 %    \begin{macrocode}
 /isFreeray { 
   cvn load /n known 
-  dup not {
-    (Encountered fiber component in beam path) Warning
-  } if
+} bind def
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{/compIsKnown}
+% Check if a component is known.
+%    \begin{macrocode}
+/compIsKnown {
+  dup type /stringtype eq { cvn } if
+  tx@OptexpDict exch known
 } bind def
 %    \end{macrocode}
 % \end{macro}
@@ -18150,36 +18170,82 @@ tx@OptexpDict begin
 %    \begin{macrocode}
 /PrearrangePlanes {
   (PrearrangePlanes) DebugBegin
-  counttomark /N ED
-  /CompA ED dup /CompB ED
-  CompA isFreeray {
-    CompA isAmbiguous {
-      amb dup CompA
-    } {
-      CompB isAmbiguous {
-        1 CompA GetIfcCenter (C) CompB GetIfcCenter @ABDist
-        (N) CompA GetIfcCenter (C) CompB GetIfcCenter @ABDist
-      } {
-        1 CompA GetIfcCenter 
-        1 CompB GetIfcCenter 
-        (N) CompB GetIfcCenter 
-        true OrderNodes exch pop
-        (N) CompA GetIfcCenter 
-        1 CompB GetIfcCenter 
-        (N) CompB GetIfcCenter 
-        true OrderNodes exch pop
+  counttomark dup 2 lt {
+    dup 0 eq { 
+      (Found no component on stack, drawing no beam) PrintWarning
+    }{
+%    \end{macrocode}
+% Only one component, draw always in ascending order. We must still
+% check in /PushAllPlanesOnStack if the component has only one
+% interface.
+%    \begin{macrocode}
+      exch dup
+      compIsKnown {
+        dup isFreeray {
+          asc exch 3 -1 roll
+        }{
+          OneFiberCompWarning
+          pop
+        } ifelse
+      }{
+        CompUnknownWarning
       } ifelse
-      le { desc } { asc } ifelse dup CompA
     } ifelse
-    counttomark 2 roll
-  } {
-    counttomark 1 sub { pop } repeat
     /N 0 def
+  }{
+%    \end{macrocode}
+% We have a minimum of two components on stack
+%    \begin{macrocode}
+    /N ED
+    /CompA ED dup /CompB ED
+%    \end{macrocode}
+% Check, if the components have been defined
+%    \begin{macrocode}
+    CompA compIsKnown CompB compIsKnown and {
+      CompA isFreeray {
+        CompA isAmbiguous {
+          amb dup CompA
+        } {
+          CompB isAmbiguous {
+            1 CompA GetIfcCenter (C) CompB GetIfcCenter @ABDist
+            (N) CompA GetIfcCenter (C) CompB GetIfcCenter @ABDist
+          } {
+            1 CompA GetIfcCenter 
+            1 CompB GetIfcCenter 
+            (N) CompB GetIfcCenter 
+            true OrderNodes exch pop
+            (N) CompA GetIfcCenter 
+            1 CompB GetIfcCenter 
+            (N) CompB GetIfcCenter 
+            true OrderNodes exch pop
+          } ifelse
+          le { desc } { asc } ifelse dup CompA
+        } ifelse
+        counttomark 2 roll
+      }{
+        FiberCompWarning
+        counttomark 1 sub { pop } repeat
+        /N 0 def
+      } ifelse
+    }{
+%    \end{macrocode}
+% One of the first two components was not defined, do not draw any beam
+%    \begin{macrocode}
+      /N 0 def
+      CompA compIsKnown not {CompA}{CompB} ifelse
+      CompUnknownWarning
+    } ifelse
   } ifelse
   2 1 N {
     /i ED exch /CompB ED
+    CompB compIsKnown not {
+      counttomark i 1 sub 2 mul 1 add sub { pop } repeat
+      CompB CompUnknownWarning
+      exit
+    } if
     CompB isFreeray not {
       counttomark i 1 sub 2 mul 1 add sub { pop } repeat
+      FiberCompWarning
       exit
     } if
     CompB isAmbiguous not {
@@ -18250,7 +18316,8 @@ tx@OptexpDict begin
 % 
 % \begin{macro}{PushAllPlanesOnStack}
 %   \begin{pssyntax}
-%     \PSvar{[} \PSvar{desc|asc} \PSstring{CompN} \PSvar{\ldots} \PSvar{desc|asc} \PSstring{Comp1} \PSop{PushAllPlanesOnStack}
+%     \PSvar{[} \PSvar{desc|asc} \PSstring{CompN} \PSvar{\ldots} \PSvar{desc|asc} \PSstring{Comp1} 
+%     \PSop{PushAllPlanesOnStack}
 %     \PSvar{[} \PSproc{PN \PSstring{CompName} n mode draw?} \PSvar{\ldots{}}
 %   \end{pssyntax}
 %   \begin{psarglist}
@@ -18358,6 +18425,7 @@ tx@OptexpDict begin
     } ifelse
   } for
   DebugEnd
+  counttomark 1 eq { pop } if
 } bind def
 %    \end{macrocode}
 % \end{macro}
