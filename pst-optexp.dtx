@@ -12856,12 +12856,27 @@
 \def\POE@getcomprange#1-#2\@nil{%
   \ifx\\#2\\%
     \ifx\\#1\\%
-      % empty option
+%    \end{macrocode}
+% empty option, use the current component ID
+%    \begin{macrocode}
       \edef\POE@firstcomp{\the\POE@cnt}%
       \edef\POE@lastcomp{\the\POE@cnt}%
     \else
+%    \end{macrocode}
+% A single number was given
+%    \begin{macrocode}
       \edef\POE@firstcomp{#1}%
       \edef\POE@lastcomp{#1}%
+%    \end{macrocode}
+% Check if the number is valid, otherwise quit with an error.
+%    \begin{macrocode}
+      \ifodd
+        \ifnum 1<\POE@firstcomp\ifnum\POE@lastcomp>\the\POE@cnt \@ne\else\z@\fi\else\@ne\fi
+        \PackageError{pst-optexp}%
+          {Component ID \POE@firstcomp\space is not valid, 
+           \ifnum\the\POE@cnt=0 no components have been defined.\else
+           valid range is from 1 to \the\POE@cnt.\fi}
+      \fi
     \fi
   \else
     \ifx\\#1\\%
@@ -12870,18 +12885,28 @@
       \edef\POE@firstcomp{#1}%
     \fi
     \POE@getlastcomp#2%
+    \ifnum\POE@firstcomp<1
+      \PackageWarning{pst-optexp}%
+        {Component ID \POE@firstcomp\space is not valid, setting to 1.}%
+      \def\POE@firstcomp{1}%
+    \else\ifnum\POE@firstcomp>\the\POE@cnt
+      \PackageWarning{pst-optexp}%
+        {Component ID \POE@firstcomp\space is not valid, setting to \MessageBreak
+         the last defined value (\the\POE@cnt).}%
+      \edef\POE@firstcomp{\the\POE@cnt}%
+    \fi\fi
+    \ifnum\POE@lastcomp>\the\POE@cnt
+      \PackageWarning{pst-optexp}%
+        {Component ID \POE@lastcomp\space is not valid, setting to \MessageBreak
+         the last defined value (\the\POE@cnt).}%
+      \edef\POE@lastcomp{\the\POE@cnt}%
+    \else\ifnum\POE@lastcomp<1
+      \PackageWarning{pst-optexp}%
+        {Component ID \POE@lastcomp\space is not valid, setting to 1.}%
+      \def\POE@lastcomp{1}%
+    \fi\fi
   \fi
-  \ifnum\POE@firstcomp<1
-    \def\POE@firstcomp{1}%
-  \else\ifnum\POE@firstcomp>\the\POE@cnt
-    \edef\POE@firstcomp{\the\POE@cnt}%
-  \fi\fi
-  \ifnum\POE@lastcomp>\the\POE@cnt
-    \edef\POE@lastcomp{\the\POE@cnt}%
-  \else\ifnum\POE@lastcomp<1
-    \def\POE@lastcomp{1}%
-  \fi\fi
-}
+}%
 \def\POE@getlastcomp#1-{%
   \ifx.#1.%
     \edef\POE@lastcomp{\the\POE@cnt}%
@@ -12892,7 +12917,7 @@
       \edef\POE@lastcomp{#1}%
     \fi
   \fi
-}
+}%
 %    \end{macrocode}
 %
 % \begin{macro}{\POE@getcomps}
