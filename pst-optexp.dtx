@@ -18,7 +18,7 @@
 %<stylefile>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<stylefile>\ProvidesPackage{pst-optexp}
 %<*stylefile>
-    [2012/08/17 v3.4alpha Optical experimental setups with PSTricks]
+    [2012/09/24 v3.4alpha Optical experimental setups with PSTricks]
 %</stylefile>
 %
 %<*driver>
@@ -10440,6 +10440,10 @@
 % \begin{changelog}
 %\patchcmd{\release}{\setlength{\itemsep}{0pt}}{\setlength{\itemsep}{0pt}\setlength{\parsep}{0pt}}{}{}
 %   ^^A Do not wrap lines inside the \items, otherwise Changes.py does not work properly
+%   \begin{release}{3.3a}{2012-09-18}
+%   \item Fixed bug which was exposed by an update of pst-node.
+%   \item Fixed trailing spaces.
+%   \end{release}
 %   \begin{release}{3.3}{2012-08-17}
 %   \item Extended \cs{opttripole} and \cs{optdipole}\see{cmd:optdipole}
 %   \item Modified reference angle for label of \cs{opttripole}\see{sec:bwd-comp-3.3}
@@ -10924,14 +10928,14 @@
     \fi
   }{%
     \PackageError{pst-optexp}%
-      {Unknown value '\val' for labelref}%
+      {Unknown value '\val' for labelref.}%
 }%
 \define@choicekey*+[psset]{optexp}{innerlabel}%
   [\val\nr]{true}[true]%
   {\ifcase\nr\relax
      \psset[optexp]{labeloffset=0, labelref=relative}%
    \fi}
-  {\PackageError{pst-optexp}{Unknown value '\val' for innerlabel}}%
+  {\PackageError{pst-optexp}{Unknown value '\val' for innerlabel.}}%
 \define@key[psset]{optexp}{label}{%
   \pst@expandafter\POE@psset@@label{#1} {} {} {} {} {}\@nil
 }%
@@ -10989,7 +10993,7 @@
       \def\POE@key@extnodealign{#1}%
     \fi
   }%
-  {\PackageError{pst-optexp}{Unknown value '\val' for extnodealign}}
+  {\PackageError{pst-optexp}{Unknown value '\val' for extnodealign.}}
 %    \end{macrocode}
 % This part was copied and adapted from \cs{psset@@ref} from pstricks.tex
 %    \begin{macrocode}
@@ -11076,7 +11080,7 @@
 }%
 \define@key[psset]{optexp}{compname}{%
   \ifPOE@insideobj\else
-    \PackageError{pst-optexp}{compname allowed only inside an object}
+    \PackageError{pst-optexp}{compname allowed only inside an object.}
   \fi
   \edef\POE@temp{#1}%
   \ifx\POE@temp\@empty
@@ -11216,9 +11220,9 @@
   \pst@expandafter\POE@psset@@crystalsize{#1} {} {} {}\@nil
 }%
 \def\POE@psset@@crystalsize#1 #2 #3\@nil{%
-  \ifx\\#2\\
+  \ifx\\#2\\%
     \PackageWarning{pst-optexp}{%
-      Parameter 'crystalsize' requires two numbers}%
+      Parameter 'crystalsize' requires two numbers.}%
   \fi
   \psset[optexp]{crystalwidth=#1}%
   \psset[optexp]{crystalheight=#2}%
@@ -11255,9 +11259,9 @@
   \pst@expandafter\POE@psset@@optboxsize{#1} {} {} {}\@nil
 }%
 \def\POE@psset@@optboxsize#1 #2 #3\@nil{%
-  \ifx\\#2\\
+  \ifx\\#2\\%
     \PackageWarning{pst-optexp}{%
-      Parameter 'optboxsize' requires two numbers}%
+      Parameter 'optboxsize' requires two numbers.}%
   \fi
   \psset[optexp]{optboxwidth=#1, optboxheight=#2}%
 }%
@@ -11290,9 +11294,9 @@
   \pst@expandafter\POE@psset@@platesize{#1} {} {} {}\@nil
 }%
 \def\POE@psset@@platesize#1 #2 #3\@nil{%
-  \ifx\\#2\\
+  \ifx\\#2\\%
     \PackageWarning{pst-optexp}{%
-      Parameter 'platesize' requires two numbers}%
+      Parameter 'platesize' requires two numbers.}%
   \fi
   \psset[optexp]{platewidth=#1, plateheight=#2}%
 }%
@@ -11304,7 +11308,7 @@
   \pst@expandafter\POE@psset@@detsize{#1} {} {} {}\@nil
 }%
 \def\POE@psset@@detsize#1 #2 #3\@nil{%
-  \ifx\\#2\\
+  \ifx\\#2\\%
     \pst@checknum{#1}\POE@key@detsize
   \else
     \let\POE@key@detsize\@empty
@@ -11314,7 +11318,7 @@
 }%
 \define@choicekey*+[psset]{optexp}{dettype}[\val\nr]{round,diode}%
    {\edef\POE@key@dettype{\val}}
-   {\PackageError{pst-optexp}{Unknown value '\val' for dettype}}
+   {\PackageError{pst-optexp}{Unknown value '\val' for dettype.}}
 \newpsstyle{DetectorStyle}{}
 \psset[optexp]{%
   detsize=0.8,
@@ -11342,7 +11346,7 @@
 \define@choicekey+[psset]{optexp}{poltype}%
   [\val\nr]{parallel,misc,perp,rcirc,lcirc}%
   {\edef\POE@key@poltype{#1}}
-  {\PackageError{pst-optexp}{Unknown value '\val' for poltype}%
+  {\PackageError{pst-optexp}{Unknown value '\val' for poltype.}%
 }
 \psset[optexp]{%
   poltype=parallel,
@@ -11362,7 +11366,7 @@
   \pst@expandafter\POE@psset@@doveprismsize{#1} {} {} {}\@nil
 }%
 \def\POE@psset@@doveprismsize#1 #2 #3\@nil{%
-  \ifx\\#2\\
+  \ifx\\#2\\%
     \pst@checknum{#1}\POE@key@doveprismheight
     \pstFPmul\POE@key@doveprismwidth{3}{#1}
   \else
@@ -11387,9 +11391,9 @@
   \pst@expandafter\POE@psset@@glanthompsonsize{#1} {} {} {}\@nil
 }%
 \def\POE@psset@@glanthompsonsize#1 #2 #3\@nil{%
-  \ifx\\#2\\
+  \ifx\\#2\\%
     \PackageWarning{pst-optexp}{%
-      Parameter 'glanthompsonsize' requires two numbers}%
+      Parameter 'glanthompsonsize' requires two numbers.}%
   \fi
   \psset[optexp]{glanthompsonwidth=#1, glanthompsonheight=#2}%
 }%
@@ -11431,7 +11435,7 @@
 }%
 \def\POE@psset@@mirrorradius#1 #2 #3\@nil{%
   \pst@checknum{#1}\POE@key@mirrorradius
-  \ifx\\#2\\
+  \ifx\\#2\\%
     \def\POE@key@mirrorradiusB{}%
   \else
     \pst@checknum{#2}\POE@key@mirrorradiusB
@@ -11523,7 +11527,7 @@
     \else
       \def\POE@key@gratingalign{#1}%
     \fi}%
-  {\PackageError{pst-optexp}{Unknown value '\val' for gratingalign}}
+  {\PackageError{pst-optexp}{Unknown value '\val' for gratingalign.}}
 \define@boolkey[psset]{optexp}[POE@]{reverse}[true]{}
 \psset[optexp]{%
   gratingcount=10,
@@ -11560,7 +11564,7 @@
 \define@choicekey+[psset]{optexp}{prismalign}[\val\nr]%
   {auto,center}%
   {\def\POE@key@prismalign{#1}}%
-  {\PackageError{pst-optexp}{Unknown value '\val' for prismalign}}%
+  {\PackageError{pst-optexp}{Unknown value '\val' for prismalign.}}%
 \psset[optexp]{%
   prismsize=1,
   prismangle=60,
@@ -11574,7 +11578,7 @@
   \pst@expandafter\POE@psset@@optdipolesize{#1} {} {} {}\@nil
 }%
 \def\POE@psset@@optdipolesize#1 #2 #3\@nil{%
-  \ifx\\#2\\
+  \ifx\\#2\\%
     \def\POE@key@optdipoleheight{0}%
   \else
     \pst@checknum{#2}\POE@key@optdipoleheight
@@ -11608,7 +11612,7 @@
 \define@choicekey+[psset]{optexp}{filtertype}[\val\nr]%
    {bandstop,bandpass,lowpass,highpass}%
    {\def\POE@key@filtertype{#1}}%
-   {\PackageError{pst-optexp}{Unknown value '\val' for filtertype}}
+   {\PackageError{pst-optexp}{Unknown value '\val' for filtertype.}}
 \newpsstyle{FilterStyle}{}
 \psset[optexp]{%
   filtersize=0.8,
@@ -11623,7 +11627,7 @@
 \define@choicekey+[psset]{optexp}{polcontroltype}[\val\nr]%
    {linear,triangle}%
    {\def\POE@key@polcontroltype{#1}}%
-   {\PackageError{pst-optexp}{Unknown polcontroltype '\val'}}
+   {\PackageError{pst-optexp}{Unknown value '\val' for polcontroltype.}}
 \psset[optexp]{%
   polcontrolsize=0.15,
   polcontroltype=linear
@@ -11636,7 +11640,7 @@
   \pst@expandafter\POE@psset@@optampsize{#1} {} {} {}\@nil
 }%
 \def\POE@psset@@optampsize#1 #2 #3\@nil{%
-  \ifx\\#2\\
+  \ifx\\#2\\%
     \pst@checknum{#1}\POE@key@optampheight
     \pstFPmul\POE@key@optampwidth{0.866}{#1}
   \else
@@ -11652,7 +11656,7 @@
   \pst@expandafter\POE@psset@@optmzmsize{#1} {} {} {}\@nil
 }%
 \def\POE@psset@@optmzmsize#1 #2 #3\@nil{%
-  \ifx\\#2\\
+  \ifx\\#2\\%
     \pst@checknum{#1}\POE@key@optmzmheight
     \pstFPmul\POE@key@optmzmwidth{1.6}{#1}
   \else
@@ -11668,7 +11672,7 @@
   \pst@expandafter\POE@psset@@isolatorsize{#1} {} {} {}\@nil
 }%
 \def\POE@psset@@isolatorsize#1 #2 #3\@nil{%
-  \ifx\\#2\\
+  \ifx\\#2\\%
     \pst@checknum{#1}\POE@key@isolatorheight
     \pstFPmul\POE@key@isolatorwidth{1.6}{#1}
   \else
@@ -11684,7 +11688,7 @@
   \pst@expandafter\POE@psset@@fiberpolsize{#1} {} {} {}\@nil
 }%
 \def\POE@psset@@fiberpolsize#1 #2 #3\@nil{%
-  \ifx\\#2\\
+  \ifx\\#2\\%
     \pst@checknum{#1}\POE@key@fiberpolheight
     \pstFPmul\POE@key@fiberpolwidth{1.6}{#1}
   \else
@@ -11702,7 +11706,7 @@
 \define@choicekey+[psset]{optexp}{switchstyle}%
   [\val\nr]{opened,closed}%
   {\edef\POE@key@switchstyle{#1}}%
-  {\PackageError{pst-optexp}{Unknown value '\val' for switchstyle}}
+  {\PackageError{pst-optexp}{Unknown value '\val' for switchstyle.}}
 \psset[optexp]{%
   switchsize=0.8,
   switchstyle=opened
@@ -11714,7 +11718,7 @@
   \pst@expandafter\POE@psset@@fdlsize{#1} {} {} {}\@nil
 }%
 \def\POE@psset@@fdlsize#1 #2 #3\@nil{%
-  \ifx\\#2\\
+  \ifx\\#2\\%
     \pst@checknum{#1}\POE@key@fdlheight
     \pstFPmul\POE@key@fdlwidth{1.6}{#1}
   \else
@@ -11730,7 +11734,7 @@
   \pst@expandafter\POE@psset@@fibercolsize{#1} {} {} {}\@nil
 }%
 \def\POE@psset@@fibercolsize#1 #2 #3\@nil{%
-  \ifx\\#2\\
+  \ifx\\#2\\%
     \pst@checknum{#1}\POE@key@fibercolheight
     \pstFPmul\POE@key@fibercolwidth{0.866}{#1}
   \else
@@ -11757,10 +11761,10 @@
 \def\POE@psset@@optcircangle#1 #2 #3\@nil{%
   \edef\POE@tempA{#1}%
   \edef\POE@tempB{#2}%
-  \ifx\\#2\\
-    \PackageError{pst-optexp}{optcircangle requires two numbers}%
-  \else\ifx\\#1\\
-    \PackageError{pst-optexp}{optcircangle requires two numbers}%
+  \ifx\\#2\\%
+    \PackageError{pst-optexp}{optcircangle requires two numbers.}%
+  \else\ifx\\#1\\%
+    \PackageError{pst-optexp}{optcircangle requires two numbers.}%
   \else
     \psset[optexp]{optcircangleA=#1, optcircangleB=#2}%
   \fi\fi
@@ -11778,7 +11782,7 @@
   \pst@expandafter\POE@psset@@couplersize{#1} {} {} {}\@nil
 }%
 \def\POE@psset@@couplersize#1 #2 #3\@nil{%
-  \ifx\\#2\\
+  \ifx\\#2\\%
     \pstFPmul\POE@key@couplerheight{0.8}{#1}
     \pstFPmul\POE@key@couplerwidth{2}{#1}
   \else
@@ -11797,7 +11801,7 @@
       \let\POE@key@couplertype\POE@str@couplertype@ellipse
     \fi
   }%
-  {\PackageError{pst-optexp}{Unknown value '\val' for couplertype}}
+  {\PackageError{pst-optexp}{Unknown value '\val' for couplertype.}}
 \define@key[psset]{optexp}{align}{%
   \psset[optexp]{coupleralign=#1}%
   \PackageWarning{pst-optexp}{%
@@ -11816,7 +11820,7 @@
     \else
       \def\POE@key@coupleralign{#1}%
     \fi}%
-  {\PackageError{pst-optexp}{Unknown value '\val' for coupleralign}}
+  {\PackageError{pst-optexp}{Unknown value '\val' for coupleralign.}}
 \psset[optexp]{%
   couplersize=0.2,
   couplersep=0.05,
@@ -11839,7 +11843,7 @@
 }%
 \def\POE@psset@@fiberboxsize#1 #2 #3\@nil{%
   \psset[optexp]{fiberboxwidth=#1}
-  \ifx\\#2\\
+  \ifx\\#2\\%
     \psset[optexp]{fiberboxheight=0}%
   \else
     \psset[optexp]{fiberboxheight=#2}%
@@ -11855,12 +11859,12 @@
   \pst@expandafter\POE@psset@@fiberboxcount#1\@nil
 }%
 \def\POE@psset@@fiberboxcount#1x#2\@nil{%
-  \ifx\\#1\\
+  \ifx\\#1\\%
     \def\POE@key@fiberboxcountin{1}%
   \else
     \def\POE@key@fiberboxcountin{#1}%
   \fi
-  \ifx\\#2\\
+  \ifx\\#2\\%
     \def\POE@key@fiberboxcountout{1}%
   \else
     \def\POE@key@fiberboxcountout{#2}
@@ -11884,7 +11888,7 @@
   \psset[optexp]{n=#1}%
   \PackageWarning{pst-optexp}{%
     Option 'refractiveindex' is deprecated,\MessageBreak
-    use 'n' instead}%
+    use 'n' instead.}%
 }%
 \define@key[psset]{optexp}{n}{%
   \POE@parsealg{n}#1\@nil
@@ -11928,7 +11932,7 @@
       \def\POE@key@savebeampoints{#1}
     \else
       \PackageError{pst-optexp}%
-        {savebeampoints must be a positive integer or 0}%
+        {savebeampoints must be a positive integer or 0.}%
     \fi
     \@expandtwoargs\in@{,\POE@key@savebeampoints,}{,\POE@beamlist,}%
     \ifin@\else
@@ -11950,7 +11954,7 @@
       \def\POE@key@loadbeampoints{#1}%
     \else
       \PackageError{pst-optexp}%
-        {loadbeampoints must be a positive integer or 0}%
+        {loadbeampoints must be a positive integer or 0.}%
     \fi
     \@expandtwoargs\in@{,\POE@key@loadbeampoints,}{,\POE@beamlist,}%
     \ifin@\else
@@ -11995,7 +11999,7 @@
       \def\POE@key@beamalign{#1}%
     \fi
   }%
-  {\PackageError{pst-optexp}{Unknown value '\val' for beamalign}}
+  {\PackageError{pst-optexp}{Unknown value '\val' for beamalign.}}
 \define@key[psset]{optexp}{ArrowInsideMinLength}{%
   \def\POE@key@ArrowInsideMinLength{#1}%
 }%
@@ -12040,13 +12044,13 @@
 }
 \def\POE@psset@fibercheck#1#2\@nil{%
   \ifx#1*\relax
-    \ifx\\#2\\
+    \ifx\\#2\\%
       \psset[optexp]{fiber@preset=all}%
     \else
       \psset[optexp]{fiber@preset=#2}%
     \fi
   \else\ifx#1+\relax
-    \ifx\\#2\\
+    \ifx\\#2\\%
       \psset[optexp]{fiber@all=all}%
     \else
       \psset[optexp]{fiber@all=#2}%
@@ -12076,7 +12080,7 @@
 }%
 \def\POE@psset@@fiberpreset#1#2,#3,#4\@nil{%
   \POE@getfiberpreset@all
-  \ifx\\#3\\
+  \ifx\\#3\\%
     \@nameuse{POE@getfiberpreset@#1}%
     \@nameuse{POE@getfiberpreset@#2}%
   \fi
@@ -12182,10 +12186,10 @@
       \def\POE@key@fiberalign{#1}%
     \fi
   }%
-  {\PackageError{pst-optexp}{Unknown value '\val' for fiberalign}}%  
+  {\PackageError{pst-optexp}{Unknown value '\val' for fiberalign.}}%
 \define@key[psset]{optexp}{fiberstyle}{%
   \@ifundefined{nc#1}%
-    {\PackageError{pst-optexp}{Unknown value '#1' for fiberstyle}}%
+    {\PackageError{pst-optexp}{Unknown value '#1' for fiberstyle.}}%
     {\def\POE@key@fiberstyle{#1}}}
 \psset[optexp]{%
   fiberangleA=0,
@@ -12199,10 +12203,10 @@
 \define@choicekey+[psset]{optexp}{startnode}%
   [\val\nr]{auto,1,2,3,4,N}%
   {\edef\POE@key@startnode{\val}}
-  {\PackageError{pst-optexp}{Unknown startnode number '\val'}}
+  {\PackageError{pst-optexp}{Unknown startnode number '\val'.}}
 \define@choicekey+[psset]{optexp}{stopnode}[\val\nr]{auto,1,2,3,4,N}%
    {\edef\POE@key@stopnode{\val}}
-   {\PackageError{pst-optexp}{Unknown stopnode number '\val'}}
+   {\PackageError{pst-optexp}{Unknown stopnode number '\val'.}}
 \psset[optexp]{%
   startnode=auto,
   stopnode=auto
@@ -12220,16 +12224,16 @@
   \egroup
   \gdef\POE@complist{}\global\POE@cnt=\POE@oldcnt\relax
   \psset[optexp]{backlayer=false, frontlayer=true}%
-  #1}%
+  #1\ignorespaces}%
 %    \end{macrocode}
 % \begin{macro}{\backlayer}
 %    \begin{macrocode}
-\def\backlayer#1{\ifPOE@backlayer #1\fi\ignorespaces}
+\def\backlayer#1{\ifPOE@backlayer #1\fi\ignorespaces}%
 %    \end{macrocode}
 % \end{macro}
 % \begin{macro}{\frontlayer}
 %    \begin{macrocode}
-\def\frontlayer#1{\ifPOE@frontlayer #1\fi\ignorespaces}
+\def\frontlayer#1{\ifPOE@frontlayer #1\fi\ignorespaces}%
 %    \end{macrocode}
 % \end{macro}
 %
@@ -12242,6 +12246,7 @@
     \POE@getcoor#1#2
     \edef\POE@temp{{\pst@coor}}%
   \else
+    \POE@checkcompname{#1#2}%
     \edef\POE@temp{/\oenode{}{#1#2}\space}%
   \fi%
 }%
@@ -12286,8 +12291,6 @@
   \expandafter\drawfiber@v\expandafter{\POE@tempe}{#1}%
   \def\POE@tempe{#1}\drawfiber@ii@}%
 \def\drawfiber@v#1#2{%
-  \POE@checkcompname{#1}%
-  \POE@checkcompname{#2}%
   \begingroup
     \let\psk@angleA\relax
     \let\psk@angleB\relax
@@ -12877,7 +12880,7 @@
         \PackageError{pst-optexp}%
           {Component ID \POE@firstcomp\space is not valid, 
            \ifnum\the\POE@cnt=0 no components have been defined\else
-           valid range is from 1 to \the\POE@cnt\fi}
+           valid range is from 1 to \the\POE@cnt\fi.}
       \fi
     \fi
   \else
@@ -13277,7 +13280,7 @@
 \def\POE@checkcompname#1{%
   \@expandtwoargs\in@{,#1,}{,\POE@complist,}%
   \ifin@\else
-    \PackageError{pst-optexp}{Component '#1' is undefined}
+    \PackageError{pst-optexp}{Component '#1' is undefined.}
   \fi
 }%
 %    \end{macrocode}
@@ -13401,7 +13404,7 @@
   \else
     \PackageWarning{pst-optexp}{%
       \string\oenodeIfc\space node argument must be\MessageBreak
-      integer, 'N', or 'C'}
+      integer, 'N', or 'C'.}
   \fi\fi\fi
 }%
 %    \end{macrocode}
@@ -13773,8 +13776,7 @@
     \dipole@iimacro{#2}%
   }{%
     \PackageError{pst-optexp}{%
-      dipole component `#2' already defined
-    }%
+      dipole component `#2' already defined.}%
   }%
 \ignorespaces}%
 %    \end{macrocode}
@@ -13810,8 +13812,7 @@
       \fiberdipole@iimacro{#2}%
    }{%
      \PackageError{pst-optexp}{%
-       fiber dipole object `#2' already defined
-     }%
+       fiber dipole object `#2' already defined.}%
   }%
 \ignorespaces}%
 %    \end{macrocode}
@@ -13844,8 +13845,7 @@
     \tripole@iimacro{#2}%
   }{%
     \PackageError{pst-optexp}{%
-      tripole object `#2' already defined
-    }%
+      tripole object `#2' already defined.}%
   }%
 \ignorespaces}%
 %    \end{macrocode}
@@ -14156,12 +14156,12 @@
       \ifnum\POE@key@fiberboxcountout=1
         \ifdim\POE@key@fiberboxheight pt=0pt
           \PackageError{pst-optexp}{%
-            Cannot determine fiberboxheight automatically}
+            Cannot determine fiberboxheight automatically.}
         \fi
       \fi
     \fi
     \ifPOE@backlayer
-      \ifx\\#3#4\\
+      \ifx\\#3#4\\%
         \POE@regNodes{#1}{#2}
         \POE@Verb{/@@inht 0 def /@@outht 0 def}%
       \else
@@ -14192,7 +14192,7 @@
     \fi
     \POE@drawcomponent[fiberbox]{#5}\fiberbox@ii
     \ifPOE@backlayer
-      \ifx\\#3#4\\
+      \ifx\\#3#4\\%
 %    \end{macrocode}
 % Connect only, if the fiberbox has a single related interface node.
 %    \begin{macrocode}
@@ -14309,7 +14309,7 @@
   \pst@getcoor{#1}\POE@temp%
   \pnode(!%
     \POE@temp /YDiff ED /XDiff ED %
-    /N@#2 load GetCenter /YShifted ED /XShifted ED
+    \pst@nodedict /N@#2 load GetCenter end /YShifted ED /XShifted ED
     /rot@angle #4 \POE@key@labelrefangle\space add def
     /XDiff@Rot rot@angle cos XDiff mul rot@angle sin YDiff mul add def
     /YDiff@Rot rot@angle cos YDiff mul rot@angle sin XDiff mul sub def
@@ -14887,7 +14887,7 @@
     \ifx\POE@key@mirrortype\POE@str@mirrortype@piezo
       \POE@setref{/@@y0 \pst@number\psyunit def}%
       \bgroup
-        \psset{style=PiezoMirror}
+        \psset{style=PiezoMirror}%
         \POE@setref{%
           \pst@number\psyunit @@y0 div 
           \POE@key@mirrorwidth\space 0.5 mul mul 2.5 div /@@y0 ED
@@ -14896,13 +14896,13 @@
     \else
       \POE@setref{/@@x \POE@key@mirrorwidth\space 0.5 mul def}%
       \ifx\POE@key@mirrortype\POE@str@mirrortype@plain\else
-        \POE@setref{\POE@key@mirrordepth\space 0.5 mul dup /@@y0 ED /@@y ED}
+        \POE@setref{\POE@key@mirrordepth\space 0.5 mul dup /@@y0 ED /@@y ED}%
       \fi
     \fi
   \else
     \POE@setref{/@@x \POE@key@mirrorwidth\space 0.5 mul def}%
     \ifx\POE@key@mirrortype\POE@str@mirrortype@plain\else
-      \POE@setref{\POE@key@mirrordepth\space 0.5 mul dup /@@y0 ED /@@y ED}
+      \POE@setref{\POE@key@mirrordepth\space 0.5 mul dup /@@y0 ED /@@y ED}%
     \fi
   \fi
 }%
@@ -18629,25 +18629,23 @@ tx@OptexpDict begin
 % \end{macro}
 % 
 % \begin{macro}{@ABVect}
-% Shorthand definition for \PSvar{ABVect} procedure of the \nxLPack{pst-eucl} package.
 % \begin{pssyntax}
 %   \PSvar{Xa Ya Xb Yb} \PSop{@ABVect} \PSvar{dX dY}
 % \end{pssyntax}
 %    \begin{macrocode}
 /@ABVect { 
-  tx@EcldDict begin ABVect end 
+  3 -1 roll exch sub 3 1 roll sub exch
 } bind def
 %    \end{macrocode}
 % \end{macro}
 %
 % \begin{macro}{@ABDist}
-% Shorthand definition for \PSvar{ABDist} procedure of the \nxLPack{pst-eucl} package.
 % \begin{pssyntax}
 %   \PSvar{Xa Ya Xb Yb} \PSop{@ABDist} \PSvar{dist}
 % \end{pssyntax}
 %    \begin{macrocode}
 /@ABDist { 
-  tx@EcldDict begin ABDist end 
+  3 -1 roll sub dup mul 3 1 roll sub dup mul add sqrt 
 } bind def
 %    \end{macrocode}
 % \end{macro}
