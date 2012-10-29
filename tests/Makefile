@@ -26,9 +26,6 @@ export DVIPSHEADERS := ..:
 
 all: $(addsuffix .pdf, $(FILELIST))
 
-connectall.tex: connectall.py $(POE)
-	./connectall.py
-
 %.pdf: %.ps
 	ps2pdf $<
 
@@ -39,7 +36,13 @@ connectall.tex: connectall.py $(POE)
 	$(LATEX) $< #2>&1 >/dev/null 
 	rm -f $*.aux $*.log
 
-clean: clean
+clean: 
+	$(RM) $(addsuffix .aux, $(FILELIST)) \
+	      $(addsuffix .log, $(FILELIST)) \
+	      $(addsuffix .dvi, $(FILELIST)) \
+	      $(addsuffix .out, $(FILELIST))
+
+veryclean: clean
 	$(RM) $(addsuffix .ps, $(FILELIST)) \
 	      $(addsuffix .pdf, $(FILELIST))
 
