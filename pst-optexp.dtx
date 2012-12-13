@@ -4190,9 +4190,16 @@
 % \end{ltxsyntax}
 % 
 % \begin{optionlist}
-% \numitem[0.8]{switchsize}
-% \ifGERMAN Die Seitenlänge des Schalters.\fi
-% \ifENGLISH The side length of the switch.\fi
+% \optitem[0.8]{switchsize}{\prm{num} or \prm{width} \prm{height}}
+% \ifGERMAN 
+% Wird nur eine Zahl angegeben, so ist das die Seitenlänge des
+% Schalters, andernfalls können Breite und Höhe getrennt angegeben
+% werden.
+% \fi
+% \ifENGLISH 
+% A single number defines the side length of the switch, otherwise the
+% height and width can be specified separately.
+% \fi
 %
 % \choitem[opened]{switchstyle}{opened, closed} 
 % \ifGERMAN Der Zustand des Schalters kann geschlossen (\opt{closed}) oder
@@ -11702,8 +11709,16 @@
 % Optical switch
 %    \begin{macrocode}
 \define@key[psset]{optexp}{switchsize}{%
-  \pst@checknum{#1}\POE@key@switchsize
-}
+  \pst@expandafter\POE@psset@@switchsize{#1} {} {} {}\@nil
+}%
+\def\POE@psset@@switchsize#1 #2 #3\@nil{%
+  \pst@checknum{#1}\POE@key@switchwidth
+  \ifx\\#2\\%
+    \pst@checknum{#1}\POE@key@switchheight
+  \else
+    \pst@checknum{#2}\POE@key@switchheight
+  \fi
+}%
 \define@choicekey+[psset]{optexp}{switchstyle}%
   [\val\nr]{opened,closed}%
   {\edef\POE@key@switchstyle{#1}}%
@@ -16168,7 +16183,10 @@
 % \begin{macro}{\optswitch@ref}
 %    \begin{macrocode}
 \def\optswitch@ref{%
-  \POE@setref{\POE@key@switchsize\space 0.5 mul dup /@@y ED /@@x ED }%
+  \POE@setref{%
+    /@@x \POE@key@switchwidth\space 0.5 mul def
+    /@@y \POE@key@switchheight\space 0.5 mul def
+  }%
 }%
 %    \end{macrocode}
 % \end{macro}
