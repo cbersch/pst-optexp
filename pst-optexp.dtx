@@ -10447,6 +10447,9 @@
 % \begin{changelog}
 %\patchcmd{\release}{\setlength{\itemsep}{0pt}}{\setlength{\itemsep}{0pt}\setlength{\parsep}{0pt}}{}{}
 %   ^^A Do not wrap lines inside the \items, otherwise Changes.py does not work properly
+%   \begin{release}{3.4}{2013-xx-xx}
+%   \item Fixed bugs when using \opt{fillstyle} for some components.
+%   \end{release}
 %   \begin{release}{3.3a}{2012-09-18}
 %   \item Fixed bug which was exposed by an update of pst-node.
 %   \item Fixed trailing spaces.
@@ -15019,10 +15022,10 @@
                dimen=outer](! \@ht 4 div 0)%
                            (! \@ht -4 div \@ht 2.5 div)
       \ifx\POE@key@extnode\@empty
-        \psbezier(! 0 \@ht 2.5 div)%
-                 (! 0 \@ht 1.5 div)%
-                 (! \@ht 2 div \@ht 2 div)%
-                 (! \@ht 4 div \@ht)
+        \psbezier[fillstyle=none](! 0 \@ht 2.5 div)%
+                                 (! 0 \@ht 1.5 div)%
+                                 (! \@ht 2 div \@ht 2 div)%
+                                 (! \@ht 4 div \@ht)
       \fi
     \else\ifx\POE@key@mirrortype\POE@str@mirrortype@extended
       \psframe[style=ExtendedMirror]%
@@ -15089,7 +15092,7 @@
 % draw the reflective interface
 %    \begin{macrocode}
     \bgroup
-      \psset{linewidth=\POE@key@mirrorlinewidth}
+      \psset{linewidth=\POE@key@mirrorlinewidth, fillstyle=none}
       \begin@OpenObj
         \addto@pscode{\POE@dict{ \@ht \@r rightCurvedIfc \@postcode }}%
       \end@OpenObj
@@ -15436,11 +15439,11 @@
     \pscircle[fillstyle=none](0,0){0.12}
   \fi
   \ifx\POE@key@poltype\POE@str@pol@polrcirc
-    \psellipticarc[arrows=->]%
+    \psellipticarc[fillstyle=none, arrows=->]%
       (0,0)(! \@sz 2 div \@sz){20}{-20}
   \fi
   \ifx\POE@key@poltype\POE@str@pol@pollcirc
-    \psellipticarc[arrows=<-]%
+    \psellipticarc[fillstyle=none, arrows=<-]%
       (0,0)(! \@sz 2 div \@sz){20}{-20}
   \fi
 \ignorespaces}%
