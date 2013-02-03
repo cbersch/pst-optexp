@@ -1,6 +1,6 @@
 % \iffalse meta-comment
 %
-% Copyright (C) 2007-2012 by Christoph Bersch <usenet@bersch.net>
+% Copyright (C) 2007-2013 by Christoph Bersch <usenet@bersch.net>
 %
 % This work may be distributed and/or modified under the
 % conditions of the LaTeX Project Public License, either version 1.3c
@@ -18,7 +18,7 @@
 %<stylefile>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<stylefile>\ProvidesPackage{pst-optexp}
 %<*stylefile>
-    [2012/09/24 v3.4alpha Optical experimental setups with PSTricks]
+    [2013/02/03 v3.4 Optical experimental setups with PSTricks]
 %</stylefile>
 %
 %<*driver>
@@ -4526,8 +4526,16 @@
 % \fi
 % 
 % \choitem[center]{coupleralign}{t, top, b, bottom, c, center}
-% \ifGERMAN Die Ausrichtung des Kopplers bezüglich der Referenzknoten.\fi
-% \ifENGLISH The alignment of the coupler with respect to the reference nodes.\fi
+% \ifGERMAN Die Ausrichtung des Kopplers bezüglich der
+% Referenzknoten. Beachten Sie, dass die Position der Komponentenmitte
+% und damit der Beschriftung von dieser Einstellung abhängt (siehe
+% \ref{sec:centernode}).
+% \fi
+% \ifENGLISH The alignment of the coupler with respect to the reference
+% nodes. Note, that the exact position of the coupler center and
+% accordingly that of the label depends on this setting (see
+% \ref{sec:centernode}).
+% \fi
 % \iffalse
 %<*ignore>
 % \fi
@@ -5284,11 +5292,13 @@
 %   \cmditem{oenodeCenter}{comp}
 % 
 % \ifGERMAN
-% Dieser Knoten liegt, bis auf wenige Ausnahmen (z.B. \Lcs{optdetector}), im
+% Dieser Knoten liegt, bis auf wenige Ausnahmen, wie
+% z.B. \Lcs{optdetector} und \Lcs{optcoupler} (siehe unten), im
 % Mittelpunkt der Komponente.
 % \fi
 % \ifENGLISH
-% This node lays, except for a few components (e.g. \Lcs{optcirculator}), in the
+% This node lays, except for a few components like
+% e.g. \Lcs{optcirculator} and \Lcs{optcoupler} (see below), in the
 % center of the component.
 % \fi
 % \iffalse
@@ -5301,6 +5311,28 @@
   \psdot(\oenodeCenter{})
   \optdetector(0,1.5)(2.5,1.5)
   \psline[style=Refline](\oenodeRefA{})(\oenodeRefB{})
+  \psdot(\oenodeCenter{})
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
+% \ifGERMAN Bei \Lcs{optcoupler} hängt die Position der Komponentenmitte
+% von den \Lkeyword{coupleralign} Einstellungen ab.
+% \fi
+% \ifENGLISH For \Lcs{optcoupler} the position of the component center
+% depends on the \Lkeyword{coupleralign} settings.
+% \fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(0,0.3)(3,3)
+  \psset[optexp]{couplersize=0.6 0.4, couplersep=0.2, couplertype=rectangle}
+  \optcoupler(0,3)(0,2)(3,3)(3,2)
+  \psdot(\oenodeCenter{})
+  \optcoupler[coupleralign=b](0,1.5)(0,0.5)(3,1.5)(3,0.5)
   \psdot(\oenodeCenter{})
 \end{pspicture}
 \end{LTXexample}
@@ -6052,20 +6084,26 @@
 % Bei \Lcs{drawbeam} und \Lcs{drawwidebeam} können auch Zahlintervalle verwendet
 % werden. Gültige Intervallangaben sind
 % \begin{description}
-% \item[\parbox{2em}{\texttt{x-y}}] Von \opt{x} bis \opt{y}, ist \opt{x} größer
-%   als \opt{y}, so wird heruntergezählt.
+% \item[\parbox{2em}{\texttt{x-y}}] Von \opt{x} bis \opt{y}, ist \opt{x}
+%   größer als \opt{y}, so wird heruntergezählt. Ist der gesamte
+%   Bereich nicht definiert, dann wird ein Fehler ausgegeben.
 % \item[\parbox{2em}{\texttt{x-}}] Von \opt{x} bis zur letzten Komponente.
-% \item[\parbox{2em}{\texttt{\hphantom{x}-y}}] Von der ersten Komponente bis \opt{y}.
+% \item[\parbox{2em}{\texttt{\hphantom{x}-y}}] Von der ersten Komponente
+%   bis \opt{y}. Ist \opt{y} außerhalb des definierten Bereichs, dann
+%   wird eine Warnung ausgegeben.
 % \item[\parbox{2em}{\texttt{\hphantom{x}-}}] Verbinde alle Komponenten.
 % \end{description}
 % \fi
 % \ifENGLISH For \Lcs{drawbeam} and \Lcs{drawwidebeam} you can also specify a
 % number range. Valid range specifications are
 % \begin{description}
-% \item[\parbox{2em}{\texttt{x-y}}] From \opt{x} to \opt{y}, if \opt{x} is
-%   greater than \opt{y}, the numbers are decremented.
+% \item[\parbox{2em}{\texttt{x-y}}] From \opt{x} to \opt{y}, if \opt{x}
+%   is greater than \opt{y}, the numbers are decremented. If the whole
+%   range is not defined, an error is raised.
 % \item[\parbox{2em}{\texttt{x-}}] From \opt{x} to the last component.
-% \item[\parbox{2em}{\texttt{\hphantom{x}-y}}] From the first component to \opt{y}.
+% \item[\parbox{2em}{\texttt{\hphantom{x}-y}}] From the first component
+%   to \opt{y}. If \opt{y} is outside the valid range, a warning is
+%   raised.
 % \item[\parbox{2em}{\texttt{\hphantom{x}-}}] Connect all components.
 % \end{description}
 % \fi
@@ -10447,10 +10485,12 @@
 % \begin{changelog}
 %\patchcmd{\release}{\setlength{\itemsep}{0pt}}{\setlength{\itemsep}{0pt}\setlength{\parsep}{0pt}}{}{}
 %   ^^A Do not wrap lines inside the \items, otherwise Changes.py does not work properly
-%   \begin{release}{3.4}{2013-xx-xx}
+%   \begin{release}{3.4}{2013-02-03}
 %   \item Fixed bugs when using \opt{fillstyle} for some components
 %   \item Extended option \opt{switchsize}\see{cmd:optswitch}
-%   \item Position of coupler center nodes is on the base line
+%   \item Modified coupler center node to be on the base line\see{sec:centernode}
+%   \item Extended error checking for \cs{drawbeam} and \cs{drawfiber}\see{sec:accessobj}
+%   \item Fixed some bugs in the connection code
 %   \end{release}
 %   \begin{release}{3.3a}{2012-09-18}
 %   \item Fixed bug which was exposed by an update of pst-node.
@@ -11081,7 +11121,7 @@
     \gdef\POE@str@basicname@sep{Intern}%
     \edef\POE@str@extnode@postfix{ExtNode}%
   \or
-    \edef\POE@str@basicname@default{}%
+    \edef\POE@str@basicname@default{@}%
     \edef\POE@str@basicname@prefix{OE@}%
     \gdef\POE@str@basicname@sep{}%
     \edef\POE@str@extnode@postfix{Ext}%
@@ -12909,6 +12949,12 @@
       \edef\POE@firstcomp{#1}%
     \fi
     \POE@getlastcomp#2%
+    \ifnum\POE@firstcomp>\the\POE@cnt
+      \ifnum\POE@lastcomp>\the\POE@cnt
+        \PackageError{pst-optexp}%
+          {All components \POE@firstcomp-\POE@lastcomp\space out of range}%
+      \fi
+    \fi
     \ifnum\POE@firstcomp<1
       \PackageWarning{pst-optexp}%
         {Component ID \POE@firstcomp\space is not valid, setting to 1.}%
@@ -12932,7 +12978,7 @@
   \fi
 }%
 \def\POE@getlastcomp#1-{%
-  \ifx.#1.%
+  \ifx\\#1\\%
     \edef\POE@lastcomp{\the\POE@cnt}%
   \else
     \ifx\@empty#1\relax
