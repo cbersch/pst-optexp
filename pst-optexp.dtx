@@ -10823,9 +10823,15 @@
 \def\POE@str@couplertype@ellipse{ellipse}
 \def\POE@str@couplertype@elliptic{elliptic}
 \def\POE@str@couplertype@rectangle{rectangle}
+\def\POE@str@couplertype@cross{cross}
 \def\POE@str@eleccouplertype@standard{standard}
 \def\POE@str@eleccouplertype@directional{directional}
-\def\POE@str@couplertype@cross{cross}
+\def\POE@str@elecsynthshape@circle{circle}
+\def\POE@str@elecsynthshape@rectangle{rectangle}
+\def\POE@str@elecsynthtype@pulse{pulse}
+\def\POE@str@elecsynthtype@sawtooth{sawtooth}
+\def\POE@str@elecsynthtype@triangle{triangle}
+\def\POE@str@elecsynthtype@rectangle{rectangle}
 \def\POE@str@polcontroltype@linear{linear}
 \def\POE@str@polcontroltype@triangle{triangle}
 \def\POE@str@top{top}
@@ -11997,11 +12003,11 @@
 \define@choicekey+[psset]{optexp}{eleccouplertype}%
   [\val\nr]{standard, directional}%
   {\edef\POE@key@eleccouplertype{#1}}%
-  {\PackageError{pst-optexp}{Unknown value '\val' for eleccouplertype}}
+  {\PackageError{pst-optexp}{Unknown value '\val' for eleccouplertype}}%
 \define@choicekey+[psset]{optexp}{eleccouplerinput}%
   [\val\nr]{left, right}%
   {\edef\POE@key@eleccouplerinput{#1}}%
-  {\PackageError{pst-optexp}{Unknown value '\val' for eleccouplerinput}}
+  {\PackageError{pst-optexp}{Unknown value '\val' for eleccouplerinput}}%
 \define@choicekey+[psset]{optexp}{eleccoupleralign}%
   [\val\nr]{t,b,c,top,bottom,center}%
   {%
@@ -12021,6 +12027,37 @@
   eleccoupleralign=center,
   eleccouplertype=standard,
   eleccouplerinput=left
+}%
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\define@key[psset]{optexp}{elecsynthsize}{%
+  \pst@expandafter\POE@psset@@elecsynthsize{#1} {} {} {}\@nil
+}%
+\def\POE@psset@@elecsynthsize#1 #2 #3\@nil{%
+  \pst@checknum{#1}\POE@key@elecsynthwidth
+  \ifx\\#2\\%
+    \pst@checknum{#1}\POE@key@elecsynthheight
+  \else
+    \pst@checknum{#2}\POE@key@elecsynthheight
+  \fi
+}%
+\define@key[psset]{optexp}{synthrectwidth}{%
+  \pst@checknum{#1}\POE@key@synthrectwidth
+}%
+\define@choicekey+[psset]{optexp}{elecsynthshape}%
+  [\val\nr]{circle, rectangle}%
+  {\edef\POE@key@elecsynthshape{#1}}%
+  {\PackageError{pst-optexp}{Unknown value '\val' for elecsynthshape}}
+\define@choicekey+[psset]{optexp}{elecsynthtype}%
+  [\val\nr]{none, pulse, rectangle, triangle, sawtooth}%
+  {\edef\POE@key@elecsynthtype{#1}}%
+  {\PackageError{pst-optexp}{Unknown value '\val' for elecsynthtype}}
+\psset[optexp]{%
+  elecsynthsize=0.8,
+  elecsynthshape=circle,
+  elecsynthtype=pulse,
+  synthrectwidth=0.2
 }%
 %    \end{macrocode}
 %
@@ -13668,7 +13705,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\newOptexpComp@}
+% \begin{macro}{\newOptexpFiberComp}
 %    \begin{macrocode}
 \def\newOptexpFiberComp#1{%
   \POE@Verb{%
@@ -13905,7 +13942,7 @@
 }%
 %    \end{macrocode}
 % \end{macro}
-% 
+%
 % \begin{macro}{\POE@newdipole}
 %    \begin{macrocode}
 \def\POE@newdipole[#1]#2#3{%
@@ -13975,7 +14012,8 @@
 \ignorespaces}%
 %    \end{macrocode}
 % \end{macro}
-% 
+%
+%
 % \begin{macro}{\POE@newtripole}
 % Equivalent to \cs{POE@newdipole} for tripole objects.
 %    \begin{macrocode}
@@ -16731,6 +16769,8 @@
 %
 % \subsection{Electrical components}
 %
+% \subsubsection{elecsynthesizer}
+%
 % \subsubsection{elecmixer}
 %
 % \begin{macro}{\elecmixer}
@@ -16927,6 +16967,89 @@
 %    \end{macrocode}
 % \end{macro}
 %
+% \begin{macro}{\newOptexpElecDipole}
+%    \begin{macrocode}
+\def\newOptexpElecDipole{%
+  \@ifnextchar[%]
+    {\POE@newelecdipole}{\POE@newelecdipole[]}%
+}%
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\POE@newelecdipole}
+%    \begin{macrocode}
+\def\POE@newelecdipole[#1]#2#3{%
+  \@ifundefined{#2@i}{%
+    \@namedef{#2}{\pst@object{#2}}%
+    \expandafter\def\csname #2@i\endcsname(##1)(##2){%
+      \@ifnextchar\bgroup%
+        {\@nameuse{#2@i@}(##1)(##2)}%
+        {\@nameuse{#2@i@}(##1)(##2){}}%
+    }%
+    \expandafter\def\csname #2@i@\endcsname(##1)(##2)##3{%
+      \addbefore@par{#3}%
+      \addafter@par{#1}%
+      \begin@OptexpObj
+        \ifPOE@backlayer
+          \POE@regNodes{##1}{##2}
+          \POE@extnodealign
+        \fi
+        \POE@drawcomponent[#2]{##3}{\@nameuse{#2@ii}}
+        \ifPOE@backlayer
+          \POE@Verb{ (1) (N) (\oenode{}{}) CorrectDipoleIfc }%
+          \drawwire(\oenodeRefA{}){}
+          \drawwire{}(\oenodeRefB{})
+        \fi
+      \end@OptexpDipole
+    }%
+    \elecdipole@iimacro{#2}%
+  }{%
+    \PackageError{pst-optexp}{%
+      dipole component '#2' already defined}%
+  }%
+\ignorespaces}%
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\elecsynthesizer@ref}
+%    \begin{macrocode}
+\newOptexpElecDipole{elecsynthesizer}{position=start}
+\def\elecsynthesizer@ref{%
+  \POE@setref{%
+    \POE@key@elecsynthwidth\space 0.5 mul
+    \POE@key@elecsynthheight\space 0.5 mul
+    \ifx\POE@key@elecsynthshape\POE@str@elecsynthshape@circle
+      min dup
+    \fi
+    /@@y ED /@@x ED
+  }%
+}%
+%    \end{macrocode}
+% \end{macro}
+% 
+% \begin{macro}{\elecsynthesizer@comp}
+%    \begin{macrocode}
+\def\elecsynthesizer@comp{%
+  \ifx\POE@key@elecsynthshape\POE@str@elecsynthshape@circle
+    \pscircle(!\POE@dict{@@x0 @@y0}){!\POE@dict{@@x}}
+  \else
+    \psframe[dimen=outer](!\POE@dict{@@x0 @@x sub @@y0 @@y sub})%
+                         (!\POE@dict{@@x0 @@x add @@y0 @@y add})
+  \fi
+  \ifx\POE@key@elecsynthtype\POE@str@elecsynthtype@rectangle
+    \psline(-0.25, -0.15)%
+           (! -0.25 0.5 1 \POE@key@synthrectwidth\space sub mul add -0.15)%
+           (! -0.25 0.5 1 \POE@key@synthrectwidth\space sub mul add 0.15)%
+           (0.25, 0.15)(0.25, -0.15)%
+  \else\ifx\POE@key@elecsynthtype\POE@str@elecsynthtype@pulse
+    \psplot[plotpoints=50]{-0.25}{0.25}{2.7182818 x 0.04 div dup mul neg exp 0.3 mul 0.13 sub }%
+  \else\ifx\POE@key@elecsynthtype\POE@str@elecsynthtype@sawtooth
+    \psline(-0.25,-0.15)(0,0.15)(0,-0.15)(0.25,0.15)(0.25,-0.15)
+  \else\ifx\POE@key@elecsynthtype\POE@str@elecsynthtype@triangle
+    \psline(-0.25,-0.15)(-0.125,0.15)(0,-0.15)(0.125,0.15)(0.25,-0.15)
+  \fi\fi\fi\fi
+}%
+%    \end{macrocode}
+% \end{macro}
 %</stylefile> 
 %
 % \chapter{The Postscript header file}
