@@ -18,7 +18,7 @@
 %<stylefile>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<stylefile>\ProvidesPackage{pst-optexp}
 %<*stylefile>
-    [2013/02/04 v3.5alpha Optical experimental setups with PSTricks]
+    [2013/02/22 v3.5alpha Optical experimental setups with PSTricks]
 %</stylefile>
 %
 %<*driver>
@@ -10504,6 +10504,7 @@
 %   \begin{release}{3.5}{2013-xx-xx}
 %   \item Added option \opt{filterangle}\see{prm:filterangle}
 %   \item Fixed wrong output fiber style in \cs{optcoupler}
+%   \item Fixed Postscript error with Adobe Distiller.
 %   \end{release}
 %   \begin{release}{3.4}{2013-02-03}
 %   \item Fixed bugs when using \opt{fillstyle} for some components
@@ -19307,13 +19308,13 @@ tx@OptexpDict begin
 % approximately 8 digits, so in order to have an effect, the nodes must
 % be separated by $10^{-7}$ times the maximum coordinate value.
 %    \begin{macrocode}
-    8 -2 roll abs exch abs max -1e-6 mul VecScale
+    8 -2 roll abs exch abs mymax -1e-6 mul VecScale
     8 -2 roll cvn load begin
       IfcName load begin 
         X Y VecAdd /YCorr exch def /XCorr exch def
       end
     end
-    4 2 roll abs exch abs max 1e-6 mul VecScale
+    4 2 roll abs exch abs mymax 1e-6 mul VecScale
     4 2 roll cvn load begin
       IfcName load begin
         X Y VecAdd /YCorr exch def /XCorr exch def
@@ -19323,6 +19324,15 @@ tx@OptexpDict begin
     10 { pop } repeat
   } ifelse
   DebugEnd
+} bind def
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{mymax}
+% For some reason Adobe Distiller crashes if 'max' operator is used with two floats which are very close (4e-5 in one case)
+%    \begin{macrocode}
+/mymax {
+  2 copy lt { exch } if pop
 } bind def
 %    \end{macrocode}
 % \end{macro}
