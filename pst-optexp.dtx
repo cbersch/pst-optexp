@@ -18,7 +18,7 @@
 %<stylefile>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<stylefile>\ProvidesPackage{pst-optexp}
 %<*stylefile>
-    [2013/02/03 v3.4 Optical experimental setups with PSTricks]
+    [2013/02/22 v3.5 Optical experimental setups with PSTricks]
 %</stylefile>
 %
 %<*driver>
@@ -681,7 +681,7 @@
 %
 % \ifGERMAN
 %   \section{Anforderungen}
-%   \LPack{pst-optexp} Version 3.4 benötigt \LaTeX{} und aktuelle Versionen der
+%   \LPack{pst-optexp} benötigt \LaTeX{} und aktuelle Versionen der
 %   Pakete \LPack{pst-node}, \LPack{pstricks-add}, \LPack{multido},
 %   \LPack{pst-eucl} und \LPack{environ}.
 %
@@ -693,7 +693,7 @@
 % \fi
 % \ifENGLISH
 %   \section{Requirements}
-%   \LPack{pst-optexp} version 3.4 requires \LaTeX{} and recent versions of
+%   \LPack{pst-optexp} requires \LaTeX{} and recent versions of
 %   \LPack{pst-node}, \LPack{multido}, \LPack{pstricks-add},
 %   \LPack{pst-eucl}, and \LPack{environ}. 
 %
@@ -849,7 +849,7 @@
 % I thank all the people of the PSTricks mailinglist for the continuous help,
 % especially Herbert Voß. Thanks also to various package authors from which I
 % learned and adopted code for this package, Florent Chervet, Rolf Niepraschk
-% and Heiko Oberdiek. Christine Römer convinced my with her article in the
+% and Heiko Oberdiek. Christine Römer convinced me with her article in the
 % german DTK\footnote{Pakete in Deutsch dokumentieren. in Die TeXnische
 % Komödie. Heft 2/2011, S. 28-35.} to provide a german translation of the
 % documentation. The documentation style is a mixture of the \opt{pst-doc} class
@@ -4981,6 +4981,22 @@
 \begin{LTXexample}[morekeywords={[21]{filtertype}}]
 \begin{pspicture}(3,1.5)
   \optfilter[filtertype=highpass](0,1)(3,1){highpass}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
+% \numitem[0]{filterangle}
+% \ifGERMAN Dreht das «Innere» des Filters relativ zum seinem Rahmen.\fi
+% \ifENGLISH Rotates the «inner» part of the filter relativ to its frame.\fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[morekeywords={[21]{filterangle}}]
+\begin{pspicture}(2,2)
+  \optfilter(0.5,0)(0.5,2)
+  \optfilter[filterangle=90](1.5,0)(1.5,2)
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -10547,6 +10563,11 @@
 % \begin{changelog}
 %\patchcmd{\release}{\setlength{\itemsep}{0pt}}{\setlength{\itemsep}{0pt}\setlength{\parsep}{0pt}}{}{}
 %   ^^A Do not wrap lines inside the \items, otherwise Changes.py does not work properly
+%   \begin{release}{3.5}{2013-02-22}
+%   \item Added option \opt{filterangle}\see{prm:filterangle}
+%   \item Fixed wrong output fiber style in \cs{optcoupler}
+%   \item Fixed strange Postscript error which occured with some interpreters.
+%   \end{release}
 %   \begin{release}{3.4}{2013-02-03}
 %   \item Fixed bugs when using \opt{fillstyle} for some components
 %   \item Extended option \opt{switchsize}\see{cmd:optswitch}
@@ -11743,8 +11764,12 @@
    {bandstop,bandpass,lowpass,highpass}%
    {\def\POE@key@filtertype{#1}}%
    {\PackageError{pst-optexp}{Unknown value '\val' for filtertype}}
+\define@key[psset]{optexp}{filterangle}{%
+  \pst@checknum{#1}\POE@key@filterangle
+}
 \newpsstyle{FilterStyle}{}
 \psset[optexp]{%
+  filterangle=0,
   filtersize=0.8,
   filtertype=bandpass
 }%
@@ -14195,7 +14220,7 @@
         \fi
         \ifPOE@fiberpresetout@
           \ifPOE@fiberpresetout@top
-            \drawfiber@{FiberOut}[startnode=3]{\POE@key@compname}%
+            \drawfiber@{FiberOut1}[startnode=3]{\POE@key@compname}%
                                               {(#3)}
           \fi
           \ifPOE@fiberpresetout@bottom
@@ -16226,7 +16251,7 @@
       90 add cos 0.2 \@sz mul mul}%
   }%
   \psframe[dimen=outer](! \@sz neg dup)(! \@sz dup)
-  \bgroup
+  \psrotate(\oenodeCenter{}){\POE@key@filterangle}{%
   \psset{style=FilterStyle}%
     \ifx\POE@key@filtertype\POE@str@filtertype@bandpass
       \psline(! -0.3 \@sz mul -0.65 \@sz mul)%
@@ -16279,7 +16304,7 @@
         \rput(0, 0){\filter@curve}
         \rput(! 0 -0.5 \@sz mul){\filter@curve}
   \fi\fi\fi\fi
-  \egroup
+  }%
 \ignorespaces}%
 %    \end{macrocode}
 % \end{macro}
@@ -19747,13 +19772,13 @@ tx@OptexpDict begin
 % approximately 8 digits, so in order to have an effect, the nodes must
 % be separated by $10^{-7}$ times the maximum coordinate value.
 %    \begin{macrocode}
-    8 -2 roll abs exch abs max -1e-6 mul VecScale
+    8 -2 roll abs exch abs mymax -1e-6 mul VecScale
     8 -2 roll cvn load begin
       IfcName load begin 
         X Y VecAdd /YCorr exch def /XCorr exch def
       end
     end
-    4 2 roll abs exch abs max 1e-6 mul VecScale
+    4 2 roll abs exch abs mymax 1e-6 mul VecScale
     4 2 roll cvn load begin
       IfcName load begin
         X Y VecAdd /YCorr exch def /XCorr exch def
@@ -19763,6 +19788,15 @@ tx@OptexpDict begin
     10 { pop } repeat
   } ifelse
   DebugEnd
+} bind def
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{mymax}
+% For some reason Adobe Distiller crashes if 'max' operator is used with two floats which are very close (4e-5 in one case)
+%    \begin{macrocode}
+/mymax {
+  2 copy lt { exch } if pop
 } bind def
 %    \end{macrocode}
 % \end{macro}
