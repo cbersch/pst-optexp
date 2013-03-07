@@ -65,7 +65,7 @@ f.write(r"""\documentclass[landscape]{scrartcl}
 \newcommand{\tripoledesc}[1]{\cmditem{#1}[opt](in)(center)(out){label}}
 \newcommand{\fiberdipoledesc}[1]{\cmditem{#1}[opt](in)(out){label}}
 \begin{document}\ttfamily\small
-\begin{multicols}{3}
+\begin{multicols*}{3}
 """)
 
 # Extract the current version number
@@ -108,6 +108,6 @@ if optenv:
 elif cmdenv:
     f.write("\\end{cmdlist}")
 
-f.write(r"""\end{multicols}
+f.write(r"""\end{multicols*}
 \end{document}""")
 f.close()
