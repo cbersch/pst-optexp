@@ -12985,7 +12985,7 @@
     \fi
     \POE@getlastcomp#2%
     \ifnum\POE@firstcomp>\the\POE@cnt
-      \ifnum\POE@lastcomp>\the\POE@cnt
+      \ifnum\POE@lastcomp>\the\POE@cnt\relax
         \PackageError{pst-optexp}%
           {All components \POE@firstcomp-\POE@lastcomp\space out of range}%
       \fi
@@ -13013,14 +13013,13 @@
   \fi
 }%
 \def\POE@getlastcomp#1-{%
-  \ifx\\#1\\%
+  \ifx\@empty#1\relax
+    \ifnum\POE@firstcomp>\the\POE@cnt\relax
+      \PackageError{pst-optexp}{All components \POE@firstcomp- out of range.}%
+    \fi
     \edef\POE@lastcomp{\the\POE@cnt}%
   \else
-    \ifx\@empty#1\relax
-      \edef\POE@lastcomp{\the\POE@cnt}%
-    \else
-      \edef\POE@lastcomp{#1}%
-    \fi
+    \edef\POE@lastcomp{#1}%
   \fi
 }%
 %    \end{macrocode}
