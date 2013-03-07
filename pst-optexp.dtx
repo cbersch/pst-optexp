@@ -10838,6 +10838,13 @@
 \newif\ifPOE@raytrace
 \newif\ifPOE@pswarning
 \newif\ifPOE@useNA
+\newif\ifPOE@wire@
+\newif\ifPOE@wirein@
+\newif\ifPOE@wirein@top
+\newif\ifPOE@wirein@bottom
+\newif\ifPOE@wireout@
+\newif\ifPOE@wireout@top
+\newif\ifPOE@wireout@bottom
 %    \end{macrocode}
 % This is to check if \nxLkeyword{compname} is set inside or outside of a component. For this no boolean key is provided.
 %    \begin{macrocode}
@@ -12291,6 +12298,11 @@
 \define@key[psset]{optexp}{fiber}[all]{%
   \POE@psset@fibercheck#1\@nil
 }
+%    \end{macrocode}
+% Check which components are affected by the fiber parameter. * is only for 
+% fiber-optical components, + refers to all components but the fiber-optical 
+% ones, otherwise all components are affected.
+%    \begin{macrocode}
 \def\POE@psset@fibercheck#1#2\@nil{%
   \ifx#1*\relax
     \ifx\\#2\\%
@@ -12309,6 +12321,9 @@
     \psset[optexp]{fiber@preset=#1#2}%
   \fi\fi
 }%
+%    \end{macrocode}
+% Set the fiber parameters for fiber-optical components only (use fiber=*...).
+%    \begin{macrocode}
 \define@choicekey*+[psset]{optexp}{fiber@preset}%
   [\val\nr]{false,none,true,all}[all]{%
   \ifcase\nr\relax
@@ -12509,46 +12524,46 @@
 % 
 % \begin{macro}{\drawfiber}
 %    \begin{macrocode}
-\def\drawfiber{\drawfiber@{Fiber}}%
+\def\drawfiber{\drawconn@{Fiber}}%
 %    \end{macrocode}
 % \end{macro}
 % \begin{macro}
 %    \begin{macrocode}
-\def\drawwire{\drawfiber@{Wire}}%
+\def\drawwire{\drawconn@{Wire}}%
 %    \end{macrocode}
 % \end{macro}
-% \begin{macro}{\drawfiber@}
+% \begin{macro}{\drawconn@}
 %    \begin{macrocode}
-\def\drawfiber@#1{%
+\def\drawconn@#1{%
   \ifPst@custom\else
     \def\pst@par{style=#1}%
   \fi
   \@ifnextchar[%]
-    {\drawfiber@i}{\drawfiber@i[]}%
+    {\drawconn@i}{\drawconn@i[]}%
 }%
-\def\drawfiber@i[#1]{%
+\def\drawconn@i[#1]{%
   \addafter@par{#1}%
-  \drawfiber@ii}
+  \drawconn@ii}
 
-\def\drawfiber@ii{%
+\def\drawconn@ii{%
   \@ifnextchar(%)
-    {\drawfiber@iii}%
-    {\@ifnextchar\bgroup{\drawfiber@iv}{}}%
+    {\drawconn@iii}%
+    {\@ifnextchar\bgroup{\drawconn@iv}{}}%
 }%
-\def\drawfiber@iii(#1){\drawfiber@iv{(#1)}}%
-\def\drawfiber@iv#1{%
-  \def\POE@tempe{#1}\drawfiber@ii@
+\def\drawconn@iii(#1){\drawconn@iv{(#1)}}%
+\def\drawconn@iv#1{%
+  \def\POE@tempe{#1}\drawconn@ii@
 }%
-\def\drawfiber@ii@{%
+\def\drawconn@ii@{%
   \@ifnextchar(%)
-    {\drawfiber@iii@}%
-    {\@ifnextchar\bgroup{\drawfiber@iv@}{}}%
+    {\drawconn@iii@}%
+    {\@ifnextchar\bgroup{\drawconn@iv@}{}}%
 }%
-\def\drawfiber@iii@(#1){\drawfiber@iv@{(#1)}}%
-\def\drawfiber@iv@#1{%
-  \expandafter\drawfiber@v\expandafter{\POE@tempe}{#1}%
-  \def\POE@tempe{#1}\drawfiber@ii@}%
-\def\drawfiber@v#1#2{%
+\def\drawconn@iii@(#1){\drawconn@iv@{(#1)}}%
+\def\drawconn@iv@#1{%
+  \expandafter\drawconn@v\expandafter{\POE@tempe}{#1}%
+  \def\POE@tempe{#1}\drawconn@ii@}%
+\def\drawconn@v#1#2{%
   \begingroup
     \let\psk@angleA\relax
     \let\psk@angleB\relax
@@ -13290,18 +13305,18 @@
 \def\POE@drawPresetFibers{%
   \ifPOE@endbox
     \ifPOE@fiberpresetin@
-      \drawfiber@{FiberIn}{(\oenodeRefA{})}{}
+      \drawconn@{FiberIn}(\oenodeRefA{}){}
     \fi
   \else\ifPOE@startbox
     \ifPOE@fiberpresetout@
-      \drawfiber@{FiberOut}{}{(\oenodeRefB{})}
+      \drawconn@{FiberOut}{}(\oenodeRefB{})
     \fi
   \else
     \ifPOE@fiberpresetin@
-      \drawfiber@{FiberIn}{(\oenodeRefA{})}{}
+      \drawconn@{FiberIn}(\oenodeRefA{}){}
     \fi
     \ifPOE@fiberpresetout@
-      \drawfiber@{FiberOut}{}{(\oenodeRefB{})}
+      \drawconn@{FiberOut}{}(\oenodeRefB{})
     \fi
   \fi\fi
 }%
@@ -13312,11 +13327,11 @@
 \def\POE@drawInternalConnectionsNew{%
   \ifPOE@beam
     \ifPOE@endbox
-      \drawbeam[raytrace=false]{(\oenodeRefA{})}{}
+      \drawbeam[raytrace=false](\oenodeRefA{}){}
     \else\ifPOE@startbox
-      \drawbeam[raytrace=false]{}{(\oenodeRefB{})}
+      \drawbeam[raytrace=false]{}(\oenodeRefB{})
     \else
-      \drawbeam[raytrace=false]{(\oenodeRefA{})}{}{(\oenodeRefB{})}
+      \drawbeam[raytrace=false](\oenodeRefA{}){}(\oenodeRefB{})
     \fi\fi
   \else\ifPOE@fiber@
 %    \end{macrocode}
@@ -13324,21 +13339,38 @@
 %    \begin{macrocode}
     \ifPOE@endbox
       \ifPOE@fiberin@
-        \drawfiber@{FiberIn}{(\oenodeRefA{})}{}
+        \drawconn@{FiberIn}(\oenodeRefA{}){}
       \fi
     \else\ifPOE@startbox
       \ifPOE@fiberout@
-        \drawfiber@{FiberOut}{}{(\oenodeRefB{})}
+        \drawconn@{FiberOut}{}(\oenodeRefB{})
       \fi
     \else
       \ifPOE@fiberin@
-        \drawfiber@{FiberIn}{(\oenodeRefA{})}{}
+        \drawconn@{FiberIn}(\oenodeRefA{}){}
       \fi
       \ifPOE@fiberout@
-        \drawfiber@{FiberOut}{}{(\oenodeRefB{})}
+        \drawconn@{FiberOut}{}(\oenodeRefB{})
       \fi
     \fi\fi
-  \fi\fi
+  \else\ifPOE@wire@
+    \ifPOE@endbox
+      \ifPOE@wirein@
+        \drawconn@{WireIn}(\oenodeRefA{}){}
+      \fi
+    \else\ifPOE@startbox
+      \ifPOE@wireout@
+        \drawconn@{WireOut}(\oenodeRefB{}){}
+      \fi
+    \else
+      \ifPOE@wirein@
+        \drawconn@{WireIn}(\oenodeRefA{}){}
+      \fi
+      \ifPOE@wireout@
+        \drawconn@{WireOut}(\oenodeRefB{}){}
+      \fi
+    \fi\fi
+  \fi\fi\fi
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -14210,21 +14242,21 @@
       \ifPOE@fiberpreset@
         \ifPOE@fiberpresetin@
           \ifPOE@fiberpresetin@top
-            \drawfiber@{FiberIn1}[stopnode=1]{(#1)}%
+            \drawconn@{FiberIn1}[stopnode=1]{(#1)}%
                                              {\POE@key@compname}
           \fi
           \ifPOE@fiberpresetin@bottom
-            \drawfiber@{FiberIn2}[stopnode=2]{(#2)}%
+            \drawconn@{FiberIn2}[stopnode=2]{(#2)}%
                                              {\POE@key@compname}
           \fi
         \fi
         \ifPOE@fiberpresetout@
           \ifPOE@fiberpresetout@top
-            \drawfiber@{FiberOut1}[startnode=3]{\POE@key@compname}%
+            \drawconn@{FiberOut1}[startnode=3]{\POE@key@compname}%
                                               {(#3)}
           \fi
           \ifPOE@fiberpresetout@bottom
-            \drawfiber@{FiberOut2}[startnode=N]{\POE@key@compname}%
+            \drawconn@{FiberOut2}[startnode=N]{\POE@key@compname}%
                                                {(#4)}
           \fi
         \fi
@@ -14274,15 +14306,15 @@
       }%
       \ifPOE@fiberpreset@
         \ifPOE@fiberpresetin@
-          \drawfiber@{FiberIn}[stopnode=1]{(#1)}{\POE@key@compname}
+          \drawconn@{FiberIn}[stopnode=1]{(#1)}{\POE@key@compname}
         \fi
         \ifPOE@fiberpresetout@
           \ifPOE@fiberpresetout@top
-            \drawfiber@{FiberOut1}[startnode=2]%
+            \drawconn@{FiberOut1}[startnode=2]%
               {\POE@key@compname}{(#2)}
           \fi
           \ifPOE@fiberpresetout@bottom
-            \drawfiber@{FiberOut2}[startnode=N]%
+            \drawconn@{FiberOut2}[startnode=N]%
               {\POE@key@compname}{(#3)}
           \fi
         \fi
@@ -14331,14 +14363,14 @@
       }%
       \ifPOE@fiberpreset@
         \ifPOE@fiberpresetout@
-          \drawfiber@{FiberOut}[startnode=N]{\POE@key@compname}{(#3)}
+          \drawconn@{FiberOut}[startnode=N]{\POE@key@compname}{(#3)}
         \fi
         \ifPOE@fiberpresetin@
           \ifPOE@fiberpresetin@top
-            \drawfiber@{FiberIn1}[stopnode=1]{(#1)}{\POE@key@compname}
+            \drawconn@{FiberIn1}[stopnode=1]{(#1)}{\POE@key@compname}
           \fi 
           \ifPOE@fiberpresetin@bottom
-            \drawfiber@{FiberIn2}[stopnode=2]{(#2)}{\POE@key@compname}
+            \drawconn@{FiberIn2}[stopnode=2]{(#2)}{\POE@key@compname}
           \fi
         \fi
       \fi
@@ -14384,15 +14416,15 @@
     \ifPOE@backlayer
       \ifPOE@fiberpreset@
         \ifPOE@fiberpresetin@top
-          \drawfiber@{FiberIn}[stopnode=1]{(#1)}{\POE@key@compname}
+          \drawconn@{FiberIn}[stopnode=1]{(#1)}{\POE@key@compname}
         \fi
         \ifPOE@fiberpresetout@
           \ifPOE@fiberpresetout@top
-            \drawfiber@{FiberOut1}[startnode=N]%
+            \drawconn@{FiberOut1}[startnode=N]%
               {\POE@key@compname}{(#2)}
           \fi
           \ifPOE@fiberpresetout@bottom
-            \drawfiber@{FiberOut2}[startnode=2, fiberalign=center]%
+            \drawconn@{FiberOut2}[startnode=2, fiberalign=center]%
               {\POE@key@compname}{(#3)}
           \fi
         \fi
@@ -14467,12 +14499,12 @@
         \ifPOE@fiberpreset@
           \ifnum\POE@key@fiberboxcountin=1
             \ifPOE@fiberpresetin@
-              \drawfiber@{FiberIn}{(#1)}{\POE@key@compname}
+              \drawconn@{FiberIn}{(#1)}{\POE@key@compname}
             \fi
           \fi
           \ifnum\POE@key@fiberboxcountout=1
             \ifPOE@fiberpresetout@
-              \drawfiber@{FiberOut}{\POE@key@compname}{(#2)}
+              \drawconn@{FiberOut}{\POE@key@compname}{(#2)}
             \fi
           \fi
         \fi
@@ -14484,18 +14516,18 @@
         \ifPOE@fiberpreset@
           \ifPOE@fiberpresetin@
             \ifPOE@fiberpresetin@top
-              \drawfiber@{FiberIn1}{(#1)}{\POE@key@compname}
+              \drawconn@{FiberIn1}{(#1)}{\POE@key@compname}
             \fi
             \ifPOE@fiberpresetin@bottom
-              \drawfiber@{FiberIn2}{(#2)}{\POE@key@compname}
+              \drawconn@{FiberIn2}{(#2)}{\POE@key@compname}
             \fi
           \fi
           \ifPOE@fiberpresetout@
             \ifPOE@fiberpresetout@top
-              \drawfiber@{FiberOut1}{\POE@key@compname}{(#3)}
+              \drawconn@{FiberOut1}{\POE@key@compname}{(#3)}
             \fi
             \ifPOE@fiberpresetout@bottom
-              \drawfiber@{FiberOut2}{\POE@key@compname}{(#4)}
+              \drawconn@{FiberOut2}{\POE@key@compname}{(#4)}
             \fi
           \fi
         \fi
