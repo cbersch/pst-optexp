@@ -18,7 +18,7 @@
 %<stylefile>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<stylefile>\ProvidesPackage{pst-optexp}
 %<*stylefile>
-    [2013/02/22 v3.5 Optical experimental setups with PSTricks]
+    [2013/03/07 v4.0alpha Optical experimental setups with PSTricks]
 %</stylefile>
 %
 %<*driver>
@@ -7086,16 +7086,6 @@
 % \ifGERMAN womit ein Strahl vom ersten Referenzknoten über die Komponente zum
 % zweiten Referenzknoten gezeichnet wird.
 % \fi
-%
-% \valitem{conn}{string}
-% \ifGERMAN Diese Option wird nur aus Kompatibilitätsgründen bereitgestellt
-% und wird aus zukünftigen Versionen entfernt. Siehe
-% \prettyref{sec:bwd-comp-3.0} für weitere Informationen.
-% \fi
-% \ifENGLISH This option is maintained for backward compatibility only and will
-% be removed in future versions. See \prettyref{sec:bwd-comp-3.0} for further
-% information.
-%\fi
 % \end{optionlist}
 %
 % \ifENGLISH\subsection{Beam appearance}\fi
@@ -10218,6 +10208,19 @@
 % Version beachten müssen, und was sie bei älteren Dokumenten gegebenenfalls
 % ändern müssen um mit der neuen Version korrekt zu funktionieren.  \fi
 %
+% \subsection{Version 4.0}\label{sec:bwd-comp-4.0}
+% 
+% \ifGERMAN Die Option \Lkeyword{conn} und das alte, fehlerhafte
+% Verfahren Strahlverbindungen zu zeichnen, wurde nun entfernt. Zur
+% Migration älterer Dokumente siehe
+% \prettyref{sec:bwd-comp-3.0-conn}. Damit wurde auch die Option
+% \Lkeyword{connjoin} überflüssig und wurde entfernt.
+% \fi
+% \ifENGLISH The option \Lkeyword{conn} and the old, buggy code for beam
+% connections was finally removed. To update older documents, see
+% \prettyref{sec:bwd-comp-3.0-conn}. With this change also option
+% \Lkeyword{connjoin} became useless.
+% \fi
 %
 % \subsection{Version 3.3}\label{sec:bwd-comp-3.3}
 %
@@ -10379,6 +10382,7 @@
 %
 % \ifENGLISH\subsubsection{Beam connections}\fi
 % \ifGERMAN\subsubsection{Strahlverbindungen}\fi
+% \label{sec:bwd-comp-3.0-conn}
 %
 % \ifENGLISH
 % In version 2.1, beam connections could be internal, that is the connections
@@ -10563,6 +10567,12 @@
 % \begin{changelog}
 %\patchcmd{\release}{\setlength{\itemsep}{0pt}}{\setlength{\itemsep}{0pt}\setlength{\parsep}{0pt}}{}{}
 %   ^^A Do not wrap lines inside the \items, otherwise Changes.py does not work properly
+%   \begin{release}{4.0}{2013-xx-xx}
+%   \item Added support for electrical component\see{sec:electrcomp}
+%   \item Removed old, buggy beam connection code\see{sec:bwd-comp-4.0}
+%   \item Removed option \opt{conn}\see{sec:bwd-comp-4.0}
+%   \item Removed option \opt{connjoin}\see{sec:bwd-comp-4.0}
+%   \end{release}
 %   \begin{release}{3.5}{2013-02-22}
 %   \item Added option \opt{filterangle}\see{prm:filterangle}
 %   \item Fixed wrong output fiber style in \cs{optcoupler}
@@ -10795,7 +10805,6 @@
 % \subsection{Switches for the boolean keys}
 % See respective key definitions for explanation.
 %    \begin{macrocode}
-\newif\ifPOE@connjoin
 \newif\ifPOE@backlayer
 \newif\ifPOE@frontlayer
 \newif\ifPOE@optexpenv
@@ -12724,7 +12733,6 @@
 %    \begin{macrocode}
 \def\drawbeam{\pst@object{drawbeam}}%
 \def\drawbeam@i{%
-  \def\POE@conntable{,a-a,b-b,A-A,B-B}%
   \begin@SingleBeamObj
   \POE@getcomps[\drawbeam@ii%
 }%
@@ -12787,17 +12795,6 @@
 % \begin{macro}{\drawbeam@ii}
 %    \begin{macrocode}
 \def\drawbeam@ii{%
-  \ifx\POE@key@conn\@empty
-    \drawbeam@iii
-  \else
-    \drawbeam@compat
-  \fi
-}
-%    \end{macrocode}
-% \end{macro}
-% \begin{macro}{\drawbeam@iii}
-%    \begin{macrocode}
-\def\drawbeam@iii{%
   \ifodd
 %    \end{macrocode}
 % Do not draw anything only if both linestyle and ArrowInside are not set.
@@ -13207,11 +13204,7 @@
 % \begin{macro}{\POE@getcomps}
 %    \begin{macrocode}
 \def\POE@getcomps#1#2{%
-  \ifx\POE@key@conn\@empty
-    \def\POE@aftercomps{\addto@pscode{#1 \POE@comps }#2}%
-  \else
-    \def\POE@aftercomps{#2}%
-  \fi
+  \def\POE@aftercomps{\addto@pscode{#1 \POE@comps }#2}%
   \def\POE@comps{}%
   \POE@getcomps@i%
 }%
@@ -13258,17 +13251,13 @@
 %    \begin{macrocode}
 \def\POE@getplanenode(#1){%
   \pst@@getcoor{#1}%
-  \ifx\POE@key@conn\@empty
-    \advance\POE@nodecnt by 1
-    \POE@getcomp{%
-      {\pst@coor} {0 1} 
-      (\POE@str@basicname@default N@\the\POE@nodecnt) 
-      {\tx@UserCoor} NewTempNodeComp 
-      (\POE@str@basicname@default N@\the\POE@nodecnt)
-    }%
-  \else
-    \POE@getcomp{{\pst@coor} }%
-  \fi
+  \advance\POE@nodecnt by 1
+  \POE@getcomp{%
+    {\pst@coor} {0 1} 
+    (\POE@str@basicname@default N@\the\POE@nodecnt) 
+    {\tx@UserCoor} NewTempNodeComp 
+    (\POE@str@basicname@default N@\the\POE@nodecnt)
+  }%
 }%
 \def\POE@getplanenode@i(#1){\POE@getplanenode(#1)\POE@getcomps@i}%
 %    \end{macrocode}
@@ -13289,17 +13278,6 @@
 % 
 % \subsection{Automatic connections}
 %
-% \begin{macro}{\POE@drawInternalConnections}
-%    \begin{macrocode}
-\def\POE@drawInternalConnections{%
-  \ifx\POE@key@conn\@empty
-    \POE@drawInternalConnectionsNew
-  \else
-    \POE@drawInternalConnectionsOld
-  \fi
-}%
-%    \end{macrocode}
-% \end{macro}
 % \begin{macro}{\POE@drawPresetFibers}
 %    \begin{macrocode}
 \def\POE@drawPresetFibers{%
@@ -13322,9 +13300,9 @@
 }%
 %    \end{macrocode}
 % \end{macro}
-% \begin{macro}{\POE@drawInternalConnectionsNew}
+% \begin{macro}{\POE@drawInternalConnections}
 %    \begin{macrocode}
-\def\POE@drawInternalConnectionsNew{%
+\def\POE@drawInternalConnections{%
   \ifPOE@beam
     \ifPOE@endbox
       \drawbeam[raytrace=false](\oenodeRefA{}){}
@@ -13374,184 +13352,6 @@
 }%
 %    \end{macrocode}
 % \end{macro}
-% \begin{macro}{\POE@drawInternalConnectionsOld}
-%    \begin{macrocode}
-\def\POE@drawInternalConnectionsOld{%
-  \ifPOE@endbox
-    \@nameuse{\POE@connIn}
-  \else
-    \ifPOE@fiber@
-      \ifPOE@fiberin@
-        \@nameuse{\POE@connIn}
-      \fi
-      \ifPOE@fiberout@
-        \@nameuse{\POE@connOut}
-      \fi
-    \else
-      \ifPOE@connjoin
-        \def\POE@tempa{POE@conn@in@i}%
-        \ifx\POE@tempa\POE@connIn
-          \def\POE@tempb{POE@conn@out@o}
-          \ifx\POE@tempb\POE@connOut
-            \pscustom[style=Beam, linejoin=\POE@key@connjoin]{%
-              \@nameuse{\POE@connIn}\@nameuse{\POE@connOut}}%
-          \else\ifx\@empty\POE@connOut
-            \pscustom[style=Beam, linejoin=\POE@key@connjoin]{%
-              \@nameuse{\POE@connIn}\@nameuse{\POE@connOut}}%
-          \else
-            \@nameuse{\POE@connIn}\@nameuse{\POE@connOut}%
-          \fi\fi
-        \else
-          \def\POE@tempa{POE@conn@in@o}%
-          \ifx\POE@tempa\POE@connIn
-            \def\POE@tempb{POE@conn@out@o}
-            \ifx\POE@tempb\POE@connOut
-              \@nameuse{\POE@connIn}\@nameuse{\POE@connOut}%
-            \else\ifx\@empty\POE@connOut
-              \pscustom[style=Beam, linejoin=\POE@key@connjoin]{%
-                \@nameuse{\POE@connIn}\@nameuse{\POE@connOut}}%
-            \else
-              \pscustom[style=Beam, linejoin=\POE@key@connjoin]{%
-                \@nameuse{\POE@connIn}\@nameuse{\POE@connOut}}%
-            \fi\fi
-          \else
-            \@nameuse{\POE@connIn}\@nameuse{\POE@connOut}%
-          \fi
-        \fi
-      \else
-        \@nameuse{\POE@connIn}\@nameuse{\POE@connOut}%
-      \fi
-    \fi
-  \fi
-}%
-%    \end{macrocode}
-% \end{macro}
-%
-% \subsection{Old connection code}
-%
-% The old connection code for backward compatibility to version 2.x. As this is
-% obsolete and was broken by design, there is no need to comment on this.
-%    \begin{macrocode}
-\def\optexp@nodeA{\oenodeIn{}}%
-\def\optexp@nodeB{\oenodeOut{}}%
-\define@key[psset]{optexp}{connjoin}{%
- \edef\POE@temp{#1}%
- \ifnum\POE@temp<0
-   \POE@connjoinfalse
- \else\ifnum\POE@temp>2
-   \POE@connjoinfalse
- \else
-   \POE@connjointrue
-   \edef\POE@key@connjoin{\POE@temp}
- \fi\fi
-}%
-\def\POE@key@conn{}%
-\define@key[psset]{optexp}{conn}{%
-  \edef\POE@key@conn{#1}%
-  \expandafter\POE@psset@@conn\POE@key@conn\@empty-\@empty\@nil
-  \if@pst\else
-    \PackageError{pst-optexp}{Bad connection specification: #1}%
-  \fi
-}%
-\def\POE@psset@@conn#1-#2\@empty#3\@nil{%
-  \@psttrue
-  \def\POE@next##1,#1-##2,##3\@nil{\def\POE@temp{##2}}%
-  \expandafter\POE@next\POE@conntable,#1-#1,\@nil
-  \@ifundefined{POE@conn@in@\POE@temp}%
-    {\@pstfalse\def\POE@connIn{}}%
-    {\edef\POE@connIn{POE@conn@in@\POE@temp}}%
-  \@ifundefined{POE@conn@out@#2}%
-    {\@pstfalse\def\POE@connOut{}}%
-    {\def\POE@connOut{POE@conn@out@#2}}%
-}%
-\def\POE@connIn{}%
-\def\POE@connOut{}%
-\def\POE@conntable{,o-o,i-i,f-f}%
-\def\POE@conn@out@{\ifPOE@insideobj\else\POE@conn@out@a\fi}%
-\def\POE@conn@in@{\ifPOE@insideobj\else\POE@conn@in@a\fi}%
-\def\POE@conn@in@o{%
-  \psline[style=Beam](\oenodeRefA{})(\optexp@nodeA)%
-}%
-\def\POE@conn@out@o{%
-  \psline[style=Beam](\optexp@nodeB)(\oenodeRefB{})%
-}%
-\def\POE@conn@in@f{%
-  \pccurve[%
-    angleA=!\POE@dict{/N@\oenodeRefA{} /N@\oenodeRefB{} SlopeAngle},
-    angleB=!\POE@dict{/N@\oenodeRefB{} /N@\oenodeRefA{} SlopeAngle},
-    style=FiberIn](\oenodeRefA{})(\optexp@nodeA)%
-}%
-\def\POE@conn@out@f{%
-  \pccurve[%
-    angleA=!\POE@dict{/N@\oenodeRefA{} /N@\oenodeRefB{} SlopeAngle},
-    angleB=!\POE@dict{/N@\oenodeRefB{} /N@\oenodeRefA{} SlopeAngle},
-    style=FiberOut](\optexp@nodeB)(\oenodeRefB{})%
-}%
-\def\POE@conn@in@i{%
-  \def\pst@par{style=Beam}
-  \begin@OpenObj
-    \addto@pscode{%
-      [%]
-      \pst@optexpdict
-        (\oenode{}{}) true GetInternalBeamNodesCompat
-        /N@\oenodeRefA{} @GetCenter 
-      end
-    }%
-  \psline@ii
-}%
-\def\POE@conn@out@i{%
-  \def\pst@par{style=Beam}
-  \begin@OpenObj
-    \addto@pscode{%
-      [%]
-      \pst@optexpdict
-        /N@\oenodeRefB{} @GetCenter
-        (\oenode{}{}) true GetInternalBeamNodesCompat
-      end
-    }%
-  \psline@ii
-}%
-\def\POE@conn@in@a{%
-  dup xcheck not {
-    \POE@dict{1 GetInternalBeamNodeCompat}
-  } if
-  exec
-}%
-\def\POE@conn@in@A{%
-  dup xcheck not {
-    false \POE@dict{GetInternalBeamNodesCompat} %
-  } if
-  exec
-}%
-\def\POE@conn@in@b{%
-  dup xcheck not {
-    \POE@dict{(N) GetInternalBeamNodeCompat}
-  } if
-  exec
-}%
-\def\POE@conn@in@B{%
-  dup xcheck not {
-    true \POE@dict{GetInternalBeamNodesCompat} %
-  } if
-  exec
-}%
-\let\POE@conn@out@a\POE@conn@in@a
-\let\POE@conn@out@A\POE@conn@in@B
-\let\POE@conn@out@b\POE@conn@in@b
-\let\POE@conn@out@B\POE@conn@in@A
-\def\drawbeam@compat{%
-  \ifPOE@connjoin
-    \setkeys+[psset]{optexp}{linejoin=\POE@key@connjoin}%
-  \fi
-  \addto@pscode{[% ]
-    \POE@tempd\space
-    \@nameuse{\POE@connOut}
-    \POE@tempc\space
-    \@nameuse{\POE@connIn}}%
-  \psline@ii
-\ignorespaces}%
-%
-%    \end{macrocode}
 %
 % \section{General purpose macros}
 %
@@ -17510,30 +17310,6 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{GetInternalBeamNodesCompat}
-%   Equivalent to \PSvar{GetInternalBeamNodes} only that it checks if the
-%   component is ambiguous (i.e. it is a beamsplitter), in which case it returns
-%   only the center node. Used only for the deprecated \opt{conn} parameter.
-%    \begin{macrocode}
-/GetInternalBeamNodesCompat {
-  exch dup 3 1 roll (C) NodeName dup tx@NodeDict exch known {
-    @GetCenter ToVec 
-    3 1 roll pop pop
-  } {
-    pop GetInternalBeamNodes
-  } ifelse
-} bind def
-/GetInternalBeamNodeCompat {
-  exch dup 3 1 roll (C) NodeName dup tx@NodeDict exch known {
-    @GetCenter ToVec
-    3 1 roll pop pop
-  } {
-    pop NodeName @GetCenter ToVec
-  } ifelse
-} bind def
-%    \end{macrocode}
-% \end{macro}
-% 
 % \begin{macro}{InitOptexpComp}
 %   Initialize some global variables for positioning of external
 %   nodes. This is called at the beginning of every component.
