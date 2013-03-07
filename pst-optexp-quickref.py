@@ -4,17 +4,17 @@ import re
 with open("pst-optexp.dtx") as f:
     data = ''.join(f.readlines())
 pat = re.compile((r'(\\[a-z]+item|\\[a-z]*desc)(?:\[[^\]]+\])?(\{[a-zA-Z0-9]+\}.*$)'
-                  r'|(\\ifGERMAN\s*\\chapter)') , re.MULTILINE)
+                  r'|(\\ifENGLISH[\s%]*\\chapter\{(.*?)\})') , re.MULTILINE)
 
 g = pat.findall(data)
 
 f = open("pst-optexp-quickref.tex", "w")
 
 f.write(r"""\documentclass[landscape]{scrartcl}
-\usepackage[latin1]{inputenc} 
+\usepackage[latin1]{inputenc}
 \usepackage[T1]{fontenc}
-\usepackage{lmodern} 
-\usepackage{amsmath, marvosym} 
+\usepackage{lmodern}
+\usepackage{amsmath, marvosym}
 \usepackage{bera}
 \usepackage{xcolor}
 \definecolor{DOrange}{rgb}{1,.4,.2}%
@@ -75,29 +75,48 @@ f.write("\\section*{Cheat sheet for pst-optexp (%s)}\n" % (v[0]))
 
 cmdenv=False
 optenv=False
+newchapter=None
+space = False
 
 for m in g:
     if m[0].startswith(r'\psargitem') or m[0].startswith(r'\poeitem'):
         continue
     if re.match(r'\\(cmditem|[a-z]+desc)', m[0]):
         if optenv:
-            f.write("\\end{optionlist}\n\\vspace{7pt}%\n\n")
+            f.write("\\end{optionlist}\n")
             optenv = False
+            space = True
         if not cmdenv:
+            if newchapter:
+                f.write("\\subsection*{" + newchapter + "}\n")
+                newchapter = None
+            elif space:
+                f.write("\\vspace{7pt}%\n\n")
+                space=False
             f.write("\\begin{cmdlist}\n")
             cmdenv = True
-    elif re.match(r'\\ifGERMAN', m[2]):
+    elif re.match(r'\\ifENGLISH', m[2]):
+        newchapter = m[3]
+        print newchapter
         if optenv:
-            f.write("\\end{optionlist}\n\\vspace{7pt}%\n\n")
+            f.write("\\end{optionlist}\n")
             optenv = False
+            space = True
         elif cmdenv:
-            f.write("\\end{cmdlist}\n\\vspace{7pt}%\n\n")
+            f.write("\\end{cmdlist}\n")
+            space = True
             cmdenv = False
     else:
         if cmdenv:
             f.write("\\end{cmdlist}\n")
             cmdenv = False
         if not optenv:
+            if newchapter:
+                f.write("\\subsection*{" + newchapter + "}\n")
+                newchapter = None
+            elif space:
+                f.write("\\vspace{7pt}%\n\n")
+                space = False
             f.write("\\begin{optionlist}\n")
             optenv = True
 
