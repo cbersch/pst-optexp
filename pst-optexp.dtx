@@ -2192,6 +2192,8 @@
 % \iffalse
 %</ignore>
 % \fi
+%
+% \numitem[0]{compoffset}
 % \end{optionlist}
 %
 %
@@ -10573,6 +10575,10 @@
 %   \item Removed option \opt{conn}\see{sec:bwd-comp-4.0}
 %   \item Removed option \opt{connjoin}\see{sec:bwd-comp-4.0}
 %   \end{release}
+%   \begin{release}{3.6}{2013-xx-xx}
+%   \item Added option \opt{compoffset}\see{prm:compoffset}
+%   \item Fixed some bug in the raytracing code
+%   \end{release}
 %   \begin{release}{3.5}{2013-02-22}
 %   \item Added option \opt{filterangle}\see{prm:filterangle}
 %   \item Fixed wrong output fiber style in \cs{optcoupler}
@@ -11056,10 +11062,14 @@
 \define@key[psset]{optexp}{angle}{%
   \pst@checknum{#1}\POE@key@angle
 }
+\define@key[psset]{optexp}{compoffset}{%
+  \pst@checknum{#1}\POE@key@compoffset
+}
 \psset[optexp]{%
   position={},
   abspos={},
   compshift=0,
+  compoffset=0,
   angle=0
 }%
 %    \end{macrocode}
@@ -13702,7 +13712,7 @@
 % is done by \opt{abspos} or \opt{position}
 %    \begin{macrocode}
     \let\POE@key@comp@Yshift\POE@key@compshift%
-    \def\POE@key@comp@Xshift{0}%
+    \let\POE@key@comp@Xshift\POE@key@compoffset%
     \edef\POE@refnodeA{\oenodeRefA{}}%
     \edef\POE@refnodeB{\oenodeRefB{}}%
     \edef\POE@trefnodeA{\oenodeTrefA{}}%
@@ -13724,7 +13734,7 @@
 % for multipoles the default shifting is in $x$-direction
 %    \begin{macrocode}
   \def\POE@key@comp@Xshift{\POE@key@compshift\space neg }%
-  \def\POE@key@comp@Yshift{0}%
+  \let\POE@key@comp@Yshift\POE@key@compoffset
 %    \end{macrocode}
 % The positioning parameters are disabled, because \opt{compshift} does the job for tripoles.
 %    \begin{macrocode}
@@ -17848,7 +17858,11 @@ tx@OptexpDict begin
 % Load some parameters from \opt{ambcomp}
 %    \begin{macrocode}
   aload pop /draw ED /name ED
-  name cvn load /N get /N ED
+  name cvn load /N get dup /N ED
+%    \end{macrocode}
+% If the ambiguous component has only one interface, there exists no internal beam
+%    \begin{macrocode}
+  1 eq { /draw true def } if
   currentdict /Curr known {
     /CurrTmp /Curr load def
     /CurrVecTmp /CurrVec load def
@@ -18659,6 +18673,13 @@ tx@OptexpDict begin
       } if
       AdjustRelRot
     } {
+%    \end{macrocode}
+% check if the first plane is an NodeIfc and correct its rotation, the
+% node ordering in CompA is irrelevant at this point, so we use desc.
+%    \begin{macrocode}
+      i 2 eq {
+        CompB amb CompA desc AdjustRelRot
+      } if
       pop amb dup
     } ifelse
     CompB /CompA CompB def
