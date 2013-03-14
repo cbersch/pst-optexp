@@ -45,7 +45,7 @@ PNG_TGT := $(subst .pdf,-01.png, $(DEV_TGT)) $(subst .pdf,-01.png, $(MASTER_TGT)
 
 DIFF := $(subst dev/,diff/, $(subst .pdf,-01.png, $(DEV_TGT)))
 
-.PHONY: all dev-dir master-dir diff-dir
+.PHONY: all dev-dir master-dir diff-dir clean veryclean
 
 all: $(DIFF)
 
@@ -74,10 +74,18 @@ $(PNG_TGT): %-01.png: %.pdf
 	@pdftk $< burst output $(subst .pdf,-%02d.pdf, $<)
 	@for f in $*-*.pdf; do $(CONVERT) $$f $${f%*.pdf}.png 2>/dev/null; done
 
-$(DIFF): diff/%: dev/% master/% | diff-dir
-	@composite master/$* dev/$* -compose MinusSrc diffsrc.png && \
-	composite master/$* dev/$* -compose MinusDst diffdst.png && \
-	composite diffsrc.png diffdst.png -compose Add diff/$* && \
-	identify -verbose $@ | \
-	egrep -zq "Histogram:[[:space:]]*[[:digit:]]*: \(  0,  0,  0\) #000000 gray\(0,0,0\)[[:space:]]*Colormap:"; \
-	  if [ $$? -eq 1 ]; then echo $*' \033[22;31mchanged\033[0m'; else echo $*' \033[22;32mok\033[0m'; fi && rm -f diffsrc.png diffdst.png
+$(DIFF): diff/%-01.png: dev/%-01.png master/%-01.png | diff-dir
+	@for f in dev/$*-*.png; do f=$${f#*/}; \
+	  composite master/$$f dev/$$f -compose MinusSrc diffsrc.png && \
+	  composite master/$$f dev/$$f -compose MinusDst diffdst.png && \
+	  composite diffsrc.png diffdst.png -compose Add diff/$$f && \
+	  identify -verbose diff/$$f | \
+	  egrep -zq "Histogram:[[:space:]]*[[:digit:]]*: \(  0,  0,  0\) #000000 gray\(0,0,0\)[[:space:]]*Colormap:"; \
+	  if [ $$? -eq 1 ]; then echo $$f' \033[22;31mchanged\033[0m'; else echo $$f' \033[22;32mok\033[0m'; fi; done \
+	&& rm -f diffsrc.png diffdst.png
+
+clean:
+	rm -f dev/*.pdf master/*.pdf
+
+veryclean:
+	rm -rf dev master diff
