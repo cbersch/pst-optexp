@@ -1,7 +1,14 @@
+ifeq ($(DEBUG),)
+LATEX = latex -interaction=nonstopmode 2>&1 >/dev/null
+DVIPS = dvips -q 2>&1 >/dev/null
+else
+LATEX = latex -interaction=nonstopmode 
+DVIPS = dvips
+endif
+
 export TEXINPUTS := ../..:
 export DVIPSHEADERS := ../..:
 
-LATEX = latex -interaction=nonstopmode
 HEADER=header
 OBJECTS=$(filter-out $(HEADER).tex, $(shell ls *.tex))
 FILELIST=$(basename $(OBJECTS))
@@ -27,10 +34,10 @@ testcases.tex: $(addsuffix .tex, $(filter-out $(GENTEX) $(HEADER), $(FILELIST)))
 	ps2pdf $<
 
 %.ps: %.dvi
-	dvips -q $< 2>&1 >/dev/null
+	$(DVIPS) $<
 
 %.dvi: %.tex $(POE)
-	$(LATEX) -jobname=$* '\input{$(HEADER)}\input{$<}\end{document}' #2>&1 >/dev/null 
+	$(LATEX) -jobname=$* '\input{$(HEADER)}\input{$<}\end{document}'
 #	rm -f $*.aux $*.log $*.tmp $*.out
 
 veryclean: 
