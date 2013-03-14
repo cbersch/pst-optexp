@@ -10940,12 +10940,13 @@
 \def\POE@str@couplertype@cross{cross}
 \def\POE@str@eleccouplertype@standard{standard}
 \def\POE@str@eleccouplertype@directional{directional}
-\def\POE@str@elecsynthshape@circle{circle}
-\def\POE@str@elecsynthshape@rectangle{rectangle}
-\def\POE@str@elecsynthtype@pulse{pulse}
-\def\POE@str@elecsynthtype@sawtooth{sawtooth}
-\def\POE@str@elecsynthtype@triangle{triangle}
-\def\POE@str@elecsynthtype@rectangle{rectangle}
+\def\POE@str@synthshape@circle{circle}
+\def\POE@str@synthshape@rectangle{rectangle}
+\def\POE@str@synthtype@sine{sine}
+\def\POE@str@synthtype@pulse{pulse}
+\def\POE@str@synthtype@sawtooth{sawtooth}
+\def\POE@str@synthtype@triangle{triangle}
+\def\POE@str@synthtype@rectangle{rectangle}
 \def\POE@str@polcontroltype@linear{linear}
 \def\POE@str@polcontroltype@triangle{triangle}
 \def\POE@str@top{top}
@@ -12153,32 +12154,33 @@
 %    \end{macrocode}
 %
 %    \begin{macrocode}
-\define@key[psset]{optexp}{elecsynthsize}{%
-  \pst@expandafter\POE@psset@@elecsynthsize{#1} {} {} {}\@nil
+\define@key[psset]{optexp}{synthsize}{%
+  \pst@expandafter\POE@psset@@synthsize{#1} {} {} {}\@nil
 }%
-\def\POE@psset@@elecsynthsize#1 #2 #3\@nil{%
-  \pst@checknum{#1}\POE@key@elecsynthwidth
+\def\POE@psset@@synthsize#1 #2 #3\@nil{%
+  \pst@checknum{#1}\POE@key@synthwidth
   \ifx\\#2\\%
-    \pst@checknum{#1}\POE@key@elecsynthheight
+    \pst@checknum{#1}\POE@key@synthheight
   \else
-    \pst@checknum{#2}\POE@key@elecsynthheight
+    \pst@checknum{#2}\POE@key@synthheight
   \fi
 }%
 \define@key[psset]{optexp}{synthrectwidth}{%
   \pst@checknum{#1}\POE@key@synthrectwidth
 }%
-\define@choicekey+[psset]{optexp}{elecsynthshape}%
+\define@choicekey+[psset]{optexp}{synthshape}%
   [\val\nr]{circle, rectangle}%
-  {\edef\POE@key@elecsynthshape{#1}}%
-  {\PackageError{pst-optexp}{Unknown value '\val' for elecsynthshape}}
-\define@choicekey+[psset]{optexp}{elecsynthtype}%
-  [\val\nr]{none, pulse, rectangle, triangle, sawtooth}%
-  {\edef\POE@key@elecsynthtype{#1}}%
-  {\PackageError{pst-optexp}{Unknown value '\val' for elecsynthtype}}
+  {\edef\POE@key@synthshape{#1}}%
+  {\PackageError{pst-optexp}{Unknown value '\val' for synthshape}}
+\define@choicekey+[psset]{optexp}{synthtype}%
+  [\val\nr]{sine, pulse, rectangle, triangle, sawtooth}%
+  {\edef\POE@key@synthtype{#1}}%
+  {\PackageError{pst-optexp}{Unknown value '\val' for synthtype}}
+\newpsstyle{SynthStyle}{}
 \psset[optexp]{%
-  elecsynthsize=0.8,
-  elecsynthshape=circle,
-  elecsynthtype=pulse,
+  synthsize=0.8,
+  synthshape=circle,
+  synthtype=sine,
   synthrectwidth=0.2
 }%
 %    \end{macrocode}
@@ -13654,6 +13656,13 @@
 %    \end{macrocode}
 % \end{macro}
 %
+% \begin{macro}{newOptexpElecComp}
+% This may change at later times.
+%    \begin{macrocode}
+\let\newOptexpElecComp\newOptexpFiberComp
+%    \end{macrocode}
+% \end{macro}
+%
 % \begin{macro}{\POE@compalias}
 %   Components which have a \opt{compname} assigned, must also be available by
 %   their component number. Here, all necessary informations (nodes, component
@@ -13887,10 +13896,10 @@
     \@namedef{#2}{\pst@object{#2}}%
     \expandafter\def\csname #2@i\endcsname(##1)(##2){%
       \@ifnextchar\bgroup%
-        {\@nameuse{#2@i@}(##1)(##2)}%
-        {\@nameuse{#2@i@}(##1)(##2){}}%
+        {\@nameuse{#2@ii}(##1)(##2)}%
+        {\@nameuse{#2@ii}(##1)(##2){}}%
     }%
-    \expandafter\def\csname #2@i@\endcsname(##1)(##2)##3{%
+    \expandafter\def\csname #2@ii\endcsname(##1)(##2)##3{%
       \addbefore@par{#3}%
       \addafter@par{#1}%
       \begin@OptexpObj
@@ -13898,14 +13907,14 @@
           \POE@regNodes{##1}{##2}
           \POE@extnodealign
         \fi
-        \POE@drawcomponent[#2]{##3}{\@nameuse{#2@ii}}
+        \POE@drawcomponent{#2}{##3}
         \ifPOE@backlayer
           \POE@Verb{ (1) (N) (\oenode{}{}) CorrectDipoleIfc }%
           \POE@drawInternalConnections
         \fi
       \end@OptexpDipole
     }%
-    \dipole@iimacro{#2}%
+    \@ifundefined{#2@nodes}{\expandafter\def\csname #2@nodes\endcsname{\dipole@nodes}}{}%
   }{%
     \PackageError{pst-optexp}{%
       dipole component '#2' already defined}%
@@ -13921,10 +13930,10 @@
     \@namedef{#2}{\pst@object{#2}}%
     \expandafter\def\csname #2@i\endcsname(##1)(##2){%
       \@ifnextchar\bgroup%
-        {\@nameuse{#2@i@}(##1)(##2)}%
-        {\@nameuse{#2@i@}(##1)(##2){}}%
+        {\@nameuse{#2@ii}(##1)(##2)}%
+        {\@nameuse{#2@ii}(##1)(##2){}}%
     }%
-    \expandafter\def\csname #2@i@\endcsname(##1)(##2)##3{%
+    \expandafter\def\csname #2@ii\endcsname(##1)(##2)##3{%
       \addbefore@par{#3}%
       \addafter@par{#1}%
       \begin@OptexpObj
@@ -13932,7 +13941,7 @@
           \POE@regNodes{##1}{##2}
           \POE@extnodealign
         \fi
-        \POE@drawcomponent[#2]{##3}{\@nameuse{#2@ii}}
+        \POE@drawcomponent{#2}{##3}
         \ifPOE@backlayer
           \POE@Verb{ (1) (N) (\oenode{}{}) CorrectDipoleIfc }%
           \ifPOE@fiberpreset@
@@ -13941,7 +13950,7 @@
         \fi
         \end@OptexpDipole
       }%
-      \fiberdipole@iimacro{#2}%
+      \@ifundefined{#2@nodes}{\expandafter\def\csname #2@nodes\endcsname{\fiberdipole@nodes}}{}%
    }{%
      \PackageError{pst-optexp}{%
        fiber dipole object '#2' already defined}%
@@ -13958,10 +13967,10 @@
   \@ifundefined{#2@i}{%
     \@namedef{#2}{\pst@object{#2}}%
     \expandafter\def\csname #2@i\endcsname(##1)(##2)(##3){%
-      \@ifnextchar\bgroup{\@nameuse{#2@i@}(##1)(##2)(##3)}%
-                         {\@nameuse{#2@i@}(##1)(##2)(##3){}}%
+      \@ifnextchar\bgroup{\@nameuse{#2@ii}(##1)(##2)(##3)}%
+                         {\@nameuse{#2@ii}(##1)(##2)(##3){}}%
     }%
-    \expandafter\def\csname #2@i@\endcsname(##1)(##2)(##3)##4{%
+    \expandafter\def\csname #2@ii\endcsname(##1)(##2)(##3)##4{%
       \addbefore@par{#3}%
       \addafter@par{ref@angle=180,#1}%
       \begin@OptexpTripole
@@ -13969,71 +13978,16 @@
           \POE@calcNodes{##1}{##2}{##3}%
           \POE@regNodes{##1}{##3}%
         \fi
-        \POE@drawcomponent[#2]{##4}{\@nameuse{#2@ii}}
+        \POE@drawcomponent{#2}{##4}
         \ifPOE@backlayer
           \POE@drawInternalConnections
         \fi
       \end@OptexpTripole
     }%
-    \tripole@iimacro{#2}%
+    \@ifundefined{#2@nodes}{\expandafter\def\csname #2@nodes\endcsname{\tripole@nodes}}{}%
   }{%
     \PackageError{pst-optexp}{%
       tripole object '#2' already defined}%
-  }%
-\ignorespaces}%
-%    \end{macrocode}
-% \end{macro}
-% 
-% \begin{macro}{\dipole@iimacro}
-%    \begin{macrocode}
-\def\dipole@iimacro#1{%
-  \POE@iimacro{#1}{\dipole@nodes}%
-\ignorespaces}%
-%    \end{macrocode}
-% \end{macro}
-% \begin{macro}{\fiberdipole@iimacro}
-%    \begin{macrocode}
-\def\fiberdipole@iimacro#1{%
-  \POE@iimacro{#1}{\fiberdipole@nodes}%
-\ignorespaces}%
-%    \end{macrocode}
-% \end{macro}
-% \begin{macro}{\elecdipole@iimacro}
-%    \begin{macrocode}
-\def\elecdipole@iimacro#1{%
-  \POE@iimacro{#1}{\elecdipole@nodes}%
-\ignorespaces}%
-%    \end{macrocode}
-% \end{macro}
-% \begin{macro}{\tripole@iimacro}
-%    \begin{macrocode}
-\def\tripole@iimacro#1{%
-  \POE@iimacro{#1}{\tripole@nodes}%
-\ignorespaces}%
-%    \end{macrocode}
-% \end{macro}
-% \begin{macro}{\POE@iimacro}
-%    \begin{macrocode}
-\def\POE@iimacro#1#2{%
-  \@namedef{#1@ii}{%
-    \ifPOE@backlayer
-      \pnode(0,0){\oenodeCenter{}}%
-    \fi
-    \@ifundefined{#1@iii}{%
-      \ifPOE@backlayer
-        \@ifundefined{#1@nodes}{#2}{\@nameuse{#1@nodes}}%
-      \fi
-      \ifPOE@frontlayer
-        \@nameuse{#1@comp}%
-      \fi
-    }{%
-      \ifPOE@backlayer
-        \PackageWarning{pst-optexp}{%
-          Using #1@iii, please switch to the new\MessageBreak
-          interface system.}%
-        \@nameuse{#1@iii}%
-      \fi
-    }%
   }%
 \ignorespaces}%
 %    \end{macrocode}
@@ -14044,15 +13998,15 @@
 \def\optcoupler{\pst@object{optcoupler}}%
 \def\optcoupler@i(#1)(#2){%
   \@ifnextchar(%)
-    {\optcoupler@@i@(#1)(#2)}%
-    {\optcoupler@@i@(#1)(#1)(#2)(#2)}%
+    {\optcoupler@ii(#1)(#2)}%
+    {\optcoupler@ii(#1)(#1)(#2)(#2)}%
 }%
-\def\optcoupler@@i@(#1)(#2)(#3)(#4){%
+\def\optcoupler@ii(#1)(#2)(#3)(#4){%
   \@ifnextchar\bgroup%
-    {\optcoupler@i@(#1)(#2)(#3)(#4)}%
-    {\optcoupler@i@(#1)(#2)(#3)(#4){}}%
+    {\optcoupler@iii(#1)(#2)(#3)(#4)}%
+    {\optcoupler@iii(#1)(#2)(#3)(#4){}}%
 }%
-\def\optcoupler@i@(#1)(#2)(#3)(#4)#5{%
+\def\optcoupler@iii(#1)(#2)(#3)(#4)#5{%
   \begin@OptexpObj
     \ifPOE@backlayer
       \ifx\POE@key@coupleralign\POE@str@top
@@ -14074,7 +14028,7 @@
                 \tx@UserCoor){\oenodeRefB{}}
       \fi\fi
     \fi
-    \POE@drawcomponent[optcoupler]{#5}{\@nameuse{optcoupler@ii}}
+    \POE@drawcomponent{optcoupler}{#5}
     \ifPOE@backlayer
       \POE@Verb{%
         (1) (3) (\oenode{}{}) CorrectDipoleIfc 
@@ -14105,7 +14059,6 @@
     \fi
   \end@OptexpObj
 }%
-\fiberdipole@iimacro{optcoupler}%
 %    \end{macrocode}
 % \end{macro}
 % 
@@ -14115,15 +14068,15 @@
 \def\wdmsplitter{\pst@object{wdmsplitter}}%
 \def\wdmsplitter@i(#1)(#2){%
   \@ifnextchar(%)
-    {\wdmsplitter@@i@(#1)(#2)}%
-    {\wdmsplitter@@i@(#1)(#2)(#2)}%
+    {\wdmsplitter@ii(#1)(#2)}%
+    {\wdmsplitter@ii(#1)(#2)(#2)}%
 }%
-\def\wdmsplitter@@i@(#1)(#2)(#3){%
+\def\wdmsplitter@ii(#1)(#2)(#3){%
   \@ifnextchar\bgroup%
-    {\wdmsplitter@i@(#1)(#2)(#3)}%
-    {\wdmsplitter@i@(#1)(#2)(#3){}}%
+    {\wdmsplitter@iii(#1)(#2)(#3)}%
+    {\wdmsplitter@iii(#1)(#2)(#3){}}%
 }%
-\def\wdmsplitter@i@(#1)(#2)(#3)#4{%
+\def\wdmsplitter@iii(#1)(#2)(#3)#4{%
   \begin@OptexpObj
     \ifPOE@backlayer
       \pnode(#1){\oenodeRefA{}}
@@ -14139,7 +14092,7 @@
                  \tx@UserCoor){\oenodeRefB{}}
       \fi\fi
     \fi
-    \POE@drawcomponent[wdmsplitter]{#4}\wdmsplitter@ii
+    \POE@drawcomponent{wdmsplitter}{#4}
     \ifPOE@backlayer
       \POE@Verb{%
         (1) (2) (\oenode{}{}) CorrectDipoleIfc 
@@ -14163,7 +14116,6 @@
     \fi
   \end@OptexpObj
 }%
-\fiberdipole@iimacro{wdmsplitter}%
 %    \end{macrocode}
 % \end{macro}
 % 
@@ -14172,15 +14124,15 @@
 \def\wdmcoupler{\pst@object{wdmcoupler}}%
 \def\wdmcoupler@i(#1)(#2){%
   \@ifnextchar(%)
-    {\wdmcoupler@@i@(#1)(#2)}%
-    {\wdmcoupler@@i@(#1)(#1)(#2)}%
+    {\wdmcoupler@ii(#1)(#2)}%
+    {\wdmcoupler@ii(#1)(#1)(#2)}%
 }%
-\def\wdmcoupler@@i@(#1)(#2)(#3){%
+\def\wdmcoupler@ii(#1)(#2)(#3){%
   \@ifnextchar\bgroup%
-    {\wdmcoupler@i@(#1)(#2)(#3)}%
-    {\wdmcoupler@i@(#1)(#2)(#3){}}%
+    {\wdmcoupler@iii(#1)(#2)(#3)}%
+    {\wdmcoupler@iii(#1)(#2)(#3){}}%
 }%
-\def\wdmcoupler@i@(#1)(#2)(#3)#4{%
+\def\wdmcoupler@iii(#1)(#2)(#3)#4{%
   \begin@OptexpObj
     \ifPOE@backlayer
       \pnode(#3){\oenodeRefB{}}
@@ -14196,7 +14148,7 @@
                  \tx@UserCoor){\oenodeRefA{}}
       \fi\fi
     \fi
-    \POE@drawcomponent[wdmcoupler]{#4}\wdmcoupler@ii
+    \POE@drawcomponent{wdmcoupler}{#4}
     \ifPOE@backlayer 
       \POE@Verb{%
         (1) (N) (\oenode{}{}) CorrectDipoleIfc 
@@ -14218,7 +14170,6 @@
     \fi
   \end@OptexpObj
 }%
-\fiberdipole@iimacro{wdmcoupler}%
 %    \end{macrocode}
 % \end{macro}
 % \begin{macro}{\optcirculator}
@@ -14226,10 +14177,10 @@
 \def\optcirculator{\pst@object{optcirculator}}%
 \def\optcirculator@i(#1)(#2)(#3){%
   \@ifnextchar\bgroup%
-    {\optcirculator@i@(#1)(#2)(#3)}%
-    {\optcirculator@i@(#1)(#2)(#3){}}%
+    {\optcirculator@ii(#1)(#2)(#3)}%
+    {\optcirculator@ii(#1)(#2)(#3){}}%
 }%
-\def\optcirculator@i@(#1)(#2)(#3)#4{%
+\def\optcirculator@ii(#1)(#2)(#3)#4{%
   \addafter@par{ref@angle=180}%
   \begin@OptexpObj
     \ifPOE@backlayer
@@ -14253,7 +14204,7 @@
         \fi
       \fi
     \fi
-    \POE@drawcomponent[optcirculator]{#4}\optcirculator@ii
+    \POE@drawcomponent{optcirculator}{#4}
     \ifPOE@backlayer
       \ifPOE@fiberpreset@
         \ifPOE@fiberpresetin@top
@@ -14273,24 +14224,23 @@
     \fi
   \end@OptexpObj
 }%
-\fiberdipole@iimacro{optcirculator}%
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\optcirculator}
+% \begin{macro}{\fiberbox}
 %    \begin{macrocode}
 \def\fiberbox{\pst@object{fiberbox}}%
 \def\fiberbox@i(#1)(#2){%
   \@ifnextchar(%)
-    {\fiberbox@@i@(#1)(#2)}%
-    {\fiberbox@@i@(#1)(#2)()()}%
+    {\fiberbox@ii(#1)(#2)}%
+    {\fiberbox@ii(#1)(#2)()()}%
 }%
-\def\fiberbox@@i@(#1)(#2)(#3)(#4){%
+\def\fiberbox@ii(#1)(#2)(#3)(#4){%
   \@ifnextchar\bgroup%
-    {\fiberbox@i@(#1)(#2)(#3)(#4)}%
-    {\fiberbox@i@(#1)(#2)(#3)(#4){}}%
+    {\fiberbox@iii(#1)(#2)(#3)(#4)}%
+    {\fiberbox@iii(#1)(#2)(#3)(#4){}}%
 }%
-\def\fiberbox@i@(#1)(#2)(#3)(#4)#5{%
+\def\fiberbox@iii(#1)(#2)(#3)(#4)#5{%
   \begin@OptexpObj
     \ifnum\POE@key@fiberboxcountin=1
       \ifnum\POE@key@fiberboxcountout=1
@@ -14331,7 +14281,7 @@
         }%
       \fi
     \fi
-    \POE@drawcomponent[fiberbox]{#5}\fiberbox@ii
+    \POE@drawcomponent{fiberbox}{#5}
     \ifPOE@backlayer
       \ifx\\#3#4\\%
 %    \end{macrocode}
@@ -14376,7 +14326,6 @@
     \fi
   \end@OptexpObj
 }%
-\fiberdipole@iimacro{fiberbox}%
 %    \end{macrocode}
 % \end{macro}
 %
@@ -14662,29 +14611,23 @@
 \def\optdipole{\pst@object{optdipole}}
 \def\optdipole@i(#1)(#2)#3{%
   \@ifnextchar\bgroup%
-    {\optdipole@i@(#1)(#2){#3}}%
-    {\optdipole@i@(#1)(#2){#3}{}}%
+    {\optdipole@ii(#1)(#2){#3}}%
+    {\optdipole@ii(#1)(#2){#3}{}}%
 }%
-\def\optdipole@i@(#1)(#2)#3#4{%
+\def\optdipole@ii(#1)(#2)#3#4{%
    \begin@OptexpObj
       \ifPOE@backlayer
         \POE@regNodes{#1}{#2}
         \POE@extnodealign
       \fi
-      \POE@drawcomponent[optdipole]{#4}{%
-        \ifPOE@backlayer
-          \pnode(!\POE@dict{@@x0 @@y0}){\oenodeCenter{}}%
-          \dipole@nodes
-        \fi
-        \ifPOE@frontlayer
-          #3
-        \fi
-      }%
+      \def\optdipole@comp{#3}%
+      \POE@drawcomponent{optdipole}{#4}
       \ifPOE@backlayer
         \POE@drawInternalConnections
       \fi
    \end@OptexpObj
 }%
+\def\optdipole@nodes{\dipole@nodes}
 %    \end{macrocode}
 % \end{macro}
 %  
@@ -14704,29 +14647,24 @@
 \def\opttripole{\pst@object{opttripole}}
 \def\opttripole@i(#1)(#2)(#3)#4{%
   \@ifnextchar\bgroup%
-    {\opttripole@i@(#1)(#2)(#3){#4}}%
-    {\opttripole@i@(#1)(#2)(#3){#4}{}}%
+    {\opttripole@ii(#1)(#2)(#3){#4}}%
+    {\opttripole@ii(#1)(#2)(#3){#4}{}}%
 }%
-\def\opttripole@i@(#1)(#2)(#3)#4#5{%
+\def\opttripole@ii(#1)(#2)(#3)#4#5{%
   \addafter@par{ref@angle=180}
   \begin@OptexpTripole
     \ifPOE@backlayer   
       \POE@calcNodes{#1}{#2}{#3}%
       \POE@regNodes{#1}{#3}%
     \fi
-    \POE@drawcomponent{#5}{%
-      \ifPOE@backlayer
-        \tripole@nodes
-      \fi
-      \ifPOE@frontlayer
-        #4
-      \fi
-    }%
+    \def\opttripole@comp{#4}%
+    \POE@drawcomponent{opttripole}{#5}
     \ifPOE@backlayer
       \POE@drawInternalConnections
     \fi
   \end@OptexpTripole
 }%
+\def\opttripole@nodes{\tripole@nodes}
 %    \end{macrocode}
 % \end{macro}
 % 
@@ -14760,15 +14698,7 @@
       \POE@regNodes{\POE@tempa}{\POE@tempb}%
       \POE@extnodealign
     \fi
-    \POE@drawcomponent[fibercollimator]{#1}{%
-       \pnode(0,0){\oenodeCenter{}}%
-       \ifPOE@backlayer
-         \fibercollimator@nodes
-       \fi
-       \ifPOE@frontlayer
-         \fibercollimator@comp
-       \fi
-    }%
+    \POE@drawcomponent{fibercollimator}{#1}
     \ifPOE@backlayer
       \ifPOE@beam
         \drawbeam{(\oenodeRefA{})}{\POE@key@compname}
@@ -14809,13 +14739,15 @@
 % This macro is called by every unit
 % The first parameter contains the label, the second one the drawing code
 %    \begin{macrocode}
-\def\POE@drawcomponent{%
-  \@ifnextchar[%]
-    {\POE@drawcomponent@i}{\POE@drawcomponent@i[]}%
-}%
-\def\POE@drawcomponent@i[#1]#2#3{%
+\def\POE@drawcomponent#1#2{%
   \def\@@comp{%
-    #3%
+    \ifPOE@backlayer
+      \pnode(!\POE@dict{@@x0 @@y0}){\oenodeCenter{}}
+      \@nameuse{#1@nodes}
+    \fi
+    \ifPOE@frontlayer
+      \@nameuse{#1@comp}
+    \fi
     \ifx\POE@key@extnode\@empty\else
       \ifPOE@backlayer
         \pnode(! \POE@dict{
@@ -14834,9 +14766,7 @@
       \fi
     \fi
   }%
-  \ifx\\#1\\\else
-    \@ifundefined{#1@ref}{}{\@nameuse{#1@ref}}%
-  \fi
+  \@ifundefined{#1@ref}{}{\@nameuse{#1@ref}}%
   \ifPOE@endbox
     \psset[optexp]{abspos={%
       \POE@dict{%
@@ -14986,7 +14916,6 @@
 %    \begin{macrocode}
 \def\tripole@nodes{%
   \newOptexpComp{{0 0} {1 0} @@x neg @@x refl {PlainIfc} 1}%
-  \pnode(! \POE@dict{@@y0 @@x0}){\oenodeCenter{}}
 \ignorespaces}%
 %    \end{macrocode}
 % \end{macro}
@@ -14999,7 +14928,6 @@
     @@x 0 eq not {
       {@@x0 @@x add 0} {0 1} @@y0 @@y sub @@y0 @@y add trans {PlainIfc}
     } if \POE@key@n }%
-  \pnode(! \POE@dict{@@x0 @@y0}){\oenodeCenter{}}
 \ignorespaces}%
 %    \end{macrocode}
 % \end{macro}
@@ -15012,7 +14940,6 @@
     @@x 0 eq not {
       {@@x0 @@x add 0}
     } if }%
-  \pnode(! \POE@dict{@@x0 @@y0}){\oenodeCenter{}}
 \ignorespaces}%
 %    \end{macrocode}
 % \end{macro}
@@ -15121,6 +15048,7 @@
     \addto@pscode{1 }%
     \end@CompIfc
   \fi
+  \pnode(0,0){\oenodeCenter{}}
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -16715,10 +16643,10 @@
 \def\elecmixer{\pst@object{elecmixer}}%
 \def\elecmixer@i(#1)(#2)(#3){%
   \@ifnextchar\bgroup%
-    {\elecmixer@i@(#1)(#2)(#3)}%
-    {\elecmixer@i@(#1)(#2)(#3){}}%
+    {\elecmixer@ii(#1)(#2)(#3)}%
+    {\elecmixer@ii(#1)(#2)(#3){}}%
 }%
-\def\elecmixer@i@(#1)(#2)(#3)#4{%
+\def\elecmixer@ii(#1)(#2)(#3)#4{%
   \addafter@par{ref@angle=180}%
   \begin@OptexpObj
     \ifPOE@backlayer
@@ -16742,10 +16670,9 @@
         \fi
       \fi
     \fi
-    \POE@drawcomponent[elecmixer]{#4}\elecmixer@ii
+    \POE@drawcomponent{elecmixer}{#4}
   \end@OptexpObj
 }%
-\elecdipole@iimacro{elecmixer}%
 %    \end{macrocode}
 % \end{macro}
 %
@@ -16759,7 +16686,7 @@
 % \begin{macro}{\elecmixer@nodes}
 %    \begin{macrocode}
 \def\elecmixer@nodes{%
-  \newOptexpFiberComp{{@@x neg 0} {0 @@y neg} {@@x 0}}%
+  \newOptexpElecComp{{@@x neg 0} {0 @@y neg} {@@x 0}}%
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -16779,15 +16706,15 @@
 \def\eleccoupler{\pst@object{eleccoupler}}%
 \def\eleccoupler@i(#1)(#2){%
   \@ifnextchar(%)
-    {\eleccoupler@@i@(#1)(#2)}%
-    {\eleccoupler@@i@(#1)(#1)(#2)(#2)}%
+    {\eleccoupler@ii(#1)(#2)}%
+    {\eleccoupler@ii(#1)(#1)(#2)(#2)}%
 }%
-\def\eleccoupler@@i@(#1)(#2)(#3)(#4){%
+\def\eleccoupler@ii(#1)(#2)(#3)(#4){%
   \@ifnextchar\bgroup%
-    {\eleccoupler@i@(#1)(#2)(#3)(#4)}%
-    {\eleccoupler@i@(#1)(#2)(#3)(#4){}}%
+    {\eleccoupler@iii(#1)(#2)(#3)(#4)}%
+    {\eleccoupler@iii(#1)(#2)(#3)(#4){}}%
 }%
-\def\eleccoupler@i@(#1)(#2)(#3)(#4)#5{%
+\def\eleccoupler@iii(#1)(#2)(#3)(#4)#5{%
   \begin@OptexpObj
     \ifPOE@backlayer
       \ifx\POE@key@eleccoupleralign\POE@str@top
@@ -16809,7 +16736,7 @@
                 \tx@UserCoor){\oenodeRefB{}}
       \fi\fi
     \fi
-    \POE@drawcomponent[eleccoupler]{#5}{\@nameuse{eleccoupler@ii}}
+    \POE@drawcomponent{eleccoupler}{#5}
     \ifPOE@backlayer
       \POE@Verb{%
         (1) (3) (\oenode{}{}) CorrectDipoleIfc 
@@ -16830,7 +16757,6 @@
     \fi
   \end@OptexpObj
 }%
-\elecdipole@iimacro{eleccoupler}%
 %    \end{macrocode}
 % \end{macro}
 %
@@ -16859,7 +16785,7 @@
 %    \begin{macrocode}
 \def\eleccoupler@nodes{%
   \edef\@sep{\POE@key@eleccouplersep\space 0.5 mul }%
-  \newOptexpFiberComp{%
+  \newOptexpElecComp{%
     {@@x neg @@y0 \@sep add}
     {@@x neg @@y0 \@sep sub}
     {@@x @@y0 \@sep add}
@@ -16920,10 +16846,10 @@
     \@namedef{#2}{\pst@object{#2}}%
     \expandafter\def\csname #2@i\endcsname(##1)(##2){%
       \@ifnextchar\bgroup%
-        {\@nameuse{#2@i@}(##1)(##2)}%
-        {\@nameuse{#2@i@}(##1)(##2){}}%
+        {\@nameuse{#2@ii}(##1)(##2)}%
+        {\@nameuse{#2@ii}(##1)(##2){}}%
     }%
-    \expandafter\def\csname #2@i@\endcsname(##1)(##2)##3{%
+    \expandafter\def\csname #2@ii\endcsname(##1)(##2)##3{%
       \addbefore@par{#3}%
       \addafter@par{#1}%
       \begin@OptexpObj
@@ -16931,15 +16857,15 @@
           \POE@regNodes{##1}{##2}
           \POE@extnodealign
         \fi
-        \POE@drawcomponent[#2]{##3}{\@nameuse{#2@ii}}
+        \POE@drawcomponent{#2}{##3}
         \ifPOE@backlayer
           \POE@Verb{ (1) (N) (\oenode{}{}) CorrectDipoleIfc }%
           \drawwire(\oenodeRefA{}){}
-          \drawwire{}(\oenodeRefB{})
+          \drawwire(\oenodeRefB{}){}
         \fi
       \end@OptexpDipole
     }%
-    \elecdipole@iimacro{#2}%
+    \@ifundefined{#2@nodes}{\expandafter\def\csname #2@nodes\endcsname{\elecdipole@nodes}}{}%
   }{%
     \PackageError{pst-optexp}{%
       dipole component '#2' already defined}%
@@ -16952,12 +16878,13 @@
 \newOptexpElecDipole{elecsynthesizer}{position=start}
 \def\elecsynthesizer@ref{%
   \POE@setref{%
-    \POE@key@elecsynthwidth\space 0.5 mul
-    \POE@key@elecsynthheight\space 0.5 mul
-    \ifx\POE@key@elecsynthshape\POE@str@elecsynthshape@circle
+    \POE@key@synthwidth\space 0.5 mul
+    \POE@key@synthheight\space 0.5 mul
+    \ifx\POE@key@synthshape\POE@str@synthshape@circle
       min dup
     \fi
-    /@@y ED /@@x ED
+    dup /@@y ED 0.35 mul /@@dy ED
+    dup /@@x ED 0.7 mul /@@dx ED
   }%
 }%
 %    \end{macrocode}
@@ -16966,24 +16893,28 @@
 % \begin{macro}{\elecsynthesizer@comp}
 %    \begin{macrocode}
 \def\elecsynthesizer@comp{%
-  \ifx\POE@key@elecsynthshape\POE@str@elecsynthshape@circle
+  \ifx\POE@key@synthshape\POE@str@synthshape@circle
     \pscircle(!\POE@dict{@@x0 @@y0}){!\POE@dict{@@x}}
   \else
     \psframe[dimen=outer](!\POE@dict{@@x0 @@x sub @@y0 @@y sub})%
                          (!\POE@dict{@@x0 @@x add @@y0 @@y add})
   \fi
-  \ifx\POE@key@elecsynthtype\POE@str@elecsynthtype@rectangle
-    \psline(-0.25, -0.15)%
-           (! -0.25 0.5 1 \POE@key@synthrectwidth\space sub mul add -0.15)%
-           (! -0.25 0.5 1 \POE@key@synthrectwidth\space sub mul add 0.15)%
-           (0.25, 0.15)(0.25, -0.15)%
-  \else\ifx\POE@key@elecsynthtype\POE@str@elecsynthtype@pulse
-    \psplot[plotpoints=50]{-0.25}{0.25}{2.7182818 x 0.04 div dup mul neg exp 0.3 mul 0.13 sub }%
-  \else\ifx\POE@key@elecsynthtype\POE@str@elecsynthtype@sawtooth
+  \psset{style=SynthStyle}%
+  \ifx\POE@key@synthtype\POE@str@synthtype@sine
+    \parametricplot[plotpoints=100]{-1}{1}{\POE@dict{@@dx t mul t 180 mul sin @@dy neg mul }}%
+  \else\ifx\POE@key@synthtype\POE@str@synthtype@rectangle
+    \psline(!\POE@dict{@@dx neg @@dy neg})%
+           (!\POE@dict{@@dx neg 0.5 1 \POE@key@synthrectwidth\space sub mul add @@dy neg})%
+           (!\POE@dict{@@dx neg 0.5 1 \POE@key@synthrectwidth\space sub mul add @@dy})%
+           (!\POE@dict{@@dx @@dy})%
+           (!\POE@dict{@@dx @@dy neg})
+  \else\ifx\POE@key@synthtype\POE@str@synthtype@pulse
+    \psplot[plotpoints=100]{-0.25}{0.25}{2.7182818 x 0.04 div dup mul neg exp 0.3 mul 0.13 sub }%
+  \else\ifx\POE@key@synthtype\POE@str@synthtype@sawtooth
     \psline(-0.25,-0.15)(0,0.15)(0,-0.15)(0.25,0.15)(0.25,-0.15)
-  \else\ifx\POE@key@elecsynthtype\POE@str@elecsynthtype@triangle
+  \else\ifx\POE@key@synthtype\POE@str@synthtype@triangle
     \psline(-0.25,-0.15)(-0.125,0.15)(0,-0.15)(0.125,0.15)(0.25,-0.15)
-  \fi\fi\fi\fi
+  \fi\fi\fi\fi\fi
 }%
 %    \end{macrocode}
 % \end{macro}
