@@ -4853,8 +4853,8 @@
 % \ifENGLISH\chapter{Electrical components}\fi
 % \label{sec:electrcomp}
 %
-% \ifGERMAN\section{Elektrischer Koppler}\fi
-% \ifENGLISH\section{Electrical coupler}\fi
+% \ifGERMAN\section{Koppler}\fi
+% \ifENGLISH\section{Coupler}\fi
 % \begin{ltxsyntax}
 % \xLfmultipole{eleccoupler}%
 % \cmditem{eleccoupler}(tl)(bl)(tr)(br){label}
@@ -4909,6 +4909,62 @@
 %</ignore>
 % \fi
 % \end{optionlist}
+%
+%
+% \ifGERMAN\section{Synthesizer}\fi
+% \ifENGLISH\section{Synthesizer}\fi
+% \begin{ltxsyntax}
+% \xLfmultipole{elecsynthesizer}%
+% \cmditem{elecsynthesizer}(in)(out){label}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(3,1.5)
+  \elecsynthesizer(1,1)(3,1){SYN}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+% \end{ltxsyntax}
+% \begin{optionlist}
+%   \optitem[0.8]{synthsize}{\prm{size} or \prm{width} \prm{height}}
+%   \choitem[sine]{synthtype}{sine, pulse, sawtooth, rectangle, triangle, custom}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(0,0.6)(3,5.4)
+  \elecsynthesizer[synthtype=sine](1,5)(3,5)
+  \elecsynthesizer[synthtype=sawtooth](1,4)(3,4)
+  \elecsynthesizer[synthtype=triangle](1,3)(3,3)
+  \elecsynthesizer[synthtype=rectangle](1,2)(3,2)
+  \elecsynthesizer[synthtype=pulse](1,1)(3,1)
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+% \end{optionlist}
+%
+% \begin{stylelist}
+% \styleitem{SynthStyle}
+% \ifGERMAN Beinflusst das Aussehen der internen Symbole.\fi
+% \ifENGLISH Change the style of the internal synthesizer symbol.\fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[morekeywords={[21]SynthStyle}]
+\begin{pspicture}(3,1)
+  \newpsstyle{SynthStyle}{xunit=0.5, yunit=-1}
+  \elecsynthesizer[position=0.5](0,0.5)(3,0.5)
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+% \end{stylelist}
 %
 % \ifGERMAN\chapter{Hybridkomponenten}\fi
 % \ifENGLISH\chapter{Hybrid components}\fi
@@ -11075,20 +11131,28 @@
 %    \end{macrocode}
 % The positioning parameters.
 %    \begin{macrocode}
+\define@boolkey[psset]{optexp}[POE@]{endbox}[true]{}
+\define@boolkey[psset]{optexp}[POE@]{startbox}[true]{}
 \define@choicekey*+[psset]{optexp}{position}[\val\nr]{start,end}{%
   \ifcase\nr\relax
     \psset[optexp]{startbox, endbox=false}%
   \or
     \psset[optexp]{startbox=false, endbox=true}%
   \fi
-}{\edef\POE@key@position{#1}}%
+}{%
+  \psset[optexp]{startbox=false, endbox=false}%
+  \edef\POE@key@position{#1}%
+}%
 \define@choicekey*+[psset]{optexp}{abspos}[\val\nr]{start,end}{%
   \ifcase\nr\relax
     \psset[optexp]{startbox, endbox=false}%
   \or
     \psset[optexp]{startbox=false, endbox=true}%
   \fi
-}{\edef\POE@key@abspos{#1}}%
+}{%
+  \psset[optexp]{startbox=false, endbox=false}%
+  \edef\POE@key@abspos{#1}%
+}%
 \define@key[psset]{optexp}{compshift}{%
   \pst@checknum{#1}\POE@key@compshift
 }
@@ -11488,8 +11552,6 @@
   \fi
   \psset[optexp]{optboxwidth=#1, optboxheight=#2}%
 }%
-\define@boolkey[psset]{optexp}[POE@]{endbox}[true]{}
-\define@boolkey[psset]{optexp}[POE@]{startbox}[true]{}
 \psset[optexp]{%
   optboxwidth=1.4,
   optboxheight=0.8
@@ -14780,6 +14842,7 @@
     \fi
   }%
   \@ifundefined{#1@ref}{}{\@nameuse{#1@ref}}%
+  \begingroup
   \ifPOE@endbox
     \psset[optexp]{abspos={%
       \POE@dict{%
@@ -14797,7 +14860,6 @@
 %    \end{macrocode}
 % Positioning of the component
 %    \begin{macrocode}
-  \begingroup
     \psset{style=OptComp}%
 %    \end{macrocode}
 % linestyle to use, if component should be marked as optional
@@ -16948,6 +17010,8 @@
     \psline(-0.25,-0.15)(0,0.15)(0,-0.15)(0.25,0.15)(0.25,-0.15)
   \else\ifx\POE@key@synthtype\POE@str@synthtype@triangle
     \psline(-0.25,-0.15)(-0.125,0.15)(0,-0.15)(0.125,0.15)(0.25,-0.15)
+  \else
+    \@ifundefined{elecsynthesizer@custom}{}{\elecsynthesizer@custom}%
   \fi\fi\fi\fi\fi}%
 }%
 %    \end{macrocode}
