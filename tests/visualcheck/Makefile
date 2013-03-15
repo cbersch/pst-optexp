@@ -2,6 +2,10 @@ ifeq ($(MASTERDIR),)
 MASTERDIR=../../../master/tests
 endif
 
+ifeq ($(abspath $(MASTERDIR)),$(abspath ..))
+$(error You are already in the master director, please set $$MASTERDIR properly)
+endif
+
 DIRS = testcases examples
 
 ifeq ($(shell test -d $(MASTERDIR); echo $$?),1)
@@ -23,11 +27,11 @@ FILELIST := $(filter-out testcases/header.tex, \
 	          $(foreach d, $(DIRS), $(wildcard ../$(d)/*.tex))))
 
 FILELIST := $(foreach f, $(FILELIST), $(shell \
-	if [ -e $(MASTERDIR)/$(f) -a -e ../$(f) ]; then \
+	if [ -e $(MASTERDIR)/$(f) ]; then \
 	  diff -q $(MASTERDIR)/$(f) ../$(f) >/dev/null; \
 	  if [ $$? -eq 0 ]; then \
 	    echo $(f); \
-	fi; fi))
+	  fi; fi))
 
 FILELIST_PDF := $(subst .tex,.pdf, $(FILELIST))
 
@@ -56,7 +60,7 @@ $(DEV_SRC):
 	make -C ../examples
 
 dev-dir master-dir diff-dir: %-dir:
-	mkdir -p $<
+	mkdir -p $*
 
 .SECONDEXPANSION:
 
