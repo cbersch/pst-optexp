@@ -114,24 +114,36 @@
     optripole, optfiber, optamp, optmzm, optfilter, polcontrol,
     optisolator, optswitch, fiberdelayline, optfiberpolarizer,
     fibercollimator, optcoupler, wdmcoupler, wdmsplitter, optcirculator,
-    fiberbox, drawbeam, drawwidebeam, drawfiber, frontlayer, backlayer,
+    fiberbox, eleccoupler, elecsynthesizer, elecmixer,
+    drawbeam, drawwidebeam, drawfiber, drawwire, frontlayer, backlayer,
     newOptexpDipole, newOptexpTripole, newOptexpFiberDipole,optplane}, %
   explpreset={%
     pos=l, width=-99pt, hsep=5mm, overhang=\codeoverhang, varwidth,
-    vsep=\bigskipamount, rframe={}}, extendedchars=true, }
+    vsep=\bigskipamount, rframe={}}, extendedchars=true,
+}
 \lstdefinestyle{example}{explpreset={%
     escapechar=*, pos=l, width=-99pt, hsep=5mm, overhang=\codeoverhang,
-    varwidth, vsep=\bigskipamount, rframe={}}} \makeatletter
+    varwidth, vsep=\bigskipamount, rframe={}}}
+\makeatletter
 \providecommand\ON{%
   \gdef\lst@alloverstyle##1{\textcolor{black!50}{\strut##1}%
-  }} \providecommand\OFF{\xdef\lst@alloverstyle##1{##1}} \makeatother
+  }} 
+\providecommand\OFF{\xdef\lst@alloverstyle##1{##1}}
+\makeatother
 \colorlet{sectioncolor}{DOrange}
 \addtokomafont{sectioning}{\color{sectioncolor}}
-\usepackage[automark,nouppercase]{scrpage2} \pagestyle{scrheadings}
-\clearscrheadings \clearscrplain \ohead{\pagemark} \ihead{\headmark}
-\ofoot[\pagemark]{} \automark[subsection]{section}
-\setheadsepline{.4pt}[\color{DOrange}] \setheadwidth[0pt]{text}
-\setfootwidth[0pt]{text} \makeatletter
+\usepackage[automark,nouppercase]{scrpage2}
+\pagestyle{scrheadings}
+\clearscrheadings 
+\clearscrplain 
+\ohead{\pagemark} 
+\ihead{\headmark}
+\ofoot[\pagemark]{} 
+\automark[subsection]{section}
+\setheadsepline{.4pt}[\color{DOrange}] 
+\setheadwidth[0pt]{text}
+\setfootwidth[0pt]{text} 
+\makeatletter
 \patchcmd{\l@chapter}{1.5em}{2em}{}{}
 \renewcommand*\l@section{\bprot@dottedtocline{1}{1.5em}{3.0em}}
 \renewcommand*\l@subsection{\bprot@dottedtocline{2}{3.8em}{4.0em}}
@@ -139,7 +151,9 @@
 \def\ltd@fnurl#1#2{\footnote{#1\hyper@linkurl{\Hurl{#2}}{#2}}}
 \newrobustcmd*{\arxivurl}[1]{\href{http://arxiv.org/abs/#1}{arXiv:#1}}
 \newrobustcmd*{\doiurl}[1]{\href{http://dx.doi.org/#1}{DOI:#1}}
-\makeatother \usepackage{csquotes} \MakeAutoQuote{«}{»}
+\makeatother
+\usepackage{csquotes} 
+\MakeAutoQuote{«}{»}
 %^^A spot is used in ltxdockit.sty
 \colorlet{spot}{sectioncolor}
 \newpsstyle{Refline}{linecolor=gray!70}
@@ -4934,13 +4948,37 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}
+\begin{LTXexample}[morekeywords={[21]synthtype}]
 \begin{pspicture}(0,0.6)(3,5.4)
   \elecsynthesizer[synthtype=sine](1,5)(3,5)
   \elecsynthesizer[synthtype=sawtooth](1,4)(3,4)
   \elecsynthesizer[synthtype=triangle](1,3)(3,3)
   \elecsynthesizer[synthtype=rectangle](1,2)(3,2)
   \elecsynthesizer[synthtype=pulse](1,1)(3,1)
+\end{pspicture}
+\end{LTXexample}
+
+\begin{LTXexample}[morekeywords={[21]synthtype}]
+\begin{pspicture}(0,0)(3,2)
+  \makeatletter
+  \def\elecsynthesizer@custom{%
+    \psline(-0.25,-0.1)(-0.1,-0.1)(-0.1,0)%
+           (0.1,0)(0.1,0.1)(0.25,0.1)}
+  \makeatother
+  \elecsynthesizer[synthtype=custom](1,1)(3,1)
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
+% \choitem[circle]{synthshape}{circle, rectangle}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[morekeywords={[21]synthshape}]
+\begin{pspicture}(3,1.5)
+  \elecsynthesizer[synthshape=rectangle](1,1)(3,1){SYN}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -4966,6 +5004,25 @@
 % \fi
 % \end{stylelist}
 %
+% \ifGERMAN\section{Mixer}\fi
+% \ifENGLISH\section{Mixer}\fi
+%
+% \begin{ltxsyntax}
+% \xLfmultipole{elecmixer}%
+% \cmditem{elecmixer}(left)(right)(bottom){label}%
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(3,2)
+  \addtopsstyle{Wire}{arrows=->}
+  \elecmixer(0,1)(3,1)(1.5,0){Mixer}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+% \end{ltxsyntax}
 % \ifGERMAN\chapter{Hybridkomponenten}\fi
 % \ifENGLISH\chapter{Hybrid components}\fi
 % \label{sec:hybridcomp}
@@ -10998,6 +11055,7 @@
 \def\POE@str@eleccouplertype@directional{directional}
 \def\POE@str@synthshape@circle{circle}
 \def\POE@str@synthshape@rectangle{rectangle}
+\def\POE@str@synthtype@custom{custom}
 \def\POE@str@synthtype@sine{sine}
 \def\POE@str@synthtype@pulse{pulse}
 \def\POE@str@synthtype@sawtooth{sawtooth}
@@ -12248,7 +12306,7 @@
   {\edef\POE@key@synthshape{#1}}%
   {\PackageError{pst-optexp}{Unknown value '\val' for synthshape}}
 \define@choicekey+[psset]{optexp}{synthtype}%
-  [\val\nr]{sine, pulse, rectangle, triangle, sawtooth}%
+  [\val\nr]{sine, pulse, rectangle, triangle, sawtooth, custom}%
   {\edef\POE@key@synthtype{#1}}%
   {\PackageError{pst-optexp}{Unknown value '\val' for synthtype}}
 \newpsstyle{SynthStyle}{}
