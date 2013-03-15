@@ -17,8 +17,8 @@ $(error Could not find master directory '$(MASTERDIR)')
 endif
 
 CONVERT = convert -density 300 -alpha off
-
-FILELIST := $(filter-out testcases/header.tex, \
+BLACKLIST = $(addprefix testcases/, header.tex doc-examples.tex testcases.tex)
+FILELIST := $(filter-out $(BLACKLIST), \
 	       $(subst ../,, \
 	          $(foreach d, $(DIRS), $(wildcard ../$(d)/*.tex))))
 
