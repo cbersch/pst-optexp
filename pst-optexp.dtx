@@ -10981,20 +10981,28 @@
 %    \end{macrocode}
 % The positioning parameters.
 %    \begin{macrocode}
+\define@boolkey[psset]{optexp}[POE@]{endbox}[true]{}
+\define@boolkey[psset]{optexp}[POE@]{startbox}[true]{}
 \define@choicekey*+[psset]{optexp}{position}[\val\nr]{start,end}{%
   \ifcase\nr\relax
     \psset[optexp]{startbox, endbox=false}%
   \or
     \psset[optexp]{startbox=false, endbox=true}%
   \fi
-}{\edef\POE@key@position{#1}}%
+}{%
+  \psset[optexp]{startbox=false, endbox=false}%
+  \edef\POE@key@position{#1}%
+}%
 \define@choicekey*+[psset]{optexp}{abspos}[\val\nr]{start,end}{%
   \ifcase\nr\relax
     \psset[optexp]{startbox, endbox=false}%
   \or
     \psset[optexp]{startbox=false, endbox=true}%
   \fi
-}{\edef\POE@key@abspos{#1}}%
+}{%
+  \psset[optexp]{startbox=false, endbox=false}%
+  \edef\POE@key@abspos{#1}%
+}%
 \define@key[psset]{optexp}{compshift}{%
   \pst@checknum{#1}\POE@key@compshift
 }
@@ -11381,8 +11389,6 @@
   \fi
   \psset[optexp]{optboxwidth=#1, optboxheight=#2}%
 }%
-\define@boolkey[psset]{optexp}[POE@]{endbox}[true]{}
-\define@boolkey[psset]{optexp}[POE@]{startbox}[true]{}
 \psset[optexp]{%
   optboxwidth=1.4,
   optboxheight=0.8
@@ -14828,6 +14834,7 @@
   \ifx\\#1\\\else
     \@ifundefined{#1@ref}{}{\@nameuse{#1@ref}}%
   \fi
+  \begingroup
   \ifPOE@endbox
     \psset[optexp]{abspos={%
       \POE@dict{%
@@ -14845,7 +14852,6 @@
 %    \end{macrocode}
 % Positioning of the component
 %    \begin{macrocode}
-  \begingroup
     \psset{style=OptComp}%
 %    \end{macrocode}
 % linestyle to use, if component should be marked as optional
