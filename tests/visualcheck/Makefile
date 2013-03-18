@@ -79,10 +79,10 @@ $(DIFF): diff/%-01.png: dev/%-01.png master/%-01.png | diff-dir
 	  composite master/$$f dev/$$f -compose MinusSrc diffsrc.png && \
 	  composite master/$$f dev/$$f -compose MinusDst diffdst.png && \
 	  composite diffsrc.png diffdst.png -compose Add diff/$$f && \
-	  identify -verbose diff/$$f | \
-	  egrep -zq "Histogram:[[:space:]]*[[:digit:]]*: \(  0,  0,  0\) #000000 gray\(0,0,0\)[[:space:]]*Colormap:"; \
 	  if [ "$(findstring $*,$(BASENAMES_NODIFF))" ]; then srcstring=' (source  \033[22;32munchanged\033[0m)'; else \
 	  srcstring=' (source \033[22;31mchanged\033[0m)'; fi; \
+	  identify -verbose diff/$$f | \
+	  egrep -zq "Histogram:[[:space:]]*[[:digit:]]*: \(  0,  0,  0\) #000000 gray\(0,0,0\)[[:space:]]*Colormap:"; \
 	  if [ $$? -eq 1 ]; then echo $$f' \033[22;31mchanged\033[0m'$$srcstring; \
 	  else echo $$f' \033[22;32mok\033[0m'; fi; \
 	   done \

@@ -2208,6 +2208,65 @@
 % \fi
 %
 % \numitem[0]{compoffset}
+% \ifGERMAN Verschiebt eine Komponente vertikal bezüglich ihrer Referenzlinie
+% (siehe \prettyref{sec:refnode}). Reflektive Komponenten werden entlang der
+% reflektiven Grenzfläche verschoben.
+% \fi
+% \ifENGLISH
+% Shift a component perpendicular to its reference line (see
+% \prettyref{sec:refnode}). For reflective components it is shifted along the
+% reflective interface.
+% \fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[linerange={1-3,9-9}, morekeywords={[21]{compshift}}]
+\begin{pspicture}(3,2)
+  \pnode(0,1){A}\pnode(2.7,1){B}
+  \lens[compoffset=0.3](A)(B){L}
+  \psline[style=Refline](\oenodeRefA{})(\oenodeRefB{})
+  \psdot(\oenodeRefA{})\uput[-90](\oenodeRefA{}){RefA}
+  \psdot(\oenodeRefB{})\uput[-90](\oenodeRefB{}){RefB}
+  \psdot[style=CenterNode](\oenodeIn{})
+  \psdot[style=CenterNode](\oenodeOut{})
+\end{pspicture}
+\end{LTXexample}
+\begin{LTXexample}[linerange={1-3,9-9}, morekeywords={[21]{compshift}}]
+\begin{pspicture}(3,2) 
+  \pnode(0,1){A}\pnode(2,0){B}
+  \mirror[compoffset=0.3](A)(2,1)(B){mirror}
+  \psline[style=Refline](\oenodeRefA{})(\oenodeRefB{}|\oenodeRefA{})(\oenodeRefB{})
+  \psdot(\oenodeRefA{})\uput[-90](\oenodeRefA{}){RefA}
+  \psdot(\oenodeRefB{})\uput[180](\oenodeRefB{}){RefB}
+  \psdot[style=CenterNode](\oenodeIn{})
+  \psdot[style=CenterNode](\oenodeOut{})
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+% \choitem{innercompalign}{rel, relative, abs, absolute}
+% \ifGERMAN Ist dieser Parameter auf \opt{absolute} gesetzt, so wird das
+% «Innere» einer Komponente nicht mitgedreht. Diese Option wird derzeit
+% nur von \Lcs{optfilter} und \Lcs{elecsynthesizer} verwendet.
+% \fi
+% \ifENGLISH If this parameter is set to \opt{absolute}, the «inner»
+% component part is not rotated with the component. At the moment, this
+% option is used by \Lcs{optfilter} and \Lcs{elecsynthesizer}. 
+% \fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(3,2)
+\psset[optexp]{labelangle=-90}
+\elecsynthesizer[innercompalign=rel](0.5,1.2)(0.5,2){rel}
+\elecsynthesizer[innercompalign=abs](2.5,1.2)(2.5,2){abs}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % \end{optionlist}
 %
 %
@@ -2810,7 +2869,27 @@
 % \fi
 % \end{optionlist}
 % \begin{stylelist}
-%   \styleitem[arrowinset=0, arrows=->]{ArrowBoxStyle}
+% \styleitem[arrowinset=0, arrows=->]{ArrowBoxStyle} 
+% \ifGERMAN 
+% Der Stil für den Pfeil. Das kann insbesonders nützlich sein um die
+% Länge und Ausrichtung des Pfeils zu verändern.
+% \fi
+% \ifENGLISH 
+% The style of the arrow. This can be especially useful to
+% adapt the length and orientation of the arrow.
+% \fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[morekeywords={[21]ArrowBoxStyle}]
+\begin{pspicture}(3,1.5)
+  \addtopsstyle{ArrowBoxStyle}{xunit=-1}
+  \optarrowbox[fiber](0,1)(3,1){delay line}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % \end{stylelist}
 %
 % \ifGERMAN\section{Bar Box}\fi
@@ -3667,7 +3746,7 @@
 % \fi
 \begin{LTXexample}
 \begin{pspicture}(3,2)
-  \optgrating[beam](0,2)(1.8,1.5)(0,0){grating}
+  \optgrating[beam](0,2)(1.8,1.5)(0,0){G}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -3709,7 +3788,7 @@
 \begin{LTXexample}[morekeywords={[21]{gratingdepth}}]
 \begin{pspicture}(3,2)
   \optgrating[gratingdepth=0.05, 
-                beam](0,2)(1.8,1.5)(0,0){grating}
+                beam](0,2)(1.8,1.5)(0,0){G}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -3725,7 +3804,7 @@
 \begin{LTXexample}[morekeywords={[21]{gratingcount}}]
 \begin{pspicture}(3,2)
   \optgrating[gratingcount=3, 
-                beam](0,2)(1.8,1.5)(0,0){grating}
+                beam](0,2)(1.8,1.5)(0,0){G}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -3746,7 +3825,7 @@
 \begin{LTXexample}[morekeywords={[21]{gratingtype}}]
 \begin{pspicture}(3,2)
   \optgrating[gratingtype=binary, 
-                beam](0,2)(1.8,1.5)(0,0){grating}
+                beam](0,2)(1.8,1.5)(0,0){G}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -4346,26 +4425,10 @@
 % \begin{stylelist}
 % \styleitem[arrowinset=0, arrows=->]{FdlArrow} 
 % \ifGERMAN 
-% Der Stil für den Pfeil. Das kann insbesonders nützlich sein um die
-% Länge des Pfeils zu verändern, die bei geänderter Größe nicht mehr
-% passend sein kann, oder um den Pfeil zu spiegeln.
+% Siehe \Lstyle{ArrowBoxStyle}.
 % \fi
 % \ifENGLISH 
-% The style of the arrow. This can be especially useful to
-% adapt the length of the arrow which may not be appropriate depending
-% on the \opt{fdlsize}, or to mirror the arrow.
-% \fi
-% \iffalse
-%<*ignore>
-% \fi
-\begin{LTXexample}[morekeywords={[21]FdlArrow}]
-\begin{pspicture}(3,1.5)
-  \addtopsstyle{FdlArrow}{xunit=-1}
-  \fiberdelayline(0,1)(3,1){delay line}
-\end{pspicture}
-\end{LTXexample}
-% \iffalse
-%</ignore>
+% See \Lstyle{ArrowBoxStyle}.
 % \fi
 % \end{stylelist}
 % 
@@ -5191,8 +5254,13 @@
 % \fi
 %
 % \numitem[0]{filterangle}
-% \ifGERMAN Dreht das «Innere» des Filters relativ zum seinem Rahmen.\fi
-% \ifENGLISH Rotates the «inner» part of the filter relativ to its frame.\fi
+% \ifGERMAN Dreht das «Innere» des Filters relativ zum seinem
+% Rahmen. Anstattdessn kann auch \Lkeyword{innercompalign} verwendet
+% werden.
+% \fi
+% \ifENGLISH Rotates the «inner» part of the filter relativ to its
+% frame. Alternatively \Lkeyword{innercompalign} can be used.
+% \fi
 % \iffalse
 %<*ignore>
 % \fi
@@ -10487,16 +10555,16 @@
 %
 % \subsection{Version 4.0}\label{sec:bwd-comp-4.0}
 % 
-% \ifGERMAN Die Option \Lkeyword{conn} und das alte, fehlerhafte
+% \ifGERMAN Die Option \Lkeyword*{conn} und das alte, fehlerhafte
 % Verfahren Strahlverbindungen zu zeichnen, wurde nun entfernt. Zur
 % Migration älterer Dokumente siehe
 % \prettyref{sec:bwd-comp-3.0-conn}. Damit wurde auch die Option
-% \Lkeyword{connjoin} überflüssig und wurde entfernt.
+% \Lkeyword*{connjoin} überflüssig und wurde entfernt.
 % \fi
-% \ifENGLISH The option \Lkeyword{conn} and the old, buggy code for beam
+% \ifENGLISH The option \Lkeyword*{conn} and the old, buggy code for beam
 % connections was finally removed. To update older documents, see
 % \prettyref{sec:bwd-comp-3.0-conn}. With this change also option
-% \Lkeyword{connjoin} became useless.
+% \Lkeyword*{connjoin} became useless.
 % \fi
 %
 % \subsection{Version 3.3}\label{sec:bwd-comp-3.3}
@@ -12886,9 +12954,10 @@
   \POE@psset@wirecheck#1\@nil
 }
 %    \end{macrocode}
-% Check which components are affected by the fiber parameter. * is only for 
-% fiber-optical components, + refers to all components but the fiber-optical 
-% ones, otherwise all components are affected.
+% Check which components are affected by the wire parameter:
+% * is only for electrical components
+% + refers to all components but the electrical ones,
+% otherwise all components are affected.
 %    \begin{macrocode}
 \def\POE@psset@wirecheck#1#2\@nil{%
   \ifx#1*\relax
@@ -12898,14 +12967,15 @@
       \psset[optexp]{wire@preset=#2}%
     \fi
   \else\ifx#1+\relax
+    \psset[optexp]{fiber@all=none, fiber@preset=none}%
     \ifx\\#2\\%
       \psset[optexp]{wire@all=all}%
     \else
       \psset[optexp]{wire@all=#2}%
     \fi
   \else
-    \psset[optexp]{wire@all=#1#2}%
-    \psset[optexp]{wire@preset=#1#2}%
+    \psset[optexp]{fiber@all=none, fiber@preset=none}%
+    \psset[optexp]{wire@all=#1#2, wire@preset=#1#2}%
   \fi\fi
 }%
 %    \end{macrocode}
@@ -14172,15 +14242,15 @@
 % \end{macro}
 %
 %    \begin{macrocode}
-\def\oe@BeamVec#1#2{%
+\def\POE@beamvec#1#2{%
   \POE@dict{%
     /prevVec#1\ifx\\#2\\1\else#2\fi\space dup
     currentdict exch known { load exec }{ pop 0 0 } ifelse
   }%
 }%
-\def\oeBeamVec#1{\oe@BeamVec{}{#1}}%
-\def\oeBeamVecUp#1{\oe@BeamVec{Up}{#1}}%
-\def\oeBeamVecLow#1{\oe@BeamVec{Low}{#1}}%
+\def\oeBeamVec#1{\POE@beamvec{}{#1}}%
+\def\oeBeamVecUp#1{\POE@beamvec{Up}{#1}}%
+\def\oeBeamVecLow#1{\POE@beamvec{Low}{#1}}%
 %    \end{macrocode}
 % \section{Components}
 %
@@ -14441,8 +14511,8 @@
 % \end{macro}
 %
 %    \begin{macrocode}
-\def\getCLWH{CLW \pst@number\psxunit 2 mul div }%
-\def\getCLW{CLW \pst@number\psxunit div }%
+\def\POE@clwh{CLW \pst@number\psxunit 2 mul div }%
+\def\POE@clw{CLW \pst@number\psxunit div }%
 \let\POE@restorerefnodes\relax
 %    \end{macrocode}
 % 
@@ -14512,7 +14582,7 @@
         \fi
       \end@OptexpDipole
     }%
-    \@ifundefined{#2@nodes}{\expandafter\def\csname #2@nodes\endcsname{\dipole@nodes}}{}%
+    \@ifundefined{#2@nodes}{\expandafter\def\csname #2@nodes\endcsname{\POE@dipole@nodes}}{}%
   }{%
     \PackageError{pst-optexp}{%
       dipole component '#2' already defined}%
@@ -14546,7 +14616,7 @@
         \fi
         \end@OptexpDipole
       }%
-      \@ifundefined{#2@nodes}{\expandafter\def\csname #2@nodes\endcsname{\fiberdipole@nodes}}{}%
+      \@ifundefined{#2@nodes}{\expandafter\def\csname #2@nodes\endcsname{\POE@fiberdipole@nodes}}{}%
    }{%
      \PackageError{pst-optexp}{%
        fiber dipole object '#2' already defined}%
@@ -14580,7 +14650,7 @@
         \fi
       \end@OptexpTripole
     }%
-    \@ifundefined{#2@nodes}{\expandafter\def\csname #2@nodes\endcsname{\tripole@nodes}}{}%
+    \@ifundefined{#2@nodes}{\expandafter\def\csname #2@nodes\endcsname{\POE@tripole@nodes}}{}%
   }{%
     \PackageError{pst-optexp}{%
       tripole object '#2' already defined}%
@@ -15226,7 +15296,7 @@
       \fi
    \end@OptexpObj
 }%
-\def\optdipole@nodes{\dipole@nodes}
+\def\optdipole@nodes{\POE@dipole@nodes}
 %    \end{macrocode}
 % \end{macro}
 %  
@@ -15263,7 +15333,7 @@
     \fi
   \end@OptexpTripole
 }%
-\def\opttripole@nodes{\tripole@nodes}
+\def\opttripole@nodes{\POE@tripole@nodes}
 %    \end{macrocode}
 % \end{macro}
 % 
@@ -15339,7 +15409,7 @@
 % The first parameter contains the label, the second one the drawing code
 %    \begin{macrocode}
 \def\POE@drawcomponent#1#2{%
-  \def\@@comp{%
+  \def\POE@comp{%
     \ifPOE@backlayer
       \pnode(!\POE@dict{@@x0 @@y0}){\oenodeCenter{}}
       \@nameuse{#1@nodes}
@@ -15399,13 +15469,13 @@
 % Then check if absolute positioning with \opt{abspos} is wanted.
 %    \begin{macrocode}
       \ifx\POE@key@position\@empty
-        \ncput[nrot=:U,npos=]{\POE@putcomp{\@@comp}}%
+        \ncput[nrot=:U,npos=]{\POE@putcomp{\POE@comp}}%
       \else
-        \ncput[nrot=:U,npos=\POE@key@position]{\POE@putcomp{\@@comp}}%
+        \ncput[nrot=:U,npos=\POE@key@position]{\POE@putcomp{\POE@comp}}%
       \fi
     \else
       \POE@nlput[nrot=:U](\POE@refnodeA)(\POE@refnodeB)%
-        {\POE@key@abspos}{\POE@putcomp{\@@comp}}%
+        {\POE@key@abspos}{\POE@putcomp{\POE@comp}}%
     \fi
   \endgroup
   \ifPOE@backlayer
@@ -15511,17 +15581,17 @@
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}{\tripole@nodes}
+% \begin{macro}{\POE@tripole@nodes}
 %    \begin{macrocode}
-\def\tripole@nodes{%
+\def\POE@tripole@nodes{%
   \newOptexpComp{{0 0} {1 0} @@x neg @@x refl {PlainIfc} 1}%
 \ignorespaces}%
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}{\dipole@nodes}
+% \begin{macro}{\POE@dipole@nodes}
 %    \begin{macrocode}
-\def\dipole@nodes{%
+\def\POE@dipole@nodes{%
   \newOptexpComp{%
     {@@x0 @@x sub 0} {0 1} @@y0 @@y sub @@y0 @@y add trans {PlainIfc} 
     @@x 0 eq not {
@@ -15531,9 +15601,9 @@
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}{fiberdipole@nodes}
+% \begin{macro}{POE@fiberdipole@nodes}
 %    \begin{macrocode}
-\def\fiberdipole@nodes{%
+\def\POE@fiberdipole@nodes{%
   \newOptexpFiberComp{%
     {@@x0 @@x sub 0}
     @@x 0 eq not {
@@ -15544,8 +15614,17 @@
 % \end{macro}
 %
 %    \begin{macrocode}
-\let\elecdipole@nodes\fiberdipole@nodes
+\let\POE@elecdipole@nodes\POE@fiberdipole@nodes
 %    \end{macrocode}
+%
+% \begin{macro}{POE@comp@rectangle}
+%    \begin{macrocode}
+\def\POE@comp@rectangle{%
+  \psframe[dimen=outer](!\POE@dict{@@x neg @@y0 @@y sub})%
+                       (!\POE@dict{@@x @@y0 @@y add})%
+}%
+%    \end{macrocode}
+% \end{macro}
 %
 % \subsection{Free-ray components}
 %
@@ -15695,7 +15774,7 @@
         (! \@ht neg 0)(! \@ht 0)
     \else
       \psline[linewidth=\POE@key@mirrorlinewidth]%
-        (! \@ht neg \getCLWH)(! \@ht \getCLWH)
+        (! \@ht neg \POE@clwh)(! \@ht \POE@clwh)
     \fi
   \else
 %    \end{macrocode}
@@ -16191,10 +16270,7 @@
 % 
 % \begin{macro}{\optbox@comp}
 %    \begin{macrocode}
-\def\optbox@comp{%
-  \psframe[dimen=outer](!\POE@dict{@@x neg @@y neg})%
-                       (!\POE@dict{@@x @@y})
-\ignorespaces}%
+\let\optbox@comp\POE@comp@rectangle
 %    \end{macrocode}
 % \end{macro}
 % 
@@ -16242,7 +16318,7 @@
 % \begin{macro}{\optdetector@nodes}
 %    \begin{macrocode}
 \def\optdetector@nodes{%
-  \dipole@nodes
+  \POE@dipole@nodes
   \ifx\POE@key@dettype\POE@str@dettype@round
     \pnode(! \POE@dict{@@x0 @@x -0.2 mul add} 0){\oenodeCenter{}}%
   \fi
@@ -16266,15 +16342,14 @@
     \else
       \def\@sz{\POE@key@detsize\space 0.5 mul }%
     \fi
-    \psframe[dimen=outer](! \POE@dict{@@x neg @@y neg})%
-                         (! \POE@dict{@@x @@y})%
+    \POE@comp@rectangle
     \bgroup
       \psset{style=DetectorStyle}
       \pspolygon(! \@sz -0.2 mul \@sz -0.4 mul)%
                 (! \@sz 0.6 mul \@sz -0.4 mul)%
                 (! \@sz 0.2 mul \@sz 0.4 mul)%
-      \psline(! \@sz -0.2 mul \@sz 0.4 mul \getCLWH add)%
-             (! \@sz 0.6 mul \@sz 0.4 mul \getCLWH add)
+      \psline(! \@sz -0.2 mul \@sz 0.4 mul \POE@clwh add)%
+             (! \@sz 0.6 mul \@sz 0.4 mul \POE@clwh add)
       \psset{arrows=->, arrowinset=0, arrowscale=0.8}%
       \psline(! \@sz -0.8 mul \@sz 0.3 mul)%
              (! \@sz -0.3 mul \@sz 0.15 mul)%
@@ -16315,7 +16390,8 @@
 %    \begin{macrocode}
 \def\optdiode@ref{%
   \POE@setref{%
-    \POE@key@optdiodesize\space 0.5 mul dup /@@y ED /@@x ED 
+    \POE@key@optdiodesize\space 0.5 mul dup dup /@@y ED /@@x ED 
+    0.4 mul /@@sz ED
   }%
 }%
 %    \end{macrocode}
@@ -16324,13 +16400,12 @@
 % \begin{macro}{\optdiode@comp}
 %    \begin{macrocode}
 \def\optdiode@comp{%
-   \edef\@sz{\POE@key@optdiodesize\space}%
-   \psframe[dimen=outer](! \@sz -0.5 mul dup)(!\@sz 0.5 mul dup)
-   \pspolygon(! \@sz -0.2 mul \@sz -0.2 mul)
-             (! \@sz -0.2 mul \@sz 0.2 mul)
-             (! \@sz 0.2 mul 0)
-   \psline(! \@sz 0.2 mul \getCLWH add \@sz 0.2 mul)%
-          (! \@sz 0.2 mul \getCLWH add \@sz -0.2 mul)
+   \POE@comp@rectangle
+   \pspolygon(!\POE@dict{@@sz neg dup})
+             (!\POE@dict{@@sz neg @@sz})
+             (!\POE@dict{@@sz 0})
+   \psline(!\POE@dict{@@sz \POE@clwh add @@sz})%
+          (!\POE@dict{@@sz \POE@clwh add @@sz neg})
 \ignorespaces}%
 %    \end{macrocode}
 % \end{macro}
@@ -16366,12 +16441,10 @@
 % \begin{macro}{\doveprism@comp}
 %    \begin{macrocode}
 \def\doveprism@comp{%
-   \edef\@ht{\POE@key@doveprismheight\space 0.5 mul }%
-   \edef\@wd{\POE@key@doveprismwidth\space 0.5 mul }%
-   \pspolygon(! \@wd neg \@ht neg)%
-             (! \@wd \@ht neg)%
-             (! \@wd \@ht 2 mul sub \@ht)%
-             (! \@ht 2 mul \@wd sub \@ht)%
+   \pspolygon(!\POE@dict{@@x neg @@y neg})%
+             (!\POE@dict{@@x @@y neg})%
+             (!\POE@dict{@@x @@y 2 mul sub @@y})%
+             (!\POE@dict{@@y 2 mul @@x sub @@y})
 \ignorespaces}%
 %    \end{macrocode}
 % \end{macro}
@@ -16381,7 +16454,8 @@
 % \begin{macro}{\glanthompson@ref}
 %    \begin{macrocode}
 \def\glanthompson@ref{%
-  \POE@setref{/@@x \POE@key@glanthompsonwidth\space 0.5 mul def
+  \POE@setref{%
+    /@@x \POE@key@glanthompsonwidth\space 0.5 mul def
     /@@y \POE@key@glanthompsonheight\space 0.5 mul def
   }%
 }%      
@@ -16566,8 +16640,10 @@
 % \begin{macro}{optfiber@ref}
 %    \begin{macrocode}
 \def\optfiber@ref{%
-  \POE@setref{/@@x \POE@key@fiberloopsep\space\POE@key@fiberloops\space
-      1 sub mul 0.5 mul def }%
+  \POE@setref{%
+    /@@x \POE@key@fiberloopsep\space\POE@key@fiberloops\space
+    1 sub mul 0.5 mul def
+  }%
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -16610,9 +16686,8 @@
 % \begin{macro}{\optmzm@comp}
 %    \begin{macrocode}
 \def\optmzm@comp{%
-  \psframe[dimen=outer](! \POE@dict{@@x neg @@y neg})%
-                       (!\POE@dict{@@x @@y})
-  \bgroup
+  \POE@comp@rectangle
+  \begingroup
     \ifPOE@usefiberstyle
       \psset{style=Fiber, arrows=-, ArrowInside=-}
     \fi
@@ -16624,7 +16699,7 @@
            (! \POE@dict{@@x 0.4 mul @@y -0.6 mul})%
            (! \POE@dict{@@x -0.4 mul @@y -0.6 mul})%
            (! \POE@dict{@@x} -0.7 mul 0)%
-  \egroup
+  \endgroup
 \ignorespaces}%
 %    \end{macrocode}
 % \end{macro}
@@ -16644,72 +16719,58 @@
     \fi def
   }%
 }%
-\let\optfilter@nodes\dipole@nodes
+\let\optfilter@nodes\POE@dipole@nodes
 %    \end{macrocode}
 % \end{macro}
 %
 % \begin{macro}{\optfilter@comp}
 %    \begin{macrocode}
 \def\optfilter@comp{%
-  \edef\@sz{\POE@key@filtersize\space 0.5 mul }%
-  \def\filter@curve{%
+  \def\POE@filter@curve{%
     \parametricplot[plotstyle=curve,arrows=-]{-1}{1}{%
-      t \@sz mul 0.7 mul t Pi mul RadtoDeg 
-      90 add cos 0.2 \@sz mul mul}%
+      \POE@dict{@@x} dup t mul 0.7 mul exch t Pi mul RadtoDeg 
+      90 add cos 0.2 mul mul}%
   }%
-  \psframe[dimen=outer](! \@sz neg dup)(! \@sz dup)
+  \def\POE@strike@line{%
+    \psline(!\POE@dict{@@x -0.3 mul @@y -0.15 mul})%
+           (!\POE@dict{@@x 0.3 mul @@y 0.15 mul})
+  }%
+  \POE@comp@rectangle
   \psrotate(\oenodeCenter{}){!\POE@dict{@@ang}}{%
   \psset{style=FilterStyle}%
     \ifx\POE@key@filtertype\POE@str@filtertype@bandpass
-      \psline(! -0.3 \@sz mul -0.65 \@sz mul)%
-             (! 0.3 \@sz mul -0.35 \@sz mul)%
-      \psline(! -0.3 \@sz mul 0.35 \@sz mul)%
-             (! 0.3 \@sz mul 0.65 \@sz mul)%
-      \rput(! 0 -0.5 \@sz mul){\filter@curve}
+      \rput(!\POE@dict{0 @@x -0.5 mul}){\POE@strike@line\POE@filter@curve}
       \rput(0, 0){%
         \ifPOE@usefiberstyle
           \psset{style=Fiber}
         \fi
-        \filter@curve}
-      \rput(! 0 0.5 \@sz mul){\filter@curve}
+        \POE@filter@curve}
+      \rput(!\POE@dict{0 @@x 0.5 mul}){\POE@strike@line\POE@filter@curve}
     \else\ifx\POE@key@filtertype\POE@str@filtertype@bandstop
-      \psline(! -0.3 \@sz mul -0.15 \@sz mul)%
-             (! 0.3 \@sz mul 0.15 \@sz mul)%
-      \rput(! 0 -0.5 \@sz mul){%
+      \begingroup
         \ifPOE@usefiberstyle
           \psset{style=Fiber}
         \fi
-        \filter@curve}
-        \rput(0, 0){\filter@curve}
-        \rput(! 0 0.5 \@sz mul){%
-          \ifPOE@usefiberstyle
-            \psset{style=Fiber}
-          \fi
-          \filter@curve}
+        \rput(!\POE@dict{0 @@x -0.5 mul}){\POE@filter@curve}
+        \rput(!\POE@dict{0 @@x 0.5 mul}){\POE@filter@curve}
+      \endgroup
+      \rput(0,0){\POE@strike@line\POE@filter@curve}
     \else\ifx\POE@key@filtertype\POE@str@filtertype@lowpass
-      \psline(! -0.3 \@sz mul -0.15 \@sz mul)%
-             (! 0.3 \@sz mul 0.15 \@sz mul)%
-      \psline(! -0.3 \@sz mul 0.35 \@sz mul)%
-             (! 0.3 \@sz mul 0.65 \@sz mul)%
-      \rput(! 0 -0.5 \@sz mul){%
+      \rput(!\POE@dict{0 @@x -0.5 mul}){%
         \ifPOE@usefiberstyle
           \psset{style=Fiber}
         \fi
-        \filter@curve}
-        \rput(0, 0){\filter@curve}
-        \rput(! 0 0.5 \@sz mul){\filter@curve}
+        \POE@filter@curve}
+        \rput(0, 0){\POE@strike@line\POE@filter@curve}
+        \rput(!\POE@dict{0 @@x 0.5 mul}){\POE@strike@line\POE@filter@curve}
     \else\ifx\POE@key@filtertype\POE@str@filtertype@highpass
-      \psline(! -0.3 \@sz mul -0.15 \@sz mul)%
-             (! 0.3 \@sz mul 0.15 \@sz mul)%
-      \psline(! -0.3 \@sz mul -0.65 \@sz mul)%
-             (! 0.3 \@sz mul -0.35 \@sz mul)%
-      \rput(! 0 0.5 \@sz mul){%
+      \rput(!\POE@dict{0 @@x 0.5 mul}){%
         \ifPOE@usefiberstyle
           \psset{style=Fiber}
         \fi
-        \filter@curve}
-        \rput(0, 0){\filter@curve}
-        \rput(! 0 -0.5 \@sz mul){\filter@curve}
+        \POE@filter@curve}
+        \rput(0, 0){\POE@strike@line\POE@filter@curve}
+        \rput(!\POE@dict{0 @@x -0.5 mul}){\POE@strike@line\POE@filter@curve}
   \fi\fi\fi\fi
   }%
 \ignorespaces}%
@@ -16721,9 +16782,10 @@
 % \begin{macro}{optamp@ref}
 %    \begin{macrocode}
 \def\optamp@ref{%
-  \POE@setref{/@@x \POE@key@optampwidth\space 0.5 mul def
-            /@@y \POE@key@optampheight\space 0.5 mul def
-          }%
+  \POE@setref{%
+    /@@x \POE@key@optampwidth\space 0.5 mul def
+    /@@y \POE@key@optampheight\space 0.5 mul def
+  }%
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -16738,10 +16800,10 @@
 % \begin{macro}{\optamp@comp}
 %    \begin{macrocode}
 \def\optamp@comp{%
-  \def\@wd{\POE@key@optampwidth\space 0.5 mul }%
-  \def\@ht{\POE@key@optampheight\space 0.5 mul }%
-  \pspolygon(! \@wd 0)(! \@wd neg \@ht)(! \@wd neg \@ht neg)
-\ignorespaces}%
+  \pspolygon(!\POE@dict{@@x 0})%
+            (!\POE@dict{@@x neg @@y})%
+            (!\POE@dict{@@x neg @@y neg})
+}%
 %    \end{macrocode}
 % \end{macro} 
 %
@@ -16810,11 +16872,10 @@
 % \begin{macro}{\optisolator@comp}
 %    \begin{macrocode}
 \def\optisolator@comp{%
-  \edef\@ht{\POE@key@isolatorheight\space 0.5 mul }%
-  \edef\@wd{\POE@key@isolatorwidth\space 0.5 mul }%
-  \psframe[dimen=outer](! \@wd neg \@ht neg)(! \@wd \@ht)
-  \psline[style=IsolatorArrow,
-          arrows=->](! \@wd neg 0.6 mul 0)(!\@wd 0.6 mul 0)
+  \POE@comp@rectangle
+  \psline[style=IsolatorArrow, arrows=->]%
+    (!\POE@dict{@@x neg 0.6 mul 0})%
+    (!\POE@dict{@@x 0.6 mul 0})
 \ignorespaces}%
 %    \end{macrocode}
 % \end{macro}
@@ -16834,10 +16895,8 @@
 % \begin{macro}{\optfiberpolarizer@comp}
 %    \begin{macrocode}
 \def\optfiberpolarizer@comp{%
-  \edef\@ht{\POE@key@fiberpolheight\space 0.5 mul }%
-  \edef\@wd{\POE@key@fiberpolwidth\space 0.5 mul }%
-  \psframe[dimen=outer](! \@wd neg \@ht neg)(! \@wd \@ht)
-  \psline(! \@wd neg 0.2 mul \@ht neg)(!\@wd 0.2 mul \@ht)
+  \POE@comp@rectangle
+  \psline(!\POE@dict{@@x -0.2 mul @@y neg})(!\POE@dict{@@x 0.2 mul @@y})
 \ignorespaces}%
 %    \end{macrocode}
 % \end{macro}
@@ -16858,12 +16917,11 @@
 % \begin{macro}{\optswitch@comp}
 %    \begin{macrocode}
 \def\optswitch@comp{%
-  \psframe[dimen=outer](! \POE@dict{@@x neg @@y neg})%
-                       (! \POE@dict{@@x @@y})%
+  \POE@comp@rectangle
 %    \end{macrocode}
 % storing the linewidth of the object allows for some aesthetic fine tuning 
 %    \begin{macrocode}
-  \pstVerb{tx@Dict begin /@lw \getCLW def end}%
+  \pstVerb{tx@Dict begin /@lw \POE@clw def end}%
   \bgroup
     \ifPOE@usefiberstyle
       \psset{style=Fiber, arrows=-, ArrowInside=-}
@@ -16930,8 +16988,7 @@
   }%
 }%
 \def\optarrowbox@comp{%
-  \psframe[dimen=outer](! \POE@dict{@@x neg @@y neg})%
-                       (! \POE@dict{@@x @@y})
+  \POE@comp@rectangle
   \begingroup
     \psset{style=ArrowBoxStyle}
     \use@par
@@ -16958,8 +17015,7 @@
   }%
 }%
 \def\optbarbox@comp{%
-  \psframe[dimen=outer](! \POE@dict{@@x neg @@y neg})%
-                       (! \POE@dict{@@x @@y})
+  \POE@comp@rectangle
   \psline[style=BarBoxStyle](!\POE@dict{@@x -0.2 mul @@y neg})%
                             (!\POE@dict{@@x 0.2 mul @@y})
 \ignorespaces}%
@@ -17006,9 +17062,7 @@
     } for
   }
 }%
-\def\fiberbox@comp{%
-  \psframe[dimen=outer](!\POE@dict{@@x neg @@y neg})(!\POE@dict{@@x @@y})
-}%
+\let\fiberbox@comp\POE@comp@rectangle
 %    \end{macrocode}
 % \end{macro}
 %
@@ -17091,8 +17145,7 @@
   \else\ifx\POE@key@couplertype\POE@str@couplertype@ellipse
     \psellipse(! 0 \POE@dict{@@y0})(! \POE@dict{@@x @@y})
   \else
-    \psframe[dimen=outer](!\POE@dict{@@x neg @@y0 @@y sub})%
-                         (!\POE@dict{@@x @@y0 @@y add})%
+    \POE@comp@rectangle
     \ifx\POE@key@couplertype\POE@str@couplertype@cross
       \psline(! \POE@dict{@@x -0.5 mul @@y0 @@y 0.5 mul sub})%
              (! \POE@dict{@@x 0.5 mul @@y0 @@y 0.5 mul add})%
@@ -17263,10 +17316,9 @@
 % \begin{macro}{\fibercollimator@comp}
 %    \begin{macrocode}
 \def\fibercollimator@comp{%
-  \def\@wd{\POE@key@fibercolwidth\space 0.5 mul }%
-  \def\@ht{\POE@key@fibercolheight\space 0.5 mul }%
-  \pspolygon(!\@wd neg \getCLWH add \@ht neg)%
-            (!\@wd 0)(!\@wd neg \getCLWH add \@ht)
+  \pspolygon(!\POE@dict{@@x neg \POE@clwh add @@y neg})%
+            (!\POE@dict{@@x 0})%
+            (!\POE@dict{@@x neg \POE@clwh add @@y})
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -17450,8 +17502,7 @@
 % \begin{macro}{\eleccoupler@comp}
 %    \begin{macrocode}
 \def\eleccoupler@comp{%
-  \psframe[dimen=outer](!\POE@dict{@@x neg @@y0 @@y sub})%
-                       (!\POE@dict{@@x @@y0 @@y add})%
+  \POE@comp@rectangle
   \psline(!\POE@dict{@@x -0.7 mul  @@y0 @@sep sub @@y 0.15 mul add})%
          (!\POE@dict{@@x 0.7 mul @@y0 @@sep add @@y 0.15 mul sub})%
   \psline(!\POE@dict{@@x 0.7 mul  @@y0 @@sep sub @@y 0.15 mul add})%
@@ -17516,7 +17567,7 @@
         \fi
       \end@OptexpDipole
     }%
-    \@ifundefined{#2@nodes}{\expandafter\def\csname #2@nodes\endcsname{\elecdipole@nodes}}{}%
+    \@ifundefined{#2@nodes}{\expandafter\def\csname #2@nodes\endcsname{\POE@elecdipole@nodes}}{}%
   }{%
     \PackageError{pst-optexp}{%
       elecdipole component '#2' already defined}%
@@ -17553,8 +17604,7 @@
   \ifx\POE@key@synthshape\POE@str@synthshape@circle
     \pscircle(!\POE@dict{@@x0 @@y0}){!\POE@dict{@@x}}
   \else
-    \psframe[dimen=outer](!\POE@dict{@@x0 @@x sub @@y0 @@y sub})%
-                         (!\POE@dict{@@x0 @@x add @@y0 @@y add})
+    \POE@comp@rectangle
   \fi
   \psrotate(\oenodeCenter{}){!\POE@dict{@@ang}}{%
   \psset{style=SynthStyle}%

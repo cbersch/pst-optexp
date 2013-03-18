@@ -1,21 +1,22 @@
 \documentclass{scrartcl}
 \usepackage{pst-optexp}
 \pagestyle{empty}
-\psset{mirrorwidth=0.7, bsstyle=plate, bssize=0.5}
-\newpsstyle{STM}{linewidth=2\pslinewidth, linecolor=gray!50}
 \begin{document}
-\begin{pspicture}[showgrid](10,10)
-\pnode(2,0){In}\pnode([offset=0.5]In){STM1}
+\psset{mirrorwidth=0.7, bsstyle=plate, bssize=0.5, unit=1.2, arrowinset=0, arrowscale=1.2}
+\begin{pspicture}[showgrid](6,3)
+\pnode(2.5,0){In}\pnode([offset=0.5]In){STM1}
 \pnode([Xnodesep=-2]STM1){M1}\pnode([offset=1]M1){M2}
-\pnode([offset=1.7]STM1){M3}
-\pnode([Xnodesep=-1]M3){M4}
+\pnode([offset=2]STM1){M3}\pnode([Xnodesep=-1]M3){M4}
 \pnode(M4|M2){STM2}
-\beamsplitter[style=STM](In)(STM1)(M1)
+\newpsobject{splitterplate}{beamsplitter}{linewidth=2\pslinewidth, linecolor=gray!50, bsstyle=plate}
+\splitterplate(In)(STM1)(M1)
 \mirror(STM1)(M1)(M2)
 \mirror(M1)(M2)(M3|M2)
 \mirror(STM1)(M3)(M4)
-\mirror(M3)(M4)(STM2)
-\beamsplitter[compoffset=0.2, style=STM, compname=STM2](M4)(STM2)([Xnodesep=1]STM2)
+\mirror[label=0.6 180 . absolute](M3)(M4)(STM2)
+\rput[r](\oenodeLabel{}){$\tau$
+  \psline[arrows=<->](0.15, 0.4)(0.15, -0.2)}
+\splitterplate[compoffset=0.2, compname=STM2](M4)(STM2)([Xnodesep=1]STM2)
 \pnode(\oenodeCenter{STM2}){STM2C}
 \pnode([Xnodesep=4]STM2C){Out}
 \lens[n=2](STM2C)(Out)
@@ -24,8 +25,8 @@
 \pinhole[position=0.95, outerheight=0.6](STM2C)(Out)
 \optdetector[detsize=0.5 0.6](STM2C)(Out)
 \drawbeam[linecolor=blue]{8-}
-\newpsstyle{Beam}{ArrowInside=->, ArrowInsidePos=0.85, arrowinset=0, arrowscale=1.2, linecolor=red, ArrowInsideMinLength=1, arrows=>-}
+\newpsstyle{Beam}{ArrowInside=->, ArrowInsidePos=0.85, linecolor=red, ArrowInsideMinLength=1, arrows=>-}
 \drawbeam(In){1-3}{7-9}
 \drawbeam(In){1}{4-9}
-\end{pspicture}
+\end{pspicture}  
 \end{document}

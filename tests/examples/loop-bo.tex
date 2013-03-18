@@ -9,18 +9,14 @@
 \thispagestyle{empty}
 \psset{labeloffset=0.5, optboxsize=1 0.8, arrowscale=1.2, arrowinset=0, unit=1.1}
 \newpsstyle{Fiber}{linecolor=red!70!black, linewidth=1.5\pslinewidth}
-\begin{pspicture}(9.3,5.8)
-  \pnode(1, 3.4){LD}\pnode([Xnodesep=3.2]LD){LoopIn}
-  \pnode([offset=-1]LoopIn){LoopInsIn}
-  \pnode([offset=-1,Xnodesep=2]LoopIn){LoopInsOut}
-  \pnode(LoopInsOut|LoopIn){LoopOut}
+\begin{pspicture}(9.3,6.1)
+  \psset{labeloffset=0.5, optboxsize=1 0.8, arrowscale=1.2, arrowinset=0}
+  \newpsstyle{Fiber}{linecolor=red!70!black, linewidth=1.5\pslinewidth}
+  \pnode(1, 3.7){LD}\pnode([Xnodesep=3.2]LD){LoopIn}\pnode([offset=-1.2]LoopIn){LoopInsIn}
+  \pnode([Xnodesep=2]LoopInsIn){LoopInsOut}\pnode(LoopInsOut|LoopIn){LoopOut}
   \optswitch[compname=LSw, label=. 180 b, abspos=2.7, fiber=o](LD)(LoopIn){load switch}
   \optcoupler[addtoFiber={ArrowInside=->, ArrowInsidePos=0.7}](LoopIn)(LoopInsIn)(LoopOut)(LoopInsOut){50/50}
-  \optbox[labelstyle=\footnotesize, 
-          position=end, fiber, 
-          label=0, optboxsize=1.3 1.1](LoopOut)([Xnodesep=0.1]LoopOut){%
-            \parbox{1.2\psxunit}{\centering Linear\\Optical\\Sampling}%
-  }%
+  \optbox[labelstyle=\footnotesize, position=end, fiber, label=0, optboxsize=1.6 1.2](LoopOut)([Xnodesep=0.1]LoopOut){\parbox{1.4\psxunit}{\centering Linear\\Optical\\Sampling}}%
   \pnode([Xnodesep=2.8]LoopInsOut){TR}
   \pnode([offset=-2]TR){BR}
   \pnode([Xnodesep=-1.5]LoopInsIn){TL}
@@ -40,18 +36,14 @@
   \optbox[position=start, innerlabel](LD)(LoopIn){LD}
   \drawfiber{}{Mod}
   \drawfiber[arrows=->]{Mod}{LSw}
-  %
-  \psline[arrows=->]([offset=1]\oenodeExt{PM})(\oenodeExt{PM})
-  \pnode([offset=1.2, Xnodesep=-1]\oenodeExt{Mod}){Osci}
-  \oscillator[output=none, unit=0.8, linewidth=0.666\pslinewidth](Osci){}{}
-  \uput{0.5}[90](Osci){SYN}
-  \newpsstyle{Fiber}{}
-  \optbox[compname=PG, extnode=b, abspos=0.6, fiber=i, label=0.5 180 b]([Xnodesep=0.4]Osci)(\oenodeExt{PM}|Osci){PG}
-  \rput(\oenodeCenter{}){\psplot[plotpoints=200]{-0.3}{0.3}{2.7182818 x 0.05 div 2 exp neg exp 0.3 mul 0.15 sub}}
-  \optfilter[label=0.5 180 b, abspos=1, fiber=i](\oenodeOut{PG})(\oenodeExt{PM}|Osci){BPF}
-  \rput[r]([offset=0.4, Xnodesep=0.2]\oenodeOut{}){\psplot[plotpoints=200]{0}{1}{360 3.14159 div x 6 mul mul sin 2 exp 0.3 mul 0.15 sub}}
-  \ncangle[angleA=-90, angleB=90, arrows=->, armB=0.5]{\oenodeExt{PG}}{\oenodeExt{Mod}}
-  \ncangle[angleB=90, arrows=->]{\oenodeOut{}}{\oenodeExt{PM}}
+  \pnode([offset=1.2, Xnodesep=-0.7]\oenodeExt{Mod}){Osci}\pnode(\oenodeExt{PM}|Osci){Tmp}
+  \psset{wire=none, fiber=none, label=0.5 180 b}
+  \elecsynthesizer(Osci)(Tmp){SYN}
+  \elecsynthesizer[synthshape=rectangle, synthtype=pulse, abspos=0.7, compname=Pg, extnode=b](Osci)(Tmp){PG}
+  \optfilter[abspos=2](Osci)(Tmp){BPF}
+\rput[r]([offset=0.4, Xnodesep=0.2]\oenodeOut{}){\psplot[plotpoints=200]{0}{1}{360 3.14159 div x 6 mul mul sin 2 exp 0.3 mul 0.15 sub}}
+  \drawwire[arm=0]{12}{13}{14}\drawwire[wireangleB=-90, arrows=->]{14}(\oenodeExt{PM})
+  \psline[style=Wire, arrows=->](\oenodeExt{Pg})(\oenodeExt{Mod})
   \rput([Xnodesep=0.1, offset=0.2]\oenodeOut{Mod}){%
     \psplot[plotpoints=200, unit=0.7]{0}{1}{2.7182818 x 0.5 sub 0.08 div 2 exp neg exp 0.5 mul}%
   }%
