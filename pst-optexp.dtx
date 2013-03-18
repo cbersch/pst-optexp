@@ -15009,38 +15009,66 @@
         \ifPOE@fiberpreset@
           \ifnum\POE@key@fiberboxcountin=1
             \ifPOE@fiberpresetin@
-              \drawfiber@{FiberIn}{(#1)}{\POE@key@compname}
+              \drawfiber@{FiberIn}(#1){}
             \fi
           \fi
           \ifnum\POE@key@fiberboxcountout=1
             \ifPOE@fiberpresetout@
-              \drawfiber@{FiberOut}{\POE@key@compname}{(#2)}
+              \drawfiber@{FiberOut}{}(#2)
             \fi
           \fi
-        \fi
+        \else\ifPOE@wire@
+          \ifnum\POE@key@fiberboxcountin=1
+            \ifPOE@wirein@
+              \drawwire@{WireIn}(#1){}
+            \fi
+          \fi
+          \ifnum\POE@key@fiberboxcountout=1
+            \ifPOE@wireout@
+              \drawwire@{WireOut}(#2){}
+            \fi
+          \fi
+        \fi\fi
       \else
 %    \end{macrocode}
-% If four nodes are specified, connect all of them with the respective interface
+% If four reference nodes are specified, connect all of them with the respective interface
 % nodes they are aligned to.
 %    \begin{macrocode}
         \ifPOE@fiberpreset@
           \ifPOE@fiberpresetin@
             \ifPOE@fiberpresetin@top
-              \drawfiber@{FiberIn1}{(#1)}{\POE@key@compname}
+              \drawfiber@{FiberIn1}(#1){}
             \fi
             \ifPOE@fiberpresetin@bottom
-              \drawfiber@{FiberIn2}{(#2)}{\POE@key@compname}
+              \drawfiber@{FiberIn2}(#2){}
             \fi
           \fi
           \ifPOE@fiberpresetout@
             \ifPOE@fiberpresetout@top
-              \drawfiber@{FiberOut1}{\POE@key@compname}{(#3)}
+              \drawfiber@{FiberOut1}{}(#3)
             \fi
             \ifPOE@fiberpresetout@bottom
-              \drawfiber@{FiberOut2}{\POE@key@compname}{(#4)}
+              \drawfiber@{FiberOut2}{}(#4)
             \fi
           \fi
-        \fi
+        \else\ifPOE@wire@
+          \ifPOE@wirein@
+            \ifPOE@wirein@top
+              \drawwire@{WireIn1}(#1){}
+            \fi
+            \ifPOE@wirein@bottom
+              \drawwire@{WireIn2}(#2){}
+            \fi
+          \fi
+          \ifPOE@wireout@
+            \ifPOE@wireout@top
+              \drawwire@{WireOut1}(#3){}
+            \fi
+            \ifPOE@wireout@bottom
+              \drawwire@{WireOut2}(#4){}
+            \fi
+          \fi
+        \fi\fi
       \fi
     \fi
   \end@OptexpObj
