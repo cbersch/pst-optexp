@@ -8,7 +8,7 @@ pat = re.compile(r'\\begin{release}{(.*?)}{(.*?)}(.*?)\\end{release}', re.DOTALL
 
 g = pat.findall(data)
 
-pat = re.compile(r'\\item\s*(.*?)(?:\\see{[^}]*})?$', re.MULTILINE)
+pat = re.compile(r'^%\s*(.*?)\s*(?:%\s*)?$', re.MULTILINE)
 
 with open("Changes", "w") as f:
     for release in g:
@@ -16,7 +16,10 @@ with open("Changes", "w") as f:
 
         txt = re.sub(r'\\opt{([^}]*)}', '\\1', release[2])
         txt = re.sub(r'(\\)cs{([^}]*)}', '\\1\\2', txt)
-        for m in pat.finditer(txt):
-            f.write("       * " + "\n           ".join(textwrap.wrap(m.group(1), 65)) + "\n")
+        txt = re.sub(r'\\see{[^}]*}', '.', txt)
+        txt_split = ' '.join(pat.findall(txt)).split('\\item')
+        for m in txt_split:
+            if m:
+                f.write("       * " + "\n           ".join(textwrap.wrap(m, 65)) + "\n")
 
         f.write("\n")
