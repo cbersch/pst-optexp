@@ -54,7 +54,6 @@
 \usepackage{nicefrac}
 \usepackage{pst-func}
 \usepackage{pst-optexp}
-\usepackage{pst-circ}
 \usepackage[makeindex]{splitidx}
 \usepackage{hypdoc}
 \hypersetup{%
@@ -114,7 +113,8 @@
     optripole, optfiber, optamp, optmzm, optfilter, polcontrol,
     optisolator, optswitch, fiberdelayline, optfiberpolarizer,
     fibercollimator, optcoupler, wdmcoupler, wdmsplitter, optcirculator,
-    fiberbox, eleccoupler, elecsynthesizer, elecmixer,
+    fiberbox, eleccoupler, elecsynthesizer, elecmixer, optarrowbox,
+    optbarbox,
     drawbeam, drawwidebeam, drawfiber, drawwire, frontlayer, backlayer,
     newOptexpDipole, newOptexpTripole, newOptexpFiberDipole,optplane}, %
   explpreset={%
@@ -2773,6 +2773,84 @@
 % \Lkeyword{optboxwidth} and \Lkeyword{optboxheight}.
 % \fi
 % \end{optionlist}
+%
+% \ifGERMAN\section{Pfeilbox}\fi
+% \ifENGLISH\section{Arrow box}\fi
+% 
+% \begin{ltxsyntax}
+% \dipoledesc{optarrowbox}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(3,2)
+  \optarrowbox[wire](0,0)(3,2){box}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+% \end{ltxsyntax}
+% 
+% \begin{optionlist}
+% \numitem[1.4]{arrowboxwidth}
+% \ifGERMAN Die Breite der Box.\fi
+% \ifENGLISH The width of the box.\fi
+%
+% \numitem[0.8]{arrowboxheight}
+% \ifGERMAN Die Höhe der Box.\fi
+% \ifENGLISH The height of the box.\fi
+%
+% \optitem{arrowboxsize}{\prm{width} \prm{height}}
+% \ifGERMAN Die Breite und Höhe der Box, äquivalent zum Aufruf von
+% \Lkeyword{arrowboxwidth} und \Lkeyword{arrowboxheight}.
+% \fi
+% \ifENGLISH The width and height of the box, is equivalent to calling both
+% \Lkeyword{arrowboxwidth} and \Lkeyword{arrowboxheight}.
+% \fi
+% \end{optionlist}
+% \begin{stylelist}
+%   \styleitem[arrowinset=0, arrows=->]{ArrowBoxStyle}
+% \end{stylelist}
+%
+% \ifGERMAN\section{Bar Box}\fi
+% \ifENGLISH\section{Bar box}\fi
+% 
+% \begin{ltxsyntax}
+% \dipoledesc{optbarbox}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(3,2)
+  \optbarbox[fiber](0,0)(3,2){box}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+% \end{ltxsyntax}
+% 
+% \begin{optionlist}
+% \numitem[1.4]{barboxwidth}
+% \ifGERMAN Die Breite der Box.\fi
+% \ifENGLISH The width of the box.\fi
+%
+% \numitem[0.8]{barboxheight}
+% \ifGERMAN Die Höhe der Box.\fi
+% \ifENGLISH The height of the box.\fi
+%
+% \optitem{barboxsize}{\prm{width} \prm{height}}
+% \ifGERMAN Die Breite und Höhe der Box, äquivalent zum Aufruf von
+% \Lkeyword{barboxwidth} und \Lkeyword{barboxheight}.
+% \fi
+% \ifENGLISH The width and height of the box, is equivalent to calling both
+% \Lkeyword{barboxwidth} and \Lkeyword{barboxheight}.
+% \fi
+% \end{optionlist}
+% \begin{stylelist}
+%   \styleitem{BarBoxStyle}
+% \end{stylelist}
 %
 %
 % \ifGERMAN\section{Kristall}\fi
@@ -9317,13 +9395,13 @@
 \optbox[label=0, compname=EAM, extnode=b, abspos=1.5](Lin)(Det){EAM}
 \optfiber[labeloffset=0.3, abspos=3.2](Lin)(Det){fibre}
 \optdetector(Lin)(Det){OSA}
-\pnode([Xnodesep=-1,offset=-1]\oenodeExt{L}){Osc}
-\pnode(\oenodeExt{L}|Osc){PSin}\pnode(\oenodeExt{EAM}|Osc){PSout}
-\oscillator[output=right](Osc){10\,GHz}{}
-\phaseshifter[arrowscale=1.5, inputarrow, labeloffset=-0.7](PSin)(PSout){$\tau$}
+\pnode([Xnodesep=-0.5,offset=-1]\oenodeExt{L}){Osc}
+\elecsynthesizer[wire=none](Osc)(\oenodeExt{EAM}|Osc){10\,GHz}
+\optarrowbox[arrowboxsize=0.8 0.6, arrowscale=1.5](Osc)(\oenodeExt{EAM}|Osc){$\tau$}
 \drawfiber{1}{2}{3}{4}
-\psset{arrows=->, arrowinset=0, arrowscale=1.5}
-\wire(PSin)(\oenodeExt{L})\wire(PSout)(\oenodeExt{EAM})
+\addtopsstyle{Wire}{arrows=->, arrowinset=0, arrowscale=1.5}
+\drawwire{5}{6}\psset[optexp]{wireangleB=90}
+\drawwire{6}(\oenodeExt{EAM})\drawwire{5}(\oenodeExt{L})
 \end{pspicture}
 \end{LTXexample}
 
@@ -9699,16 +9777,14 @@
 \optamp[fiber](Pump)(\oenodeIfc{2}{13})
 \optbox[position=start, optboxsize=0.6 1.2, label=0 . . absolute](Pump)(Pump|Cpl){Pump}
 \drawfiber{10}{11}{12}{13}{14}{15}\drawfiber{14}{16}
-% electrical stuff
-\newpsstyle{Fiber}{}\psset[optexp]{label=0}
+\psset[optexp]{label=0}
 \optbox[compshift=0.7, optboxsize=2.5 0.8](\oenodeExt{M2})(\oenodeExt{Pd}|\oenodeExt{M2}){Lock-In Amp}
-\ncangle[angleA=90, angleB=180, linearc=0.3]{\oenodeExt{M2}}{\oenodeIn{}}
-\ncangle[angleB=90, linearc=0.3]{\oenodeOut{}}{\oenodeExt{Pd}}
-\psset[optexp]{fiber=all, optboxsize=0.8 1, position=start}
-\optbox(\oenodeExt{S}|Pump)(\oenodeExt{S}){\psline(-0.3,-0.2)(0.3,0.2)(0.3,-0.2)}
-\optbox(\oenodeExt{M3}|Pump)(\oenodeExt{M3}){\psline(-0.3,-0.2)(0,0.2)(0.3,-0.2)}
-\oscillator[output=none, unit=0.75, linewidth=0.666\pslinewidth]([offset=1]\oenodeExt{M1}){}{}
-\psline(\oenodeExt{M1})([offset=0.4]\oenodeExt{M1})
+\drawwire[wireangleA=90, linearc=0.3](\oenodeExt{M2}){}
+\drawwire[wireangleB=90, linearc=0.3]{}(\oenodeExt{Pd})
+\addtopsstyle{Wire}{arm=0}
+\elecsynthesizer[synthshape=rectangle, synthtype=sawtooth](\oenodeExt{S}|Pump)(\oenodeExt{S})
+\elecsynthesizer[synthshape=rectangle, synthtype=triangle](\oenodeExt{M3}|Pump)(\oenodeExt{M3})
+\elecsynthesizer([offset=0.4]\oenodeExt{M1})(\oenodeExt{M1})
 \end{pspicture}
 \end{LTXexample}
 \endgroup
@@ -9761,14 +9837,15 @@
 \pnode([Xnodesep=-2]STM1){M1}\pnode([offset=1]M1){M2}
 \pnode([offset=2]STM1){M3}\pnode([Xnodesep=-1]M3){M4}
 \pnode(M4|M2){STM2}
-\beamsplitter[linewidth=2\pslinewidth, linecolor=gray!50](In)(STM1)(M1)
+\newpsobject{splitterplate}{beamsplitter}{linewidth=2\pslinewidth, linecolor=gray!50, bsstyle=plate}
+\splitterplate(In)(STM1)(M1)
 \mirror(STM1)(M1)(M2)
 \mirror(M1)(M2)(M3|M2)
 \mirror(STM1)(M3)(M4)
 \mirror[label=0.6 180 . absolute](M3)(M4)(STM2)
 \rput[r](\oenodeLabel{}){$\tau$
   \psline[arrows=<->](0.15, 0.4)(0.15, -0.2)}
-\beamsplitter[compoffset=0.2, linewidth=2\pslinewidth, linecolor=gray!50, compname=STM2](M4)(STM2)([Xnodesep=1]STM2)
+\splitterplate[compoffset=0.2, compname=STM2](M4)(STM2)([Xnodesep=1]STM2)
 \pnode(\oenodeCenter{STM2}){STM2C}
 \pnode([Xnodesep=4]STM2C){Out}
 \lens[n=2](STM2C)(Out)
@@ -9786,15 +9863,15 @@
 
 \begin{LTXexample}[pos=t, linerange={1-1}, caption={caption}]
 
-\psset{unit=1.1}
-\begin{pspicture}(9.3,5.8)
+\psset{unit=1.1, usefiberstyle=false}
+\begin{pspicture}(9.3,6.1)
   \psset{labeloffset=0.5, optboxsize=1 0.8, arrowscale=1.2, arrowinset=0}
   \newpsstyle{Fiber}{linecolor=red!70!black, linewidth=1.5\pslinewidth}
-  \pnode(1, 3.4){LD}\pnode([Xnodesep=3.2]LD){LoopIn}\pnode([offset=-1]LoopIn){LoopInsIn}
-  \pnode([offset=-1,Xnodesep=2]LoopIn){LoopInsOut}\pnode(LoopInsOut|LoopIn){LoopOut}
+  \pnode(1, 3.7){LD}\pnode([Xnodesep=3.2]LD){LoopIn}\pnode([offset=-1.2]LoopIn){LoopInsIn}
+  \pnode([Xnodesep=2]LoopInsIn){LoopInsOut}\pnode(LoopInsOut|LoopIn){LoopOut}
   \optswitch[compname=LSw, label=. 180 b, abspos=2.7, fiber=o](LD)(LoopIn){load switch}
   \optcoupler[addtoFiber={ArrowInside=->, ArrowInsidePos=0.7}](LoopIn)(LoopInsIn)(LoopOut)(LoopInsOut){50/50}
-  \optbox[labelstyle=\footnotesize, position=end, fiber, label=0, optboxsize=1.4 1.2](LoopOut)([Xnodesep=0.1]LoopOut){\parbox{1.4\psxunit}{\centering Linear\\Optical\\Sampling}}%
+  \optbox[labelstyle=\footnotesize, position=end, fiber, label=0, optboxsize=1.6 1.2](LoopOut)([Xnodesep=0.1]LoopOut){\parbox{1.4\psxunit}{\centering Linear\\Optical\\Sampling}}%
   \pnode([Xnodesep=2.8]LoopInsOut){TR}
   \pnode([offset=-2]TR){BR}
   \pnode([Xnodesep=-1.5]LoopInsIn){TL}
@@ -9814,17 +9891,14 @@
   \optbox[position=start, innerlabel](LD)(LoopIn){LD}
   \drawfiber{}{Mod}
   \drawfiber[arrows=->]{Mod}{LSw}
-  \psline[arrows=->]([offset=1]\oenodeExt{PM})(\oenodeExt{PM})
-  \pnode([offset=1.2, Xnodesep=-1]\oenodeExt{Mod}){Osci}
-  \oscillator[output=none, unit=0.8, linewidth=0.666\pslinewidth](Osci){}{}
-  \uput{0.5}[90](Osci){SYN}
-  \newpsstyle{Fiber}{}
-  \optbox[compname=PG, extnode=b, abspos=0.6, fiber=i, label=0.5 180 b]([Xnodesep=0.4]Osci)(\oenodeExt{PM}|Osci){PG}
-  \rput(\oenodeCenter{}){\psplot[plotpoints=200]{-0.3}{0.3}{2.7182818 x 0.05 div 2 exp neg exp 0.3 mul 0.15 sub}}
-  \optfilter[label=0.5 180 b, abspos=1, fiber=i](\oenodeOut{PG})(\oenodeExt{PM}|Osci){BPF}
-  \rput[r]([offset=0.4, Xnodesep=0.2]\oenodeOut{}){\psplot[plotpoints=200]{0}{1}{360 3.14159 div x 6 mul mul sin 2 exp 0.3 mul 0.15 sub}}
-  \ncangle[angleA=-90, angleB=90, arrows=->, armB=0.5]{\oenodeExt{PG}}{\oenodeExt{Mod}}
-  \ncangle[angleB=90, arrows=->]{\oenodeOut{}}{\oenodeExt{PM}}
+  \pnode([offset=1.2, Xnodesep=-0.7]\oenodeExt{Mod}){Osci}\pnode(\oenodeExt{PM}|Osci){Tmp}
+  \psset{wire=none, fiber=none, label=0.5 180 b}
+  \elecsynthesizer(Osci)(Tmp){SYN}
+  \elecsynthesizer[synthshape=rectangle, synthtype=pulse, abspos=0.7, compname=Pg, extnode=b](Osci)(Tmp){PG}
+  \optfilter[abspos=2](Osci)(Tmp){BPF}
+\rput[r]([offset=0.4, Xnodesep=0.2]\oenodeOut{}){\psplot[plotpoints=200]{0}{1}{360 3.14159 div x 6 mul mul sin 2 exp 0.3 mul 0.15 sub}}
+  \drawwire[arm=0]{12}{13}{14}\drawwire[wireangleB=-90, arrows=->]{14}(\oenodeExt{PM})
+  \psline[style=Wire, arrows=->](\oenodeExt{Pg})(\oenodeExt{Mod})
   \rput([Xnodesep=0.1, offset=0.2]\oenodeOut{Mod}){%
     \psplot[plotpoints=200, unit=0.7]{0}{1}{2.7182818 x 0.5 sub 0.08 div 2 exp neg exp 0.5 mul}%
   }%
@@ -11730,11 +11804,51 @@
   \fi
   \psset[optexp]{optboxwidth=#1, optboxheight=#2}%
 }%
-\psset[optexp]{%
-  optboxwidth=1.4,
-  optboxheight=0.8
-}%
+\psset[optexp]{optboxsize=1.4 0.8}%
 %    \end{macrocode}
+% arrowbox
+%    \begin{macrocode}
+\define@key[psset]{optexp}{arrowboxwidth}{%
+  \pst@checknum{#1}\POE@key@arrowboxwidth
+}
+\define@key[psset]{optexp}{arrowboxheight}{%
+  \pst@checknum{#1}\POE@key@arrowboxheight
+}
+\define@key[psset]{optexp}{arrowboxsize}{%
+  \pst@expandafter\POE@psset@@arrowboxsize{#1} {} {} {}\@nil
+}%
+\def\POE@psset@@arrowboxsize#1 #2 #3\@nil{%
+  \ifx\\#2\\%
+    \PackageWarning{pst-optexp}{%
+      Parameter 'arrowboxsize' requires two numbers.}%
+  \fi
+  \psset[optexp]{arrowboxwidth=#1, arrowboxheight=#2}%
+}%
+\psset[optexp]{arrowboxsize=1.4 0.8}%
+\newpsstyle{ArrowBoxStyle}{arrowinset=0, arrows=->}%
+%    \end{macrocode}
+% BarBox
+%    \begin{macrocode}
+\define@key[psset]{optexp}{barboxwidth}{%
+  \pst@checknum{#1}\POE@key@barboxwidth
+}
+\define@key[psset]{optexp}{barboxheight}{%
+  \pst@checknum{#1}\POE@key@barboxheight
+}
+\define@key[psset]{optexp}{barboxsize}{%
+  \pst@expandafter\POE@psset@@barboxsize{#1} {} {} {}\@nil
+}%
+\def\POE@psset@@barboxsize#1 #2 #3\@nil{%
+  \ifx\\#2\\%
+    \PackageWarning{pst-optexp}{%
+      Parameter 'barboxsize' requires two numbers.}%
+  \fi
+  \psset[optexp]{barboxwidth=#1, barboxheight=#2}%
+}%
+\psset[optexp]{barboxsize=1.4 0.8}%
+\newpsstyle{BarBoxStyle}{}%
+%    \end{macrocode}
+%
 % Plate
 %    \begin{macrocode}
 \define@key[psset]{optexp}{platelinewidth}{%
@@ -14662,30 +14776,33 @@
     {\optcirculator@ii(#1)(#2)(#3)}%
     {\optcirculator@ii(#1)(#2)(#3){}}%
 }%
+\def\POE@calcCircRefNodes#1#2#3{%
+\ifPOE@backlayer
+  \POE@regNodes{#1}{#2}
+  \ifx\POE@key@position\@empty
+    \ifx\POE@key@abspos\@empty
+      \POE@positionrefnodes
+      \pst@getcoor{#1}\POE@tempa%
+      \pst@getcoor{#2}\POE@tempc%
+      \pst@getcoor{#3}\POE@tempb%
+      \pnode(! \POE@dict{%
+        \POE@tempa \tx@UserCoor 2 copy 2 copy 
+        \POE@tempc \tx@UserCoor 4 2 roll @ABVect
+        2 copy 2 copy 10 4 roll
+        \POE@tempb \tx@UserCoor 6 -2 roll @ABVect
+        4 2 roll tx@EcldDict begin Project end VecAdd
+        2 copy 6 -2 roll -0.5 VecScale VecAdd
+      }){\oenode@RefA{}}%
+      \pnode(! \POE@dict{4 2 roll 0.5 VecScale VecAdd})%
+      {\oenode@RefB{}}%
+      \fi
+    \fi
+  \fi
+}%
 \def\optcirculator@ii(#1)(#2)(#3)#4{%
   \addafter@par{ref@angle=180}%
   \begin@OptexpObj
-    \ifPOE@backlayer
-      \POE@regNodes{#1}{#2}
-      \ifx\POE@key@position\@empty
-        \ifx\POE@key@abspos\@empty
-          \POE@positionrefnodes
-          \pst@getcoor{#1}\POE@tempa%
-          \pst@getcoor{#2}\POE@tempc%
-          \pst@getcoor{#3}\POE@tempb%
-          \pnode(! \POE@dict{%
-            \POE@tempa \tx@UserCoor 2 copy 2 copy 
-            \POE@tempc \tx@UserCoor 4 2 roll @ABVect
-            2 copy 2 copy 10 4 roll
-            \POE@tempb \tx@UserCoor 6 -2 roll @ABVect
-            4 2 roll tx@EcldDict begin Project end VecAdd
-            2 copy 6 -2 roll -0.5 VecScale VecAdd
-          }){\oenode@RefA{}}%
-          \pnode(! \POE@dict{4 2 roll 0.5 VecScale VecAdd})%
-            {\oenode@RefB{}}%
-        \fi
-      \fi
-    \fi
+    \POE@calcCircRefNodes{#1}{#2}{#3}%
     \POE@drawcomponent{optcirculator}{#4}
     \ifPOE@backlayer
       \ifPOE@fiberpreset@
@@ -16075,9 +16192,8 @@
 % \begin{macro}{\optbox@comp}
 %    \begin{macrocode}
 \def\optbox@comp{%
-  \edef\@wd{\POE@key@optboxwidth\space 0.5 mul }
-  \edef\@ht{\POE@key@optboxheight\space 0.5 mul }
-  \psframe[dimen=outer](! \@wd neg \@ht neg)(! \@wd \@ht)
+  \psframe[dimen=outer](!\POE@dict{@@x neg @@y neg})%
+                       (!\POE@dict{@@x @@y})
 \ignorespaces}%
 %    \end{macrocode}
 % \end{macro}
@@ -16797,10 +16913,27 @@
 % \begin{macro}{\fiberdelayline@comp}
 %    \begin{macrocode}
 \def\fiberdelayline@comp{%
+  \begingroup
+    \def\pscs@ArrowBoxStyle{\pscs@FdlArrow}
+    \optarrowbox@comp
+  \endgroup
+\ignorespaces}%
+%    \end{macrocode}
+% \end{macro}
+% 
+%    \begin{macrocode}
+\newOptexpDipole{optarrowbox}{}
+\def\optarrowbox@ref{%
+  \POE@setref{%
+    /@@x \POE@key@arrowboxwidth\space 0.5 mul def
+    /@@y \POE@key@arrowboxheight\space 0.5 mul def
+  }%
+}%
+\def\optarrowbox@comp{%
   \psframe[dimen=outer](! \POE@dict{@@x neg @@y neg})%
                        (! \POE@dict{@@x @@y})
   \begingroup
-    \psset{style=FdlArrow}
+    \psset{style=ArrowBoxStyle}
     \use@par
     \pst@expandafter\POE@get@yarrowscale{\psk@arrowscale}\@nil
     \def\@arrowshift{%
@@ -16815,8 +16948,24 @@
   \endgroup
 \ignorespaces}%
 %    \end{macrocode}
-% \end{macro}
-% 
+%
+%    \begin{macrocode}
+\newOptexpDipole{optbarbox}{}
+\def\optbarbox@ref{%
+  \POE@setref{%
+    /@@x \POE@key@barboxwidth\space 0.5 mul def
+    /@@y \POE@key@barboxheight\space 0.5 mul def
+  }%
+}%
+\def\optbarbox@comp{%
+  \psframe[dimen=outer](! \POE@dict{@@x neg @@y neg})%
+                       (! \POE@dict{@@x @@y})
+  \psline[style=BarBoxStyle](!\POE@dict{@@x -0.2 mul @@y neg})%
+                            (!\POE@dict{@@x 0.2 mul @@y})
+\ignorespaces}%
+%    \end{macrocode}
+%
+%
 % \subsubsection{fiberbox}
 % \begin{macro}{fiberbox@ref}
 %    \begin{macrocode}
@@ -17139,27 +17288,7 @@
 \def\elecmixer@ii(#1)(#2)(#3)#4{%
   \addafter@par{ref@angle=180}%
   \begin@OptexpObj
-    \ifPOE@backlayer
-      \POE@regNodes{#1}{#2}
-      \ifx\POE@key@position\@empty
-        \ifx\POE@key@abspos\@empty
-          \POE@positionrefnodes
-          \pst@getcoor{#1}\POE@tempa%
-          \pst@getcoor{#2}\POE@tempc%
-          \pst@getcoor{#3}\POE@tempb%
-          \pnode(! \POE@dict{%
-            \POE@tempa \tx@UserCoor 2 copy 2 copy 
-            \POE@tempc \tx@UserCoor 4 2 roll @ABVect
-            2 copy 2 copy 10 4 roll
-            \POE@tempb \tx@UserCoor 6 -2 roll @ABVect
-            4 2 roll tx@EcldDict begin Project end VecAdd
-            2 copy 6 -2 roll -0.5 VecScale VecAdd
-          }){\oenode@RefA{}}%
-          \pnode(! \POE@dict{4 2 roll 0.5 VecScale VecAdd})%
-            {\oenode@RefB{}}%
-        \fi
-      \fi
-    \fi
+    \POE@calcCircRefNodes{#1}{#2}{#3}%
     \POE@drawcomponent{elecmixer}{#4}
     \ifPOE@backlayer
       \ifPOE@wirepreset@
@@ -17402,11 +17531,11 @@
   \POE@setref{%
     \POE@key@synthwidth\space 0.5 mul
     \POE@key@synthheight\space 0.5 mul
+    2 copy min /@@sz ED
     \ifx\POE@key@synthshape\POE@str@synthshape@circle
-      min dup
+      pop pop @@sz dup
     \fi
-    dup /@@y ED 0.35 mul /@@dy ED
-    dup /@@x ED 0.7 mul /@@dx ED
+    /@@y ED /@@x ED
     /@@ang 
     \ifx\POE@key@innercompalign\POE@str@absolute
       /N@\oenodeRefA{} /N@\oenodeRefB{} SlopeAngle \POE@key@angle sub
@@ -17445,21 +17574,25 @@
     \fi
     \ifx\POE@key@synthtype\POE@str@synthtype@sine
       \parametricplot[plotpoints=100]{-1}{1}{%
-        \POE@dict{@@dx t mul t 180 mul \POE@tempA sin @@dy neg mul \POE@tempB }}%
+        \POE@dict{@@sz 0.7 mul t mul t 180 mul \POE@tempA sin @@y -0.35 mul mul \POE@tempB }}%
     \else\ifx\POE@key@synthtype\POE@str@synthtype@pulse
       \psplot[plotpoints=100]{-0.25}{0.25}{2.7182818 x 0.04 div dup mul neg exp 0.3 mul 0.13 sub \POE@tempB}%
     \fi\fi
   \endgroup
   \ifx\POE@key@synthtype\POE@str@synthtype@rectangle
-    \psline(!\POE@dict{@@dx neg @@dy neg})%
-           (!\POE@dict{@@dx neg 0.5 1 \POE@key@synthrectwidth\space sub mul add @@dy neg})%
-           (!\POE@dict{@@dx neg 0.5 1 \POE@key@synthrectwidth\space sub mul add @@dy})%
-           (!\POE@dict{@@dx @@dy})%
-           (!\POE@dict{@@dx @@dy neg})
+    \psline(!\POE@dict{@@sz -0.7 mul @@sz -0.35 mul})%
+           (!\POE@dict{@@sz 0.7 mul -1 1 \POE@key@synthrectwidth\space sub 2 mul add mul @@sz -0.35 mul})%
+           (!\POE@dict{@@sz 0.7 mul -1 1 \POE@key@synthrectwidth\space sub 2 mul add mul @@sz 0.35 mul})%
+           (!\POE@dict{@@sz 0.7 mul @@sz 0.35 mul})%
+           (!\POE@dict{@@sz 0.7 mul @@sz -0.35 mul})
   \else\ifx\POE@key@synthtype\POE@str@synthtype@sawtooth
-    \psline(-0.25,-0.15)(0,0.15)(0,-0.15)(0.25,0.15)(0.25,-0.15)
+    \psline(!\POE@dict{@@sz -0.6 mul @@sz -0.4 mul})%
+           (!\POE@dict{@@sz 0.6 mul @@sz 0.4 mul})%
+           (!\POE@dict{@@sz 0.6 mul @@sz -0.4 mul})
   \else\ifx\POE@key@synthtype\POE@str@synthtype@triangle
-    \psline(-0.25,-0.15)(-0.125,0.15)(0,-0.15)(0.125,0.15)(0.25,-0.15)
+    \psline(!\POE@dict{@@sz -0.6 mul @@sz -0.4 mul})%
+           (!\POE@dict{0 @@sz 0.4 mul})%
+           (!\POE@dict{@@sz 0.6 mul @@sz -0.4 mul})
   \else
     \@ifundefined{elecsynthesizer@custom}{}{\elecsynthesizer@custom}%
   \fi\fi\fi}%
