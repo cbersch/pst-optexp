@@ -11372,6 +11372,8 @@
 \def\POE@str@auto{auto}
 \def\POE@str@verbose{verbose}
 \def\POE@str@quiet{quiet}
+\def\POE@str@reflective{reflective}
+\def\POE@str@transmittive{transmittive}
 \def\POE@Verb#1{\pst@Verb{\pst@optexpdict #1 end }}%
 %    \end{macrocode}
 %
@@ -12291,10 +12293,15 @@
   {auto,center}%
   {\def\POE@key@prismalign{#1}}%
   {\PackageError{pst-optexp}{Unknown value '\val' for prismalign}}%
+\define@choicekey+[psset]{optexp}{prismtype}[\val\nr]%
+  {transmission, coupling}%
+  {\def\POE@key@prismtype{#1}}%
+  {\PackageError{pst-optexp}{Unknown value '\val' for prismtype}}%
 \psset[optexp]{%
   prismsize=1,
   prismangle=60,
-  prismalign=auto
+  prismalign=auto,
+  prismtype=transmission
 }%
 %    \end{macrocode}
 %
@@ -12825,6 +12832,20 @@
     \fi
   }%
   {\PackageError{pst-optexp}{Unknown value '\val' for beamalign}}
+\define@choicekey+[psset]{optexp}{beammode}%
+  [\val\nr]{refl,trans,none,reflective,transmittive}%
+  {%
+    \ifcase\nr\relax
+      \let\POE@key@beammode\POE@str@reflective
+    \or
+      \let\POE@key@beammode\POE@str@transmittive
+    \or
+      \def\POE@key@beammode{}%
+    \else
+      \def\POE@key@beammode{#1}%
+    \fi
+  }%
+  {\def\POE@key@beammode{}}
 \define@key[psset]{optexp}{ArrowInsideMinLength}{%
   \def\POE@key@ArrowInsideMinLength{#1}%
 }%
@@ -12850,6 +12871,7 @@
   ,beamalign=relative
   ,beamwidth=0
   ,beamdiv=0
+  ,beammode=
   ,n=1.5
   ,beampathskip=0
   ,ArrowInsideMinLength=0.2
@@ -13462,6 +13484,14 @@
          relative
        \fi def
      /beampathskip \POE@key@beampathskip\space def
+     /beammode
+       \ifx\POE@key@beammode\POE@str@transmittive
+         trans
+       \else\ifx\POE@key@beammode\POE@str@reflective
+         refl
+       \else
+         undefined
+       \fi\fi def
      /useNA \ifPOE@useNA true \else false \fi def
   }%
 }%
@@ -16654,14 +16684,28 @@
       0
     \fi
   }%
-  \newOptexpComp{%
-    {\@sz -0.6 mul \@ang tan mul \@hshift neg} 
-    {90 \@ang sub dup cos exch sin} 
-    \@sz \@ang cos div dup -0.4 mul exch 0.6 mul trans {PlainIfc}
-    {\@sz 0.6 mul \@ang tan mul \@hshift neg} 
-    {90 \@ang add dup cos exch sin} 
-    \@sz \@ang cos div dup -0.4 mul exch 0.6 mul trans {PlainIfc} 
-    \POE@key@n true }%
+  \def\POE@tempA{transmission}%
+  \ifx\POE@key@prismtype\POE@tempA
+    \newOptexpComp{%
+      {\@sz -0.6 mul \@ang tan mul \@hshift neg} 
+      {90 \@ang sub dup cos exch sin} 
+      \@sz \@ang cos div dup -0.4 mul exch 0.6 mul trans {PlainIfc}
+      {\@sz 0.6 mul \@ang tan mul \@hshift neg} 
+      {90 \@ang add dup cos exch sin} 
+      \@sz \@ang cos div dup -0.4 mul exch 0.6 mul trans {PlainIfc} 
+      \POE@key@n true }%
+  \else
+    \newOptexpCompAmb{%
+      {\@sz -0.6 mul \@ang tan mul \@hshift neg} 
+      {90 \@ang sub dup cos exch sin} 
+      \@sz \@ang cos div dup -0.4 mul exch 0.6 mul trans {PlainIfc}
+      {0 \@sz -0.4 mul \@hshift sub } {1 0} \@ang tan \@sz mul dup neg exch 
+      trans {PlainIfc}
+      {\@sz 0.6 mul \@ang tan mul \@hshift neg} 
+      {90 \@ang add dup cos exch sin} 
+      \@sz \@ang cos div dup -0.4 mul exch 0.6 mul trans {PlainIfc} 
+      2 \POE@key@n true }%
+  \fi
   \pnode(! 0 \@hshift neg){\oenodeCenter{}}
 }%
 %    \end{macrocode}
@@ -18268,7 +18312,7 @@ tx@OptexpDict begin
 % Define some constants.
 %    \begin{macrocode}
 /relative 0 def /absolute 1 def /center 2 def
-/refl 0 def /trans 1 def /absorb 2 def
+/refl 0 def /trans 1 def /absorb 2 def /undefined -1 def
 /desc 0 def /asc 1 def /amb 2 def
 /ok 0 def /tir 1 def /missed 2 def
 /bgRefIndex 0 def
@@ -18741,9 +18785,13 @@ tx@OptexpDict begin
 %    \begin{macrocode}
       [ (C) name
       name GetRefIndex
-      CurrVecTmp (C) name GetPlaneVec NormalVec outToPlane 
-      GetIfcCenter (C) name GetIfcCenter @ABVect DotProd
-      0 lt { trans } { refl } ifelse
+      beammode undefined eq {
+        CurrVecTmp (C) name GetPlaneVec NormalVec outToPlane 
+        GetIfcCenter (C) name GetIfcCenter @ABVect DotProd
+        0 lt { trans } { refl } ifelse
+      } {
+        beammode
+      } ifelse
       dup 6 1 roll
 %    \end{macrocode}
 % if the ambiguous interface is the first, always draw to it
@@ -18784,11 +18832,16 @@ tx@OptexpDict begin
 %    \begin{macrocode}
 /GetNextPlane {
   (GetNextPlane) DebugBegin
-  2 copy (C) 3 -1 roll
-  GetIfcCenter 3 -1 roll
-  exec GetIfcCenter
-  4 2 roll 4 copy @ABVect ToVec /Vec ED
-  @ABDist /centerDist ED
+  beammode undefined eq {
+    2 copy (C) 3 -1 roll
+    GetIfcCenter 3 -1 roll
+    exec GetIfcCenter 
+    4 2 roll 4 copy @ABVect ToVec /Vec ED
+    @ABDist /centerDist ED
+  } {
+    /Vec /CurrVecTmp load def
+    /centerDist -1 def
+  } ifelse
   /sprod 1 def
   /nextPlane 0 def
   exch dup 3 1 roll
@@ -18802,6 +18855,7 @@ tx@OptexpDict begin
       Vec DotProd dup sprod lt 5 2 roll
       GetIfcCenter 3 -1 roll exec GetIfcCenter @ABDist 
       centerDist lt and
+      centerDist -1 eq { pop dup 0 gt } if
       { /sprod ED /nextPlane ED } { pop pop } ifelse
     } {
       pop
