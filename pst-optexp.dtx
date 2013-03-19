@@ -5156,9 +5156,7 @@
 % \fi
 \begin{LTXexample}
 \begin{pspicture}(3,2)
-  \newpsstyle{Wire}{arrowscale=1.5, arrowinset=0}
-  \addtopsstyle{WireIn}{arrows=->}
-  \addtopsstyle{WireOut}{arrows=<-}
+  \newpsstyle{Wire}{arrowscale=1.5, arrowinset=0, arrows=->}
   \addtopsstyle{WireOut1}{linecolor=blue}
   \addtopsstyle{WireOut2}{linecolor=green!80!black}
   \elecmixer(0,1)(3,1)(1.5,0){Mixer}
@@ -7084,6 +7082,38 @@
 %</ignore>
 % \fi
 %
+%
+% \numitem[0]{beampathskip}
+% \ifGERMAN
+% Überspringt \prm{num} Segmente am Anfang des Strahlengangs.
+% \fi
+% \ifENGLISH
+% Skip \prm{num} segments at the beginning of the beam path. 
+% \fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[morekeywords = {[21]{beampathskip}}, pos=t]
+\begin{pspicture}(5,2)
+\pnode(0,1){A}\pnode(5,1){B}\pnode(2,0){C}
+\begin{optexp}
+  \glanthompson(A)(B)
+  \optplane(B)\optplane[angle=90](C)
+  \polarization[abspos=1, poltype=misc, linecolor=yellow!80!black](A)(B)
+  \drawbeam[beaminsidelast, linecolor=yellow!80!black](A){1}
+  \drawbeam[beampathskip=2](A){1-2}
+  \drawbeam[beampathskip=2, savebeam, linestyle=dashed, dash=2pt 2pt, linecolor=red,arrowscale=1.5, arrows=->](A){1}{3}
+\end{optexp}
+\nodexn{(\oenodeBeam{})-1.5(!\oeBeamVec{})}{D}
+\polarization[poltype=parallel, linecolor=red](D)(\oenodeBeam{})
+\polarization[abspos=4, poltype=perp, linecolor=green, dotscale=1.5](A)(B)
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+% \end{optionlist}
+%
 % \ifGERMAN\subsection{Interner Strahlengang}\fi
 % \ifENGLISH\subsection{Internal beam path}\fi
 %
@@ -7099,7 +7129,7 @@
 % werden, kann mit mehreren Parametern festgelegt werden. Die erste, letzte und
 % die übrigen Komponenten werden separat gehandhabt.
 % \fi
-% 
+% \begin{optionlist}
 % \boolitem[true]{beaminside}
 % \ifGERMAN
 % Zeichnet den Strahlengang innerhalb aller Komponenten mit Ausnahme der
@@ -10917,6 +10947,7 @@
 %   \item Added component \cs{optarrowbox}\see{cmd:optarrowbox}
 %   \item Added component \cs{optbarbox}\see{cmd:optbarbox}
 %   \item Added option \opt{innercompalign}\see{prm:innercompalign}
+%   \item Added option \opt{beampathskip}\see{prm:beampathskip}
 %   \item Removed old, buggy beam connection code\see{sec:bwd-comp-4.0}
 %   \item Removed option \opt{conn}\see{sec:bwd-comp-4.0}
 %   \item Removed option \opt{connjoin}\see{sec:bwd-comp-4.0}
@@ -12779,8 +12810,8 @@
 \define@boolkey[psset]{optexp}[POE@]{forcebeaminside}[true]{}%
 \define@boolkey[psset]{optexp}[POE@]{raytrace}[true]{}%
 \define@boolkey[psset]{optexp}[POE@]{useNA}[true]{}%
-\define@key[psset]{optexp}{skipconn}{%
-  \pst@checknum{#1}\POE@key@skipconn
+\define@key[psset]{optexp}{beampathskip}{%
+  \pst@checknum{#1}\POE@key@beampathskip
 }%
 \define@choicekey+[psset]{optexp}{beamalign}%
   [\val\nr]{rel,abs,relative,absolute}%
@@ -12820,7 +12851,7 @@
   ,beamwidth=0
   ,beamdiv=0
   ,n=1.5
-  ,skipconn=0
+  ,beampathskip=0
   ,ArrowInsideMinLength=0.2
   ,ArrowInsideMaxLength=-1
 }%
@@ -13430,7 +13461,7 @@
        \else 
          relative
        \fi def
-     /skipconn \POE@key@skipconn\space def
+     /beampathskip \POE@key@beampathskip\space def
      /useNA \ifPOE@useNA true \else false \fi def
   }%
 }%
@@ -14003,6 +14034,7 @@
 % \subsection{Automatic connections}
 %
 % \begin{macro}{\POE@InternalWireConn}
+% Draw automatic wires for fiber and free-ray components.
 %    \begin{macrocode}
 \def\POE@InternalWireConn{%
   \ifPOE@wire@
@@ -14012,14 +14044,14 @@
       \fi
     \else\ifPOE@startbox
       \ifPOE@wireout@
-        \drawwire@{WireOut}(\oenodeRefB{}){}
+        \drawwire@{WireOut}{}(\oenodeRefB{})
       \fi
     \else
       \ifPOE@wirein@
         \drawwire@{WireIn}(\oenodeRefA{}){}
       \fi
       \ifPOE@wireout@
-        \drawwire@{WireOut}(\oenodeRefB{}){}
+        \drawwire@{WireOut}{}(\oenodeRefB{})
       \fi
     \fi\fi
   \fi
@@ -14027,6 +14059,7 @@
 %    \end{macrocode}
 % \end{macro}
 % \begin{macro}{\POE@PresetWireConn}
+% Draw automatic wires for electrical components.
 %    \begin{macrocode}
 \def\POE@PresetWireConn{%
   \ifPOE@wirepreset@
@@ -14036,23 +14069,23 @@
       \fi
     \else\ifPOE@startbox
       \ifPOE@wirepresetout@
-        \drawwire@{WireOut}(\oenodeRefB{}){}
+        \drawwire@{WireOut}{}(\oenodeRefB{})
       \fi
     \else
       \ifPOE@wirepresetin@
         \drawwire@{WireIn}(\oenodeRefA{}){}
       \fi
       \ifPOE@wirepresetout@
-        \drawwire@{WireOut}(\oenodeRefB{}){}
+        \drawwire@{WireOut}{}(\oenodeRefB{})
       \fi
     \fi\fi
   \fi
 }%
 %    \end{macrocode}
 % \end{macro}
-% \begin{macro}{\POE@FiberComp@InternalConn}
+% \begin{macro}{\POE@PresetFiberConn}
 %    \begin{macrocode}
-\def\POE@FiberComp@InternalConn{%
+\def\POE@PresetFiberConn{%
   \ifPOE@fiberpreset@
     \ifPOE@endbox
       \ifPOE@fiberpresetin@
@@ -14076,9 +14109,32 @@
 }%
 %    \end{macrocode}
 % \end{macro}
-% \begin{macro}{\POE@drawInternalConnections}
+% \begin{macroc}{\POE@InternalFiberConn}
+\def\POE@InternalFiberConn{%
+  \ifPOE@fiber@
+    \ifPOE@endbox
+      \ifPOE@fiberin@
+        \drawfiber@{FiberIn}(\oenodeRefA{}){}
+      \fi
+    \else\ifPOE@startbox
+      \ifPOE@fiberout@
+        \drawfiber@{FiberOut}{}(\oenodeRefB{})
+      \fi
+    \else
+      \ifPOE@fiberin@
+        \drawfiber@{FiberIn}(\oenodeRefA{}){}
+      \fi
+      \ifPOE@fiberout@
+        \drawfiber@{FiberOut}{}(\oenodeRefB{})
+      \fi
+    \fi\fi
+  \fi
+}%
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\POE@InternalConn}
 %    \begin{macrocode}
-\def\POE@drawInternalConnections{%
+\def\POE@InternalConn{%
   \ifPOE@beam
     \ifPOE@endbox
       \drawbeam[raytrace=false](\oenodeRefA{}){}
@@ -14088,45 +14144,10 @@
       \drawbeam[raytrace=false](\oenodeRefA{}){}(\oenodeRefB{})
     \fi\fi
   \else\ifPOE@fiber@
-%    \end{macrocode}
-% This is equivalent to the code in \cs{POE@drawPresetFibers}.
-%    \begin{macrocode}
-    \ifPOE@endbox
-      \ifPOE@fiberin@
-        \drawfiber@{FiberIn}(\oenodeRefA{}){}
-      \fi
-    \else\ifPOE@startbox
-      \ifPOE@fiberout@
-        \drawfiber@{FiberOut}{}(\oenodeRefB{})
-      \fi
-    \else
-      \ifPOE@fiberin@
-        \drawfiber@{FiberIn}(\oenodeRefA{}){}
-      \fi
-      \ifPOE@fiberout@
-        \drawfiber@{FiberOut}{}(\oenodeRefB{})
-      \fi
-    \fi\fi
+    \POE@InternalFiberConn
   \else
     \POE@InternalWireConn
   \fi\fi
-}%
-%    \end{macrocode}
-% \end{macro}
-%
-% \section{General purpose macros}
-%
-% \begin{macro}{\defShiftedNode}
-%   This is provided only for backward compatibility, and should be replaced by
-%   \cs{nodexn}.
-%    \begin{macrocode}
-\def\defShiftedNode(#1)(#2)#3{%
-  \PackageWarning{pst-optexp}{%
-    \string\defShiftedNode\space is deprecated,\MessageBreak
-    use \string\nodexn\space(pst-node) instead.}%
-  \pst@getcoor{#1}\pst@tempa%
-  \pst@getcoor{#2}\pst@tempb%
-  \pnode(! \pst@tempb \pst@tempa \POE@dict{VecAdd} \tx@UserCoor){#3}%
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -14628,7 +14649,7 @@
         \POE@drawcomponent{#2}{##3}
         \ifPOE@backlayer
           \POE@Verb{ (1) (N) (\oenode{}{}) CorrectDipoleIfc }%
-          \POE@drawInternalConnections
+          \POE@InternalConn
         \fi
       \end@OptexpDipole
     }%
@@ -14662,7 +14683,7 @@
         \POE@drawcomponent{#2}{##3}
         \ifPOE@backlayer
           \POE@Verb{ (1) (N) (\oenode{}{}) CorrectDipoleIfc }%
-          \POE@FiberComp@InternalConn
+          \POE@PresetFiberConn
         \fi
         \end@OptexpDipole
       }%
@@ -14696,7 +14717,7 @@
         \fi
         \POE@drawcomponent{#2}{##4}
         \ifPOE@backlayer
-          \POE@drawInternalConnections
+          \POE@InternalConn
         \fi
       \end@OptexpTripole
     }%
@@ -15025,7 +15046,7 @@
           \fi
           \ifnum\POE@key@fiberboxcountout=1
             \ifPOE@wireout@
-              \drawwire@{WireOut}(#2){}
+              \drawwire@{WireOut}{}(#2)
             \fi
           \fi
         \fi\fi
@@ -15062,10 +15083,10 @@
           \fi
           \ifPOE@wireout@
             \ifPOE@wireout@top
-              \drawwire@{WireOut1}(#3){}
+              \drawwire@{WireOut1}{}(#3)
             \fi
             \ifPOE@wireout@bottom
-              \drawwire@{WireOut2}(#4){}
+              \drawwire@{WireOut2}{}(#4)
             \fi
           \fi
         \fi\fi
@@ -15370,7 +15391,7 @@
       \def\optdipole@comp{#3}%
       \POE@drawcomponent{optdipole}{#4}
       \ifPOE@backlayer
-        \POE@drawInternalConnections
+        \POE@InternalConn
       \fi
    \end@OptexpObj
 }%
@@ -15407,7 +15428,7 @@
     \def\opttripole@comp{#4}%
     \POE@drawcomponent{opttripole}{#5}
     \ifPOE@backlayer
-      \POE@drawInternalConnections
+      \POE@InternalConn
     \fi
   \end@OptexpTripole
 }%
@@ -17427,10 +17448,10 @@
         \fi
         \ifPOE@wirepresetout@
           \ifPOE@wirepresetout@top
-            \drawwire@{WireOut1}[stopnode=N](#2){}
+            \drawwire@{WireOut1}[startnode=N]{}(#2)
           \fi
           \ifPOE@wirepresetout@bottom
-            \drawwire@{WireOut2}[stopnode=2, wirealign=center](#3){}
+            \drawwire@{WireOut2}[startnode=2, wirealign=center]{}(#3)
           \fi
         \fi
       \fi
@@ -17509,29 +17530,29 @@
       \ifPOE@wirepreset@
         \ifPOE@wirepresetin@
           \ifPOE@wirepresetin@top
-            \drawwire[stopnode=1](#1){}
+            \drawwire@{WireIn1}[stopnode=1](#1){}
           \fi
           \ifPOE@wirepresetin@bottom
             \ifx\POE@key@eleccouplertype\POE@str@eleccouplertype@directional
               \ifx\POE@key@eleccouplerinput\POE@str@left\else
-                \drawwire[stopnode=2](#2){}
+                \drawwire@{WireIn2}[stopnode=2](#2){}
               \fi
             \else
-              \drawwire[stopnode=2](#2){}
+              \drawwire@{WireIn2}[stopnode=2](#2){}
             \fi
           \fi
         \fi
         \ifPOE@wirepresetout@
           \ifPOE@wirepresetout@top
-            \drawwire[stopnode=3](#3){}
+            \drawwire@{WireOut1}[startnode=3]{}(#3)
           \fi
           \ifPOE@wirepresetout@bottom
             \ifx\POE@key@eleccouplertype\POE@str@eleccouplertype@directional
               \ifx\POE@key@eleccouplerinput\POE@str@left
-                \drawwire[stopnode=N](#4){}
+                \drawwire@{WireOut2}[startnode=N]{}(#4)
               \fi
             \else
-              \drawwire[stopnode=N](#4){}
+              \drawwire@{WireOut2}[stopnode=N]{}(#4)
             \fi
           \fi
         \fi
@@ -17585,12 +17606,12 @@
          (!\POE@dict{@@x 0.7 mul @@y0 @@sep add @@y 0.15 mul sub})%
   \psline(!\POE@dict{@@x 0.7 mul  @@y0 @@sep sub @@y 0.15 mul add})%
          (!\POE@dict{@@x -0.7 mul @@y0 @@sep add @@y 0.15 mul sub})%
-  \psline[style=Wire](\oenodeIfc{1}{})(\oenodeIfc{3}{})
+  \psline[style=Wire, arrows=-](\oenodeIfc{1}{})(\oenodeIfc{3}{})
   \ifx\POE@key@eleccouplertype\POE@str@eleccouplertype@directional
     \ifx\POE@key@eleccouplerinput\POE@str@left
-      \psline[style=Wire]([Xnodesep=-0.1]\oenodeIfc{2}{})(\oenodeIfc{N}{})
+      \psline[style=Wire, arrows=-]([Xnodesep=-0.1]\oenodeIfc{2}{})(\oenodeIfc{N}{})
     \else
-      \psline[style=Wire](\oenodeIfc{2}{})([Xnodesep=0.1]\oenodeIfc{N}{})
+      \psline[style=Wire, arrows=-](\oenodeIfc{2}{})([Xnodesep=0.1]\oenodeIfc{N}{})
     \fi
     \pscustom[style=OptComp]{%
       \moveto(!\POE@dict{@@x 0.15 add
@@ -17605,7 +17626,7 @@
       \rlineto(0,-0.04)
     }%
   \else
-    \psline[style=Wire](\oenodeIfc{2}{})(\oenodeIfc{N}{})
+    \psline[style=Wire, arrows=-](\oenodeIfc{2}{})(\oenodeIfc{N}{})
   \fi
 }%
 %    \end{macrocode}
@@ -18857,7 +18878,7 @@ tx@OptexpDict begin
     } ifelse
     2 copy
     ToVec /Curr ED 
-    draw PN skipconn 1 add gt and
+    draw PN beampathskip 1 add gt and
     counttomark 3 roll
     /PrevCenter /CurrCenter load def
     /lastBeamPointTmp /Curr load def
@@ -19016,7 +19037,7 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % \PSvar{draw} indicates if the beam to the current interface should be drawn.
 %    \begin{macrocode}
-    PN skipconn 1 add gt and /draw ED
+    PN beampathskip 1 add gt and /draw ED
 %    \end{macrocode}
 % \PSvar{Mode} stores the mode (transmittive or reflective) of the current interface.
 %    \begin{macrocode}
