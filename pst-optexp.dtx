@@ -16645,7 +16645,11 @@
   \edef\@ang{\POE@key@prismangle\space 0.5 mul\space}%
   \edef\@hshift{%
     \ifx\POE@key@prismalign\POE@str@auto
-      \@sz 0.6 mul \@ang tan mul \POE@dict{OEangle} 0.5 mul tan div 
+      \POE@dict{OEangle} 1e-5 lt {
+        0
+      } {
+        \@sz 0.6 mul \@ang tan mul \POE@dict{OEangle} 0.5 mul tan div 
+      } ifelse
     \else
       0
     \fi
@@ -16670,7 +16674,11 @@
   \edef\@altan{\POE@key@prismangle\space 0.5 mul tan }%
   \edef\@hshift{%
     \ifx\POE@key@prismalign\POE@str@auto
-      \@sz 0.6 mul \@altan mul \POE@dict{OEangle} 0.5 mul tan div 
+      \POE@dict{OEangle} 1e-5 lt {
+        0
+       } {
+        \@sz 0.6 mul \@altan mul \POE@dict{OEangle} 0.5 mul tan div 
+       } ifelse
     \else
       0
     \fi
@@ -18655,6 +18663,12 @@ tx@OptexpDict begin
 % If the ambiguous component has only one interface, there exists no internal beam
 %    \begin{macrocode}
   1 eq { /draw true def } if
+%    \end{macrocode}
+% \PSvar{CurrTmp} is the current point of the beam on the interface
+% prior to the ambiguos component, \PSvar{CurrVecTmp} its outgoing
+% vector. For wide beams, the lower ray is used. These vectors will be
+% changed inside this procedure.
+%    \begin{macrocode}
   currentdict /Curr known {
     /CurrTmp /Curr load def
     /CurrVecTmp /CurrVec load def
@@ -18662,14 +18676,10 @@ tx@OptexpDict begin
     /CurrTmp /CurrLow load def
     /CurrVecTmp /CurrVecLow load def
   } ifelse
-%    \end{macrocode}
-% \PSvar{CurrTmp} is the current point of the beam on the interface prior to the
-% ambiguos component, \PSvar{CurrVecTmp} its outgoing vector. For wide beams,
-% the lower ray is used.
-%    \begin{macrocode}
   PN 1 eq {
 %    \end{macrocode}
-% If it is the first interface, the starting point is always the (C) plane
+% If it is the first interface, the starting point is always the (C)
+% plane, the mode is set arbitrarily to transmittive.
 %    \begin{macrocode}
     [ (C) name name GetRefIndex trans draw] cvx
 %    \end{macrocode}
@@ -18678,7 +18688,8 @@ tx@OptexpDict begin
     name /outToPlane load GetNextPlane
     dup 0 eq not {
 %    \end{macrocode}
-% If there is one, i.e. if \PSvar{GetNextPlane} leaves something not equal to \PSvar{0} on the stack, this is the plane.
+% If there is one, i.e. if \PSvar{GetNextPlane} leaves something not
+% equal to \PSvar{0} on the stack, this is the plane.
 %    \begin{macrocode}
       [ exch name bgRefIndex trans draw ] cvx exch
       /IfcCntTmp IfcCntTmp 1 add def
@@ -18686,33 +18697,39 @@ tx@OptexpDict begin
       pop
     } ifelse
   }{
+%    \end{macrocode}
+% It is not the first component, check which interface of the component
+% is the nearest one to the current beam point and save its name in
+% \PSvar{firstPlane}.
+%    \begin{macrocode}
     CurrTmp name GetNearestPlane dup /firstPlane ED
     name isAmbiguousIfc not {
 %    \end{macrocode}
-% The first interface is not the ambiguous one.
-%
-% check if mode is trans or refl
+% The first interface is not the ambiguous one, put it on the stack and
+% calculated the new beam vector.
 %    \begin{macrocode}
-      CurrVecTmp firstPlane name GetPlaneVec NormalVec
-      (C) name GetIfcCenter firstPlane name GetIfcCenter 
-      @ABVect 2 copy 6 2 roll DotProd 
-      0 lt { trans }{ refl } ifelse
-      3 1 roll ToVec /CurrVecTmp ED
+      firstPlane name
+      name firstPlane GetIfcMode
+      connectifc { bgRefIndex }{ name GetRefIndex } ifelse
+      CurrTmp CurrVecTmp
+      10 dict begin HandleInterface end pop 
+      ToVec /CurrVecTmp ED ToVec /CurrTmp ED
       [ firstPlane name
       connectifc {
         bgRefIndex
       }{
         name GetRefIndex
       } ifelse
+      name firstPlane GetIfcMode
 %    \end{macrocode}
 % always draw to first interface
 %    \begin{macrocode}
-      5 -1 roll true ] cvx
+      true ] cvx
       /IfcCntTmp IfcCntTmp 1 add def
     } if
     PN IfcCnt eq {
 %    \end{macrocode}
-% its the last comp, just put the center plane on the stack
+% Its the last comp, just put the ambiguous interface on the stack, the mode is irrelevant.
 %    \begin{macrocode}
       [ (C) name
       name GetRefIndex
@@ -18720,18 +18737,24 @@ tx@OptexpDict begin
       IfcCntTmp IfcCnt gt { exch } if
     }{
 %    \end{macrocode}
-% check the mode of the ambiguous interface
+% Otherwise put the ambiguous interface on the stack and check its mode.
 %    \begin{macrocode}
       [ (C) name
       name GetRefIndex
       CurrVecTmp (C) name GetPlaneVec NormalVec outToPlane 
       GetIfcCenter (C) name GetIfcCenter @ABVect DotProd
-      0 lt { trans } { refl } ifelse % mode
+      0 lt { trans } { refl } ifelse
+      dup 6 1 roll
 %    \end{macrocode}
 % if the ambiguous interface is the first, always draw to it
 %    \begin{macrocode}
       IfcCntTmp IfcCnt eq { true }{ draw } ifelse
-      ] cvx 
+      ] cvx
+      (C) name 4 -1 roll
+      connectifc { bgRefIndex }{ name GetRefIndex } ifelse
+      CurrTmp CurrVecTmp
+      10 dict begin HandleInterface end pop 
+      ToVec /CurrVecTmp ED ToVec /CurrTmp ED
 %    \end{macrocode}
 % now check which is the outgoing plane
 %    \begin{macrocode}
@@ -18762,8 +18785,9 @@ tx@OptexpDict begin
 /GetNextPlane {
   (GetNextPlane) DebugBegin
   2 copy (C) 3 -1 roll
-  GetIfcCenter 3 -1 roll exec GetIfcCenter 
-  4 2 roll 4 copy @ABVect /VecY ED /VecX ED 
+  GetIfcCenter 3 -1 roll
+  exec GetIfcCenter
+  4 2 roll 4 copy @ABVect ToVec /Vec ED
   @ABDist /centerDist ED
   /sprod 1 def
   /nextPlane 0 def
@@ -18774,8 +18798,8 @@ tx@OptexpDict begin
 %    \begin{macrocode}
    dup ambIfc eq not {
       3 copy 3 -1 roll 2 copy
-      GetPlaneVec VecX VecY 4 2 roll NormalVec 
-      VecX VecY DotProd dup sprod lt 5 2 roll
+      GetPlaneVec Vec 4 2 roll NormalVec 
+      Vec DotProd dup sprod lt 5 2 roll
       GetIfcCenter 3 -1 roll exec GetIfcCenter @ABDist 
       centerDist lt and
       { /sprod ED /nextPlane ED } { pop pop } ifelse
@@ -19656,6 +19680,18 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % \end{macro}
 % 
+% \begin{macro}{GetIfcMode}
+%   \begin{pssyntax}
+%     \PSstring{name} \PSvar{num} \PSop{GetIfcMode} \PSvar{mode}
+%   \end{pssyntax}
+%    \begin{macrocode}
+/GetIfcMode {
+  exch cvn load begin
+    IfcName load /mode get
+  end
+} bind def
+%    \end{macrocode}
+% \end{macro}
 % \begin{macro}{NodeName}
 % Construct the plane name from IfcNum. This must be called within a dict of a
 % optexpcomp, because the last node ends with (N) instead of the number and we must
