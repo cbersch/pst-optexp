@@ -113,8 +113,8 @@
     optripole, optfiber, optamp, optmzm, optfilter, polcontrol,
     optisolator, optswitch, fiberdelayline, optfiberpolarizer,
     fibercollimator, optcoupler, wdmcoupler, wdmsplitter, optcirculator,
-    fiberbox, eleccoupler, elecsynthesizer, elecmixer, optarrowbox,
-    optbarbox,
+    fiberbox, eleccoupler, elecsynthesizer, elecmixer, optarrowcomp,
+    optbarcomp,
     drawbeam, drawwidebeam, drawfiber, drawwire, frontlayer, backlayer,
     newOptexpDipole, newOptexpTripole, newOptexpFiberDipole,optplane}, %
   explpreset={%
@@ -2833,17 +2833,17 @@
 % \fi
 % \end{optionlist}
 %
-% \ifGERMAN\section{Pfeilbox}\fi
-% \ifENGLISH\section{Arrow box}\fi
+% \ifGERMAN\section{Pfeilkomponente}\fi
+% \ifENGLISH\section{Arrow component}\fi
 % 
 % \begin{ltxsyntax}
-% \dipoledesc{optarrowbox}
+% \dipoledesc{optarrowcomp}
 % \iffalse
 %<*ignore>
 % \fi
 \begin{LTXexample}
 \begin{pspicture}(3,2)
-  \optarrowbox[wire](0,0)(3,2){box}
+  \optarrowcomp[wire](0,0)(3,2){box}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -2852,24 +2852,37 @@
 % \end{ltxsyntax}
 % 
 % \begin{optionlist}
-% \numitem[1.4]{arrowboxwidth}
+% \numitem[1.4]{arrowcompwidth}
 % \ifGERMAN Die Breite der Box.\fi
 % \ifENGLISH The width of the box.\fi
 %
-% \numitem[0.8]{arrowboxheight}
-% \ifGERMAN Die Höhe der Box.\fi
-% \ifENGLISH The height of the box.\fi
+% \numitem[0.8]{arrowcompheight}
+% \ifGERMAN Die Höhe der Komponente.\fi
+% \ifENGLISH The height of the Komponente.\fi
 %
-% \optitem{arrowboxsize}{\prm{width} \prm{height}}
-% \ifGERMAN Die Breite und Höhe der Box, äquivalent zum Aufruf von
-% \Lkeyword{arrowboxwidth} und \Lkeyword{arrowboxheight}.
+% \optitem{arrowcompsize}{\prm{width} \prm{height}}
+% \ifGERMAN Die Breite und Höhe der Komponente, äquivalent zum Aufruf von
+% \Lkeyword{arrowcompwidth} und \Lkeyword{arrowcompheight}.
 % \fi
-% \ifENGLISH The width and height of the box, is equivalent to calling both
-% \Lkeyword{arrowboxwidth} and \Lkeyword{arrowboxheight}.
+% \ifENGLISH The width and height of the component, is equivalent to calling both
+% \Lkeyword{arrowcompwidth} and \Lkeyword{arrowcompheight}.
+% \fi
+%
+% \choitem[rectangle]{arrowcompshape}{rectangle, circle}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(3,1)
+  \optarrowcomp[arrowcompshape=circle, wire](0,0.5)(3,0.5)
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
 % \fi
 % \end{optionlist}
 % \begin{stylelist}
-% \styleitem[arrowinset=0, arrows=->]{ArrowBoxStyle} 
+% \styleitem[arrowinset=0, arrows=->]{ArrowCompStyle} 
 % \ifGERMAN 
 % Der Stil für den Pfeil. Das kann insbesonders nützlich sein um die
 % Länge und Ausrichtung des Pfeils zu verändern.
@@ -2881,10 +2894,10 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}[morekeywords={[21]ArrowBoxStyle}]
+\begin{LTXexample}[morekeywords={[21]ArrowCompStyle}]
 \begin{pspicture}(3,1.5)
-  \addtopsstyle{ArrowBoxStyle}{xunit=-1}
-  \optarrowbox[fiber](0,1)(3,1){delay line}
+  \addtopsstyle{ArrowCompStyle}{xunit=-1}
+  \optarrowcomp[fiber](0,1)(3,1){delay line}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -2896,13 +2909,13 @@
 % \ifENGLISH\section{Bar box}\fi
 % 
 % \begin{ltxsyntax}
-% \dipoledesc{optbarbox}
+% \dipoledesc{optbarcomp}
 % \iffalse
 %<*ignore>
 % \fi
 \begin{LTXexample}
 \begin{pspicture}(3,2)
-  \optbarbox[fiber](0,0)(3,2){box}
+  \optbarcomp[fiber](0,0)(3,2){box}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -2911,24 +2924,37 @@
 % \end{ltxsyntax}
 % 
 % \begin{optionlist}
-% \numitem[1.4]{barboxwidth}
+% \numitem[1.4]{barcompwidth}
 % \ifGERMAN Die Breite der Box.\fi
 % \ifENGLISH The width of the box.\fi
 %
-% \numitem[0.8]{barboxheight}
+% \numitem[0.8]{barcompheight}
 % \ifGERMAN Die Höhe der Box.\fi
 % \ifENGLISH The height of the box.\fi
 %
-% \optitem{barboxsize}{\prm{width} \prm{height}}
+% \optitem{barcompsize}{\prm{width} \prm{height}}
 % \ifGERMAN Die Breite und Höhe der Box, äquivalent zum Aufruf von
-% \Lkeyword{barboxwidth} und \Lkeyword{barboxheight}.
+% \Lkeyword{barcompwidth} und \Lkeyword{barcompheight}.
 % \fi
 % \ifENGLISH The width and height of the box, is equivalent to calling both
-% \Lkeyword{barboxwidth} and \Lkeyword{barboxheight}.
+% \Lkeyword{barcompwidth} and \Lkeyword{barcompheight}.
+% \fi
+%
+% \choitem[rectangle]{barcompshape}{rectangle, circle}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(3,1)
+  \optbarcomp[barcompshape=circle, fiber](0,0.5)(3,0.5)
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
 % \fi
 % \end{optionlist}
 % \begin{stylelist}
-%   \styleitem{BarBoxStyle}
+%   \styleitem{BarCompStyle}
 % \end{stylelist}
 %
 %
@@ -4425,10 +4451,10 @@
 % \begin{stylelist}
 % \styleitem[arrowinset=0, arrows=->]{FdlArrow} 
 % \ifGERMAN 
-% Siehe \Lstyle{ArrowBoxStyle}.
+% Siehe \Lstyle{ArrowCompStyle}.
 % \fi
 % \ifENGLISH 
-% See \Lstyle{ArrowBoxStyle}.
+% See \Lstyle{ArrowCompStyle}.
 % \fi
 % \end{stylelist}
 % 
@@ -9487,7 +9513,7 @@
 \optdetector(Lin)(Det){OSA}
 \pnode([Xnodesep=-0.5,offset=-1]\oenodeExt{L}){Osc}
 \elecsynthesizer[wire=none](Osc)(\oenodeExt{EAM}|Osc){10\,GHz}
-\optarrowbox[arrowboxsize=0.8 0.6, arrowscale=1.5](Osc)(\oenodeExt{EAM}|Osc){$\tau$}
+\optarrowcomp[arrowcompsize=0.8 0.6, arrowscale=1.5](Osc)(\oenodeExt{EAM}|Osc){$\tau$}
 \drawfiber{1}{2}{3}{4}
 \addtopsstyle{Wire}{arrows=->, arrowinset=0, arrowscale=1.5}
 \drawwire{5}{6}\psset[optexp]{wireangleB=90}
@@ -10944,8 +10970,8 @@
 %   \item Added electrical components \cs{eleccoupler}, \cs{elecmixer},
 %     \cs{elecsynthesizer}\see{sec:electrcomp}
 %   \item Added wire connections with \cs{drawwire}\see{sec:drawwire}
-%   \item Added component \cs{optarrowbox}\see{cmd:optarrowbox}
-%   \item Added component \cs{optbarbox}\see{cmd:optbarbox}
+%   \item Added component \cs{optarrowcomp}\see{cmd:optarrowcomp}
+%   \item Added component \cs{optbarcomp}\see{cmd:optbarcomp}
 %   \item Added option \opt{innercompalign}\see{prm:innercompalign}
 %   \item Added option \opt{beampathskip}\see{prm:beampathskip}
 %   \item Removed old, buggy beam connection code\see{sec:bwd-comp-4.0}
@@ -11372,6 +11398,8 @@
 \def\POE@str@auto{auto}
 \def\POE@str@verbose{verbose}
 \def\POE@str@quiet{quiet}
+\def\POE@str@circle{circle}
+\def\POE@str@rectangle{rectangle}
 \def\POE@str@reflective{reflective}
 \def\POE@str@transmittive{transmittive}
 \def\POE@Verb#1{\pst@Verb{\pst@optexpdict #1 end }}%
@@ -11959,45 +11987,59 @@
 %    \end{macrocode}
 % arrowbox
 %    \begin{macrocode}
-\define@key[psset]{optexp}{arrowboxwidth}{%
-  \pst@checknum{#1}\POE@key@arrowboxwidth
+\define@key[psset]{optexp}{arrowcompwidth}{%
+  \pst@checknum{#1}\POE@key@arrowcompwidth
 }
-\define@key[psset]{optexp}{arrowboxheight}{%
-  \pst@checknum{#1}\POE@key@arrowboxheight
+\define@key[psset]{optexp}{arrowcompheight}{%
+  \pst@checknum{#1}\POE@key@arrowcompheight
 }
-\define@key[psset]{optexp}{arrowboxsize}{%
-  \pst@expandafter\POE@psset@@arrowboxsize{#1} {} {} {}\@nil
+\define@key[psset]{optexp}{arrowcompsize}{%
+  \pst@expandafter\POE@psset@@arrowcompsize{#1} {} {} {}\@nil
 }%
-\def\POE@psset@@arrowboxsize#1 #2 #3\@nil{%
+\def\POE@psset@@arrowcompsize#1 #2 #3\@nil{%
   \ifx\\#2\\%
     \PackageWarning{pst-optexp}{%
-      Parameter 'arrowboxsize' requires two numbers.}%
+      Parameter 'arrowcompsize' requires two numbers.}%
   \fi
-  \psset[optexp]{arrowboxwidth=#1, arrowboxheight=#2}%
+  \psset[optexp]{arrowcompwidth=#1, arrowcompheight=#2}%
 }%
-\psset[optexp]{arrowboxsize=1.4 0.8}%
-\newpsstyle{ArrowBoxStyle}{arrowinset=0, arrows=->}%
+\define@choicekey+[psset]{optexp}{arrowcompshape}%
+  [\val\nr]{circle, rectangle}%
+  {\edef\POE@key@arrowcompshape{#1}}%
+  {\PackageError{pst-optexp}{Unknown value '\val' for arrowcompshape}}
+\psset[optexp]{%
+  arrowcompsize=1.4 0.8,
+  arrowcompshape=rectangle
+}%
+\newpsstyle{ArrowCompStyle}{arrowinset=0, arrows=->}%
 %    \end{macrocode}
 % BarBox
 %    \begin{macrocode}
-\define@key[psset]{optexp}{barboxwidth}{%
-  \pst@checknum{#1}\POE@key@barboxwidth
+\define@key[psset]{optexp}{barcompwidth}{%
+  \pst@checknum{#1}\POE@key@barcompwidth
 }
-\define@key[psset]{optexp}{barboxheight}{%
-  \pst@checknum{#1}\POE@key@barboxheight
+\define@key[psset]{optexp}{barcompheight}{%
+  \pst@checknum{#1}\POE@key@barcompheight
 }
-\define@key[psset]{optexp}{barboxsize}{%
-  \pst@expandafter\POE@psset@@barboxsize{#1} {} {} {}\@nil
+\define@key[psset]{optexp}{barcompsize}{%
+  \pst@expandafter\POE@psset@@barcompsize{#1} {} {} {}\@nil
 }%
-\def\POE@psset@@barboxsize#1 #2 #3\@nil{%
+\def\POE@psset@@barcompsize#1 #2 #3\@nil{%
   \ifx\\#2\\%
     \PackageWarning{pst-optexp}{%
-      Parameter 'barboxsize' requires two numbers.}%
+      Parameter 'barcompsize' requires two numbers.}%
   \fi
-  \psset[optexp]{barboxwidth=#1, barboxheight=#2}%
+  \psset[optexp]{barcompwidth=#1, barcompheight=#2}%
 }%
-\psset[optexp]{barboxsize=1.4 0.8}%
-\newpsstyle{BarBoxStyle}{}%
+\define@choicekey+[psset]{optexp}{barcompshape}%
+  [\val\nr]{circle, rectangle}%
+  {\edef\POE@key@barcompshape{#1}}%
+  {\PackageError{pst-optexp}{Unknown value '\val' for barcompshape}}
+\psset[optexp]{%
+  barcompsize=1.4 0.8,
+  barcompshape=rectangle
+}%
+\newpsstyle{BarCompStyle}{}%
 %    \end{macrocode}
 %
 % Plate
@@ -17123,52 +17165,86 @@
 %    \begin{macrocode}
 \def\fiberdelayline@comp{%
   \begingroup
-    \def\pscs@ArrowBoxStyle{\pscs@FdlArrow}
-    \optarrowbox@comp
+    \def\pscs@ArrowCompStyle{\pscs@FdlArrow}
+    \optarrowcomp@comp
   \endgroup
 \ignorespaces}%
 %    \end{macrocode}
 % \end{macro}
 % 
 %    \begin{macrocode}
-\newOptexpDipole{optarrowbox}{}
-\def\optarrowbox@ref{%
+\newOptexpDipole{optarrowcomp}{}
+\def\optarrowcomp@ref{%
   \POE@setref{%
-    /@@x \POE@key@arrowboxwidth\space 0.5 mul def
-    /@@y \POE@key@arrowboxheight\space 0.5 mul def
+    \ifx\POE@key@arrowcompshape\POE@str@rectangle
+      /@@x \POE@key@arrowcompwidth\space 0.5 mul def
+      /@@y \POE@key@arrowcompheight\space 0.5 mul def
+    \else
+      \POE@key@arrowcompwidth\space\POE@key@arrowcompheight\space
+      min 0.5 mul dup /@@x ED /@@y ED
+    \fi
   }%
 }%
-\def\optarrowbox@comp{%
-  \POE@comp@rectangle
-  \begingroup
-    \psset{style=ArrowBoxStyle}
-    \use@par
-    \pst@expandafter\POE@get@yarrowscale{\psk@arrowscale}\@nil
-    \def\@arrowshift{%
-      \psk@arrowlength\space \psk@arrowsize\space
-      \pst@number\pslinewidth\space mul add mul 
-      \POE@tempA mul 
-      @@y 2.9 mul @@x 0.6 mul atan 2 copy cos mul 3 1 roll sin mul 
-      \tx@UserCoor abs exch abs exch\space
-    }%
-    \psline(! \POE@dict{@@x -0.4 mul @@y -1.6 mul})%
-           (! \POE@dict{@@x 0.2 mul @@y 1.3 mul \@arrowshift VecAdd})
-  \endgroup
+\def\optarrowcomp@comp{%
+  \ifx\POE@key@arrowcompshape\POE@str@rectangle
+    \POE@comp@rectangle
+    \begingroup
+      \psset{style=ArrowCompStyle}
+      \use@par
+      \pst@expandafter\POE@get@yarrowscale{\psk@arrowscale}\@nil
+      \def\@arrowshift{%
+        \psk@arrowlength\space \psk@arrowsize\space
+        \pst@number\pslinewidth\space mul add mul 
+        \POE@tempA mul 
+        @@y 2.9 mul @@x 0.6 mul atan 2 copy cos mul 3 1 roll sin mul 
+        \tx@UserCoor abs exch abs exch\space
+      }%
+      \psline(! \POE@dict{@@x -0.4 mul @@y -1.6 mul})%
+             (! \POE@dict{@@x 0.2 mul @@y 1.3 mul \@arrowshift VecAdd})
+    \endgroup
+  \else
+    \pscircle(!\POE@dict{@@x0 @@y0}){!\POE@dict{@@x}}
+    \begingroup
+      \psset{style=ArrowCompStyle}
+      \use@par
+      \pst@expandafter\POE@get@yarrowscale{\psk@arrowscale}\@nil
+      \def\@arrowshift{%
+        \psk@arrowlength\space \psk@arrowsize\space
+        \pst@number\pslinewidth\space mul add mul 
+        \POE@tempA mul 
+        @@y 2 mul @@x 2 mul atan 2 copy cos mul 3 1 roll sin mul 
+        \tx@UserCoor abs exch abs exch\space
+      }%
+      \psline(! \POE@dict{@@x neg @@x neg \@arrowshift -0.5 VecScale VecAdd })%
+             (! \POE@dict{@@x @@y \@arrowshift VecAdd})
+    \endgroup
+  \fi
 \ignorespaces}%
 %    \end{macrocode}
 %
 %    \begin{macrocode}
-\newOptexpDipole{optbarbox}{}
-\def\optbarbox@ref{%
+\newOptexpDipole{optbarcomp}{}
+\def\optbarcomp@ref{%
   \POE@setref{%
-    /@@x \POE@key@barboxwidth\space 0.5 mul def
-    /@@y \POE@key@barboxheight\space 0.5 mul def
+    \ifx\POE@key@barcompshape\POE@str@rectangle
+      /@@x \POE@key@barcompwidth\space 0.5 mul def
+      /@@y \POE@key@barcompheight\space 0.5 mul def
+    \else
+      \POE@key@barcompwidth\space\POE@key@barcompheight\space
+      min 0.5 mul dup /@@x ED /@@y ED
+    \fi
   }%
 }%
-\def\optbarbox@comp{%
-  \POE@comp@rectangle
-  \psline[style=BarBoxStyle](!\POE@dict{@@x -0.2 mul @@y neg})%
-                            (!\POE@dict{@@x 0.2 mul @@y})
+\def\optbarcomp@comp{%
+  \ifx\POE@key@barcompshape\POE@str@rectangle
+    \POE@comp@rectangle
+    \psline[style=BarCompStyle](!\POE@dict{@@x -0.2 mul @@y neg})%
+                               (!\POE@dict{@@x 0.2 mul @@y})
+  \else
+    \pscircle(!\POE@dict{@@x0 @@y0}){!\POE@dict{@@x}}
+    \psline[style=BarCompStyle](!\POE@dict{@@x neg 2 sqrt div @@y neg 2 sqrt div})
+                               (!\POE@dict{@@x 2 sqrt div @@y 2 sqrt div})
+  \fi
 \ignorespaces}%
 %    \end{macrocode}
 %
