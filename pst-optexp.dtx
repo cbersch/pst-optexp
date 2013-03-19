@@ -2194,6 +2194,65 @@
 % \fi
 %
 % \numitem[0]{compoffset}
+% \ifGERMAN Verschiebt eine Komponente vertikal bezüglich ihrer Referenzlinie
+% (siehe \prettyref{sec:refnode}). Reflektive Komponenten werden entlang der
+% reflektiven Grenzfläche verschoben.
+% \fi
+% \ifENGLISH
+% Shift a component perpendicular to its reference line (see
+% \prettyref{sec:refnode}). For reflective components it is shifted along the
+% reflective interface.
+% \fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[linerange={1-3,9-9}, morekeywords={[21]{compshift}}]
+\begin{pspicture}(3,2)
+  \pnode(0,1){A}\pnode(2.7,1){B}
+  \lens[compoffset=0.3](A)(B){L}
+  \psline[style=Refline](\oenodeRefA{})(\oenodeRefB{})
+  \psdot(\oenodeRefA{})\uput[-90](\oenodeRefA{}){RefA}
+  \psdot(\oenodeRefB{})\uput[-90](\oenodeRefB{}){RefB}
+  \psdot[style=CenterNode](\oenodeIn{})
+  \psdot[style=CenterNode](\oenodeOut{})
+\end{pspicture}
+\end{LTXexample}
+\begin{LTXexample}[linerange={1-3,9-9}, morekeywords={[21]{compshift}}]
+\begin{pspicture}(3,2) 
+  \pnode(0,1){A}\pnode(2,0){B}
+  \mirror[compoffset=0.3](A)(2,1)(B){mirror}
+  \psline[style=Refline](\oenodeRefA{})(\oenodeRefB{}|\oenodeRefA{})(\oenodeRef{})
+  \psdot(\oenodeRefA{})\uput[-90](\oenodeRefA{}){RefA}
+  \psdot(\oenodeRefB{})\uput[180](\oenodeRefB{}){RefB}
+  \psdot[style=CenterNode](\oenodeIn{})
+  \psdot[style=CenterNode](\oenodeOut{})
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+% \choitem{innercompalign}{rel, relative, abs, absolute}
+% \ifGERMAN Ist dieser Parameter auf \opt{absolute} gesetzt, so wird das
+% «Innere» einer Komponente nicht mitgedreht. Diese Option wird derzeit
+% nur von \Lcs{optfilter} verwendet.
+% \fi
+% \ifENGLISH If this parameter is set to \opt{absolute}, the «inner»
+% component part is not rotated with the component. At the moment, this
+% option is used only by \Lcs{optfilter}. 
+% \fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(3,2)
+\psset[optexp]{labelangle=-90, position=start}
+\optfilter[innercompalign=rel](0.5,1.2)(0.5,2){rel}
+\optfilter[innercompalign=abs](2.5,1.2)(2.5,2){abs}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % \end{optionlist}
 %
 %
@@ -4928,8 +4987,13 @@
 % \fi
 %
 % \numitem[0]{filterangle}
-% \ifGERMAN Dreht das «Innere» des Filters relativ zum seinem Rahmen.\fi
-% \ifENGLISH Rotates the «inner» part of the filter relativ to its frame.\fi
+% \ifGERMAN Dreht das «Innere» des Filters relativ zum seinem
+% Rahmen. Anstattdessen kann auch \Lkeyword{innercompalign} verwendet
+% werden.
+% \fi
+% \ifENGLISH Rotates the «inner» part of the filter relativ to its
+% frame. Alternatively \Lkeyword{innercompalign} can be used.
+% \fi
 % \iffalse
 %<*ignore>
 % \fi
@@ -10569,6 +10633,7 @@
 %   \begin{release}{3.6}{2013-xx-xx}
 %   \item Added option \opt{compoffset}\see{prm:compoffset}
 %   \item Added option \opt{beampathskip}\see{prm:beampathskip}
+%   \item Added option \opt{innercompalign}\see{prm:innercompalign}
 %   \item Fixed some bugs in the raytracing code.
 %   \end{release}
 %   \begin{release}{3.5}{2013-02-22}
@@ -11089,11 +11154,24 @@
 \define@key[psset]{optexp}{compoffset}{%
   \pst@checknum{#1}\POE@key@compoffset
 }
+\define@choicekey+[psset]{optexp}{innercompalign}%
+  [\val\nr]{rel,abs,relative,absolute}%
+  {%
+    \ifcase\nr\relax
+      \let\POE@key@innercompalign\POE@str@relative
+    \or
+      \let\POE@key@innercompalign\POE@str@absolute
+    \else
+      \def\POE@key@innercompalign{#1}%
+    \fi
+  }%
+  {\PackageError{pst-optexp}{Unknown value '\val' for innercompalign}}%
 \psset[optexp]{%
   position={},
   abspos={},
   compshift=0,
   compoffset=0,
+  innercompalign=relative,
   angle=0
 }%
 %    \end{macrocode}
@@ -16185,9 +16263,17 @@
 %
 % \begin{macro}{\optfilter@ref}
 %    \begin{macrocode}
-\def\optfilter@ref{%
-  \POE@setref{\POE@key@filtersize\space 0.5 mul dup /@@y ED /@@x ED }%
-}%
+ \def\optfilter@ref{%
+  \POE@setref{%
+    \POE@key@filtersize\space 0.5 mul dup /@@y ED /@@x ED 
+    /@@ang 
+    \ifx\POE@key@innercompalign\POE@str@absolute
+      /N@\oenodeRefA{} /N@\oenodeRefB{} SlopeAngle \POE@key@angle sub
+    \else
+      \POE@key@filterangle
+    \fi def
+  }%
+ }%
 \let\optfilter@nodes\dipole@nodes
 %    \end{macrocode}
 % \end{macro}
@@ -16202,7 +16288,7 @@
       90 add cos 0.2 \@sz mul mul}%
   }%
   \psframe[dimen=outer](! \@sz neg dup)(! \@sz dup)
-  \psrotate(\oenodeCenter{}){\POE@key@filterangle}{%
+  \psrotate(\oenodeCenter{}){!\POE@dict{@@ang}}{%
   \psset{style=FilterStyle}%
     \ifx\POE@key@filtertype\POE@str@filtertype@bandpass
       \psline(! -0.3 \@sz mul -0.65 \@sz mul)%
