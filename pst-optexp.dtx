@@ -464,7 +464,7 @@
 % \DoNotIndex{\newcommand,\newenvironment,\def,\edef,\let,\if,\ifx,\else,\fi,\@ifnextchar}
 % \DoNotIndex{\space,\relax,\nr,\val,\ignorespaces,\ifdim,\ifcat,\@nil,\@none,\@empty}
 % \DoNotIndex{\PackageError,\PackageWarning,\advance,\csname,\endcsname,\bgroup,\egroup}
-% \DoNotIndex{\expandafter,\@@comp,\@postcode}
+% \DoNotIndex{\expandafter,\POE@comp,\@postcode}
 % \DoNotIndex{\psset}
 % \DoNotIndex{\@wd,\@sz,\@ht,\@yshift,\@step,\@xl,\@sep,\@r,\@dp,\@altan,\@extpostcode}
 % \DoNotIndex{\@f@cnt,\@f@r,\@f@sep,\@hshift,\@bs@wd,\@c@caxisL,\@cnt,\@pstfalse,\@psttrue}
@@ -13727,15 +13727,15 @@
 % \end{macro}
 %
 %    \begin{macrocode}
-\def\oe@BeamVec#1#2{%
+\def\POE@beamvec#1#2{%
   \POE@dict{%
     /prevVec#1\ifx\\#2\\1\else#2\fi\space dup
     currentdict exch known { load exec }{ pop 0 0 } ifelse
   }%
 }%
-\def\oeBeamVec#1{\oe@BeamVec{}{#1}}%
-\def\oeBeamVecUp#1{\oe@BeamVec{Up}{#1}}%
-\def\oeBeamVecLow#1{\oe@BeamVec{Low}{#1}}%
+\def\oeBeamVec#1{\POE@beamvec{}{#1}}%
+\def\oeBeamVecUp#1{\POE@beamvec{Up}{#1}}%
+\def\oeBeamVecLow#1{\POE@beamvec{Low}{#1}}%
 %    \end{macrocode}
 % \section{Components}
 %
@@ -13994,8 +13994,8 @@
 % \end{macro}
 %
 %    \begin{macrocode}
-\def\getCLWH{CLW \pst@number\psxunit 2 mul div }%
-\def\getCLW{CLW \pst@number\psxunit div }%
+\def\POE@clwh{CLW \pst@number\psxunit 2 mul div }%
+\def\POE@clw{CLW \pst@number\psxunit div }%
 \let\POE@restorerefnodes\relax
 %    \end{macrocode}
 % 
@@ -14966,7 +14966,7 @@
     {\POE@drawcomponent@i}{\POE@drawcomponent@i[]}%
 }%
 \def\POE@drawcomponent@i[#1]#2#3{%
-  \def\@@comp{%
+  \def\POE@comp{%
     #3%
     \ifx\POE@key@extnode\@empty\else
       \ifPOE@backlayer
@@ -15022,13 +15022,13 @@
 % Then check if absolute positioning with \opt{abspos} is wanted.
 %    \begin{macrocode}
       \ifx\POE@key@position\@empty
-        \ncput[nrot=:U,npos=]{\POE@putcomp{\@@comp}}%
+        \ncput[nrot=:U,npos=]{\POE@putcomp{\POE@comp}}%
       \else
-        \ncput[nrot=:U,npos=\POE@key@position]{\POE@putcomp{\@@comp}}%
+        \ncput[nrot=:U,npos=\POE@key@position]{\POE@putcomp{\POE@comp}}%
       \fi
     \else
       \POE@nlput[nrot=:U](\POE@refnodeA)(\POE@refnodeB)%
-        {\POE@key@abspos}{\POE@putcomp{\@@comp}}%
+        {\POE@key@abspos}{\POE@putcomp{\POE@comp}}%
     \fi
   \endgroup
   \ifPOE@backlayer
@@ -15316,7 +15316,7 @@
         (! \@ht neg 0)(! \@ht 0)
     \else
       \psline[linewidth=\POE@key@mirrorlinewidth]%
-        (! \@ht neg \getCLWH)(! \@ht \getCLWH)
+        (! \@ht neg \POE@clwh)(! \@ht \POE@clwh)
     \fi
   \else
 %    \end{macrocode}
@@ -15895,8 +15895,8 @@
       \pspolygon(! \@sz -0.2 mul \@sz -0.4 mul)%
                 (! \@sz 0.6 mul \@sz -0.4 mul)%
                 (! \@sz 0.2 mul \@sz 0.4 mul)%
-      \psline(! \@sz -0.2 mul \@sz 0.4 mul \getCLWH add)%
-             (! \@sz 0.6 mul \@sz 0.4 mul \getCLWH add)
+      \psline(! \@sz -0.2 mul \@sz 0.4 mul \POE@clwh add)%
+             (! \@sz 0.6 mul \@sz 0.4 mul \POE@clwh add)
       \psset{arrows=->, arrowinset=0, arrowscale=0.8}%
       \psline(! \@sz -0.8 mul \@sz 0.3 mul)%
              (! \@sz -0.3 mul \@sz 0.15 mul)%
@@ -15951,8 +15951,8 @@
    \pspolygon(! \@sz -0.2 mul \@sz -0.2 mul)
              (! \@sz -0.2 mul \@sz 0.2 mul)
              (! \@sz 0.2 mul 0)
-   \psline(! \@sz 0.2 mul \getCLWH add \@sz 0.2 mul)%
-          (! \@sz 0.2 mul \getCLWH add \@sz -0.2 mul)
+   \psline(! \@sz 0.2 mul \POE@clwh add \@sz 0.2 mul)%
+          (! \@sz 0.2 mul \POE@clwh add \@sz -0.2 mul)
 \ignorespaces}%
 %    \end{macrocode}
 % \end{macro}
@@ -16493,7 +16493,7 @@
 %    \end{macrocode}
 % storing the linewidth of the object allows for some aesthetic fine tuning 
 %    \begin{macrocode}
-  \pstVerb{tx@Dict begin /@lw \getCLW def end}%
+  \pstVerb{tx@Dict begin /@lw \POE@clw def end}%
   \bgroup
     \ifPOE@usefiberstyle
       \psset{style=Fiber, arrows=-, ArrowInside=-}
@@ -16862,8 +16862,8 @@
 \def\fibercollimator@comp{%
   \def\@wd{\POE@key@fibercolwidth\space 0.5 mul }%
   \def\@ht{\POE@key@fibercolheight\space 0.5 mul }%
-  \pspolygon(!\@wd neg \getCLWH add \@ht neg)%
-            (!\@wd 0)(!\@wd neg \getCLWH add \@ht)
+  \pspolygon(!\@wd neg \POE@clwh add \@ht neg)%
+            (!\@wd 0)(!\@wd neg \POE@clwh add \@ht)
 }%
 %    \end{macrocode}
 % \end{macro}
