@@ -76,6 +76,7 @@ $(PNG_TGT): %-01.png: %.pdf
 
 $(DIFF): diff/%-01.png: dev/%-01.png master/%-01.png | diff-dir
 	@for f in dev/$*-*.png; do f=$${f#*/}; \
+	  if [ ! -e master/$$f ]; then continue; fi; \
 	  composite master/$$f dev/$$f -compose MinusSrc diffsrc.png && \
 	  composite master/$$f dev/$$f -compose MinusDst diffdst.png && \
 	  composite diffsrc.png diffdst.png -compose Add diff/$$f && \
