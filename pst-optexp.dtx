@@ -18,7 +18,7 @@
 %<stylefile>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<stylefile>\ProvidesPackage{pst-optexp}
 %<*stylefile>
-    [2013/03/20 v3.6 Optical experimental setups with PSTricks]
+    [2013/03/20 v4.0alpha Optical experimental setups with PSTricks]
 %</stylefile>
 %
 %<*driver>
@@ -54,7 +54,6 @@
 \usepackage{nicefrac}
 \usepackage{pst-func}
 \usepackage{pst-optexp}
-\usepackage{pst-circ}
 \usepackage[makeindex]{splitidx}
 \usepackage{hypdoc}
 \hypersetup{%
@@ -114,7 +113,9 @@
     optripole, optfiber, optamp, optmzm, optfilter, polcontrol,
     optisolator, optswitch, fiberdelayline, optfiberpolarizer,
     fibercollimator, optcoupler, wdmcoupler, wdmsplitter, optcirculator,
-    fiberbox, drawbeam, drawwidebeam, drawfiber, frontlayer, backlayer,
+    fiberbox, eleccoupler, elecsynthesizer, elecmixer, optarrowcomp,
+    optbarcomp,
+    drawbeam, drawwidebeam, drawfiber, drawwire, frontlayer, backlayer,
     newOptexpDipole, newOptexpTripole, newOptexpFiberDipole,optplane}, %
   explpreset={%
     pos=l, width=-99pt, hsep=5mm, overhang=\codeoverhang, varwidth,
@@ -2253,20 +2254,20 @@
 % \choitem{innercompalign}{rel, relative, abs, absolute}
 % \ifGERMAN Ist dieser Parameter auf \opt{absolute} gesetzt, so wird das
 % «Innere» einer Komponente nicht mitgedreht. Diese Option wird derzeit
-% nur von \Lcs{optfilter} verwendet.
+% nur von \Lcs{optfilter} und \Lcs{elecsynthesizer} verwendet.
 % \fi
 % \ifENGLISH If this parameter is set to \opt{absolute}, the «inner»
 % component part is not rotated with the component. At the moment, this
-% option is used only by \Lcs{optfilter}. 
+% option is used by \Lcs{optfilter} and \Lcs{elecsynthesizer}. 
 % \fi
 % \iffalse
 %<*ignore>
 % \fi
 \begin{LTXexample}
 \begin{pspicture}(3,2)
-\psset[optexp]{labelangle=-90, position=start}
-\optfilter[innercompalign=rel](0.5,1.2)(0.5,2){rel}
-\optfilter[innercompalign=abs](2.5,1.2)(2.5,2){abs}
+\psset[optexp]{labelangle=-90}
+\elecsynthesizer[innercompalign=rel](0.5,1.2)(0.5,2){rel}
+\elecsynthesizer[innercompalign=abs](2.5,1.2)(2.5,2){abs}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -2837,6 +2838,130 @@
 % \Lkeyword{optboxwidth} and \Lkeyword{optboxheight}.
 % \fi
 % \end{optionlist}
+%
+% \ifGERMAN\section{Pfeilkomponente}\fi
+% \ifENGLISH\section{Arrow component}\fi
+% 
+% \begin{ltxsyntax}
+% \dipoledesc{optarrowcomp}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(3,2)
+  \optarrowcomp[wire](0,0)(3,2){box}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+% \end{ltxsyntax}
+% 
+% \begin{optionlist}
+% \numitem[1.4]{arrowcompwidth}
+% \ifGERMAN Die Breite der Box.\fi
+% \ifENGLISH The width of the box.\fi
+%
+% \numitem[0.8]{arrowcompheight}
+% \ifGERMAN Die Höhe der Komponente.\fi
+% \ifENGLISH The height of the Komponente.\fi
+%
+% \optitem{arrowcompsize}{\prm{width} \prm{height}}
+% \ifGERMAN Die Breite und Höhe der Komponente, äquivalent zum Aufruf von
+% \Lkeyword{arrowcompwidth} und \Lkeyword{arrowcompheight}.
+% \fi
+% \ifENGLISH The width and height of the component, is equivalent to calling both
+% \Lkeyword{arrowcompwidth} and \Lkeyword{arrowcompheight}.
+% \fi
+%
+% \choitem[rectangle]{arrowcompshape}{rectangle, circle}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(3,1)
+  \optarrowcomp[arrowcompshape=circle, wire](0,0.5)(3,0.5)
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+% \end{optionlist}
+% \begin{stylelist}
+% \styleitem[arrowinset=0, arrows=->]{ArrowCompStyle} 
+% \ifGERMAN 
+% Der Stil für den Pfeil. Das kann insbesonders nützlich sein um die
+% Länge und Ausrichtung des Pfeils zu verändern.
+% \fi
+% \ifENGLISH 
+% The style of the arrow. This can be especially useful to
+% adapt the length and orientation of the arrow.
+% \fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[morekeywords={[21]ArrowCompStyle}]
+\begin{pspicture}(3,1.5)
+  \addtopsstyle{ArrowCompStyle}{xunit=-1}
+  \optarrowcomp[fiber](0,1)(3,1){delay line}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+% \end{stylelist}
+%
+% \ifGERMAN\section{Bar Box}\fi
+% \ifENGLISH\section{Bar box}\fi
+% 
+% \begin{ltxsyntax}
+% \dipoledesc{optbarcomp}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(3,2)
+  \optbarcomp[fiber](0,0)(3,2){box}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+% \end{ltxsyntax}
+% 
+% \begin{optionlist}
+% \numitem[1.4]{barcompwidth}
+% \ifGERMAN Die Breite der Box.\fi
+% \ifENGLISH The width of the box.\fi
+%
+% \numitem[0.8]{barcompheight}
+% \ifGERMAN Die Höhe der Box.\fi
+% \ifENGLISH The height of the box.\fi
+%
+% \optitem{barcompsize}{\prm{width} \prm{height}}
+% \ifGERMAN Die Breite und Höhe der Box, äquivalent zum Aufruf von
+% \Lkeyword{barcompwidth} und \Lkeyword{barcompheight}.
+% \fi
+% \ifENGLISH The width and height of the box, is equivalent to calling both
+% \Lkeyword{barcompwidth} and \Lkeyword{barcompheight}.
+% \fi
+%
+% \choitem[rectangle]{barcompshape}{rectangle, circle}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(3,1)
+  \optbarcomp[barcompshape=circle, fiber](0,0.5)(3,0.5)
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+% \end{optionlist}
+% \begin{stylelist}
+%   \styleitem{BarCompStyle}
+% \end{stylelist}
 %
 %
 % \ifGERMAN\section{Kristall}\fi
@@ -3653,7 +3778,7 @@
 % \fi
 \begin{LTXexample}
 \begin{pspicture}(3,2)
-  \optgrating[beam](0,2)(1.8,1.5)(0,0){grating}
+  \optgrating[beam](0,2)(1.8,1.5)(0,0){G}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -3695,7 +3820,7 @@
 \begin{LTXexample}[morekeywords={[21]{gratingdepth}}]
 \begin{pspicture}(3,2)
   \optgrating[gratingdepth=0.05, 
-                beam](0,2)(1.8,1.5)(0,0){grating}
+                beam](0,2)(1.8,1.5)(0,0){G}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -3711,7 +3836,7 @@
 \begin{LTXexample}[morekeywords={[21]{gratingcount}}]
 \begin{pspicture}(3,2)
   \optgrating[gratingcount=3, 
-                beam](0,2)(1.8,1.5)(0,0){grating}
+                beam](0,2)(1.8,1.5)(0,0){G}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -3732,7 +3857,7 @@
 \begin{LTXexample}[morekeywords={[21]{gratingtype}}]
 \begin{pspicture}(3,2)
   \optgrating[gratingtype=binary, 
-                beam](0,2)(1.8,1.5)(0,0){grating}
+                beam](0,2)(1.8,1.5)(0,0){G}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -4331,26 +4456,10 @@
 % \begin{stylelist}
 % \styleitem[arrowinset=0, arrows=->]{FdlArrow} 
 % \ifGERMAN 
-% Der Stil für den Pfeil. Das kann insbesonders nützlich sein um die
-% Länge des Pfeils zu verändern, die bei geänderter Größe nicht mehr
-% passend sein kann, oder um den Pfeil zu spiegeln.
+% Siehe \Lstyle{ArrowCompStyle}.
 % \fi
 % \ifENGLISH 
-% The style of the arrow. This can be especially useful to
-% adapt the length of the arrow which may not be appropriate depending
-% on the \opt{fdlsize}, or to mirror the arrow.
-% \fi
-% \iffalse
-%<*ignore>
-% \fi
-\begin{LTXexample}[morekeywords={[21]FdlArrow}]
-\begin{pspicture}(3,1.5)
-  \addtopsstyle{FdlArrow}{xunit=-1}
-  \fiberdelayline(0,1)(3,1){delay line}
-\end{pspicture}
-\end{LTXexample}
-% \iffalse
-%</ignore>
+% See \Lstyle{ArrowCompStyle}.
 % \fi
 % \end{stylelist}
 % 
@@ -4925,6 +5034,176 @@
 % \fi
 % \psset{usefiberstyle=false}
 %
+%
+% \ifGERMAN\chapter{Elektrische Komponenten}\fi
+% \ifENGLISH\chapter{Electrical components}\fi
+% \label{sec:electrcomp}
+%
+% \ifGERMAN\section{Koppler}\fi
+% \ifENGLISH\section{Coupler}\fi
+% \begin{ltxsyntax}
+% \xLfmultipole{eleccoupler}%
+% \cmditem{eleccoupler}(tl)(bl)(tr)(br){label}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(3,1.5)
+  \eleccoupler(0,1.5)(0,0)(3,1.5)(3,0)
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+% \end{ltxsyntax}
+% \begin{optionlist}
+%   \optitem[0.8]{eleccouplersize}{\prm{size} or \prm{width} \prm{height}}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(3,1.5)
+  \eleccoupler[eleccouplersize=1 0.6](0,1.5)(0,0)(3,1.5)(3,0)
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%   \numitem[0.6]{eleccouplersep}
+%   \choitem[standard]{eleccouplertype}{standard, directional}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(3,1.5)
+  \eleccoupler[eleccouplertype=directional](0,1.5)(0,0)(3,1.5)(3,0)
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
+%   \choitem[left]{eleccouplerinput}{left, right}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(3,1.5)
+  \eleccoupler[eleccouplertype=directional, eleccouplerinput=right](0,1.5)(0,0)(3,1.5)(3,0)
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+% \end{optionlist}
+%
+%
+% \ifGERMAN\section{Synthesizer}\fi
+% \ifENGLISH\section{Synthesizer}\fi
+% \begin{ltxsyntax}
+% \xLfmultipole{elecsynthesizer}%
+% \cmditem{elecsynthesizer}(in)(out){label}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(3,1.5)
+  \elecsynthesizer(1,1)(3,1){SYN}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+% \end{ltxsyntax}
+% \begin{optionlist}
+%   \optitem[0.8]{synthsize}{\prm{size} or \prm{width} \prm{height}}
+%   \choitem[sine]{synthtype}{sine, pulse, sawtooth, rectangle, triangle, custom}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[morekeywords={[21]synthtype}]
+\begin{pspicture}(0,0.6)(3,5.4)
+  \elecsynthesizer[synthtype=sine](1,5)(3,5)
+  \elecsynthesizer[synthtype=sawtooth](1,4)(3,4)
+  \elecsynthesizer[synthtype=triangle](1,3)(3,3)
+  \elecsynthesizer[synthtype=rectangle](1,2)(3,2)
+  \elecsynthesizer[synthtype=pulse](1,1)(3,1)
+\end{pspicture}
+\end{LTXexample}
+
+\begin{LTXexample}[morekeywords={[21]synthtype}]
+\begin{pspicture}(0,0)(3,2)
+  \makeatletter
+  \def\elecsynthesizer@custom{%
+    \psline(-0.25,-0.1)(-0.1,-0.1)(-0.1,0)%
+           (0.1,0)(0.1,0.1)(0.25,0.1)}
+  \makeatother
+  \elecsynthesizer[synthtype=custom](1,1)(3,1)
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
+% \choitem[circle]{synthshape}{circle, rectangle}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[morekeywords={[21]synthshape}]
+\begin{pspicture}(3,1.5)
+  \elecsynthesizer[synthshape=rectangle](1,1)(3,1){SYN}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+% \end{optionlist}
+%
+% \begin{stylelist}
+% \styleitem{SynthStyle}
+% \ifGERMAN Beinflusst das Aussehen der internen Symbole.\fi
+% \ifENGLISH Change the style of the internal synthesizer symbol.\fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[morekeywords={[21]SynthStyle}]
+\begin{pspicture}(3,1)
+  \newpsstyle{SynthStyle}{xunit=0.5, yunit=-1}
+  \elecsynthesizer[position=0.5](0,0.5)(3,0.5)
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+% \end{stylelist}
+%
+% \ifGERMAN\section{Mixer}\fi
+% \ifENGLISH\section{Mixer}\fi
+%
+% \begin{ltxsyntax}
+% \xLfmultipole{elecmixer}%
+% \cmditem{elecmixer}(left)(right)(bottom){label}%
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(3,2)
+  \newpsstyle{Wire}{arrowscale=1.5, arrowinset=0, arrows=->}
+  \addtopsstyle{WireOut1}{linecolor=blue}
+  \addtopsstyle{WireOut2}{linecolor=green!80!black}
+  \elecmixer(0,1)(3,1)(1.5,0){Mixer}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+% \end{ltxsyntax}
+%
+% \begin{optionlist}
+%   \numitem[0.8]{elecmixersize}
+% \end{optionlist}
+%
+%
 % \ifGERMAN\chapter{Hybridkomponenten}\fi
 % \ifENGLISH\chapter{Hybrid components}\fi
 % \label{sec:hybridcomp}
@@ -5006,7 +5285,7 @@
 %
 % \numitem[0]{filterangle}
 % \ifGERMAN Dreht das «Innere» des Filters relativ zum seinem
-% Rahmen. Anstattdessen kann auch \Lkeyword{innercompalign} verwendet
+% Rahmen. Anstattdessn kann auch \Lkeyword{innercompalign} verwendet
 % werden.
 % \fi
 % \ifENGLISH Rotates the «inner» part of the filter relativ to its
@@ -6835,6 +7114,7 @@
 %</ignore>
 % \fi
 %
+%
 % \numitem[0]{beampathskip}
 % \ifGERMAN
 % Überspringt \prm{num} Segmente am Anfang des Strahlengangs.
@@ -7140,16 +7420,6 @@
 % \ifGERMAN womit ein Strahl vom ersten Referenzknoten über die Komponente zum
 % zweiten Referenzknoten gezeichnet wird.
 % \fi
-%
-% \valitem{conn}{string}
-% \ifGERMAN Diese Option wird nur aus Kompatibilitätsgründen bereitgestellt
-% und wird aus zukünftigen Versionen entfernt. Siehe
-% \prettyref{sec:bwd-comp-3.0} für weitere Informationen.
-% \fi
-% \ifENGLISH This option is maintained for backward compatibility only and will
-% be removed in future versions. See \prettyref{sec:bwd-comp-3.0} for further
-% information.
-%\fi
 % \end{optionlist}
 %
 % \ifENGLISH\subsection{Beam appearance}\fi
@@ -8614,6 +8884,52 @@
 % \end{stylelist}
 %
 %
+% \ifGERMAN\section{Elektrische Verbindungen}\fi
+% \ifENGLISH\section{Drawing wires}\fi
+% \label{sec:drawwire}
+%
+% \ifENGLISH
+% All available components can be connected with wire connections, the
+% wire components in \prettyref{sec:electrcomp} are connected automatically.
+% \fi
+% \ifGERMAN
+% Alle Komponenten können mit Drähten verbunden werden, die elektrischen
+% Komponenten in \prettyref{sec:electrcomp} werden automatisch
+% verbunden.
+% \fi
+%
+% \begin{ltxsyntax}
+%   \xLcs{drawwire}\cmditem{drawwire}[options]{obj$_1$}{obj$_2$}\ldots
+% \end{ltxsyntax}
+%
+% \begin{optionlist}
+%   \choitem[relative]{wirealign}{rel,relative,center,abs,absolute}
+%   \numitem[0]{wireangleA}
+%   \ifENGLISH An additive value for the starting angle, the total angle depends
+%   on \Lkeyword{wirealign}. If this parameter is set to \opt{absolute}, then
+%   \Lkeyword{wireangleA} is the total angle, otherwise its value is added to
+%   the calculated angle.
+%   \fi
+%   \ifGERMAN
+%   Ein additiver Wert für den Anfangswinkel, der gesamte Winkel hängt von
+%   \Lkeyword{wirealign} ab. Ist dieser auf \opt{absolute} eingestellt, so ist
+%   \Lkeyword{wireangleA} der absolute Winkel, andernfalls wird der Wert zu dem
+%   automatisch berechneten Winkel hinzuaddiert.
+%   \fi
+%
+%   \numitem[0]{fiberangleB}
+%   \ifENGLISH Like \Lkeyword{wireangleA}, but for the end angle.\fi
+%   \ifGERMAN Wie \Lkeyword{wireangleB}, aber für den Endwinkel.\fi
+% %   \valitem{addtoWire}{list}
+%     \addtostylemsg{Wire}
+%
+%   \valitem{newWire}{list}
+%     \newstylemsg{Wire}
+% 
+%   \valitem[curve]{wirestyle}{string}
+%   \choitem[all]{wire}{[*+]none,all,i,o,\prm{refpoint}} 
+% \end{optionlist}
+% 
 % \ifGERMAN\section{Zeichenebenen}\fi
 % \ifENGLISH\section{Layers}\fi
 % \label{sec:layers}
@@ -8937,10 +9253,6 @@
 % Note, that this part of the documentation is not complete. It roughly
 % describes the steps to define own components as of version 3.0. Some parts may
 % be subject to change which are not backward compatible.
-%
-% The old syntax of defining \Lcs*{mycomp@iii} is supported for backward
-% compatibility, but will be dropped soon. Please adapt your macros to the new
-% syntax.
 % \fi
 % \ifGERMAN
 % \nxLPack{pst-optexp} stellt einige Benutzermakros zur Verfügung, mit denen
@@ -8950,10 +9262,6 @@
 % notwendigen Schritte zur Definition neuer Komponenten in Version 3.0 werden
 % grob beschrieben, können sich aber noch ändern und sind nicht zwangsläufig
 % abwärtskompatibel.
-%
-% The alte Syntax mit \Lcs*{mycomp@iii} wird noch unterstützt, gilt aber als
-% veraltet und wird in zukünftigen Versionen entfernt werden. Bitte passen Sie
-% ihre vorhandenen Makros entsprechen an.
 % \fi
 %
 % \begin{ltxsyntax}
@@ -9210,13 +9518,13 @@
 \optbox[label=0, compname=EAM, extnode=b, abspos=1.5](Lin)(Det){EAM}
 \optfiber[labeloffset=0.3, abspos=3.2](Lin)(Det){fibre}
 \optdetector(Lin)(Det){OSA}
-\pnode([Xnodesep=-1,offset=-1]\oenodeExt{L}){Osc}
-\pnode(\oenodeExt{L}|Osc){PSin}\pnode(\oenodeExt{EAM}|Osc){PSout}
-\oscillator[output=right](Osc){10\,GHz}{}
-\phaseshifter[arrowscale=1.5, inputarrow, labeloffset=-0.7](PSin)(PSout){$\tau$}
+\pnode([Xnodesep=-0.5,offset=-1]\oenodeExt{L}){Osc}
+\elecsynthesizer[wire=none](Osc)(\oenodeExt{EAM}|Osc){10\,GHz}
+\optarrowcomp[arrowcompsize=0.8 0.6, arrowscale=1.5](Osc)(\oenodeExt{EAM}|Osc){$\tau$}
 \drawfiber{1}{2}{3}{4}
-\psset{arrows=->, arrowinset=0, arrowscale=1.5}
-\wire(PSin)(\oenodeExt{L})\wire(PSout)(\oenodeExt{EAM})
+\addtopsstyle{Wire}{arrows=->, arrowinset=0, arrowscale=1.5}
+\drawwire{5}{6}\psset[optexp]{wireangleB=90}
+\drawwire{6}(\oenodeExt{EAM})\drawwire{5}(\oenodeExt{L})
 \end{pspicture}
 \end{LTXexample}
 
@@ -9592,16 +9900,14 @@
 \optamp[fiber](Pump)(\oenodeIfc{2}{13})
 \optbox[position=start, optboxsize=0.6 1.2, label=0 . . absolute](Pump)(Pump|Cpl){Pump}
 \drawfiber{10}{11}{12}{13}{14}{15}\drawfiber{14}{16}
-% electrical stuff
-\newpsstyle{Fiber}{}\psset[optexp]{label=0}
+\psset[optexp]{label=0}
 \optbox[compshift=0.7, optboxsize=2.5 0.8](\oenodeExt{M2})(\oenodeExt{Pd}|\oenodeExt{M2}){Lock-In Amp}
-\ncangle[angleA=90, angleB=180, linearc=0.3]{\oenodeExt{M2}}{\oenodeIn{}}
-\ncangle[angleB=90, linearc=0.3]{\oenodeOut{}}{\oenodeExt{Pd}}
-\psset[optexp]{fiber=all, optboxsize=0.8 1, position=start}
-\optbox(\oenodeExt{S}|Pump)(\oenodeExt{S}){\psline(-0.3,-0.2)(0.3,0.2)(0.3,-0.2)}
-\optbox(\oenodeExt{M3}|Pump)(\oenodeExt{M3}){\psline(-0.3,-0.2)(0,0.2)(0.3,-0.2)}
-\oscillator[output=none, unit=0.75, linewidth=0.666\pslinewidth]([offset=1]\oenodeExt{M1}){}{}
-\psline(\oenodeExt{M1})([offset=0.4]\oenodeExt{M1})
+\drawwire[wireangleA=90, linearc=0.3](\oenodeExt{M2}){}
+\drawwire[wireangleB=90, linearc=0.3]{}(\oenodeExt{Pd})
+\addtopsstyle{Wire}{arm=0}
+\elecsynthesizer[synthshape=rectangle, synthtype=sawtooth](\oenodeExt{S}|Pump)(\oenodeExt{S})
+\elecsynthesizer[synthshape=rectangle, synthtype=triangle](\oenodeExt{M3}|Pump)(\oenodeExt{M3})
+\elecsynthesizer([offset=0.4]\oenodeExt{M1})(\oenodeExt{M1})
 \end{pspicture}
 \end{LTXexample}
 \endgroup
@@ -9680,15 +9986,15 @@
 
 \begin{LTXexample}[pos=t, linerange={1-1}, caption={caption}]
 
-\psset{unit=1.1}
-\begin{pspicture}(9.3,5.8)
+\psset{unit=1.1, usefiberstyle=false}
+\begin{pspicture}(9.3,6.1)
   \psset{labeloffset=0.5, optboxsize=1 0.8, arrowscale=1.2, arrowinset=0}
   \newpsstyle{Fiber}{linecolor=red!70!black, linewidth=1.5\pslinewidth}
-  \pnode(1, 3.4){LD}\pnode([Xnodesep=3.2]LD){LoopIn}\pnode([offset=-1]LoopIn){LoopInsIn}
-  \pnode([offset=-1,Xnodesep=2]LoopIn){LoopInsOut}\pnode(LoopInsOut|LoopIn){LoopOut}
+  \pnode(1, 3.7){LD}\pnode([Xnodesep=3.2]LD){LoopIn}\pnode([offset=-1.2]LoopIn){LoopInsIn}
+  \pnode([Xnodesep=2]LoopInsIn){LoopInsOut}\pnode(LoopInsOut|LoopIn){LoopOut}
   \optswitch[compname=LSw, label=. 180 b, abspos=2.7, fiber=o](LD)(LoopIn){load switch}
   \optcoupler[addtoFiber={ArrowInside=->, ArrowInsidePos=0.7}](LoopIn)(LoopInsIn)(LoopOut)(LoopInsOut){50/50}
-  \optbox[labelstyle=\footnotesize, position=end, fiber, label=0, optboxsize=1.4 1.2](LoopOut)([Xnodesep=0.1]LoopOut){\parbox{1.4\psxunit}{\centering Linear\\Optical\\Sampling}}%
+  \optbox[labelstyle=\footnotesize, position=end, fiber, label=0, optboxsize=1.6 1.2](LoopOut)([Xnodesep=0.1]LoopOut){\parbox{1.4\psxunit}{\centering Linear\\Optical\\Sampling}}%
   \pnode([Xnodesep=2.8]LoopInsOut){TR}
   \pnode([offset=-2]TR){BR}
   \pnode([Xnodesep=-1.5]LoopInsIn){TL}
@@ -9708,17 +10014,14 @@
   \optbox[position=start, innerlabel](LD)(LoopIn){LD}
   \drawfiber{}{Mod}
   \drawfiber[arrows=->]{Mod}{LSw}
-  \psline[arrows=->]([offset=1]\oenodeExt{PM})(\oenodeExt{PM})
-  \pnode([offset=1.2, Xnodesep=-1]\oenodeExt{Mod}){Osci}
-  \oscillator[output=none, unit=0.8, linewidth=0.666\pslinewidth](Osci){}{}
-  \uput{0.5}[90](Osci){SYN}
-  \newpsstyle{Fiber}{}
-  \optbox[compname=PG, extnode=b, abspos=0.6, fiber=i, label=0.5 180 b]([Xnodesep=0.4]Osci)(\oenodeExt{PM}|Osci){PG}
-  \rput(\oenodeCenter{}){\psplot[plotpoints=200]{-0.3}{0.3}{2.7182818 x 0.05 div 2 exp neg exp 0.3 mul 0.15 sub}}
-  \optfilter[label=0.5 180 b, abspos=1, fiber=i](\oenodeOut{PG})(\oenodeExt{PM}|Osci){BPF}
-  \rput[r]([offset=0.4, Xnodesep=0.2]\oenodeOut{}){\psplot[plotpoints=200]{0}{1}{360 3.14159 div x 6 mul mul sin 2 exp 0.3 mul 0.15 sub}}
-  \ncangle[angleA=-90, angleB=90, arrows=->, armB=0.5]{\oenodeExt{PG}}{\oenodeExt{Mod}}
-  \ncangle[angleB=90, arrows=->]{\oenodeOut{}}{\oenodeExt{PM}}
+  \pnode([offset=1.2, Xnodesep=-0.7]\oenodeExt{Mod}){Osci}\pnode(\oenodeExt{PM}|Osci){Tmp}
+  \psset{wire=none, fiber=none, label=0.5 180 b}
+  \elecsynthesizer(Osci)(Tmp){SYN}
+  \elecsynthesizer[synthshape=rectangle, synthtype=pulse, abspos=0.7, compname=Pg, extnode=b](Osci)(Tmp){PG}
+  \optfilter[abspos=2](Osci)(Tmp){BPF}
+\rput[r]([offset=0.4, Xnodesep=0.2]\oenodeOut{}){\psplot[plotpoints=200]{0}{1}{360 3.14159 div x 6 mul mul sin 2 exp 0.3 mul 0.15 sub}}
+  \drawwire[arm=0]{12}{13}{14}\drawwire[wireangleB=-90, arrows=->]{14}(\oenodeExt{PM})
+  \psline[style=Wire, arrows=->](\oenodeExt{Pg})(\oenodeExt{Mod})
   \rput([Xnodesep=0.1, offset=0.2]\oenodeOut{Mod}){%
     \psplot[plotpoints=200, unit=0.7]{0}{1}{2.7182818 x 0.5 sub 0.08 div 2 exp neg exp 0.5 mul}%
   }%
@@ -10305,6 +10608,26 @@
 % Version beachten müssen, und was sie bei älteren Dokumenten gegebenenfalls
 % ändern müssen um mit der neuen Version korrekt zu funktionieren.  \fi
 %
+% \subsection{Version 4.0}\label{sec:bwd-comp-4.0}
+% 
+% \ifGERMAN Die Option \Lkeyword*{conn} und das alte, fehlerhafte
+% Verfahren Strahlverbindungen zu zeichnen, wurde nun entfernt. Zur
+% Migration älterer Dokumente siehe
+% \prettyref{sec:bwd-comp-3.0-conn}. Damit wurde auch die Option
+% \Lkeyword*{connjoin} überflüssig und wurde entfernt.
+% \fi
+% \ifENGLISH The option \Lkeyword*{conn} and the old, buggy code for beam
+% connections was finally removed. To update older documents, see
+% \prettyref{sec:bwd-comp-3.0-conn}. With this change also option
+% \Lkeyword*{connjoin} became useless.
+% \fi
+%
+% \ifGERMAN The alte Syntax mit \Lcs*{mycomp@iii} zur Definition eigener
+% Komponenten wird nicht mehr unterstützt.
+% \fi
+% \ifENGLISH The old syntax of defining own components with
+% \Lcs*{mycomp@iii} is not supported anymore.
+% \fi
 %
 % \subsection{Version 3.3}\label{sec:bwd-comp-3.3}
 %
@@ -10466,6 +10789,7 @@
 %
 % \ifENGLISH\subsubsection{Beam connections}\fi
 % \ifGERMAN\subsubsection{Strahlverbindungen}\fi
+% \label{sec:bwd-comp-3.0-conn}
 %
 % \ifENGLISH
 % In version 2.1, beam connections could be internal, that is the connections
@@ -10649,6 +10973,18 @@
 %
 % \begin{changelog}
 %\patchcmd{\release}{\setlength{\itemsep}{0pt}}{\setlength{\itemsep}{0pt}\setlength{\parsep}{0pt}}{}{}
+%   \begin{release}{4.0}{2013-xx-xx}
+%   \item Added electrical components \cs{eleccoupler}, \cs{elecmixer},
+%     \cs{elecsynthesizer}\see{sec:electrcomp}
+%   \item Added wire connections with \cs{drawwire}\see{sec:drawwire}
+%   \item Added component \cs{optarrowcomp}\see{cmd:optarrowcomp}
+%   \item Added component \cs{optbarcomp}\see{cmd:optbarcomp}
+%   \item Added option \opt{innercompalign}\see{prm:innercompalign}
+%   \item Added option \opt{beampathskip}\see{prm:beampathskip}
+%   \item Removed old, buggy beam connection code\see{sec:bwd-comp-4.0}
+%   \item Removed option \opt{conn}\see{sec:bwd-comp-4.0}
+%   \item Removed option \opt{connjoin}\see{sec:bwd-comp-4.0}
+%   \end{release}
 %   \begin{release}{3.6}{2013-03-20}
 %   \item Added option \opt{compoffset}\see{prm:compoffset}
 %   \item Added option \opt{beampathskip}\see{prm:beampathskip}
@@ -10662,13 +10998,13 @@
 %     interpreters.
 %   \end{release}
 %   \begin{release}{3.4}{2013-02-03}
-%   \item Fixed bugs when using \opt{fillstyle} for some components
+%   \item Fixed bugs when using \opt{fillstyle} for some components.
 %   \item Extended option \opt{switchsize}\see{cmd:optswitch}
 %   \item Modified coupler center node to be on the base
 %     line\see{sec:centernode}
 %   \item Extended error checking for \cs{drawbeam} and
 %     \cs{drawfiber}\see{sec:accessobj}
-%   \item Fixed some bugs in the connection code
+%   \item Fixed some bugs in the connection code.
 %   \end{release}
 %   \begin{release}{3.3a}{2012-09-18}
 %   \item Fixed bug which was exposed by an update of pst-node.
@@ -10689,7 +11025,7 @@
 %     \cs{oenodeBeamLow}\see{cmd:oenodeBeamUp}
 %   \item Fixed a bug related to \opt{beaminside} and ambiguous
 %     components.
-%   \item Fixed some trailing spaces
+%   \item Fixed some trailing spaces.
 %   \item Added more examples\see{sec:examples}
 %   \end{release}
 %   \begin{release}{3.2}{2012-07-26}
@@ -10722,7 +11058,7 @@
 %   \item Added \cs{drawfiber} for fiber connections\see{cmd:drawfiber}
 %   \item Added \opt{optexp} environment for layering of components and
 %     connections\see{sec:layers}
-%   \item Added german documentation
+%   \item Added german documentation.
 %   \item Modified naming of component nodes\see{sec:objnodes}
 %   \item Modified \opt{extnode} to work with more
 %     components\see{prm:extnode}
@@ -10812,22 +11148,24 @@
 %     nodes\see{cmd:fibercollimator}
 %   \item Improved \opt{thicklens} to work also with plain
 %     lenses\see{prm:thicklens}
-%   \item Use pst-doc class for the documentation
+%   \item Use pst-doc class for the documentation.
 %   \end{release}
 %
 %   \begin{release}{2.0}{2008-07-27}
-%   \item Added fiber-optical components\see{chap:fibercomp}
-%   \item Added component \cs{optdiode}\see{cmd:optdiode}
-%   \item Added component \cs{pentaprism}\see{cmd:pentaprism}
-%   \item Added component \cs{rightangleprism}\see{cmd:rightangleprism}
-%   \item Added component \cs{doveprism}\see{cmd:doveprism}
-%   \item Added component \cs{optprism}\see{cmd:optprism}
-%   \item Added \cs{drawbeam}\see{sec:drawbeam}
-%   \item Added component connections (options \opt{fiber}, \opt{conn}
-%     and \opt{beam})\see{chap:connecting}
-%   \item Added option \opt{compname}\see{prm:compname}
-%   \item Added option \opt{extnode}\see{prm:extnode}
-%   \item Renamed \cs{detector} to \cs{optdetector}\see{cmd:optdetector}
+%     \item Added fiber-optical components\see{chap:fibercomp}
+%     \item Added component \cs{optdiode}\see{cmd:optdiode}
+%     \item Added component \cs{pentaprism}\see{cmd:pentaprism}
+%     \item Added component
+%       \cs{rightangleprism}\see{cmd:rightangleprism}
+%     \item Added component \cs{doveprism}\see{cmd:doveprism}
+%     \item Added component \cs{optprism}\see{cmd:optprism}
+%     \item Added \cs{drawbeam}\see{sec:drawbeam}
+%     \item Added component connections (options \opt{fiber}, \opt{conn}
+%       and \opt{beam})\see{chap:connecting}
+%     \item Added option \opt{compname}\see{prm:compname}
+%     \item Added option \opt{extnode}\see{prm:extnode}
+%     \item Renamed \cs{detector} to
+%       \cs{optdetector}\see{cmd:optdetector}
 %   \end{release}
 %   \begin{release}{1.2}{2008-06-17}
 %   \item Modified lens design to use interface curvatures\see{cmd:lens}
@@ -10932,7 +11270,6 @@
 % \subsection{Switches for the boolean keys}
 % See respective key definitions for explanation.
 %    \begin{macrocode}
-\newif\ifPOE@connjoin
 \newif\ifPOE@backlayer
 \newif\ifPOE@frontlayer
 \newif\ifPOE@optexpenv
@@ -10964,6 +11301,22 @@
 \newif\ifPOE@fiberpresetout@
 \newif\ifPOE@fiberpresetout@top
 \newif\ifPOE@fiberpresetout@bottom
+\newif\ifPOE@wire@
+\newif\ifPOE@nowire@
+\newif\ifPOE@worein@
+\newif\ifPOE@wirein@top
+\newif\ifPOE@wirein@bottom
+\newif\ifPOE@wireout@
+\newif\ifPOE@wireout@top
+\newif\ifPOE@wireout@bottom
+\newif\ifPOE@wirepreset@
+\newif\ifPOE@nowirepreset@
+\newif\ifPOE@wirepresetin@
+\newif\ifPOE@wirepresetin@top
+\newif\ifPOE@wirepresetin@bottom
+\newif\ifPOE@wirepresetout@
+\newif\ifPOE@wirepresetout@top
+\newif\ifPOE@wirepresetout@bottom
 \newif\ifPOE@beam
 \newif\ifPOE@startinside
 \newif\ifPOE@stopinside
@@ -10975,6 +11328,13 @@
 \newif\ifPOE@raytrace
 \newif\ifPOE@pswarning
 \newif\ifPOE@useNA
+\newif\ifPOE@wire@
+\newif\ifPOE@wirein@
+\newif\ifPOE@wirein@top
+\newif\ifPOE@wirein@bottom
+\newif\ifPOE@wireout@
+\newif\ifPOE@wireout@top
+\newif\ifPOE@wireout@bottom
 %    \end{macrocode}
 % This is to check if \nxLkeyword{compname} is set inside or outside of a component. For this no boolean key is provided.
 %    \begin{macrocode}
@@ -11021,10 +11381,22 @@
 \def\POE@str@couplertype@elliptic{elliptic}
 \def\POE@str@couplertype@rectangle{rectangle}
 \def\POE@str@couplertype@cross{cross}
+\def\POE@str@eleccouplertype@standard{standard}
+\def\POE@str@eleccouplertype@directional{directional}
+\def\POE@str@synthshape@circle{circle}
+\def\POE@str@synthshape@rectangle{rectangle}
+\def\POE@str@synthtype@custom{custom}
+\def\POE@str@synthtype@sine{sine}
+\def\POE@str@synthtype@pulse{pulse}
+\def\POE@str@synthtype@sawtooth{sawtooth}
+\def\POE@str@synthtype@triangle{triangle}
+\def\POE@str@synthtype@rectangle{rectangle}
 \def\POE@str@polcontroltype@linear{linear}
 \def\POE@str@polcontroltype@triangle{triangle}
 \def\POE@str@top{top}
 \def\POE@str@bottom{bottom}
+\def\POE@str@left{left}
+\def\POE@str@right{right}
 \def\POE@str@center{center}
 \def\POE@str@closed{closed}
 \def\POE@str@opened{opened}
@@ -11033,9 +11405,12 @@
 \def\POE@str@bsstyle@cube{cube}
 \def\POE@str@bsstyle@plate{plate}
 \def\POE@str@auto{auto}
-\def\POE@str@center{center}
 \def\POE@str@verbose{verbose}
 \def\POE@str@quiet{quiet}
+\def\POE@str@circle{circle}
+\def\POE@str@rectangle{rectangle}
+\def\POE@str@reflective{reflective}
+\def\POE@str@transmittive{transmittive}
 \def\POE@Verb#1{\pst@Verb{\pst@optexpdict #1 end }}%
 %    \end{macrocode}
 %
@@ -11111,6 +11486,60 @@
 \define@key[psset]{optexp}{addtoFiberOut2}{%
   \addtopsstyle{FiberOut2}{#1}%
 }
+%    \end{macrocode}
+%
+% Electrical connection stuff
+%    \begin{macrocode}
+\newpsstyle{Wire}{}
+\define@key[psset]{optexp}{newWire}{%
+  \newpsstyle{Wire}{#1}%
+}
+\define@key[psset]{optexp}{addtoWire}{%
+  \addtopsstyle{Wire}{#1}%
+}
+\newpsstyle{WireIn}{style=Wire}
+\define@key[psset]{optexp}{newWireIn}{%
+  \newpsstyle{WireIn}{#1}%
+}
+\define@key[psset]{optexp}{addtoWireIn}{%
+  \addtopsstyle{WireIn}{#1}%
+}
+\newpsstyle{WireIn1}{style=WireIn}
+\define@key[psset]{optexp}{newWireIn1}{%
+  \newpsstyle{WireIn1}{#1}%
+}
+\define@key[psset]{optexp}{addtoWireIn1}{%
+  \addtopsstyle{WireIn1}{#1}%
+}
+\newpsstyle{WireIn2}{style=WireIn}
+\define@key[psset]{optexp}{newWireIn2}{%
+  \newpsstyle{WireIn2}{#1}%
+}
+\define@key[psset]{optexp}{addtoWireIn2}{%
+  \addtopsstyle{WireIn2}{#1}%
+}
+\newpsstyle{WireOut}{style=Wire}
+\define@key[psset]{optexp}{newWireOut}{%
+  \newpsstyle{WireOut}{#1}%
+}
+\define@key[psset]{optexp}{addtoWireOut}{%
+  \addtopsstyle{WireOut}{#1}%
+}
+\newpsstyle{WireOut1}{style=WireOut}
+\define@key[psset]{optexp}{newWireOut1}{%
+  \newpsstyle{WireOut1}{#1}%
+}
+\define@key[psset]{optexp}{addtoWireOut1}{%
+  \addtopsstyle{WireOut1}{#1}%
+}
+\newpsstyle{WireOut2}{style=WireOut}
+\define@key[psset]{optexp}{newWireOut2}{%
+  \newpsstyle{WireOut2}{#1}%
+}
+\define@key[psset]{optexp}{addtoWireOut2}{%
+  \addtopsstyle{WireOut2}{#1}%
+}
+\newpsstyle{ElecComp}{}
 %    \end{macrocode}
 % Special styles to change only a part of some devices.
 %    \begin{macrocode}
@@ -11563,11 +11992,65 @@
   \fi
   \psset[optexp]{optboxwidth=#1, optboxheight=#2}%
 }%
-\psset[optexp]{%
-  optboxwidth=1.4,
-  optboxheight=0.8
-}%
+\psset[optexp]{optboxsize=1.4 0.8}%
 %    \end{macrocode}
+% arrowbox
+%    \begin{macrocode}
+\define@key[psset]{optexp}{arrowcompwidth}{%
+  \pst@checknum{#1}\POE@key@arrowcompwidth
+}
+\define@key[psset]{optexp}{arrowcompheight}{%
+  \pst@checknum{#1}\POE@key@arrowcompheight
+}
+\define@key[psset]{optexp}{arrowcompsize}{%
+  \pst@expandafter\POE@psset@@arrowcompsize{#1} {} {} {}\@nil
+}%
+\def\POE@psset@@arrowcompsize#1 #2 #3\@nil{%
+  \ifx\\#2\\%
+    \PackageWarning{pst-optexp}{%
+      Parameter 'arrowcompsize' requires two numbers.}%
+  \fi
+  \psset[optexp]{arrowcompwidth=#1, arrowcompheight=#2}%
+}%
+\define@choicekey+[psset]{optexp}{arrowcompshape}%
+  [\val\nr]{circle, rectangle}%
+  {\edef\POE@key@arrowcompshape{#1}}%
+  {\PackageError{pst-optexp}{Unknown value '\val' for arrowcompshape}}
+\psset[optexp]{%
+  arrowcompsize=1.4 0.8,
+  arrowcompshape=rectangle
+}%
+\newpsstyle{ArrowCompStyle}{arrowinset=0, arrows=->}%
+%    \end{macrocode}
+% BarBox
+%    \begin{macrocode}
+\define@key[psset]{optexp}{barcompwidth}{%
+  \pst@checknum{#1}\POE@key@barcompwidth
+}
+\define@key[psset]{optexp}{barcompheight}{%
+  \pst@checknum{#1}\POE@key@barcompheight
+}
+\define@key[psset]{optexp}{barcompsize}{%
+  \pst@expandafter\POE@psset@@barcompsize{#1} {} {} {}\@nil
+}%
+\def\POE@psset@@barcompsize#1 #2 #3\@nil{%
+  \ifx\\#2\\%
+    \PackageWarning{pst-optexp}{%
+      Parameter 'barcompsize' requires two numbers.}%
+  \fi
+  \psset[optexp]{barcompwidth=#1, barcompheight=#2}%
+}%
+\define@choicekey+[psset]{optexp}{barcompshape}%
+  [\val\nr]{circle, rectangle}%
+  {\edef\POE@key@barcompshape{#1}}%
+  {\PackageError{pst-optexp}{Unknown value '\val' for barcompshape}}
+\psset[optexp]{%
+  barcompsize=1.4 0.8,
+  barcompshape=rectangle
+}%
+\newpsstyle{BarCompStyle}{}%
+%    \end{macrocode}
+%
 % Plate
 %    \begin{macrocode}
 \define@key[psset]{optexp}{platelinewidth}{%
@@ -11861,10 +12344,15 @@
   {auto,center}%
   {\def\POE@key@prismalign{#1}}%
   {\PackageError{pst-optexp}{Unknown value '\val' for prismalign}}%
+\define@choicekey+[psset]{optexp}{prismtype}[\val\nr]%
+  {transmission, coupling}%
+  {\def\POE@key@prismtype{#1}}%
+  {\PackageError{pst-optexp}{Unknown value '\val' for prismtype}}%
 \psset[optexp]{%
   prismsize=1,
   prismangle=60,
-  prismalign=auto
+  prismalign=auto,
+  prismtype=transmission
 }%
 %    \end{macrocode}
 %
@@ -12182,6 +12670,95 @@
   fiberboxsepout=0.2,
   fiberboxcount=2x2}
 %    \end{macrocode}
+%
+% \subsection{Electrical components}
+%
+% \subsubsection{elecmixer}
+%    \begin{macrocode}
+\define@key[psset]{optexp}{elecmixersize}{%
+  \pst@checknum{#1}\POE@key@elecmixersize
+}%
+\psset[optexp]{elecmixersize=0.8}%
+%    \end{macrocode}
+%
+% \subsubsection{eleccoupler}
+%    \begin{macrocode}
+\define@key[psset]{optexp}{eleccouplersize}{%
+  \pst@expandafter\POE@psset@@eleccouplersize{#1} {} {} {}\@nil
+}%
+\def\POE@psset@@eleccouplersize#1 #2 #3\@nil{%
+  \pst@checknum{#1}\POE@key@eleccouplerwidth
+  \ifx\\#2\\%
+    \pst@checknum{#1}\POE@key@eleccouplerheight
+  \else
+    \pst@checknum{#2}\POE@key@eleccouplerheight
+  \fi
+}%
+\define@key[psset]{optexp}{eleccouplersep}{%
+  \pst@checknum{#1}\POE@key@eleccouplersep
+}
+\define@choicekey+[psset]{optexp}{eleccouplertype}%
+  [\val\nr]{standard, directional}%
+  {\edef\POE@key@eleccouplertype{#1}}%
+  {\PackageError{pst-optexp}{Unknown value '\val' for eleccouplertype}}%
+\define@choicekey+[psset]{optexp}{eleccouplerinput}%
+  [\val\nr]{left, right}%
+  {\edef\POE@key@eleccouplerinput{#1}}%
+  {\PackageError{pst-optexp}{Unknown value '\val' for eleccouplerinput}}%
+\define@choicekey+[psset]{optexp}{eleccoupleralign}%
+  [\val\nr]{t,b,c,top,bottom,center}%
+  {%
+    \ifcase\nr\relax
+      \let\POE@key@eleccoupleralign\POE@str@top
+    \or
+      \let\POE@key@eleccoupleralign\POE@str@bottom
+    \or
+      \let\POE@key@eleccoupleralign\POE@str@center
+    \else
+      \def\POE@key@eleccoupleralign{#1}%
+    \fi}%
+  {\PackageError{pst-optexp}{Unknown value '\val' for eleccoupleralign}}
+\psset[optexp]{%
+  eleccouplersize=0.8,
+  eleccouplersep=0.6,
+  eleccoupleralign=center,
+  eleccouplertype=standard,
+  eleccouplerinput=left
+}%
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\define@key[psset]{optexp}{synthsize}{%
+  \pst@expandafter\POE@psset@@synthsize{#1} {} {} {}\@nil
+}%
+\def\POE@psset@@synthsize#1 #2 #3\@nil{%
+  \pst@checknum{#1}\POE@key@synthwidth
+  \ifx\\#2\\%
+    \pst@checknum{#1}\POE@key@synthheight
+  \else
+    \pst@checknum{#2}\POE@key@synthheight
+  \fi
+}%
+\define@key[psset]{optexp}{synthrectwidth}{%
+  \pst@checknum{#1}\POE@key@synthrectwidth
+}%
+\define@choicekey+[psset]{optexp}{synthshape}%
+  [\val\nr]{circle, rectangle}%
+  {\edef\POE@key@synthshape{#1}}%
+  {\PackageError{pst-optexp}{Unknown value '\val' for synthshape}}
+\define@choicekey+[psset]{optexp}{synthtype}%
+  [\val\nr]{sine, pulse, rectangle, triangle, sawtooth, custom}%
+  {\edef\POE@key@synthtype{#1}}%
+  {\PackageError{pst-optexp}{Unknown value '\val' for synthtype}}
+\newpsstyle{SynthStyle}{}
+\psset[optexp]{%
+  synthsize=0.8,
+  synthshape=circle,
+  synthtype=sine,
+  synthrectwidth=0.2
+}%
+%    \end{macrocode}
+%
 % \subsection{Beam-connection parameters}
 % The keys related to the \cs{draw*} macros.
 %
@@ -12339,15 +12916,16 @@
 %    \end{macrocode}
 %
 % \subsection{Fiber-connection parameters}
-% Select which fibers are drawn automatically. The parameters \opt{fiber},
-% \opt{fiberin} and \opt{fiberout} do not only select which fibers are drawn,
-% but do also enable fiber connecting for the free-ray components. So you should
-% use these switches only locally, or they must be followed by a
-% \opt{fiber@=false}. (Need to rethink this part\ldots).
+% Select which fibers are drawn automatically. 
 %    \begin{macrocode}
 \define@key[psset]{optexp}{fiber}[all]{%
   \POE@psset@fibercheck#1\@nil
 }
+%    \end{macrocode}
+% Check which components are affected by the fiber parameter. * is only for 
+% fiber-optical components, + refers to all components but the fiber-optical 
+% ones, otherwise all components are affected.
+%    \begin{macrocode}
 \def\POE@psset@fibercheck#1#2\@nil{%
   \ifx#1*\relax
     \ifx\\#2\\%
@@ -12366,6 +12944,9 @@
     \psset[optexp]{fiber@preset=#1#2}%
   \fi\fi
 }%
+%    \end{macrocode}
+% Set the fiber parameters for fiber-optical components only (use fiber=*...).
+%    \begin{macrocode}
 \define@choicekey*+[psset]{optexp}{fiber@preset}%
   [\val\nr]{false,none,true,all}[all]{%
   \ifcase\nr\relax
@@ -12503,8 +13084,181 @@
   fiberalign=relative,
   fiberstyle=curve
 }%
+
+% \subsection{Wire connection parameters}
+% Select which wires are drawn automatically. 
+% Note, this part is equivalent to the fiber connection parameters, only 'fiber' is replace by 'wire'.
+%    \begin{macrocode}
+\define@key[psset]{optexp}{wire}[all]{%
+  \POE@psset@wirecheck#1\@nil
+}
 %    \end{macrocode}
-% Which nodes to take for the automatic fiber connections.
+% Check which components are affected by the wire parameter:
+% * is only for electrical components
+% + refers to all components but the electrical ones,
+% otherwise all components are affected.
+%    \begin{macrocode}
+\def\POE@psset@wirecheck#1#2\@nil{%
+  \ifx#1*\relax
+    \ifx\\#2\\%
+      \psset[optexp]{wire@preset=all}%
+    \else
+      \psset[optexp]{wire@preset=#2}%
+    \fi
+  \else\ifx#1+\relax
+    \psset[optexp]{fiber@all=none, fiber@preset=none}%
+    \ifx\\#2\\%
+      \psset[optexp]{wire@all=all}%
+    \else
+      \psset[optexp]{wire@all=#2}%
+    \fi
+  \else
+    \psset[optexp]{fiber@all=none, fiber@preset=none}%
+    \psset[optexp]{wire@all=#1#2, wire@preset=#1#2}%
+  \fi\fi
+}%
+%    \end{macrocode}
+% Set the fiber parameters for fiber-optical components only (use fiber=*...).
+%    \begin{macrocode}
+\define@choicekey*+[psset]{optexp}{wire@preset}%
+  [\val\nr]{false,none,true,all}[all]{%
+  \ifcase\nr\relax
+    \POE@getwirepreset@none
+  \or
+    \POE@getwirepreset@none
+  \or
+    \POE@getwirepreset@all
+  \or
+    \POE@getwirepreset@all
+  \fi
+}{%
+  \ifx\@empty\val
+    \POE@getwirepreset@none
+  \else
+    \pst@expandafter\POE@psset@@wirepreset{#1}\@empty,,\@nil
+  \fi
+}%
+\def\POE@psset@@wirepreset#1#2,#3,#4\@nil{%
+  \POE@getwirepreset@all
+  \ifx\\#3\\%
+    \@nameuse{POE@getwirepreset@#1}%
+    \@nameuse{POE@getwirepreset@#2}%
+  \fi
+}%
+\def\POE@getwirepreset@none{%
+  \psset[optexp]{wirepreset@=false}%
+}%
+\def\POE@getwirepreset@all{%
+  \psset[optexp]{%
+    wirepreset@, wirepresetin@, wirepresetout@,
+    wirepresetin@top, wirepresetin@bottom, 
+    wirepresetout@top, wirepresetout@bottom}%
+}%
+\def\POE@getwirepreset@t{%
+  \psset[optexp]{wirepresetin@bottom=false, wirepresetout@bottom=false}}%
+\def\POE@getwirepreset@b{%
+  \psset[optexp]{wirepresetin@top=false, wirepresetout@top=false}}%
+\def\POE@getwirepreset@l{\psset[optexp]{wirepresetout@=false}}%
+\def\POE@getwirepreset@r{\psset[optexp]{wirepresetin@=false}}%
+\let\POE@getwirepreset@i\POE@getwirepreset@l
+\let\POE@getwirepreset@o\POE@getwirepreset@r
+%    \end{macrocode}
+%
+% This code is for all components, fiber-optical and free-ray.
+%    \begin{macrocode}
+\define@choicekey*+[psset]{optexp}{wire@all}%
+  [\val\nr]{false,none,true,all}[all]{%
+  \ifcase\nr\relax
+    \POE@getwire@none
+  \or
+    \POE@getwire@none
+  \or
+    \POE@getwire@all
+  \or
+    \POE@getwire@all
+  \fi
+}{%
+  \ifx\@empty\val
+    \POE@getwire@none
+  \else
+    \pst@expandafter\POE@psset@@wire{#1}\@empty,,\@nil
+  \fi
+}%
+\def\POE@psset@@wire#1#2,#3,#4\@nil{%
+  \POE@getwire@all
+  \ifx\@empty#3\@empty
+    \@nameuse{POE@getwire@#1}%
+    \@nameuse{POE@getwire@#2}%
+  \fi
+}%
+\def\POE@getwire@none{%
+  \psset[optexp]{wire@=false}%
+}%
+\def\POE@getwire@all{%
+  \psset[optexp]{%
+    wire@, wirein@, wireout@,
+    wirein@top, wirein@bottom, 
+    wireout@top, wireout@bottom}%
+}%
+\def\POE@getwire@t{%
+  \psset[optexp]{wirein@bottom=false, wireout@bottom=false}}%
+\def\POE@getwire@b{%
+  \psset[optexp]{wirein@top=false, wireout@top=false}}%
+\def\POE@getwire@l{\psset[optexp]{wireout@=false}}%
+\def\POE@getwire@r{\psset[optexp]{wirein@=false}}%
+\let\POE@getwire@i\POE@getwire@l
+\let\POE@getwire@o\POE@getwire@r
+%    \end{macrocode}
+% These are the internal boolkeys for the wire choices done with \opt{wirein},
+% \opt{wireout} and \opt{wire}. Do not use them directly.
+%    \begin{macrocode}
+\define@boolkey[psset]{optexp}[POE@]{wire@}[true]{}
+\define@boolkey[psset]{optexp}[POE@]{nowire@}[true]{}
+\define@boolkey[psset]{optexp}[POE@]{wirein@}[true]{}
+\define@boolkey[psset]{optexp}[POE@]{wirein@top}[true]{}
+\define@boolkey[psset]{optexp}[POE@]{wirein@bottom}[true]{}
+\define@boolkey[psset]{optexp}[POE@]{wireout@}[true]{}
+\define@boolkey[psset]{optexp}[POE@]{wireout@top}[true]{}
+\define@boolkey[psset]{optexp}[POE@]{wireout@bottom}[true]{}
+\define@boolkey[psset]{optexp}[POE@]{wirepreset@}[true]{}
+\define@boolkey[psset]{optexp}[POE@]{nowirepreset@}[true]{}
+\define@boolkey[psset]{optexp}[POE@]{wirepresetin@}[true]{}
+\define@boolkey[psset]{optexp}[POE@]{wirepresetin@top}[true]{}
+\define@boolkey[psset]{optexp}[POE@]{wirepresetin@bottom}[true]{}
+\define@boolkey[psset]{optexp}[POE@]{wirepresetout@}[true]{}
+\define@boolkey[psset]{optexp}[POE@]{wirepresetout@top}[true]{}
+\define@boolkey[psset]{optexp}[POE@]{wirepresetout@bottom}[true]{}
+\psset[optexp]{wire=*all}%
+\define@key[psset]{optexp}{wireangleA}{%
+  \pst@checknum{#1}\POE@key@wireangleA
+}%
+\define@key[psset]{optexp}{wireangleB}{%
+  \pst@checknum{#1}\POE@key@wireangleB
+}%
+\define@choicekey+[psset]{optexp}{wirealign}%
+  [\val\nr]{rel,abs,relative,center,absolute}%
+  {%
+    \ifcase\nr\relax
+      \let\POE@key@wirealign\POE@str@relative
+    \or
+      \let\POE@key@wirealign\POE@str@absolute
+    \else
+      \def\POE@key@wirealign{#1}%
+    \fi
+  }%
+  {\PackageError{pst-optexp}{Unknown value '\val' for wirealign}}%
+\define@key[psset]{optexp}{wirestyle}{%
+  \@ifundefined{nc#1}%
+    {\PackageError{pst-optexp}{Unknown value '#1' for wirestyle}}%
+    {\def\POE@key@wirestyle{#1}}}
+\psset[optexp]{%
+  wireangleA=0,
+  wireangleB=0,
+  wirealign=relative,
+  wirestyle=angle
+}%
+%    \end{macrocode}
+% Which nodes to take for the automatic fiber and wire connections.
 %    \begin{macrocode}
 \define@choicekey+[psset]{optexp}{startnode}%
   [\val\nr]{auto,1,2,3,4,N}%
@@ -12567,40 +13321,76 @@
 % \begin{macro}{\drawfiber}
 %    \begin{macrocode}
 \def\drawfiber{\drawfiber@{Fiber}}%
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\drawwire}
+%    \begin{macrocode}
+\def\drawwire{\drawwire@{Wire}}%
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\drawwire@}
+%    \begin{macrocode}
+\def\drawwire@#1{%
+  \def\POE@setconnparam{%
+    \let\POE@key@connangleA\POE@key@wireangleA
+    \let\POE@key@connangleB\POE@key@wireangleB
+    \let\POE@key@connalign\POE@key@wirealign
+    \let\POE@key@connstyle\POE@key@wirestyle
+  }%
+  \drawconn@{#1}
+}%
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\drawfiber@}
+%    \begin{macrocode}
 \def\drawfiber@#1{%
+  \def\POE@setconnparam{%
+    \let\POE@key@connangleA\POE@key@fiberangleA
+    \let\POE@key@connangleB\POE@key@fiberangleB
+    \let\POE@key@connalign\POE@key@fiberalign
+    \let\POE@key@connstyle\POE@key@fiberstyle
+  }%
+  \drawconn@{#1}%
+}%
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\drawconn@}
+%    \begin{macrocode}
+\def\drawconn@#1{%
   \ifPst@custom\else
     \def\pst@par{style=#1}%
   \fi
   \@ifnextchar[%]
-    {\drawfiber@i}{\drawfiber@i[]}%
+    {\drawconn@i}{\drawconn@i[]}%
 }%
-\def\drawfiber@i[#1]{%
+\def\drawconn@i[#1]{%
   \addafter@par{#1}%
-  \drawfiber@ii}
+  \drawconn@ii}
 
-\def\drawfiber@ii{%
+\def\drawconn@ii{%
   \@ifnextchar(%)
-    {\drawfiber@iii}%
-    {\@ifnextchar\bgroup{\drawfiber@iv}{}}%
+    {\drawconn@iii}%
+    {\@ifnextchar\bgroup{\drawconn@iv}{}}%
 }%
-\def\drawfiber@iii(#1){\drawfiber@iv{(#1)}}%
-\def\drawfiber@iv#1{%
-  \def\POE@tempe{#1}\drawfiber@ii@
+\def\drawconn@iii(#1){\drawconn@iv{(#1)}}%
+\def\drawconn@iv#1{%
+  \def\POE@tempe{#1}\drawconn@ii@
 }%
-\def\drawfiber@ii@{%
+\def\drawconn@ii@{%
   \@ifnextchar(%)
-    {\drawfiber@iii@}%
-    {\@ifnextchar\bgroup{\drawfiber@iv@}{}}%
+    {\drawconn@iii@}%
+    {\@ifnextchar\bgroup{\drawconn@iv@}{}}%
 }%
-\def\drawfiber@iii@(#1){\drawfiber@iv@{(#1)}}%
-\def\drawfiber@iv@#1{%
-  \expandafter\drawfiber@v\expandafter{\POE@tempe}{#1}%
-  \def\POE@tempe{#1}\drawfiber@ii@}%
-\def\drawfiber@v#1#2{%
+\def\drawconn@iii@(#1){\drawconn@iv@{(#1)}}%
+\def\drawconn@iv@#1{%
+  \expandafter\drawconn@v\expandafter{\POE@tempe}{#1}%
+  \def\POE@tempe{#1}\drawconn@ii@}%
+\def\drawconn@v#1#2{%
   \begingroup
     \let\psk@angleA\relax
     \let\psk@angleB\relax
     \use@par
+    \POE@setconnparam
     \let\POE@angleA\psk@angleA
     \let\POE@angleB\psk@angleB
     \ifx\psk@angleA\relax
@@ -12652,28 +13442,28 @@
       \pst@getcoor{@@A}\POE@tempa
       \pst@getcoor{@@B}\POE@tempb
       \ifx\POE@angleA\relax
-        \ifx\POE@key@fiberalign\POE@str@absolute
-          \psset{angleA=\POE@key@fiberangleA}%
+        \ifx\POE@key@connalign\POE@str@absolute
+          \psset{angleA=\POE@key@connangleA}%
         \else
           \psset{angleA=! \POE@dict{%
             \POE@tempb \POE@tempa \POE@comps exch 
-            \POE@key@fiberalign\space RelFiberAngle
-            \POE@key@fiberangleA\space add }
+            \POE@key@connalign\space RelConnAngle
+            \POE@key@connangleA\space add }
           }%
         \fi
       \fi
       \ifx\POE@angleB\relax
-        \ifx\POE@key@fiberalign\POE@str@absolute
-          \psset{angleB=\POE@key@fiberangleB}%
+        \ifx\POE@key@connalign\POE@str@absolute
+          \psset{angleB=\POE@key@connangleB}%
         \else
           \psset{angleB=! \POE@dict{%
             \POE@tempa \POE@tempb \POE@comps 
-            \POE@key@fiberalign\space RelFiberAngle
-            \POE@key@fiberangleB\space add}
+            \POE@key@connalign\space RelConnAngle
+            \POE@key@connangleB\space add}
           }%
         \fi
       \fi
-      \@nameuse{nc\POE@key@fiberstyle}{@@A}{@@B}
+      \@nameuse{nc\POE@key@connstyle}{@@A}{@@B}
     \fi
   \endgroup
 }%
@@ -12757,7 +13547,6 @@
 %    \begin{macrocode}
 \def\drawbeam{\pst@object{drawbeam}}%
 \def\drawbeam@i{%
-  \def\POE@conntable{,a-a,b-b,A-A,B-B}%
   \begin@SingleBeamObj
   \POE@getcomps[\drawbeam@ii%
 }%
@@ -12820,17 +13609,6 @@
 % \begin{macro}{\drawbeam@ii}
 %    \begin{macrocode}
 \def\drawbeam@ii{%
-  \ifx\POE@key@conn\@empty
-    \drawbeam@iii
-  \else
-    \drawbeam@compat
-  \fi
-}
-%    \end{macrocode}
-% \end{macro}
-% \begin{macro}{\drawbeam@iii}
-%    \begin{macrocode}
-\def\drawbeam@iii{%
   \ifodd
 %    \end{macrocode}
 % Do not draw anything only if both linestyle and ArrowInside are not set.
@@ -13239,11 +14017,7 @@
 % \begin{macro}{\POE@getcomps}
 %    \begin{macrocode}
 \def\POE@getcomps#1#2{%
-  \ifx\POE@key@conn\@empty
-    \def\POE@aftercomps{\addto@pscode{#1 \POE@comps }#2}%
-  \else
-    \def\POE@aftercomps{#2}%
-  \fi
+  \def\POE@aftercomps{\addto@pscode{#1 \POE@comps }#2}%
   \def\POE@comps{}%
   \POE@getcomps@i%
 }%
@@ -13290,17 +14064,13 @@
 %    \begin{macrocode}
 \def\POE@getplanenode(#1){%
   \pst@@getcoor{#1}%
-  \ifx\POE@key@conn\@empty
-    \advance\POE@nodecnt by 1
-    \POE@getcomp{%
-      {\pst@coor} {0 1} 
-      (\POE@str@basicname@default N@\the\POE@nodecnt) 
-      {\tx@UserCoor} NewTempNodeComp 
-      (\POE@str@basicname@default N@\the\POE@nodecnt)
-    }%
-  \else
-    \POE@getcomp{{\pst@coor} }%
-  \fi
+  \advance\POE@nodecnt by 1
+  \POE@getcomp{%
+    {\pst@coor} {0 1} 
+    (\POE@str@basicname@default N@\the\POE@nodecnt) 
+    {\tx@UserCoor} NewTempNodeComp 
+    (\POE@str@basicname@default N@\the\POE@nodecnt)
+  }%
 }%
 \def\POE@getplanenode@i(#1){\POE@getplanenode(#1)\POE@getcomps@i}%
 %    \end{macrocode}
@@ -13321,266 +14091,121 @@
 % 
 % \subsection{Automatic connections}
 %
-% \begin{macro}{\POE@drawInternalConnections}
+% \begin{macro}{\POE@InternalWireConn}
+% Draw automatic wires for fiber and free-ray components.
 %    \begin{macrocode}
-\def\POE@drawInternalConnections{%
-  \ifx\POE@key@conn\@empty
-    \POE@drawInternalConnectionsNew
-  \else
-    \POE@drawInternalConnectionsOld
+\def\POE@InternalWireConn{%
+  \ifPOE@wire@
+    \ifPOE@endbox
+      \ifPOE@wirein@
+        \drawwire@{WireIn}(\oenodeRefA{}){}
+      \fi
+    \else\ifPOE@startbox
+      \ifPOE@wireout@
+        \drawwire@{WireOut}{}(\oenodeRefB{})
+      \fi
+    \else
+      \ifPOE@wirein@
+        \drawwire@{WireIn}(\oenodeRefA{}){}
+      \fi
+      \ifPOE@wireout@
+        \drawwire@{WireOut}{}(\oenodeRefB{})
+      \fi
+    \fi\fi
   \fi
 }%
 %    \end{macrocode}
 % \end{macro}
-% \begin{macro}{\POE@drawPresetFibers}
+% \begin{macro}{\POE@PresetWireConn}
+% Draw automatic wires for electrical components.
 %    \begin{macrocode}
-\def\POE@drawPresetFibers{%
-  \ifPOE@endbox
-    \ifPOE@fiberpresetin@
-      \drawfiber@{FiberIn}{(\oenodeRefA{})}{}
-    \fi
-  \else\ifPOE@startbox
-    \ifPOE@fiberpresetout@
-      \drawfiber@{FiberOut}{}{(\oenodeRefB{})}
-    \fi
-  \else
-    \ifPOE@fiberpresetin@
-      \drawfiber@{FiberIn}{(\oenodeRefA{})}{}
-    \fi
-    \ifPOE@fiberpresetout@
-      \drawfiber@{FiberOut}{}{(\oenodeRefB{})}
-    \fi
-  \fi\fi
+\def\POE@PresetWireConn{%
+  \ifPOE@wirepreset@
+    \ifPOE@endbox
+      \ifPOE@wirepresetin@
+        \drawwire@{WireIn}(\oenodeRefA{}){}
+      \fi
+    \else\ifPOE@startbox
+      \ifPOE@wirepresetout@
+        \drawwire@{WireOut}{}(\oenodeRefB{})
+      \fi
+    \else
+      \ifPOE@wirepresetin@
+        \drawwire@{WireIn}(\oenodeRefA{}){}
+      \fi
+      \ifPOE@wirepresetout@
+        \drawwire@{WireOut}{}(\oenodeRefB{})
+      \fi
+    \fi\fi
+  \fi
 }%
 %    \end{macrocode}
 % \end{macro}
-% \begin{macro}{\POE@drawInternalConnectionsNew}
+% \begin{macro}{\POE@PresetFiberConn}
 %    \begin{macrocode}
-\def\POE@drawInternalConnectionsNew{%
+\def\POE@PresetFiberConn{%
+  \ifPOE@fiberpreset@
+    \ifPOE@endbox
+      \ifPOE@fiberpresetin@
+        \drawfiber@{FiberIn}(\oenodeRefA{}){}
+      \fi
+    \else\ifPOE@startbox
+      \ifPOE@fiberpresetout@
+        \drawfiber@{FiberOut}{}(\oenodeRefB{})
+      \fi
+    \else
+      \ifPOE@fiberpresetin@
+        \drawfiber@{FiberIn}(\oenodeRefA{}){}
+      \fi
+      \ifPOE@fiberpresetout@
+        \drawfiber@{FiberOut}{}(\oenodeRefB{})
+      \fi
+    \fi\fi
+  \else
+    \POE@InternalWireConn
+  \fi  
+}%
+%    \end{macrocode}
+% \end{macro}
+% \begin{macroc}{\POE@InternalFiberConn}
+\def\POE@InternalFiberConn{%
+  \ifPOE@fiber@
+    \ifPOE@endbox
+      \ifPOE@fiberin@
+        \drawfiber@{FiberIn}(\oenodeRefA{}){}
+      \fi
+    \else\ifPOE@startbox
+      \ifPOE@fiberout@
+        \drawfiber@{FiberOut}{}(\oenodeRefB{})
+      \fi
+    \else
+      \ifPOE@fiberin@
+        \drawfiber@{FiberIn}(\oenodeRefA{}){}
+      \fi
+      \ifPOE@fiberout@
+        \drawfiber@{FiberOut}{}(\oenodeRefB{})
+      \fi
+    \fi\fi
+  \fi
+}%
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\POE@InternalConn}
+%    \begin{macrocode}
+\def\POE@InternalConn{%
   \ifPOE@beam
     \ifPOE@endbox
-      \drawbeam[raytrace=false]{(\oenodeRefA{})}{}
+      \drawbeam[raytrace=false](\oenodeRefA{}){}
     \else\ifPOE@startbox
-      \drawbeam[raytrace=false]{}{(\oenodeRefB{})}
+      \drawbeam[raytrace=false]{}(\oenodeRefB{})
     \else
-      \drawbeam[raytrace=false]{(\oenodeRefA{})}{}{(\oenodeRefB{})}
+      \drawbeam[raytrace=false](\oenodeRefA{}){}(\oenodeRefB{})
     \fi\fi
   \else\ifPOE@fiber@
-%    \end{macrocode}
-% This is equivalent to the code in \cs{POE@drawPresetFibers}.
-%    \begin{macrocode}
-    \ifPOE@endbox
-      \ifPOE@fiberin@
-        \drawfiber@{FiberIn}{(\oenodeRefA{})}{}
-      \fi
-    \else\ifPOE@startbox
-      \ifPOE@fiberout@
-        \drawfiber@{FiberOut}{}{(\oenodeRefB{})}
-      \fi
-    \else
-      \ifPOE@fiberin@
-        \drawfiber@{FiberIn}{(\oenodeRefA{})}{}
-      \fi
-      \ifPOE@fiberout@
-        \drawfiber@{FiberOut}{}{(\oenodeRefB{})}
-      \fi
-    \fi\fi
-  \fi\fi
-}%
-%    \end{macrocode}
-% \end{macro}
-% \begin{macro}{\POE@drawInternalConnectionsOld}
-%    \begin{macrocode}
-\def\POE@drawInternalConnectionsOld{%
-  \ifPOE@endbox
-    \@nameuse{\POE@connIn}
+    \POE@InternalFiberConn
   \else
-    \ifPOE@fiber@
-      \ifPOE@fiberin@
-        \@nameuse{\POE@connIn}
-      \fi
-      \ifPOE@fiberout@
-        \@nameuse{\POE@connOut}
-      \fi
-    \else
-      \ifPOE@connjoin
-        \def\POE@tempa{POE@conn@in@i}%
-        \ifx\POE@tempa\POE@connIn
-          \def\POE@tempb{POE@conn@out@o}
-          \ifx\POE@tempb\POE@connOut
-            \pscustom[style=Beam, linejoin=\POE@key@connjoin]{%
-              \@nameuse{\POE@connIn}\@nameuse{\POE@connOut}}%
-          \else\ifx\@empty\POE@connOut
-            \pscustom[style=Beam, linejoin=\POE@key@connjoin]{%
-              \@nameuse{\POE@connIn}\@nameuse{\POE@connOut}}%
-          \else
-            \@nameuse{\POE@connIn}\@nameuse{\POE@connOut}%
-          \fi\fi
-        \else
-          \def\POE@tempa{POE@conn@in@o}%
-          \ifx\POE@tempa\POE@connIn
-            \def\POE@tempb{POE@conn@out@o}
-            \ifx\POE@tempb\POE@connOut
-              \@nameuse{\POE@connIn}\@nameuse{\POE@connOut}%
-            \else\ifx\@empty\POE@connOut
-              \pscustom[style=Beam, linejoin=\POE@key@connjoin]{%
-                \@nameuse{\POE@connIn}\@nameuse{\POE@connOut}}%
-            \else
-              \pscustom[style=Beam, linejoin=\POE@key@connjoin]{%
-                \@nameuse{\POE@connIn}\@nameuse{\POE@connOut}}%
-            \fi\fi
-          \else
-            \@nameuse{\POE@connIn}\@nameuse{\POE@connOut}%
-          \fi
-        \fi
-      \else
-        \@nameuse{\POE@connIn}\@nameuse{\POE@connOut}%
-      \fi
-    \fi
-  \fi
-}%
-%    \end{macrocode}
-% \end{macro}
-%
-% \subsection{Old connection code}
-%
-% The old connection code for backward compatibility to version 2.x. As this is
-% obsolete and was broken by design, there is no need to comment on this.
-%    \begin{macrocode}
-\def\optexp@nodeA{\oenodeIn{}}%
-\def\optexp@nodeB{\oenodeOut{}}%
-\define@key[psset]{optexp}{connjoin}{%
- \edef\POE@temp{#1}%
- \ifnum\POE@temp<0
-   \POE@connjoinfalse
- \else\ifnum\POE@temp>2
-   \POE@connjoinfalse
- \else
-   \POE@connjointrue
-   \edef\POE@key@connjoin{\POE@temp}
- \fi\fi
-}%
-\def\POE@key@conn{}%
-\define@key[psset]{optexp}{conn}{%
-  \edef\POE@key@conn{#1}%
-  \expandafter\POE@psset@@conn\POE@key@conn\@empty-\@empty\@nil
-  \if@pst\else
-    \PackageError{pst-optexp}{Bad connection specification: #1}%
-  \fi
-}%
-\def\POE@psset@@conn#1-#2\@empty#3\@nil{%
-  \@psttrue
-  \def\POE@next##1,#1-##2,##3\@nil{\def\POE@temp{##2}}%
-  \expandafter\POE@next\POE@conntable,#1-#1,\@nil
-  \@ifundefined{POE@conn@in@\POE@temp}%
-    {\@pstfalse\def\POE@connIn{}}%
-    {\edef\POE@connIn{POE@conn@in@\POE@temp}}%
-  \@ifundefined{POE@conn@out@#2}%
-    {\@pstfalse\def\POE@connOut{}}%
-    {\def\POE@connOut{POE@conn@out@#2}}%
-}%
-\def\POE@connIn{}%
-\def\POE@connOut{}%
-\def\POE@conntable{,o-o,i-i,f-f}%
-\def\POE@conn@out@{\ifPOE@insideobj\else\POE@conn@out@a\fi}%
-\def\POE@conn@in@{\ifPOE@insideobj\else\POE@conn@in@a\fi}%
-\def\POE@conn@in@o{%
-  \psline[style=Beam](\oenodeRefA{})(\optexp@nodeA)%
-}%
-\def\POE@conn@out@o{%
-  \psline[style=Beam](\optexp@nodeB)(\oenodeRefB{})%
-}%
-\def\POE@conn@in@f{%
-  \pccurve[%
-    angleA=!\POE@dict{/N@\oenodeRefA{} /N@\oenodeRefB{} SlopeAngle},
-    angleB=!\POE@dict{/N@\oenodeRefB{} /N@\oenodeRefA{} SlopeAngle},
-    style=FiberIn](\oenodeRefA{})(\optexp@nodeA)%
-}%
-\def\POE@conn@out@f{%
-  \pccurve[%
-    angleA=!\POE@dict{/N@\oenodeRefA{} /N@\oenodeRefB{} SlopeAngle},
-    angleB=!\POE@dict{/N@\oenodeRefB{} /N@\oenodeRefA{} SlopeAngle},
-    style=FiberOut](\optexp@nodeB)(\oenodeRefB{})%
-}%
-\def\POE@conn@in@i{%
-  \def\pst@par{style=Beam}
-  \begin@OpenObj
-    \addto@pscode{%
-      [%]
-      \pst@optexpdict
-        (\oenode{}{}) true GetInternalBeamNodesCompat
-        /N@\oenodeRefA{} @GetCenter 
-      end
-    }%
-  \psline@ii
-}%
-\def\POE@conn@out@i{%
-  \def\pst@par{style=Beam}
-  \begin@OpenObj
-    \addto@pscode{%
-      [%]
-      \pst@optexpdict
-        /N@\oenodeRefB{} @GetCenter
-        (\oenode{}{}) true GetInternalBeamNodesCompat
-      end
-    }%
-  \psline@ii
-}%
-\def\POE@conn@in@a{%
-  dup xcheck not {
-    \POE@dict{1 GetInternalBeamNodeCompat}
-  } if
-  exec
-}%
-\def\POE@conn@in@A{%
-  dup xcheck not {
-    false \POE@dict{GetInternalBeamNodesCompat} %
-  } if
-  exec
-}%
-\def\POE@conn@in@b{%
-  dup xcheck not {
-    \POE@dict{(N) GetInternalBeamNodeCompat}
-  } if
-  exec
-}%
-\def\POE@conn@in@B{%
-  dup xcheck not {
-    true \POE@dict{GetInternalBeamNodesCompat} %
-  } if
-  exec
-}%
-\let\POE@conn@out@a\POE@conn@in@a
-\let\POE@conn@out@A\POE@conn@in@B
-\let\POE@conn@out@b\POE@conn@in@b
-\let\POE@conn@out@B\POE@conn@in@A
-\def\drawbeam@compat{%
-  \ifPOE@connjoin
-    \setkeys+[psset]{optexp}{linejoin=\POE@key@connjoin}%
-  \fi
-  \addto@pscode{[% ]
-    \POE@tempd\space
-    \@nameuse{\POE@connOut}
-    \POE@tempc\space
-    \@nameuse{\POE@connIn}}%
-  \psline@ii
-\ignorespaces}%
-%
-%    \end{macrocode}
-%
-% \section{General purpose macros}
-%
-% \begin{macro}{\defShiftedNode}
-%   This is provided only for backward compatibility, and should be replaced by
-%   \cs{nodexn}.
-%    \begin{macrocode}
-\def\defShiftedNode(#1)(#2)#3{%
-  \PackageWarning{pst-optexp}{%
-    \string\defShiftedNode\space is deprecated,\MessageBreak
-    use \string\nodexn\space(pst-node) instead.}%
-  \pst@getcoor{#1}\pst@tempa%
-  \pst@getcoor{#2}\pst@tempb%
-  \pnode(! \pst@tempb \pst@tempa \POE@dict{VecAdd} \tx@UserCoor){#3}%
+    \POE@InternalWireConn
+  \fi\fi
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -13816,7 +14441,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\newOptexpComp@}
+% \begin{macro}{\newOptexpFiberComp}
 %    \begin{macrocode}
 \def\newOptexpFiberComp#1{%
   \POE@Verb{%
@@ -13825,6 +14450,13 @@
       NewOptexpFiberComp
   }%
 \ignorespaces}%
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{newOptexpElecComp}
+% This may change at later times.
+%    \begin{macrocode}
+\let\newOptexpElecComp\newOptexpFiberComp
 %    \end{macrocode}
 % \end{macro}
 %
@@ -13930,11 +14562,6 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\begin@OptexpFiberObj}
-%    \begin{macrocode}
-\let\begin@OptexpFiberObj\begin@OptexpObj
-%    \end{macrocode}
-% \end{macro}
 % \begin{macro}{\begin@OptexpTripole}
 %    \begin{macrocode}
 \let\POE@disablepos\relax
@@ -14058,7 +14685,7 @@
 }%
 %    \end{macrocode}
 % \end{macro}
-% 
+%
 % \begin{macro}{\POE@newdipole}
 %    \begin{macrocode}
 \def\POE@newdipole[#1]#2#3{%
@@ -14066,10 +14693,10 @@
     \@namedef{#2}{\pst@object{#2}}%
     \expandafter\def\csname #2@i\endcsname(##1)(##2){%
       \@ifnextchar\bgroup%
-        {\@nameuse{#2@i@}(##1)(##2)}%
-        {\@nameuse{#2@i@}(##1)(##2){}}%
+        {\@nameuse{#2@ii}(##1)(##2)}%
+        {\@nameuse{#2@ii}(##1)(##2){}}%
     }%
-    \expandafter\def\csname #2@i@\endcsname(##1)(##2)##3{%
+    \expandafter\def\csname #2@ii\endcsname(##1)(##2)##3{%
       \addbefore@par{#3}%
       \addafter@par{#1}%
       \begin@OptexpObj
@@ -14077,14 +14704,14 @@
           \POE@regNodes{##1}{##2}
           \POE@extnodealign
         \fi
-        \POE@drawcomponent[#2]{##3}{\@nameuse{#2@ii}}
+        \POE@drawcomponent{#2}{##3}
         \ifPOE@backlayer
           \POE@Verb{ (1) (N) (\oenode{}{}) CorrectDipoleIfc }%
-          \POE@drawInternalConnections
+          \POE@InternalConn
         \fi
       \end@OptexpDipole
     }%
-    \dipole@iimacro{#2}%
+    \@ifundefined{#2@nodes}{\expandafter\def\csname #2@nodes\endcsname{\POE@dipole@nodes}}{}%
   }{%
     \PackageError{pst-optexp}{%
       dipole component '#2' already defined}%
@@ -14100,27 +14727,25 @@
     \@namedef{#2}{\pst@object{#2}}%
     \expandafter\def\csname #2@i\endcsname(##1)(##2){%
       \@ifnextchar\bgroup%
-        {\@nameuse{#2@i@}(##1)(##2)}%
-        {\@nameuse{#2@i@}(##1)(##2){}}%
+        {\@nameuse{#2@ii}(##1)(##2)}%
+        {\@nameuse{#2@ii}(##1)(##2){}}%
     }%
-    \expandafter\def\csname #2@i@\endcsname(##1)(##2)##3{%
+    \expandafter\def\csname #2@ii\endcsname(##1)(##2)##3{%
       \addbefore@par{#3}%
       \addafter@par{#1}%
-      \begin@OptexpFiberObj
+      \begin@OptexpObj
         \ifPOE@backlayer
           \POE@regNodes{##1}{##2}
           \POE@extnodealign
         \fi
-        \POE@drawcomponent[#2]{##3}{\@nameuse{#2@ii}}
+        \POE@drawcomponent{#2}{##3}
         \ifPOE@backlayer
           \POE@Verb{ (1) (N) (\oenode{}{}) CorrectDipoleIfc }%
-          \ifPOE@fiberpreset@
-            \POE@drawPresetFibers
-          \fi
+          \POE@PresetFiberConn
         \fi
         \end@OptexpDipole
       }%
-      \fiberdipole@iimacro{#2}%
+      \@ifundefined{#2@nodes}{\expandafter\def\csname #2@nodes\endcsname{\POE@fiberdipole@nodes}}{}%
    }{%
      \PackageError{pst-optexp}{%
        fiber dipole object '#2' already defined}%
@@ -14128,7 +14753,8 @@
 \ignorespaces}%
 %    \end{macrocode}
 % \end{macro}
-% 
+%
+%
 % \begin{macro}{\POE@newtripole}
 % Equivalent to \cs{POE@newdipole} for tripole objects.
 %    \begin{macrocode}
@@ -14136,10 +14762,10 @@
   \@ifundefined{#2@i}{%
     \@namedef{#2}{\pst@object{#2}}%
     \expandafter\def\csname #2@i\endcsname(##1)(##2)(##3){%
-      \@ifnextchar\bgroup{\@nameuse{#2@i@}(##1)(##2)(##3)}%
-                         {\@nameuse{#2@i@}(##1)(##2)(##3){}}%
+      \@ifnextchar\bgroup{\@nameuse{#2@ii}(##1)(##2)(##3)}%
+                         {\@nameuse{#2@ii}(##1)(##2)(##3){}}%
     }%
-    \expandafter\def\csname #2@i@\endcsname(##1)(##2)(##3)##4{%
+    \expandafter\def\csname #2@ii\endcsname(##1)(##2)(##3)##4{%
       \addbefore@par{#3}%
       \addafter@par{ref@angle=180,#1}%
       \begin@OptexpTripole
@@ -14147,13 +14773,13 @@
           \POE@calcNodes{##1}{##2}{##3}%
           \POE@regNodes{##1}{##3}%
         \fi
-        \POE@drawcomponent[#2]{##4}{\@nameuse{#2@ii}}
+        \POE@drawcomponent{#2}{##4}
         \ifPOE@backlayer
-          \POE@drawInternalConnections
+          \POE@InternalConn
         \fi
       \end@OptexpTripole
     }%
-    \tripole@iimacro{#2}%
+    \@ifundefined{#2@nodes}{\expandafter\def\csname #2@nodes\endcsname{\POE@tripole@nodes}}{}%
   }{%
     \PackageError{pst-optexp}{%
       tripole object '#2' already defined}%
@@ -14161,70 +14787,22 @@
 \ignorespaces}%
 %    \end{macrocode}
 % \end{macro}
-% 
-% \begin{macro}{\dipole@iimacro}
-%    \begin{macrocode}
-\def\dipole@iimacro#1{%
-  \POE@iimacro{#1}{\dipole@nodes}%
-\ignorespaces}%
-%    \end{macrocode}
-% \end{macro}
-% \begin{macro}{\fiberdipole@iimacro}
-%    \begin{macrocode}
-\def\fiberdipole@iimacro#1{%
-  \POE@iimacro{#1}{\fiberdipole@nodes}%
-\ignorespaces}%
-%    \end{macrocode}
-% \end{macro}
-% \begin{macro}{\tripole@iimacro}
-%    \begin{macrocode}
-\def\tripole@iimacro#1{%
-  \POE@iimacro{#1}{\tripole@nodes}%
-\ignorespaces}%
-%    \end{macrocode}
-% \end{macro}
-% \begin{macro}{\POE@iimacro}
-%    \begin{macrocode}
-\def\POE@iimacro#1#2{%
-  \@namedef{#1@ii}{%
-    \ifPOE@backlayer
-      \pnode(0,0){\oenodeCenter{}}%
-    \fi
-    \@ifundefined{#1@iii}{%
-      \ifPOE@backlayer
-        \@ifundefined{#1@nodes}{#2}{\@nameuse{#1@nodes}}%
-      \fi
-      \ifPOE@frontlayer
-        \@nameuse{#1@comp}%
-      \fi
-    }{%
-      \ifPOE@backlayer
-        \PackageWarning{pst-optexp}{%
-          Using #1@iii, please switch to the new\MessageBreak
-          interface system.}%
-        \@nameuse{#1@iii}%
-      \fi
-    }%
-  }%
-\ignorespaces}%
-%    \end{macrocode}
-% \end{macro}
 %
-% \begin{macro}{\POE@newfiberquadrupole}
+% \begin{macro}{\optcoupler}
 %    \begin{macrocode}
 \def\optcoupler{\pst@object{optcoupler}}%
 \def\optcoupler@i(#1)(#2){%
   \@ifnextchar(%)
-    {\optcoupler@@i@(#1)(#2)}%
-    {\optcoupler@@i@(#1)(#1)(#2)(#2)}%
+    {\optcoupler@ii(#1)(#2)}%
+    {\optcoupler@ii(#1)(#1)(#2)(#2)}%
 }%
-\def\optcoupler@@i@(#1)(#2)(#3)(#4){%
+\def\optcoupler@ii(#1)(#2)(#3)(#4){%
   \@ifnextchar\bgroup%
-    {\optcoupler@i@(#1)(#2)(#3)(#4)}%
-    {\optcoupler@i@(#1)(#2)(#3)(#4){}}%
+    {\optcoupler@iii(#1)(#2)(#3)(#4)}%
+    {\optcoupler@iii(#1)(#2)(#3)(#4){}}%
 }%
-\def\optcoupler@i@(#1)(#2)(#3)(#4)#5{%
-  \begin@OptexpFiberObj
+\def\optcoupler@iii(#1)(#2)(#3)(#4)#5{%
+  \begin@OptexpObj
     \ifPOE@backlayer
       \ifx\POE@key@coupleralign\POE@str@top
         \pnode(#1){\oenodeRefA{}}
@@ -14245,7 +14823,7 @@
                 \tx@UserCoor){\oenodeRefB{}}
       \fi\fi
     \fi
-    \POE@drawcomponent[optcoupler]{#5}{\@nameuse{optcoupler@ii}}
+    \POE@drawcomponent{optcoupler}{#5}
     \ifPOE@backlayer
       \POE@Verb{%
         (1) (3) (\oenode{}{}) CorrectDipoleIfc 
@@ -14276,7 +14854,6 @@
     \fi
   \end@OptexpObj
 }%
-\fiberdipole@iimacro{optcoupler}%
 %    \end{macrocode}
 % \end{macro}
 % 
@@ -14286,16 +14863,16 @@
 \def\wdmsplitter{\pst@object{wdmsplitter}}%
 \def\wdmsplitter@i(#1)(#2){%
   \@ifnextchar(%)
-    {\wdmsplitter@@i@(#1)(#2)}%
-    {\wdmsplitter@@i@(#1)(#2)(#2)}%
+    {\wdmsplitter@ii(#1)(#2)}%
+    {\wdmsplitter@ii(#1)(#2)(#2)}%
 }%
-\def\wdmsplitter@@i@(#1)(#2)(#3){%
+\def\wdmsplitter@ii(#1)(#2)(#3){%
   \@ifnextchar\bgroup%
-    {\wdmsplitter@i@(#1)(#2)(#3)}%
-    {\wdmsplitter@i@(#1)(#2)(#3){}}%
+    {\wdmsplitter@iii(#1)(#2)(#3)}%
+    {\wdmsplitter@iii(#1)(#2)(#3){}}%
 }%
-\def\wdmsplitter@i@(#1)(#2)(#3)#4{%
-  \begin@OptexpFiberObj
+\def\wdmsplitter@iii(#1)(#2)(#3)#4{%
+  \begin@OptexpObj
     \ifPOE@backlayer
       \pnode(#1){\oenodeRefA{}}
       \ifx\POE@key@coupleralign\POE@str@top
@@ -14310,7 +14887,7 @@
                  \tx@UserCoor){\oenodeRefB{}}
       \fi\fi
     \fi
-    \POE@drawcomponent[wdmsplitter]{#4}\wdmsplitter@ii
+    \POE@drawcomponent{wdmsplitter}{#4}
     \ifPOE@backlayer
       \POE@Verb{%
         (1) (2) (\oenode{}{}) CorrectDipoleIfc 
@@ -14334,7 +14911,6 @@
     \fi
   \end@OptexpObj
 }%
-\fiberdipole@iimacro{wdmsplitter}%
 %    \end{macrocode}
 % \end{macro}
 % 
@@ -14343,16 +14919,16 @@
 \def\wdmcoupler{\pst@object{wdmcoupler}}%
 \def\wdmcoupler@i(#1)(#2){%
   \@ifnextchar(%)
-    {\wdmcoupler@@i@(#1)(#2)}%
-    {\wdmcoupler@@i@(#1)(#1)(#2)}%
+    {\wdmcoupler@ii(#1)(#2)}%
+    {\wdmcoupler@ii(#1)(#1)(#2)}%
 }%
-\def\wdmcoupler@@i@(#1)(#2)(#3){%
+\def\wdmcoupler@ii(#1)(#2)(#3){%
   \@ifnextchar\bgroup%
-    {\wdmcoupler@i@(#1)(#2)(#3)}%
-    {\wdmcoupler@i@(#1)(#2)(#3){}}%
+    {\wdmcoupler@iii(#1)(#2)(#3)}%
+    {\wdmcoupler@iii(#1)(#2)(#3){}}%
 }%
-\def\wdmcoupler@i@(#1)(#2)(#3)#4{%
-  \begin@OptexpFiberObj
+\def\wdmcoupler@iii(#1)(#2)(#3)#4{%
+  \begin@OptexpObj
     \ifPOE@backlayer
       \pnode(#3){\oenodeRefB{}}
       \ifx\POE@key@coupleralign\POE@str@top
@@ -14367,7 +14943,7 @@
                  \tx@UserCoor){\oenodeRefA{}}
       \fi\fi
     \fi
-    \POE@drawcomponent[wdmcoupler]{#4}\wdmcoupler@ii
+    \POE@drawcomponent{wdmcoupler}{#4}
     \ifPOE@backlayer 
       \POE@Verb{%
         (1) (N) (\oenode{}{}) CorrectDipoleIfc 
@@ -14389,7 +14965,6 @@
     \fi
   \end@OptexpObj
 }%
-\fiberdipole@iimacro{wdmcoupler}%
 %    \end{macrocode}
 % \end{macro}
 % \begin{macro}{\optcirculator}
@@ -14397,34 +14972,37 @@
 \def\optcirculator{\pst@object{optcirculator}}%
 \def\optcirculator@i(#1)(#2)(#3){%
   \@ifnextchar\bgroup%
-    {\optcirculator@i@(#1)(#2)(#3)}%
-    {\optcirculator@i@(#1)(#2)(#3){}}%
+    {\optcirculator@ii(#1)(#2)(#3)}%
+    {\optcirculator@ii(#1)(#2)(#3){}}%
 }%
-\def\optcirculator@i@(#1)(#2)(#3)#4{%
-  \addafter@par{ref@angle=180}%
-  \begin@OptexpFiberObj
-    \ifPOE@backlayer
-      \POE@regNodes{#1}{#2}
-      \ifx\POE@key@position\@empty
-        \ifx\POE@key@abspos\@empty
-          \POE@positionrefnodes
-          \pst@getcoor{#1}\POE@tempa%
-          \pst@getcoor{#2}\POE@tempc%
-          \pst@getcoor{#3}\POE@tempb%
-          \pnode(! \POE@dict{%
-            \POE@tempa \tx@UserCoor 2 copy 2 copy 
-            \POE@tempc \tx@UserCoor 4 2 roll @ABVect
-            2 copy 2 copy 10 4 roll
-            \POE@tempb \tx@UserCoor 6 -2 roll @ABVect
-            4 2 roll tx@EcldDict begin Project end VecAdd
-            2 copy 6 -2 roll -0.5 VecScale VecAdd
-          }){\oenode@RefA{}}%
-          \pnode(! \POE@dict{4 2 roll 0.5 VecScale VecAdd})%
-            {\oenode@RefB{}}%
-        \fi
+\def\POE@calcCircRefNodes#1#2#3{%
+\ifPOE@backlayer
+  \POE@regNodes{#1}{#2}
+  \ifx\POE@key@position\@empty
+    \ifx\POE@key@abspos\@empty
+      \POE@positionrefnodes
+      \pst@getcoor{#1}\POE@tempa%
+      \pst@getcoor{#2}\POE@tempc%
+      \pst@getcoor{#3}\POE@tempb%
+      \pnode(! \POE@dict{%
+        \POE@tempa \tx@UserCoor 2 copy 2 copy 
+        \POE@tempc \tx@UserCoor 4 2 roll @ABVect
+        2 copy 2 copy 10 4 roll
+        \POE@tempb \tx@UserCoor 6 -2 roll @ABVect
+        4 2 roll tx@EcldDict begin Project end VecAdd
+        2 copy 6 -2 roll -0.5 VecScale VecAdd
+      }){\oenode@RefA{}}%
+      \pnode(! \POE@dict{4 2 roll 0.5 VecScale VecAdd})%
+      {\oenode@RefB{}}%
       \fi
     \fi
-    \POE@drawcomponent[optcirculator]{#4}\optcirculator@ii
+  \fi
+}%
+\def\optcirculator@ii(#1)(#2)(#3)#4{%
+  \addafter@par{ref@angle=180}%
+  \begin@OptexpObj
+    \POE@calcCircRefNodes{#1}{#2}{#3}%
+    \POE@drawcomponent{optcirculator}{#4}
     \ifPOE@backlayer
       \ifPOE@fiberpreset@
         \ifPOE@fiberpresetin@top
@@ -14444,25 +15022,24 @@
     \fi
   \end@OptexpObj
 }%
-\fiberdipole@iimacro{optcirculator}%
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\optcirculator}
+% \begin{macro}{\fiberbox}
 %    \begin{macrocode}
 \def\fiberbox{\pst@object{fiberbox}}%
 \def\fiberbox@i(#1)(#2){%
   \@ifnextchar(%)
-    {\fiberbox@@i@(#1)(#2)}%
-    {\fiberbox@@i@(#1)(#2)()()}%
+    {\fiberbox@ii(#1)(#2)}%
+    {\fiberbox@ii(#1)(#2)()()}%
 }%
-\def\fiberbox@@i@(#1)(#2)(#3)(#4){%
+\def\fiberbox@ii(#1)(#2)(#3)(#4){%
   \@ifnextchar\bgroup%
-    {\fiberbox@i@(#1)(#2)(#3)(#4)}%
-    {\fiberbox@i@(#1)(#2)(#3)(#4){}}%
+    {\fiberbox@iii(#1)(#2)(#3)(#4)}%
+    {\fiberbox@iii(#1)(#2)(#3)(#4){}}%
 }%
-\def\fiberbox@i@(#1)(#2)(#3)(#4)#5{%
-  \begin@OptexpFiberObj
+\def\fiberbox@iii(#1)(#2)(#3)(#4)#5{%
+  \begin@OptexpObj
     \ifnum\POE@key@fiberboxcountin=1
       \ifnum\POE@key@fiberboxcountout=1
         \ifdim\POE@key@fiberboxheight pt=0pt
@@ -14502,7 +15079,7 @@
         }%
       \fi
     \fi
-    \POE@drawcomponent[fiberbox]{#5}\fiberbox@ii
+    \POE@drawcomponent{fiberbox}{#5}
     \ifPOE@backlayer
       \ifx\\#3#4\\%
 %    \end{macrocode}
@@ -14511,43 +15088,70 @@
         \ifPOE@fiberpreset@
           \ifnum\POE@key@fiberboxcountin=1
             \ifPOE@fiberpresetin@
-              \drawfiber@{FiberIn}{(#1)}{\POE@key@compname}
+              \drawfiber@{FiberIn}(#1){}
             \fi
           \fi
           \ifnum\POE@key@fiberboxcountout=1
             \ifPOE@fiberpresetout@
-              \drawfiber@{FiberOut}{\POE@key@compname}{(#2)}
+              \drawfiber@{FiberOut}{}(#2)
             \fi
           \fi
-        \fi
+        \else\ifPOE@wire@
+          \ifnum\POE@key@fiberboxcountin=1
+            \ifPOE@wirein@
+              \drawwire@{WireIn}(#1){}
+            \fi
+          \fi
+          \ifnum\POE@key@fiberboxcountout=1
+            \ifPOE@wireout@
+              \drawwire@{WireOut}{}(#2)
+            \fi
+          \fi
+        \fi\fi
       \else
 %    \end{macrocode}
-% If four nodes are specified, connect all of them with the respective interface
+% If four reference nodes are specified, connect all of them with the respective interface
 % nodes they are aligned to.
 %    \begin{macrocode}
         \ifPOE@fiberpreset@
           \ifPOE@fiberpresetin@
             \ifPOE@fiberpresetin@top
-              \drawfiber@{FiberIn1}{(#1)}{\POE@key@compname}
+              \drawfiber@{FiberIn1}(#1){}
             \fi
             \ifPOE@fiberpresetin@bottom
-              \drawfiber@{FiberIn2}{(#2)}{\POE@key@compname}
+              \drawfiber@{FiberIn2}(#2){}
             \fi
           \fi
           \ifPOE@fiberpresetout@
             \ifPOE@fiberpresetout@top
-              \drawfiber@{FiberOut1}{\POE@key@compname}{(#3)}
+              \drawfiber@{FiberOut1}{}(#3)
             \fi
             \ifPOE@fiberpresetout@bottom
-              \drawfiber@{FiberOut2}{\POE@key@compname}{(#4)}
+              \drawfiber@{FiberOut2}{}(#4)
             \fi
           \fi
-        \fi
+        \else\ifPOE@wire@
+          \ifPOE@wirein@
+            \ifPOE@wirein@top
+              \drawwire@{WireIn1}(#1){}
+            \fi
+            \ifPOE@wirein@bottom
+              \drawwire@{WireIn2}(#2){}
+            \fi
+          \fi
+          \ifPOE@wireout@
+            \ifPOE@wireout@top
+              \drawwire@{WireOut1}{}(#3)
+            \fi
+            \ifPOE@wireout@bottom
+              \drawwire@{WireOut2}{}(#4)
+            \fi
+          \fi
+        \fi\fi
       \fi
     \fi
   \end@OptexpObj
 }%
-\fiberdipole@iimacro{fiberbox}%
 %    \end{macrocode}
 % \end{macro}
 %
@@ -14833,29 +15437,23 @@
 \def\optdipole{\pst@object{optdipole}}
 \def\optdipole@i(#1)(#2)#3{%
   \@ifnextchar\bgroup%
-    {\optdipole@i@(#1)(#2){#3}}%
-    {\optdipole@i@(#1)(#2){#3}{}}%
+    {\optdipole@ii(#1)(#2){#3}}%
+    {\optdipole@ii(#1)(#2){#3}{}}%
 }%
-\def\optdipole@i@(#1)(#2)#3#4{%
+\def\optdipole@ii(#1)(#2)#3#4{%
    \begin@OptexpObj
       \ifPOE@backlayer
         \POE@regNodes{#1}{#2}
         \POE@extnodealign
       \fi
-      \POE@drawcomponent[optdipole]{#4}{%
-        \ifPOE@backlayer
-          \pnode(!\POE@dict{@@x0 @@y0}){\oenodeCenter{}}%
-          \dipole@nodes
-        \fi
-        \ifPOE@frontlayer
-          #3
-        \fi
-      }%
+      \def\optdipole@comp{#3}%
+      \POE@drawcomponent{optdipole}{#4}
       \ifPOE@backlayer
-        \POE@drawInternalConnections
+        \POE@InternalConn
       \fi
    \end@OptexpObj
 }%
+\def\optdipole@nodes{\POE@dipole@nodes}
 %    \end{macrocode}
 % \end{macro}
 %  
@@ -14875,29 +15473,24 @@
 \def\opttripole{\pst@object{opttripole}}
 \def\opttripole@i(#1)(#2)(#3)#4{%
   \@ifnextchar\bgroup%
-    {\opttripole@i@(#1)(#2)(#3){#4}}%
-    {\opttripole@i@(#1)(#2)(#3){#4}{}}%
+    {\opttripole@ii(#1)(#2)(#3){#4}}%
+    {\opttripole@ii(#1)(#2)(#3){#4}{}}%
 }%
-\def\opttripole@i@(#1)(#2)(#3)#4#5{%
+\def\opttripole@ii(#1)(#2)(#3)#4#5{%
   \addafter@par{ref@angle=180}
   \begin@OptexpTripole
     \ifPOE@backlayer   
       \POE@calcNodes{#1}{#2}{#3}%
       \POE@regNodes{#1}{#3}%
     \fi
-    \POE@drawcomponent{#5}{%
-      \ifPOE@backlayer
-        \tripole@nodes
-      \fi
-      \ifPOE@frontlayer
-        #4
-      \fi
-    }%
+    \def\opttripole@comp{#4}%
+    \POE@drawcomponent{opttripole}{#5}
     \ifPOE@backlayer
-      \POE@drawInternalConnections
+      \POE@InternalConn
     \fi
   \end@OptexpTripole
 }%
+\def\opttripole@nodes{\POE@tripole@nodes}
 %    \end{macrocode}
 % \end{macro}
 % 
@@ -14926,20 +15519,12 @@
 }%
 \def\fibercollimator@v#1{%
   \addbefore@par{allowbeaminside=false}%
-  \begin@OptexpFiberObj
+  \begin@OptexpObj
     \ifPOE@backlayer
       \POE@regNodes{\POE@tempa}{\POE@tempb}%
       \POE@extnodealign
     \fi
-    \POE@drawcomponent[fibercollimator]{#1}{%
-       \pnode(0,0){\oenodeCenter{}}%
-       \ifPOE@backlayer
-         \fibercollimator@nodes
-       \fi
-       \ifPOE@frontlayer
-         \fibercollimator@comp
-       \fi
-    }%
+    \POE@drawcomponent{fibercollimator}{#1}
     \ifPOE@backlayer
       \ifPOE@beam
         \drawbeam{(\oenodeRefA{})}{\POE@key@compname}
@@ -14980,13 +15565,15 @@
 % This macro is called by every unit
 % The first parameter contains the label, the second one the drawing code
 %    \begin{macrocode}
-\def\POE@drawcomponent{%
-  \@ifnextchar[%]
-    {\POE@drawcomponent@i}{\POE@drawcomponent@i[]}%
-}%
-\def\POE@drawcomponent@i[#1]#2#3{%
+\def\POE@drawcomponent#1#2{%
   \def\POE@comp{%
-    #3%
+    \ifPOE@backlayer
+      \pnode(!\POE@dict{@@x0 @@y0}){\oenodeCenter{}}
+      \@nameuse{#1@nodes}
+    \fi
+    \ifPOE@frontlayer
+      \@nameuse{#1@comp}
+    \fi
     \ifx\POE@key@extnode\@empty\else
       \ifPOE@backlayer
         \pnode(! \POE@dict{
@@ -15005,9 +15592,7 @@
       \fi
     \fi
   }%
-  \ifx\\#1\\\else
-    \@ifundefined{#1@ref}{}{\@nameuse{#1@ref}}%
-  \fi
+  \@ifundefined{#1@ref}{}{\@nameuse{#1@ref}}%
   \begingroup
   \ifPOE@endbox
     \psset[optexp]{abspos={%
@@ -15153,41 +15738,51 @@
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}{\tripole@nodes}
+% \begin{macro}{\POE@tripole@nodes}
 %    \begin{macrocode}
-\def\tripole@nodes{%
+\def\POE@tripole@nodes{%
   \newOptexpComp{{0 0} {1 0} @@x neg @@x refl {PlainIfc} 1}%
-  \pnode(! \POE@dict{@@y0 @@x0}){\oenodeCenter{}}
 \ignorespaces}%
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}{\dipole@nodes}
+% \begin{macro}{\POE@dipole@nodes}
 %    \begin{macrocode}
-\def\dipole@nodes{%
+\def\POE@dipole@nodes{%
   \newOptexpComp{%
     {@@x0 @@x sub 0} {0 1} @@y0 @@y sub @@y0 @@y add trans {PlainIfc} 
     @@x 0 eq not {
       {@@x0 @@x add 0} {0 1} @@y0 @@y sub @@y0 @@y add trans {PlainIfc}
     } if \POE@key@n }%
-  \pnode(! \POE@dict{@@x0 @@y0}){\oenodeCenter{}}
 \ignorespaces}%
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}{fiberdipole@nodes}
+% \begin{macro}{POE@fiberdipole@nodes}
 %    \begin{macrocode}
-\def\fiberdipole@nodes{%
+\def\POE@fiberdipole@nodes{%
   \newOptexpFiberComp{%
     {@@x0 @@x sub 0}
     @@x 0 eq not {
       {@@x0 @@x add 0}
     } if }%
-  \pnode(! \POE@dict{@@x0 @@y0}){\oenodeCenter{}}
 \ignorespaces}%
 %    \end{macrocode}
 % \end{macro}
-% 
+%
+%    \begin{macrocode}
+\let\POE@elecdipole@nodes\POE@fiberdipole@nodes
+%    \end{macrocode}
+%
+% \begin{macro}{POE@comp@rectangle}
+%    \begin{macrocode}
+\def\POE@comp@rectangle{%
+  \psframe[dimen=outer](!\POE@dict{@@x neg @@y0 @@y sub})%
+                       (!\POE@dict{@@x @@y0 @@y add})%
+}%
+%    \end{macrocode}
+% \end{macro}
+%
 % \subsection{Free-ray components}
 %
 % \subsubsection{mirror}
@@ -15288,6 +15883,7 @@
     \addto@pscode{1 }%
     \end@CompIfc
   \fi
+  \pnode(0,0){\oenodeCenter{}}
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -15831,11 +16427,7 @@
 % 
 % \begin{macro}{\optbox@comp}
 %    \begin{macrocode}
-\def\optbox@comp{%
-  \edef\@wd{\POE@key@optboxwidth\space 0.5 mul }
-  \edef\@ht{\POE@key@optboxheight\space 0.5 mul }
-  \psframe[dimen=outer](! \@wd neg \@ht neg)(! \@wd \@ht)
-\ignorespaces}%
+\let\optbox@comp\POE@comp@rectangle
 %    \end{macrocode}
 % \end{macro}
 % 
@@ -15883,7 +16475,7 @@
 % \begin{macro}{\optdetector@nodes}
 %    \begin{macrocode}
 \def\optdetector@nodes{%
-  \dipole@nodes
+  \POE@dipole@nodes
   \ifx\POE@key@dettype\POE@str@dettype@round
     \pnode(! \POE@dict{@@x0 @@x -0.2 mul add} 0){\oenodeCenter{}}%
   \fi
@@ -15907,8 +16499,7 @@
     \else
       \def\@sz{\POE@key@detsize\space 0.5 mul }%
     \fi
-    \psframe[dimen=outer](! \POE@dict{@@x neg @@y neg})%
-                         (! \POE@dict{@@x @@y})%
+    \POE@comp@rectangle
     \bgroup
       \psset{style=DetectorStyle}
       \pspolygon(! \@sz -0.2 mul \@sz -0.4 mul)%
@@ -15956,7 +16547,8 @@
 %    \begin{macrocode}
 \def\optdiode@ref{%
   \POE@setref{%
-    \POE@key@optdiodesize\space 0.5 mul dup /@@y ED /@@x ED 
+    \POE@key@optdiodesize\space 0.5 mul dup dup /@@y ED /@@x ED 
+    0.4 mul /@@sz ED
   }%
 }%
 %    \end{macrocode}
@@ -15965,13 +16557,12 @@
 % \begin{macro}{\optdiode@comp}
 %    \begin{macrocode}
 \def\optdiode@comp{%
-   \edef\@sz{\POE@key@optdiodesize\space}%
-   \psframe[dimen=outer](! \@sz -0.5 mul dup)(!\@sz 0.5 mul dup)
-   \pspolygon(! \@sz -0.2 mul \@sz -0.2 mul)
-             (! \@sz -0.2 mul \@sz 0.2 mul)
-             (! \@sz 0.2 mul 0)
-   \psline(! \@sz 0.2 mul \POE@clwh add \@sz 0.2 mul)%
-          (! \@sz 0.2 mul \POE@clwh add \@sz -0.2 mul)
+   \POE@comp@rectangle
+   \pspolygon(!\POE@dict{@@sz neg dup})
+             (!\POE@dict{@@sz neg @@sz})
+             (!\POE@dict{@@sz 0})
+   \psline(!\POE@dict{@@sz \POE@clwh add @@sz})%
+          (!\POE@dict{@@sz \POE@clwh add @@sz neg})
 \ignorespaces}%
 %    \end{macrocode}
 % \end{macro}
@@ -16007,12 +16598,10 @@
 % \begin{macro}{\doveprism@comp}
 %    \begin{macrocode}
 \def\doveprism@comp{%
-   \edef\@ht{\POE@key@doveprismheight\space 0.5 mul }%
-   \edef\@wd{\POE@key@doveprismwidth\space 0.5 mul }%
-   \pspolygon(! \@wd neg \@ht neg)%
-             (! \@wd \@ht neg)%
-             (! \@wd \@ht 2 mul sub \@ht)%
-             (! \@ht 2 mul \@wd sub \@ht)%
+   \pspolygon(!\POE@dict{@@x neg @@y neg})%
+             (!\POE@dict{@@x @@y neg})%
+             (!\POE@dict{@@x @@y 2 mul sub @@y})%
+             (!\POE@dict{@@y 2 mul @@x sub @@y})
 \ignorespaces}%
 %    \end{macrocode}
 % \end{macro}
@@ -16022,7 +16611,8 @@
 % \begin{macro}{\glanthompson@ref}
 %    \begin{macrocode}
 \def\glanthompson@ref{%
-  \POE@setref{/@@x \POE@key@glanthompsonwidth\space 0.5 mul def
+  \POE@setref{%
+    /@@x \POE@key@glanthompsonwidth\space 0.5 mul def
     /@@y \POE@key@glanthompsonheight\space 0.5 mul def
   }%
 }%      
@@ -16122,14 +16712,28 @@
       0
     \fi
   }%
-  \newOptexpComp{%
-    {\@sz -0.6 mul \@ang tan mul \@hshift neg} 
-    {90 \@ang sub dup cos exch sin} 
-    \@sz \@ang cos div dup -0.4 mul exch 0.6 mul trans {PlainIfc}
-    {\@sz 0.6 mul \@ang tan mul \@hshift neg} 
-    {90 \@ang add dup cos exch sin} 
-    \@sz \@ang cos div dup -0.4 mul exch 0.6 mul trans {PlainIfc} 
-    \POE@key@n true }%
+  \def\POE@tempA{transmission}%
+  \ifx\POE@key@prismtype\POE@tempA
+    \newOptexpComp{%
+      {\@sz -0.6 mul \@ang tan mul \@hshift neg} 
+      {90 \@ang sub dup cos exch sin} 
+      \@sz \@ang cos div dup -0.4 mul exch 0.6 mul trans {PlainIfc}
+      {\@sz 0.6 mul \@ang tan mul \@hshift neg} 
+      {90 \@ang add dup cos exch sin} 
+      \@sz \@ang cos div dup -0.4 mul exch 0.6 mul trans {PlainIfc} 
+      \POE@key@n true }%
+  \else
+    \newOptexpCompAmb{%
+      {\@sz -0.6 mul \@ang tan mul \@hshift neg} 
+      {90 \@ang sub dup cos exch sin} 
+      \@sz \@ang cos div dup -0.4 mul exch 0.6 mul trans {PlainIfc}
+      {0 \@sz -0.4 mul \@hshift sub } {1 0} \@ang tan \@sz mul dup neg exch 
+      trans {PlainIfc}
+      {\@sz 0.6 mul \@ang tan mul \@hshift neg} 
+      {90 \@ang add dup cos exch sin} 
+      \@sz \@ang cos div dup -0.4 mul exch 0.6 mul trans {PlainIfc} 
+      2 \POE@key@n true }%
+  \fi
   \pnode(! 0 \@hshift neg){\oenodeCenter{}}
 }%
 %    \end{macrocode}
@@ -16215,8 +16819,10 @@
 % \begin{macro}{optfiber@ref}
 %    \begin{macrocode}
 \def\optfiber@ref{%
-  \POE@setref{/@@x \POE@key@fiberloopsep\space\POE@key@fiberloops\space
-      1 sub mul 0.5 mul def }%
+  \POE@setref{%
+    /@@x \POE@key@fiberloopsep\space\POE@key@fiberloops\space
+    1 sub mul 0.5 mul def
+  }%
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -16259,9 +16865,8 @@
 % \begin{macro}{\optmzm@comp}
 %    \begin{macrocode}
 \def\optmzm@comp{%
-  \psframe[dimen=outer](! \POE@dict{@@x neg @@y neg})%
-                       (!\POE@dict{@@x @@y})
-  \bgroup
+  \POE@comp@rectangle
+  \begingroup
     \ifPOE@usefiberstyle
       \psset{style=Fiber, arrows=-, ArrowInside=-}
     \fi
@@ -16273,7 +16878,7 @@
            (! \POE@dict{@@x 0.4 mul @@y -0.6 mul})%
            (! \POE@dict{@@x -0.4 mul @@y -0.6 mul})%
            (! \POE@dict{@@x} -0.7 mul 0)%
-  \egroup
+  \endgroup
 \ignorespaces}%
 %    \end{macrocode}
 % \end{macro}
@@ -16282,7 +16887,7 @@
 %
 % \begin{macro}{\optfilter@ref}
 %    \begin{macrocode}
- \def\optfilter@ref{%
+\def\optfilter@ref{%
   \POE@setref{%
     \POE@key@filtersize\space 0.5 mul dup /@@y ED /@@x ED 
     /@@ang 
@@ -16292,73 +16897,59 @@
       \POE@key@filterangle
     \fi def
   }%
- }%
-\let\optfilter@nodes\dipole@nodes
+}%
+\let\optfilter@nodes\POE@dipole@nodes
 %    \end{macrocode}
 % \end{macro}
 %
 % \begin{macro}{\optfilter@comp}
 %    \begin{macrocode}
 \def\optfilter@comp{%
-  \edef\@sz{\POE@key@filtersize\space 0.5 mul }%
-  \def\filter@curve{%
+  \def\POE@filter@curve{%
     \parametricplot[plotstyle=curve,arrows=-]{-1}{1}{%
-      t \@sz mul 0.7 mul t Pi mul RadtoDeg 
-      90 add cos 0.2 \@sz mul mul}%
+      \POE@dict{@@x} dup t mul 0.7 mul exch t Pi mul RadtoDeg 
+      90 add cos 0.2 mul mul}%
   }%
-  \psframe[dimen=outer](! \@sz neg dup)(! \@sz dup)
+  \def\POE@strike@line{%
+    \psline(!\POE@dict{@@x -0.3 mul @@y -0.15 mul})%
+           (!\POE@dict{@@x 0.3 mul @@y 0.15 mul})
+  }%
+  \POE@comp@rectangle
   \psrotate(\oenodeCenter{}){!\POE@dict{@@ang}}{%
   \psset{style=FilterStyle}%
     \ifx\POE@key@filtertype\POE@str@filtertype@bandpass
-      \psline(! -0.3 \@sz mul -0.65 \@sz mul)%
-             (! 0.3 \@sz mul -0.35 \@sz mul)%
-      \psline(! -0.3 \@sz mul 0.35 \@sz mul)%
-             (! 0.3 \@sz mul 0.65 \@sz mul)%
-      \rput(! 0 -0.5 \@sz mul){\filter@curve}
+      \rput(!\POE@dict{0 @@x -0.5 mul}){\POE@strike@line\POE@filter@curve}
       \rput(0, 0){%
         \ifPOE@usefiberstyle
           \psset{style=Fiber}
         \fi
-        \filter@curve}
-      \rput(! 0 0.5 \@sz mul){\filter@curve}
+        \POE@filter@curve}
+      \rput(!\POE@dict{0 @@x 0.5 mul}){\POE@strike@line\POE@filter@curve}
     \else\ifx\POE@key@filtertype\POE@str@filtertype@bandstop
-      \psline(! -0.3 \@sz mul -0.15 \@sz mul)%
-             (! 0.3 \@sz mul 0.15 \@sz mul)%
-      \rput(! 0 -0.5 \@sz mul){%
+      \begingroup
         \ifPOE@usefiberstyle
           \psset{style=Fiber}
         \fi
-        \filter@curve}
-        \rput(0, 0){\filter@curve}
-        \rput(! 0 0.5 \@sz mul){%
-          \ifPOE@usefiberstyle
-            \psset{style=Fiber}
-          \fi
-          \filter@curve}
+        \rput(!\POE@dict{0 @@x -0.5 mul}){\POE@filter@curve}
+        \rput(!\POE@dict{0 @@x 0.5 mul}){\POE@filter@curve}
+      \endgroup
+      \rput(0,0){\POE@strike@line\POE@filter@curve}
     \else\ifx\POE@key@filtertype\POE@str@filtertype@lowpass
-      \psline(! -0.3 \@sz mul -0.15 \@sz mul)%
-             (! 0.3 \@sz mul 0.15 \@sz mul)%
-      \psline(! -0.3 \@sz mul 0.35 \@sz mul)%
-             (! 0.3 \@sz mul 0.65 \@sz mul)%
-      \rput(! 0 -0.5 \@sz mul){%
+      \rput(!\POE@dict{0 @@x -0.5 mul}){%
         \ifPOE@usefiberstyle
           \psset{style=Fiber}
         \fi
-        \filter@curve}
-        \rput(0, 0){\filter@curve}
-        \rput(! 0 0.5 \@sz mul){\filter@curve}
+        \POE@filter@curve}
+        \rput(0, 0){\POE@strike@line\POE@filter@curve}
+        \rput(!\POE@dict{0 @@x 0.5 mul}){\POE@strike@line\POE@filter@curve}
     \else\ifx\POE@key@filtertype\POE@str@filtertype@highpass
-      \psline(! -0.3 \@sz mul -0.15 \@sz mul)%
-             (! 0.3 \@sz mul 0.15 \@sz mul)%
-      \psline(! -0.3 \@sz mul -0.65 \@sz mul)%
-             (! 0.3 \@sz mul -0.35 \@sz mul)%
-      \rput(! 0 0.5 \@sz mul){%
+      \rput(!\POE@dict{0 @@x 0.5 mul}){%
         \ifPOE@usefiberstyle
           \psset{style=Fiber}
         \fi
-        \filter@curve}
-        \rput(0, 0){\filter@curve}
-        \rput(! 0 -0.5 \@sz mul){\filter@curve}
+        \POE@filter@curve}
+        \rput(0, 0){\POE@strike@line\POE@filter@curve}
+        \rput(!\POE@dict{0 @@x -0.5 mul}){\POE@strike@line\POE@filter@curve}
   \fi\fi\fi\fi
   }%
 \ignorespaces}%
@@ -16370,9 +16961,10 @@
 % \begin{macro}{optamp@ref}
 %    \begin{macrocode}
 \def\optamp@ref{%
-  \POE@setref{/@@x \POE@key@optampwidth\space 0.5 mul def
-            /@@y \POE@key@optampheight\space 0.5 mul def
-          }%
+  \POE@setref{%
+    /@@x \POE@key@optampwidth\space 0.5 mul def
+    /@@y \POE@key@optampheight\space 0.5 mul def
+  }%
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -16387,10 +16979,10 @@
 % \begin{macro}{\optamp@comp}
 %    \begin{macrocode}
 \def\optamp@comp{%
-  \def\@wd{\POE@key@optampwidth\space 0.5 mul }%
-  \def\@ht{\POE@key@optampheight\space 0.5 mul }%
-  \pspolygon(! \@wd 0)(! \@wd neg \@ht)(! \@wd neg \@ht neg)
-\ignorespaces}%
+  \pspolygon(!\POE@dict{@@x 0})%
+            (!\POE@dict{@@x neg @@y})%
+            (!\POE@dict{@@x neg @@y neg})
+}%
 %    \end{macrocode}
 % \end{macro} 
 %
@@ -16459,11 +17051,10 @@
 % \begin{macro}{\optisolator@comp}
 %    \begin{macrocode}
 \def\optisolator@comp{%
-  \edef\@ht{\POE@key@isolatorheight\space 0.5 mul }%
-  \edef\@wd{\POE@key@isolatorwidth\space 0.5 mul }%
-  \psframe[dimen=outer](! \@wd neg \@ht neg)(! \@wd \@ht)
-  \psline[style=IsolatorArrow,
-          arrows=->](! \@wd neg 0.6 mul 0)(!\@wd 0.6 mul 0)
+  \POE@comp@rectangle
+  \psline[style=IsolatorArrow, arrows=->]%
+    (!\POE@dict{@@x neg 0.6 mul 0})%
+    (!\POE@dict{@@x 0.6 mul 0})
 \ignorespaces}%
 %    \end{macrocode}
 % \end{macro}
@@ -16483,10 +17074,8 @@
 % \begin{macro}{\optfiberpolarizer@comp}
 %    \begin{macrocode}
 \def\optfiberpolarizer@comp{%
-  \edef\@ht{\POE@key@fiberpolheight\space 0.5 mul }%
-  \edef\@wd{\POE@key@fiberpolwidth\space 0.5 mul }%
-  \psframe[dimen=outer](! \@wd neg \@ht neg)(! \@wd \@ht)
-  \psline(! \@wd neg 0.2 mul \@ht neg)(!\@wd 0.2 mul \@ht)
+  \POE@comp@rectangle
+  \psline(!\POE@dict{@@x -0.2 mul @@y neg})(!\POE@dict{@@x 0.2 mul @@y})
 \ignorespaces}%
 %    \end{macrocode}
 % \end{macro}
@@ -16507,8 +17096,7 @@
 % \begin{macro}{\optswitch@comp}
 %    \begin{macrocode}
 \def\optswitch@comp{%
-  \psframe[dimen=outer](! \POE@dict{@@x neg @@y neg})%
-                       (! \POE@dict{@@x @@y})%
+  \POE@comp@rectangle
 %    \end{macrocode}
 % storing the linewidth of the object allows for some aesthetic fine tuning 
 %    \begin{macrocode}
@@ -16562,26 +17150,91 @@
 % \begin{macro}{\fiberdelayline@comp}
 %    \begin{macrocode}
 \def\fiberdelayline@comp{%
-  \psframe[dimen=outer](! \POE@dict{@@x neg @@y neg})%
-                       (! \POE@dict{@@x @@y})
   \begingroup
-    \psset{style=FdlArrow}
-    \use@par
-    \pst@expandafter\POE@get@yarrowscale{\psk@arrowscale}\@nil
-    \def\@arrowshift{%
-      \psk@arrowlength\space \psk@arrowsize\space
-      \pst@number\pslinewidth\space mul add mul 
-      \POE@tempA mul 
-      @@y 2.9 mul @@x 0.6 mul atan 2 copy cos mul 3 1 roll sin mul 
-      \tx@UserCoor abs exch abs exch\space
-    }%
-    \psline(! \POE@dict{@@x -0.4 mul @@y -1.6 mul})%
-           (! \POE@dict{@@x 0.2 mul @@y 1.3 mul \@arrowshift VecAdd})
+    \def\pscs@ArrowCompStyle{\pscs@FdlArrow}
+    \optarrowcomp@comp
   \endgroup
 \ignorespaces}%
 %    \end{macrocode}
 % \end{macro}
 % 
+%    \begin{macrocode}
+\newOptexpDipole{optarrowcomp}{}
+\def\optarrowcomp@ref{%
+  \POE@setref{%
+    \ifx\POE@key@arrowcompshape\POE@str@rectangle
+      /@@x \POE@key@arrowcompwidth\space 0.5 mul def
+      /@@y \POE@key@arrowcompheight\space 0.5 mul def
+    \else
+      \POE@key@arrowcompwidth\space\POE@key@arrowcompheight\space
+      min 0.5 mul dup /@@x ED /@@y ED
+    \fi
+  }%
+}%
+\def\optarrowcomp@comp{%
+  \ifx\POE@key@arrowcompshape\POE@str@rectangle
+    \POE@comp@rectangle
+    \begingroup
+      \psset{style=ArrowCompStyle}
+      \use@par
+      \pst@expandafter\POE@get@yarrowscale{\psk@arrowscale}\@nil
+      \def\@arrowshift{%
+        \psk@arrowlength\space \psk@arrowsize\space
+        \pst@number\pslinewidth\space mul add mul 
+        \POE@tempA mul 
+        @@y 2.9 mul @@x 0.6 mul atan 2 copy cos mul 3 1 roll sin mul 
+        \tx@UserCoor abs exch abs exch\space
+      }%
+      \psline(! \POE@dict{@@x -0.4 mul @@y -1.6 mul})%
+             (! \POE@dict{@@x 0.2 mul @@y 1.3 mul \@arrowshift VecAdd})
+    \endgroup
+  \else
+    \pscircle(!\POE@dict{@@x0 @@y0}){!\POE@dict{@@x}}
+    \begingroup
+      \psset{style=ArrowCompStyle}
+      \use@par
+      \pst@expandafter\POE@get@yarrowscale{\psk@arrowscale}\@nil
+      \def\@arrowshift{%
+        \psk@arrowlength\space \psk@arrowsize\space
+        \pst@number\pslinewidth\space mul add mul 
+        \POE@tempA mul 
+        @@y 2 mul @@x 2 mul atan 2 copy cos mul 3 1 roll sin mul 
+        \tx@UserCoor abs exch abs exch\space
+      }%
+      \psline(! \POE@dict{@@x neg @@x neg \@arrowshift -0.5 VecScale VecAdd })%
+             (! \POE@dict{@@x @@y \@arrowshift VecAdd})
+    \endgroup
+  \fi
+\ignorespaces}%
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\newOptexpDipole{optbarcomp}{}
+\def\optbarcomp@ref{%
+  \POE@setref{%
+    \ifx\POE@key@barcompshape\POE@str@rectangle
+      /@@x \POE@key@barcompwidth\space 0.5 mul def
+      /@@y \POE@key@barcompheight\space 0.5 mul def
+    \else
+      \POE@key@barcompwidth\space\POE@key@barcompheight\space
+      min 0.5 mul dup /@@x ED /@@y ED
+    \fi
+  }%
+}%
+\def\optbarcomp@comp{%
+  \ifx\POE@key@barcompshape\POE@str@rectangle
+    \POE@comp@rectangle
+    \psline[style=BarCompStyle](!\POE@dict{@@x -0.2 mul @@y neg})%
+                               (!\POE@dict{@@x 0.2 mul @@y})
+  \else
+    \pscircle(!\POE@dict{@@x0 @@y0}){!\POE@dict{@@x}}
+    \psline[style=BarCompStyle](!\POE@dict{@@x neg 2 sqrt div @@y neg 2 sqrt div})
+                               (!\POE@dict{@@x 2 sqrt div @@y 2 sqrt div})
+  \fi
+\ignorespaces}%
+%    \end{macrocode}
+%
+%
 % \subsubsection{fiberbox}
 % \begin{macro}{fiberbox@ref}
 %    \begin{macrocode}
@@ -16622,9 +17275,7 @@
     } for
   }
 }%
-\def\fiberbox@comp{%
-  \psframe[dimen=outer](!\POE@dict{@@x neg @@y neg})(!\POE@dict{@@x @@y})
-}%
+\let\fiberbox@comp\POE@comp@rectangle
 %    \end{macrocode}
 % \end{macro}
 %
@@ -16707,8 +17358,7 @@
   \else\ifx\POE@key@couplertype\POE@str@couplertype@ellipse
     \psellipse(! 0 \POE@dict{@@y0})(! \POE@dict{@@x @@y})
   \else
-    \psframe[dimen=outer](!\POE@dict{@@x neg @@y0 @@y sub})%
-                         (!\POE@dict{@@x @@y0 @@y add})%
+    \POE@comp@rectangle
     \ifx\POE@key@couplertype\POE@str@couplertype@cross
       \psline(! \POE@dict{@@x -0.5 mul @@y0 @@y 0.5 mul sub})%
              (! \POE@dict{@@x 0.5 mul @@y0 @@y 0.5 mul add})%
@@ -16879,14 +17529,339 @@
 % \begin{macro}{\fibercollimator@comp}
 %    \begin{macrocode}
 \def\fibercollimator@comp{%
-  \def\@wd{\POE@key@fibercolwidth\space 0.5 mul }%
-  \def\@ht{\POE@key@fibercolheight\space 0.5 mul }%
-  \pspolygon(!\@wd neg \POE@clwh add \@ht neg)%
-            (!\@wd 0)(!\@wd neg \POE@clwh add \@ht)
+  \pspolygon(!\POE@dict{@@x neg \POE@clwh add @@y neg})%
+            (!\POE@dict{@@x 0})%
+            (!\POE@dict{@@x neg \POE@clwh add @@y})
 }%
 %    \end{macrocode}
 % \end{macro}
 %
+% \subsection{Electrical components}
+%
+% \subsubsection{elecsynthesizer}
+%
+% \subsubsection{elecmixer}
+%
+% \begin{macro}{\elecmixer}
+%    \begin{macrocode}
+\def\elecmixer{\pst@object{elecmixer}}%
+\def\elecmixer@i(#1)(#2)(#3){%
+  \@ifnextchar\bgroup%
+    {\elecmixer@ii(#1)(#2)(#3)}%
+    {\elecmixer@ii(#1)(#2)(#3){}}%
+}%
+\def\elecmixer@ii(#1)(#2)(#3)#4{%
+  \addafter@par{ref@angle=180}%
+  \begin@OptexpObj
+    \POE@calcCircRefNodes{#1}{#2}{#3}%
+    \POE@drawcomponent{elecmixer}{#4}
+    \ifPOE@backlayer
+      \ifPOE@wirepreset@
+        \ifPOE@wirepresetin@top
+          \drawwire@{WireIn}[stopnode=1](#1){}
+        \fi
+        \ifPOE@wirepresetout@
+          \ifPOE@wirepresetout@top
+            \drawwire@{WireOut1}[startnode=N]{}(#2)
+          \fi
+          \ifPOE@wirepresetout@bottom
+            \drawwire@{WireOut2}[startnode=2, wirealign=center]{}(#3)
+          \fi
+        \fi
+      \fi
+    \fi
+  \end@OptexpObj
+}%
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{elecmixer@ref}
+%    \begin{macrocode}
+\def\elecmixer@ref{%
+  \POE@setref{\POE@key@elecmixersize\space 0.5 mul dup /@@x ED /@@y ED }%
+}%
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\elecmixer@nodes}
+%    \begin{macrocode}
+\def\elecmixer@nodes{%
+  \newOptexpElecComp{{@@x neg 0} {0 @@y neg} {@@x 0}}%
+}%
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\elecmixer@comp}
+%    \begin{macrocode}
+\def\elecmixer@comp{%
+  \edef\@sz{\POE@key@elecmixersize\space 0.5 mul }%
+  \pscircle(0,0){! \@sz}
+  \psline(!\@sz 2 sqrt div neg dup)(!\@sz 2 sqrt div dup)
+  \psline(!\@sz 2 sqrt div dup neg exch)(!\@sz 2 sqrt div dup neg)
+}%
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsubsection{Electrical coupler}
+\def\eleccoupler{\pst@object{eleccoupler}}%
+\def\eleccoupler@i(#1)(#2){%
+  \@ifnextchar(%)
+    {\eleccoupler@ii(#1)(#2)}%
+    {\eleccoupler@ii(#1)(#1)(#2)(#2)}%
+}%
+\def\eleccoupler@ii(#1)(#2)(#3)(#4){%
+  \@ifnextchar\bgroup%
+    {\eleccoupler@iii(#1)(#2)(#3)(#4)}%
+    {\eleccoupler@iii(#1)(#2)(#3)(#4){}}%
+}%
+\def\eleccoupler@iii(#1)(#2)(#3)(#4)#5{%
+  \begin@OptexpObj
+    \ifPOE@backlayer
+      \ifx\POE@key@eleccoupleralign\POE@str@top
+        \pnode(#1){\oenodeRefA{}}
+        \pnode(#3){\oenodeRefB{}}
+      \else\ifx\POE@key@eleccoupleralign\POE@str@bottom
+        \pnode(#2){\oenodeRefA{}}
+        \pnode(#4){\oenodeRefB{}}
+      \else
+        \pst@getcoor{#1}\POE@tempa%
+        \pst@getcoor{#2}\POE@tempb%
+        \pnode(!\POE@tempa \POE@tempb 
+                \POE@dict{VecAdd 0.5 VecScale}
+                \tx@UserCoor){\oenodeRefA{}}
+        \pst@getcoor{#3}\POE@tempa%
+        \pst@getcoor{#4}\POE@tempb%
+        \pnode(!\POE@tempa \POE@tempb 
+                \POE@dict{VecAdd 0.5 VecScale}
+                \tx@UserCoor){\oenodeRefB{}}
+      \fi\fi
+    \fi
+    \POE@drawcomponent{eleccoupler}{#5}
+    \ifPOE@backlayer
+      \POE@Verb{%
+        (1) (3) (\oenode{}{}) CorrectDipoleIfc 
+        (2) (N) (\oenode{}{}) CorrectDipoleIfc 
+      }%
+      \ifPOE@wirepreset@
+        \ifPOE@wirepresetin@
+          \ifPOE@wirepresetin@top
+            \drawwire@{WireIn1}[stopnode=1](#1){}
+          \fi
+          \ifPOE@wirepresetin@bottom
+            \ifx\POE@key@eleccouplertype\POE@str@eleccouplertype@directional
+              \ifx\POE@key@eleccouplerinput\POE@str@left\else
+                \drawwire@{WireIn2}[stopnode=2](#2){}
+              \fi
+            \else
+              \drawwire@{WireIn2}[stopnode=2](#2){}
+            \fi
+          \fi
+        \fi
+        \ifPOE@wirepresetout@
+          \ifPOE@wirepresetout@top
+            \drawwire@{WireOut1}[startnode=3]{}(#3)
+          \fi
+          \ifPOE@wirepresetout@bottom
+            \ifx\POE@key@eleccouplertype\POE@str@eleccouplertype@directional
+              \ifx\POE@key@eleccouplerinput\POE@str@left
+                \drawwire@{WireOut2}[startnode=N]{}(#4)
+              \fi
+            \else
+              \drawwire@{WireOut2}[stopnode=N]{}(#4)
+            \fi
+          \fi
+        \fi
+      \fi
+    \fi
+  \end@OptexpObj
+}%
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\eleccoupler@ref}
+%    \begin{macrocode}
+\def\eleccoupler@ref{%
+  \POE@setref{%
+    /@@y0
+    \ifx\POE@key@eleccoupleralign\POE@str@top
+      \POE@key@eleccouplersep\space -0.5 mul
+    \else\ifx\POE@key@eleccoupleralign\POE@str@bottom
+      \POE@key@eleccouplersep\space 0.5 mul
+    \else
+      0
+    \fi\fi
+    def
+    /@@sep \POE@key@eleccouplersep\space 0.5 mul def
+    /@@x \POE@key@eleccouplerwidth\space 0.5 mul def
+    /@@y \POE@key@eleccouplerheight\space 0.5 mul def
+  }%
+}%
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\eleccoupler@nodes}
+%    \begin{macrocode}
+\def\eleccoupler@nodes{%
+  \edef\@sep{\POE@key@eleccouplersep\space 0.5 mul }%
+  \newOptexpElecComp{%
+    {@@x neg @@y0 \@sep add}
+    {@@x neg @@y0 \@sep sub}
+    {@@x @@y0 \@sep add}
+    {@@x @@y0 \@sep sub} }%
+  \pnode(0,0){\oenodeCenter{}}
+}%
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\eleccoupler@comp}
+%    \begin{macrocode}
+\def\eleccoupler@comp{%
+  \POE@comp@rectangle
+  \psline(!\POE@dict{@@x -0.7 mul  @@y0 @@sep sub @@y 0.15 mul add})%
+         (!\POE@dict{@@x 0.7 mul @@y0 @@sep add @@y 0.15 mul sub})%
+  \psline(!\POE@dict{@@x 0.7 mul  @@y0 @@sep sub @@y 0.15 mul add})%
+         (!\POE@dict{@@x -0.7 mul @@y0 @@sep add @@y 0.15 mul sub})%
+  \psline[style=Wire, arrows=-](\oenodeIfc{1}{})(\oenodeIfc{3}{})
+  \ifx\POE@key@eleccouplertype\POE@str@eleccouplertype@directional
+    \ifx\POE@key@eleccouplerinput\POE@str@left
+      \psline[style=Wire, arrows=-]([Xnodesep=-0.1]\oenodeIfc{2}{})(\oenodeIfc{N}{})
+    \else
+      \psline[style=Wire, arrows=-](\oenodeIfc{2}{})([Xnodesep=0.1]\oenodeIfc{N}{})
+    \fi
+    \pscustom[style=OptComp]{%
+      \moveto(!\POE@dict{@@x 0.15 add
+               \ifx\POE@key@eleccouplerinput\POE@str@left neg \fi
+               @@y0 @@sep sub 0.14 add})
+      \rlineto(0,-0.04)
+      \multido{\rx=0.12+-0.08}{4}{%
+        \rlineto(0.05,-0.02)
+        \rlineto(-0.1,-0.04)
+        \rlineto(0.05,-0.02)
+      }%
+      \rlineto(0,-0.04)
+    }%
+  \else
+    \psline[style=Wire, arrows=-](\oenodeIfc{2}{})(\oenodeIfc{N}{})
+  \fi
+}%
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\newOptexpElecDipole}
+%    \begin{macrocode}
+\def\newOptexpElecDipole{%
+  \@ifnextchar[%]
+    {\POE@newelecdipole}{\POE@newelecdipole[]}%
+}%
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\POE@newelecdipole}
+%    \begin{macrocode}
+\def\POE@newelecdipole[#1]#2#3{%
+  \@ifundefined{#2@i}{%
+    \@namedef{#2}{\pst@object{#2}}%
+    \expandafter\def\csname #2@i\endcsname(##1)(##2){%
+      \@ifnextchar\bgroup%
+        {\@nameuse{#2@ii}(##1)(##2)}%
+        {\@nameuse{#2@ii}(##1)(##2){}}%
+    }%
+    \expandafter\def\csname #2@ii\endcsname(##1)(##2)##3{%
+      \addbefore@par{#3}%
+      \addafter@par{#1}%
+      \begin@OptexpObj
+        \ifPOE@backlayer
+          \POE@regNodes{##1}{##2}
+          \POE@extnodealign
+        \fi
+        \POE@drawcomponent{#2}{##3}
+        \ifPOE@backlayer
+          \POE@Verb{ (1) (N) (\oenode{}{}) CorrectDipoleIfc }%
+          \POE@PresetWireConn
+        \fi
+      \end@OptexpDipole
+    }%
+    \@ifundefined{#2@nodes}{\expandafter\def\csname #2@nodes\endcsname{\POE@elecdipole@nodes}}{}%
+  }{%
+    \PackageError{pst-optexp}{%
+      elecdipole component '#2' already defined}%
+  }%
+\ignorespaces}%
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\elecsynthesizer@ref}
+%    \begin{macrocode}
+\newOptexpElecDipole{elecsynthesizer}{position=start, innercompalign=absolute}
+\def\elecsynthesizer@ref{%
+  \POE@setref{%
+    \POE@key@synthwidth\space 0.5 mul
+    \POE@key@synthheight\space 0.5 mul
+    2 copy min /@@sz ED
+    \ifx\POE@key@synthshape\POE@str@synthshape@circle
+      pop pop @@sz dup
+    \fi
+    /@@y ED /@@x ED
+    /@@ang 
+    \ifx\POE@key@innercompalign\POE@str@absolute
+      /N@\oenodeRefA{} /N@\oenodeRefB{} SlopeAngle \POE@key@angle sub
+    \else
+      0
+    \fi def
+  }%
+}%
+%    \end{macrocode}
+% \end{macro}
+% 
+% \begin{macro}{\elecsynthesizer@comp}
+%    \begin{macrocode}
+\def\elecsynthesizer@comp{%
+  \ifx\POE@key@synthshape\POE@str@synthshape@circle
+    \pscircle(!\POE@dict{@@x0 @@y0}){!\POE@dict{@@x}}
+  \else
+    \POE@comp@rectangle
+  \fi
+  \psrotate(\oenodeCenter{}){!\POE@dict{@@ang}}{%
+  \psset{style=SynthStyle}%
+  \begingroup
+%    \end{macrocode}
+% Negative units are not possible with parametric or function plots.
+%    \begin{macrocode}
+    \let\POE@tempA\@empty
+    \let\POE@tempB\@empty
+    \ifdim\psxunit<0pt 
+      \psset{xunit=-\psxunit}
+      \def\POE@tempA{-1 mul\space}%
+    \fi
+    \ifdim\psyunit<0pt 
+      \psset{yunit=-\psyunit}
+      \def\POE@tempB{-1 mul\space}%
+    \fi
+    \ifx\POE@key@synthtype\POE@str@synthtype@sine
+      \parametricplot[plotpoints=100]{-1}{1}{%
+        \POE@dict{@@sz 0.7 mul t mul t 180 mul \POE@tempA sin @@y -0.35 mul mul \POE@tempB }}%
+    \else\ifx\POE@key@synthtype\POE@str@synthtype@pulse
+      \psplot[plotpoints=100]{-0.25}{0.25}{2.7182818 x 0.04 div dup mul neg exp 0.3 mul 0.13 sub \POE@tempB}%
+    \fi\fi
+  \endgroup
+  \ifx\POE@key@synthtype\POE@str@synthtype@rectangle
+    \psline(!\POE@dict{@@sz -0.7 mul @@sz -0.35 mul})%
+           (!\POE@dict{@@sz 0.7 mul -1 1 \POE@key@synthrectwidth\space sub 2 mul add mul @@sz -0.35 mul})%
+           (!\POE@dict{@@sz 0.7 mul -1 1 \POE@key@synthrectwidth\space sub 2 mul add mul @@sz 0.35 mul})%
+           (!\POE@dict{@@sz 0.7 mul @@sz 0.35 mul})%
+           (!\POE@dict{@@sz 0.7 mul @@sz -0.35 mul})
+  \else\ifx\POE@key@synthtype\POE@str@synthtype@sawtooth
+    \psline(!\POE@dict{@@sz -0.6 mul @@sz -0.4 mul})%
+           (!\POE@dict{@@sz 0.6 mul @@sz 0.4 mul})%
+           (!\POE@dict{@@sz 0.6 mul @@sz -0.4 mul})
+  \else\ifx\POE@key@synthtype\POE@str@synthtype@triangle
+    \psline(!\POE@dict{@@sz -0.6 mul @@sz -0.4 mul})%
+           (!\POE@dict{0 @@sz 0.4 mul})%
+           (!\POE@dict{@@sz 0.6 mul @@sz -0.4 mul})
+  \else
+    \@ifundefined{elecsynthesizer@custom}{}{\elecsynthesizer@custom}%
+  \fi\fi\fi}%
+}%
+%    \end{macrocode}
+% \end{macro}
 %</stylefile> 
 %
 % \chapter{The Postscript header file}
@@ -17005,10 +17980,10 @@ tx@OptexpDict begin
   (Component ') exch strcat (' unknown) strcat PrintWarning
 } bind def
 /OneFiberCompWarning {
-  (Found only one fiber component in beam path, drawing no beam) PrintWarning
+  (Found only one unsupported component in beam path, drawing no beam) PrintWarning
 } bind def
 /FiberCompWarning {
-  (Found a fiber component in beam path, stopping beam path) PrintWarning
+  (Found an unsupported component in beam path, stopping beam path) PrintWarning
 } bind def
 %    \end{macrocode}
 % \end{macro}
@@ -17251,30 +18226,6 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{GetInternalBeamNodesCompat}
-%   Equivalent to \PSvar{GetInternalBeamNodes} only that it checks if the
-%   component is ambiguous (i.e. it is a beamsplitter), in which case it returns
-%   only the center node. Used only for the deprecated \opt{conn} parameter.
-%    \begin{macrocode}
-/GetInternalBeamNodesCompat {
-  exch dup 3 1 roll (C) NodeName dup tx@NodeDict exch known {
-    @GetCenter ToVec 
-    3 1 roll pop pop
-  } {
-    pop GetInternalBeamNodes
-  } ifelse
-} bind def
-/GetInternalBeamNodeCompat {
-  exch dup 3 1 roll (C) NodeName dup tx@NodeDict exch known {
-    @GetCenter ToVec
-    3 1 roll pop pop
-  } {
-    pop NodeName @GetCenter ToVec
-  } ifelse
-} bind def
-%    \end{macrocode}
-% \end{macro}
-% 
 % \begin{macro}{InitOptexpComp}
 %   Initialize some global variables for positioning of external
 %   nodes. This is called at the beginning of every component.
@@ -17423,7 +18374,7 @@ tx@OptexpDict begin
 % Define some constants.
 %    \begin{macrocode}
 /relative 0 def /absolute 1 def /center 2 def
-/refl 0 def /trans 1 def /absorb 2 def
+/refl 0 def /trans 1 def /absorb 2 def /undefined -1 def
 /desc 0 def /asc 1 def /amb 2 def
 /ok 0 def /tir 1 def /missed 2 def
 /bgRefIndex 0 def
@@ -17957,6 +18908,7 @@ tx@OptexpDict begin
       Vec DotProd dup sprod lt 5 2 roll
       GetIfcCenter 3 -1 roll exec GetIfcCenter @ABDist 
       centerDist lt and
+      centerDist -1 eq { pop dup 0 gt } if
       { /sprod ED /nextPlane ED } { pop pop } ifelse
     } {
       pop
@@ -19372,15 +20324,15 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}{RelFiberAngle}
+% \begin{macro}{RelConnAngle}
 % Calculate start angle of \cs{nccurve} from CompA to CompB
 %
 % \begin{pssyntax}
-%   \PSvar{Xb Yb Xa Ya A B} \PSvar{fiberalign} \PSop{RelFiberAngle} \PSvar{angle}
+%   \PSvar{Xb Yb Xa Ya A B} \PSvar{fiberalign} \PSop{RelConnAngle} \PSvar{angle}
 % \end{pssyntax}
 %    \begin{macrocode}
-/RelFiberAngle {
-  (RelFiberAngle) DebugBegin
+/RelConnAngle {
+  (RelConnAngle) DebugBegin
   /fiberalign ED
   dup xcheck not { nametostr } if /CompB ED
   dup xcheck not { nametostr } if /CompA ED
@@ -19405,10 +20357,10 @@ tx@OptexpDict begin
       4 2 roll @ABVect 4 2 roll
       CompB 
       fiberalign center eq {
-        RelFiberAngle@center
+        RelConnAngle@center
       }{
         3 1 roll pop pop
-        RelFiberAngle@ref
+        RelConnAngle@ref
       } ifelse
       2 copy exch atan
       7 3 roll 2 copy 9 -2 roll
@@ -19427,10 +20379,10 @@ tx@OptexpDict begin
 % on stack: Xac-Xa Yac-Xa Xa Ya
 %    \begin{macrocode}
     CompA fiberalign center eq {
-      RelFiberAngle@center
+      RelConnAngle@center
     }{
       3 1 roll pop pop
-      RelFiberAngle@tref
+      RelConnAngle@tref
     } ifelse
     2 copy exch atan
 %    \end{macrocode}
@@ -19443,40 +20395,40 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}{/RelFiberAngle@ref}
+% \begin{macro}{/RelConnAngle@ref}
 % Calculate the vector of the reference line of \PSvar{CompA}.
 % \begin{pssyntax}
-%   \PSstring{CompA} \PSop{RelFiberAngle@ref} \PSvar{dX dY}
+%   \PSstring{CompA} \PSop{RelConnAngle@ref} \PSvar{dX dY}
 % \end{pssyntax}
 %    \begin{macrocode}
-/RelFiberAngle@ref {
+/RelConnAngle@ref {
   dup (A) NodeName exch (B) NodeName
   @GetCenter 3 -1 roll @GetCenter @ABVect 
 } bind def
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{/RelFiberAngle@tref}
-% Same as \PSname{RelFiberAngle@ref} but uses the transformed reference nodes.
+% \begin{macro}{/RelConnAngle@tref}
+% Same as \PSname{RelConnAngle@ref} but uses the transformed reference nodes.
 % \begin{pssyntax}
-%   \PSvar{CompA} \PSop{RelFiberAngle@ref} \PSvar{dX dY}
+%   \PSvar{CompA} \PSop{RelConnAngle@ref} \PSvar{dX dY}
 % \end{pssyntax}
 %    \begin{macrocode}
-/RelFiberAngle@tref {
+/RelConnAngle@tref {
   dup (TrefA) NodeName exch (TrefB) NodeName
   @GetCenter 3 -1 roll @GetCenter @ABVect 
 } bind def
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{/RelFiberAngle@center}
+% \begin{macro}{/RelConnAngle@center}
 %   Calculate the vector from the center node of \PSvar{CompA} to the
 %   node \PSstring{Xa, Ya}.
 % \begin{pssyntax}
-%   \PSvar{Xa Ya CompA} \PSop{RelFiberAngle@center} \PSvar{dX dY}
+%   \PSvar{Xa Ya CompA} \PSop{RelConnAngle@center} \PSvar{dX dY}
 % \end{pssyntax}
 %    \begin{macrocode}
-/RelFiberAngle@center {
+/RelConnAngle@center {
   (Center) NodeName @GetCenter 4 2 roll @ABVect
 } bind def
 %    \end{macrocode}
