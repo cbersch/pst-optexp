@@ -27,12 +27,16 @@ FILELIST := $(filter-out $(BLACKLIST), \
 	          $(foreach d, $(DIRS), $(wildcard ../$(d)/*.tex))))
 
 FILELIST := $(foreach f, $(FILELIST), $(shell \
-	if [ -e $(MASTERDIR)/$(f) ]; then \
+	if [ -e $(MASTERDIR)/$(f) -a -e ../$(f) ]; then \
+	    echo $(f); fi))
+
+FILELIST_NODIFF := $(foreach f, $(FILELIST), $(shell \
+	if [ -e $(MASTERDIR)/$(f) -a -e ../$(f) ]; then \
 	  diff -q $(MASTERDIR)/$(f) ../$(f) >/dev/null; \
 	  if [ $$? -eq 0 ]; then \
 	    echo $(f); \
-	  fi; fi))
-
+	fi; fi))
+BASENAMES_NODIFF := $(subst .tex,,$(foreach d, $(DIRS), $(subst $(d)/,, $(filter $(d)/%, $(FILELIST_NODIFF)))))
 FILELIST_PDF := $(subst .tex,.pdf, $(FILELIST))
 
 DEV_SRC := $(addprefix ../, $(FILELIST_PDF))
@@ -76,16 +80,21 @@ $(PNG_TGT): %-01.png: %.pdf
 
 $(DIFF): diff/%-01.png: dev/%-01.png master/%-01.png | diff-dir
 	@for f in dev/$*-*.png; do f=$${f#*/}; \
+	  if [ ! -e master/$$f ]; then continue; fi; \
 	  composite master/$$f dev/$$f -compose MinusSrc diffsrc.png && \
 	  composite master/$$f dev/$$f -compose MinusDst diffdst.png && \
 	  composite diffsrc.png diffdst.png -compose Add diff/$$f && \
+	  if [ "$(findstring $*,$(BASENAMES_NODIFF))" ]; then srcstring=' (source  \033[22;32munchanged\033[0m)'; else \
+	  srcstring=' (source \033[22;31mchanged\033[0m)'; fi; \
 	  identify -verbose diff/$$f | \
 	  egrep -zq "Histogram:[[:space:]]*[[:digit:]]*: \(  0,  0,  0\) #000000 gray\(0,0,0\)[[:space:]]*Colormap:"; \
-	  if [ $$? -eq 1 ]; then echo $$f' \033[22;31mchanged\033[0m'; else echo $$f' \033[22;32mok\033[0m'; fi; done \
+	  if [ $$? -eq 1 ]; then echo $$f' \033[22;31mchanged\033[0m'$$srcstring; \
+	  else echo $$f' \033[22;32mok\033[0m'; fi; \
+	   done \
 	&& rm -f diffsrc.png diffdst.png
 
 clean:
-	rm -f dev/*.pdf master/*.pdf
+	$(RM) dev/*.pdf master/*.pdf
 
 veryclean:
-	rm -rf dev master diff
+	$(RM) -r dev master diff
