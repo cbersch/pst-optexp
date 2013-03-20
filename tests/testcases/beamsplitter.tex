@@ -22,3 +22,35 @@
   \rput(\oenodeLabel{BS}){\pnode(2;10){D}}
   \drawbeam[addtoBeam={linecolor=red, linestyle=dashed}]{1}{BS}{(D)}
 \end{pspicture}
+
+\newpage
+% Document the behaviour of the beamsplitter so we can use this as reference
+\newpsstyle{AltBeam}{linecolor=red, linestyle=dashed}
+\begin{pspicture}[showgrid](4,4)
+  \pnode(0,2){A}\pnode(2,0){B}\pnode(4,2){C}\pnode(2,4){D}\pnode(2,2){E}
+  \beamsplitter(A)(E)(B)
+  \drawbeam([offset=0.1]A){}(B)
+  \drawbeam[style=AltBeam](A){}(C)
+\end{pspicture}
+\hspace*{10mm}
+\begin{pspicture}[showgrid](4,4)
+  \pnode(0,2){A}\pnode(2,0){B}\pnode(4,2){C}\pnode(2,4){D}\pnode(2,2){E}
+  \beamsplitter(A)(E)(B)
+  \drawbeam([Xnodesep=-0.1]D){}(C)
+  \drawbeam[style=AltBeam](D){}(A)
+\end{pspicture}
+
+\vspace*{10mm}
+\begin{pspicture}[showgrid](5,5)
+  \pnode(0,2){A}\pnode(1.5,0){B}\pnode(5,2){C}\pnode(2,4){D}\pnode(1.5,2){E}\pnode(3,2){F}
+  \beamsplitter(A)(E)(B)\beamsplitter(A)(F)([offset=2]F)
+  \drawbeam[beampos=0.2](D){1-2}(D)
+  \drawbeam[style=AltBeam](D){1-2}(D)
+\end{pspicture}
+\hspace*{10mm}
+\begin{pspicture}[showgrid](5,5)
+  \pnode(0,2){A}\pnode(1.5,0){B}\pnode(5,2){C}\pnode(2,4){D}\pnode(1.5,2){E}\pnode(3,2){F}
+  \beamsplitter(A)(E)(B)\beamsplitter(A)(F)([offset=2]F)
+  \drawbeam([Xnodesep=-0.7]D){1-2}(C)
+  \drawbeam[style=AltBeam]([Xnodesep=-0.5]D){1-2}(B)
+\end{pspicture}
