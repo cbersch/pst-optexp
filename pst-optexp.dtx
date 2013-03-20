@@ -18,7 +18,7 @@
 %<stylefile>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<stylefile>\ProvidesPackage{pst-optexp}
 %<*stylefile>
-    [2013/03/07 v3.6alpha Optical experimental setups with PSTricks]
+    [2013/03/20 v3.6 Optical experimental setups with PSTricks]
 %</stylefile>
 %
 %<*driver>
@@ -118,20 +118,31 @@
     newOptexpDipole, newOptexpTripole, newOptexpFiberDipole,optplane}, %
   explpreset={%
     pos=l, width=-99pt, hsep=5mm, overhang=\codeoverhang, varwidth,
-    vsep=\bigskipamount, rframe={}}, extendedchars=true, }
+    vsep=\bigskipamount, rframe={}}, extendedchars=true
+}%
 \lstdefinestyle{example}{explpreset={%
     escapechar=*, pos=l, width=-99pt, hsep=5mm, overhang=\codeoverhang,
-    varwidth, vsep=\bigskipamount, rframe={}}} \makeatletter
+    varwidth, vsep=\bigskipamount, rframe={}}}
+\makeatletter
 \providecommand\ON{%
   \gdef\lst@alloverstyle##1{\textcolor{black!50}{\strut##1}%
-  }} \providecommand\OFF{\xdef\lst@alloverstyle##1{##1}} \makeatother
+}}
+\providecommand\OFF{\xdef\lst@alloverstyle##1{##1}}
+\makeatother
 \colorlet{sectioncolor}{DOrange}
 \addtokomafont{sectioning}{\color{sectioncolor}}
-\usepackage[automark,nouppercase]{scrpage2} \pagestyle{scrheadings}
-\clearscrheadings \clearscrplain \ohead{\pagemark} \ihead{\headmark}
-\ofoot[\pagemark]{} \automark[subsection]{section}
-\setheadsepline{.4pt}[\color{DOrange}] \setheadwidth[0pt]{text}
-\setfootwidth[0pt]{text} \makeatletter
+\usepackage[automark,nouppercase]{scrpage2}
+\pagestyle{scrheadings}
+\clearscrheadings
+\clearscrplain
+\ohead{\pagemark}
+\ihead{\headmark}
+\ofoot[\pagemark]{}
+\automark[subsection]{section}
+\setheadsepline{.4pt}[\color{DOrange}]
+\setheadwidth[0pt]{text}
+\setfootwidth[0pt]{text}
+\makeatletter
 \patchcmd{\l@chapter}{1.5em}{2em}{}{}
 \renewcommand*\l@section{\bprot@dottedtocline{1}{1.5em}{3.0em}}
 \renewcommand*\l@subsection{\bprot@dottedtocline{2}{3.8em}{4.0em}}
@@ -139,7 +150,9 @@
 \def\ltd@fnurl#1#2{\footnote{#1\hyper@linkurl{\Hurl{#2}}{#2}}}
 \newrobustcmd*{\arxivurl}[1]{\href{http://arxiv.org/abs/#1}{arXiv:#1}}
 \newrobustcmd*{\doiurl}[1]{\href{http://dx.doi.org/#1}{DOI:#1}}
-\makeatother \usepackage{csquotes} \MakeAutoQuote{«}{»}
+\makeatother
+\usepackage{csquotes}
+\MakeAutoQuote{«}{»}
 %^^A spot is used in ltxdockit.sty
 \colorlet{spot}{sectioncolor}
 \newpsstyle{Refline}{linecolor=gray!70}
@@ -2194,14 +2207,19 @@
 % \fi
 %
 % \numitem[0]{compoffset}
-% \ifGERMAN Verschiebt eine Komponente vertikal bezüglich ihrer Referenzlinie
-% (siehe \prettyref{sec:refnode}). Reflektive Komponenten werden entlang der
-% reflektiven Grenzfläche verschoben.
+% \ifGERMAN Verschiebt eine Komponente vertikal bezüglich ihrer
+% Referenzlinie (siehe \prettyref{sec:refnode}). Reflektierende
+% Komponenten werden entlang der reflektiven Grenzfläche verschoben. Die
+% Verschiebung erfolgt also senkrecht zu einer Verschiebung mit
+% \Lkeyword{compshift}. Ein Anwendungsbeispiel ist
+% \prettyref{ex:autocorrelation}.
 % \fi
 % \ifENGLISH
 % Shift a component perpendicular to its reference line (see
-% \prettyref{sec:refnode}). For reflective components it is shifted along the
-% reflective interface.
+% \prettyref{sec:refnode}). For reflective components it is shifted
+% along the reflective interface. The displacement is vertical to a
+% displacement with \Lkeyword{compshift}. For an example see
+% \prettyref{ex:autocorrelation}.
 % \fi
 % \iffalse
 %<*ignore>
@@ -9629,21 +9647,22 @@
 
 \begingroup
 \captionsetup[lstlisting]{format=poecaption}
-\begin{LTXexample}[pos=t, caption={\ifGERMAN Angepasst von \fi\ifENGLISH Adapted from \fi\doiurl{10.1364/AOP.1.000308}, \ifGERMAN Abb. \fi\ifENGLISH Fig. \fi 8}]
-\psset{mirrorwidth=0.7, bsstyle=plate, bssize=0.5, unit=1.2, arrowinset=0, arrowscale=1.2}
-\begin{pspicture}(6,3)
-\pnode(2.5,0){In}\pnode([offset=0.5]In){STM1}
+\begin{LTXexample}[pos=t, caption={\ifGERMAN Angepasst von \fi\ifENGLISH Adapted from \fi\doiurl{10.1364/AOP.1.000308}, \ifGERMAN Abb. \fi\ifENGLISH Fig. \fi 8}, label={ex:autocorrelation}]
+\begin{pspicture}(5.7,2.8)
+\psset{mirrorwidth=0.7, bsstyle=plate, bssize=0.5, arrowinset=0, arrowscale=1.2}
+\newpsobject{splitterplate}{beamsplitter}{linewidth=2\pslinewidth, linecolor=gray!50}
+\pnode(2.3,0){In}\pnode([offset=0.5]In){STM1}
 \pnode([Xnodesep=-2]STM1){M1}\pnode([offset=1]M1){M2}
 \pnode([offset=2]STM1){M3}\pnode([Xnodesep=-1]M3){M4}
 \pnode(M4|M2){STM2}
-\beamsplitter[linewidth=2\pslinewidth, linecolor=gray!50](In)(STM1)(M1)
+\splitterplate(In)(STM1)(M1)
 \mirror(STM1)(M1)(M2)
 \mirror(M1)(M2)(M3|M2)
 \mirror(STM1)(M3)(M4)
 \mirror[label=0.6 180 . absolute](M3)(M4)(STM2)
 \rput[r](\oenodeLabel{}){$\tau$
   \psline[arrows=<->](0.15, 0.4)(0.15, -0.2)}
-\beamsplitter[compoffset=0.2, linewidth=2\pslinewidth, linecolor=gray!50, compname=STM2](M4)(STM2)([Xnodesep=1]STM2)
+\splitterplate[compoffset=0.2, compname=STM2](M4)(STM2)([Xnodesep=1]STM2)
 \pnode(\oenodeCenter{STM2}){STM2C}
 \pnode([Xnodesep=4]STM2C){Out}
 \lens[n=2](STM2C)(Out)
@@ -9652,10 +9671,10 @@
 \pinhole[position=0.95, outerheight=0.6](STM2C)(Out)
 \optdetector[detsize=0.5 0.6](STM2C)(Out)
 \drawbeam[linecolor=blue]{8-}
-\newpsstyle{Beam}{ArrowInside=->, ArrowInsidePos=0.85, linecolor=red, ArrowInsideMinLength=1, arrows=>-}
-\drawbeam(In){1-3}{7-9}
-\drawbeam(In){1}{4-9}
-\end{pspicture}  
+\newpsstyle{Beam}{ArrowInside=->, linecolor=red, ArrowInsideMinLength=1, arrows=>-}
+\drawbeam[ArrowInsidePos=0.835](In){1-3}{7-9}
+\drawbeam[ArrowInsidePos=0.74](In){1}{4-9}
+\end{pspicture}
 \end{LTXexample}
 \endgroup
 
@@ -10630,11 +10649,11 @@
 %
 % \begin{changelog}
 %\patchcmd{\release}{\setlength{\itemsep}{0pt}}{\setlength{\itemsep}{0pt}\setlength{\parsep}{0pt}}{}{}
-%   \begin{release}{3.6}{2013-xx-xx}
+%   \begin{release}{3.6}{2013-03-20}
 %   \item Added option \opt{compoffset}\see{prm:compoffset}
 %   \item Added option \opt{beampathskip}\see{prm:beampathskip}
 %   \item Added option \opt{innercompalign}\see{prm:innercompalign}
-%   \item Fixed some bugs in the raytracing code.
+%   \item Fixed some bugs in the raytracing and beam code.
 %   \end{release}
 %   \begin{release}{3.5}{2013-02-22}
 %   \item Added option \opt{filterangle}\see{prm:filterangle}
