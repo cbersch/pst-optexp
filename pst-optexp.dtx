@@ -2866,7 +2866,7 @@
 % \ifGERMAN Die Höhe der Komponente.\fi
 % \ifENGLISH The height of the Komponente.\fi
 %
-% \optitem{arrowcompsize}{\prm{width} \prm{height}}
+% \optitem{arrowcompsize}{\prm{size} or \prm{width} \prm{height}}
 % \ifGERMAN Die Breite und Höhe der Komponente, äquivalent zum Aufruf von
 % \Lkeyword{arrowcompwidth} und \Lkeyword{arrowcompheight}.
 % \fi
@@ -2938,7 +2938,7 @@
 % \ifGERMAN Die Höhe der Box.\fi
 % \ifENGLISH The height of the box.\fi
 %
-% \optitem{barcompsize}{\prm{width} \prm{height}}
+% \optitem{barcompsize}{\prm{size} or \prm{width} \prm{height}}
 % \ifGERMAN Die Breite und Höhe der Box, äquivalent zum Aufruf von
 % \Lkeyword{barcompwidth} und \Lkeyword{barcompheight}.
 % \fi
@@ -12007,10 +12007,10 @@
 }%
 \def\POE@psset@@arrowcompsize#1 #2 #3\@nil{%
   \ifx\\#2\\%
-    \PackageWarning{pst-optexp}{%
-      Parameter 'arrowcompsize' requires two numbers.}%
+    \psset[optexp]{arrowcompwidth=#1, arrowcompheight=#1}%
+  \else
+    \psset[optexp]{arrowcompwidth=#1, arrowcompheight=#2}%
   \fi
-  \psset[optexp]{arrowcompwidth=#1, arrowcompheight=#2}%
 }%
 \define@choicekey+[psset]{optexp}{arrowcompshape}%
   [\val\nr]{circle, rectangle}%
@@ -12035,10 +12035,10 @@
 }%
 \def\POE@psset@@barcompsize#1 #2 #3\@nil{%
   \ifx\\#2\\%
-    \PackageWarning{pst-optexp}{%
-      Parameter 'barcompsize' requires two numbers.}%
+    \psset[optexp]{barcompwidth=#1, barcompheight=#1}%
+  \else
+    \psset[optexp]{barcompwidth=#1, barcompheight=#2}%
   \fi
-  \psset[optexp]{barcompwidth=#1, barcompheight=#2}%
 }%
 \define@choicekey+[psset]{optexp}{barcompshape}%
   [\val\nr]{circle, rectangle}%
