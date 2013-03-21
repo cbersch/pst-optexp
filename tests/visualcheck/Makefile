@@ -36,11 +36,12 @@ FILELIST_NODIFF := $(foreach f, $(FILELIST), $(shell \
 	  if [ $$? -eq 0 ]; then \
 	    echo $(f); \
 	fi; fi))
-BASENAMES_NODIFF := $(subst .tex,,$(foreach d, $(DIRS), $(subst $(d)/,, $(filter $(d)/%, $(FILELIST_NODIFF)))))
-FILELIST_PDF := $(subst .tex,.pdf, $(FILELIST))
+FILELIST_DIFF := $(filter-out $(FILELIST_NODIFF), $(FILELIST))
 
-DEV_SRC := $(addprefix ../, $(FILELIST_PDF))
-MASTER_SRC := $(addprefix $(MASTERDIR)/, $(FILELIST_PDF))
+BASENAMES_NODIFF := $(subst .tex,,$(foreach d, $(DIRS), $(subst $(d)/,, $(filter $(d)/%, $(FILELIST_NODIFF)))))
+BASENAMES_DIFF := $(subst .tex,,$(foreach d, $(DIRS), $(subst $(d)/,, $(filter $(d)/%, $(FILELIST_DIFF)))))
+
+FILELIST_PDF := $(subst .tex,.pdf, $(FILELIST))
 
 DEV_TGT := $(addprefix dev/, $(foreach d, $(DIRS), $(subst $(d)/,, $(filter $(d)/%, $(FILELIST_PDF)))))
 MASTER_TGT := $(addprefix master/, $(foreach d, $(DIRS), $(subst $(d)/,, $(filter $(d)/%, $(FILELIST_PDF)))))
@@ -49,16 +50,16 @@ PNG_TGT := $(subst .pdf,-01.png, $(DEV_TGT)) $(subst .pdf,-01.png, $(MASTER_TGT)
 
 DIFF := $(subst dev/,diff/, $(subst .pdf,-01.png, $(DEV_TGT)))
 
-.PHONY: all dev-dir master-dir diff-dir clean veryclean
+.PHONY: all dev-dir master-dir diff-dir clean veryclean check-diff check-nodiff dev-src master-src
 
-all: $(DIFF)
+all: check-diff check-nodiff
 
-$(MASTER_SRC):
+master-src:
 	make -C $(MASTERDIR)/.. pst-optexp.pro
 	make -C $(MASTERDIR)/testcases
 	make -C $(MASTERDIR)/examples
 
-$(DEV_SRC): 
+dev-src: 
 	make -C ../.. pst-optexp.pro
 	make -C ../testcases
 	make -C ../examples
@@ -83,16 +84,31 @@ $(DIFF): diff/%-01.png: dev/%-01.png master/%-01.png | diff-dir
 	  if [ ! -e master/$$f ]; then continue; fi; \
 	  composite master/$$f dev/$$f -compose MinusSrc diffsrc.png && \
 	  composite master/$$f dev/$$f -compose MinusDst diffdst.png && \
-	  composite diffsrc.png diffdst.png -compose Add diff/$$f && \
-	  if [ "$(findstring $*,$(BASENAMES_NODIFF))" ]; then srcstring=' (source  \033[22;32munchanged\033[0m)'; else \
-	  srcstring=' (source \033[22;31mchanged\033[0m)'; fi; \
-	  identify -verbose diff/$$f | \
-	  egrep -zq "Histogram:[[:space:]]*[[:digit:]]*: \(  0,  0,  0\) #000000 gray\(0,0,0\)[[:space:]]*Colormap:"; \
-	  if [ $$? -eq 1 ]; then echo $$f' \033[22;31mchanged\033[0m'$$srcstring; \
-	  else echo $$f' \033[22;32mok\033[0m'; fi; \
-	   done \
-	&& rm -f diffsrc.png diffdst.png
+	  composite diffsrc.png diffdst.png -compose Add diff/$$f; \
+	  echo $$f' done'; \
+	done; \
+	rm -f diffsrc.png diffdst.png
 
+check-nodiff check-diff: master-src dev-src
+
+GREPDIFF=egrep -zq "Histogram:[[:space:]]*[[:digit:]]*: \(  0,  0,  0\) \#000000 gray\(0,0,0\)[[:space:]]*Colormap:"
+check-nodiff: $(DIFF)
+	@for f in $(addprefix diff/, $(addsuffix *.png, $(BASENAMES_NODIFF))); \
+	  do srcstring=' (source  \033[22;32munchanged\033[0m)';\
+	  identify -verbose $$f | $(GREPDIFF); \
+	  if [ $$? -eq 1 ]; \
+	    then echo $$f' \033[22;31mchanged\033[0m'$$srcstring; \
+	    else echo $$f' \033[22;32mok\033[0m'; fi; \
+	done
+
+check-diff: $(DIFF)
+	@for f in $(addprefix diff/, $(addsuffix *.png, $(BASENAMES_DIFF))); \
+	  do srcstring=' (source \033[22;31mchanged\033[0m)'; \
+	  identify -verbose $$f | $(GREPDIFF); \
+	  if [ $$? -eq 1 ]; \
+	    then echo $$f' \033[22;31mchanged\033[0m'$$srcstring; \
+	    else echo $$f' \033[22;32mok\033[0m'; fi; \
+	done
 clean:
 	$(RM) dev/*.pdf master/*.pdf
 
