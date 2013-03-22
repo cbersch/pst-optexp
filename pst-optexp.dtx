@@ -9663,7 +9663,7 @@
 \psset{unit=0.9}
 \begin{LTXexample}[pos=t, caption={caption}, label=ex:transmission-loop]
 \begin{pspicture}(13,5.5)
-\psset{usefiberstyle, optboxwidth=1, labelstyle=\footnotesize, fiber=none}
+\psset{optboxwidth=1, labelstyle=\footnotesize, fiber=none}
 \pnode(1,5){LD}\pnode([Xnodesep=5.5]LD){CPLin1}
 \pnode([offset=-2]CPLin1){CPLin2}\pnode([Xnodesep=2.5]CPLin1){CPLout1}
 \pnode([Xnodesep=2.5]CPLin2){CPLout2}\pnode([Xnodesep=3]CPLout1){RX}
@@ -9853,19 +9853,38 @@
 
 \begin{LTXexample}[pos=t, caption={caption}, label={ex:glan-thompson}]
 \begin{pspicture}(-1,-0.5)(8,1.5)
-  \newpsobject{perppol}{polarization}{poltype=perp, linecolor=green!90!black, polsize=1}
-  \newpsobject{parallelpol}{polarization}{poltype=parallel, linecolor=red, polsize=0.8}
+  \newpsobject{perppol}{polarization}{poltype=perp, linecolor=green, polsize=1}
+  \newpsobject{parpol}{polarization}{poltype=parallel, linecolor=red, polsize=0.8}
   \newpsstyle{Polarization}{arrowinset=0, arrowscale=1.2}
   \pnode(0,1){A}\pnode(8,1){B}\pnode(4,-0.5){C}
   \glanthompson[glanthompsongap=0.2, glanthompsonsize=2 1](A)(B)
   \optplane(B)\optplane[angle=90](C)
   \drawbeam(A){1-2}
-  \drawbeam[linestyle=dashed, dash=2pt 2pt, linecolor=red, arrowscale=1.5, arrows=->](A){1}{3}
-  \parallelpol[abspos=1](A)(B)
-  \perppol[abspos=1](A)(B)
+  \drawbeam[linestyle=dashed, dash=2pt 2pt, linecolor=red, arrows=->](A){1}{3}
+  \parpol[abspos=1](A)(B)\perppol[abspos=1](A)(B)
   \nodexn{(\oenodeBeam{})-1.5(!\oeBeamVec{})}{D}
-  \perppol[abspos=7](A)(B)
-  \parallelpol(D)(\oenodeBeam{})
+  \perppol[abspos=7](A)(B)\parpol(D)(\oenodeBeam{})
+\end{pspicture}
+\end{LTXexample}
+\enlargethispage{1cm}
+\begin{LTXexample}[pos=t, caption={caption}]
+\begin{pspicture}(13.7,2.9)
+\newpsstyle{Wire}{arm=0.1, arrows=->}
+\psset[optexp]{optboxsize=1.2 0.8, optmzmsize=1.2 0.8, fiber=none, label=0.7}
+\pnode(2,1){L}\pnode([Xnodesep=11]L){A}
+\optbox[position=start, optboxwidth=2, label=0](L)(A){DFB-Laser}
+\optbox[abspos=1, label=0, compname=Eam, extnode=t](L)(A){EAM}
+\optmzm[abspos=4.5, compname=Mzm1, extnode=t](L)(A){MZM}
+\optmzm[abspos=6, compname=Mzm2, extnode=t](L)(A){MZM}
+\optamp[abspos=9](L)(A){EDFA}
+\drawfiber{1}{2}{3}{4}{5}\drawfiber[arrows=->]{}(A)
+\pnode([offset=1.5]\oenodeExt{Eam}){Osci}
+\elecsynthesizer[compname=Syn, position=0.5, wire=o, label=0.5 . r](Osci)(\oenodeExt{Eam}){10\,GHz}
+\psset[optexp]{label=0, wire, optboxsize=0.8 1.2}
+\optbox[compname=Ppg1](\oenodeExt{Mzm1}|Osci)(\oenodeExt{Mzm1}){PPG}
+\optbox[compname=Ppg2](\oenodeExt{Mzm2}|Osci)(\oenodeExt{Mzm2}){PPG}
+\drawwire[arrows=-, wireangleB=-90]{Syn}(\oenodeExt{Mzm2}|Osci)
+\rput([offset=0.5, Xnodesep=-0.3]A){Faserschleife}
 \end{pspicture}
 \end{LTXexample}
 
@@ -9874,7 +9893,7 @@
 \captionsetup[lstlisting]{format=poecaption}%
 \begin{LTXexample}[pos=t, caption={\ifGERMAN Angepasst von \fi\ifENGLISH Adapted from \fi\doiurl{10.1364/OL.37.000930}}]
 \begin{pspicture}(0,0.2)(13.5,4.7)
-\psset[optexp]{optboxsize=1 0.8, usefiberstyle, label=0, fiber=none}
+\psset[optexp]{optboxsize=1 0.8, label=0, fiber=none}
 \pnode(1,3.2){Scan}\pnode([offset=-1.6]Scan){Sat}
 \pnode([Xnodesep=5]Scan){ScanCpl}\pnode(ScanCpl|Sat){SatCpl}
 \pnode([Xnodesep=1.5,offset=-0.8]ScanCpl){Cpl}\pnode([Xnodesep=5]Cpl){PD}
@@ -13372,18 +13391,18 @@
 }%
 \def\drawconn@iii(#1){\drawconn@iv{(#1)}}%
 \def\drawconn@iv#1{%
-  \def\POE@tempe{#1}\drawconn@ii@
+  \def\POE@tempe{#1}\drawconn@v
 }%
-\def\drawconn@ii@{%
+\def\drawconn@v{%
   \@ifnextchar(%)
-    {\drawconn@iii@}%
-    {\@ifnextchar\bgroup{\drawconn@iv@}{}}%
+    {\drawconn@vi}%
+    {\@ifnextchar\bgroup{\drawconn@vii}{}}%
 }%
-\def\drawconn@iii@(#1){\drawconn@iv@{(#1)}}%
-\def\drawconn@iv@#1{%
-  \expandafter\drawconn@v\expandafter{\POE@tempe}{#1}%
-  \def\POE@tempe{#1}\drawconn@ii@}%
-\def\drawconn@v#1#2{%
+\def\drawconn@vi(#1){\drawconn@vii{(#1)}}%
+\def\drawconn@vii#1{%
+  \expandafter\drawconn@viii\expandafter{\POE@tempe}{#1}%
+  \def\POE@tempe{#1}\drawconn@v}%
+\def\drawconn@viii#1#2{%
   \begingroup
     \let\psk@angleA\relax
     \let\psk@angleB\relax
