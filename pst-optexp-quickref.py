@@ -52,7 +52,7 @@ f.write(r"""\documentclass[landscape]{scrartcl}
 \makeatletter
 \def\choitem#1#2{\item[#1]=\ltd@verblist{#2}}
 \def\boolitem#1{\item[#1]=\ltd@verblist{true,false}}
-\def\envitem#1{\item[{\textbackslash begin\{#1\}\ldots\textbackslash end\{#1\}}]}
+\def\envitem#1{\item[\textcolor{DOrange}{\textbackslash begin\{#1\}}\ldots\textcolor{DOrange}{\textbackslash end\{#1\}}]}
 \def\cmditem#1{%
   \item[\textcolor{DOrange}{\textbackslash#1}]%
   \begingroup
@@ -73,15 +73,17 @@ v = re.findall("%<\*stylefile>\s*\[[0-9/]+\s*(v[0-9.]+[^\s]*).*?\]", data)
 
 f.write("\\section*{Cheat sheet for pst-optexp (%s)}\n" % (v[0]))
 
+deprecated_parameters = ['pollinewidth', 'align', 'lampscale', 'refractiveindex']
+dp_pat = re.compile(r'\{(' + '|'.join(deprecated_parameters) + r')\}')
 cmdenv=False
 optenv=False
 newchapter=None
 space = False
 
 for m in g:
-    if m[0].startswith(r'\psargitem') or m[0].startswith(r'\poeitem'):
+    if m[0].startswith(r'\psargitem') or m[0].startswith(r'\poeitem') or re.match(dp_pat, m[1]):
         continue
-    if re.match(r'\\(cmditem|[a-z]+desc)', m[0]):
+    if re.match(r'\\((?:cmd|env)item|[a-z]+desc)', m[0]):
         if optenv:
             f.write("\\end{optionlist}\n")
             optenv = False
