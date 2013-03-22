@@ -9784,15 +9784,16 @@
 \end{LTXexample}
 
 \begin{LTXexample}[caption={caption}]
-\begin{pspicture}(0,1)(3.2,4.2)
+\psset{unit=1.5}
+\begin{pspicture}(0,1)(2.2,4.2)
   \pnode(0,2){In}\pnode(1,2){G}\pnode(1,4){M1}
-  \pnode(3,2){M2}\pnode(1,1){S}
+  \pnode(2,2){M2}\pnode(1,1){S}
   \mirror[mirrortype=semitrans](In)(G)(M1)
   \optbox[optboxwidth=0.15, angle=45, style=SemitransMirror](G)(M1)
   \mirror[mirrortype=extended](G)(M1)(G)
   \mirror[mirrortype=extended](G)(M2)(G)
   \optplate[position=end](G)(S)
-  \newpsstyle{Beam}{linecolor=red, ArrowInside=->, ArrowInsidePos=0.4, arrowscale=1.3}
+  \newpsstyle{Beam}{linecolor=red, ArrowInside=->, ArrowInsidePos=0.4, arrowscale=1.5}
   \drawbeam(In){1}{4}{1}{5}
   \drawbeam(In){1-3}{2}{1}{5}
 \end{pspicture}
@@ -9810,7 +9811,7 @@
     \optbox[abspos=2.5](Laser)(Ref){Raumfilter}
     \lens[fillstyle=solid, fillcolor={[rgb]{0.87,0.91,0.93}}](Laser)(Ref){Linse}
     \mirror[label=1 30]([offset=0.2]Laser)([offset=0.2]Ref)(Film){%
-      \begin{tabular}{l}Spiegel\\(fest)\end{tabular}}
+      \begin{tabular}{c}Spiegel\\(fest)\end{tabular}}
     \opttripole[label=0.4](Ref)(Film)(Ref){%
       \psframe(0.5,1\pslinewidth)(-0.5,5\pslinewidth)
       \psline[linewidth=2\pslinewidth](0.5,0)(-0.5,0)
@@ -9839,7 +9840,7 @@
   \optbox[optboxsize=0.2 0.6, n=1, label=-1.2](\oenodeOut{6})(Det){%
     \begin{tabular}{@{}c@{}}nonlinear\\ crystal\end{tabular}}
   \optplate[linestyle=none](\oenodeOut{7})(Det)
-  \optdetector[detsize=0.6 0.6, fillstyle=solid,fillcolor=blue](\oenodeOut{6})(Det)
+  \optdetector[detsize=0.6 0.6, fillstyle=solid, fillcolor=blue](\oenodeOut{6})(Det)
   \newpsstyle{Beam}{linewidth=1.5\pslinewidth}
   \drawbeam[linecolor=blue]{7-9}
   \addtopsstyle{Beam}{linecolor=red}
@@ -9873,18 +9874,18 @@
 \captionsetup[lstlisting]{format=poecaption}%
 \begin{LTXexample}[pos=t, caption={\ifGERMAN Angepasst von \fi\ifENGLISH Adapted from \fi\doiurl{10.1364/OL.37.000930}}]
 \begin{pspicture}(0,0.2)(13.5,4.7)
-\psset[optexp]{optboxsize=1 0.8, usefiberstyle}
+\psset[optexp]{optboxsize=1 0.8, usefiberstyle, label=0, fiber=none}
 \pnode(1,3.2){Scan}\pnode([offset=-1.6]Scan){Sat}
 \pnode([Xnodesep=5]Scan){ScanCpl}\pnode(ScanCpl|Sat){SatCpl}
 \pnode([Xnodesep=1.5,offset=-0.8]ScanCpl){Cpl}\pnode([Xnodesep=5]Cpl){PD}
-\pnode([Xnodesep=2.5, offset=-1.4]Cpl){Pump}\psset[optexp]{fiber=none}
-\optbox[position=start, label=0](Scan)(ScanCpl){Scan}
+\pnode([Xnodesep=2.5, offset=-1.4]Cpl){Pump}
+\optbox[position=start](Scan)(ScanCpl){Scan}
 \optmzm[abspos=1, compname=M1, extnode=t](Scan)(ScanCpl)
 \optmzm[abspos=2.5, compname=M2, extnode=t](Scan)(ScanCpl)
 \optamp[abspos=3.7](Scan)(ScanCpl)
 \polcontrol[abspos=4.5, fiber=o](Scan)(ScanCpl)
 \drawfiber{1}{2}{3}{4}{5}
-\optbox[position=start, compname=S, extnode=b, label=0](Sat)(SatCpl){Sat}
+\optbox[position=start, compname=S, extnode=b](Sat)(SatCpl){Sat}
 \optmzm[abspos=1.75, compname=M3, extnode=b](Sat)(SatCpl)
 \optamp[abspos=3.7](Sat)(SatCpl)
 \polcontrol[abspos=4.5, fiber=o](Sat)(SatCpl)
@@ -9895,19 +9896,19 @@
 \addtopsstyle{OptCircArrow}{arrows=<-}
 \optcirculator[optcircangle=0 -90](Cpl)(PD)(Pump)
 \wdmsplitter[position=0.8, coupleralign=t](Cpl)(PD)
-\optbox[position=end, label=0, compname=Pd, extnode=t](Cpl)(PD){PD}
-\optbox[position=end, label=0, compshift=-1.5](Cpl)(PD){OSA}
+\optbox[position=end, compname=Pd, extnode=t](Cpl)(PD){PD}
+\optbox[position=end, compshift=-1.5](Cpl)(PD){OSA}
 \optamp[fiber](Pump)(\oenodeIfc{2}{13})
-\optbox[position=start, optboxsize=0.6 1.2, label=0 . . absolute](Pump)(Pump|Cpl){Pump}
+\optbox[position=start, optboxsize=0.6 1.2](Pump)(Pump|Cpl){Pump}
 \drawfiber{10}{11}{12}{13}{14}{15}\drawfiber{14}{16}
-\psset[optexp]{label=0}
 \optbox[compshift=0.7, optboxsize=2.5 0.8](\oenodeExt{M2})(\oenodeExt{Pd}|\oenodeExt{M2}){Lock-In Amp}
+\addtopsstyle{Wire}{arm=0.1}
 \drawwire[wireangleA=90, linearc=0.3](\oenodeExt{M2}){}
 \drawwire[wireangleB=90, linearc=0.3]{}(\oenodeExt{Pd})
-\addtopsstyle{Wire}{arm=0}
-\elecsynthesizer[synthshape=rectangle, synthtype=sawtooth](\oenodeExt{S}|Pump)(\oenodeExt{S})
-\elecsynthesizer[synthshape=rectangle, synthtype=triangle](\oenodeExt{M3}|Pump)(\oenodeExt{M3})
-\elecsynthesizer([offset=0.4]\oenodeExt{M1})(\oenodeExt{M1})
+\elecsynthesizer([offset=0.2]\oenodeExt{M1})(\oenodeExt{M1})
+\psset[optexp]{synthshape=rectangle}
+\elecsynthesizer[synthtype=sawtooth](\oenodeExt{S}|Pump)(\oenodeExt{S})
+\elecsynthesizer[synthtype=triangle](\oenodeExt{M3}|Pump)(\oenodeExt{M3})
 \end{pspicture}
 \end{LTXexample}
 \endgroup
@@ -10974,13 +10975,10 @@
 % \begin{changelog}
 %\patchcmd{\release}{\setlength{\itemsep}{0pt}}{\setlength{\itemsep}{0pt}\setlength{\parsep}{0pt}}{}{}
 %   \begin{release}{4.0}{2013-xx-xx}
-%   \item Added electrical components \cs{eleccoupler}, \cs{elecmixer},
-%     \cs{elecsynthesizer}\see{sec:electrcomp}
+%   \item Added electrical components\see{sec:electrcomp}
 %   \item Added wire connections with \cs{drawwire}\see{sec:drawwire}
 %   \item Added component \cs{optarrowcomp}\see{cmd:optarrowcomp}
 %   \item Added component \cs{optbarcomp}\see{cmd:optbarcomp}
-%   \item Added option \opt{innercompalign}\see{prm:innercompalign}
-%   \item Added option \opt{beampathskip}\see{prm:beampathskip}
 %   \item Removed old, buggy beam connection code\see{sec:bwd-comp-4.0}
 %   \item Removed option \opt{conn}\see{sec:bwd-comp-4.0}
 %   \item Removed option \opt{connjoin}\see{sec:bwd-comp-4.0}
