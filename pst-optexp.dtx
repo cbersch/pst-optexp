@@ -2182,26 +2182,27 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}[linerange={1-3,9-9}, morekeywords={[21]{compshift}}]
-\begin{pspicture}(3,2)
-  \pnode(0,1){A}\pnode(2.7,1){B}
-  \lens[compshift=0.3](A)(B){L}
-  \psline[style=Refline](\oenodeRefA{})(\oenodeRefB{})
+\begin{LTXexample}[linerange={1-3,10-10}, morekeywords={[21]{compshift}}]
+\begin{pspicture}(4,2)
+  \pnode(0.4, 0.5){A}\pnode(3.6,0.5){B}
+  \lens[lens=2 2 2, compshift=0.5](A)(B)
+  \psline[style=Refline, linestyle=dashed](\oenodeRefA{})(\oenodeRefB{})
   \psdot(\oenodeRefA{})\uput[-90](\oenodeRefA{}){RefA}
   \psdot(\oenodeRefB{})\uput[-90](\oenodeRefB{}){RefB}
   \psdot[style=CenterNode](\oenodeIn{})
   \psdot[style=CenterNode](\oenodeOut{})
+  \psline[linecolor=DOrange, arrows=|->, arrowscale=1.5, arrowinset=0](\oenodeCenter{}|A)(\oenodeCenter{})
 \end{pspicture}
 \end{LTXexample}
 \begin{LTXexample}[linerange={1-3,9-9}, morekeywords={[21]{compshift}}]
-\begin{pspicture}(3,2) 
-  \pnode(0,1){A}\pnode(2,0){B}
-  \mirror[compshift=0.3](A)(2,1)(B){mirror}
-  \psline[style=Refline](\oenodeRefA{})(\oenodeRefB{}|\oenodeRefA{})(\oenodeRefB{})
+\begin{pspicture}(4,2) 
+  \pnode(0.4,1.2){A}\pnode(3,0.2){B}
+  \mirror[compshift=0.5](A)(B|A)(B)
+  \psline[style=Refline, linestyle=dashed](\oenodeRefA{})(\oenodeRefB{}|\oenodeRefA{})(\oenodeRefB{})
   \psdot(\oenodeRefA{})\uput[-90](\oenodeRefA{}){RefA}
-  \psdot(\oenodeRefB{})\uput[180](\oenodeRefB{}){RefB}
+  \psdot(\oenodeRefB{})\uput[0](\oenodeRefB{}){RefB}
   \psdot[style=CenterNode](\oenodeIn{})
-  \psdot[style=CenterNode](\oenodeOut{})
+  \psline[linecolor=DOrange, arrows=|->, arrowscale=1.5, arrowinset=0](B|A)(\oenodeCenter{})
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -2226,26 +2227,27 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}[linerange={1-3,9-9}, morekeywords={[21]{compshift}}]
-\begin{pspicture}(3,2)
-  \pnode(0,1){A}\pnode(2.7,1){B}
-  \lens[compoffset=0.3](A)(B){L}
-  \psline[style=Refline](\oenodeRefA{})(\oenodeRefB{})
+\begin{LTXexample}[linerange={1-3,10-10}, morekeywords={[21]{compoffset}}]
+\begin{pspicture}(4,2)
+  \pnode(0.4, 1){A}\pnode(3.6, 1){B}
+  \lens[lens=2 2 2, compoffset=0.5](A)(B)
+  \psline[style=Refline, linestyle=dashed](\oenodeRefA{})(\oenodeRefB{})
   \psdot(\oenodeRefA{})\uput[-90](\oenodeRefA{}){RefA}
   \psdot(\oenodeRefB{})\uput[-90](\oenodeRefB{}){RefB}
   \psdot[style=CenterNode](\oenodeIn{})
   \psdot[style=CenterNode](\oenodeOut{})
+  \psline[linecolor=DOrange, arrows=|->, arrowscale=1.5, arrowinset=0]([Xnodesep=-0.5]\oenodeCenter{})(\oenodeCenter{})
 \end{pspicture}
 \end{LTXexample}
-\begin{LTXexample}[linerange={1-3,9-9}, morekeywords={[21]{compshift}}]
-\begin{pspicture}(3,2) 
-  \pnode(0,1){A}\pnode(2,0){B}
-  \mirror[compoffset=0.3](A)(2,1)(B){mirror}
-  \psline[style=Refline](\oenodeRefA{})(\oenodeRefB{}|\oenodeRefA{})(\oenodeRefB{})
+\begin{LTXexample}[linerange={1-3,9-9}, morekeywords={[21]{compoffset}}]
+\begin{pspicture}(4,2) 
+  \pnode(0.4,1.2){A}\pnode(3,0.2){B}
+  \mirror[compoffset=0.5](A)(B|A)(B)
+  \psline[style=Refline, linestyle=dashed](\oenodeRefA{})(\oenodeRefB{}|\oenodeRefA{})(\oenodeRefB{})
   \psdot(\oenodeRefA{})\uput[-90](\oenodeRefA{}){RefA}
-  \psdot(\oenodeRefB{})\uput[180](\oenodeRefB{}){RefB}
+  \psdot(\oenodeRefB{})\uput[0](\oenodeRefB{}){RefB}
   \psdot[style=CenterNode](\oenodeIn{})
-  \psdot[style=CenterNode](\oenodeOut{})
+  \psline[linecolor=DOrange, arrows=|->, arrowscale=1.5, arrowinset=0](B|A)(\oenodeCenter{})
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -5833,7 +5835,17 @@
   \multido{\i=0+45}{8}{%
     \optbox[innerlabel](0,0)(1;\i){\i}
     \psdot(\oenodeExt{})
-  }
+  }%
+\end{pspicture}
+\end{LTXexample}
+\begin{LTXexample}[morekeywords={[21]extnodealign}]
+\begin{pspicture}(-2.2,-2.2)(2.2,2.2)
+  \psset{dotscale=1.5, mirrortype=extended, mirrordepth=0.5, label=0.25 . . relative, extnodealign=abs, extnode=tr}
+  \newpsstyle{ExtendedMirror}{}
+  \multido{\i=0+45,\ii=-45+45}{8}{%
+    \mirror(0,0)(1.5;\i)(2.1212;\ii){\i}
+    \psdot(\oenodeExt{})
+  }%
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -5858,6 +5870,16 @@
   \psset{extnodealign=rel, extnode=tr}
   \multido{\i=0+45}{8}{%
     \optbox[innerlabel](0,0)(1;\i){\i}
+    \psdot(\oenodeExt{})
+  }%
+\end{pspicture}
+\end{LTXexample}
+\begin{LTXexample}[morekeywords={[21]extnodealign}]
+\begin{pspicture}(-2.2,-2.2)(2.2,2.2)
+  \psset{dotscale=1.5, mirrortype=extended, mirrordepth=0.5, label=0.25 . . relative, extnodealign=abs, extnode=tr}
+  \newpsstyle{ExtendedMirror}{}
+  \multido{\i=0+45,\ii=-45+45}{8}{%
+    \mirror(0,0)(1.5;\i)(2.1212;\ii){\i}
     \psdot(\oenodeExt{})
   }%
 \end{pspicture}
@@ -6330,12 +6352,13 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}[pos=t, linerange={2-4,16-16}]
+\begin{LTXexample}[pos=t, linerange={2-4,17-17}]
 \psset{unit=2}
 \begin{pspicture}(0.3,0.1)(4.8,1.6)
   \pnode(0.5,0.5){A}\pnode(4.5,0.5){B}
   \optbox[compshift=0.5, angle=10, rotateref=tr, extnode={-0.5,1}](A)(B)
   \psline[style=Refline](\oenodeTrefA{})(\oenodeTrefB{})
+  \psline[style=Refline, linestyle=dashed](\oenodeRefA{})(\oenodeRefB{})
   \psdot(\oenodeRefA{})\uput[-90](\oenodeRefA{}){RefA}
   \psdot(\oenodeRefB{})\uput[-90](\oenodeRefB{}){RefB}
   \psdot(\oenodeTrefA{})\uput[90](\oenodeTrefA{}){TrefA}
@@ -8119,13 +8142,13 @@
 %
 % \ifENGLISH
 % A connection of a component with a node is what is used for automatic
-% connections (see \prettyref{sec:drawfiber-auto}). Consider the following
+% connections (see \prettyref{sec:drawconn-auto}). Consider the following
 % example for clarification of the curve alignment:
 % \fi
 % \ifGERMAN
 % Eine Verbindung zwischen einer Komponente und einem Knoten ist das, was bei
 % automatischen Verbindungen verwendet wird (siehe
-% \prettyref{sec:drawfiber-auto}). Folgendes Beispiel erläutert die Ausrichtung
+% \prettyref{sec:drawconn-auto}). Folgendes Beispiel erläutert die Ausrichtung
 % der Kurve:
 % \fi
 %
@@ -8567,11 +8590,76 @@
 %</ignore>
 % \fi
 % \end{optionlist}
-% 
 %
-% \ifENGLISH\subsection{Automatic fiber connections}\fi
-% \ifGERMAN\subsection{Automatische Faserverbindungen}\fi
-% \label{sec:drawfiber-auto}
+% \ifGERMAN\section{Elektrische Verbindungen}\fi
+% \ifENGLISH\section{Drawing wires}\fi
+% \label{sec:drawwire}
+%
+% \ifENGLISH
+% All available components can be connected with wire connections, the
+% wire components in \prettyref{sec:electrcomp} are connected
+% automatically. The \Lkeyword*{wire*} parameters are equivalent to
+% their \Lkeyword*{fiber*} counterparts, see their respective
+% documentation for details.
+% \fi
+% \ifGERMAN
+% Alle Komponenten können mit Drähten verbunden werden, die elektrischen
+% Komponenten in \prettyref{sec:electrcomp} werden automatisch
+% verbunden. Die \Lkeyword*{wire*}-Parameter sind äquivalent zu den
+% entsprechenden \Lkeyword*{fiber*}-Parametern, die detailliertere
+% Informationen enthalten.
+% \fi
+%
+% \begin{ltxsyntax}
+%   \xLcs{drawwire}\cmditem{drawwire}[options]{obj$_1$}{obj$_2$}\ldots
+% \end{ltxsyntax}
+%
+% \begin{optionlist}
+%   \choitem[relative]{wirealign}{rel,relative,center,abs,absolute}
+%   \ifGERMAN Siehe \Lkeyword{fiberalign}.\fi
+%   \ifENGLISH See \Lkeyword{fiberalign}.\fi
+%
+%   \numitem[0]{wireangleA}
+%   \ifGERMAN Siehe \Lkeyword{fiberangleA}.\fi
+%   \ifENGLISH See \Lkeyword{fiberangleA}.\fi
+%
+%   \numitem[0]{wireangleB}
+%   \ifGERMAN Siehe \Lkeyword{fiberangleB}.\fi
+%   \ifENGLISH See \Lkeyword{fiberangleB}.\fi
+%
+%   \valitem{addtoWire}{list}
+%     \addtostylemsg{Wire}
+%
+%   \valitem{newWire}{list}
+%     \newstylemsg{Wire}
+% 
+%   \valitem[angle]{wirestyle}{string}
+%   \ifGERMAN Siehe \Lkeyword{fiberstyle}, lediglich der Vorgabewert ist hier \opt{angle}.\fi
+%   \ifENGLISH See \Lkeyword{fiberangleB}, the default value is \opt{angle}.\fi
+%
+%   \choitem[all]{wire}{[*+]none,all,i,o,\prm{refpoint}}
+%   \ifENGLISH 
+%   This parameter selects which wire connections are drawn.  The value
+%   of this parameter can affect either only the electrical components
+%   (if the value is prefixed with \opt{*}), only free-ray and fiber
+%   components (prefixed with \opt{+}), or all components otherwise.
+%
+%   See \Lkeyword{fiber} for details and examples.
+%   \fi
+%   \ifGERMAN
+%   Dieser Parameter gibt an, welche elektrische Verbindungen gezeichnet werden. Der
+%   Parameter kann nur die elektrischen Komponenten betreffen (falls ein \opt{*}
+%   vorangestellt ist), nur die Faser- und Freistrahlkomponenten (\opt{+} wird
+%   vorangestellt), oder alle Komponenten. 
+%
+%   Siehe \Lkeyword{fiber} für Details und Beispiele.
+%   \fi
+% \end{optionlist}
+%
+%
+% \ifENGLISH\subsection{Automatic connections}\fi
+% \ifGERMAN\subsection{Automatische Verbindungen}\fi
+% \label{sec:drawconn-auto}
 %
 % \ifENGLISH
 % All fiber components described in \prettyref{chap:fibercomp} are connected
@@ -8579,7 +8667,7 @@
 % is descibed in \prettyref{sec:drawfiber-angles}. The fiber connections can be
 % controlled in a number of ways, without need to explicitely use
 % \Lcs{drawfiber}. The style of each fiber connection can be configure
-% independently, see \prettyref{sec:drawfiber-auto-styles}.
+% independently, see \prettyref{sec:drawconn-auto-styles}.
 % \fi
 % \ifGERMAN
 % Alle Faserkomponenten, die in \prettyref{chap:fibercomp} beschrieben werden,
@@ -8588,7 +8676,7 @@
 % automatischen Faserverbindungen können umfangreich kontrolliert werden, ohne
 % explizit \Lcs{drawfiber} zu benutzen. Das Aussehen jeder Verbindung kann
 % ebenfalls separat konfiguriert werden, siehe
-% \prettyref{sec:drawfiber-auto-styles}.
+% \prettyref{sec:drawconn-auto-styles}.
 % \fi
 %
 % \begin{optionlist}
@@ -8734,9 +8822,9 @@
 % \end{enumerate}
 %
 %
-% \ifENGLISH\subsection{Appearance of automatic fiber connections}\fi
-% \ifGERMAN\subsection{Aussehen der automatischen Faserverbindungen}\fi
-% \label{sec:drawfiber-auto-styles}
+% \ifENGLISH\subsection{Appearance of automatic connections}\fi
+% \ifGERMAN\subsection{Aussehen der automatischen Verbindungen}\fi
+% \label{sec:drawconn-auto-styles}
 %
 % \begin{figure}\centering
 % \begin{pspicture}(0,-0.2)(12,4.4)
@@ -8892,53 +8980,6 @@
 %</ignore>
 % \fi
 % \end{stylelist}
-%
-%
-% \ifGERMAN\section{Elektrische Verbindungen}\fi
-% \ifENGLISH\section{Drawing wires}\fi
-% \label{sec:drawwire}
-%
-% \ifENGLISH
-% All available components can be connected with wire connections, the
-% wire components in \prettyref{sec:electrcomp} are connected automatically.
-% \fi
-% \ifGERMAN
-% Alle Komponenten können mit Drähten verbunden werden, die elektrischen
-% Komponenten in \prettyref{sec:electrcomp} werden automatisch
-% verbunden.
-% \fi
-%
-% \begin{ltxsyntax}
-%   \xLcs{drawwire}\cmditem{drawwire}[options]{obj$_1$}{obj$_2$}\ldots
-% \end{ltxsyntax}
-%
-% \begin{optionlist}
-%   \choitem[relative]{wirealign}{rel,relative,center,abs,absolute}
-%   \numitem[0]{wireangleA}
-%   \ifENGLISH An additive value for the starting angle, the total angle depends
-%   on \Lkeyword{wirealign}. If this parameter is set to \opt{absolute}, then
-%   \Lkeyword{wireangleA} is the total angle, otherwise its value is added to
-%   the calculated angle.
-%   \fi
-%   \ifGERMAN
-%   Ein additiver Wert für den Anfangswinkel, der gesamte Winkel hängt von
-%   \Lkeyword{wirealign} ab. Ist dieser auf \opt{absolute} eingestellt, so ist
-%   \Lkeyword{wireangleA} der absolute Winkel, andernfalls wird der Wert zu dem
-%   automatisch berechneten Winkel hinzuaddiert.
-%   \fi
-%
-%   \numitem[0]{fiberangleB}
-%   \ifENGLISH Like \Lkeyword{wireangleA}, but for the end angle.\fi
-%   \ifGERMAN Wie \Lkeyword{wireangleB}, aber für den Endwinkel.\fi
-% %   \valitem{addtoWire}{list}
-%     \addtostylemsg{Wire}
-%
-%   \valitem{newWire}{list}
-%     \newstylemsg{Wire}
-% 
-%   \valitem[curve]{wirestyle}{string}
-%   \choitem[all]{wire}{[*+]none,all,i,o,\prm{refpoint}} 
-% \end{optionlist}
 % 
 % \ifGERMAN\section{Zeichenebenen}\fi
 % \ifENGLISH\section{Layers}\fi
@@ -10987,19 +11028,19 @@
 % \chapter{Revision history}
 %
 % This revision history is a list of changes relevant to users of this
-% package. Changes of a more technical nature which do not affect the user
-% interface or the behavior of the package are not included in the list. If an
-% entry in the revision history states that a feature has been \emph{improved}
-% or \emph{extended}, this indicates a modification which either does not affect
-% the syntax and behavior of the package or is syntactically backwards
-% compatible (such as the addition of an optional argument to an existing
-% command). Entries stating that a feature has been \emph{deprecated},
-% \emph{modified}, \emph{renamed}, or \emph{removed} demand attention. They
-% indicate a modification which may require changes to existing documents. The
-% numbers on the right indicate the relevant section of this manual, more
-% information regarding backward compatibility can be found in
-% \prettyref{sec:bwd-comp}.
-% \fi
+% package. Changes of a more technical nature which do not affect the
+% user interface or the behavior of the package are not included in the
+% list. If an entry in the revision history states that a feature has
+% been \emph{improved} or \emph{extended}, this indicates a modification
+% which either does not affect the syntax and behavior of the package or
+% is syntactically backwards compatible (such as the addition of an
+% optional argument to an existing command). Entries stating that a
+% feature has been \emph{deprecated}, \emph{modified}, \emph{fixed},
+% \emph{renamed}, or \emph{removed} demand attention. They indicate a
+% modification which may require changes to existing documents. The
+% numbers on the right indicate the relevant section of this manual,
+% more information regarding backward compatibility can be found in
+% \prettyref{sec:bwd-comp}.  \fi
 %
 % \begin{changelog}
 %\patchcmd{\release}{\setlength{\itemsep}{0pt}}{\setlength{\itemsep}{0pt}\setlength{\parsep}{0pt}}{}{}
@@ -11008,6 +11049,7 @@
 %   \item Added wire connections with \cs{drawwire}\see{sec:drawwire}
 %   \item Added component \cs{optarrowcomp}\see{cmd:optarrowcomp}
 %   \item Added component \cs{optbarcomp}\see{cmd:optbarcomp}
+%   \item Fixed \opt{extnodealign} to affect also multipoles\see{cmd:extnodealign}
 %   \item Removed old, buggy beam connection code\see{sec:bwd-comp-4.0}
 %   \item Removed option \opt{conn}\see{sec:bwd-comp-4.0}
 %   \item Removed option \opt{connjoin}\see{sec:bwd-comp-4.0}
@@ -11777,7 +11819,7 @@
 \def\POE@getref@r{\def\POE@key@extnode@xref{1}}%
 \psset[optexp]{%
   extnode=\@empty, 
-  extnodealign=abs
+  extnodealign=absolute
 }%
 %    \end{macrocode}
 % Set the rotation reference point. For this to work properly, the components
@@ -14729,7 +14771,6 @@
       \begin@OptexpObj
         \ifPOE@backlayer
           \POE@regNodes{##1}{##2}
-          \POE@extnodealign
         \fi
         \POE@drawcomponent{#2}{##3}
         \ifPOE@backlayer
@@ -14763,7 +14804,6 @@
       \begin@OptexpObj
         \ifPOE@backlayer
           \POE@regNodes{##1}{##2}
-          \POE@extnodealign
         \fi
         \POE@drawcomponent{#2}{##3}
         \ifPOE@backlayer
@@ -15224,17 +15264,11 @@
   \POE@Verb{%
     /@xref \POE@key@extnode@xref\space def 
     /@yref \POE@key@extnode@yref\space def
+    /@@ang /N@\POE@refnodeA\space /N@\POE@refnodeB\space SlopeAngle \POE@key@angle sub def
   }%
-\ignorespaces}%
-%    \end{macrocode}
-% \end{macro}
-% 
-% \begin{macro}{\POE@extnodealign}
-%    \begin{macrocode}
-\def\POE@extnodealign{%
   \ifx\POE@key@extnodealign\POE@str@absolute
     \POE@Verb{%
-      /N@\oenodeRefA{} @GetCenter /N@\oenodeRefB{} @GetCenter
+      /N@\POE@refnodeA\space @GetCenter /N@\POE@refnodeB\space @GetCenter
       @ABVect exch
       dup 0 gt 3 1 roll 0 eq exch 0 lt and or
       { /RefFac -1 def } if
@@ -15471,9 +15505,8 @@
    \begin@OptexpObj
       \ifPOE@backlayer
         \POE@regNodes{#1}{#2}
-        \POE@extnodealign
       \fi
-      \def\optdipole@comp{#3}%
+      \def\optdipole@comp{\psrotate(0,0){!\POE@dict{@@ang}}{#3}}%
       \POE@drawcomponent{optdipole}{#4}
       \ifPOE@backlayer
         \POE@InternalConn
@@ -15549,7 +15582,6 @@
   \begin@OptexpObj
     \ifPOE@backlayer
       \POE@regNodes{\POE@tempa}{\POE@tempb}%
-      \POE@extnodealign
     \fi
     \POE@drawcomponent{fibercollimator}{#1}
     \ifPOE@backlayer
@@ -16917,12 +16949,9 @@
 \def\optfilter@ref{%
   \POE@setref{%
     \POE@key@filtersize\space 0.5 mul dup /@@y ED /@@x ED 
-    /@@ang 
     \ifx\POE@key@innercompalign\POE@str@absolute
-      /N@\oenodeRefA{} /N@\oenodeRefB{} SlopeAngle \POE@key@angle sub
-    \else
-      \POE@key@filterangle
-    \fi def
+      /@@ang \POE@key@filterangle\space def
+    \fi
   }%
 }%
 \let\optfilter@nodes\POE@dipole@nodes
@@ -17798,7 +17827,6 @@
       \begin@OptexpObj
         \ifPOE@backlayer
           \POE@regNodes{##1}{##2}
-          \POE@extnodealign
         \fi
         \POE@drawcomponent{#2}{##3}
         \ifPOE@backlayer
@@ -17827,12 +17855,6 @@
       pop pop @@sz dup
     \fi
     /@@y ED /@@x ED
-    /@@ang 
-    \ifx\POE@key@innercompalign\POE@str@absolute
-      /N@\oenodeRefA{} /N@\oenodeRefB{} SlopeAngle \POE@key@angle sub
-    \else
-      0
-    \fi def
   }%
 }%
 %    \end{macrocode}
