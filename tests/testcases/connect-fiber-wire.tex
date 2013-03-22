@@ -1,23 +1,33 @@
-\newpsstyle{Beam}{linecolor=green}
+% The styles are choosen such, that one could see an overlay of
+% different connections.
+\newpsstyle{Beam}{linecolor=green, ArrowInside=->, arrowscale=2}
 \newpsstyle{Fiber}{linecolor=red, linewidth=3\pslinewidth, linestyle=dashed, dash=5pt 5pt}
-\newpsstyle{Wire}{linecolor=green!50!red}
-\begin{pspicture}(3,8)
+\newpsstyle{Wire}{linecolor=blue, linewidth=1.5\pslinewidth}
+\begin{pspicture}(0,0.5)(3,8)
+  \rput[t](1.5,8){--}
+  \lens(0,1)(3,1)
+  \optbox(0,2.5)(3,2.5)
+  \fiberdelayline(0,4)(3,4)
+  \optfilter(0,5.5)(3,5.5)
+  \elecsynthesizer[position=0.5](0,7)(3,7)
+\end{pspicture}\hspace*{\fill}%
+\begin{pspicture}(0,0.5)(3,8)
   \psset[optexp]{beam}\rput[t](1.5,8){beam}
   \lens(0,1)(3,1)
   \optbox(0,2.5)(3,2.5)
   \fiberdelayline(0,4)(3,4)
   \optfilter(0,5.5)(3,5.5)
   \elecsynthesizer[position=0.5](0,7)(3,7)
-\end{pspicture}
-\begin{pspicture}(3,8)
+\end{pspicture}\hspace*{\fill}%
+\begin{pspicture}(0,0.5)(3,8)
   \psset[optexp]{fiber}  \rput[t](1.5,8){fiber}
   \lens(0,1)(3,1)
   \optbox(0,2.5)(3,2.5)
   \fiberdelayline(0,4)(3,4)
   \optfilter(0,5.5)(3,5.5)
   \elecsynthesizer[position=0.5](0,7)(3,7)
-\end{pspicture}
-\begin{pspicture}(3,8)
+\end{pspicture}\hspace*{\fill}%
+\begin{pspicture}(0,0.5)(3,8)
   \psset[optexp]{wire}  \rput[t](1.5,8){wire}
   \lens(0,1)(3,1)
   \optbox(0,2.5)(3,2.5)
@@ -25,19 +35,188 @@
   \optfilter(0,5.5)(3,5.5)
   \elecsynthesizer[position=0.5](0,7)(3,7)
 \end{pspicture}
-\begin{pspicture}(3,8)
-  \psset[optexp]{wire, fiber}  \rput[t](1.5,8){wire, fiber}
+\vspace{1cm}
+
+\begin{pspicture}(0,0.5)(3,8.5)
+  \psset[optexp]{fiber=*all}\rput[b](1.5,7.7){fiber=*all}
+  \lens(0,1)(3,1)
+  \optbox(0,2.5)(3,2.5)
+  \fiberdelayline(0,4)(3,4)
+  \optfilter(0,5.5)(3,5.5)
+  \elecsynthesizer[position=0.5](0,7)(3,7)
+\end{pspicture}\hspace*{\fill}%
+\begin{pspicture}(0,0.5)(3,8.5)
+  \psset[optexp]{wire=*all}\rput[b](1.5,7.7){wire=*all}
+  \lens(0,1)(3,1)
+  \optbox(0,2.5)(3,2.5)
+  \fiberdelayline(0,4)(3,4)
+  \optfilter(0,5.5)(3,5.5)
+  \elecsynthesizer[position=0.5](0,7)(3,7)
+\end{pspicture}\hspace*{\fill}%
+\begin{pspicture}(0,0.5)(3,8.5)
+  \psset[optexp]{fiber=*none, fiber=+all}
+  \rput[b](1.5,7.7){\parbox{3\psxunit}{\centering fiber=*none\\ fiber=+all}}
+  \lens(0,1)(3,1)
+  \optbox(0,2.5)(3,2.5)
+  \fiberdelayline(0,4)(3,4)
+  \optfilter(0,5.5)(3,5.5)
+  \elecsynthesizer[position=0.5](0,7)(3,7)
+\end{pspicture}\hspace*{\fill}%
+\begin{pspicture}(0,0.5)(3,8.5)
+  \psset[optexp]{wire=*none, wire=+all}
+  \rput[b](1.5,7.7){\parbox{3\psxunit}{\centering wire=*none\\ wire=+all}}
   \lens(0,1)(3,1)
   \optbox(0,2.5)(3,2.5)
   \fiberdelayline(0,4)(3,4)
   \optfilter(0,5.5)(3,5.5)
   \elecsynthesizer[position=0.5](0,7)(3,7)
 \end{pspicture}
-\begin{pspicture}(3,8)
-  \psset[optexp]{fiber, wire}  \rput[t](1.5,8){fiber, wire}
+\vspace{1cm}
+
+\begin{pspicture}(0,0.5)(3,8.5)
+  \psset[optexp]{fiber=*i}\rput[b](1.5,7.7){fiber=*i}
+  \lens(0,1)(3,1)
+  \optbox(0,2.5)(3,2.5)
+  \fiberdelayline(0,4)(3,4)
+  \optfilter(0,5.5)(3,5.5)
+  \elecsynthesizer[position=0.5](0,7)(3,7)
+\end{pspicture}\hspace*{\fill}%
+\begin{pspicture}(0,0.5)(3,8.5)
+  \psset[optexp]{wire=*i}\rput[b](1.5,7.7){wire=*i}
+  \lens(0,1)(3,1)
+  \optbox(0,2.5)(3,2.5)
+  \fiberdelayline(0,4)(3,4)
+  \optfilter(0,5.5)(3,5.5)
+  \elecsynthesizer[position=0.5](0,7)(3,7)
+\end{pspicture}\hspace*{\fill}%
+\begin{pspicture}(0,0.5)(3,8.5)
+  \psset[optexp]{fiber=*o, wire=+i}
+  \rput[b](1.5,7.7){\parbox{3\psxunit}{\centering fiber=*o\\ wire=+i}}
+  \lens(0,1)(3,1)
+  \optbox(0,2.5)(3,2.5)
+  \fiberdelayline(0,4)(3,4)
+  \optfilter(0,5.5)(3,5.5)
+  \elecsynthesizer[position=0.5](0,7)(3,7)
+\end{pspicture}\hspace*{\fill}%
+\begin{pspicture}(0,0.5)(3,8.5)
+  \psset[optexp]{wire=*o, fiber=+i}
+  \rput[b](1.5,7.7){\parbox{3\psxunit}{\centering wire=*o\\ fiber=+i}}
   \lens(0,1)(3,1)
   \optbox(0,2.5)(3,2.5)
   \fiberdelayline(0,4)(3,4)
   \optfilter(0,5.5)(3,5.5)
   \elecsynthesizer[position=0.5](0,7)(3,7)
 \end{pspicture}
+\vspace{1cm}
+
+\begin{pspicture}(0,0.5)(3,8.5)
+  \psset[optexp]{fiber=+o}\rput[b](1.5,7.7){fiber=+o}
+  \lens(0,1)(3,1)
+  \optbox(0,2.5)(3,2.5)
+  \fiberdelayline(0,4)(3,4)
+  \optfilter(0,5.5)(3,5.5)
+  \elecsynthesizer[position=0.5](0,7)(3,7)
+\end{pspicture}\hspace*{\fill}%
+\begin{pspicture}(0,0.5)(3,8.5)
+  \psset[optexp]{wire=+o}\rput[b](1.5,7.7){wire=+o}
+  \lens(0,1)(3,1)
+  \optbox(0,2.5)(3,2.5)
+  \fiberdelayline(0,4)(3,4)
+  \optfilter(0,5.5)(3,5.5)
+  \elecsynthesizer[position=0.5](0,7)(3,7)
+\end{pspicture}\hspace*{\fill}%
+\begin{pspicture}(0,0.5)(3,8.5)
+  \psset[optexp]{fiber=+o, wire=*i}
+  \rput[b](1.5,7.7){\parbox{3\psxunit}{\centering fiber=+o\\ wire=*i}}
+  \lens(0,1)(3,1)
+  \optbox(0,2.5)(3,2.5)
+  \fiberdelayline(0,4)(3,4)
+  \optfilter(0,5.5)(3,5.5)
+  \elecsynthesizer[position=0.5](0,7)(3,7)
+\end{pspicture}\hspace*{\fill}%
+\begin{pspicture}(0,0.5)(3,8.5)
+  \psset[optexp]{wire=+o, fiber=*i}
+  \rput[b](1.5,7.7){\parbox{3\psxunit}{\centering wire=+o\\ fiber=*i}}
+  \lens(0,1)(3,1)
+  \optbox(0,2.5)(3,2.5)
+  \fiberdelayline(0,4)(3,4)
+  \optfilter(0,5.5)(3,5.5)
+  \elecsynthesizer[position=0.5](0,7)(3,7)
+\end{pspicture}
+\vspace{1cm}
+
+\begin{pspicture}(0,0.5)(3,8.5)
+  \psset[optexp]{fiber=i}\rput[b](1.5,7.7){fiber=i}
+  \lens(0,1)(3,1)
+  \optbox(0,2.5)(3,2.5)
+  \fiberdelayline(0,4)(3,4)
+  \optfilter(0,5.5)(3,5.5)
+  \elecsynthesizer[position=0.5](0,7)(3,7)
+\end{pspicture}\hspace*{\fill}%
+\begin{pspicture}(0,0.5)(3,8.5)
+  \psset[optexp]{wire=i}\rput[b](1.5,7.7){wire=i}
+  \lens(0,1)(3,1)
+  \optbox(0,2.5)(3,2.5)
+  \fiberdelayline(0,4)(3,4)
+  \optfilter(0,5.5)(3,5.5)
+  \elecsynthesizer[position=0.5](0,7)(3,7)
+\end{pspicture}\hspace*{\fill}%
+\begin{pspicture}(0,0.5)(3,8.5)
+  \psset[optexp]{fiber=o, wire=i}
+  \rput[b](1.5,7.7){\parbox{3\psxunit}{\centering fiber=o\\ wire=i}}
+  \lens(0,1)(3,1)
+  \optbox(0,2.5)(3,2.5)
+  \fiberdelayline(0,4)(3,4)
+  \optfilter(0,5.5)(3,5.5)
+  \elecsynthesizer[position=0.5](0,7)(3,7)
+\end{pspicture}\hspace*{\fill}%
+\begin{pspicture}(0,0.5)(3,8.5)
+  \psset[optexp]{wire=o, fiber=i}
+  \rput[b](1.5,7.7){\parbox{3\psxunit}{\centering wire=o\\ fiber=i}}
+  \lens(0,1)(3,1)
+  \optbox(0,2.5)(3,2.5)
+  \fiberdelayline(0,4)(3,4)
+  \optfilter(0,5.5)(3,5.5)
+  \elecsynthesizer[position=0.5](0,7)(3,7)
+\end{pspicture}
+\vspace{1cm}
+
+\begin{pspicture}(0,0.5)(3,8.5)
+  \psset[optexp]{fiber=i, wire=+i}
+  \rput[b](1.5,7.7){\parbox{3\psxunit}{\centering fiber=i\\ wire=+i}}
+  \lens(0,1)(3,1)
+  \optbox(0,2.5)(3,2.5)
+  \fiberdelayline(0,4)(3,4)
+  \optfilter(0,5.5)(3,5.5)
+  \elecsynthesizer[position=0.5](0,7)(3,7)
+\end{pspicture}\hspace*{\fill}%
+\begin{pspicture}(0,0.5)(3,8.5)
+  \psset[optexp]{wire=+i, fiber=i}
+  \rput[b](1.5,7.7){\parbox{3\psxunit}{\centering wire=+i\\ fiber=i}}
+  \lens(0,1)(3,1)
+  \optbox(0,2.5)(3,2.5)
+  \fiberdelayline(0,4)(3,4)
+  \optfilter(0,5.5)(3,5.5)
+  \elecsynthesizer[position=0.5](0,7)(3,7)
+\end{pspicture}\hspace*{\fill}%
+\begin{pspicture}(0,0.5)(3,8.5)
+  \psset[optexp]{fiber=+i, wire=i}
+  \rput[b](1.5,7.7){\parbox{3\psxunit}{\centering fiber=+i\\ wire=i}}
+  \lens(0,1)(3,1)
+  \optbox(0,2.5)(3,2.5)
+  \fiberdelayline(0,4)(3,4)
+  \optfilter(0,5.5)(3,5.5)
+  \elecsynthesizer[position=0.5](0,7)(3,7)
+\end{pspicture}\hspace*{\fill}%
+\begin{pspicture}(0,0.5)(3,8.5)
+  \psset[optexp]{fiber=+o, wire=+o}
+  \rput[b](1.5,7.7){\parbox{3\psxunit}{\centering fiber=+o\\ wire=+o}}
+  \lens(0,1)(3,1)
+  \optbox(0,2.5)(3,2.5)
+  \fiberdelayline(0,4)(3,4)
+  \optfilter(0,5.5)(3,5.5)
+  \elecsynthesizer[position=0.5](0,7)(3,7)
+\end{pspicture}
+
+
+
