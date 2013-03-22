@@ -6206,8 +6206,9 @@
 % \ifENGLISH\section{Beam vector}\fi
 %
 % \ifENGLISH In addition to the beam nodes (see
-% \prettyref{sec:beamnode}) also the vectors of the last saved beams
-% (see \Lkeyword{savebeam}) can be access on Postscript level.
+% \prettyref{sec:beamnode}) also the normalized vectors of the last
+% saved beams (see \Lkeyword{savebeam}) can be accessed at Postscript
+% level.
 %
 % These are again separated in single, upper and lower beams. \prm{num}
 % has the same meaning as for \Lcs{oenodeBeam}.
@@ -6227,67 +6228,76 @@
 %   \cmditem{oeBeamVecLow}{num}
 % \end{ltxsyntax}
 %
+% \ifGERMAN Bei den gespeicherten Werten handelt es sich um den
+% normierten Richtungsvektor des letzten Strahlsegments. Dieser ist im
+% folgenden Beispiel in rot zu sehen. Im Gegensatz dazu wird mit
+% \Lkeyword{savebeam} der Richtungsvektor gespeichert, der nach der
+% letzten Grenzfläche gelten würde, also für einen nachfolgenden Strahl
+% verwendet würde. Dieser ist im Beispiel in blau eingezeichnet.
+% \fi
+% \ifENGLISH The saved values are those of the normalized direction
+% vector of the last beam segment and is drawn in red in the next
+% example. In contrast to this, the vector saved with
+% \Lkeyword{savebeam} is that behind the last interface and would be
+% used for a following beam. This is shown in blue in the following
+% example.
+% \fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[morekeywords={[21]beaminsidelast}]
+\begin{pspicture}(4,2)
+  \optbox[optboxsize=2 1, angle=20, n=2](0,1)(4,1)
+  \drawbeam[beaminsidelast, beamalign=abs](0,1){1}
+  \pnode(\oenodeBeam{}){Out}
+  \nodexn{(Out)+(!\oeBeamVec{})}{C}
+  \drawbeam[linecolor=blue, arrows=->, loadbeam]{1}(C)
+  \drawbeam[linecolor=red, arrows=->](Out)(C)
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
+% \ifGERMAN Das Verhalten ist unabhängig davon, ob der letzte Strahl nur
+% berechnet, oder auch gezeichnet wurde. Das nächste Beispiel verwendet
+% \Lkeyword{stopinside} anstelle vom Parameter \Lkeyword{beaminsidelast}
+% im vorangegangenen Beispiel; die Strahlvektoren bleiben davon
+% unbeeinflusst.
+% \fi
+% \ifENGLISH This behaviour is independent of whether the last beam was
+% only calculated or also drawn. The next example uses
+% \Lkeyword{stopinside} instead of \Lkeyword{beaminsidelast} compared to
+% the previous example; the beam vectors are not affected by this.
+% \fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[morekeywords={[21]stopinside}]
+\begin{pspicture}(4,2)
+  \optbox[optboxsize=2 1, angle=20, n=2](0,1)(4,1)
+  \drawbeam[stopinside, beamalign=abs](0,1){1}
+  \pnode(\oenodeBeam{}){Out}
+  \nodexn{(Out)+(!\oeBeamVec{})}{C}
+  \drawbeam[linecolor=blue, arrows=->, loadbeam]{1}(C)
+  \drawbeam[linecolor=red, arrows=->](Out)(C)
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
 % \ifGERMAN Das kann dazu genutzt werden, um z.B. die Polarisation eines
-% Strahls zu kennzeichnen. Im folgenden Beispiel wird ein neuer Knoten
-% \prm{C} definiert, indem mit \Lcs*{nodexn} der Endpunkt des Strahls
-% entlang seiner Trajektorie verschoben wird.
+% Strahls zu kennzeichnen. Im folgenden Beispiel werden die neuen Knoten
+% \prm{U} und \prm{L}definiert, indem mit \Lcs*{nodexn} die Endpunkte
+% des oberen bzw. unteren Strahls entlang ihrer Trajektorie zurück
+% verschoben werden.
 % \fi
 % \ifENGLISH A possible application is marking of the polarization of a
-% beam. In the following example we define a node \prm{C} which is
-% shifted with \Lcs*{nodexn} from the beam end point along the beam
-% trajectory.
+% beam. In the following example we define the nodes \prm{U} and \prm{L}
+% which are shifted with \Lcs*{nodexn} from the end point of the upper
+% and lower beam along the respective beam trajectory.
 % \fi
-% 
-% \iffalse
-%<*ignore>
-% \fi
-\begin{LTXexample}[linerange={1-7,9-9}]
-\begin{pspicture}(3,3)
-  \pnode(0,1.5){A}\pnode(3,1.5){B}
-  \lens[abspos=1, lens=5 5 3, n=2.1](A)(B)
-  \optplane(B)
-  \drawbeam[beampos=1](A){1-2}
-  \nodexn{(\oenodeBeam{})-1.5(!\oeBeamVec{})}{C}
-  \polarization(C)(\oenodeBeam{})
-  \psdot(C)\uput[45](C){C}
-\end{pspicture}
-\end{LTXexample}
-% \iffalse
-%</ignore>
-% \fi
-%
-% \ifGERMAN Dieses Beispiel zeigt, dass wirklich der letzte eingehende
-% Strahlenvektor genommen wird, im Gegensatz zu \Lkeyword{loadbeam}, wo
-% der ausgehende Strahl weiterverwendet wird. Die Richtung des ausgehenden Strahl ist
-% rot angedeutet.
-% \fi
-% \ifENGLISH This examples shows that the last incoming beam vector is
-% used, instead of \Lkeyword{loadbeam}, where the outgoing beam vector
-% is used. The direction of the outgoing beam is marked red.
-% \fi
-%
-% \iffalse
-%<*ignore>
-% \fi
-\begin{LTXexample}[linerange={1-5,8-8}]
-\begin{pspicture}(3,2)
-  \pnode(0,1){A}\pnode(3,1){B}
-  \optbox[optboxsize=2 1, angle=20](A)(B)
-  \drawbeam[beaminsidelast, beamalign=abs](A){1}
-  \nodexn{(\oenodeBeam{})-(!\oeBeamVec{})}{C}
-  \psdot(C)\uput[-90](C){C}
-  \psline[linecolor=red, linestyle=dashed, dash=2pt 2pt, arrows=->, arrowscale=1.5](A|\oenodeBeam{})(B|\oenodeBeam{})
-\end{pspicture}
-\end{LTXexample}
-% \iffalse
-%</ignore>
-% \fi
-%
-% \ifENGLISH This can be applied to the upper and lower beams as well.\fi
-% \ifGERMAN Das kann ebenfalls auf den oberen und unteren
-% Strahl angewendet werden.
-% \fi
-%
 % \iffalse
 %<*ignore>
 % \fi
@@ -6308,7 +6318,7 @@
 %</ignore>
 % \fi
 % 
-% \ifGERMAN Ein weiteres Beispiel finden Sie in \prettyref{ex:glan-thompson}.\fi
+% \ifGERMAN Ein weiteres Anwendungsbeispiel finden Sie in \prettyref{ex:glan-thompson}.\fi
 % \ifENGLISH For another example see \prettyref{ex:glan-thompson}.\fi
 %
 %
