@@ -99,7 +99,6 @@ for m in g:
             cmdenv = True
     elif re.match(r'\\ifENGLISH', m[2]):
         newchapter = m[3]
-        print newchapter
         if optenv:
             f.write("\\end{optionlist}\n")
             optenv = False

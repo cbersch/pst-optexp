@@ -1245,7 +1245,6 @@
 %
 % \ifGERMAN\subsection{Galilei-Fernrohr}\fi
 % \ifENGLISH\subsection{Galilean telescope}\fi
-% \label{ex:galileo}
 %
 % \ifGERMAN 
 % Im Folgenden wird ein sehr einfacher Aufbau mit einer konkaven und
@@ -1412,7 +1411,7 @@
 \begingroup
 \catcode`\*=13
 \def*{}%
-\begin{LTXexample}[style=example]
+\begin{LTXexample}[style=example, label=ex:galileo]
 *\ON*\begin{pspicture}(5,2)
   \pnode(0,1){A}\pnode(3.5,1){B}
   \lens[lensradius=-0.7, 
@@ -1611,7 +1610,7 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}[style=example, caption={caption}, linerange={1-10,13-13}]
+\begin{LTXexample}[style=example, caption={caption}, label={ex:fiber-setup-alt}, linerange={1-10,13-13}]
 \begin{pspicture}[showgrid](4.9,2)
   \pnode(0.7,1){A}\pnode(4,1){B}
   \psset{optboxwidth=0.7, labelstyle=\scriptsize, fiber=none}
@@ -1638,7 +1637,6 @@
 % \ifENGLISH
 % \subsection{Michelson-Interferometer}
 % \fi
-% \label{ex:michelson}
 %
 % \ifGERMAN
 % In diesem Beispiel werden neben Linsen auch reflektierende Elemente
@@ -1656,7 +1654,7 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}[style=example, hsep=8mm, numbers=left, numberstyle=\footnotesize, caption={caption}]
+\begin{LTXexample}[style=example, hsep=8mm, numbers=left, numberstyle=\footnotesize, caption={caption}, label=ex:michelson]
 \begin{pspicture}(3.2,5)
   \pnode(0,3){A}\pnode(1,3){BS}\pnode(3,3){M1}*\label{l:ex2-nodes1}*
   \pnode(1,5){M2}\pnode(1,1){PD}*\label{l:ex2-nodes2}*
@@ -7424,7 +7422,7 @@
 % \fi
 % \end{ltxsyntax}
 %
-% \ifENGLISH\subsection{Automatic connection}\fi
+% \ifENGLISH\subsection{Automatic connections}\fi
 % \ifGERMAN\subsection{Automatische Verbindungen}\fi
 %
 % \ifENGLISH
@@ -8654,11 +8652,29 @@
 %
 %   Siehe \Lkeyword{fiber} für Details und Beispiele.
 %   \fi
-% \end{optionlist}
+% 
+%   \styleitem{Wire}
+%   \ifENGLISH
+%   The appearance of wires is controlled with this style. The optional
+%   argument of \Lcs{drawwire} can be used as well, these options can overwrite
+%   settings from the \Lstyle{Wire} style.
+%   \fi
+%   \ifGERMAN
+%   Das Aussehen der elektrischen Verbindungen wird durch diesen Stil vorgegeben. Das optionale
+%   Argument von \Lcs{drawwire} kann ebenfalls verwendet werden, die
+%   entsprechenden Parameter können die Einstellungen von \Lstyle{Wire}
+%   überschreiben.
+%   \fi
 %
+%   \valitem{addtoWire}{list}
+%     \addtostylemsg{Wire}
 %
-% \ifENGLISH\subsection{Automatic connections}\fi
-% \ifGERMAN\subsection{Automatische Verbindungen}\fi
+%   \valitem{newWire}{list}
+%     \newstylemsg{Wire}
+%   \end{optionlist}
+%   
+% \ifENGLISH\section{Automatic fiber and wire connections}\fi
+% \ifGERMAN\section{Automatische Faser- und Drahtverbindungen}\fi
 % \label{sec:drawconn-auto}
 %
 % \ifENGLISH
@@ -8878,13 +8894,14 @@
 % \caption{Vererbungsdiagramm der PS-Stile für die automatischen
 % Faserverbindungen. Sie sollten diese Stile mit \protect\Lcs*{addtopsstyle}
 % oder den entsprechenden \opt{addto}\prm{style} Parametern ändern um die
-% Vererbungslinie beizubehalten.}%
-% \fi 
-% \ifENGLISH
+% Vererbungslinie beizubehalten. Eine identisches Vererbungsdiagramm besteht 
+% für die entsprechenden \opt{Wire\ldots} Stile.}%
+% \fi \ifENGLISH
 % \caption{Inheritance diagram for the psstyles used for the automatic fiber
 % connections. These styles should be changed with \protect\Lcs*{addtopsstyle}
 % or the respective \opt{addto}\prm{style} options to preserve the
-% inheritance.}%
+% inheritance. An identical inheritance tree applies to the respective 
+% \opt{Wire\ldots} styles.}%
 % \fi
 % \label{fig:fiberstyles}
 % \end{figure}
@@ -8940,6 +8957,22 @@
 % Stile nur mit \Lcs*{addtopsstyle} oder den entsprechenden
 % \opt{addto}\prm{style} Parametern verändert werden.
 % \fi
+% \item[\smash{%
+%   \begin{tabular}[t]{@{}r@{}}%
+%     \opt{WireIn}\\
+%     \opt{WireIn1}\\
+%     \opt{WireIn2}\\
+%     \opt{WireOut}\\
+%     \opt{WireOut1}\\
+%     \opt{WireOut2}
+%   \end{tabular}}%
+% ]%
+% \xLstyle{WireIn}\label{prm:WireIn}%
+% \xLstyle{WireIn1}\label{prm:WireIn1}%
+% \xLstyle{WireIn2}\label{prm:WireIn2}%
+% \xLstyle{WireOut}\label{prm:WireOut}%
+% \xLstyle{WireOut1}\label{prm:WireOut1}%
+% \xLstyle{WireOut2}\label{prm:WireOut2}%
 %
 % \item[\smash{\begin{tabular}[t]{@{}r@{}}%
 %   \opt{new}\prm{style}\\
@@ -8951,16 +8984,22 @@
 %   \xLkeyword{newFiberOut}\xLkeyword{addtoFiberOut}
 %   \xLkeyword{newFiberOut1}\xLkeyword{addtoFiberOut1}
 %   \xLkeyword{newFiberOut2}\xLkeyword{addtoFiberOut2} 
+%   \xLkeyword{newWireIn}\xLkeyword{addtoWireIn}
+%   \xLkeyword{newWireIn1}\xLkeyword{addtoWireIn1}
+%   \xLkeyword{newWireIn2}\xLkeyword{addtoWireIn2}
+%   \xLkeyword{newWireOut}\xLkeyword{addtoWireOut}
+%   \xLkeyword{newWireOut1}\xLkeyword{addtoWireOut1}
+%   \xLkeyword{newWireOut2}\xLkeyword{addtoWireOut2} 
 %   \ifENGLISH For every style two appropriate keys \opt{new}\prm{style} and
 %   \opt{addto}\prm{style} are provided which can be used to change the styles
 %   for single objects. This can be used to define own components
-%   (\prettyref{sec:customcomp}) with respectively changed fiber connections or
+%   (\prettyref{sec:customcomp}) with respectively changed connections or
 %   to avoid explicit grouping.
 %   \fi
 %   \ifGERMAN Für jeden Faserstil werden zwei Parameter \opt{new}\prm{style} und
 %   \opt{addto}\prm{style} bereitgestellt, mit denen die Stile für einzelne
 %   Komponenten verändert werden können. Damit können neuen Komponenten mit
-%   anderen voreingestellten Faserverbindungen definiert werden
+%   anderen voreingestellten Verbindungen definiert werden
 %   (\prettyref{sec:customcomp}), oder explizite Gruppierung kann vermieden
 %   werden.
 %   \fi
@@ -11049,7 +11088,7 @@
 %   \item Added wire connections with \cs{drawwire}\see{sec:drawwire}
 %   \item Added component \cs{optarrowcomp}\see{cmd:optarrowcomp}
 %   \item Added component \cs{optbarcomp}\see{cmd:optbarcomp}
-%   \item Fixed \opt{extnodealign} to affect also multipoles\see{cmd:extnodealign}
+%   \item Fixed \opt{extnodealign} to affect also multipoles\see{prm:extnodealign}
 %   \item Removed old, buggy beam connection code\see{sec:bwd-comp-4.0}
 %   \item Removed option \opt{conn}\see{sec:bwd-comp-4.0}
 %   \item Removed option \opt{connjoin}\see{sec:bwd-comp-4.0}
