@@ -11336,15 +11336,21 @@
 \pst@addfams{optexp}
 \pstheader{pst-optexp.pro}
 %    \end{macrocode}
-% This holds a comma-separated list of all component names which are defined in
-% a \nxLenv{pspicture} environment. This list is cleared when leaving the
-% \nxLenv{pspicture}.
+% This holds a comma-separated list of all component names which are
+% defined in a \nxLenv{pspicture} environment. The list is cleared when
+% leaving the \nxLenv{pspicture} environment.
 %    \begin{macrocode}
 \gdef\POE@complist{}%
+%    \end{macrocode}
+% This hold a comma-separated list of the numbers of all saved beam end
+% points in a \nxLenv{pspicture} environment. The list is used to delete
+% all remaining Postscript information about the saved beams when
+% leaving the current \nxLenv{pspicture}, as they may cause problems
+% inside any following optexp-drawing.
+%    \begin{macrocode}
 \gdef\POE@beamlist{1}%
 \g@addto@macro{\endpspicture}{%
 %    \end{macrocode}
-%
 % Undefine all beam nodes at the end of the \nxLenv{pspicture}.
 %    \begin{macrocode}
   \expandafter\XKV@for@n\expandafter{\POE@beamlist}\POE@temp{%
@@ -11360,9 +11366,7 @@
     }%
   }%
 %    \end{macrocode}
-%
 % Reset the component list.
-%
 %    \begin{macrocode}
   \gdef\POE@complist{}\gdef\POE@beamlist{1}\global\POE@cnt=0\relax
 }%
@@ -11371,10 +11375,11 @@
 %    \begin{macrocode}
 \def\pst@optexpdict{tx@OptexpDict begin }
 \def\POE@dict#1{\pst@optexpdict #1 end}
+\def\POE@Verb#1{\pst@Verb{\pst@optexpdict #1 end }}%
 \SpecialCoor
 %    \end{macrocode}
-% \section{Basic definitions}
 %
+% \section{Basic definitions}
 % \subsection{Switches for the boolean keys}
 % See respective key definitions for explanation.
 %    \begin{macrocode}
@@ -11433,78 +11438,75 @@
 %    \begin{macrocode}
 \newif\ifPOE@insideobj\POE@insideobjfalse
 %    \end{macrocode}
+%
 % \subsection{Counters}
 % Count the components in one \nxLenv{pspicture} environment.
 %    \begin{macrocode}
 \newcount\POE@cnt
+%    \end{macrocode}
+% Save the current count at the end of the optexp-environment, before
+% the second pass.
+%    \begin{macrocode}
 \newcount\POE@oldcnt
 %    \end{macrocode}
 % Count the temporal planes which are created for connections to nodes.
 %    \begin{macrocode}
 \newcount\POE@nodecnt
 %    \end{macrocode}
-%    \begin{macrocode}
-\newdimen\POE@dim
-%    \end{macrocode}
+%
 % \subsection{Fixed strings}
 % These are all the fixed strings which are used as possible values for
 % choicekeys.
 %    \begin{macrocode}
-\def\POE@str@pol@polperp{perp}
-\def\POE@str@pol@polparallel{parallel}
-\def\POE@str@pol@polmisc{misc}
-\def\POE@str@pol@polrcirc{rcirc}
-\def\POE@str@pol@pollcirc{lcirc}
-\def\POE@str@mirrortype@piezo{piezo}
-\def\POE@str@mirrortype@plain{plain}
-\def\POE@str@mirrortype@extended{extended}
-\def\POE@str@mirrortype@semitrans{semitrans}
-\def\POE@str@gratingtype@blazed{blazed}
-\def\POE@str@gratingtype@binary{binary}
-\def\POE@str@relative{relative}
 \def\POE@str@absolute{absolute}
-\def\POE@str@labelref@relgrav{relgrav}
-\def\POE@str@labelref@global{global}
-\def\POE@str@filtertype@bandpass{bandpass}
-\def\POE@str@filtertype@bandstop{bandstop}
-\def\POE@str@filtertype@lowpass{lowpass}
-\def\POE@str@filtertype@highpass{highpass}
-\def\POE@str@couplertype@none{none}
-\def\POE@str@couplertype@ellipse{ellipse}
-\def\POE@str@couplertype@elliptic{elliptic}
-\def\POE@str@couplertype@rectangle{rectangle}
-\def\POE@str@couplertype@cross{cross}
-\def\POE@str@eleccouplertype@standard{standard}
-\def\POE@str@eleccouplertype@directional{directional}
-\def\POE@str@synthshape@circle{circle}
-\def\POE@str@synthshape@rectangle{rectangle}
-\def\POE@str@synthtype@custom{custom}
-\def\POE@str@synthtype@sine{sine}
-\def\POE@str@synthtype@pulse{pulse}
-\def\POE@str@synthtype@sawtooth{sawtooth}
-\def\POE@str@synthtype@triangle{triangle}
-\def\POE@str@synthtype@rectangle{rectangle}
-\def\POE@str@polcontroltype@linear{linear}
-\def\POE@str@polcontroltype@triangle{triangle}
-\def\POE@str@top{top}
-\def\POE@str@bottom{bottom}
-\def\POE@str@left{left}
-\def\POE@str@right{right}
-\def\POE@str@center{center}
-\def\POE@str@closed{closed}
-\def\POE@str@opened{opened}
-\def\POE@str@dettype@round{round}
-\def\POE@str@dettype@diode{diode}
-\def\POE@str@bsstyle@cube{cube}
-\def\POE@str@bsstyle@plate{plate}
 \def\POE@str@auto{auto}
-\def\POE@str@verbose{verbose}
-\def\POE@str@quiet{quiet}
+\def\POE@str@bandpass{bandpass}
+\def\POE@str@bandstop{bandstop}
+\def\POE@str@binary{binary}
+\def\POE@str@blazed{blazed}                                                                                                                  
+\def\POE@str@bottom{bottom}
+\def\POE@str@center{center}
 \def\POE@str@circle{circle}
+\def\POE@str@closed{closed}
+\def\POE@str@cross{cross}
+\def\POE@str@cube{cube}
+\def\POE@str@custom{custom}
+\def\POE@str@diode{diode}
+\def\POE@str@directional{directional}
+\def\POE@str@ellipse{ellipse}
+\def\POE@str@elliptic{elliptic}
+\def\POE@str@extended{extended}
+\def\POE@str@global{global}
+\def\POE@str@highpass{highpass}
+\def\POE@str@lcirc{lcirc}
+\def\POE@str@left{left}
+\def\POE@str@linear{linear}
+\def\POE@str@lowpass{lowpass}
+\def\POE@str@misc{misc}
+\def\POE@str@none{none}
+\def\POE@str@opened{opened}
+\def\POE@str@parallel{parallel}
+\def\POE@str@perp{perp}
+\def\POE@str@piezo{piezo}
+\def\POE@str@plain{plain}
+\def\POE@str@plate{plate}
+\def\POE@str@pulse{pulse}
+\def\POE@str@quiet{quiet}
+\def\POE@str@rcirc{rcirc}
 \def\POE@str@rectangle{rectangle}
 \def\POE@str@reflective{reflective}
+\def\POE@str@relative{relative}
+\def\POE@str@relgrav{relgrav}
+\def\POE@str@right{right}
+\def\POE@str@round{round}
+\def\POE@str@sawtooth{sawtooth}
+\def\POE@str@semitrans{semitrans}
+\def\POE@str@sine{sine}
+\def\POE@str@standard{standard}
+\def\POE@str@top{top}
 \def\POE@str@transmittive{transmittive}
-\def\POE@Verb#1{\pst@Verb{\pst@optexpdict #1 end }}%
+\def\POE@str@triangle{triangle}
+\def\POE@str@verbose{verbose}
 %    \end{macrocode}
 %
 % \section{Parameter and style definitions}
@@ -11742,7 +11744,7 @@
   [\val\nr]{absolute,relative,relgrav,global}%
   {%
     \ifcase\nr\relax
-      \let\POE@key@labelref\POE@str@labelref@global
+      \let\POE@key@labelref\POE@str@global
     \else
       \def\POE@key@labelref{#1}%
     \fi
@@ -12684,8 +12686,8 @@
   [\val\nr]{none,elliptic,ellipse,cross,rectangle}%
   {%
     \edef\POE@key@couplertype{#1}
-    \ifx\POE@key@couplertype\POE@str@couplertype@elliptic
-      \let\POE@key@couplertype\POE@str@couplertype@ellipse
+    \ifx\POE@key@couplertype\POE@str@elliptic
+      \let\POE@key@couplertype\POE@str@ellipse
     \fi
   }%
   {\PackageError{pst-optexp}{Unknown value '\val' for couplertype}}
@@ -14591,6 +14593,7 @@
 % \section{Components}
 %
 % \begin{macro}{\POE@useifccode}
+% \begin{macro}{\begin@CompIfc}
 %    \begin{macrocode}
 \def\POE@useifccode{%
   \POE@Verb{%
@@ -14618,6 +14621,8 @@
   \ignorespaces
 }%
 %    \end{macrocode}
+% \end{macro}
+% \end{macro}
 % \begin{macro}{\newOptexpComp@}
 %    \begin{macrocode}
 \def\newOptexpComp@#1#2{%
@@ -15497,7 +15502,7 @@
 %    \end{macrocode}
 % Place the correct 'global' label node when the label is empty.
 %    \begin{macrocode}
-    \ifx\POE@key@labelref\POE@str@labelref@global
+    \ifx\POE@key@labelref\POE@str@global
       \nput[labelsep=\POE@key@labeloffset]%
         {\POE@key@labelangle}%
         {\oenodeCenter{}}%
@@ -15508,7 +15513,7 @@
 % For \opt{global} positioning, the label is placed in global coordinate system
 % with respect to the center node.
 %    \begin{macrocode}
-  \ifx\POE@key@labelref\POE@str@labelref@global
+  \ifx\POE@key@labelref\POE@str@global
     \nput[labelsep=\POE@key@labeloffset]%
       {\POE@key@labelangle}%
       {\oenodeCenter{}}%
@@ -15518,7 +15523,7 @@
 % Rotate the label node together with the component, but do not rotate the label
 % text itself.
 %    \begin{macrocode}
-  \else\ifx\POE@key@labelref\POE@str@labelref@relgrav
+  \else\ifx\POE@key@labelref\POE@str@relgrav
     \rput[\POE@key@labelalign](\oenodeLabel{}){%
       \POE@key@labelstyle\oelabel{#1}}%
 %    \end{macrocode}
@@ -15953,7 +15958,7 @@
 %    \begin{macrocode}
 \def\mirror@ref{%
   \ifdim\POE@key@mirrorradius pt=0pt
-    \ifx\POE@key@mirrortype\POE@str@mirrortype@piezo
+    \ifx\POE@key@mirrortype\POE@str@piezo
       \POE@setref{/@@y0 \pst@number\psyunit def}%
       \bgroup
         \psset{style=PiezoMirror}%
@@ -15964,13 +15969,13 @@
       \egroup
     \else
       \POE@setref{/@@x \POE@key@mirrorwidth\space 0.5 mul def}%
-      \ifx\POE@key@mirrortype\POE@str@mirrortype@plain\else
+      \ifx\POE@key@mirrortype\POE@str@plain\else
         \POE@setref{\POE@key@mirrordepth\space 0.5 mul dup /@@y0 ED /@@y ED}%
       \fi
     \fi
   \else
     \POE@setref{/@@x \POE@key@mirrorwidth\space 0.5 mul def}%
-    \ifx\POE@key@mirrortype\POE@str@mirrortype@plain\else
+    \ifx\POE@key@mirrortype\POE@str@plain\else
       \POE@setref{\POE@key@mirrordepth\space 0.5 mul dup /@@y0 ED /@@y ED}%
     \fi
   \fi
@@ -15999,7 +16004,7 @@
 %    \end{macrocode}
 % A second interface exists only for semitrans mirrors
 %    \begin{macrocode}
-  \ifx\POE@key@mirrortype\POE@str@mirrortype@semitrans
+  \ifx\POE@key@mirrortype\POE@str@semitrans
 %    \end{macrocode}
 % if no second mirror radius was specified, use the same curvature of the first interface.
 %    \begin{macrocode}
@@ -16069,7 +16074,7 @@
 % plain mirror 
 %    \begin{macrocode}
     \edef\@ht{\POE@key@mirrorwidth\space 0.5 mul }%
-    \ifx\POE@key@mirrortype\POE@str@mirrortype@piezo
+    \ifx\POE@key@mirrortype\POE@str@piezo
       \psframe[style=PiezoMirror,
                dimen=outer](! \@ht 4 div 0)%
                            (! \@ht -4 div \@ht 2.5 div)
@@ -16079,16 +16084,16 @@
                                  (! \@ht 2 div \@ht 2 div)%
                                  (! \@ht 4 div \@ht)
       \fi
-    \else\ifx\POE@key@mirrortype\POE@str@mirrortype@extended
+    \else\ifx\POE@key@mirrortype\POE@str@extended
       \psframe[style=ExtendedMirror]%
         (! \@ht neg \POE@key@mirrordepth\space )%
         (! \@ht 0)
-    \else\ifx\POE@key@mirrortype\POE@str@mirrortype@semitrans
+    \else\ifx\POE@key@mirrortype\POE@str@semitrans
       \psframe[style=SemitransMirror]%
         (! \@ht neg \POE@key@mirrordepth\space )%
         (! \@ht 0)
     \fi\fi\fi
-    \ifx\POE@key@mirrortype\POE@str@mirrortype@semitrans
+    \ifx\POE@key@mirrortype\POE@str@semitrans
       \psline[linewidth=\POE@key@mirrorlinewidth]%
         (! \@ht neg 0)(! \@ht 0)
     \else
@@ -16105,17 +16110,17 @@
       \def\POE@temparc{arcn }
     \fi
     \ifodd
-      \ifx\POE@key@mirrortype\POE@str@mirrortype@extended 1
-      \else\ifx\POE@key@mirrortype\POE@str@mirrortype@semitrans 1
+      \ifx\POE@key@mirrortype\POE@str@extended 1
+      \else\ifx\POE@key@mirrortype\POE@str@semitrans 1
       \else 0
       \fi\fi
 %    \end{macrocode}
 % extended or semitrans mirrortype
 %    \begin{macrocode}
       \bgroup
-      \ifx\POE@key@mirrortype\POE@str@mirrortype@extended
+      \ifx\POE@key@mirrortype\POE@str@extended
         \psset{style=ExtendedMirror}
-      \else\ifx\POE@key@mirrortype\POE@str@mirrortype@semitrans
+      \else\ifx\POE@key@mirrortype\POE@str@semitrans
         \psset{style=SemitransMirror}
       \fi\fi
         \begin@ClosedObj
@@ -16371,7 +16376,7 @@
 %    \begin{macrocode}
 \def\beamsplitter@nodes{%
   \edef\@bs@wd{\POE@key@bssize\space 0.5 mul }%
-  \ifx\POE@key@bsstyle\POE@str@bsstyle@cube
+  \ifx\POE@key@bsstyle\POE@str@cube
     \newOptexpCompAmb{%
       {\@bs@wd 2 sqrt div neg dup} {-1 1} \@bs@wd neg \@bs@wd 
       trans {PlainIfc}
@@ -16385,7 +16390,7 @@
       trans {PlainIfc} 
       3 \POE@key@n
     }%
-  \else\ifx\POE@key@bsstyle\POE@str@bsstyle@plate
+  \else\ifx\POE@key@bsstyle\POE@str@plate
     \newOptexpCompAmb{%
       {0 0} {1 0} \@bs@wd neg \@bs@wd trans {PlainIfc} 1 1 }%
   \fi\fi
@@ -16397,13 +16402,13 @@
 %    \begin{macrocode}
 \def\beamsplitter@comp{%
   \edef\@bs@wd{\POE@key@bssize\space 2.0 div }%
-  \ifx\POE@key@bsstyle\POE@str@bsstyle@cube
+  \ifx\POE@key@bsstyle\POE@str@cube
     \psline[arrows=cc-cc](! \@bs@wd neg 2 sqrt mul 0)
                   (! \@bs@wd 2 sqrt mul 0)
     \rput[c]{45}(0,0){%
       \psframe(! \@bs@wd neg \@bs@wd neg)(! \@bs@wd \@bs@wd)
     }
-  \else\ifx\POE@key@bsstyle\POE@str@bsstyle@plate
+  \else\ifx\POE@key@bsstyle\POE@str@plate
     \psline(! \@bs@wd neg 2 sqrt mul 0)(! \@bs@wd 2 sqrt mul 0)
   \fi\fi
 \ignorespaces}%
@@ -16478,23 +16483,23 @@
 \def\polarization@comp{%
   \edef\@sz{\POE@key@polsize\space 0.5 mul }%
   \psset{style=Polarization}%
-  \ifx\POE@key@poltype\POE@str@pol@polparallel
+  \ifx\POE@key@poltype\POE@str@parallel
     \psline[arrows=<->](! 0 \@sz neg)(! 0 \@sz)
   \fi
-  \ifx\POE@key@poltype\POE@str@pol@polperp
+  \ifx\POE@key@poltype\POE@str@perp
     \psdot(0,0)
     \pscircle[fillstyle=none](0,0){0.12}
   \fi
-  \ifx\POE@key@poltype\POE@str@pol@polmisc
+  \ifx\POE@key@poltype\POE@str@misc
     \psline[arrows=<->](! 0 \@sz neg)(! 0 \@sz)
     \psdot(0,0)
     \pscircle[fillstyle=none](0,0){0.12}
   \fi
-  \ifx\POE@key@poltype\POE@str@pol@polrcirc
+  \ifx\POE@key@poltype\POE@str@rcirc
     \psellipticarc[fillstyle=none, arrows=->]%
       (0,0)(! \@sz 2 div \@sz){20}{-20}
   \fi
-  \ifx\POE@key@poltype\POE@str@pol@pollcirc
+  \ifx\POE@key@poltype\POE@str@lcirc
     \psellipticarc[fillstyle=none, arrows=<-]%
       (0,0)(! \@sz 2 div \@sz){20}{-20}
   \fi
@@ -16534,7 +16539,7 @@
     \edef\@ht{\@ht \POE@key@gratingdepth\space sub }%
   \fi
   \edef\@step{\POE@key@gratingwidth\space\@cnt div }%
-  \ifx\POE@key@gratingtype\POE@str@gratingtype@blazed
+  \ifx\POE@key@gratingtype\POE@str@blazed
     \pscustom[linewidth=\POE@key@gratinglinewidth, linejoin=1]{%
       \psline[liftpen=1](! \@wd \@dp)(! \@wd \@ht)%
                         (! \@wd neg \@ht)(! \@wd neg \@dp)%
@@ -16547,7 +16552,7 @@
       }%
       \closepath
     }%
-  \else\ifx\POE@key@gratingtype\POE@str@gratingtype@binary
+  \else\ifx\POE@key@gratingtype\POE@str@binary
     \pscustom[linewidth=\POE@key@gratinglinewidth, linejoin=1]{%
       \psline[liftpen=1](! \@wd \@dp)(! \@wd \@ht)%
                         (! \@wd neg \@ht)(! \@wd neg \@dp)%
@@ -16626,7 +16631,7 @@
     \POE@setref{%
       /@@y \POE@key@detsize\space 0.5 mul def
       /@@x \POE@key@detsize\space 0.5 mul
-      \ifx\POE@key@dettype\POE@str@dettype@round 0.5 mul\fi
+      \ifx\POE@key@dettype\POE@str@round 0.5 mul\fi
       \space def
     }%
   \fi
@@ -16638,7 +16643,7 @@
 %    \begin{macrocode}
 \def\optdetector@nodes{%
   \POE@dipole@nodes
-  \ifx\POE@key@dettype\POE@str@dettype@round
+  \ifx\POE@key@dettype\POE@str@round
     \pnode(! \POE@dict{@@x0 @@x -0.2 mul add} 0){\oenodeCenter{}}%
   \fi
 }%
@@ -16648,10 +16653,10 @@
 % \begin{macro}{\optdetector@comp}
 %    \begin{macrocode}
 \def\optdetector@comp{%
-  \ifx\POE@key@dettype\POE@str@dettype@round
+  \ifx\POE@key@dettype\POE@str@round
     \psellipticwedge(!\POE@dict{@@x0 @@x sub @@y0})%
       (!\POE@dict{@@x 2 mul @@y}){-90}{90}%
-  \else\ifx\POE@key@dettype\POE@str@dettype@diode
+  \else\ifx\POE@key@dettype\POE@str@diode
     \ifx\POE@key@detsize\@empty
       \ifdim\POE@key@detwidth pt<\POE@key@detheight pt
         \def\@sz{\POE@key@detwidth\space 0.5 mul }%
@@ -17076,7 +17081,7 @@
   \POE@comp@rectangle
   \psrotate(\oenodeCenter{}){!\POE@dict{@@ang}}{%
   \psset{style=FilterStyle}%
-    \ifx\POE@key@filtertype\POE@str@filtertype@bandpass
+    \ifx\POE@key@filtertype\POE@str@bandpass
       \rput(!\POE@dict{0 @@x -0.5 mul}){\POE@strike@line\POE@filter@curve}
       \rput(0, 0){%
         \ifPOE@usefiberstyle
@@ -17084,7 +17089,7 @@
         \fi
         \POE@filter@curve}
       \rput(!\POE@dict{0 @@x 0.5 mul}){\POE@strike@line\POE@filter@curve}
-    \else\ifx\POE@key@filtertype\POE@str@filtertype@bandstop
+    \else\ifx\POE@key@filtertype\POE@str@bandstop
       \begingroup
         \ifPOE@usefiberstyle
           \psset{style=Fiber}
@@ -17093,7 +17098,7 @@
         \rput(!\POE@dict{0 @@x 0.5 mul}){\POE@filter@curve}
       \endgroup
       \rput(0,0){\POE@strike@line\POE@filter@curve}
-    \else\ifx\POE@key@filtertype\POE@str@filtertype@lowpass
+    \else\ifx\POE@key@filtertype\POE@str@lowpass
       \rput(!\POE@dict{0 @@x -0.5 mul}){%
         \ifPOE@usefiberstyle
           \psset{style=Fiber}
@@ -17101,7 +17106,7 @@
         \POE@filter@curve}
         \rput(0, 0){\POE@strike@line\POE@filter@curve}
         \rput(!\POE@dict{0 @@x 0.5 mul}){\POE@strike@line\POE@filter@curve}
-    \else\ifx\POE@key@filtertype\POE@str@filtertype@highpass
+    \else\ifx\POE@key@filtertype\POE@str@highpass
       \rput(!\POE@dict{0 @@x 0.5 mul}){%
         \ifPOE@usefiberstyle
           \psset{style=Fiber}
@@ -17150,7 +17155,7 @@
 % \begin{macro}{polcontrol@ref}
 %    \begin{macrocode}
 \def\polcontrol@ref{%
-  \ifx\POE@key@polcontroltype\POE@str@polcontroltype@linear
+  \ifx\POE@key@polcontroltype\POE@str@linear
     \POE@setref{/@@x \POE@key@polcontrolsize\space 2 mul def}%
   \else
     \POE@setref{/@@x \POE@key@polcontrolsize\space 1.5 mul def}%
@@ -17177,7 +17182,7 @@
     \ifPOE@usefiberstyle
       \psset{style=Fiber, arrows=-, ArrowInside=-}%
     \fi
-    \ifx\POE@key@polcontroltype\POE@str@polcontroltype@linear
+    \ifx\POE@key@polcontroltype\POE@str@linear
       \multips(! -2 \@sz mul \@sz)(! 2 \@sz mul 0){3}{%
         \pscircle(0,0){\POE@key@polcontrolsize}%
       }%
@@ -17468,7 +17473,7 @@
     \fi\fi
     def
     /@@x \POE@key@couplerwidth\space 0.5 mul def
-    \ifx\POE@key@couplertype\POE@str@couplertype@none
+    \ifx\POE@key@couplertype\POE@str@none
       \POE@key@couplersep
     \else
       \POE@key@couplerheight\space 0.5 mul
@@ -17488,7 +17493,7 @@
 %    \begin{macrocode}
 \def\wdmcoupler@ref{%
   \POE@coupler@ref
-  \ifx\POE@key@couplertype\POE@str@couplertype@none
+  \ifx\POE@key@couplertype\POE@str@none
     \ifx\POE@key@coupleralign\POE@str@center
       \POE@setref{/@@y 0 def }%
     \fi
@@ -17501,7 +17506,7 @@
 % \begin{macro}{\optcoupler@comp}
 %    \begin{macrocode}
 \def\optcoupler@comp{%
-  \ifx\POE@key@couplertype\POE@str@couplertype@none
+  \ifx\POE@key@couplertype\POE@str@none
     \psline[style=Fiber](\oenode{1}{})(\oenode{3}{})
     \psline[style=Fiber](\oenode{2}{})(\oenode{N}{})
   \fi
@@ -17513,19 +17518,19 @@
 % \begin{macro}{\POE@coupler@comp}
 %    \begin{macrocode}
 \def\POE@coupler@comp{%
-  \ifx\POE@key@couplertype\POE@str@couplertype@none
-  \else\ifx\POE@key@couplertype\POE@str@couplertype@ellipse
+  \ifx\POE@key@couplertype\POE@str@none
+  \else\ifx\POE@key@couplertype\POE@str@ellipse
     \psellipse(! 0 \POE@dict{@@y0})(! \POE@dict{@@x @@y})
   \else
     \POE@comp@rectangle
-    \ifx\POE@key@couplertype\POE@str@couplertype@cross
+    \ifx\POE@key@couplertype\POE@str@cross
       \psline(! \POE@dict{@@x -0.5 mul @@y0 @@y 0.5 mul sub})%
              (! \POE@dict{@@x 0.5 mul @@y0 @@y 0.5 mul add})%
       \psline(! \POE@dict{@@x -0.5 mul @@y0 @@y 0.5 mul add})%
              (! \POE@dict{@@x 0.5 mul @@y0 @@y 0.5 mul sub})%
     \fi
   \fi\fi
-  \ifx\POE@key@couplertype\POE@str@couplertype@cross\else
+  \ifx\POE@key@couplertype\POE@str@cross\else
     \ifPOE@variable
       \begingroup
 %    \end{macrocode}
@@ -17557,7 +17562,7 @@
 %    \begin{macrocode}
 \def\wdmcoupler@nodes{%
   \edef\@sep{\POE@key@couplersep\space 0.5 mul }%
-  \ifx\POE@key@couplertype\POE@str@couplertype@none
+  \ifx\POE@key@couplertype\POE@str@none
     \ifx\POE@key@coupleralign\POE@str@center
       \edef\@sep{0 }%
     \fi
@@ -17574,7 +17579,7 @@
 % \begin{macro}{\wdmcoupler@comp}
 %    \begin{macrocode}
 \def\wdmcoupler@comp{%
-  \ifx\POE@key@couplertype\POE@str@couplertype@none
+  \ifx\POE@key@couplertype\POE@str@none
     \ifx\POE@key@coupleralign\POE@str@top
       \psline[style=Fiber](\oenode{1}{})(\oenodeOut{})
       \psline[style=Fiber]%
@@ -17599,7 +17604,7 @@
 %    \begin{macrocode}
 \def\wdmsplitter@nodes{%
   \edef\@sep{\POE@key@couplersep\space 0.5 mul }%
-  \ifx\POE@key@couplertype\POE@str@couplertype@none
+  \ifx\POE@key@couplertype\POE@str@none
     \ifx\POE@key@coupleralign\POE@str@center
       \edef\@sep{0 }%
     \fi
@@ -17616,7 +17621,7 @@
 % \begin{macro}{\wdmsplitter@comp}
 %    \begin{macrocode}
 \def\wdmsplitter@comp{%
-  \ifx\POE@key@couplertype\POE@str@couplertype@none
+  \ifx\POE@key@couplertype\POE@str@none
     \ifx\POE@key@coupleralign\POE@str@top
       \psline[style=Fiber](\oenodeIn{})(\oenode{2}{})
       \psline[style=Fiber](! \POE@dict{/N@\oenodeIn{} @GetCenter}
@@ -17757,6 +17762,9 @@
 % \end{macro}
 %
 % \subsubsection{Electrical coupler}
+%
+% \begin{macro}{\eleccoupler}
+%    \begin{macrocode}
 \def\eleccoupler{\pst@object{eleccoupler}}%
 \def\eleccoupler@i(#1)(#2){%
   \@ifnextchar(%)
@@ -17802,7 +17810,7 @@
       \ifPOE@wirepresetout@top
         \drawwire@{WireOut1}[startnode=3]{}(#3)
       \fi
-      \ifx\POE@key@eleccouplertype\POE@str@eleccouplertype@directional
+      \ifx\POE@key@eleccouplertype\POE@str@directional
         \ifx\POE@key@eleccouplerinput\POE@str@left
           \ifPOE@wirepresetout@bottom
             \drawwire@{WireOut2}[startnode=N]{}(#4)
@@ -17870,7 +17878,7 @@
   \psline(!\POE@dict{@@x 0.7 mul  @@y0 @@sep sub @@y 0.15 mul add})%
          (!\POE@dict{@@x -0.7 mul @@y0 @@sep add @@y 0.15 mul sub})%
   \psline[style=Wire, arrows=-](\oenodeIfc{1}{})(\oenodeIfc{3}{})
-  \ifx\POE@key@eleccouplertype\POE@str@eleccouplertype@directional
+  \ifx\POE@key@eleccouplertype\POE@str@directional
     \ifx\POE@key@eleccouplerinput\POE@str@left
       \psline[style=Wire, arrows=-]([Xnodesep=-0.1]\oenodeIfc{2}{})(\oenodeIfc{N}{})
     \else
@@ -17944,7 +17952,7 @@
     \POE@key@synthwidth\space 0.5 mul
     \POE@key@synthheight\space 0.5 mul
     2 copy min /@@sz ED
-    \ifx\POE@key@synthshape\POE@str@synthshape@circle
+    \ifx\POE@key@synthshape\POE@str@circle
       pop pop @@sz dup
     \fi
     /@@y ED /@@x ED
@@ -17956,7 +17964,7 @@
 % \begin{macro}{\elecsynthesizer@comp}
 %    \begin{macrocode}
 \def\elecsynthesizer@comp{%
-  \ifx\POE@key@synthshape\POE@str@synthshape@circle
+  \ifx\POE@key@synthshape\POE@str@circle
     \pscircle(!\POE@dict{@@x0 @@y0}){!\POE@dict{@@x}}
   \else
     \POE@comp@rectangle
@@ -17977,24 +17985,24 @@
       \psset{yunit=-\psyunit}
       \def\POE@tempB{-1 mul\space}%
     \fi
-    \ifx\POE@key@synthtype\POE@str@synthtype@sine
+    \ifx\POE@key@synthtype\POE@str@sine
       \parametricplot[plotpoints=100]{-1}{1}{%
         \POE@dict{@@sz 0.7 mul t mul t 180 mul \POE@tempA sin @@y -0.35 mul mul \POE@tempB }}%
-    \else\ifx\POE@key@synthtype\POE@str@synthtype@pulse
+    \else\ifx\POE@key@synthtype\POE@str@pulse
       \psplot[plotpoints=100]{-0.25}{0.25}{2.7182818 x 0.04 div dup mul neg exp 0.3 mul 0.13 sub \POE@tempB}%
     \fi\fi
   \endgroup
-  \ifx\POE@key@synthtype\POE@str@synthtype@rectangle
+  \ifx\POE@key@synthtype\POE@str@rectangle
     \psline(!\POE@dict{@@sz -0.7 mul @@sz -0.35 mul})%
            (!\POE@dict{@@sz 0.7 mul -1 1 \POE@key@synthrectwidth\space sub 2 mul add mul @@sz -0.35 mul})%
            (!\POE@dict{@@sz 0.7 mul -1 1 \POE@key@synthrectwidth\space sub 2 mul add mul @@sz 0.35 mul})%
            (!\POE@dict{@@sz 0.7 mul @@sz 0.35 mul})%
            (!\POE@dict{@@sz 0.7 mul @@sz -0.35 mul})
-  \else\ifx\POE@key@synthtype\POE@str@synthtype@sawtooth
+  \else\ifx\POE@key@synthtype\POE@str@sawtooth
     \psline(!\POE@dict{@@sz -0.6 mul @@sz -0.4 mul})%
            (!\POE@dict{@@sz 0.6 mul @@sz 0.4 mul})%
            (!\POE@dict{@@sz 0.6 mul @@sz -0.4 mul})
-  \else\ifx\POE@key@synthtype\POE@str@synthtype@triangle
+  \else\ifx\POE@key@synthtype\POE@str@triangle
     \psline(!\POE@dict{@@sz -0.6 mul @@sz -0.4 mul})%
            (!\POE@dict{0 @@sz 0.4 mul})%
            (!\POE@dict{@@sz 0.6 mul @@sz -0.4 mul})
