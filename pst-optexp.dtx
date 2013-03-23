@@ -14290,6 +14290,7 @@
 %    \end{macrocode}
 % \end{macro}
 % \begin{macro}{\POE@PresetFiberConn}
+% Draw automatic fiber or wires for fiber components.
 %    \begin{macrocode}
 \def\POE@PresetFiberConn{%
   \ifPOE@startbox\else
@@ -14343,6 +14344,7 @@
 %
 % \section{Accessing component nodes} 
 % \begin{macro}{\POE@checkcompname}
+% Check if a component with name \#1 was already defined.
 %    \begin{macrocode}
 \def\POE@checkcompname#1{%
   \@expandtwoargs\in@{,#1,}{,\POE@complist,}%
@@ -14354,6 +14356,7 @@
 % \end{macro}
 % 
 % \begin{macro}{\POE@getlastcompname}
+% Get the last component name which was defined.
 %    \begin{macrocode}
 \def\POE@getlastcompname{%
   \expandafter\POE@getlastcompname@i \POE@complist,\relax,\@nil
@@ -14363,6 +14366,7 @@
 % \end{macro}
 %
 % \begin{macro}{\oenode}
+% Get the full node name of the node \#1 defined in component \#2.
 %    \begin{macrocode}
 \def\oenode#1#2{%
   \POE@str@basicname@prefix%
@@ -14387,79 +14391,100 @@
 %    \end{macrocode}
 % \end{macro}
 %
+% Define some special nodes, which should be accessed always via these macros.
+%
 % \begin{macro}{\oenodeExt}
-% The external node which is set with \opt{extnode}.
+%   The external node which is set with \opt{extnode}.
 %    \begin{macrocode}
 \def\oenodeExt#1{\oenode{\POE@str@extnode@postfix}{#1}}%
 %    \end{macrocode}
 % \end{macro}
 % \begin{macro}{\oenodeIn}
-% The first (input) node of the component.
+%   The first (input) node of the component.
 %    \begin{macrocode}
 \def\oenodeIn#1{\oenode{1}{#1}}%
 %    \end{macrocode}
 % \end{macro}
 % \begin{macro}{\oenodeOut}
+%   The last (output) node of the component
 %    \begin{macrocode}
 \def\oenodeOut#1{\oenode{N}{#1}}%
 %    \end{macrocode}
 % \end{macro}
 % \begin{macro}{\oenodeCenter}
+%   The center node of the component.
 %    \begin{macrocode}
 \def\oenodeCenter#1{\oenode{Center}{#1}}%
 %    \end{macrocode}
 % \end{macro}
 % \begin{macro}{\oenodeLabel}
+%   The transformed label node of the component
 %    \begin{macrocode}
 \def\oenodeLabel#1{\oenode{Label}{#1}}%
 %    \end{macrocode}
 % \end{macro}
 % \begin{macro}{\oenodeRefA}
+%   The first reference node which is used for positioning of the
+%   component. For dipoles it is equivalent to the (\#1) node.
 %    \begin{macrocode}
 \def\oenodeRefA#1{\oenode{A}{#1}}%
 %    \end{macrocode}
 % \end{macro}
 % \begin{macro}{\oenodeRefB}
+%   The second reference node, for dipoles it is equivalent to the (\#2)
+%   node.
 %    \begin{macrocode}
 \def\oenodeRefB#1{\oenode{B}{#1}}%
 %    \end{macrocode}
 % \end{macro}
 % \begin{macro}{\oenodeRotref}
+%   The rotation reference node.
 %    \begin{macrocode}
 \def\oenodeRotref#1{\oenode{Rotref}{#1}}%
 %    \end{macrocode}
 % \end{macro}
 % \begin{macro}{\oenodeTrefA}
+%   The transformed first reference node, after applying parameters
+%   \opt{compshift}, \opt{compoffset} and \opt{angle}.
 %    \begin{macrocode}
 \def\oenodeTrefA#1{\oenode{TrefA}{#1}}%
 %    \end{macrocode}
 % \end{macro}
 % \begin{macro}{\oenodeTrefB}
+%   The transformed second reference node.
 %    \begin{macrocode}
 \def\oenodeTrefB#1{\oenode{TrefB}{#1}}%
 %    \end{macrocode}
 % \end{macro}
 % \begin{macro}{\oenode@RefA}
+%   The first reference node, after it was projected on the reflection
+%   plane of a tripole, at distance 1 from the center.
 %    \begin{macrocode}
 \def\oenode@RefA#1{\oenode{@A}{#1}}%
 %    \end{macrocode}
 % \end{macro}
 % \begin{macro}{\oenode@RefB}
+%   The second referencen node, projected on the reflection plane.
 %    \begin{macrocode}
 \def\oenode@RefB#1{\oenode{@B}{#1}}%
 %    \end{macrocode}
 % \end{macro}
 % \begin{macro}{\oenode@TrefA}
+%   The transformed, projected first reference node.
 %    \begin{macrocode}
 \def\oenode@TrefA#1{\oenode{@TrefA}{#1}}%
 %    \end{macrocode}
 % \end{macro}
 % \begin{macro}{\oenode@TrefB}
+%   The transformed, projected second reference node.
 %    \begin{macrocode}
 \def\oenode@TrefB#1{\oenode{@TrefB}{#1}}%
 %    \end{macrocode}
 % \end{macro}
 % \begin{macro}{\oenodeIfc}
+%   The node of the interface no. \#1 of component \#2. Only integer
+%   number, N or C are allowed. You should always use this e.g. to
+%   access coupler nodes.
 %    \begin{macrocode}
 \def\oenodeIfc#1#2{%
   \ifnum9<1#1 %
@@ -14477,6 +14502,8 @@
 %    \end{macrocode}
 % \end{macro}
 % \begin{macro}{\oenodeBeam}
+%   The end point of the last beam path which was saved with number \#1
+%   (default is 1).
 %    \begin{macrocode}
 \def\oenodeBeam#1{%
   \POE@str@basicname@prefix\POE@str@basicname@default Beam%
@@ -14485,6 +14512,8 @@
 %    \end{macrocode}
 % \end{macro}
 % \begin{macro}{\oenodeBeamUp}
+%   The upper end point of the last wide beam path saved with number \#1
+%   (default is 1).
 %    \begin{macrocode}
 \def\oenodeBeamUp#1{%
   \POE@str@basicname@prefix\POE@str@basicname@default BeamUp%
@@ -14493,6 +14522,8 @@
 %    \end{macrocode}
 % \end{macro}
 % \begin{macro}{\oenodeBeamLow}
+%   The lower end point of the last wide beam path saved with number \#1
+%   (default is 1).
 %    \begin{macrocode}
 \def\oenodeBeamLow#1{%
   \POE@str@basicname@prefix\POE@str@basicname@default BeamLow%
@@ -14501,6 +14532,10 @@
 %    \end{macrocode}
 % \end{macro}
 %
+% \begin{macro}{\POE@beamvec}
+%   Generic macro to load the Postscript coordinates of the direction
+%   vector of the last beam segment (upper, lower, single, specified
+%   with \#1) saved with number \#2.
 %    \begin{macrocode}
 \def\POE@beamvec#1#2{%
   \POE@dict{%
@@ -14512,8 +14547,11 @@
 \def\oeBeamVecUp#1{\POE@beamvec{Up}{#1}}%
 \def\oeBeamVecLow#1{\POE@beamvec{Low}{#1}}%
 %    \end{macrocode}
+% \end{macro}
+% 
 % \section{Components}
 %
+% \begin{macro}{\POE@useifccode}
 %    \begin{macrocode}
 \def\POE@useifccode{%
   \POE@Verb{%
