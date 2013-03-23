@@ -1,0 +1,133 @@
+\documentclass{scrartcl}
+\usepackage{pst-optexp}
+\usepackage{siunitx}
+\usepackage{calc}
+\pagestyle{empty}
+\begin{document}
+\psset{%
+  optboxsize=0.8 0.6, 
+  arrowcompsize=0.8 0.5,
+  optmzmsize=0.8 0.6,
+  isolatorsize=0.8 0.5,
+  filtersize=0.6,
+  detsize=0.5 0.6,
+  fiber=none, wire=none,
+  usefiberstyle=false,
+  innercompalign=absolute
+}
+\addtopsstyle{Wire}{arrowscale=0.85, arrows=->}
+\newpsstyle{FiberComp}{linecolor=red}
+\newpsstyle{Fiber}{style=FiberComp, arrows=->}
+\begin{pspicture}(12,11)
+  \pnode(1,10){Syn}\pnode([Xnodesep=8]Syn){Pm}
+  \elecsynthesizer[compname=Syn](Syn)(Pm){SYN}
+  \fiberdelayline[compname=Voa1, abspos=2.5](Syn)(Pm)
+  \optbox[compname=Am, abspos=4, innerlabel, extnode=b](Syn)(Pm){AM}
+  \fiberdelayline[compname=DelayPm, abspos=5.5](Syn)(Pm)
+  \optbox[fiber, style=FiberComp, label=0, compname=Pm, extnode=t, optboxheight=0.7]([offset=-1]Pm)([offset=1]Pm){PM}
+  \elecsynthesizer[synthtype=rectangle, synthrectwidth=0.3, wire, addtoWire={arrows=->}]([offset=-0.5]\oenodeExt{Am})(\oenodeExt{Am})
+  \pnode([offset=-0.5, Xnodesep=-1]\oenodeIn{Voa1}){A}
+  \pnode([offset=-1.5]A){B}
+  \eleccoupler[eleccouplertype=directional, eleccouplerinput=right, compname=Cpl](B)(A)
+  \pnode([Xnodesep=-1.2]\oenodeIn{}){EamIn}
+  \pnode([Xnodesep=0.5,offset=-0.3]\oenodeIfc{2}{}){N1}
+  \pnode([offset=-1.3]N1){N2}
+  \optisolator[label=0.4 . r, compname=Iso1](N1)(N2){Isolator}
+  \optarrowcomp[compname=DelayPpg]([offset=-1.4]N2)(N2)
+  \fiberbox[position=start, 
+            label=0, 
+            fiberboxsize=0.7 1, 
+            fiberboxcount=2x1,
+            fiberboxsepin=0.2, 
+            compname=Ppg]([offset=-0.4]\oenodeIn{DelayPpg})(\oenodeIn{DelayPpg}){PPG}
+  \pnode([offset=-0.5,Xnodesep=-0.5]\oenodeIn{Ppg}){MzmAmp1}
+  \pnode([offset=-0.5,Xnodesep=0.5]\oenodeIfc{2}{Ppg}){MzmAmp2}
+  \pnode([offset=-1.5,Xnodesep=-0.9]MzmAmp1){MzmIn}
+  \pnode([offset=-1.5,Xnodesep=0.9]MzmAmp2){MzmOut}
+  \optamp[abspos=0.5, compname=MzmAmp1](MzmAmp1)(MzmAmp1|MzmIn)
+  \optamp[abspos=0.5, compname=MzmAmp2](MzmAmp2)(MzmAmp2|MzmIn)
+  \optmzm[abspos=0.9, usefiberstyle, style=FiberComp, compname=Mzm1, extnode=t](MzmIn)(MzmOut)
+  \optmzm[abspos=2.3, usefiberstyle, style=FiberComp, compname=Mzm2, extnode=t](MzmIn)(MzmOut)
+  \pnode([Xnodesep=-1]\oenodeIn{Mzm1}){Eam}
+  \optbox[style=FiberComp, 
+          label=0, 
+          optboxsize=1 0.6, 
+          compname=Eam, 
+          extnode=t]([Xnodesep=-1]Eam)([Xnodesep=0.8]Eam){EAM}
+  \drawfiber([Xnodesep=-1.2]Eam){Eam}{Mzm1}{Mzm2}(MzmOut)
+  \pnode([Xnodesep=8]N2){N3}
+  \optfilter[abspos=1, compname=Bpf1](N2)(N3)
+  \makeatletter\edef\mystart{\the\POE@cnt}\makeatother
+  \optbox[label=0, 
+          abspos=2, 
+          optboxsize=0.6 0.6](N2)(N3){$\div 8$}
+  \makeatletter\edef\mystartb{\the\POE@cnt}\makeatother
+  \optamp[abspos=3](N2)(N3)
+  \optbox[label=0, 
+          abspos=4, 
+          optboxsize=0.6 0.6, 
+          compname=Div5](N2)(N3){$\div 5$}
+  \optfilter[abspos=5](N2)(N3)
+  \pnode([offset=-1]N3){N4}
+  \pnode([offset=-2.4]N4){Mixer}
+  \optamp[abspos=0.4](N4)(Mixer)
+  \optfilter[filtertype=lowpass, 
+             abspos=1.4, 
+             compname=Bpf,
+             extnode=t,
+             label=0.5 0 l global](N4)(Mixer){%
+    \parbox{\widthof{\SI{300}{\MHz}}}{LPF\\[-1pt]\SI{300}{\MHz}}%
+  }
+  \pnode([Xnodesep=-4]Mixer){MixerI}
+  \pnode([offset=-2.5]Mixer){MixerR}
+  \elecmixer[compname=Mixer, elecmixersize=0.7](Mixer)(MixerR)(MixerI)
+  \pnode([Xnodesep=-9.8]MixerR){Menlo}
+  \optbox[position=start, 
+          compname=Lo, 
+          innerlabel, 
+          style=FiberComp](Menlo)(MixerR){LO}
+  \optdetector[extnode=r, 
+               label=0.5 180 b,
+               compname=Pd](Menlo)([Xnodesep=0.5]Menlo){PD}
+  \optfilter[abspos=0.7, 
+             compname=LoBpf](\oenodeExt{Pd})(MixerR)
+  \optamp[abspos=1.7, 
+          compname=LoAmp](\oenodeExt{Pd})(MixerR)
+  \drawfiber[arrows=->]{Lo}{Pd}
+  \drawwire(\oenodeExt{Pd}){LoBpf}{LoAmp}
+  \drawwire[stopnode=N]{LoAmp}{Mixer}
+  \optfilter[filtertype=lowpass, 
+             abspos=1, 
+             label=1.1 180 t, 
+             compname=LpfP2](MixerI)(\oenodeIfc{2}{Mixer}){%
+               \parbox{\widthof{\SI{500}{\kHz}}}{\centering LPF\\[-1pt]\SI{500}{\kHz}}%
+  }
+  \optfilter[filtertype=lowpass, 
+             abspos=2.7, 
+             label=1.1 180 t, 
+             compname=LpfP1](MixerI)(\oenodeIfc{2}{Mixer}){%
+               \parbox{\widthof{\SI{10.7}{\MHz}}}{\centering LPF\\[-1pt]\SI{10.7}{\MHz}}%
+  }
+  \optbox[compname=T0,
+          extnode=b,
+          position=start,
+          optboxsize=2.2 0.8,
+          label=0](MixerI)(\oenodeIfc{2}{Mixer}){$T_0$-Messung}
+  \drawwire[wirealign=center]{Mixer}{LpfP1}{LpfP2}{}
+  \psline[style=Wire](\oenodeExt{T0}|Menlo)(\oenodeExt{T0})
+  \uput{0.3}[-60](\oenodeExt{T0}){\rput[l](0,0){Takt}}
+  \optbox[optboxsize=1 0.8,
+          label=0,
+          style=FiberComp,
+          position=end](MixerR)([Xnodesep=0.8]MixerR){LOS}
+  \drawwire(MixerR)(\oenodeIn{})
+  \uput{0.3}[-120](\oenodeIn{}){\rput[r](0,0){Takt}}
+  \drawwire[arrows=<-](\oenodeExt{Eam}){Cpl}
+  \drawwire{Syn}{Voa1}{Am}{DelayPm}(\oenodeExt{Pm})
+  \drawwire{Syn}{Cpl}{Iso1}{DelayPpg}{Ppg}{MzmAmp1}(\oenodeExt{Mzm1})
+  \drawwire{Ppg}{MzmAmp2}(\oenodeExt{Mzm2})
+  \drawwire{Iso1}{Bpf1}
+  \multido{\i=\mystart+1,\ii=\mystartb+1}{7}{%
+    \drawwire{\i}{\ii}}
+\end{pspicture}
+\end{document}
