@@ -2256,11 +2256,11 @@
 % \choitem{innercompalign}{rel, relative, abs, absolute}
 % \ifGERMAN Ist dieser Parameter auf \opt{absolute} gesetzt, so wird das
 % «Innere» einer Komponente nicht mitgedreht. Diese Option wird derzeit
-% nur von \Lcs{optfilter} und \Lcs{elecsynthesizer} verwendet.
+% von \Lcs{optfilter}, \Lcs{elecsynthesizer} und \Lcs{optdipole} verwendet.
 % \fi
 % \ifENGLISH If this parameter is set to \opt{absolute}, the «inner»
 % component part is not rotated with the component. At the moment, this
-% option is used by \Lcs{optfilter} and \Lcs{elecsynthesizer}. 
+% option is used by \Lcs{optfilter}, \Lcs{elecsynthesizer}, and \Lcs{optdipole}.
 % \fi
 % \iffalse
 %<*ignore>
@@ -15324,7 +15324,12 @@
   \POE@Verb{%
     /@xref \POE@key@extnode@xref\space def 
     /@yref \POE@key@extnode@yref\space def
-    /@@ang /N@\POE@refnodeA\space /N@\POE@refnodeB\space SlopeAngle \POE@key@angle sub def
+    /@@ang 
+    \ifx\POE@key@innercompalign\POE@str@absolute
+      /N@\POE@refnodeA\space /N@\POE@refnodeB\space SlopeAngle
+    \else
+      0
+    \fi def
   }%
   \ifx\POE@key@extnodealign\POE@str@absolute
     \POE@Verb{%
@@ -15562,6 +15567,7 @@
     {\optdipole@ii(#1)(#2){#3}{}}%
 }%
 \def\optdipole@ii(#1)(#2)#3#4{%
+   \addbefore@par{innercompalign=relative}%
    \begin@OptexpObj
       \ifPOE@backlayer
         \POE@regNodes{#1}{#2}
@@ -17007,7 +17013,7 @@
 \def\optfilter@ref{%
   \POE@setref{%
     \POE@key@filtersize\space 0.5 mul dup /@@y ED /@@x ED 
-    \ifx\POE@key@innercompalign\POE@str@absolute
+    \ifx\POE@key@innercompalign\POE@str@absolute\else
       /@@ang \POE@key@filterangle\space def
     \fi
   }%
