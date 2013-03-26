@@ -10947,7 +10947,7 @@
 % \ifENGLISH
 % In version 2.1, beam connections could be internal, that is the connections
 % were specified together with the compent (\Lkeyword{beam} or
-% \Lkeyword{conn}), or external with an additional call of \Lcs{drawbeam}. The
+% \Lkeyword*{conn}), or external with an additional call of \Lcs{drawbeam}. The
 % main reason for internal connections was the aesthetic aspect of drawing the
 % beam behind the component, but also convenience played a role. Drawing the
 % beam behind the component is possible with layering (\prettyref{sec:layers})
@@ -10958,7 +10958,7 @@
 % \ifGERMAN
 % In Version 2.1 konnten Strahlverbindungen intern sein, d.h. die Verbindung
 % wurde zusammen mit der Komponenten definiert (z.B. mit \Lkeyword{beam}, oder
-% \Lkeyword{conn}) oder extern über einen separaten Aufruf von \Lcs{drawbeam}.
+% \Lkeyword*{conn}) oder extern über einen separaten Aufruf von \Lcs{drawbeam}.
 % Der Hauptgrund für die internen Verbindungen war der ästhetische Aspekt,
 % zuerst die Verbindung und dann die Komponente darüber zu zeichnen, aber
 % Bequemlichkeit spielte auch eine Rolle. Seit Version 3.0 kann die Reihenfolge
@@ -11132,6 +11132,7 @@
 %   \item Added component \cs{optarrowcomp}\see{cmd:optarrowcomp}
 %   \item Added component \cs{optbarcomp}\see{cmd:optbarcomp}
 %   \item Improved \cs{optdetector}\see{cmd:optdetector}
+%   \item Fixed appearance of \cs{optfiber}\see{cmd:optfiber}
 %   \item Fixed \opt{extnodealign} to affect also multipoles\see{prm:extnodealign}
 %   \item Removed old, buggy beam connection code\see{sec:bwd-comp-4.0}
 %   \item Removed option \opt{conn}\see{sec:bwd-comp-4.0}
@@ -17070,13 +17071,15 @@
 % \begin{macro}{\optfiber@comp}
 %    \begin{macrocode}
 \def\optfiber@comp{%
-  \edef\@f@cnt{\POE@key@fiberloops\space}%
-  \edef\@f@r{\POE@key@fiberloopradius\space}%
-  \edef\@f@sep{\POE@key@fiberloopsep\space}%
-  \parametricplot[plotpoints=200, style=Fiber]{0}{1}{%
-    t 360 mul \@f@cnt mul sin \@f@r mul \@f@sep 
-    \@f@cnt 1 sub mul t 0.5 sub mul add
-     1 t 360 mul \@f@cnt mul cos sub \@f@r mul
+  \pscustom[style=Fiber, arrows=-]{%
+    \multido{\i=0+1}{\POE@key@fiberloops}{%
+      \parametricplot[liftpen=1]{0}{1}{%
+        t 360 mul sin 1 t 360 mul cos sub
+        \POE@key@fiberloopradius\space dup 3 1 roll mul 3 1 roll mul
+        \POE@key@fiberloops\space 1 sub -2 div \i\space add
+        \POE@key@fiberloopsep\space mul add exch
+      }%
+    }%
   }%
 \ignorespaces}%
 %    \end{macrocode}
