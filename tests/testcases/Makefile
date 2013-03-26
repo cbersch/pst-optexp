@@ -27,6 +27,7 @@ doc-examples.tex: ../../pst-optexp.dtx doc-examples.py $(POE)
 	./doc-examples.py
 
 testcases.tex: $(addsuffix .tex, $(filter-out $(GENTEX) $(HEADER), $(FILELIST)))
+	$(RM) -f $@
 	@{ $(foreach file, $(basename $^), \
 		echo "\\\\bgroup\section{$(file)}\\\\input{$(file)}\\\\egroup\\\\newpage";) } >> $@
 
