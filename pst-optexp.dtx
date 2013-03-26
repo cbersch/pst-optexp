@@ -12187,12 +12187,16 @@
     \psset[optexp]{arrowcompwidth=#1, arrowcompheight=#2}%
   \fi
 }%
+\define@key[psset]{optexp}{arrowcompangle}{%
+  \pst@checknum{#1}\POE@key@arrowcompangle
+}%
 \define@choicekey+[psset]{optexp}{arrowcompshape}%
   [\val\nr]{circle, rectangle}%
   {\edef\POE@key@arrowcompshape{#1}}%
   {\PackageError{pst-optexp}{Unknown value '\val' for arrowcompshape}}
 \psset[optexp]{%
   arrowcompsize=1.4 0.8,
+  arrowcompangle=70,
   arrowcompshape=rectangle
 }%
 \newpsstyle{ArrowCompStyle}{arrowinset=0, arrows=->}%
@@ -17422,9 +17426,20 @@
 % \begin{macro}{\fiberdelayline@comp}
 %    \begin{macrocode}
 \def\fiberdelayline@comp{%
+  \POE@comp@rectangle
   \begingroup
-    \def\pscs@ArrowCompStyle{\pscs@FdlArrow}
-    \optarrowcomp@comp
+    \psset{style=FdlArrow}
+    \use@par
+    \pst@expandafter\POE@get@yarrowscale{\psk@arrowscale}\@nil
+    \def\@arrowshift{%
+      \psk@arrowlength\space \psk@arrowsize\space
+      \pst@number\pslinewidth\space mul add mul
+      \POE@tempA mul
+      @@y 2.9 mul @@x 0.6 mul atan 2 copy cos mul 3 1 roll sin mul
+      \tx@UserCoor abs exch abs exch\space
+    }%
+    \psline(! \POE@dict{@@x -0.4 mul @@y -1.6 mul})%
+           (! \POE@dict{@@x 0.2 mul @@y 1.3 mul \@arrowshift VecAdd})
   \endgroup
 \ignorespaces}%
 %    \end{macrocode}
@@ -17441,42 +17456,49 @@
       \POE@key@arrowcompwidth\space\POE@key@arrowcompheight\space
       min 0.5 mul dup /@@x ED /@@y ED
     \fi
+    \POE@key@arrowcompangle\space dup 0 gt {
+      { dup 180 ge { 180 sub } { exit } ifelse } loop
+    } {
+      { dup 0 lt { 180 add } { exit } ifelse } loop
+    } ifelse dup /@arrowangle ED dup dup
+    @@y @@x atan gt exch @@y @@x neg atan lt and {
+      /@@dy @@y def
+      tan @@y exch div /@@dx ED
+    }{
+      /@@dx @@x def
+      tan @@x mul /@@dy ED
+    } ifelse
   }%
 }%
 \def\optarrowcomp@comp{%
   \ifx\POE@key@arrowcompshape\POE@str@rectangle
     \POE@comp@rectangle
-    \begingroup
-      \psset{style=ArrowCompStyle}
-      \use@par
-      \pst@expandafter\POE@get@yarrowscale{\psk@arrowscale}\@nil
-      \def\@arrowshift{%
-        \psk@arrowlength\space \psk@arrowsize\space
-        \pst@number\pslinewidth\space mul add mul 
-        \POE@tempA mul 
-        @@y 2.9 mul @@x 0.6 mul atan 2 copy cos mul 3 1 roll sin mul 
-        \tx@UserCoor abs exch abs exch\space
-      }%
-      \psline(! \POE@dict{@@x -0.4 mul @@y -1.6 mul})%
-             (! \POE@dict{@@x 0.2 mul @@y 1.3 mul \@arrowshift VecAdd})
-    \endgroup
   \else
     \pscircle(!\POE@dict{@@x0 @@y0}){!\POE@dict{@@x}}
-    \begingroup
-      \psset{style=ArrowCompStyle}
-      \use@par
-      \pst@expandafter\POE@get@yarrowscale{\psk@arrowscale}\@nil
-      \def\@arrowshift{%
-        \psk@arrowlength\space \psk@arrowsize\space
-        \pst@number\pslinewidth\space mul add mul 
-        \POE@tempA mul 
-        @@y 2 mul @@x 2 mul atan 2 copy cos mul 3 1 roll sin mul 
-        \tx@UserCoor abs exch abs exch\space
-      }%
-      \psline(! \POE@dict{@@x neg @@x neg \@arrowshift -0.5 VecScale VecAdd })%
-             (! \POE@dict{@@x @@y \@arrowshift VecAdd})
-    \endgroup
   \fi
+  \begingroup
+%    \end{macrocode}
+% Set the style and execute the options directly, so we can use the correct 
+% arrowscale and linewidth for the calculations.
+%    \begin{macrocode}
+    \psset{style=ArrowCompStyle}
+    \use@par
+    \pst@expandafter\POE@get@yarrowscale{\psk@arrowscale}\@nil
+    \def\@arrowshift{%
+      \psk@arrowlength\space \psk@arrowsize\space
+      \pst@number\pslinewidth\space mul add mul 
+      \POE@tempA mul
+      @arrowangle 2 copy cos mul 3 1 roll sin mul 
+      \tx@UserCoor\space
+    }%
+    \ifx\POE@key@arrowcompshape\POE@str@rectangle
+      \psline(!\POE@dict{@@dx -1.5 mul @@dy -1.5 mul})%
+             (!\POE@dict{@@dx 1.3 mul @@dy 1.3 mul \@arrowshift VecAdd})
+    \else
+      \psline(!\POE@dict{@arrowangle dup cos @@x -1.5 mul mul exch sin @@x -1.5 mul mul})
+             (!\POE@dict{@arrowangle dup cos @@x 1.3 mul mul exch sin @@x 1.3 mul mul \@arrowshift VecAdd})
+    \fi
+  \endgroup
 \ignorespaces}%
 %    \end{macrocode}
 %
