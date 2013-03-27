@@ -51,6 +51,33 @@
   \psdot(\oenodeOut{})\uput[45](\oenodeOut{}){N}
   \rput[bl](0,-0.4){\ttfamily\textbackslash doveprism}
 \end{pspicture}%
+\bigskip
+
+\noindent\begin{pspicture}(0,-0.5)(3,1.7) 
+  \pnode(0,0.7){A}\pnode(3,0.7){B}
+  \glanthompson[glanthompsonsize=1.8 1, glanthompsongap=0.2](A)(B)
+  \drawbeam(A){}(B)
+  \psdot(\oenodeIn{})\uput[135](\oenodeIn{}){1}
+  \psdot(\oenodeIfc{2}{})\uput[45](\oenodeIfc{2}{}){2}
+  \psdot(\oenodeIfc{3}{})\uput[30](\oenodeIfc{3}{}){3,C}
+  \psdot(\oenodeIfc{4}{})\uput[150](\oenodeIfc{4}{}){4}
+  \psdot(\oenodeOut{})\uput[45](\oenodeOut{}){N}
+  \rput[bl](0,-0.4){\ttfamily\textbackslash glanthompson}
+\end{pspicture}%
+\hspace{\fill}%
+\showdipoleifc{optarrowcomp}\hspace{\fill}%
+\showdipoleifc{optbarcomp}
+\bigskip
+
+\noindent\begin{pspicture}(0,-0.5)(3,1.7)
+  \pnode(0,0.7){A}\pnode(3,0.7){B}
+  \optdipole[optdipolesize=1](A)(B){}
+  \drawbeam(A){}(B)
+  \psdot(\oenodeIn{})\uput[135](\oenodeIn{}){1}
+  \psdot(\oenodeOut{})\uput[45](\oenodeOut{}){N}
+  \rput[bl](0,-0.4){\ttfamily\textbackslash optdipole}
+\end{pspicture}%
+\hspace{\fill}%
 
 \section*{Tripoles}
 \begin{pspicture}(3,1.5)
@@ -183,3 +210,31 @@
   \rput[bl](0,-0.4){\ttfamily\textbackslash optcoupler}
 \end{pspicture}%
 
+
+\section*{Electrical components}
+\begingroup
+\addtopsstyle{Wire}{arrows=->, arrowscale=1.5, arrowinset=0, arm=0.6}
+\noindent\begin{pspicture}(0, -0.5)(3,1.7)
+  \pnode(2,1.2){A}\pnode(3,1.2){B}
+  \elecsynthesizer(A)(B)
+  \psdot(\oenodeIn{})\uput[135](\oenodeIn{}){1, N}
+  \rput[bl](0,-0.4){\ttfamily\textbackslash elecsynthesizer}
+\end{pspicture}\hspace{\fill}%
+\begin{pspicture}(0,-0.5)(3,1.7)
+  \pnode(0,1.2){A}\pnode(3,1.2){B}\pnode(1.2,0.1){C}
+  \elecmixer(A)(B)(C)
+  \psdot(\oenodeIn{})\uput[-135](\oenodeIn{}){1}
+  \psdot(\oenodeIfc{2}{})\uput[-45](\oenodeIfc{2}{}){2}
+  \psdot(\oenodeOut{})\uput[-45](\oenodeOut{}){N}
+  \rput[bl](0,-0.4){\ttfamily\textbackslash elecmixer}
+\end{pspicture}\hspace{\fill}%
+\begin{pspicture}(0,-0.5)(3,1.7)
+  \pnode(0,1.7){A}\pnode(0,0.2){B}\pnode(3,1.7){C}\pnode(3,0.2){D}
+  \eleccoupler(A)(B)(C)(D)
+  \psdot(\oenodeIn{})\uput[120](\oenodeIn{}){1}
+  \psdot(\oenodeIfc{2}{})\uput[-120](\oenodeIfc{2}{}){2}
+  \psdot(\oenodeIfc{3}{})\uput[60](\oenodeIfc{3}{}){3}
+  \psdot(\oenodeOut{})\uput[-60](\oenodeOut{}){N}
+  \rput[bl](0,-0.4){\ttfamily\textbackslash eleccoupler}
+\end{pspicture}%
+\endgroup

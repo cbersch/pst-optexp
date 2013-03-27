@@ -2933,11 +2933,11 @@
 % \iffalse
 %</ignore>
 % \fi
-% \ifENGLISH A general purpose component, similar to \Lcs{optpolarizer},
+% \ifENGLISH A general purpose component, similar to \Lcs{optfiberpolarizer},
 % but much more flexible.
 % \fi
 % \ifGERMAN Eine Komponente für den allgemeinen, flexiblen Gebrauch
-% ähnlich zu \Lcs{optpolarizer}, aber deutlich variabler.
+% ähnlich zu \Lcs{optfiberpolarizer}, aber deutlich variabler.
 % \fi
 % \end{ltxsyntax}
 % 
@@ -4257,7 +4257,7 @@
 %</ignore>
 % \fi
 % 
-% \numitem[0.3]{fiberloopsep}
+% \numitem[0.2]{fiberloopsep}
 % \ifGERMAN Abstand zwischen zwei aufeinanderfolgenden Faserschleifen.\fi
 % \ifENGLISH Separation between two successive fiber loops.\fi
 % \iffalse
@@ -8680,12 +8680,6 @@
 %   \ifGERMAN Siehe \Lkeyword{fiberangleB}.\fi
 %   \ifENGLISH See \Lkeyword{fiberangleB}.\fi
 %
-%   \valitem{addtoWire}{list}
-%     \addtostylemsg{Wire}
-%
-%   \valitem{newWire}{list}
-%     \newstylemsg{Wire}
-% 
 %   \valitem[angle]{wirestyle}{string}
 %   \ifGERMAN Siehe \Lkeyword{fiberstyle}, lediglich der Vorgabewert ist hier \opt{angle}.\fi
 %   \ifENGLISH See \Lkeyword{fiberangleB}, the default value is \opt{angle}.\fi
@@ -8991,10 +8985,9 @@
 % \xLstyle{FiberOut2}\label{prm:FiberOut2}%
 % \ifENGLISH
 % Style \Lstyle{FiberIn} applies to all input fibers, it inherits from
-% \Lstyle{Fiber}. If the component has more than one input fiber they have the
+% \Lstyle{Fiber}. If the component has more than one input fiber they use the
 % styles \Lstyle{FiberIn1} and \Lstyle{FiberIn2} which inherit from
-% \Lstyle{FiberIn}. All output fibers have the style \Lstyle{FiberOut}, two
-% output fibers have the styles \Lstyle{FiberOut1} and \Lstyle{FiberOut2} which
+% \Lstyle{FiberIn}. All output fibers use the style \Lstyle{FiberOut}, in case of two output fibers they use the styles \Lstyle{FiberOut1} and \Lstyle{FiberOut2} which
 % inherit from \Lstyle{FiberOut}. See \prettyref{fig:fiberstyles} for an
 % inheritance diagram of the styles. You must have in mind, that this
 % inheritance is effective only if you use \Lcs*{addtopsstyle} to change the
@@ -9022,6 +9015,31 @@
 %     \opt{WireOut2}
 %   \end{tabular}}%
 % ]%
+% \ifENGLISH
+% Style \Lstyle{WireIn} applies to all input wires, it inherits from
+% \Lstyle{Wire}. If the component has more than one input wire they use
+% the styles \Lstyle{WireIn1} and \Lstyle{WireIn2} which inherit from
+% \Lstyle{WireIn}. All output wires use the style \Lstyle{WireOut}, in
+% case of two output wires they use the styles \Lstyle{WireOut1} and
+% \Lstyle{WireOut2} which inherit from \Lstyle{WireOut}. See
+% \prettyref{fig:fiberstyles} for an inheritance diagram of the
+% styles. You must have in mind, that this inheritance is effective only
+% if you use \Lcs*{addtopsstyle} to change the styles (see also below).
+% \fi
+% \ifGERMAN
+% Der Stil \Lstyle{WireIn} bezieht sich auf alle eingehenden
+% elektrischen Verbindungen und erbt alle Eigenschaften von
+% \Lstyle{Wire}. Hat eine Komponente zwei davon, so können diese mit
+% \Lstyle{WireIn1} und \Lstyle{WireIn2} angesprochen werden, die alles
+% von \Lstyle{WireIn} übernehmen. Entsprechend bezieht sich
+% \Lstyle{WireOut} auf alle ausgehenden elektrischen Verbindungen, falls
+% es davon zwei gibt dann können diese mit \Lstyle{WireOut1} und
+% \Lstyle{WireOut2} geändert werden. Siehe \prettyref{fig:fiberstyles}
+% für ein Vererbungsdiagramm der Stile. Beachten Sie, dass diese
+% Vererbung nur erhalten bleibt, falls die Stile nur mit
+% \Lcs*{addtopsstyle} oder den entsprechenden \opt{addto}\prm{style}
+% Parametern verändert werden.
+% \fi
 % \xLstyle{WireIn}\label{prm:WireIn}%
 % \xLstyle{WireIn1}\label{prm:WireIn1}%
 % \xLstyle{WireIn2}\label{prm:WireIn2}%
@@ -9045,24 +9063,26 @@
 %   \xLkeyword{newWireOut}\xLkeyword{addtoWireOut}
 %   \xLkeyword{newWireOut1}\xLkeyword{addtoWireOut1}
 %   \xLkeyword{newWireOut2}\xLkeyword{addtoWireOut2} 
-%   \ifENGLISH For every style two appropriate keys \opt{new}\prm{style} and
-%   \opt{addto}\prm{style} are provided which can be used to change the styles
-%   for single objects. This can be used to define own components
-%   (\prettyref{sec:customcomp}) with respectively changed connections or
-%   to avoid explicit grouping.
+%   \ifENGLISH 
+%   For every style two appropriate keys \opt{new}\prm{style} and
+%   \opt{addto}\prm{style} are provided which can be used to change the
+%   styles for single objects. This can be used to define own components
+%   (\prettyref{sec:customcomp}) with respectively changed connections
+%   or to avoid explicit grouping.
 %   \fi
-%   \ifGERMAN Für jeden Faserstil werden zwei Parameter \opt{new}\prm{style} und
-%   \opt{addto}\prm{style} bereitgestellt, mit denen die Stile für einzelne
-%   Komponenten verändert werden können. Damit können neuen Komponenten mit
-%   anderen voreingestellten Verbindungen definiert werden
-%   (\prettyref{sec:customcomp}), oder explizite Gruppierung kann vermieden
-%   werden.
+%   \ifGERMAN 
+%   Für jeden Faserstil werden zwei Parameter \opt{new}\prm{style} und
+%   \opt{addto}\prm{style} bereitgestellt, mit denen die Stile für
+%   einzelne Komponenten verändert werden können. Damit können neuen
+%   Komponenten mit anderen voreingestellten Verbindungen definiert
+%   werden (\prettyref{sec:customcomp}), oder explizite Gruppierung kann
+%   vermieden werden.
 %   \fi
 %
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}[morekeywords={[21]{addtoFiberOut1}}]
+\begin{LTXexample}[alsoletter={1}, morekeywords={[21]{addtoFiberOut1}}]
 \begin{pspicture}(3,2)
   \newpsobject{tapcoupler}{wdmsplitter}{%
     coupleralign=b, 
@@ -9413,6 +9433,7 @@
 %   \xLcs{newOptexpDipole}\cmditem{newOptexpDipole}[fixopt]{name}{dftopt}
 %   \xLcs{newOptexpTripole}\cmditem{newOptexpTripole}[fixopt]{name}{dftopt}
 %   \xLcs{newOptexpFiberDipole}\cmditem{newOptexpFiberDipole}[fixopt]{name}{dftopt}
+%   \xLcs{newOptexpElecDipole}\cmditem{newOptexpElecDipole}[fixopt]{name}{dftopt}
 % \end{ltxsyntax}
 %
 % \ifENGLISH
@@ -9420,9 +9441,6 @@
 % positioning, label placement, rotation and shifting, and the layering. In the
 % simplest case you only have to define the actual drawing of the component
 % outline.
-%
-% The macro \Lcs*{newOptexpDipoleNolabel} is superfluous because since version
-% 3.0 the label is optional for all components.
 %
 % The actual process of creating a new component is split up in different parts,
 % depending on the component complexity and user requirements:
@@ -9439,9 +9457,6 @@
 % und die Ebenenverwaltung. Im einfachsten Fall müssen Sie lediglich die
 % eigentliche Zeichnung der Komponente erstellen.
 %
-% Seit Version 3.0 ist das Makro \Lcs*{newOptexpDipoleNolabel} überflüssig, da
-% seitdem die Beschriftung für alle Komponenten optional ist.
-% 
 % Die Definition der neuen Komponenten kann in unterschiedliche Schritte
 % eingeteilt werden, je nach Komplexität und Anforderung des Benutzers:
 %
@@ -9474,7 +9489,7 @@
 % \fi
 \begin{LTXexample}[morekeywords={[21]{newOptexpDipole}}]
 \begin{pspicture}(3.5,2.6)
-\newOptexpDipole{mydipole}{}
+\newOptexpDipole{mydipole}
 \makeatletter
 \def\mydipole@comp{%
   \psaxes[arrows=->](0,0)(0,-1.1)(1.3,1.3)[$x$,90][$y$,0]
@@ -9525,7 +9540,7 @@
   \optbox[position=end, optboxsize=3.2 1, innerlabel, compshift=-0.2](M)(IRSpec){IR spectrometer}
   \lens[abspos=1](M)(OSA)
   \optplane[angle=90]([offset=-1.5]M)
-  \optfiber[fiberloopradius=0.2, fiberloopsep=0.2, label=1, newFiber={linewidth=1.5\pslinewidth}]([offset=-1.5]M)(OSA){MM fiber}
+  \optfiber[fiberloopradius=0.2, label=1, newFiber={linewidth=1.5\pslinewidth}]([offset=-1.5]M)(OSA){MM fiber}
   \optbox[position=end, innerlabel, optboxwidth=1.1](M)(OSA){OSA}
   \newpsstyle{Beam}{linestyle=none, fillcolor=red, fillstyle=solid, raytrace=false}
   \drawwidebeam[beamwidth=0.2, stopinside]{1-2}
@@ -10465,11 +10480,11 @@
 % \Lcs{mirror} ignores \opt{t} and \opt{b} and an \Lcs{optplate} ignores \opt{l}
 % and \opt{r}.
 %
-% Instead of these values also fractional parts can be used: \opt{t} corresponds
-% to $+1\cdot\Delta y$, \opt{b} corresponds to $-1\cdot\Delta y$, \opt{l}
-% corresponds to $-1\cdot\Delta x$, and \opt{r} corresponds to $+1\cdot\Delta
-% x$. In the following example the point $(0.5\Delta x, 1.2\Delta y)$ is
-% provided as external node.
+% Instead of these values also fractional parts can be used: \opt{t}
+% corresponds to $+1\cdot\Delta y$, \opt{b} corresponds to
+% $-1\cdot\Delta y$, \opt{l} corresponds to $-1\cdot\Delta x$, and
+% \opt{r} corresponds to $+1\cdot\Delta x$. This can be especially
+% useful for round outer shapes, as the following examples shows.
 % \fi
 % \ifGERMAN
 % Hier finden Sie eine Übersicht über alle möglichen externen Knoten
@@ -10480,18 +10495,18 @@
 % und \opt{b} ignoriert werden (z.B. bei \Lcs{mirror}), oder auch \opt{r} und
 % \opt{l} (z.B. bei \Lcs{optplate}).
 % 
-% Anstelle dieser Werte können auch Bruchteile davon verwendet werden: \opt{t}
-% entspricht $+1\cdot\Delta y$, \opt{b} entspricht $-1\cdot\Delta y$, \opt{l}
-% entspricht $-1\cdot\Delta x$ und \opt{r} entspricht $+1\cdot\Delta x$. Im
-% folgenden Beispiel wird der Punkt $(0.5\Delta x, 1.2\Delta y)$ als externer
-% Knoten bereitgestellt.
+% Anstelle dieser Werte können auch Bruchteile davon verwendet werden:
+% \opt{t} entspricht $+1\cdot\Delta y$, \opt{b} entspricht
+% $-1\cdot\Delta y$, \opt{l} entspricht $-1\cdot\Delta x$ und \opt{r}
+% entspricht $+1\cdot\Delta x$. Das kann gerade im Fall einer runden
+% Außenform sehr hilfreich sein, wie das folgende Beispiel zeigt.
 % \fi
 % \iffalse
 %<*ignore>
 % \fi
 \begin{LTXexample}[morekeywords={[21]extnode}]
-\begin{pspicture}(3,1)
-  \optbox[extnode={0.5,1.2}, beam](0,0.5)(3,0.5)
+\begin{pspicture}(2,1)
+  \elecsynthesizer[extnode={-0.707,0.707}](1,0.5)(2,0.5)
   \psdot(\oenodeExt{})
 \end{pspicture}
 \end{LTXexample}
@@ -10502,7 +10517,7 @@
 % \newpsstyle{ExtNodeStyle}{dotstyle=B+, dotangle=45, linewidth=2\pslinewidth, linecolor=DOrange}
 % \makeatletter
 % \newcommand{\testextnodes}[3][]{%
-%   \begin{pspicture}(3,2)
+%   \begin{pspicture}(3,2.2)
 %   \@nameuse{#2}[#1]#3
 %   \rput[t](1.5,0.9){\ttfamily\small
 %     \ifx\\#1\\\relax
@@ -10543,6 +10558,16 @@
 % \testextnodes[bsstyle=plate]{beamsplitter}{(0,1.5)(2,1.5)(2,0)}
 % \testextnodes{rightangleprism}{(0,1.5)(2.5,1)(0,0.5)}
 % \testextnodes{pentaprism}{(0,1.3)(2,1.3)(2,0)}
+% \testextnodes{optarrowcomp}{(0,1.5)(3,1.5)}
+% \testextnodes{optbarcomp}{(0,1.5)(3,1.5)}
+% \begin{pspicture}(3,2)
+%   \optdipole[optdipolesize=1](0,1.5)(3,1.5){}
+%   \rput[t](1.5,0.9){\ttfamily\small
+%     \begin{tabular}{@{}c@{}}\textbackslash optdipole\end{tabular}}
+%   \makeatletter
+%   \POE@extnodes[style=ExtNodeStyle, optdipolesize=1]{optdipole}
+%   \makeatother
+% \end{pspicture}
 %
 % \ifENGLISH\subsubsection*{Fiber components}\fi
 % \ifGERMAN\subsubsection*{Faserkomponenten}\fi
@@ -10560,6 +10585,13 @@
 % \testextnodes{optcirculator}{(0,1.6)(3,1.6)(1.5,0.9)}
 % \testextnodes[couplersize=0.5 0.3]{optcoupler}{(0,2)(0,1)(3,2)(3,1)}
 % \testextnodes{fiberbox}{(0,1.75)(0,1.25)(3,1.75)(3,1.25)}
+%
+% \ifENGLISH\subsubsection*{Electrical components}\fi
+% \ifGERMAN\subsubsection*{Elektrische Komponenten}\fi
+%
+% \testextnodes{eleccoupler}{(0,2)(0,1)(3,2)(3,1)}
+% \testextnodes{elecmixer}{(0,1.6)(3,1.6)(1.5,0.9)}
+% \testextnodes{elecsynthesizer}{(1,1.5)(3,1.5)}
 %
 %
 % \ifENGLISH\subsection{Interface nodes}\fi
@@ -10669,8 +10701,20 @@
 %   \rput[bl](0,-0.4){\ttfamily\textbackslash glanthompson}
 % \end{pspicture}%
 % \hspace{\fill}%
+% \showdipoleifc{optarrowcomp}\hspace{\fill}%
+% \showdipoleifc{optbarcomp}
 %
-% \begin{pspicture}(3,2.5)
+% \noindent\begin{pspicture}(0,-0.5)(3,1.7)
+%   \pnode(0,0.7){A}\pnode(3,0.7){B}
+%   \optdipole[optdipolesize=1](A)(B){}
+%   \drawbeam(A){}(B)
+%   \psdot(\oenodeIn{})\uput[135](\oenodeIn{}){1}
+%   \psdot(\oenodeOut{})\uput[45](\oenodeOut{}){N}
+%   \rput[bl](0,-0.4){\ttfamily\textbackslash optdipole}
+% \end{pspicture}%
+% \hspace{\fill}%
+%
+% \noindent\begin{pspicture}(3,2.5)
 %   \pnode(0,1.5){A}\pnode(2.5,1.5){B}\pnode(2.5,0.4){C}
 %   \beamsplitter[bssize=1.2](A)(B)(C)
 %   \drawbeam(A){}(C)
@@ -10717,6 +10761,7 @@
 %     \rput[bl](0,-0.4){\ttfamily\textbackslash #1}
 %   \end{pspicture}%
 % }%
+% \begingroup
 % \addtopsstyle{Fiber}{ArrowInside=->, ArrowInsidePos=0.6, arrowscale=1.5, arrowinset=0}
 % \vspace*{5mm}%
 % \showfdipoleifc{optfiber}\hspace{\fill}%
@@ -10784,7 +10829,37 @@
 %   \psdot(\oenodeOut{})\uput[-90](\oenodeOut{}){N}
 %   \rput[bl](0,-0.4){\ttfamily\textbackslash optcoupler}
 % \end{pspicture}%
+% \endgroup
 %
+% 
+% \ifENGLISH\subsubsection*{Electrical components}\fi
+% \ifGERMAN\subsubsection*{Elektrische Komponenten}\fi
+% \begingroup
+% \addtopsstyle{Wire}{arrows=->, arrowscale=1.5, arrowinset=0, arm=0.6}
+% \noindent\begin{pspicture}(0, -0.5)(3,1.7)
+%   \pnode(2,1.2){A}\pnode(3,1.2){B}
+%   \elecsynthesizer(A)(B)
+%   \psdot(\oenodeIn{})\uput[135](\oenodeIn{}){1, N}
+%   \rput[bl](0,-0.4){\ttfamily\textbackslash elecsynthesizer}
+% \end{pspicture}\hspace{\fill}%
+% \begin{pspicture}(0,-0.5)(3,1.7)
+%   \pnode(0,1.2){A}\pnode(3,1.2){B}\pnode(1.2,0.1){C}
+%   \elecmixer(A)(B)(C)
+%   \psdot(\oenodeIn{})\uput[-135](\oenodeIn{}){1}
+%   \psdot(\oenodeIfc{2}{})\uput[-45](\oenodeIfc{2}{}){2}
+%   \psdot(\oenodeOut{})\uput[-45](\oenodeOut{}){N}
+%   \rput[bl](0,-0.4){\ttfamily\textbackslash elecmixer}
+% \end{pspicture}\hspace{\fill}%
+% \begin{pspicture}(0,-0.5)(3,1.7)
+%   \pnode(0,1.7){A}\pnode(0,0.2){B}\pnode(3,1.7){C}\pnode(3,0.2){D}
+%   \eleccoupler(A)(B)(C)(D)
+%   \psdot(\oenodeIn{})\uput[120](\oenodeIn{}){1}
+%   \psdot(\oenodeIfc{2}{})\uput[-120](\oenodeIfc{2}{}){2}
+%   \psdot(\oenodeIfc{3}{})\uput[60](\oenodeIfc{3}{}){3}
+%   \psdot(\oenodeOut{})\uput[-60](\oenodeOut{}){N}
+%   \rput[bl](0,-0.4){\ttfamily\textbackslash eleccoupler}
+% \end{pspicture}%
+% \endgroup
 %
 % \ifGERMAN
 %   \section{Abwärtskompatibilität}
@@ -10818,6 +10893,64 @@
 % connections was finally removed. To update older documents, see
 % \prettyref{sec:bwd-comp-3.0-conn}. With this change also option
 % \Lkeyword*{connjoin} became useless.
+% \fi
+%
+% \ifENGLISH 
+% The appearance of \Lcs{optfiber} changed slightly, because the old
+% implementation was buggy and the separation between the loops depended
+% on the number of loops (see example below). Note, that to achieve a
+% similar default look, the default value for \Lkeyword{fiberloopsep}
+% was changed from 0.3 to 0.2. Therefore, the interface nodes are a bit
+% closer together.
+% \fi
+% \ifGERMAN 
+% Das Aussehen von \Lcs{optfiber} hat sich etwas geändert, da in der
+% vorherigen Implementierung der Abstand zwischen zwei Schleifen von der
+% Anzahl der Schleifen abhing (siehe das Beispiel unten). Beachten Sie,
+% dass die Voreinstellung für \Lkeyword{fiberloopsep} von 0.3 auf 0.2
+% geändert wurde um ein ähnliches Aussehen bei Verwendung der
+% Voreinstellungen zu erhalten. Dadurch sitzen die Eingangs- und
+% Ausgangsknoten jedoch etwas näher zusammen (siehe unten).
+% \fi
+%
+% \makeatletter
+% \begin{pspicture}[showgrid](0,-0.3)(6,2)
+% \newOptexpFiberDipole{optfiber@old}
+% \def\optfiber@old@ref{%
+%   \POE@setref{/@@x 0.3 \POE@key@fiberloops\space 1 sub mul 0.5 mul def }%
+% }%
+% \def\optfiber@old@nodes{%
+%   \newOptexpFiberComp{{@@x neg 0} {@@x 0}}%
+% \ignorespaces}%
+% \def\optfiber@old@comp{%
+%   \edef\@f@cnt{\POE@key@fiberloops\space}%
+%   \edef\@f@r{0.4 }%
+%   \edef\@f@sep{0.3 }%
+%   \parametricplot[plotpoints=200, style=Fiber]{0}{1}{%
+%     t 360 mul \@f@cnt mul sin \@f@r mul \@f@sep
+%     \@f@cnt 1 sub mul t 0.5 sub mul add
+%      1 t 360 mul \@f@cnt mul cos sub \@f@r mul
+%   }%
+% \ignorespaces}%
+% \psset[optexp]{label=0.5 . b, showifcnodes}
+% \optfiber@old[fiberloops=2](0,1)(2,1)
+% \optfiber@old[fiberloops=3](2,1)(4,1){old}
+% \optfiber@old[fiberloops=4](4,1)(6,1)
+% \end{pspicture}
+% \makeatother
+% \hspace{\fill}
+% \begin{pspicture}[showgrid](0,-0.3)(6,2)
+% \psset[optexp]{label=0.5 . b, showifcnodes}
+% \optfiber[fiberloops=2](0,1)(2,1)
+% \optfiber[fiberloops=3](2,1)(4,1){new}
+% \optfiber[fiberloops=4](4,1)(6,1)
+% \end{pspicture}
+% 
+% \ifGERMAN Das Makro \Lcs*{newOptexpDipoleNolabel} wurde entfernt und
+% kann ohne weitere Änderungen durch \Lcs{newOptexpDipole} ersetzt werden.
+% \fi
+% \ifENGLISH The macro \Lcs*{newOptexpDipoleNolabel} was removed and can
+% be replaced by \Lcs{newOptexpDipole} without any further changes.
 % \fi
 %
 % \ifGERMAN The alte Syntax mit \Lcs*{mycomp@iii} zur Definition eigener
@@ -11177,11 +11310,13 @@
 %   \item Added component \cs{optarrowcomp}\see{cmd:optarrowcomp}
 %   \item Added component \cs{optbarcomp}\see{cmd:optbarcomp}
 %   \item Improved \cs{optdetector}\see{cmd:optdetector}
-%   \item Fixed appearance of \cs{optfiber}\see{cmd:optfiber}
-%   \item Fixed \opt{extnodealign} to affect also multipoles\see{prm:extnodealign}
+%   \item Fixed appearance of \cs{optfiber}\see{sec:bwd-comp-4.0}
+%   \item Fixed \opt{extnodealign} to affect also
+%     multipoles\see{prm:extnodealign}
 %   \item Removed old, buggy beam connection code\see{sec:bwd-comp-4.0}
 %   \item Removed option \opt{conn}\see{sec:bwd-comp-4.0}
 %   \item Removed option \opt{connjoin}\see{sec:bwd-comp-4.0}
+%   \item Removed \cs{newOptexpDipoleNolabel}\see{sec:bwd-comp-4.0}
 %   \end{release}
 %   \begin{release}{3.6}{2013-03-20}
 %   \item Added option \opt{compoffset}\see{prm:compoffset}
@@ -12578,7 +12713,7 @@
 \psset[optexp]{%
   fiberloops=3,
   fiberloopradius=0.4,
-  fiberloopsep=0.3
+  fiberloopsep=0.2
 }%
 %    \end{macrocode}
 % \subsubsection{optfilter}
@@ -14970,16 +15105,7 @@
 }%
 %    \end{macrocode}
 % \end{macro}
-% \begin{macro}{\newOptexpDipoleNolabel}
-%    \begin{macrocode}
-\def\newOptexpDipoleNolabel{%
-  \PackageWarning{pst-optexp}{%
-    \string\newOptexpDipoleNolabel\space is deprecated,\MessageBreak
-    use \string\newOptexpDipole\space instead.}%
-  \newOptexpDipole
-}%
-%    \end{macrocode}
-% \end{macro}
+%
 % \begin{macro}{\newOptexpTripole}
 %    \begin{macrocode}
 \def\newOptexpTripole{%
@@ -14999,7 +15125,15 @@
 %
 % \begin{macro}{\POE@newdipole}
 %    \begin{macrocode}
-\def\POE@newdipole[#1]#2#3{%
+\def\POE@newdipole[#1]#2{%
+  \@ifnextchar\bgroup
+    {\POE@newdipole@i[#1]{#2}}{\POE@newdipole@i[#1]{#2}{}}%
+}%
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\POE@newdipole@i}
+%    \begin{macrocode}
+\def\POE@newdipole@i[#1]#2#3{%
   \@ifundefined{#2@i}{%
     \@namedef{#2}{\pst@object{#2}}%
     \expandafter\def\csname #2@i\endcsname(##1)(##2){%
@@ -15032,7 +15166,15 @@
 % 
 % \begin{macro}{\POE@newfiberdipole}
 %    \begin{macrocode}
-\def\POE@newfiberdipole[#1]#2#3{%
+\def\POE@newfiberdipole[#1]#2{%
+  \@ifnextchar\bgroup
+    {\POE@newfiberdipole@i[#1]{#2}}{\POE@newfiberdipole@i[#1]{#2}{}}%
+}%
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\POE@newfiberdipole@i}
+%    \begin{macrocode}
+\def\POE@newfiberdipole@i[#1]#2#3{%
   \@ifundefined{#2@i}{%
     \@namedef{#2}{\pst@object{#2}}%
     \expandafter\def\csname #2@i\endcsname(##1)(##2){%
@@ -15063,11 +15205,17 @@
 %    \end{macrocode}
 % \end{macro}
 %
-%
 % \begin{macro}{\POE@newtripole}
-% Equivalent to \cs{POE@newdipole} for tripole objects.
 %    \begin{macrocode}
-\def\POE@newtripole[#1]#2#3{%
+\def\POE@newtripole[#1]#2{%
+  \@ifnextchar\bgroup
+    {\POE@newtripole@i[#1]{#2}}{\POE@newtripole@i[#1]{#2}{}}%
+}%
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\POE@newtripole@i}
+%    \begin{macrocode}
+\def\POE@newtripole@i[#1]#2#3{%
   \@ifundefined{#2@i}{%
     \@namedef{#2}{\pst@object{#2}}%
     \expandafter\def\csname #2@i\endcsname(##1)(##2)(##3){%
@@ -15671,33 +15819,33 @@
 %
 % Define all free-ray dipoles
 %    \begin{macrocode}
-\newOptexpDipole{lens}{}
-\newOptexpDipole{pinhole}{}
-\newOptexpDipole{crystal}{}
-\newOptexpDipole{polarization}{}
-\newOptexpDipole{optbox}{}
-\newOptexpDipole{optplate}{}
-\newOptexpDipole{optretplate}{}
+\newOptexpDipole{lens}
+\newOptexpDipole{pinhole}
+\newOptexpDipole{crystal}
+\newOptexpDipole{polarization}
+\newOptexpDipole{optbox}
+\newOptexpDipole{optplate}
+\newOptexpDipole{optretplate}
 \newOptexpDipole{optdetector}{position=end}
 \newOptexpDipole{optdiode}{allowbeaminside=false}
-\newOptexpDipole{doveprism}{}
-\newOptexpDipole{glanthompson}{}
+\newOptexpDipole{doveprism}
+\newOptexpDipole{glanthompson}
 %    \end{macrocode}
 % 
 % Define all free-ray tripoles
 %    \begin{macrocode}
-\newOptexpTripole{mirror}{}%
-\newOptexpTripole[ref@angle=-135]{beamsplitter}{}%
-\newOptexpTripole{optgrating}{}%
+\newOptexpTripole{mirror}
+\newOptexpTripole[ref@angle=-135]{beamsplitter}
+\newOptexpTripole{optgrating}
 \def\optgrid{%
   \PackageWarning{pst-optexp}{%
     \string\optgrid\space is deprecated,\MessageBreak
     use \string\optgrating\space instead.}%
   \optgrating%
 }%
-\newOptexpTripole[ref@angle=-135]{pentaprism}{}%
-\newOptexpTripole[ref@angle=-135]{rightangleprism}{}%
-\newOptexpTripole[ref@angle=-135]{optprism}{}%
+\newOptexpTripole[ref@angle=-135]{pentaprism}
+\newOptexpTripole[ref@angle=-135]{rightangleprism}
+\newOptexpTripole[ref@angle=-135]{optprism}
 %    \end{macrocode}
 %
 % \begin{macro}{\optdipole}
@@ -15816,14 +15964,14 @@
 % Define all fiber dipoles
 %    \begin{macrocode}
 \newOptexpFiberDipole{optfiber}{newOptComp={}}
-\newOptexpFiberDipole{optamp}{}
-\newOptexpFiberDipole{optmzm}{}
+\newOptexpFiberDipole{optamp}
+\newOptexpFiberDipole{optmzm}
 \newOptexpFiberDipole{optfilter}{allowbeaminside=false}
-\newOptexpFiberDipole{polcontrol}{}
-\newOptexpFiberDipole{optisolator}{}
-\newOptexpFiberDipole{optfiberpolarizer}{}
-\newOptexpFiberDipole{optswitch}{}
-\newOptexpFiberDipole{fiberdelayline}{}
+\newOptexpFiberDipole{polcontrol}
+\newOptexpFiberDipole{optisolator}
+\newOptexpFiberDipole{optfiberpolarizer}
+\newOptexpFiberDipole{optswitch}
+\newOptexpFiberDipole{fiberdelayline}
 %    \end{macrocode}
 %
 % \begin{macro}{\POE@drawcomponent}
@@ -17126,7 +17274,7 @@
 \def\optfiber@comp{%
   \pscustom[style=Fiber, arrows=-]{%
     \multido{\i=0+1}{\POE@key@fiberloops}{%
-      \parametricplot[liftpen=1]{0}{1}{%
+      \parametricplot[liftpen=1, plotpoints=100]{0}{1}{%
         t 360 mul sin 1 t 360 mul cos sub
         \POE@key@fiberloopradius\space dup 3 1 roll mul 3 1 roll mul
         \POE@key@fiberloops\space 1 sub -2 div \i\space add
@@ -17961,12 +18109,12 @@
         \drawwire@{WireIn1}[stopnode=1](#1){}
       \fi
       \ifPOE@wirepresetout@top
-        \drawwire@{WireOut1}[startnode=3]{}(#3)
+        \drawwire@{WireOut1}[startnode=3](#3){}
       \fi
       \ifx\POE@key@eleccouplertype\POE@str@directional
         \ifx\POE@key@eleccouplerinput\POE@str@left
           \ifPOE@wirepresetout@bottom
-            \drawwire@{WireOut2}[startnode=N]{}(#4)
+            \drawwire@{WireOut2}[startnode=N](#4){}
           \fi
         \else
           \ifPOE@wirepresetin@bottom
@@ -17975,7 +18123,7 @@
         \fi
       \else
         \ifPOE@wirepresetout@bottom
-          \drawwire@{WireOut2}[startnode=N]{}(#4)
+          \drawwire@{WireOut2}[startnode=N](#4){}
         \fi
         \ifPOE@wirepresetin@bottom
           \drawwire@{WireIn2}[stopnode=2](#2){}
@@ -18030,12 +18178,12 @@
          (!\POE@dict{@@x 0.7 mul @@y0 @@sep add @@y 0.15 mul sub})%
   \psline(!\POE@dict{@@x 0.7 mul  @@y0 @@sep sub @@y 0.15 mul add})%
          (!\POE@dict{@@x -0.7 mul @@y0 @@sep add @@y 0.15 mul sub})%
-  \psline[style=Wire, arrows=-](\oenodeIfc{1}{})(\oenodeIfc{3}{})
+  \psline[style=Wire, arrows=-, ArrowInside=-](\oenodeIfc{1}{})(\oenodeIfc{3}{})
   \ifx\POE@key@eleccouplertype\POE@str@directional
     \ifx\POE@key@eleccouplerinput\POE@str@left
-      \psline[style=Wire, arrows=-]([Xnodesep=-0.1]\oenodeIfc{2}{})(\oenodeIfc{N}{})
+      \psline[style=Wire, arrows=-, ArrowInside=-]([Xnodesep=-0.1]\oenodeIfc{2}{})(\oenodeIfc{N}{})
     \else
-      \psline[style=Wire, arrows=-](\oenodeIfc{2}{})([Xnodesep=0.1]\oenodeIfc{N}{})
+      \psline[style=Wire, arrows=-, ArrowInside=-](\oenodeIfc{2}{})([Xnodesep=0.1]\oenodeIfc{N}{})
     \fi
     \pscustom[style=OptComp]{%
       \moveto(!\POE@dict{@@x 0.15 add
@@ -18050,7 +18198,7 @@
       \rlineto(0,-0.04)
     }%
   \else
-    \psline[style=Wire, arrows=-](\oenodeIfc{2}{})(\oenodeIfc{N}{})
+    \psline[style=Wire, arrows=-, ArrowInside=-](\oenodeIfc{2}{})(\oenodeIfc{N}{})
   \fi
 }%
 %    \end{macrocode}
@@ -18065,9 +18213,17 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\POE@newelecdipole}
+% \begin{macro}{\POE@newfiberdipole}
 %    \begin{macrocode}
-\def\POE@newelecdipole[#1]#2#3{%
+\def\POE@newelecdipole[#1]#2{%
+  \@ifnextchar\bgroup
+    {\POE@newelecdipole@i[#1]{#2}}{\POE@newelecdipole@i[#1]{#2}{}}%
+}%
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\POE@newelecdipole@i}
+%    \begin{macrocode}
+\def\POE@newelecdipole@i[#1]#2#3{%
   \@ifundefined{#2@i}{%
     \@namedef{#2}{\pst@object{#2}}%
     \expandafter\def\csname #2@i\endcsname(##1)(##2){%
