@@ -115,7 +115,8 @@
     optcoupler, wdmcoupler, wdmsplitter, optcirculator, fiberbox,
     eleccoupler, elecsynthesizer, elecmixer, optarrowcomp, optbarcomp,
     drawbeam, drawwidebeam, drawfiber, drawwire, frontlayer, backlayer,
-    newOptexpDipole, newOptexpTripole, newOptexpFiberDipole,optplane},
+    newOptexpDipole, newOptexpTripole, newOptexpFiberDipole,
+    newOptexpComp, newOptexpFiberComp, optplane},
   explpreset={%
     pos=l, width=-99pt, hsep=5mm, overhang=\codeoverhang, varwidth,
     vsep=\bigskipamount, rframe={}}, extendedchars=true
@@ -5092,7 +5093,7 @@
 %
 % \ifGERMAN\chapter{Elektrische Komponenten}\fi
 % \ifENGLISH\chapter{Electrical components}\fi
-% \label{sec:electrcomp}
+% \label{chap:electrcomp}
 %
 % \ifGERMAN\section{Koppler}\fi
 % \ifENGLISH\section{Coupler}\fi
@@ -8650,14 +8651,14 @@
 %
 % \ifENGLISH
 % All available components can be connected with wire connections, the
-% wire components in \prettyref{sec:electrcomp} are connected
+% wire components in \prettyref{chap:electrcomp} are connected
 % automatically. The \Lkeyword*{wire*} parameters are equivalent to
 % their \Lkeyword*{fiber*} counterparts, see their respective
 % documentation for details.
 % \fi
 % \ifGERMAN
 % Alle Komponenten können mit Drähten verbunden werden, die elektrischen
-% Komponenten in \prettyref{sec:electrcomp} werden automatisch
+% Komponenten in \prettyref{chap:electrcomp} werden automatisch
 % verbunden. Die \Lkeyword*{wire*}-Parameter sind äquivalent zu den
 % entsprechenden \Lkeyword*{fiber*}-Parametern, die detailliertere
 % Informationen enthalten.
@@ -9416,7 +9417,7 @@
 % definition of your own custom components. 
 %
 % Note, that this part of the documentation is not complete. It roughly
-% describes the steps to define own components as of version 3.0. Some parts may
+% describes the steps to define own components since version 3.0. Some parts may
 % be subject to change which are not backward compatible.
 % \fi
 % \ifGERMAN
@@ -9424,7 +9425,7 @@
 % sehr bequem neue, eigene Komponenten definiert werden können.
 %
 % Beachten Sie, dass dieser Teil der Dokumentation nicht vollständig ist. Die
-% notwendigen Schritte zur Definition neuer Komponenten in Version 3.0 werden
+% notwendigen Schritte zur Definition neuer Komponenten seit Version 3.0 werden
 % grob beschrieben, können sich aber noch ändern und sind nicht zwangsläufig
 % abwärtskompatibel.
 % \fi
@@ -9436,37 +9437,62 @@
 %   \xLcs{newOptexpElecDipole}\cmditem{newOptexpElecDipole}[fixopt]{name}{dftopt}
 % \end{ltxsyntax}
 %
-% \ifENGLISH
-% These macros generate all organizing code for the components which handle the
-% positioning, label placement, rotation and shifting, and the layering. In the
-% simplest case you only have to define the actual drawing of the component
-% outline.
+% \ifENGLISH 
+% These macros generate all organizing code for the component
+% \textbackslash\prm{name} which handle the positioning, label
+% placement, rotation and shifting, and the layering. In the simplest
+% case you only have to define the actual drawing of the component
+% outline. 
+%
+% With the argument \prm{fixopt} you can specify argument settings which
+% will not be allowed to be overwritten, with \prm{dftopt} you can
+% specify a set of default arguments which may be overwritten with the
+% components optional argument. Both arguments \prm{fixopt} and
+% \prm{dftopt} are optional and may be omitted.
+%
+% The macros \Lcs{newOptexpFiberDipole} and \Lcs{newOptexpElecDipole}
+% only differ from the generic \Lcs{newOptexpDipole} in the connection
+% settings, like the components in \prettyref{chap:fibercomp} and
+% \prettyref{chap:electrcomp}, respectively.
 %
 % The actual process of creating a new component is split up in different parts,
 % depending on the component complexity and user requirements:
 % \begin{enumerate}
 % \item The component drawing (see \prettyref{sec:newobj-comp}), this is the
 %   only required part.
-% \item Support for raytracing and layers (optional)
+% \item Support for raytracing (optional)
 % \item Optional support for \Lkeyword{rotateref}, \Lkeyword{extnode} and
-%   \Lkeyword{position}\opt{=start|end}.
+%   \Lkeyword{position}\opt{=start|end} (optional).
 % \end{enumerate}
 % \fi
 % \ifGERMAN
-% Diese Makros erzeugen den Code für die Positionierung, Drehung, Beschriftung
-% und die Ebenenverwaltung. Im einfachsten Fall müssen Sie lediglich die
+% Diese Makros erzeugen den Code für die Positionierung, Drehung,
+% Beschriftung und die Ebenenverwaltung der neuen Komponente
+% \textbackslash\prm{name}. Im einfachsten Fall müssen Sie lediglich die
 % eigentliche Zeichnung der Komponente erstellen.
+%
+% Mit dem Argument \prm{fixopt} können Optionen voreingestellt werden,
+% die später über das optionale Argument der Komponente nicht verändert
+% werden können, \prm{dftopt} erlaubt Voreinstellungen zu machen, die
+% überschrieben werden können. Beide Argumente \prm{fixopt} und
+% \prm{dftopt} sind optional und können auch ganz weggelassen werden.
 %
 % Die Definition der neuen Komponenten kann in unterschiedliche Schritte
 % eingeteilt werden, je nach Komplexität und Anforderung des Benutzers:
-%
 % \begin{enumerate}
 % \item Die Zeichnung (siehe \prettyref{sec:newobj-comp}), das ist der einzige
 %   erforderliche Schritt.
-% \item Unterstützung von Raytracing und Ebenen (optional).
+% \item Unterstützung von Raytracing (optional).
 % \item Unterstützung für \Lkeyword{rotateref}, \Lkeyword{extnode} und
-%   \Lkeyword{position}\opt{=start|end}.
+%   \Lkeyword{position}\opt{=start|end} (optional).
 % \end{enumerate}
+% \fi
+%
+% \ifGERMAN Die folgenden Abschnitte enthalten die Entwicklung einer
+% einfachen Beispielkomponente \Lcs*{testcomp}.
+% \fi
+% \ifENGLISH The following section show the development of a simple
+% example component \Lcs*{testcomp}.
 % \fi
 %
 % \ifENGLISH\subsection{The component drawing}\fi
@@ -9487,7 +9513,7 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}[morekeywords={[21]{newOptexpDipole}}]
+\begin{LTXexample}
 \begin{pspicture}(3.5,2.6)
 \newOptexpDipole{mydipole}
 \makeatletter
@@ -9499,7 +9525,7 @@
 \drawbeam(0,1){}(3.5,1)
 \end{pspicture}
 \end{LTXexample}
-\begin{LTXexample}[morekeywords={[21]{newOptexpTripole}}]
+\begin{LTXexample}
 \begin{pspicture}(3.5,3.7)
 \newOptexpTripole{mytripole}{labelangle=-60}
 \makeatletter
@@ -9509,6 +9535,184 @@
 \makeatother
 \mytripole(0,1)(2,1.7)(3,0){\color{spot}label}
 \drawbeam(0,1){}(3,0)
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
+% \ifGERMAN Unsere Beispielkomponente und ihre Zeichnung wird also wie
+% folgt definiert:
+% \fi 
+% \ifENGLISH Our example component and its drawing are defined as
+% follows:
+% \fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[morekeywords={[21]{testcomp@comp}}]
+\begin{pspicture}(3, 2)
+\newOptexpDipole{testcomp}
+\makeatletter
+\def\testcomp@comp{%
+  \psframe[fillstyle=solid, fillcolor=black!30](-0.5,-0.5)(-0.3,0.5)
+  \psframe(-0.5,-0.5)(0.5,0.5)
+}%
+\makeatother
+\begin{optexp}
+\testcomp[position=0.6, labelalign=l](0,1)(3,1){label}
+\drawbeam[beaminside=false](0,1){}(3,1)
+\end{optexp}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
+% \ifGERMAN Die Positionierung der Komponente und der Beschriftung,
+% sowie die Ebenen funktioniert also schon.
+% \fi
+% \ifENGLISH The positioning of the component and the label, and the
+% layering is working already.
+% \fi
+%
+% \ifENGLISH\subsection{Support for raytracing}\fi
+% \ifGERMAN\subsection{Unterstützung von Raytracing}\fi
+%
+% \ifGERMAN Damit die Komponente Raytracing unterstützt, müssen die
+% Grenzflächen mit ihren Eigenschaften definiert werden. Die Definition
+% der Ebenen werden in einenm Makro \Lcs*{\prm{name}@nodes} definiert,
+% damit sie auch in den unterschiedlichen Ebenen verfügbar sind.
+%
+% Die Definition der Ebenen erfolgt dann über das Makro \Lcs*{newOptexpComp}
+%
+% \begin{lstlisting}[gobble=2]
+% \def\testcomp@nodes{%
+%   \newOptexpComp{%
+%     % Definition der ersten Grenzflaeche (GF)
+%     {-0.5 0} % x- und y-Koordinate der GF-Mitte
+%     {0 1}    % Richtungsvektor der GF (x und y)
+%     -0.5 0.5 % Grenzen fuer die NA, gesehen als Faktoren des GF-Vektor
+%     trans    % Verhalten der GF, kann 'trans', 'refl' oder 'abs' sein
+%     {PlainIfc} % Art der GF
+%     % Dasselbe fuer die rechte GF, nur die Mitte ist anders
+%     {0.5 0} {0 1} -0.5 0.5 trans {PlainIfc}
+%     \POE@key@n % Brechungsindex, koennte jede Zahl sein
+%   }%
+% }%
+% \end{lstlisting}
+% \fi
+% \ifENGLISH To add support for ray-tracing, you must define the
+% interface with their properties. The definitions are nested in a macro
+% \Lcs*{\prm{name}@nodes} in order to be accessible in the different
+% layers.
+%
+% The definitions are done with the macro \Lcs*{newOptexpComp}
+%
+% \begin{lstlisting}[gobble=2]
+% \def\testcomp@nodes{%
+%   \newOptexpComp{%
+%     % definition of the first interface (IF)
+%     {-0.5 0} % x- and y-coordinate of the IF center
+%     {0 1}    % direction vector of the IF (x and y)
+%     -0.5 0.5 % limits use for the NA as factor for IF vector.
+%     trans    % behavior of the IF, can be 'trans', 'refl' or 'abs'
+%     {PlainIfc} % type of IF
+%     % the same for the right IF, only the center is different
+%     {0.5 0} {0 1} -0.5 0.5 trans {PlainIfc}
+%     \POE@key@n % refractive index, could be any number
+%   }%
+% }%
+% \end{lstlisting}
+% \fi
+%
+% \ifENGLISH So, in condensed form, our example component looks like
+% this, and the beam is not drawn inside the component any more:
+% \fi
+% \ifGERMAN Unsere Komponent sieht also folgendermaßen aus, und der
+% Strahl verläuft nicht mehr innerhalb der Komponente:
+% \fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[morekeywords={[21]{testcomp@comp, testcomp@nodes}}]
+\begin{pspicture}(3, 2)
+\newOptexpDipole{testcomp}
+\makeatletter
+\def\testcomp@comp{%
+  \psframe[fillstyle=solid, fillcolor=black!30](-0.5,-0.5)(-0.3,0.5)
+  \psframe(-0.5,-0.5)(0.5,0.5)}%
+\def\testcomp@nodes{%
+  \newOptexpComp{%
+    {-0.5 0} {0 1} -0.5 0.5 trans {PlainIfc}
+    {0.5 0} {0 1} -0.5 0.5 trans {PlainIfc} \POE@key@n }}%
+\makeatother
+\begin{optexp}
+\testcomp[position=0.6, labelalign=l](0,1)(3,1){label}
+\drawbeam[beaminside=false](0,1){}(3,1)
+\end{optexp}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
+% \ifENGLISH\subsection{Support for external nodes}\fi
+% \ifGERMAN\subsection{Unterstützung von externen Knoten}\fi
+%
+% \ifGERMAN Damit nun, als letzter Schritt auch externe Knoten mit \Lkeyword{extnode},
+% Positionierung an den Anfang oder das Ende mit
+% \Lkeyword{position}\opt{=start|end}, oder auch das Setzen eines
+% anderen Drehpunktes mit \Lkeyword{rotateref} möglich wird, müssen die
+% externen Dimensionen der Komponente bekannt gemacht werden. Dafür muss
+% ein weiteres Makro mit dem Name \Lcs*{\prm{name}@ref} definiert
+% werden, in dem auf Postscript-Ebene die Werte \opt{@@x} (halbe
+% Breite), \opt{@@y} (halbe Höhe), und optional auch \opt{@@x0} und
+% \opt{@@y0} (Verschiebung der Mitte) definiert werden müssen.
+% \fi
+% \ifENGLISH To enable, as last step, support for external nodes with
+% \Lkeyword{extnode}, positioning at the start or end with
+% \Lkeyword{position}\opt{=start|end}, and setting the rotation
+% reference node with \Lkeyword{rotateref}, we need to provide the
+% external dimensions of the component. For this we need to define a new
+% macro \Lcs*{\prm{name}@ref}, which defines at Postscript level the
+% values \opt{@@x} (half width), \opt{@@y} (half height), and optionally
+% \opt{@@x0} and \opt{@@y0} (offset of the center). 
+% \fi
+% \begin{lstlisting}[gobble=2]
+% \def\testcomp@ref{%
+%   \POE@setref{ /@@x 0.5 def /@@y 0.5 def }%
+% }%
+% \end{lstlisting}
+%
+% \ifGERMAN Der Code für unsere Beispielkomponente \Lcs*{testcomp} ist
+% damit vollständig, und sieht folgendermaßen aus:
+% \fi
+% \ifENGLISH This completes the code for our example component
+% \Lcs*{testcomp}, which now looks like this:
+% \fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[morekeywords={[21]{testcomp@comp, testcomp@nodes, testcomp@ref}}]
+\begin{pspicture}(3, 2)
+\newOptexpDipole{testcomp}
+\makeatletter
+\def\testcomp@comp{%
+  \psframe[fillstyle=solid, fillcolor=black!30](-0.5,-0.5)(-0.3,0.5)
+  \psframe(-0.5,-0.5)(0.5,0.5)}%
+\def\testcomp@nodes{%
+  \newOptexpComp{%
+    {-0.5 0} {0 1} -0.5 0.5 trans {PlainIfc}
+    {0.5 0} {0 1} -0.5 0.5 trans {PlainIfc} \POE@key@n }}%
+\def\testcomp@ref{%
+  \POE@setref{ /@@x 0.5 def /@@y 0.5 def }}%
+\makeatother
+\begin{optexp}
+\testcomp[position=0.6, labelalign=l, extnode=tl](0,1)(3,1){label}
+\drawbeam[beaminside=false](0,1){}(3,1)
+\psdot(\oenodeExt{})
+\end{optexp}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -11305,7 +11509,7 @@
 % \begin{changelog}
 %\patchcmd{\release}{\setlength{\itemsep}{0pt}}{\setlength{\itemsep}{0pt}\setlength{\parsep}{0pt}}{}{}
 %   \begin{release}{4.0}{2013-xx-xx}
-%   \item Added electrical components\see{sec:electrcomp}
+%   \item Added electrical components\see{chap:electrcomp}
 %   \item Added wire connections with \cs{drawwire}\see{sec:drawwire}
 %   \item Added component \cs{optarrowcomp}\see{cmd:optarrowcomp}
 %   \item Added component \cs{optbarcomp}\see{cmd:optbarcomp}
