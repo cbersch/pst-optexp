@@ -87,6 +87,7 @@
   keywordstyle = [22]\color{DOrange},
   stringstyle=\color{colString},
   commentstyle=\color{colComments},
+  alsoletter={12},
   float=hbp,
   basicstyle=\ttfamily\small,
   columns=flexible,
@@ -177,12 +178,17 @@
 \providerobustcmd*\ifrefundefined [1]{%
   \begingroup%
     \csname @safe@activestrue\endcsname%
-    \expandafter\endgroup\csname @\ifcsname r@#1\endcsname second\else first\fi oftwo\endcsname
+    \expandafter\endgroup\csname @\ifodd
+      \ifcsname r@comp:#1\endcsname 1\else
+        \ifcsname r@prm:#1\endcsname 1\else 
+          \ifcsname r@cs:#1\endcsname 1\else
+            \ifcsname r@sty:#1\endcsname 1\else 0
+      \fi\fi\fi\fi second\else first\fi oftwo\endcsname
 }% \ifrefundefined
 \def\lsthk@OutputBox@H@@k{%
     \begingroup%
       \let\lst@UM\@empty%
-      \edef\@tempc{cmd:\detokenize\expandafter{\the\lst@token }}%\edef
+      \edef\@tempc{\detokenize\expandafter{\the\lst@token }}%\edef
       \ifrefundefined{\@tempc}%
     \endgroup%
     \sethyperlistings%
@@ -194,11 +200,29 @@
     \setbox\@tempboxa\hbox%
     \bgroup%
       \rlap{\hypersetup {linkcolor=.}\relax\fboxrule\z@%
-      \hyperref[\hyperlistingsreference]{\boxframe{\wd\@tempboxa}{\ht\@tempboxa}{\dp\@tempboxa}}}%
+        \ifcsdef{r@prm:\hyperlistingsreference}%
+          {\hyperref[prm:\hyperlistingsreference]{\xLkeyword{\hyperlistingsreference}\boxframe{\wd\@tempboxa}{\ht\@tempboxa}{\dp\@tempboxa}}}%
+          {\ifcsdef{r@comp:\hyperlistingsreference}%
+            {\hyperref[comp:\hyperlistingsreference]{\xLcomp{\hyperlistingsreference}\boxframe{\wd\@tempboxa}{\ht\@tempboxa}{\dp\@tempboxa}}}%
+            {\ifcsdef{r@sty:\hyperlistingsreference}%
+              {\hyperref[sty:\hyperlistingsreference]{\xLstyle{\hyperlistingsreference}\boxframe{\wd\@tempboxa}{\ht\@tempboxa}{\dp\@tempboxa}}}%
+              {\hyperref[cs:\hyperlistingsreference]{\xLcs{\hyperlistingsreference}\boxframe{\wd\@tempboxa}{\ht\@tempboxa}{\dp\@tempboxa}}}}}}%
       \unhbox\@tempboxa%
     \egroup%
 }% \hyperlistings
 \let\lsthk@OutputBox\lsthk@OutputBox@H@@k
+
+\renewenvironment*{ltxsyntax}
+  {\list{}{%
+     \setlength{\labelwidth}{\marglistwidth}%
+     \setlength{\labelsep}{0pt}%
+     \setlength{\leftmargin}{0pt}%
+     \renewcommand*{\makelabel}[1]{%
+       \hss\ltxsyntaxfont\ltxsyntaxlabelfont##1}}%
+   \let\cmditem\POE@cmditem
+   \let\envitem\ltd@envitem
+   \let\compitem\POE@compitem}
+  {\endlist}
 
 \newenvironment*{stylelist}
   {\list{}{%
@@ -227,7 +251,7 @@
 }
 \def\POE@styleitem@i[#1]#2{%
   \item[{#2}]%
-  \label{prm:#2}%
+  \label{sty:#2}%
   \begingroup\raggedright
   \prm{psstyle}%
   \settowidth\@tempdimb{\prm{psstyle}}%
@@ -248,8 +272,9 @@
     {\boolfalse{@tempswa}\POE@optitem@i}
     {\booltrue{@tempswa}\POE@optitem@i}}
 \newcommand*{\POE@optitem@i}[3][]{%
-  \ifbool{@tempswa}{\label{prm:#2}}{}%
-  \xLkeyword{#2}%
+  \ifbool{@tempswa}%
+    {\label{prm:#2}\xdefLkeyword{#2}}%
+    {\xLkeyword{#2}}%
   \ifblank{#1}
     {\ltd@option{#2}{#2}{#3}{}}
     {\ltd@option{#2}{#2}{#3}{\ltd@textverb{#1}}}}%
@@ -259,8 +284,9 @@
     {\boolfalse{@tempswa}\POE@valitem@i}
     {\booltrue{@tempswa}\POE@valitem@i}}
 \newcommand*{\POE@valitem@i}[3][]{%
-  \ifbool{@tempswa}{\label{prm:#2}}{}%
-  \xLkeyword{#2}%
+  \ifbool{@tempswa}%
+    {\label{prm:#2}\xdefLkeyword{#2}}%
+    {\xLkeyword{#2}}%
   \ifblank{#1}
     {\ltd@option{#2}{#2}{\prm{#3}}{}}
     {\ltd@option{#2}{#2}{\prm{#3}}{\ltd@textverb{#1}}}}%
@@ -270,8 +296,9 @@
     {\boolfalse{@tempswa}\POE@choitem@i}
     {\booltrue{@tempswa}\POE@choitem@i}}
 \newcommand*{\POE@choitem@i}[3][]{%
-  \ifbool{@tempswa}{\label{prm:#2}}{}%
-  \xLkeyword{#2}%
+  \ifbool{@tempswa}%
+    {\label{prm:#2}\xdefLkeyword{#2}}%
+    {\xLkeyword{#2}}%
   \ifblank{#1}
     {\ltd@option{#2}{#2}{\ltd@verblist{#3}}{}}
     {\ltd@option{#2}{#2}{\ltd@verblist{#3}}{\ltd@textverb{#1}}}}%
@@ -281,8 +308,9 @@
     {\boolfalse{@tempswa}\POE@boolitem@i}
     {\booltrue{@tempswa}\POE@boolitem@i}}
 \newcommand*{\POE@boolitem@i}[2][]{%
-  \ifbool{@tempswa}{\label{prm:#2}}{}%
-  \xLkeyword{#2}%
+  \ifbool{@tempswa}%
+    {\label{prm:#2}\xdefLkeyword{#2}}%
+    {\xLkeyword{#2}}%
   \ifblank{#1}
     {\ltd@option{#2}{#2}{\ltd@verblist{true,false}}{}}
     {\ltd@option{#2}{#2}{\ltd@verblist{true,false}}{\ltd@textverb{#1}}}}%
@@ -292,8 +320,9 @@
     {\boolfalse{@tempswa}\POE@intitem@i}
     {\booltrue{@tempswa}\POE@intitem@i}}
 \newcommand*{\POE@intitem@i}[2][]{%
-  \ifbool{@tempswa}{\label{prm:#2}}{}%
-  \xLkeyword{#2}%
+  \ifbool{@tempswa}%
+    {\label{prm:#2}\xdefLkeyword{#2}}%
+    {\xLkeyword{#2}}%
   \ifblank{#1}
     {\ltd@option{#2}{#2}{\prm{int}}{}}
     {\ltd@option{#2}{#2}{\prm{int}}{\ltd@textverb{#1}}}}%
@@ -303,8 +332,9 @@
     {\boolfalse{@tempswa}\POE@numitem@i}
     {\booltrue{@tempswa}\POE@numitem@i}}
 \newcommand*{\POE@numitem@i}[2][]{%
-  \ifbool{@tempswa}{\label{prm:#2}}{}%
-  \xLkeyword{#2}%
+  \ifbool{@tempswa}%
+    {\label{prm:#2}\xdefLkeyword{#2}}%
+    {\xLkeyword{#2}}%
   \ifblank{#1}
     {\ltd@option{#2}{#2}{\prm{num}}{}}
     {\ltd@option{#2}{#2}{\prm{num}}{\ltd@textverb{#1}}}}%
@@ -314,13 +344,39 @@
     {\boolfalse{@tempswa}\POE@psnumitem@i}
     {\booltrue{@tempswa}\POE@psnumitem@i}}
 \newcommand*{\POE@psnumitem@i}[2][]{%
-  \ifbool{@tempswa}{\label{prm:#2}}{}%
-  \xLkeyword{#2}%
+  \ifbool{@tempswa}%
+    {\label{prm:#2}\xdefLkeyword{#2}}%
+    {\xLkeyword{#2}}%
   \ifblank{#1}
     {\ltd@option{#2}{#2}{\prm{psnum}}{}}
     {\ltd@option{#2}{#2}{\prm{psnum}}{\ltd@textverb{#1}}}}%
 
-\def\ltd@cmditem@ii#1#2{%
+\def\ltd@csitem{%
+  \@ifstar
+    {\boolfalse{@tempswa}\ltd@csitem@i}
+    {\booltrue{@tempswa}\ltd@csitem@i}}
+\def\ltd@csitem@i#1{%
+  \ifbool{@tempswa}
+    {\ltd@item@ii{\textbackslash#1\hspace\marglistsep}{#1}}
+    {\ltd@item@ii{\textbackslash#1\hspace\marglistsep}{}}}
+
+\def\POE@cmditem{%
+  \@ifstar
+    {\boolfalse{@tempswa}\POE@cmditem@i}
+    {\booltrue{@tempswa}\POE@cmditem@i}}
+\def\POE@cmditem@i#1{%
+  \ifbool{@tempswa}
+    {\POE@cmditem@ii{\textbackslash#1}{cs:#1}}
+    {\POE@cmditem@ii{\textbackslash#1}{}}}
+\def\POE@compitem{%
+  \@ifstar
+    {\boolfalse{@tempswa}\POE@compitem@i}
+    {\booltrue{@tempswa}\POE@compitem@i}}
+\def\POE@compitem@i#1{%
+  \ifbool{@tempswa}
+    {\POE@cmditem@ii{\textbackslash#1}{comp:#1}}
+    {\POE@cmditem@ii{\textbackslash#1}{}}}
+\def\POE@cmditem@ii#1#2{%
   \ltd@itemsave
   \ifhmode
     \itemsep-\topsep
@@ -329,7 +385,23 @@
   \fi
   \item[#1]%
   \ltd@itemrest
-  \ifblank{#2}{}{\label{cmd:#2}}%
+  \ifblank{#2}{}{\label{#2}}%
+  \begingroup
+  \ltd@syntaxsetup
+  \ltxsyntaxfont
+  \let\@tempa\@empty
+  \ltd@parseargs}
+
+\def\ltd@csitem@ii#1#2{%
+  \ltd@itemsave
+  \ifhmode
+    \itemsep-\topsep
+  \else
+    \ltd@itembreak
+  \fi
+  \item[#1]%
+  \ltd@itemrest
+  \ifblank{#2}{}{\label{cs:#2}}%
   \begingroup
   \ltd@syntaxsetup
   \ltxsyntaxfont
@@ -355,70 +427,84 @@
 \newcommand*{\PSvar}[1]{{\normalfont\small\ttfamily #1}}
 \newcommand*{\PSop}[1]{{\normalfont\small\ttfamily\color{DOrange}\hskip 3pt #1\hskip 3pt}}
 
+\newcommand*{\compref}[1]{\ref{comp:#1}}
+\newcommand*{\hyperpagedef}[1]{\textbf{\hyperpage{#1}}}
 \newcommand*{\nodename}[1]{\emph{#1}}
 \newcommand*{\param}[1]{\normalfont\texttt{#1}}
 \newcommand*{\paramvalue}[1]{\texttt{#1}}
 \newcommand*{\styleshape}[1]{\texttt{#1}}
 \newcommand{\docindex}[1]{\sindex[doc]{#1|hyperpage}}
+\newcommand{\docindexdef}[1]{\sindex[doc]{#1|hyperpagedef}}
 \makeatletter
 \def\Lcs{\@ifstar{\Lcs@nobm}{\Lcs@bm}}
 \def\Lcs@nobm#1{\nxLcs{#1}\xLcs{#1}}
-\def\Lcs@bm#1{\hyperref[cmd:#1]{\Lcs@nobm{#1}}}
+\def\Lcs@bm#1{\hyperref[cs:#1]{\Lcs@nobm{#1}}}
 \def\xLcs#1{\docindex{#1=\nxLcs{#1}}\docindex{\POEindexMacro!#1=\nxLcs{#1}}}
 \def\nxLcs#1{\texttt{\textbackslash#1}}
 
-\def\LPack#1{\texttt{#1}\docindex{#1=\texttt{#1}}\docindex{\POEindexPackage!#1=\texttt{#1}}}
+\def\Lcomp{\@ifstar{\Lcomp@nobm}{\Lcomp@bm}}
+\def\Lcomp@nobm#1{\nxLcomp{#1}\xLcomp{#1}}
+\def\Lcomp@bm#1{\hyperref[comp:#1]{\Lcomp@nobm{#1}}}
+\def\xLcomp#1{\docindex{#1=\nxLcomp{#1}}\docindex{\POEindexComp!#1=\nxLcomp{#1}}}
+\def\nxLcomp#1{\texttt{\textbackslash#1}}
+
+\def\LPack#1{\nxLPack{#1}\docindex{#1=\nxLPack{#1}}\docindex{\POEindexPack!#1=\nxLPack{#1}}}
 \def\nxLPack#1{\texttt{#1}}
 
 \def\Lenv{\@ifstar{\Lenv@nobm}{\Lenv@bm}}
 \def\Lenv@nobm#1{\nxLenv{#1}\xLenv{#1}}
 \def\Lenv@bm#1{\hyperref[env:#1]{\Lenv@nobm{#1}}}
-\def\xLenv#1{\docindex{#1=\texttt{#1}}\docindex{\POEindexEnv!#1=\texttt{#1}}}
+\def\xLenv#1{\docindex{#1=\nxLenv{#1}}\docindex{\POEindexEnv!#1=\nxLenv{#1}}}
 \def\nxLenv#1{\texttt{#1}}
 \let\orig@ltd@envitem\ltd@envitem
 \def\ltd@envitem#1{\orig@ltd@envitem{#1}\label{env:#1}\xLenv{#1}}
 
 \def\Lkeyword{\@ifstar{\Lkeyword@nobm}{\Lkeyword@bm}}
-\def\Lkeyword@nobm#1{\texttt{#1}\xLkeyword{#1}}
+\def\Lkeyword@nobm#1{\nxLkeyword{#1}\xLkeyword{#1}}
 \def\Lkeyword@bm#1{\hyperref[prm:#1]{\Lkeyword@nobm{#1}}}
-\def\xLkeyword#1{\docindex{#1=\texttt{#1}}\docindex{\POEindexKeyword!#1=\texttt{#1}}}
+\def\xLkeyword#1{\docindex{#1=\nxLkeyword{#1}}\docindex{\POEindexKeyword!#1=\nxLkeyword{#1}}}
+\def\xdefLkeyword#1{\docindexdef{#1=\nxLkeyword{#1}}\docindexdef{\POEindexKeyword!#1=\nxLkeyword{#1}}}
 \def\nxLkeyword#1{\texttt{#1}}
 
-\def\xLoption#1{\docindex{#1=\texttt{#1}}\docindex{\POEindexOption!#1=\texttt{#1}}}
+\def\xLoption#1{\docindex{#1=\texttt{#1}}}
 \def\Loption#1{\texttt{#1}\xLoption{#1}}
 \def\nxLoption#1{\texttt{#1}}
 
 \def\Lstyle{\@ifstar{\Lstyle@nobm}{\Lstyle@bm}}
-\def\Lstyle@nobm#1{\texttt{#1}\xLstyle{#1}}
-\def\Lstyle@bm#1{\hyperref[prm:#1]{\Lstyle@nobm{#1}}}
-\def\xLstyle#1{\docindex{#1=\texttt{#1}}\docindex{\POEindexStyle!#1=\texttt{#1}}}
+\def\Lstyle@nobm#1{\nxLstyle{#1}\xLstyle{#1}}
+\def\Lstyle@bm#1{\hyperref[sty:#1]{\Lstyle@nobm{#1}}}
+\def\xLstyle#1{\docindex{#1=\nxLstyle{#1}}\docindex{\POEindexStyle!#1=\nxLstyle{#1}}}
+\def\xdefLstyle#1{\docindexdef{#1=\nxLstyle{#1}}\docindexdef{\POEindexStyle!#1=\nxLstyle{#1}}}
 \def\nxLstyle#1{\texttt{#1}}
 
 \def\Ldipole#1{\nxLcs{#1}\xLdipole{#1}}
-\def\xLdipole#1{\docindex{#1=\nxLcs{#1}}\docindex{\POEindexDipoles!#1=\nxLcs{#1}}}
+\def\xLdipole#1{\docindexdef{#1=\nxLcs{#1}}\docindexdef{\POEindexComp!#1=\nxLcs{#1}}}
 
 \def\Ltripole#1{\nxLcs{#1}\xLtripole{#1}}
-\def\xLtripole#1{\docindex{#1=\nxLcs{#1}}\docindex{\POEindexTripoles!#1=\nxLcs{#1}}}
+\def\xLtripole#1{\docindexdef{#1=\nxLcs{#1}}\docindexdef{\POEindexComp!#1=\nxLcs{#1}}}
 
 \def\Lfdipole#1{\nxLcs{#1}\xLfdipole{#1}}
-\def\xLfdipole#1{\docindex{#1=\nxLcs{#1}}\docindex{\POEindexFiberDipoles!#1=\nxLcs{#1}}}
+\def\xLfdipole#1{\docindexdef{#1=\nxLcs{#1}}\docindexdef{\POEindexComp!#1=\nxLcs{#1}}}
 
 \def\Lfmultipole#1{\nxLcs{#1}\xLfmultipole{#1}}
-\def\xLfmultipole#1{\docindex{#1=\nxLcs{#1}}\docindex{\POEindexFiberMultipoles!#1=\nxLcs{#1}}}
+\def\xLfmultipole#1{\docindexdef{#1=\nxLcs{#1}}\docindexdef{\POEindexComp!#1=\nxLcs{#1}}}
+
+\def\Lemultipole#1{\nxLcs{#1}\xLemultipole{#1}}
+\def\xLemultipole#1{\docindexdef{#1=\nxLcs{#1}}\docindexdef{\POEindexComp!#1=\nxLcs{#1}}}
 \makeatother
 
 \newcommand{\dipoledesc}[1]{%
   \xLdipole{#1}%
-  \cmditem{#1}[options](in)(out){label}%
+  \compitem{#1}[options](in)(out){label}%
 }
 \newcommand{\tripoledesc}[1]{%
   \xLtripole{#1}%
-  \cmditem{#1}[options](in)(center)(out){label}%
+  \compitem{#1}[options](in)(center)(out){label}%
 }
 
 \newcommand{\fiberdipoledesc}[1]{%
   \xLfdipole{#1}%
-  \cmditem{#1}[options](in)(out){label}%
+  \compitem{#1}[options](in)(out){label}%
 }
 
 \newenvironment*{pssyntax}
@@ -503,16 +589,12 @@
 %   \newrefformat{fig}{Abb.~\ref{#1}}
 %   \newindex[Quelltextindex]{idx}
 %   \newindex[Dokumentationsindex]{doc}
-%   \newcommand{\POEindexPackage}{Paket}
-%   \newcommand{\POEindexMacro}{Makro}
-%   \newcommand{\POEindexKeyword}{Schlüsselwort}
-%   \newcommand{\POEindexEnv}{Umgebung}
-%   \newcommand{\POEindexOption}{Option}
-%   \newcommand{\POEindexStyle}{Stil}
-%   \newcommand{\POEindexDipoles}{Zweipol}
-%   \newcommand{\POEindexTripoles}{Dreipol}
-%   \newcommand{\POEindexFiberDipoles}{Faserzweipol}
-%   \newcommand{\POEindexFiberMultipoles}{Fasermultipol}
+%   \newcommand{\POEindexComp}{Komponenten}
+%   \newcommand{\POEindexStyle}{Stile}
+%   \newcommand{\POEindexMacro}{Makros}
+%   \newcommand{\POEindexKeyword}{Parameter}
+%   \newcommand{\POEindexEnv}{Umgebungen}
+%   \newcommand{\POEindexPack}{Pakete}
 %   \renewcommand*\lstlistingname{Bsp.}
 % \fi
 % \ifENGLISH
@@ -524,16 +606,12 @@
 %   \newrefformat{fig}{Fig.~\ref{#1}}
 %   \newindex[Code index]{idx}
 %   \newindex[Documentation index]{doc}
-%   \newcommand{\POEindexPackage}{Package}
-%   \newcommand{\POEindexMacro}{Macro}
-%   \newcommand{\POEindexKeyword}{Keyword}
-%   \newcommand{\POEindexEnv}{Environment}
-%   \newcommand{\POEindexOption}{Option} 
-%   \newcommand{\POEindexStyle}{Style}
-%   \newcommand{\POEindexDipoles}{Dipoles}
-%   \newcommand{\POEindexTripoles}{Tripoles}
-%   \newcommand{\POEindexFiberDipoles}{Fiber dipoles}
-%   \newcommand{\POEindexFiberMultipoles}{Fiber multipoles}
+%   \newcommand{\POEindexComp}{components}
+%   \newcommand{\POEindexStyle}{styles}
+%   \newcommand{\POEindexMacro}{macros}
+%   \newcommand{\POEindexKeyword}{parameters}
+%   \newcommand{\POEindexEnv}{environments}
+%   \newcommand{\POEindexPack}{packages}
 %   \renewcommand*\lstlistingname{Ex.}
 % \fi
 %
@@ -1199,7 +1277,7 @@
 % verteilt und mit einem Strahl verbunden.
 %
 % Zuerst werden Anfangsknoten \prm{A} und Endknoten \prm{B} definiert. Die erste
-% \Lcs{optbox} wird an den Anfang platziert, die Wellenplatte und der
+% \Lcomp{optbox} wird an den Anfang platziert, die Wellenplatte und der
 % Polarisator werden innerhalb der Verbindungslinie positioniert. Der Parameter
 % \Lkeyword{position} erwartet Werte zwischen \opt{0} und \opt{1}, die relativ
 % zur Länge der Verbindungslinie sind, oder \opt{start}/\opt{end}. Der Detektor
@@ -1212,7 +1290,7 @@
 % connected with a beam.
 %
 % First we define the start node \prm{A} and the stop node \prm{B}. The first
-% \Lcs{optbox} is positioned at the start, the wave plate and the polarizer are
+% \Lcomp{optbox} is positioned at the start, the wave plate and the polarizer are
 % positioned between the nodes. The parameter \Lkeyword{position} expects a
 % value between \opt{0} and \opt{1} which is relative to the length of the
 % reference line, or \opt{start}/\opt{end}. The detector is always positioned at
@@ -1323,14 +1401,14 @@
 %
 % \ifGERMAN
 % Die Lichtstrahlen sollen auf einer CCD-Kamera enden, die mit einer
-% \Lcs{optbox} gezeichnet wird. Mit \Lkeyword{position}\opt{=end} wird die Box
+% \Lcomp{optbox} gezeichnet wird. Mit \Lkeyword{position}\opt{=end} wird die Box
 % ans Ende der Referenzlinie von \prm{A} nach \prm{B} gesetzt, die
 % Beschriftung wird mit \Lkeyword{labeloffset} in die Mitte der Komponente
 % gelegt.
 % \fi
 % \ifENGLISH
 % The beam rays are supposed to end at the CCD camera which is drawn as a
-% \Lcs{optbox}. With \Lkeyword{position}\opt{=end} the box is positioned at
+% \Lcomp{optbox}. With \Lkeyword{position}\opt{=end} the box is positioned at
 % the end of the reference line from \prm{A} to \prm{B}. The label is put at
 % the center of the component with \Lkeyword{labeloffset}.
 % \fi
@@ -1441,10 +1519,10 @@
 % Der Laser wird wieder an den Anfang gesetzt. Der Abstand
 % der Beschriftung wird mit dem Parameter \Lkeyword{label} eingestellt,
 % mit dem alle Beschriftungsparameter gesammelt eingestellt werden
-% können. Da eine \Lcs{optbox} sowohl als Freistrahl- als auch als
+% können. Da eine \Lcomp{optbox} sowohl als Freistrahl- als auch als
 % Faserkomponente verwendet werden kann, wird in der Standardeinstellung
 % keine Faser gezeichnet, was mit \Lkeyword{fiber} geändert werden
-% kann. Die Breite dieser und aller folgenden \Lcs{optbox} wird auf
+% kann. Die Breite dieser und aller folgenden \Lcomp{optbox} wird auf
 % \opt{0.7} geändert.
 % \fi
 % \ifENGLISH
@@ -1457,9 +1535,9 @@
 %
 % The laser is set at the start. The label offset is set with the
 % \Lkeyword{label} parameter, which would allow setting all label parameters at
-% once. A \Lcs{optbox} is originally a free-ray component, so that for it the
+% once. A \Lcomp{optbox} is originally a free-ray component, so that for it the
 % fiber connection must be enabled with \Lkeyword{fiber}. The width of all
-% \Lcs{optbox} is changed to \opt{0.7}.
+% \Lcomp{optbox} is changed to \opt{0.7}.
 % \fi
 % \iffalse
 %<*ignore>
@@ -1533,7 +1611,7 @@
 % 
 % \ifGERMAN 
 % An die Enden des Kopplers wird ein optischer Spektrumanalysator (OSA)
-% und eine Leistungsmessgerät (PD) gesetzt. Der \Lcs{optdetector} wird
+% und eine Leistungsmessgerät (PD) gesetzt. Der \Lcomp{optdetector} wird
 % nach Voreinstellung ans Ende der Referenzlinie gesetzt
 % (\Lkeyword{position}\opt{=end}). Diese beiden Komponenten werden ohne
 % weitere Einstellungen ohne Faserverbindungen gezeichnet. Das passt, da
@@ -1545,7 +1623,7 @@
 % \fi
 % \ifENGLISH
 % At the ends of the coupler we put an optical spectrum analyzer (OSA)
-% and a power meter (PD). The \Lcs{optdetector} is set by default at the
+% and a power meter (PD). The \Lcomp{optdetector} is set by default at the
 % end of the reference line, it has \Lkeyword{position} preset to
 % \opt{end}. These two components are drawn without fibers, because
 % their end nodes coincide with the two outputs of the coupler.
@@ -2251,11 +2329,11 @@
 % \choitem{innercompalign}{rel, relative, abs, absolute}
 % \ifGERMAN Ist dieser Parameter auf \opt{absolute} gesetzt, so wird das
 % «Innere» einer Komponente nicht mitgedreht. Diese Option wird derzeit
-% von \Lcs{optfilter}, \Lcs{elecsynthesizer} und \Lcs{optdipole} verwendet.
+% von \Lcomp{optfilter}, \Lcomp{elecsynthesizer} und \Lcomp{optdipole} verwendet.
 % \fi
 % \ifENGLISH If this parameter is set to \opt{absolute}, the «inner»
 % component part is not rotated with the component. At the moment, this
-% option is used by \Lcs{optfilter}, \Lcs{elecsynthesizer}, and \Lcs{optdipole}.
+% option is used by \Lcomp{optfilter}, \Lcomp{elecsynthesizer}, and \Lcomp{optdipole}.
 % \fi
 % \iffalse
 %<*ignore>
@@ -2383,12 +2461,12 @@
 %
 % \styleitem[linestyle=dashed,dash=1.5pt 1pt]{OptionalStyle} 
 % \ifGERMAN
-% Der Stil wird zusätzlich zu \Lkeyword{OptComp} auf Komponenten angewendet,
+% Der Stil wird zusätzlich zu \Lstyle{OptComp} auf Komponenten angewendet,
 % die als \Lkeyword{optional} markiert sind.
 % \fi
 % \ifENGLISH
 % This style is applied to components marked as \Lkeyword{optional} in addition
-% to \Lkeyword{OptComp}.
+% to \Lstyle{OptComp}.
 % \fi
 % \iffalse
 %<*ignore>
@@ -2440,11 +2518,11 @@
 % \fi
 %
 % \styleitem[linewidth=0.8\cs{pslinewidth}, arrowinset=0, arrowscale=0.8, arrows=<->]{VariableStyle} 
-% \ifGERMAN Der Stil der Pfeile für verstellbare Komponenten (\Lcs{mirror} und
-% \Lcs{optgrating}).
+% \ifGERMAN Der Stil der Pfeile für verstellbare Komponenten (\Lcomp{mirror} und
+% \Lcomp{optgrating}).
 % \fi
-% \ifENGLISH The style of the arrows of variable components (\Lcs{mirror} and
-% \Lcs{optgrating}).
+% \ifENGLISH The style of the arrows of variable components (\Lcomp{mirror} and
+% \Lcomp{optgrating}).
 % \fi
 % \end{stylelist}
 %
@@ -2503,17 +2581,17 @@
 % Faserkomponenten, transmittive und reflektive Grenzflächen haben, die für
 % Raytracing von Lichtstrahlen verwendet werden können. Es gibt zwei
 % unterschiedliche Komponententypen: manche benötigen nur zwei Knoten um
-% positioniert zu werden (\ref{cmd:lens}--\ref{cmd:polarization}), wohingegen
+% positioniert zu werden (\compref{lens}--\compref{polarization}), wohingegen
 % z.B. Spiegel drei Knoten benötigen um korrekt ausgerichtet zu werden
-% (\ref{cmd:mirror}--\ref{cmd:pentaprism}).
+% (\compref{mirror}--\compref{pentaprism}).
 % \fi
 % \ifENGLISH This chapter describes all free-ray components and their
 % options. Free-ray components differ from fiber components in that they provide
 % transmittive or reflective interfaces which can be used to raytrace
 % beams. They are divided in two types: some components like lenses need only
-% two nodes for positioning (\ref{cmd:lens}--\ref{cmd:polarization}), whereas
+% two nodes for positioning (\compref{lens}--\compref{polarization}), whereas
 % e.g. mirrors require three nodes to determine the orientation
-% (\ref{cmd:mirror}--\ref{cmd:pentaprism}).
+% (\compref{mirror}--\compref{pentaprism}).
 % \fi
 %
 % \ifGERMAN\section{Linse}\fi
@@ -2682,7 +2760,8 @@
 % 
 % \ifGERMAN\section{Optisches Plättchen}\fi
 % \ifENGLISH\section{Optical plate}\fi
-% 
+%
+%
 % \begin{ltxsyntax}
 % \dipoledesc{optplate}
 % \iffalse
@@ -2852,11 +2931,11 @@
 % \iffalse
 %</ignore>
 % \fi
-% \ifENGLISH A general purpose component, similar to \Lcs{fiberdelayline},
+% \ifENGLISH A general purpose component, similar to \Lcomp{fiberdelayline},
 % but much more flexible.
 % \fi
 % \ifGERMAN Eine Komponente für den allgemeinen, flexiblen Gebrauch
-% ähnlich zu \Lcs{fiberdelayline}, aber deutlich variabler.
+% ähnlich zu \Lcomp{fiberdelayline}, aber deutlich variabler.
 % \fi
 % \end{ltxsyntax}
 % 
@@ -2934,11 +3013,11 @@
 % \iffalse
 %</ignore>
 % \fi
-% \ifENGLISH A general purpose component, similar to \Lcs{optfiberpolarizer},
+% \ifENGLISH A general purpose component, similar to \Lcomp{optfiberpolarizer},
 % but much more flexible.
 % \fi
 % \ifGERMAN Eine Komponente für den allgemeinen, flexiblen Gebrauch
-% ähnlich zu \Lcs{optfiberpolarizer}, aber deutlich variabler.
+% ähnlich zu \Lcomp{optfiberpolarizer}, aber deutlich variabler.
 % \fi
 % \end{ltxsyntax}
 % 
@@ -3147,104 +3226,6 @@
 %</ignore>
 % \fi
 % 
-% \ifGERMAN\section{Detektor}\fi
-% \ifENGLISH\section{Detector}\fi
-% 
-% \begin{ltxsyntax}
-% \dipoledesc{optdetector}
-% \iffalse
-%<*ignore>
-% \fi
-\begin{LTXexample}
-\begin{pspicture}(3,1.2)
-  \optdetector[beam](0,0)(1.5,1){detector}
-\end{pspicture}
-\end{LTXexample}
-% \iffalse
-%</ignore>
-% \fi
-% \end{ltxsyntax}
-%
-% \ifENGLISH The detector is placed by default at the end of the
-% reference line (\Lkeyword{position}\opt{=end}). If this setting is
-% overwritten, the output connection is treated like that of an
-% electrical component.
-% \fi
-% \ifGERMAN Der Detektor wird in der Voreinstellung ans Ende der
-% Referenzlinie platziert (\Lkeyword{position}\opt{=end}). Wird dieser
-% Parameter überschrieben, dann wird die ausgehende Verbindung wie bei
-% einer elektrischen Komponente behandelt.
-% \fi
-% \iffalse
-%<*ignore>
-% \fi
-\begin{LTXexample}
-\begin{pspicture}(3,1.2)
-  \optdetector[position=0.5](0,0)(1.5,1){detector}
-\end{pspicture}
-\end{LTXexample}
-% \iffalse
-%</ignore>
-% \fi
-% 
-% \begin{optionlist}
-% \optitem[0.8]{detsize}{\prm{num} or \prm{width} \prm{height}}
-% \ifGERMAN 
-% Wenn eine einzelne Zahl angegeben ist, dann ist das die Seitenlänge
-% (\opt{diode}) bzw. der Durchmesser (\opt{round}) des Detektors. Werden zwei
-% Zahlen angegeben, so sind das Breite und Höhe des Detektors. Beachten Sie,
-% dass \opt{detsize=1} und \opt{detsize=1 1} für \opt{dettype=round} nicht dasselbe ist.
-% \fi
-% \ifENGLISH 
-% If a single number is given it is the side length (\opt{diode}) or the
-% diameter (\opt{round}) of the detector. Two numbers define the width and
-% height of the detector. Note, that \opt{detsize=1} and \opt{detsize=1 1} are
-% not equivalent for \opt{dettype=round}.
-% \fi
-% 
-% \choitem[round]{dettype}{round, diode} 
-% \ifGERMAN
-% Dieser Parameter bestimmt den Typ und damit das Aussehen des Detektors.
-% \fi
-% \ifENGLISH
-% This parameter selects between different types of detectors.
-% \fi
-% \iffalse
-%<*ignore>
-% \fi
-\begin{LTXexample}[morekeywords={[21]{dettype}}] 
-\begin{pspicture}(3,1.5)
-  \optdetector[beam, dettype=diode](0,0)(1.5,1){detector}
-\end{pspicture}
-\end{LTXexample}
-% \iffalse
-%</ignore>
-% \fi
-% \end{optionlist}
-%
-% \begin{stylelist}
-% \styleitem{DetectorStyle} 
-% \ifGERMAN 
-% Der Stil der Diode für \Lkeyword{dettype}\opt{=diode}.
-% \fi
-% \ifENGLISH 
-% The style of the diode for \Lkeyword{dettype}\opt{=diode}.
-% \fi
-% \iffalse
-%<*ignore>
-% \fi
-\begin{LTXexample}
-\begin{pspicture}(3,1.5)
-  \newpsstyle{OptComp}{linewidth=2\pslinewidth}
-  \newpsstyle{DetectorStyle}{linewidth=0.5\pslinewidth}
-  \optdetector[dettype=diode](0,1)(2,1)
-\end{pspicture}
-\end{LTXexample}
-% \iffalse
-%</ignore>
-% \fi
-% \end{stylelist}
-% 
 % \ifGERMAN\section{Optische Diode}\fi
 % \ifENGLISH\section{Optical diode}\fi
 %
@@ -3332,7 +3313,7 @@
 % 
 % \ifGERMAN\section{Glan--Thompson prism}\fi
 % \ifENGLISH\section{Glan-Thompson-Prisma}\fi
-% 
+%
 % \begin{ltxsyntax}
 % \dipoledesc{glanthompson}
 % \iffalse
@@ -3802,13 +3783,13 @@
 % \ifGERMAN
 % Wählt zwischen zwei Strahlteilertypen: einem Strahlteilerwürfel (\opt{cube})
 % und einem halbdurchlässigen Spiegel (\opt{plate}). Dieser halbdurchlässige
-% Spiegel ist äquivalent zu \Lcs{mirror} mit
+% Spiegel ist äquivalent zu \Lcomp{mirror} mit
 % \Lkeyword{mirrortype}\opt{=semitrans} für \Lkeyword{mirrordepth}\opt{=0}.
 % \fi
 % \ifENGLISH
 % Selects between two types of beamsplitters: the beamsplitter cube (\opt{cube})
 % and the semitransparent mirror (\opt{plate}).  This semitransparent mirror ist
-% equivalent to \Lcs{mirror} with \Lkeyword{mirrortype}\opt{=semitrans} and
+% equivalent to \Lcomp{mirror} with \Lkeyword{mirrortype}\opt{=semitrans} and
 % \Lkeyword{mirrordepth}\opt{=0}.
 % \fi
 % \iffalse
@@ -3843,10 +3824,10 @@
 % \end{ltxsyntax}
 %
 % \ifENGLISH Before package version 3.0 this component was called
-% \Lcs*{optgrid}. Since then this command name is deprecated and will be removed
+% \Lcomp*{optgrid}. Since then this command name is deprecated and will be removed
 % in future versions.
 % \fi
-% \ifGERMAN Vor Paketversion 3.0 hieß diese Komponente \Lcs*{optgrid}. Seitdem
+% \ifGERMAN Vor Paketversion 3.0 hieß diese Komponente \Lcomp*{optgrid}. Seitdem
 % ist diese Benennung veraltet und wird in zukünftigen Versionen entfernt
 % werden.
 % \fi
@@ -4188,21 +4169,21 @@
 %
 % Die meisten Komponenten benötigen nur zwei Referenzknoten und werden
 % wie die Freistrahlzweipole behandelt. Manche spezielle Komponenten wie
-% Koppler (\ref{sec:coupler}) und Zirkulatoren (\ref{cmd:optcirculator})
+% Koppler (\ref{sec:coupler}) und Zirkulatoren (\compref{optcirculator})
 % werden anders ausgerichtet.
 % \fi
 %
 % \begin{optionlist}
 %   \boolitem{usefiberstyle} 
 %   \ifGERMAN
-%   Bei manchen Komponenten (z.B. \Lcs{optfilter} oder \Lcs{optmzm}) kann es
+%   Bei manchen Komponenten (z.B. \Lcomp{optfilter} oder \Lcomp{optmzm}) kann es
 %   vorteilhaft sein interne Faserteile hervorzuheben. Mit diesem Parameter
 %   werden z.B. die durchlässigen Teile eines Filter angezeigt und mit dem
 %   \Lstyle{Fiber}-Stil gezeichnet. In der Dokumentation ist dieses Verhalten
 %   angeschaltet um die betroffenen Bereiche hervorzuheben.
 %   \fi
 %   \ifENGLISH
-%   For some components (e.g. \Lcs{optfilter} or \Lcs{optmzm}) it can be nice
+%   For some components (e.g. \Lcomp{optfilter} or \Lcomp{optmzm}) it can be nice
 %   to highlight some internals. For example, if this option is enabled the
 %   passing parts of the optical filter are drawn with the \Lstyle{Fiber}
 %   style. In the documentation this parameter is enabled to show the parts
@@ -4552,10 +4533,11 @@
 %
 % \ifGERMAN\section{Optischer Zirkulator}\fi
 % \ifENGLISH\section{Optical circulator}\fi
+%
 % \label{sec:optcirculator}
 % \begin{ltxsyntax}
 % \xLfmultipole{optcirculator}%
-% \cmditem{optcirculator}(left)(right)(bottom){label}%
+% \compitem{optcirculator}(left)(right)(bottom){label}%
 % \iffalse
 %<*ignore>
 % \fi
@@ -4680,7 +4662,7 @@
 % \fi
 % \begin{ltxsyntax}
 % \xLfmultipole{optcoupler}%
-% \cmditem{optcoupler}(tl)(bl)(tr)(br){label}
+% \compitem{optcoupler}(tl)(bl)(tr)(br){label}
 % \iffalse
 %<*ignore>
 % \fi
@@ -4694,7 +4676,7 @@
 % \fi
 %
 % \xLfmultipole{wdmcoupler}%
-% \cmditem{wdmcoupler}(tl)(bl)(r){label}
+% \compitem{wdmcoupler}(tl)(bl)(r){label}
 % \iffalse
 %<*ignore>
 % \fi
@@ -4708,7 +4690,7 @@
 % \fi
 %
 % \xLfmultipole{wdmsplitter}%
-% \cmditem{wdmsplitter}(l)(tr)(br){label}
+% \compitem{wdmsplitter}(l)(tr)(br){label}
 % \iffalse
 %<*ignore>
 % \fi
@@ -4829,16 +4811,16 @@
 %
 % \ifGERMAN
 % Jeder Koppler hat eine Variante, die nur zwei Knoten benötigt, einen Eingangs-
-% und einen Ausgangsknoten. \Lcs{optcoupler} verwendet jeden dieser Knoten
-% zweimal, \Lcs{wdmsplitter} verwendet den Knoten \prm{out} zweimal und
-% \Lcs{wdmcoupler} verwendet \prm{in} zweimal. Das kann sehr praktisch sein,
+% und einen Ausgangsknoten. \Lcomp{optcoupler} verwendet jeden dieser Knoten
+% zweimal, \Lcomp{wdmsplitter} verwendet den Knoten \prm{out} zweimal und
+% \Lcomp{wdmcoupler} verwendet \prm{in} zweimal. Das kann sehr praktisch sein,
 % wenn man für einen Koppler die automatischen Verbindungen nicht verwendet,
 % sondern die Komponente manuell verbindet.
 % \fi
 % \ifENGLISH 
 % Every coupler has a variant which needs only two nodes, one input and one
-% output node. For \Lcs{optcoupler}, both nodes are used twice,
-% \Lcs{wdmsplitter} uses node \prm{out} twice, and \Lcs{wdmcoupler} uses node
+% output node. For \Lcomp{optcoupler}, both nodes are used twice,
+% \Lcomp{wdmsplitter} uses node \prm{out} twice, and \Lcomp{wdmcoupler} uses node
 % \prm{in} twice. This can be very useful if you do not use the automatic
 % connections but connect the components manually.
 % \fi
@@ -4890,9 +4872,9 @@
 % \psdot(\oenodeIfc{2}{})\uput[-90](\oenodeIfc{2}{}){2}
 % \psdot(\oenodeIfc{3}{})\uput[90](\oenodeIfc{3}{}){3}
 % \psdot(\oenodeIfc{N}{})\uput[-90](\oenodeIfc{N}{}){N}
-% \rput[b](1.5,0){\nxLcs{wdmsplitter}}
-% \rput[b](5.5,0){\nxLcs{wdmcoupler}}
-% \rput[b](9.5,0){\nxLcs{optcoupler}}
+% \rput[b](1.5,0){\nxLcomp{wdmsplitter}}
+% \rput[b](5.5,0){\nxLcomp{wdmcoupler}}
+% \rput[b](9.5,0){\nxLcomp{optcoupler}}
 % \end{pspicture}
 % \end{center}
 %
@@ -4933,12 +4915,12 @@
 %
 % \begin{ltxsyntax}
 % \xLfmultipole{fiberbox}%
-% \cmditem{fiberbox}(in)(out){label}
-% \cmditem*{fiberbox}(tl)(bl)(tr)(br){label}
+% \compitem{fiberbox}(in)(out){label}
+% \compitem*{fiberbox}(tl)(bl)(tr)(br){label}
 % \end{ltxsyntax}
 % 
 % \ifGERMAN 
-% Eine \Lcs{fiberbox} kann entweder mit zwei, oder mit vier Knoten
+% Eine \Lcomp{fiberbox} kann entweder mit zwei, oder mit vier Knoten
 % positioniert werden. Die Wahl beeinflusst die Position der Komponente
 % und der Komponentenknoten und die automatischen Faserverbindungen.
 %
@@ -4950,7 +4932,7 @@
 % (siehe \Lkeyword{fiberboxcount} und das folgende Beispiel).
 % \fi
 % \ifENGLISH 
-% A \Lcs{fiberbox} can be positioned either with two, or four nodes which
+% A \Lcomp{fiberbox} can be positioned either with two, or four nodes which
 % affects the positioning of the component and the interface nodes, and the
 % automatic fiber connections.
 % 
@@ -5069,11 +5051,11 @@
 %   \ifENGLISH Number of input (\prm{N}) and output nodes (\prm{M}).\fi
 % \end{optionlist}
 %
-% \ifGERMAN Für bestimmte Parameterkombinationen ist eine \Lcs{fiberbox}
-% äquivalent zu einer \Lcs{optbox}.
+% \ifGERMAN Für bestimmte Parameterkombinationen ist eine \Lcomp{fiberbox}
+% äquivalent zu einer \Lcomp{optbox}.
 % \fi
-% \ifENGLISH For certain parameter configurations a \Lcs{fiberbox} is
-% equivalent to an \Lcs{optbox}.
+% \ifENGLISH For certain parameter configurations a \Lcomp{fiberbox} is
+% equivalent to an \Lcomp{optbox}.
 % \fi
 % \iffalse
 %<*ignore>
@@ -5097,9 +5079,10 @@
 %
 % \ifGERMAN\section{Koppler}\fi
 % \ifENGLISH\section{Coupler}\fi
+%
 % \begin{ltxsyntax}
-% \xLfmultipole{eleccoupler}%
-% \cmditem{eleccoupler}(tl)(bl)(tr)(br){label}
+% \xLemultipole{eleccoupler}%
+% \compitem{eleccoupler}(tl)(bl)(tr)(br){label}
 % \iffalse
 %<*ignore>
 % \fi
@@ -5156,9 +5139,10 @@
 %
 % \ifGERMAN\section{Synthesizer}\fi
 % \ifENGLISH\section{Synthesizer}\fi
+%
 % \begin{ltxsyntax}
-% \xLfmultipole{elecsynthesizer}%
-% \cmditem{elecsynthesizer}(in)(out){label}
+% \xLemultipole{elecsynthesizer}%
+% \compitem{elecsynthesizer}(in)(out){label}
 % \iffalse
 %<*ignore>
 % \fi
@@ -5237,8 +5221,8 @@
 % \ifENGLISH\section{Mixer}\fi
 %
 % \begin{ltxsyntax}
-% \xLfmultipole{elecmixer}%
-% \cmditem{elecmixer}(left)(right)(bottom){label}%
+% \xLemultipole{elecmixer}%
+% \compitem{elecmixer}(left)(right)(bottom){label}%
 % \iffalse
 %<*ignore>
 % \fi
@@ -5267,25 +5251,29 @@
 % \ifENGLISH This chapter describes the components which can be used both for
 % free-ray and fiber optics but which differ from these two categories.
 %
-% The optical filter (\Lcs{optfilter}) is connected by default with automatic
-% fiber connections, but can likewise be used with free-ray beams, in contrast
-% to the fiber components (\prettyref{chap:fibercomp}). The fiber collimator
-% (\Lcs{fibercollimator}) has one interface only, the other connection is a
-% fiber.
+% The \Lcomp{optfilter} is connected by default with automatic fiber
+% connections, but can likewise be used with free-ray beams, in contrast
+% to the fiber components (\prettyref{chap:fibercomp}). The
+% \Lcomp{fibercollimator} has one interface only, the other connection is
+% a fiber and the \Lcomp{optdetector} has one interface, the other
+% connection is a wire.
 % \fi
 % \ifGERMAN Dieses Kapitel beschreibt die Komponenten, die sowohl für
 % Freistrahl- als auch Faseroptik zu verwenden sind, sich von diesen aber etwas
 % abgrenzen.
 %
-% Der optische Filter (\Lcs{optfilter}) wird mit den Voreinstellungen aber als
+% Der \Lcomp{optfilter} wird mit den Voreinstellungen zwar als
 % Faserkomponente gehandhabt, kann jedoch im Gegensatz zu den reinen
-% Faserkomponenten (\prettyref{chap:fibercomp}) auch als Freistrahlkomponente
-% verwendet werden. Der Faserkollimator (\Lcs{fibercollimator}) hat nur eine
-% Faser, die andere Verbindung ist Freistrahl.
+% Faserkomponenten (\prettyref{chap:fibercomp}) auch als
+% Freistrahlkomponente verwendet werden. Der \Lcomp{fibercollimator} hat
+% nur eine Faser, die andere Verbindung ist Freistrahl und der
+% \Lcomp{optdetector} hat eine Freistrahl- und eine elektrische
+% Verbindung.
 % \fi
 %
 % \ifGERMAN\section{Optischer Filter}\fi
 % \ifENGLISH\section{Optical filter}\fi
+%
 % \psset{usefiberstyle}
 % \begin{ltxsyntax}
 % \fiberdipoledesc{optfilter}
@@ -5407,7 +5395,7 @@
 % \ifENGLISH\section{Fiber collimator}\fi
 % 
 % \begin{ltxsyntax}
-% \xLdipole{fibercollimator}\cmditem{fibercollimator}(in)(A)(B)(out){label}%
+% \xLdipole{fibercollimator}\compitem{fibercollimator}(in)(A)(B)(out){label}%
 % \iffalse
 %<*ignore>
 % \fi
@@ -5489,6 +5477,105 @@
 % \opt{xunit} and \opt{yunit}.
 % \fi
 % \end{optionlist}
+%
+% \ifGERMAN\section{Detektor}\fi
+% \ifENGLISH\section{Detector}\fi
+% 
+% \begin{ltxsyntax}
+% \dipoledesc{optdetector}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(3,1.2)
+  \optdetector[beam](0,0)(1.5,1){detector}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+% \end{ltxsyntax}
+%
+% \ifENGLISH The detector is placed by default at the end of the
+% reference line (\Lkeyword{position}\opt{=end}). If this setting is
+% overwritten, the output connection is treated like that of an
+% electrical component.
+% \fi
+% \ifGERMAN Der Detektor wird in der Voreinstellung ans Ende der
+% Referenzlinie platziert (\Lkeyword{position}\opt{=end}). Wird dieser
+% Parameter überschrieben, dann wird die ausgehende Verbindung wie bei
+% einer elektrischen Komponente behandelt.
+% \fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(3,1.2)
+  \optdetector[position=0.5](0,0)(1.5,1){detector}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+% 
+% \begin{optionlist}
+% \optitem[0.8]{detsize}{\prm{num} or \prm{width} \prm{height}}
+% \ifGERMAN 
+% Wenn eine einzelne Zahl angegeben ist, dann ist das die Seitenlänge
+% (\opt{diode}) bzw. der Durchmesser (\opt{round}) des Detektors. Werden zwei
+% Zahlen angegeben, so sind das Breite und Höhe des Detektors. Beachten Sie,
+% dass \opt{detsize=1} und \opt{detsize=1 1} für \opt{dettype=round} nicht dasselbe ist.
+% \fi
+% \ifENGLISH 
+% If a single number is given it is the side length (\opt{diode}) or the
+% diameter (\opt{round}) of the detector. Two numbers define the width and
+% height of the detector. Note, that \opt{detsize=1} and \opt{detsize=1 1} are
+% not equivalent for \opt{dettype=round}.
+% \fi
+% 
+% \choitem[round]{dettype}{round, diode} 
+% \ifGERMAN
+% Dieser Parameter bestimmt den Typ und damit das Aussehen des Detektors.
+% \fi
+% \ifENGLISH
+% This parameter selects between different types of detectors.
+% \fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[morekeywords={[21]{dettype}}] 
+\begin{pspicture}(3,1.5)
+  \optdetector[beam, dettype=diode](0,0)(1.5,1){detector}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+% \end{optionlist}
+%
+% \begin{stylelist}
+% \styleitem{DetectorStyle} 
+% \ifGERMAN 
+% Der Stil der Diode für \Lkeyword{dettype}\opt{=diode}.
+% \fi
+% \ifENGLISH 
+% The style of the diode for \Lkeyword{dettype}\opt{=diode}.
+% \fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(3,1.5)
+  \newpsstyle{OptComp}{linewidth=2\pslinewidth}
+  \newpsstyle{DetectorStyle}{linewidth=0.5\pslinewidth}
+  \optdetector[dettype=diode](0,1)(2,1)
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+% \end{stylelist}
+% 
 %
 % \ifGERMAN\chapter{Spezielle Knoten}\fi
 % \ifENGLISH\chapter{Special nodes}\fi
@@ -5658,7 +5745,7 @@
 %  Das sind die ursprünglichen Knoten, die für die Positionierung der Komponente
 %  benutzt wurden, \nxLcs{oenodeRefA} ist der erste und \nxLcs{oenodeRefB} der
 %  letzte Knoten. Diese Zuordnung ist nicht gültig für Faserkoppler
-%  (\ref{sec:coupler-refnodes}) und Zirkulatoren (\ref{cmd:optcirculator}).
+%  (\ref{sec:coupler-refnodes}) und Zirkulatoren (\compref{optcirculator}).
 %  \fi
 %  \ifENGLISH
 %  The input and output reference nodes.
@@ -5666,7 +5753,7 @@
 %  These are the original nodes which were used for the component positioning,
 %  \nxLcs{oenodeRefA} is the first and \nxLcs{oenodeRefB} the last node. This
 %  definition is not valid couplers (\ref{sec:coupler-refnodes}) and circulators
-%  (\ref{cmd:optcirculator}).
+%  (\compref{optcirculator}).
 %  \fi
 % \iffalse
 %<*ignore>
@@ -5728,12 +5815,12 @@
 % 
 % \ifGERMAN
 % Dieser Knoten liegt, bis auf wenige Ausnahmen, wie
-% z.B. \Lcs{optdetector} und \Lcs{optcoupler} (siehe unten), im
+% z.B. \Lcomp{optdetector} und \Lcomp{optcoupler} (siehe unten), im
 % Mittelpunkt der Komponente.
 % \fi
 % \ifENGLISH
 % This node lays, except for a few components like
-% e.g. \Lcs{optcirculator} and \Lcs{optcoupler} (see below), in the
+% e.g. \Lcomp{optcirculator} and \Lcomp{optcoupler} (see below), in the
 % center of the component.
 % \fi
 % \iffalse
@@ -5753,10 +5840,10 @@
 %</ignore>
 % \fi
 %
-% \ifGERMAN Bei \Lcs{optcoupler} hängt die Position der Komponentenmitte
+% \ifGERMAN Bei \Lcomp{optcoupler} hängt die Position der Komponentenmitte
 % von den \Lkeyword{coupleralign} Einstellungen ab.
 % \fi
-% \ifENGLISH For \Lcs{optcoupler} the position of the component center
+% \ifENGLISH For \Lcomp{optcoupler} the position of the component center
 % depends on the \Lkeyword{coupleralign} settings.
 % \fi
 % \iffalse
@@ -5987,7 +6074,7 @@
 %   Lichtstrahl ausgehend vom Referenzknoten \Lcs{oenodeRefA} verläuft. Analog
 %   dazu ist die Definition ds Ausgangsknotens. Diese Bezeichnung kann nur für
 %   Faserkoppler (siehe \prettyref{sec:coupler-nodes}) und Strahlteiler
-%   (\ref{cmd:beamsplitter}) nicht angewendet werden.
+%   (\compref{beamsplitter}) nicht angewendet werden.
 %
 %   \nxLcs{oenodeIn} ist äquivalent zu \nxLcs{oenodeIfc\{1\}} und
 %   \nxLcs{oenodeOut} ist äquivalent zu \nxLcs{oenodeIfc\{N\}}. Die Eingangs-
@@ -6000,7 +6087,7 @@
 %   is by definition the node to which a beam coming from the reference node
 %   \Lcs{oenodeRefA} is connected to. Correspondingly is the definition of the
 %   output node. This definition breaks down only for fiber couplers (see
-%   \prettyref{sec:coupler-nodes}) and beamsplitter (\ref{cmd:beamsplitter}).
+%   \prettyref{sec:coupler-nodes}) and beamsplitter (\compref{beamsplitter}).
 %
 %   \nxLcs{oenodeIn} is equivalent to \nxLcs{oenodeIfc\{1\}} and
 %   \nxLcs{oenodeOut} is equivalent to \nxLcs{oenodeIfc\{N\}}. You should use
@@ -6593,6 +6680,7 @@
 % \ifENGLISH\section{Drawing beams}\fi
 % \ifGERMAN\section{Strahlen zeichnen}\fi
 % \label{sec:drawbeam}
+%
 % \ifENGLISH
 % The package provides several ways to connect components and nodes with beams,
 % which can be either single rays or wide beams. Most parameters have the same
@@ -6673,7 +6761,7 @@
 %   component connection («connect» mode).
 %
 %   In most cases, the «connect» mode is equivalent to «raytracing» with
-%   \Lkeyword{n}\opt{=1}, except for \Lcs{optprism} and \Lcs{doveprism}, where
+%   \Lkeyword{n}\opt{=1}, except for \Lcomp{optprism} and \Lcomp{doveprism}, where
 %   the interface nodes (\prettyref{sec:ifcnode}) are simply connected. 
 %   See the following two example for the differences between the tracing modes
 %   using these two components. The interface nodes are highlighted for clarity.
@@ -6689,7 +6777,7 @@
 %   Komponente lediglich («connect» Variante).
 %
 %   In vielen Fällen ist «connect» identisch mit «raytracing» für
-%   \Lkeyword{n}\opt{=1}, außer für \Lcs{optprism} oder \Lcs{doveprism} bei
+%   \Lkeyword{n}\opt{=1}, außer für \Lcomp{optprism} oder \Lcomp{doveprism} bei
 %   denen die Grenzflächenknoten (\prettyref{sec:ifcnode}) dann einfach nur
 %   verbunden werden.  Die folgenden beiden Beispiele zeigen die Unterschiede
 %   der beiden Methoden für diese Komponenten. Die Grenzflächenknoten sind zum
@@ -6720,14 +6808,14 @@
 %\fi
 %
 % \ifENGLISH
-% For the \Lcs{doveprism} the same applies as for the \Lcs{optprism}, but the
+% For the \Lcomp{doveprism} the same applies as for the \Lcomp{optprism}, but the
 % raytraced beam with \Lkeyword{n}\opt{=1} (blue) misses the second interface
 % because it is not refracted and stops therefore at the first interface (see
 % \prettyref{sec:error-handling}). Again, the green «connect» ray passes through
 % all interface nodes.
 % \fi
 % \ifGERMAN
-% Das \Lcs{doveprism} wird im Prinzip genauso behandelt wie das \Lcs{optprism},
+% Das \Lcomp{doveprism} wird im Prinzip genauso behandelt wie das \Lcomp{optprism},
 % der «raytracing» Strahl mit \Lkeyword{n}\opt{=1} (blau) trifft wegen fehlender
 % Brechung die zweite Grenzfläche gar nicht, und endet daher schon an der ersten
 % Grenzflächen (siehe \prettyref{sec:error-handling}). Der grüne «connect»
@@ -6907,13 +6995,13 @@
 % \begin{enumerate}
 % \item 
 %   \ifENGLISH Set a fixed refractive index for the component. Interestingly,
-%   for the default shape of the \Lcs{doveprism} a refractive index of
+%   for the default shape of the \Lcomp{doveprism} a refractive index of
 %   $\sqrt{5}$ gives the ideal output direction which is the same as the input
 %   direction.
 %   \fi
 %   \ifGERMAN
 %   Setze den Brechungsindex einer Komponente. Interessanterweise ist für die
-%   Standardform des \Lcs{doveprism} ein Brechungsindex von $\sqrt{5}$ der
+%   Standardform des \Lcomp{doveprism} ein Brechungsindex von $\sqrt{5}$ der
 %   ideale Wert so dass der Ausgangsstrahl parallel zum Eingangsstrahl verläuft.
 %   \fi
 %
@@ -7335,14 +7423,14 @@
 % \Lkeyword{beaminside}, \Lkeyword{beaminsidefirst} und
 % \Lkeyword{beaminsidelast}. Damit kann der Strahlengang in einzelnen
 % Komponenten unterdrückt werden, für die es keinen Sinn macht
-% (z.B. \Lcs{optfilter} und \Lcs{optdiode}, was sonst nicht möglich ist. 
+% (z.B. \Lcomp{optfilter} und \Lcomp{optdiode}, was sonst nicht möglich ist. 
 % \fi
 % \ifENGLISH
 % Define whether a beam is drawn inside a component. The option affects
 % components only and overwrites all settings of \Lkeyword{beaminside},
 % \Lkeyword{beaminsidefirst}, and \Lkeyword{beaminsidelast} if set to
 % \opt{false}. With this you can forbid any internal beams for components where
-% it does not make any sense (e.g. \Lcs{optfilter} and \Lcs{optdiode}).
+% it does not make any sense (e.g. \Lcomp{optfilter} and \Lcomp{optdiode}).
 % \fi
 % \iffalse
 %<*ignore>
@@ -7446,11 +7534,11 @@
 % Das ist in vielen Fällen sehr praktisch, kann aber wiederum unerwünschte
 % Ergebnisse bei gedrehten und verschobenen Komponenten ergeben und die
 % Ebenenausrichtung kann nicht beliebig gesetzt werden.  Das kann mit einer
-% unsichtbaren Ebene erreicht werden, die mit \Lcs{optplane} definiert wird.
+% unsichtbaren Ebene erreicht werden, die mit \Lcomp{optplane} definiert wird.
 % \fi
 %
 % \begin{ltxsyntax}
-%   \xLcs{optplane}\cmditem{optplane}(center) 
+%   \xLcomp{optplane}\compitem{optplane}(center) 
 %
 %   \ifENGLISH
 %   The plane is defined by a single node only, the rotation around this node
@@ -7517,12 +7605,12 @@
 %   \styleitem[linecolor=green!90!black, linejoin=1]{Beam}
 %   \ifENGLISH
 %   The appearance of beams is controlled with this style. The optional argument
-%   of \Lcs*{draw*beam} can also be used, these options can overwrite settings from
+%   of \nxLcs{draw*beam} can also be used, these options can overwrite settings from
 %   the \Lstyle{Beam} style.
 %   \fi
 %   \ifGERMAN
 %   Das Aussehen der Lichtstrahlen kann mit diesem Stil gesteuert werden. Das
-%   optionale Argument von \Lcs*{draw*beam} kann ebenfalls dafür verwendet
+%   optionale Argument von \nxLcs{draw*beam} kann ebenfalls dafür verwendet
 %   werden und kann die Einstellungen des \Lstyle{Beam}-Stils überschreiben.
 %   \fi
 % \end{stylelist}
@@ -7535,7 +7623,7 @@
 %
 %   \psnumitem[0.2]{ArrowInsideMinLength}
 %   \ifGERMAN 
-%   \Lcs*{draw*beam} verwendet auch die Option \Lkeyword*{ArrowInside} aus
+%   \nxLcs{draw*beam} verwendet auch die Option \Lkeyword*{ArrowInside} aus
 %   \LPack{pstricks-add}. In dem Fall wird für alle Strahlsegmente ein Pfeil
 %   gezeichnet, was häufig für die internen, kurzen Strahlengänge unerwünscht
 %   ist. Mit \Lkeyword{ArrowInsideMinLength} kann angegeben werden ab welcher
@@ -7544,7 +7632,7 @@
 %   Strahl einen Pfeil hat (siehe auch \prettyref{ex:czerny-turner}).
 %   \fi
 %   \ifENGLISH 
-%   \Lcs*{draw*beam} uses also the option \Lkeyword*{ArrowInside} from
+%   \nxLcs{draw*beam} uses also the option \Lkeyword*{ArrowInside} from
 %   \LPack{pstricks-add}. In this case the arrows would be drawn for every beam
 %   segment, which is often undesired for the internal, short beam
 %   paths. \Lkeyword{ArrowInsideMinLength} sets a minimum segment length, below
@@ -8166,7 +8254,7 @@
 % \ifGERMAN
 % Das \Lcs{drawfiber} Makro kann ID, \Lkeyword{compname} oder Knoten als
 % \prm{obj$_N$} Argumente verarbeiten (siehe \prettyref{sec:accessobj}), aber
-% ID-Intervalle wie bei \Lcs*{draw*beam} sind nicht möglich. Werden mehr als
+% ID-Intervalle wie bei \nxLcs{draw*beam} sind nicht möglich. Werden mehr als
 % zwei Argumente mitgegeben, werden die Verbindungen $1\rightarrow 2$,
 % $2\rightarrow 3$, usw. gezeichnet.
 %
@@ -8366,7 +8454,7 @@
 %   \ifENGLISH The fiber angles both at the node and the component are relative
 %   to the connection between the involved interface node and the center node of
 %   the component. In most cases this is equivalent to \opt{relative}, but
-%   necessary e.g. for \Lcs{optcirculator}. In the example, the green fiber
+%   necessary e.g. for \Lcomp{optcirculator}. In the example, the green fiber
 %   shows the correct alignment, while the red one is with \opt{relative}
 %   alignment.
 %   \fi
@@ -8374,7 +8462,7 @@
 %   Die Winkel sowohl am Knoten als auch an der Komponente sind relativ zu der
 %   Verbindung zwischen dem betroffenen Komponentenknoten und der
 %   Komponentenmitte. Meistens ist das äquivalent zu \opt{relative}, wird aber
-%   z.B. für \Lcs{optcirculator} benötigt. In dem Beispiel hat die grüne Faser
+%   z.B. für \Lcomp{optcirculator} benötigt. In dem Beispiel hat die grüne Faser
 %   die korrekte Ausrichtung, während die rote \opt{relative} ausgerichtet wird.
 %   \fi
 %
@@ -8751,7 +8839,7 @@
 %   value of this parameter can affect either only the fiber components
 %   (if the value is prefixed with \opt{*}), only free-ray components (prefixed
 %   with \opt{+}), or all components otherwise. Typical free-ray components
-%   which are often used with fibers as well are \Lcs{optbox} and \Lcs{optdetector}.
+%   which are often used with fibers as well are \Lcomp{optbox} and \Lcomp{optdetector}.
 %
 %   You can select to connect \opt{all} nodes, \opt{none}, or select distinct
 %   connections to draw. Value \opt{i} (\opt{l} is equivalent) draws all input
@@ -8760,7 +8848,7 @@
 %   none.
 %
 %   Components which have more than one input or output fiber
-%   (\hyperref[sec:coupler]{couplers} and \Lcs{optcirculator}) allow also
+%   (\hyperref[sec:coupler]{couplers} and \Lcomp{optcirculator}) allow also
 %   values \opt{t} and \opt{b}, possibly in combination with \opt{i}, \opt{o},
 %   \opt{r}, or \opt{l}.
 %
@@ -8771,8 +8859,8 @@
 %   Parameter kann nur die Faserkomponenten betreffen (falls ein \opt{*}
 %   vorangestellt ist), nur die Freistrahlkomponenten (\opt{+} wird
 %   vorangestellt), oder alle Komponenten. Typische Freistrahlkomponenten, die
-%   häufig als Faserkomponenten verwendet werden, sind \Lcs{optbox} und
-%   \Lcs{optdetector}.
+%   häufig als Faserkomponenten verwendet werden, sind \Lcomp{optbox} und
+%   \Lcomp{optdetector}.
 %
 %   Es können alle Verbindungen gezeichnet werden (\opt{all}), keine
 %   (\opt{none}), oder es können bestimmte ausgewählt werden. Die Werte \opt{i}
@@ -8781,7 +8869,7 @@
 %   d.h. mit \opt{io} werden gar keine Verbindungen gezeichnet.
 %
 %   Komponenten, die über mehr als einen Eingang oder Ausgang verfügen
-%   (\hyperref[sec:coupler]{Koppler} und \Lcs{optcirculator}) erlauben
+%   (\hyperref[sec:coupler]{Koppler} und \Lcomp{optcirculator}) erlauben
 %   weitergehende Auswahl mit \opt{t} und \opt{b}, möglicherweise in Verbindung
 %   mit \opt{i}, \opt{o}, \opt{l} und \opt{r}.
 % 
@@ -8809,11 +8897,11 @@
 % \fi
 %
 % \item 
-%   \ifENGLISH Draw only the input fiber of a fiber component (\Lcs{optmzm}),
-%   the free-ray component (\Lcs{optbox}) is not affected.
+%   \ifENGLISH Draw only the input fiber of a fiber component (\Lcomp{optmzm}),
+%   the free-ray component (\Lcomp{optbox}) is not affected.
 %   \fi
-%   \ifGERMAN Nur die Eingangsverbindung einer Faserkomponente (\Lcs{optmzm})
-%   wird gezeichnet, die Freistrahlkomponente (\Lcs{optbox}) bleibt
+%   \ifGERMAN Nur die Eingangsverbindung einer Faserkomponente (\Lcomp{optmzm})
+%   wird gezeichnet, die Freistrahlkomponente (\Lcomp{optbox}) bleibt
 %   unbeeinflusst.
 %   \fi
 %
@@ -8833,7 +8921,7 @@
 % 
 % \item 
 %   \ifENGLISH Draw only the output fiber of a free-ray component
-%   (\Lcs{optbox}), but all connections of the fiber component (\Lcs{optmzm}).
+%   (\Lcomp{optbox}), but all connections of the fiber component (\Lcomp{optmzm}).
 %   \fi
 %   \ifGERMAN Von der Freistahlkomponente wird nur die Ausgangsverbindung
 %   gezeichnet, die Faserkomponente erhält jedoch alle Verbindungen.
@@ -8855,12 +8943,12 @@
 % 
 % \item 
 %   \ifENGLISH The values \opt{t} and \opt{b} affect only components which have
-%   more than two fibers, i.e \Lcs{optcirculator} and the couplers
+%   more than two fibers, i.e \Lcomp{optcirculator} and the couplers
 %   (\prettyref{sec:coupler}).
 %   \fi
 %   \ifGERMAN
 %   Die Werte \opt{t} und \opt{b} betreffen nur die Komponenten mit mehr als
-%   zwei Verbindungen, also \Lcs{optcirculator} und die Koppler
+%   zwei Verbindungen, also \Lcomp{optcirculator} und die Koppler
 %   (\prettyref{sec:coupler}).
 %   \fi
 %
@@ -8978,12 +9066,12 @@
 %     \opt{FiberOut2}
 %   \end{tabular}}%
 % ]%
-% \xLstyle{FiberIn}\label{prm:FiberIn}%
-% \xLstyle{FiberIn1}\label{prm:FiberIn1}%
-% \xLstyle{FiberIn2}\label{prm:FiberIn2}%
-% \xLstyle{FiberOut}\label{prm:FiberOut}%
-% \xLstyle{FiberOut1}\label{prm:FiberOut1}%
-% \xLstyle{FiberOut2}\label{prm:FiberOut2}%
+% \xLstyle{FiberIn}\label{sty:FiberIn}%
+% \xLstyle{FiberIn1}\label{sty:FiberIn1}%
+% \xLstyle{FiberIn2}\label{sty:FiberIn2}%
+% \xLstyle{FiberOut}\label{sty:FiberOut}%
+% \xLstyle{FiberOut1}\label{sty:FiberOut1}%
+% \xLstyle{FiberOut2}\label{sty:FiberOut2}%
 % \ifENGLISH
 % Style \Lstyle{FiberIn} applies to all input fibers, it inherits from
 % \Lstyle{Fiber}. If the component has more than one input fiber they use the
@@ -9041,12 +9129,12 @@
 % \Lcs*{addtopsstyle} oder den entsprechenden \opt{addto}\prm{style}
 % Parametern verändert werden.
 % \fi
-% \xLstyle{WireIn}\label{prm:WireIn}%
-% \xLstyle{WireIn1}\label{prm:WireIn1}%
-% \xLstyle{WireIn2}\label{prm:WireIn2}%
-% \xLstyle{WireOut}\label{prm:WireOut}%
-% \xLstyle{WireOut1}\label{prm:WireOut1}%
-% \xLstyle{WireOut2}\label{prm:WireOut2}%
+% \xLstyle{WireIn}\label{sty:WireIn}%
+% \xLstyle{WireIn1}\label{sty:WireIn1}%
+% \xLstyle{WireIn2}\label{sty:WireIn2}%
+% \xLstyle{WireOut}\label{sty:WireOut}%
+% \xLstyle{WireOut1}\label{sty:WireOut1}%
+% \xLstyle{WireOut2}\label{sty:WireOut2}%
 %
 % \item[\smash{\begin{tabular}[t]{@{}r@{}}%
 %   \opt{new}\prm{style}\\
@@ -9083,7 +9171,7 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}[alsoletter={1}, morekeywords={[21]{addtoFiberOut1}}]
+\begin{LTXexample}[morekeywords={[21]{addtoFiberOut1}}]
 \begin{pspicture}(3,2)
   \newpsobject{tapcoupler}{wdmsplitter}{%
     coupleralign=b, 
@@ -9260,27 +9348,27 @@
 %
 % \ifENGLISH
 % These components can also be connected with beams and fibers, but do
-% not provide full access to all options. \Lcs{opttripole} defines a
-% single reflective interface, whereas \Lcs{optdipole} can have two
+% not provide full access to all options. \Lcomp{opttripole} defines a
+% single reflective interface, whereas \Lcomp{optdipole} can have two
 % transmittive interfaces:
 % \fi
 % \ifGERMAN
 % Diese Komponenten können sowohl mit Fasern als auch mit Strahlen
 % verbunden werden, können aber nicht deren volles Potential
-% ausschöpfen. \Lcs{opttripole} definiert eine einzelne reflektive
-% Grenzfläche, \Lcs{optdipole} kann zwei transmittive Grenzflächen haben:
+% ausschöpfen. \Lcomp{opttripole} definiert eine einzelne reflektive
+% Grenzfläche, \Lcomp{optdipole} kann zwei transmittive Grenzflächen haben:
 % \fi
 %
 % \begin{optionlist}
 %   \optitem[0 0]{optdipolesize}{\prm{width}[ \prm{height}]}
 %   \ifGERMAN 
 %   Hiermit können zwei transmittierende Grenzflächen für
-%   \Lcs{optdipole} definiert werden, die sich bei
+%   \Lcomp{optdipole} definiert werden, die sich bei
 %   $(\pm 0.5\text{\prm{width}}, 0)$ befinden.
 %   \fi
 %   \ifENGLISH
 %   With this option you can define two transmittive interfaces for
-%   \Lcs{optdipole}, which are placed at $(\pm 0.5\text{\prm{width}}, 0)$.
+%   \Lcomp{optdipole}, which are placed at $(\pm 0.5\text{\prm{width}}, 0)$.
 %   \fi
 %
 % \iffalse
@@ -9489,10 +9577,10 @@
 % \fi
 %
 % \ifGERMAN Die folgenden Abschnitte enthalten die Entwicklung einer
-% einfachen Beispielkomponente \Lcs*{testcomp}.
+% einfachen Beispielkomponente \nxLcs{testcomp}.
 % \fi
 % \ifENGLISH The following section show the development of a simple
-% example component \Lcs*{testcomp}.
+% example component \nxLcs{testcomp}.
 % \fi
 %
 % \ifENGLISH\subsection{The component drawing}\fi
@@ -9581,7 +9669,7 @@
 %
 % \ifGERMAN Damit die Komponente Raytracing unterstützt, müssen die
 % Grenzflächen mit ihren Eigenschaften definiert werden. Die Definition
-% der Ebenen werden in einenm Makro \Lcs*{\prm{name}@nodes} definiert,
+% der Ebenen werden in einenm Makro \nxLcs{\prm{name}@nodes} definiert,
 % damit sie auch in den unterschiedlichen Ebenen verfügbar sind.
 %
 % Die Definition der Ebenen erfolgt dann über das Makro \Lcs*{newOptexpComp}
@@ -9604,7 +9692,7 @@
 % \fi
 % \ifENGLISH To add support for ray-tracing, you must define the
 % interface with their properties. The definitions are nested in a macro
-% \Lcs*{\prm{name}@nodes} in order to be accessible in the different
+% \nxLcs{\prm{name}@nodes} in order to be accessible in the different
 % layers.
 %
 % The definitions are done with the macro \Lcs*{newOptexpComp}
@@ -9665,7 +9753,7 @@
 % \Lkeyword{position}\opt{=start|end}, oder auch das Setzen eines
 % anderen Drehpunktes mit \Lkeyword{rotateref} möglich wird, müssen die
 % externen Dimensionen der Komponente bekannt gemacht werden. Dafür muss
-% ein weiteres Makro mit dem Name \Lcs*{\prm{name}@ref} definiert
+% ein weiteres Makro mit dem Name \nxLcs{\prm{name}@ref} definiert
 % werden, in dem auf Postscript-Ebene die Werte \opt{@@x} (halbe
 % Breite), \opt{@@y} (halbe Höhe), und optional auch \opt{@@x0} und
 % \opt{@@y0} (Verschiebung der Mitte) definiert werden müssen.
@@ -9675,7 +9763,7 @@
 % \Lkeyword{position}\opt{=start|end}, and setting the rotation
 % reference node with \Lkeyword{rotateref}, we need to provide the
 % external dimensions of the component. For this we need to define a new
-% macro \Lcs*{\prm{name}@ref}, which defines at Postscript level the
+% macro \nxLcs{\prm{name}@ref}, which defines at Postscript level the
 % values \opt{@@x} (half width), \opt{@@y} (half height), and optionally
 % \opt{@@x0} and \opt{@@y0} (offset of the center). 
 % \fi
@@ -9685,11 +9773,11 @@
 % }%
 % \end{lstlisting}
 %
-% \ifGERMAN Der Code für unsere Beispielkomponente \Lcs*{testcomp} ist
+% \ifGERMAN Der Code für unsere Beispielkomponente \nxLcs{testcomp} ist
 % damit vollständig, und sieht folgendermaßen aus:
 % \fi
 % \ifENGLISH This completes the code for our example component
-% \Lcs*{testcomp}, which now looks like this:
+% \nxLcs{testcomp}, which now looks like this:
 % \fi
 % \iffalse
 %<*ignore>
@@ -10089,8 +10177,7 @@
 \begin{LTXexample}[caption={caption}]
 \begin{pspicture}(0.5,0)(2.2,4)
   \pnode(0,1){A}\pnode(1,1){BS}\pnode(2,1){G}\pnode(1,4){B}
-  \beamsplitter(G)(BS)(B)
-  \optgrating(BS)(G)(BS)
+  \beamsplitter(G)(BS)(B)  \optgrating(BS)(G)(BS)
   \lens[lens=2 2 1.5, compshift=0.1, n=2.25](BS)(B)
   \pinhole[phwidth=0.05, innerheight=0.05, position=0.8, compshift=0.18](BS)(B)
   \optplane[angle=90](B)
@@ -10600,14 +10687,14 @@
 % Every component consists internally of interfaces which are defined by a node
 % on the optical axis, a plane vector or a curvature radius, and by its optical
 % characteristics (reflective or transmittive, or both e.g. for
-% \Lcs{beamsplitter}). The interface nodes can be visualized for each component
+% \Lcomp{beamsplitter}). The interface nodes can be visualized for each component
 % with the \Lkeyword{showifcnodes} parameter.
 % \fi
 % \ifGERMAN
 % Jede Komponente besteht aus Grenzflächen, die über einen Knoten auf der
 % optischen Achse, einen Ebenevektor bzw. einen Krümmungsradius, und ihre
 % optische Eigenschaft (reflektiv oder transmittiv, oder beides für
-% z.B. \Lcs{beamsplitter}) definiert ist. Die Grenzflächenknoten können mit
+% z.B. \Lcomp{beamsplitter}) definiert ist. Die Grenzflächenknoten können mit
 % \Lkeyword{showifcnodes} angezeigt werden.
 % \fi
 % 
@@ -10681,7 +10768,7 @@
 % reference nodes (\prettyref{sec:rotrefnode}) for all components. Displayed are
 % all possible combinations of \opt{t}, \opt{c}, or \opt{b} with \opt{l},
 % \opt{c}, or \opt{r}. Not all components support all combinations, e.g. a plain
-% \Lcs{mirror} ignores \opt{t} and \opt{b} and an \Lcs{optplate} ignores \opt{l}
+% \Lcomp{mirror} ignores \opt{t} and \opt{b} and an \Lcomp{optplate} ignores \opt{l}
 % and \opt{r}.
 %
 % Instead of these values also fractional parts can be used: \opt{t}
@@ -10696,8 +10783,8 @@
 % aller Komponenten. Angezeigt werden die Positionen für alle möglichen
 % Kombinationen von \opt{t}, \opt{c} oder \opt{b} mit \opt{l}, \opt{c} oder
 % \opt{r}. Es sind nicht immer alle Möglichkeiten vorhanden, so können \opt{t}
-% und \opt{b} ignoriert werden (z.B. bei \Lcs{mirror}), oder auch \opt{r} und
-% \opt{l} (z.B. bei \Lcs{optplate}).
+% und \opt{b} ignoriert werden (z.B. bei \Lcomp{mirror}), oder auch \opt{r} und
+% \opt{l} (z.B. bei \Lcomp{optplate}).
 % 
 % Anstelle dieser Werte können auch Bruchteile davon verwendet werden:
 % \opt{t} entspricht $+1\cdot\Delta y$, \opt{b} entspricht
@@ -11100,7 +11187,7 @@
 % \fi
 %
 % \ifENGLISH 
-% The appearance of \Lcs{optfiber} changed slightly, because the old
+% The appearance of \Lcomp{optfiber} changed slightly, because the old
 % implementation was buggy and the separation between the loops depended
 % on the number of loops (see example below). Note, that to achieve a
 % similar default look, the default value for \Lkeyword{fiberloopsep}
@@ -11108,7 +11195,7 @@
 % closer together.
 % \fi
 % \ifGERMAN 
-% Das Aussehen von \Lcs{optfiber} hat sich etwas geändert, da in der
+% Das Aussehen von \Lcomp{optfiber} hat sich etwas geändert, da in der
 % vorherigen Implementierung der Abstand zwischen zwei Schleifen von der
 % Anzahl der Schleifen abhing (siehe das Beispiel unten). Beachten Sie,
 % dass die Voreinstellung für \Lkeyword{fiberloopsep} von 0.3 auf 0.2
@@ -11157,11 +11244,11 @@
 % be replaced by \Lcs{newOptexpDipole} without any further changes.
 % \fi
 %
-% \ifGERMAN The alte Syntax mit \Lcs*{mycomp@iii} zur Definition eigener
+% \ifGERMAN The alte Syntax mit \nxLcs{mycomp@iii} zur Definition eigener
 % Komponenten wird nicht mehr unterstützt.
 % \fi
 % \ifENGLISH The old syntax of defining own components with
-% \Lcs*{mycomp@iii} is not supported anymore.
+% \nxLcs{mycomp@iii} is not supported anymore.
 % \fi
 %
 % \subsection{Version 3.3}\label{sec:bwd-comp-3.3}
@@ -11169,11 +11256,11 @@
 % \begin{optionlist}
 %   \poeitem{\textbackslash opttripole}
 %   \ifGERMAN Der Ausgangswinkel für die Beschriftung des
-%   \Lcs{opttripole} wurde um 180° geändert um konsistent zu den anderen
+%   \Lcomp{opttripole} wurde um 180° geändert um konsistent zu den anderen
 %   Dreipolen zu sein.
 %   \fi
 %   \ifENGLISH Changed the reference angle for the label of the
-%   \Lcs{opttripole} to be consistent with the other tripoles.
+%   \Lcomp{opttripole} to be consistent with the other tripoles.
 %   \fi
 % \end{optionlist}
 %
@@ -11286,37 +11373,37 @@
 %   \poeitem{extnode}
 %   \ifENGLISH
 %   Some components now provide more possible positions for
-%   \Lkeyword{extnode}. \Lcs{optdetector} had only one possible external node,
+%   \Lkeyword{extnode}. \Lcomp{optdetector} had only one possible external node,
 %   which was accessible for any value of \Lkeyword{extnode}, now this node can
 %   be accessed only with \Lkeyword{extnode}\opt{=r}. All other values give
 %   different node positions.
 %   \fi
 %   \ifGERMAN 
 %   Einigen Komponenten stellen nun mehr mögliche Positionen für
-%   \Lkeyword{extnode} zur Verfügung. So muss war z.B. für \Lcs{optdetector} nur
+%   \Lkeyword{extnode} zur Verfügung. So muss war z.B. für \Lcomp{optdetector} nur
 %   ein Knoten möglich, der für jeden Wert von \Lkeyword{extnode} zugänglich
 %   war, jetzt aber nur mit \Lkeyword{extnode}\opt{=r}. Alle anderen Werte
 %   setzen den Knoten an andere Stellen.
 %   \fi
 %
 %   \poeitem{\textbackslash optbox}
-%   \ifENGLISH An \Lcs{optbox} does always have the input and output
+%   \ifENGLISH An \Lcomp{optbox} does always have the input and output
 %   nodes at the respective interfaces, whereas in version 2.1 the input
 %   and output nodes where at the same position for
 %   \Lkeyword{endbox}\opt{=true}.
 %   \fi
-%   \ifGERMAN Eine \Lcs{optbox} hat immer einen Eingangs- und
+%   \ifGERMAN Eine \Lcomp{optbox} hat immer einen Eingangs- und
 %   Ausgangsknoten an den entsprechenden Grenzflächen. In Version 2.1
 %   fielen Eingangs- und Ausgangsknoten zusammen falls \Lkeyword{endbox}
 %   auf \opt{true} gesetzt war.
 %   \fi
 %
 %   \poeitem{\textbackslash fibercollimator}
-%   \ifENGLISH The \Lcs{fibercollimator} has only a fiber connection by
+%   \ifENGLISH The \Lcomp{fibercollimator} has only a fiber connection by
 %   default, the beam must be drawn manually or with \Lkeyword{beam}
 %   option.
 %   \fi
-%   \ifGERMAN Der \Lcs{fibercollimator} hat in den Voreinstellungen nur
+%   \ifGERMAN Der \Lcomp{fibercollimator} hat in den Voreinstellungen nur
 %   eine Faserverbindung, der Strahl muss manuell oder durch Angabe des
 %   \Lkeyword{beam} Parameters gezeichnet werden.
 %   \fi
@@ -11438,17 +11525,17 @@
 % \let\index@preamble=\relax
 % \renewcommand{\setindexpreamble}[1]{\def\index@preamble{#1}}
 % \renewcommand*{\idx@heading}{%
-%   \twocolumn[\idx@@heading{\indexname}]%
+%^^A   \twocolumn[\idx@@heading{\indexname}]%
 %   \@mkboth{\indexname}{\indexname}%
 % }
 % \renewenvironment{theindex}{%
-%   \if@twocolumn
-%     \@restonecolfalse
-%   \else
-%     \@restonecoltrue
-%   \fi
-%   \columnseprule \z@
-%   \columnsep 35\p@
+%^^A   \if@twocolumn
+%^^A     \@restonecolfalse
+%^^A   \else
+%^^A     \@restonecoltrue
+%^^A   \fi
+%^^A   \columnseprule \z@
+%^^A   \columnsep 35\p@
 %   \idx@heading%
 %   \index@preamble\par\nobreak
 %   \thispagestyle{\indexpagestyle}\parindent\z@
@@ -11456,7 +11543,8 @@
 %   \setlength{\parfillskip}{\z@ \@plus 1fil}%
 %   \let\item\@idxitem
 % }{%
-%   \if@restonecol\onecolumn\else\clearpage\fi
+%^^A   \if@restonecol\onecolumn\else\clearpage\fi
+%  \clearpage
 % }
 % \renewcommand*\@idxitem{\par\hangindent 40\p@}
 % \renewcommand*\subitem{\@idxitem \hspace*{20\p@}}
@@ -11511,9 +11599,9 @@
 %   \begin{release}{4.0}{2013-xx-xx}
 %   \item Added electrical components\see{chap:electrcomp}
 %   \item Added wire connections with \cs{drawwire}\see{sec:drawwire}
-%   \item Added component \cs{optarrowcomp}\see{cmd:optarrowcomp}
-%   \item Added component \cs{optbarcomp}\see{cmd:optbarcomp}
-%   \item Improved \cs{optdetector}\see{cmd:optdetector}
+%   \item Added component \cs{optarrowcomp}\see{comp:optarrowcomp}
+%   \item Added component \cs{optbarcomp}\see{comp:optbarcomp}
+%   \item Improved \cs{optdetector}\see{comp:optdetector}
 %   \item Fixed appearance of \cs{optfiber}\see{sec:bwd-comp-4.0}
 %   \item Fixed \opt{extnodealign} to affect also
 %     multipoles\see{prm:extnodealign}
@@ -11536,7 +11624,7 @@
 %   \end{release}
 %   \begin{release}{3.4}{2013-02-03}
 %   \item Fixed bugs when using \opt{fillstyle} for some components.
-%   \item Extended option \opt{switchsize}\see{cmd:optswitch}
+%   \item Extended option \opt{switchsize}\see{comp:optswitch}
 %   \item Modified coupler center node to be on the base
 %     line\see{sec:centernode}
 %   \item Extended error checking for \cs{drawbeam} and
@@ -11548,7 +11636,7 @@
 %   \item Fixed trailing spaces.
 %   \end{release}
 %   \begin{release}{3.3}{2012-08-17}
-%   \item Extended \cs{opttripole} and \cs{optdipole}\see{cmd:optdipole}
+%   \item Extended \cs{opttripole} and \cs{optdipole}\see{comp:optdipole}
 %   \item Modified reference angle for label of
 %     \cs{opttripole}\see{sec:bwd-comp-3.3}
 %   \item Added option \opt{optdipolesize} to support two interfaces for
@@ -11559,16 +11647,16 @@
 %   \item Improved \cs{drawbeam} and \cs{drawwidebeam} to be able to use
 %     \opt{ArrowInside} without linestyle\see{prm:ArrowInsideMaxLength}
 %   \item Fixed orientation of \cs{oenodeBeamUp} and
-%     \cs{oenodeBeamLow}\see{cmd:oenodeBeamUp}
+%     \cs{oenodeBeamLow}\see{cs:oenodeBeamUp}
 %   \item Fixed a bug related to \opt{beaminside} and ambiguous
 %     components.
 %   \item Fixed some trailing spaces.
 %   \item Added more examples\see{sec:examples}
 %   \end{release}
 %   \begin{release}{3.2}{2012-07-26}
-%   \item Added component \cs{glanthompson}\see{cmd:glanthompson}
+%   \item Added component \cs{glanthompson}\see{comp:glanthompson}
 %   \item Added access to beam vectors with \cs{oeBeamVec},
-%     \cs{oeBeamVecUp} and \cs{oeBeamVecLow}\see{cmd:oeBeamVec}
+%     \cs{oeBeamVecUp} and \cs{oeBeamVecLow}\see{cs:oeBeamVec}
 %   \item Fixed wrong computation of node distance in \cs{fiberbox}
 %   \item Fixed bug in \cs{wdmsplitter} for \opt{coupleralign=b} and
 %     \opt{couplertype=none}
@@ -11579,20 +11667,20 @@
 %   \item Added examples\see{sec:examples}
 %   \end{release}
 %   \begin{release}{3.1}{2012-07-17}
-%   \item Added component \cs{fiberbox}\see{cmd:fiberbox}
+%   \item Added component \cs{fiberbox}\see{comp:fiberbox}
 %   \item Extended connection macros to not required curly braces around
 %     node parenthesis any more\see{sec:namingobj}
 %   \item Modified \cs{fibercollimator} to have
-%     \opt{allowbeaminside=false} by default\see{cmd:fibercollimator}
+%     \opt{allowbeaminside=false} by default\see{comp:fibercollimator}
 %   \item Extended fiber couplers to allow using only two
 %     nodes\see{sec:coupler}
 %   \item Fixed a bug concerning node expressions with \cs{drawfiber}
 %   \end{release}
 %   \begin{release}{3.0}{2012-07-09}
 %   \item Modified beam connections with \cs{drawbeam} to support
-%     raytracing\see{cmd:drawbeam}
-%   \item Added wide beams with \cs{drawwidebeam}\see{cmd:drawwidebeam}
-%   \item Added \cs{drawfiber} for fiber connections\see{cmd:drawfiber}
+%     raytracing\see{cs:drawbeam}
+%   \item Added wide beams with \cs{drawwidebeam}\see{cs:drawwidebeam}
+%   \item Added \cs{drawfiber} for fiber connections\see{cs:drawfiber}
 %   \item Added \opt{optexp} environment for layering of components and
 %     connections\see{sec:layers}
 %   \item Added german documentation.
@@ -11608,61 +11696,61 @@
 %   \item Extended \opt{abspos} by values \opt{start} and
 %     \opt{end}\see{sec:positioning}
 %   \item Removed deprecated lens code which used \opt{lenswidth} and
-%     \opt{lensheight} for construction\see{cmd:lens}
+%     \opt{lensheight} for construction\see{comp:lens}
 %   \item Added option \opt{platesize}\see{prm:platesize}
-%   \item Added option \opt{phwidth}\see{cmd:pinhole}
-%   \item Modified option \opt{caxislength}\see{cmd:crystal}
-%   \item Deprecated option \opt{lampscale}\see{cmd:crystal}
-%   \item Added style \opt{CrystalCaxis}\see{cmd:crystal}
-%   \item Added style \opt{CrystalLamp}\see{cmd:crystal}
-%   \item Added option \opt{optboxsize}\see{cmd:optbox}
-%   \item Extended option \opt{detsize}\see{cmd:optdetector}
-%   \item Added style \opt{DetectorStyle}\see{cmd:optdetector}
+%   \item Added option \opt{phwidth}\see{comp:pinhole}
+%   \item Modified option \opt{caxislength}\see{comp:crystal}
+%   \item Deprecated option \opt{lampscale}\see{comp:crystal}
+%   \item Added style \opt{CrystalCaxis}\see{comp:crystal}
+%   \item Added style \opt{CrystalLamp}\see{comp:crystal}
+%   \item Added option \opt{optboxsize}\see{comp:optbox}
+%   \item Extended option \opt{detsize}\see{comp:optdetector}
+%   \item Added style \opt{DetectorStyle}\see{comp:optdetector}
 %   \item Removed deprecated \cs{detector}, use
-%     \cs{optdetector}\see{cmd:optdetector}
-%   \item Extended option \opt{doveprismsize}\see{cmd:doveprism}
-%   \item Added style \opt{Polarization}\see{cmd:polarization}
-%   \item Deprecated option \opt{pollinewidth}\see{cmd:polarization}
-%   \item Removed option \opt{polwidth}\see{cmd:polarization}
-%   \item Removed option \opt{pol}\see{cmd:polarization}
-%   \item Added style \opt{VariableStyle}\see{cmd:mirror}
+%     \cs{optdetector}\see{comp:optdetector}
+%   \item Extended option \opt{doveprismsize}\see{comp:doveprism}
+%   \item Added style \opt{Polarization}\see{comp:polarization}
+%   \item Deprecated option \opt{pollinewidth}\see{comp:polarization}
+%   \item Removed option \opt{polwidth}\see{comp:polarization}
+%   \item Removed option \opt{pol}\see{comp:polarization}
+%   \item Added style \opt{VariableStyle}\see{comp:mirror}
 %   \item Added mirror type \opt{semitrans}\see{prm:mirrortype}
-%   \item Renamed \cs{optgrid} to \cs{optgrating}\see{cmd:optgrating}
+%   \item Renamed \cs{optgrid} to \cs{optgrating}\see{comp:optgrating}
 %   \item Renamed \opt{optgridwidth} to
-%     \opt{gratingwidth}\see{cmd:optgrating}
+%     \opt{gratingwidth}\see{comp:optgrating}
 %   \item Renamed \opt{optgridheight} to
-%     \opt{gratingheight}\see{cmd:optgrating}
+%     \opt{gratingheight}\see{comp:optgrating}
 %   \item Renamed \opt{optgriddepth} to
-%     \opt{gratingdepth}\see{cmd:optgrating}
+%     \opt{gratingdepth}\see{comp:optgrating}
 %   \item Renamed \opt{optgridcount} to
-%     \opt{gratingcount}\see{cmd:optgrating}
+%     \opt{gratingcount}\see{comp:optgrating}
 %   \item Renamed \opt{optgridtype} to
-%     \opt{gratingtype}\see{cmd:optgrating}
+%     \opt{gratingtype}\see{comp:optgrating}
 %   \item Renamed \opt{optgridlinewidth} to
-%     \opt{gratinglinewidth}\see{cmd:optgrating}
-%   \item Added option \opt{prismalign}\see{cmd:optprism}
+%     \opt{gratinglinewidth}\see{comp:optgrating}
+%   \item Added option \opt{prismalign}\see{comp:optprism}
 %   \item Modified faulty alignment of
-%     \cs{rightangleprism}\see{cmd:rightangleprism}
-%   \item Extended option \opt{optampsize}\see{cmd:optamp}
-%   \item Extended option \opt{optmzmsize}\see{cmd:optmzm}
-%   \item Added option \opt{polcontroltype}\see{cmd:polcontrol}
-%   \item Extended option \opt{isolatorsize}\see{cmd:optisolator}
-%   \item Added style \opt{IsolatorArrow}\see{cmd:optisolator}
-%   \item Extended option \opt{fdlsize}\see{cmd:fiberdelayline}
-%   \item Added style \opt{FdlArrow}\see{cmd:fiberdelayline}
-%   \item Extended option \opt{fiberpolsize}\see{cmd:optfiberpolarizer}
-%   \item Added component \cs{optcirculator}\see{cmd:optcirculator}
-%   \item Extended option \opt{couplersize}\see{cmd:optcoupler}
-%   \item Extended option \opt{couplertype}\see{cmd:optcoupler}
+%     \cs{rightangleprism}\see{comp:rightangleprism}
+%   \item Extended option \opt{optampsize}\see{comp:optamp}
+%   \item Extended option \opt{optmzmsize}\see{comp:optmzm}
+%   \item Added option \opt{polcontroltype}\see{comp:polcontrol}
+%   \item Extended option \opt{isolatorsize}\see{comp:optisolator}
+%   \item Added style \opt{IsolatorArrow}\see{comp:optisolator}
+%   \item Extended option \opt{fdlsize}\see{comp:fiberdelayline}
+%   \item Added style \opt{FdlArrow}\see{comp:fiberdelayline}
+%   \item Extended option \opt{fiberpolsize}\see{comp:optfiberpolarizer}
+%   \item Added component \cs{optcirculator}\see{comp:optcirculator}
+%   \item Extended option \opt{couplersize}\see{comp:optcoupler}
+%   \item Extended option \opt{couplertype}\see{comp:optcoupler}
 %   \item Renamed option \opt{align} to
-%     \opt{coupleralign}\see{cmd:optcoupler}
-%   \item Added style \opt{VariableCoupler}\see{cmd:optcoupler}
-%   \item Added style \opt{FilterStyle}\see{cmd:optfilter}
-%   \item Extended option \opt{fibercolsize}\see{cmd:fibercollimator}
+%     \opt{coupleralign}\see{comp:optcoupler}
+%   \item Added style \opt{VariableCoupler}\see{comp:optcoupler}
+%   \item Added style \opt{FilterStyle}\see{comp:optfilter}
+%   \item Extended option \opt{fibercolsize}\see{comp:fibercollimator}
 %   \item Removed deprecated option \opt{labelrelative}\see{sec:labels}
-%   \item Removed deprecated option \opt{iwidth}\see{cmd:pinhole}
-%   \item Removed deprecated option \opt{owidth}\see{cmd:pinhole}
-%   \item Removed deprecated option \opt{bswidth}\see{cmd:beamsplitter}
+%   \item Removed deprecated option \opt{iwidth}\see{comp:pinhole}
+%   \item Removed deprecated option \opt{owidth}\see{comp:pinhole}
+%   \item Removed deprecated option \opt{bswidth}\see{comp:beamsplitter}
 %   \item Deprecated \cs{newOptexpDipoleNolabel}, use
 %     \cs{newOptexpDipole}\see{sec:newobj}
 %   \item Deprecated option
@@ -11672,7 +11760,7 @@
 %   \end{release}
 %   \begin{release}{2.1}{2009-11-05}
 %   \item Added component
-%     \cs{optfiberpolarizer}\see{cmd:optfiberpolarizer}
+%     \cs{optfiberpolarizer}\see{comp:optfiberpolarizer}
 %   \item Added option \opt{compshift}\see{prm:compshift}
 %   \item Added option \opt{label}\see{prm:label}
 %   \item Added option \opt{connjoin}
@@ -11680,9 +11768,9 @@
 %     \opt{newBeam}\see{sec:drawbeam}
 %   \item Added style \opt{OptComp} and related options
 %     \opt{addtoOptComp} and \opt{newOptComp}\see{sec:appearance}
-%   \item Added option \opt{bsstyle}\see{cmd:beamsplitter}
+%   \item Added option \opt{bsstyle}\see{comp:beamsplitter}
 %   \item Extended \cs{fibercollimator} to use up to four reference
-%     nodes\see{cmd:fibercollimator}
+%     nodes\see{comp:fibercollimator}
 %   \item Improved \opt{thicklens} to work also with plain
 %     lenses\see{prm:thicklens}
 %   \item Use pst-doc class for the documentation.
@@ -11690,30 +11778,30 @@
 %
 %   \begin{release}{2.0}{2008-07-27}
 %     \item Added fiber-optical components\see{chap:fibercomp}
-%     \item Added component \cs{optdiode}\see{cmd:optdiode}
-%     \item Added component \cs{pentaprism}\see{cmd:pentaprism}
+%     \item Added component \cs{optdiode}\see{comp:optdiode}
+%     \item Added component \cs{pentaprism}\see{comp:pentaprism}
 %     \item Added component
-%       \cs{rightangleprism}\see{cmd:rightangleprism}
-%     \item Added component \cs{doveprism}\see{cmd:doveprism}
-%     \item Added component \cs{optprism}\see{cmd:optprism}
+%       \cs{rightangleprism}\see{comp:rightangleprism}
+%     \item Added component \cs{doveprism}\see{comp:doveprism}
+%     \item Added component \cs{optprism}\see{comp:optprism}
 %     \item Added \cs{drawbeam}\see{sec:drawbeam}
 %     \item Added component connections (options \opt{fiber}, \opt{conn}
 %       and \opt{beam})\see{chap:connecting}
 %     \item Added option \opt{compname}\see{prm:compname}
 %     \item Added option \opt{extnode}\see{prm:extnode}
 %     \item Renamed \cs{detector} to
-%       \cs{optdetector}\see{cmd:optdetector}
+%       \cs{optdetector}\see{comp:optdetector}
 %   \end{release}
 %   \begin{release}{1.2}{2008-06-17}
-%   \item Modified lens design to use interface curvatures\see{cmd:lens}
+%   \item Modified lens design to use interface curvatures\see{comp:lens}
 %   \item Added options \opt{lensradiusleft} and
-%     \opt{lensradiusright}\see{cmd:lens}
-%   \item Added option \opt{thicklens}\see{cmd:lens}
-%   \item Added option \opt{lenstype}\see{cmd:lens}
+%     \opt{lensradiusright}\see{comp:lens}
+%   \item Added option \opt{thicklens}\see{comp:lens}
+%   \item Added option \opt{lenstype}\see{comp:lens}
 %   \item Added option \opt{mirrorradius} (curved
-%     mirrors)\see{cmd:mirror}
+%     mirrors)\see{comp:mirror}
 %   \item Added option \opt{optgridtype} (binary
-%     gratings)\see{cmd:optgrating}
+%     gratings)\see{comp:optgrating}
 %   \item Added \cs{newOptexpDipole}\see{sec:newobj}
 %   \item Added \cs{newOptexpDipoleNolabel}\see{sec:newobj}
 %   \item Added \cs{newOptexpTripole}\see{sec:newobj}
@@ -11726,12 +11814,12 @@
 %   \item Replaced \opt{labelrelative} by
 %     \opt{labelref=relative}\see{sec:labels}
 %   \item Renamed \cs{polarisation} to
-%     \cs{polarization}\see{cmd:polarization}
-%   \item Renamed \opt{polwidth} to \opt{polsize}\see{cmd:polarization}
-%   \item Renamed \opt{pol} to \opt{poltype}\see{cmd:polarization}
-%   \item Renamed \opt{bswidth} to \opt{bssize}\see{cmd:beamsplitter}
-%   \item Renamed \opt{iwidth} to \opt{innerheight}\see{cmd:pinhole}
-%   \item Renamed \opt{owidth} to \opt{outerheight}\see{cmd:pinhole}
+%     \cs{polarization}\see{comp:polarization}
+%   \item Renamed \opt{polwidth} to \opt{polsize}\see{comp:polarization}
+%   \item Renamed \opt{pol} to \opt{poltype}\see{comp:polarization}
+%   \item Renamed \opt{bswidth} to \opt{bssize}\see{comp:beamsplitter}
+%   \item Renamed \opt{iwidth} to \opt{innerheight}\see{comp:pinhole}
+%   \item Renamed \opt{owidth} to \opt{outerheight}\see{comp:pinhole}
 %   \item Added support for fillstyle for all components
 %   \end{release}
 %
@@ -21272,7 +21360,7 @@ end % tx@OptexpDict
 % \Finale
 % \endinput
 %
-%<*indexstyle>
+%<*indexstyle>font-size
 headings_flag       1
 heading_prefix   "\\textbf{"
 heading_suffix   "}\n"
@@ -21282,15 +21370,15 @@ actual          '='
 preamble
   "\\begin{theindex}\n"
 item_1
-  "\\par\\leavevmode\\hangindent10pt\\makebox[15pt][l]{ -- }"
+  "\\par\\leavevmode\\hangindent10pt\\makebox[25pt][r]{ -- }"
 item_01
-  "\\par\\leavevmode\\hangindent10pt\\makebox[15pt][l]{ -- }"
+  "\\par\\leavevmode\\hangindent10pt\\makebox[25pt][r]{ -- }"
 item_x1
-  "\\par\\leavevmode\\hangindent10pt\\makebox[15pt][l]{ -- }"
+  "\\par\\leavevmode\\hangindent10pt\\makebox[25pt][r]{ -- }"
 item_2
-  "\\par\\leavevmode\\hangindent20pt\\makebox[30pt][l]{ -- -- }"
+  "\\par\\leavevmode\\hangindent20pt\\makebox[50pt][r]{ -- -- }"
 item_12
-  "\\par\\leavevmode\\hangindent20pt\\makebox[30pt][l]{ -- -- }"
+  "\\par\\leavevmode\\hangindent20pt\\makebox[50pt][r]{ -- -- }"
 item_x2
-  "\\par\\leavevmode\\hangindent20pt\\makebox[30pt][l]{ -- -- }"
+  "\\par\\leavevmode\\hangindent20pt\\makebox[50pt][r]{ -- -- }"
 %</indexstyle>

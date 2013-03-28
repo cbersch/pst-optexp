@@ -60,6 +60,7 @@ f.write(r"""\documentclass[landscape]{scrartcl}
   \ltxsyntaxfont
   \let\@tempa\@empty
   \ltd@parseargs}
+\let\compitem\cmditem
 \makeatother
 \newcommand{\dipoledesc}[1]{\cmditem{#1}[opt](in)(out){label}}
 \newcommand{\tripoledesc}[1]{\cmditem{#1}[opt](in)(center)(out){label}}
@@ -83,7 +84,7 @@ space = False
 for m in g:
     if m[0].startswith(r'\psargitem') or m[0].startswith(r'\poeitem') or re.match(dp_pat, m[1]):
         continue
-    if re.match(r'\\((?:cmd|env)item|[a-z]+desc)', m[0]):
+    if re.match(r'\\((?:comp|cmd|env)item|[a-z]+desc)', m[0]):
         if optenv:
             f.write("\\end{optionlist}\n")
             optenv = False
