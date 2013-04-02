@@ -1694,7 +1694,7 @@
   \wdmsplitter[abspos=2.25, label=0.4](A)(B)(B){50\%}
   \optbox[position=end,label=0, compshift=0.5](A)(B){OSA}
   \optdetector[compshift=-0.5](A)(B){PD}
-  \drawfiber{1}{2}{3}{4}
+  \drawfiber{1-4}
   \drawfiber{3}{5}
   \psset{style=Refline}\psdot(A)\psdot(B)
   \color{Refline}\uput[45](A){A}\uput[135](B){B}
@@ -9973,7 +9973,7 @@
 \pnode([Xnodesep=-0.5,offset=-1]\oenodeExt{L}){Osc}
 \elecsynthesizer[wire=none](Osc)(\oenodeExt{EAM}|Osc){10\,GHz}
 \optarrowcomp[arrowcompsize=0.8 0.6, arrowscale=1.5](Osc)(\oenodeExt{EAM}|Osc){$\tau$}
-\drawfiber{1}{2}{3}{4}
+\drawfiber{1-4}
 \addtopsstyle{Wire}{arrows=->, arrowinset=0, arrowscale=1.5}
 \drawwire{5}{6}\psset[optexp]{wireangleB=90}
 \drawwire{6}(\oenodeExt{EAM})\drawwire{5}(\oenodeExt{L})
@@ -10125,12 +10125,12 @@
 \optfilter[abspos=3](LD)(CPLin1){BPF}
 \optswitch[abspos=4](LD)(CPLin1){SW}
 \polcontrol[abspos=5, fiber=out](LD)(CPLin1)
-\drawfiber{1}{2}{3}{4}{5}{6}
+\drawfiber{1-6}
 \optcoupler[couplertype=none, fiber](CPLin1)(CPLin2)(CPLout1)(CPLout2)
 \optamp[abspos=0.8, fiber=in](CPLout1)(RX){EDFA}
 \optfilter[abspos=2](CPLout1)(RX){BPF}
 \optbox[position=end](CPLout1)(RX){RX}
-\drawfiber{8}{9}{10}
+\drawfiber{8-10}
 \pnode([Xnodesep=-0.5]LD|CPLin2){TL}\pnode(RX|TL){TR}
 \pnode([offset=-2.5]TR){BR}\pnode(TL|BR){BL}
 \optamp[fiber=i](CPLout2)(TR){EDFA}
@@ -10143,7 +10143,7 @@
 \optfilter[position=0.2](TL)(CPLin2){BPF}
 \optswitch(TL)(CPLin2){SW}
 \polcontrol[position=0.8, fiber=out](TL)(CPLin2)
-\drawfiber{12}{13}{14}{15}{16}\drawfiber{17}{18}{19}
+\drawfiber{12-16}\drawfiber{17-19}
 \drawfiber[fiberstyle=angle, arm=0.5, linearc=0.5, stopnode=1]{16}{17}
 \end{pspicture}
 \end{LTXexample}
@@ -10328,7 +10328,7 @@
 \optmzm[abspos=4.5, compname=Mzm1, extnode=t](L)(A){MZM}
 \optmzm[abspos=6, compname=Mzm2, extnode=t](L)(A){MZM}
 \optamp[abspos=9](L)(A){EDFA}
-\drawfiber{1}{2}{3}{4}{5}\drawfiber[arrows=->]{}(A)
+\drawfiber{1-5}\drawfiber[arrows=->]{}(A)
 \pnode([offset=1.5]\oenodeExt{Eam}){Osci}
 \elecsynthesizer[compname=Syn, position=0.5, wire=o, label=0.5 . r](Osci)(\oenodeExt{Eam}){10\,GHz}
 \psset[optexp]{label=0, wire, optboxsize=0.8 1.2}
@@ -10354,12 +10354,12 @@
 \optmzm[abspos=2.5, compname=M2, extnode=t](Scan)(ScanCpl)
 \optamp[abspos=3.7](Scan)(ScanCpl)
 \polcontrol[abspos=4.5, fiber=o](Scan)(ScanCpl)
-\drawfiber{1}{2}{3}{4}{5}
+\drawfiber{1-5}
 \optbox[position=start, compname=S, extnode=b](Sat)(SatCpl){Sat}
 \optmzm[abspos=1.75, compname=M3, extnode=b](Sat)(SatCpl)
 \optamp[abspos=3.7](Sat)(SatCpl)
 \polcontrol[abspos=4.5, fiber=o](Sat)(SatCpl)
-\drawfiber{6}{7}{8}{9}
+\drawfiber{6-9}
 \wdmcoupler[fiber=i](ScanCpl)(SatCpl)(Cpl)
 \optisolator[position=0.1](Cpl)(Pump|Cpl)
 \optfiber[position=0.6](Cpl)(Pump|Cpl)
@@ -10370,7 +10370,7 @@
 \optbox[position=end, compshift=-1.5](Cpl)(PD){OSA}
 \optamp[fiber](Pump)(\oenodeIfc{2}{13})
 \optbox[position=start, optboxsize=0.6 1.2](Pump)(Pump|Cpl){Pump}
-\drawfiber{10}{11}{12}{13}{14}{15}\drawfiber{14}{16}
+\drawfiber{10-15}\drawfiber{14}{16}
 \optbox[compshift=0.7, optboxsize=2.5 0.8](\oenodeExt{M2})(\oenodeExt{Pd}|\oenodeExt{M2}){Lock-In Amp}
 \addtopsstyle{Wire}{arm=0.1}
 \drawwire[wireangleA=90, linearc=0.3](\oenodeExt{M2}){}
@@ -10477,13 +10477,13 @@
   \optswitch[position=0.7](UpIn)(UpOut)
   \optcoupler[label=0.4, position=0.3](UpOut)(LowOut)(UpIn2)(LowIn2){50\%}
   \optbox[optboxsize=2 0.8, position=end, label=0, extnode=t](LowIn2)(LowOut2){Messsystem}
-  \drawfiber{1}{2}{3}{4}{7}(LowIn2)\drawfiber[arrows=->](LowIn2){8}
+  \drawfiber{1-4}{7}(LowIn2)\drawfiber[arrows=->](LowIn2){8}
   \optdetector[abspos=0.4, detsize=0.6 0.8](UpIn2)(UpOut2){PD}
   \optbox[optboxsize=0.8 0.8, label=0, position=0.44](UpIn2)(UpOut2){$\div 8$}
   \optamp[position=0.8](UpIn2)(UpOut2)
   \optbox[position=end, extnode=b, label=0, optboxsize=2 0.8](UpIn2)(UpOut2){Faserkamm}
-  \drawfiber{2}{5}{6}{7}(UpIn2)\drawfiber[arrows=->](UpIn2){9}
-  \drawwire{9}{10}{11}{12}
+  \drawfiber{2}{5-7}(UpIn2)\drawfiber[arrows=->](UpIn2){9}
+  \drawwire{9-12}
   \drawfiber[arrows=->](\oenodeExt{12})(\oenodeExt{8})
 \end{pspicture}
 \end{LTXexample}
@@ -10511,7 +10511,7 @@
   \drawfiber[fiberstyle=bar, angleA=0, startnode=N, linearc=0.5, armA=0.6]{5}{6}
   \optamp[labelalign=b, abspos=3.8](BR)(BL){EDFA}
   \optfilter[label=. 180 b, usefiberstyle, abspos=1](BL)(BR){OBPF}
-  \drawfiber{6}{7}{8}
+  \drawfiber{6-8}
   \optswitch[labelalign=t, abspos=1, fiber=o](TL)(LoopInsIn){unload switch}
   \drawfiber[angleA=180, linearc=0.5, armA=1, startnode=1, fiberstyle=bar]{8}{9}
   \optbox[extnode=t, compname=Mod, innerlabel, abspos=0.7](LD)(LoopIn){MOD}
@@ -10524,7 +10524,7 @@
   \elecsynthesizer[synthshape=rectangle, synthtype=pulse, abspos=0.7, compname=Pg, extnode=b](Osci)(Tmp){PG}
   \optfilter[abspos=2](Osci)(Tmp){BPF}
 \rput[r]([offset=0.4, Xnodesep=0.2]\oenodeOut{}){\psplot[plotpoints=200]{0}{1}{360 3.14159 div x 6 mul mul sin 2 exp 0.3 mul 0.15 sub}}
-  \drawwire[arm=0]{12}{13}{14}\drawwire[wireangleB=-90, arrows=->]{14}(\oenodeExt{PM})
+  \drawwire[arm=0]{12-14}\drawwire[wireangleB=-90, arrows=->]{14}(\oenodeExt{PM})
   \psline[style=Wire, arrows=->](\oenodeExt{Pg})(\oenodeExt{Mod})
   \rput([Xnodesep=0.1, offset=0.2]\oenodeOut{Mod}){%
     \psplot[plotpoints=200, unit=0.7]{0}{1}{2.7182818 x 0.5 sub 0.08 div 2 exp neg exp 0.5 mul}%
@@ -11838,6 +11838,7 @@
 %<*stylefile>
 % \section{Requirements}
 %    \begin{macrocode}
+\RequirePackage{ifthen}
 \RequirePackage{pstricks}
 \RequirePackage{pst-xkey}
 \RequirePackage{pst-node}
@@ -14112,7 +14113,7 @@
 }%
 \def\drawconn@i[#1]{%
   \addafter@par{#1}%
-  \drawconn@ii}
+  \POE@resolvecomprange\drawconn@ii}
 
 \def\drawconn@ii{%
   \@ifnextchar(%)
@@ -14695,68 +14696,68 @@
 %    \end{macrocode}
 % empty option, use the current component ID
 %    \begin{macrocode}
-      \edef\POE@firstcomp{\the\POE@cnt}%
-      \edef\POE@lastcomp{\the\POE@cnt}%
+      \@tempcnta=\POE@cnt
+      \@tempcntb=\POE@cnt
     \else
 %    \end{macrocode}
 % A single number was given
 %    \begin{macrocode}
-      \edef\POE@firstcomp{#1}%
-      \edef\POE@lastcomp{#1}%
+      \@tempcnta=#1
+      \@tempcntb=#1
 %    \end{macrocode}
 % Check if the number is valid, otherwise quit with an error.
 %    \begin{macrocode}
       \ifodd
-        \ifnum 0<\POE@firstcomp\ifnum\POE@lastcomp>\the\POE@cnt \@ne\else\z@\fi\else\@ne\fi
+        \ifnum 0<\@tempcnta\ifnum\@tempcntb>\the\POE@cnt \@ne\else\z@\fi\else\@ne\fi
         \PackageError{pst-optexp}%
-          {Component ID \POE@firstcomp\space is not valid, 
+          {Component ID \the\@tempcnta\space is not valid, 
            \ifnum\the\POE@cnt=0 no components have been defined\else
            valid range is from 1 to \the\POE@cnt\fi}
       \fi
     \fi
   \else
     \ifx\\#1\\%
-      \edef\POE@firstcomp{1}%
+      \@tempcnta=\@ne
     \else
-      \edef\POE@firstcomp{#1}%
+      \@tempcnta=#1
     \fi
     \POE@getlastcomp#2%
-    \ifnum\POE@firstcomp>\the\POE@cnt
-      \ifnum\POE@lastcomp>\the\POE@cnt\relax
+    \ifnum\@tempcnta>\POE@cnt
+      \ifnum\@tempcntb>\POE@cnt
         \PackageError{pst-optexp}%
-          {All components \POE@firstcomp-\POE@lastcomp\space out of range}%
+          {All components \the\@tempcnta-\the\@tempcntb\space out of range}%
       \fi
     \fi
-    \ifnum\POE@firstcomp<1
+    \ifnum\@tempcnta<\@ne
       \PackageWarning{pst-optexp}%
-        {Component ID \POE@firstcomp\space is not valid, setting to 1.}%
-      \def\POE@firstcomp{1}%
-    \else\ifnum\POE@firstcomp>\the\POE@cnt
+        {Component ID \the\@tempcnta\space is not valid, setting to 1.}%
+      \@tempcnta=\@ne
+    \else\ifnum\@tempcnta>\POE@cnt
       \PackageWarning{pst-optexp}%
-        {Component ID \POE@firstcomp\space is not valid, setting to \MessageBreak
+        {Component ID \the\@tempcnta\space is not valid, setting to \MessageBreak
          the last defined value (\the\POE@cnt).}%
-      \edef\POE@firstcomp{\the\POE@cnt}%
+      \@tempcnta=\POE@cnt%
     \fi\fi
-    \ifnum\POE@lastcomp>\the\POE@cnt
+    \ifnum\@tempcntb>\POE@cnt
       \PackageWarning{pst-optexp}%
-        {Component ID \POE@lastcomp\space is not valid, setting to \MessageBreak
+        {Component ID \the\@tempcntb\space is not valid, setting to \MessageBreak
          the last defined value (\the\POE@cnt).}%
-      \edef\POE@lastcomp{\the\POE@cnt}%
-    \else\ifnum\POE@lastcomp<1
+      \@tempcntb=\POE@cnt%
+    \else\ifnum\@tempcntb<\@ne
       \PackageWarning{pst-optexp}%
-        {Component ID \POE@lastcomp\space is not valid, setting to 1.}%
-      \def\POE@lastcomp{1}%
+        {Component ID \the\@tempcntb\space is not valid, setting to 1.}%
+      \@tempcntb=\@ne
     \fi\fi
   \fi
 }%
 \def\POE@getlastcomp#1-{%
   \ifx\@empty#1\relax
-    \ifnum\POE@firstcomp>\the\POE@cnt\relax
-      \PackageError{pst-optexp}{All components \POE@firstcomp- out of range.}%
+    \ifnum\@tempcnta>\POE@cnt
+      \PackageError{pst-optexp}{All components \the\@tempcnta- out of range.}%
     \fi
-    \edef\POE@lastcomp{\the\POE@cnt}%
+    \@tempcntb=\POE@cnt
   \else
-    \edef\POE@lastcomp{#1}%
+    \@tempcntb=#1
   \fi
 }%
 %    \end{macrocode}
@@ -14790,13 +14791,13 @@
     \POE@getcomprange#1#2-\@nil
     \POE@getcomp{%
       (\POE@str@basicname@prefix\POE@str@basicname@default)
-      \POE@firstcomp\space\POE@lastcomp\space GetCompRange %
+      \the\@tempcnta\space\the\@tempcntb\space GetCompRange %
     }%
   \else\ifx-#1\relax
     \POE@getcomprange#1#2-\@nil
     \POE@getcomp{%
       (\POE@str@basicname@prefix\POE@str@basicname@default) 
-      \POE@firstcomp\space\POE@lastcomp\space GetCompRange %
+      \the\@tempcnta\space\the\@tempcntb\space GetCompRange %
     }%
   \else
     \POE@checkcompname{#1#2}%
@@ -14832,6 +14833,54 @@
     \edef\POE@tempd{#1}%
   \fi
   \edef\POE@comps{#1 \POE@comps}%
+}%
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\POE@resolvecomprange}
+%    \begin{macrocode}
+\def\POE@resolvecomprange#1{%
+  \def\POE@aftercomps{\expandafter#1\POE@comps}%
+  \def\POE@comps{}%
+  \POE@resolvecomprange@i%
+}%
+\def\POE@resolvecomprange@i{%
+  \@ifnextchar(%)
+    {\POE@resolvecomprange@ii}%
+    {\POE@resolvecomprange@iii}
+}%
+\def\POE@resolvecomprange@ii(#1){%
+  \edef\POE@comps{\POE@comps(#1)}%
+  \POE@resolvecomprange@i
+}%
+\def\POE@resolvecomprange@iii{%
+  \@ifnextchar\bgroup{\POE@resolvecomprange@iv}{\POE@aftercomps}%
+}%
+\def\POE@resolvecomprange@iv#1{%
+  \def\POE@temp{#1\@empty}%
+  \expandafter\POE@resolvecomprange@v\POE@temp\@nil
+}%
+\def\POE@resolvecomprange@v#1#2\@nil{%
+  \edef\POE@temp{#1}%
+  \ifnum9<1#1\relax
+    \def\POE@tempa{1}
+  \else\ifx-#1\relax
+    \def\POE@tempa{1}
+  \else
+    \def\POE@tempa{0}
+  \fi\fi
+  \ifodd\POE@tempa
+    \POE@getcomprange#1#2-\@nil
+    \ifnum\@tempcnta<\@tempcntb \def\POE@rel{<}\def\POE@inc{\@ne}%
+    \else \def\POE@rel{>}\def\POE@inc{\m@ne}\fi
+    \advance\@tempcntb\POE@inc
+    \whiledo{\@tempcnta\POE@rel\@tempcntb}{%
+      \edef\POE@comps{\POE@comps{\the\@tempcnta}}%
+      \advance\@tempcnta\POE@inc
+    }%
+  \else
+    \edef\POE@comps{\POE@comps{#1#2}}%
+  \fi
+  \POE@resolvecomprange@i%
 }%
 %    \end{macrocode}
 % \end{macro}
