@@ -6634,8 +6634,7 @@
 %
 % \item 
 % \ifGERMAN 
-% Bei \Lcs{drawbeam} und \Lcs{drawwidebeam} können auch Zahlintervalle verwendet
-% werden. Gültige Intervallangaben sind
+% Es können auch Zahlintervalle verwendet werden, gültige Intervallangaben sind
 % \begin{description}
 % \item[\parbox{2em}{\texttt{x-y}}] Von \opt{x} bis \opt{y}, ist \opt{x}
 %   größer als \opt{y}, so wird heruntergezählt. Ist der gesamte
@@ -6647,8 +6646,7 @@
 % \item[\parbox{2em}{\texttt{\hphantom{x}-}}] Verbinde alle Komponenten.
 % \end{description}
 % \fi
-% \ifENGLISH For \Lcs{drawbeam} and \Lcs{drawwidebeam} you can also specify a
-% number range. Valid range specifications are
+% \ifENGLISH You can also use number ranges, valid range specifications are
 % \begin{description}
 % \item[\parbox{2em}{\texttt{x-y}}] From \opt{x} to \opt{y}, if \opt{x}
 %   is greater than \opt{y}, the numbers are decremented. If the whole
@@ -6701,9 +6699,10 @@
 %   \xLcs{drawwidebeam}\cmditem*{drawwidebeam}[options]{obj$_1$}{obj$_2$}\ldots
 %
 %   \ifENGLISH
-%   These are the two macros for beam connections; they can take a variable
-%   number of arguments (minimum of two) which can be either an ID, a
-%   \Lkeyword{compname}, or a PSTricks nodes. To distinguish between nodes and
+%   These are the two macros for beam connections; they can take a
+%   variable number of arguments (minimum of two) which can be either an
+%   ID, an ID range, a \Lkeyword{compname}, or a PSTricks nodes (see
+%   \prettyref{sec:accessobj}). To distinguish between nodes and
 %   components, nodes must be either enclosed in parenthesis within the
 %   brackets, or enclosed only in parenthesis:
 %   \Lcs{drawbeam}\opt{\{(node)\}\{comp\}}, or
@@ -6711,13 +6710,14 @@
 %   \fi
 %   \ifGERMAN 
 %   Diese beiden Makros sind für die Strahlverbindungen zuständig, sie
-%   akzeptieren eine variable Anzahl an Argumenten (mindestens zwei), die
-%   entweder eine ID, ein \Lkeyword{compname}, oder ein PSTricks-Knoten sein
-%   können. Um zwischen Knoten und Komponenten unterscheiden zu können, müssen
-%   Knoten entweder in runde Klammern innerhalb der geschweiften Klammern
-%   eingeschlossen werden oder dürfen nur runde Klammern haben:
+%   akzeptieren eine variable Anzahl an Argumenten (mindestens zwei),
+%   die entweder eine ID, ein ID-Intervall, ein \Lkeyword{compname} oder
+%   ein PSTricks-Knoten sein können (siehe \prettyref{sec:accessobj}. Um
+%   zwischen Knoten und Komponenten unterscheiden zu können, müssen
+%   Knoten entweder in runde Klammern innerhalb der geschweiften
+%   Klammern eingeschlossen werden oder dürfen nur runde Klammern haben:
 %   \Lcs{drawbeam}\opt{\{(node)\}\{comp\}}, oder
-%   \Lcs{drawbeam}\opt{(node)\{comp\}}.
+%   \Lcs{drawbeam}\opt{(node)\{comp\}}. 
 %   \fi
 % \end{ltxsyntax}
 %
@@ -8241,26 +8241,36 @@
 % \begin{ltxsyntax}
 %   \xLcs{drawfiber}\cmditem{drawfiber}[options]{obj$_1$}{obj$_2$}\ldots
 % \end{ltxsyntax}
-% 
-% \ifENGLISH
-% The \Lcs{drawfiber} command takes ID, \Lkeyword{compname}, or nodes as
-% \prm{obj$_N$} arguments (see \prettyref{sec:accessobj}), but ID ranges like
-% with \Lcs{drawbeam} are not possible. If you specify more than two arguments,
-% you get connections $1\rightarrow 2$, $2\rightarrow 3$, and so on.
+%   \ifENGLISH
+%   This command can take a variable number of arguments (minimum of
+%   two) which can be either an ID, an ID range, a \Lkeyword{compname},
+%   or a PSTricks nodes (see \prettyref{sec:accessobj}). To distinguish
+%   between nodes and components, nodes must be either enclosed in
+%   parenthesis within the brackets, or enclosed only in parenthesis:
+%   \Lcs{drawbeam}\opt{\{(node)\}\{comp\}}, or
+%   \Lcs{drawbeam}\opt{(node)\{comp\}}. If you specify more than two
+%   arguments, you get connections $1\rightarrow 2$, $2\rightarrow 3$,
+%   and so on.
 %
-% The automatic fiber connections are drawn internally with \Lcs{drawfiber}
-% commands from each reference node to the component.
-% \fi
-% \ifGERMAN
-% Das \Lcs{drawfiber} Makro kann ID, \Lkeyword{compname} oder Knoten als
-% \prm{obj$_N$} Argumente verarbeiten (siehe \prettyref{sec:accessobj}), aber
-% ID-Intervalle wie bei \nxLcs{draw*beam} sind nicht möglich. Werden mehr als
-% zwei Argumente mitgegeben, werden die Verbindungen $1\rightarrow 2$,
-% $2\rightarrow 3$, usw. gezeichnet.
+%   The automatic fiber connections are drawn internally with
+%   \Lcs{drawfiber} commands from each reference node to the component.
+%   \fi
+%   \ifGERMAN 
+%   Dieses Makro akzeptiert eine variable Anzahl an Argumenten
+%   (mindestens zwei), die entweder eine ID, ein ID-Intervall, ein
+%   \Lkeyword{compname} oder ein PSTricks-Knoten sein können (siehe
+%   \prettyref{sec:accessobj}. Um zwischen Knoten und Komponenten
+%   unterscheiden zu können, müssen Knoten entweder in runde Klammern
+%   innerhalb der geschweiften Klammern eingeschlossen werden oder
+%   dürfen nur runde Klammern haben:
+%   \Lcs{drawbeam}\opt{\{(node)\}\{comp\}}, oder
+%   \Lcs{drawbeam}\opt{(node)\{comp\}}. Werden mehr als zwei Argumente
+%   mitgegeben, werden die Verbindungen $1\rightarrow 2$, $2\rightarrow
+%   3$, usw. gezeichnet.
 %
-% Die automatischen Faserverbindungen werden intern als \Lcs{drawfiber} von den
-% Referenzknoten zur Komponente gezeichnet.
-% \fi
+%   Die automatischen Faserverbindungen werden intern als
+%   \Lcs{drawfiber} von den Referenzknoten zur Komponente gezeichnet.
+%   \fi
 %
 % \ifENGLISH\subsection{Fiber angles}\fi
 % \ifGERMAN\subsection{Faserwinkel}\fi
@@ -8755,6 +8765,36 @@
 % \begin{ltxsyntax}
 %   \xLcs{drawwire}\cmditem{drawwire}[options]{obj$_1$}{obj$_2$}\ldots
 % \end{ltxsyntax}
+%   \ifENGLISH
+%   This command can take a variable number of arguments (minimum of
+%   two) which can be either an ID, an ID range, a \Lkeyword{compname},
+%   or a PSTricks nodes (see \prettyref{sec:accessobj}). To distinguish
+%   between nodes and components, nodes must be either enclosed in
+%   parenthesis within the brackets, or enclosed only in parenthesis:
+%   \Lcs{drawbeam}\opt{\{(node)\}\{comp\}}, or
+%   \Lcs{drawbeam}\opt{(node)\{comp\}}. If you specify more than two
+%   arguments, you get connections $1\rightarrow 2$, $2\rightarrow 3$,
+%   and so on.
+%
+%   The automatic connections are drawn internally with
+%   \Lcs{drawwire} commands from each reference node to the component.
+%   \fi
+%   \ifGERMAN 
+%   Dieses Makro akzeptiert eine variable Anzahl an Argumenten
+%   (mindestens zwei), die entweder eine ID, ein ID-Intervall, ein
+%   \Lkeyword{compname} oder ein PSTricks-Knoten sein können (siehe
+%   \prettyref{sec:accessobj}. Um zwischen Knoten und Komponenten
+%   unterscheiden zu können, müssen Knoten entweder in runde Klammern
+%   innerhalb der geschweiften Klammern eingeschlossen werden oder
+%   dürfen nur runde Klammern haben:
+%   \Lcs{drawbeam}\opt{\{(node)\}\{comp\}}, oder
+%   \Lcs{drawbeam}\opt{(node)\{comp\}}. Werden mehr als zwei Argumente
+%   mitgegeben, werden die Verbindungen $1\rightarrow 2$, $2\rightarrow
+%   3$, usw. gezeichnet.
+%
+%   Die automatischen Verbindungen werden intern als
+%   \Lcs{drawwire} von den Referenzknoten zur Komponente gezeichnet.
+%   \fi
 %
 % \begin{optionlist}
 %   \choitem[relative]{wirealign}{rel,relative,center,abs,absolute}
@@ -11602,6 +11642,8 @@
 %   \item Added component \cs{optarrowcomp}\see{comp:optarrowcomp}
 %   \item Added component \cs{optbarcomp}\see{comp:optbarcomp}
 %   \item Improved \cs{optdetector}\see{comp:optdetector}
+%   \item Extended \cs{drawfiber} to support component
+%     ranges\see{cmd:drawfiber}
 %   \item Fixed appearance of \cs{optfiber}\see{sec:bwd-comp-4.0}
 %   \item Fixed \opt{extnodealign} to affect also
 %     multipoles\see{prm:extnodealign}
@@ -14109,31 +14151,22 @@
     \def\pst@par{style=#1}%
   \fi
   \@ifnextchar[%]
-    {\drawconn@i}{\drawconn@i[]}%
-}%
+    {\drawconn@i}{\drawconn@i[]}}%
 \def\drawconn@i[#1]{%
   \addafter@par{#1}%
-  \POE@resolvecomprange\drawconn@ii}
-
+  \POE@normalizecomps\drawconn@ii}
 \def\drawconn@ii{%
-  \@ifnextchar(%)
+  \@ifnextchar\bgroup
     {\drawconn@iii}%
-    {\@ifnextchar\bgroup{\drawconn@iv}{}}%
-}%
-\def\drawconn@iii(#1){\drawconn@iv{(#1)}}%
-\def\drawconn@iv#1{%
-  \def\POE@tempe{#1}\drawconn@v
-}%
-\def\drawconn@v{%
-  \@ifnextchar(%)
-    {\drawconn@vi}%
-    {\@ifnextchar\bgroup{\drawconn@vii}{}}%
-}%
-\def\drawconn@vi(#1){\drawconn@vii{(#1)}}%
-\def\drawconn@vii#1{%
-  \expandafter\drawconn@viii\expandafter{\POE@tempe}{#1}%
-  \def\POE@tempe{#1}\drawconn@v}%
-\def\drawconn@viii#1#2{%
+    {}}%
+\def\drawconn@iii#1{%
+  \def\POE@tempe{#1}\drawconn@iv}%
+\def\drawconn@iv{%
+  \@ifnextchar\bgroup{\drawconn@v}{}}%
+\def\drawconn@v#1{%
+  \expandafter\drawconn@vi\expandafter{\POE@tempe}{#1}%
+  \def\POE@tempe{#1}\drawconn@iv}%
+\def\drawconn@vi#1#2{%
   \begingroup
     \let\psk@angleA\relax
     \let\psk@angleB\relax
@@ -14836,30 +14869,33 @@
 }%
 %    \end{macrocode}
 % \end{macro}
-% \begin{macro}{\POE@resolvecomprange}
+% \begin{macro}{\POE@normalizecomps}
+%   Expands all component parameters by resolving the ranges, i.e. {1-3}
+%   becomes {1}{2}{3}, and wrapping nodes with brackets, if necessary
+%   (1,1) becomes {(1,1)}.
 %    \begin{macrocode}
-\def\POE@resolvecomprange#1{%
+\def\POE@normalizecomps#1{%
   \def\POE@aftercomps{\expandafter#1\POE@comps}%
   \def\POE@comps{}%
-  \POE@resolvecomprange@i%
+  \POE@normalizecomps@i%
 }%
-\def\POE@resolvecomprange@i{%
+\def\POE@normalizecomps@i{%
   \@ifnextchar(%)
-    {\POE@resolvecomprange@ii}%
-    {\POE@resolvecomprange@iii}
+    {\POE@normalizecomps@ii}%
+    {\POE@normalizecomps@iii}
 }%
-\def\POE@resolvecomprange@ii(#1){%
-  \edef\POE@comps{\POE@comps(#1)}%
-  \POE@resolvecomprange@i
+\def\POE@normalizecomps@ii(#1){%
+  \edef\POE@comps{\POE@comps{(#1)}}%
+  \POE@normalizecomps@i
 }%
-\def\POE@resolvecomprange@iii{%
-  \@ifnextchar\bgroup{\POE@resolvecomprange@iv}{\POE@aftercomps}%
+\def\POE@normalizecomps@iii{%
+  \@ifnextchar\bgroup{\POE@normalizecomps@iv}{\POE@aftercomps}%
 }%
-\def\POE@resolvecomprange@iv#1{%
+\def\POE@normalizecomps@iv#1{%
   \def\POE@temp{#1\@empty}%
-  \expandafter\POE@resolvecomprange@v\POE@temp\@nil
+  \expandafter\POE@normalizecomps@v\POE@temp\@nil
 }%
-\def\POE@resolvecomprange@v#1#2\@nil{%
+\def\POE@normalizecomps@v#1#2\@nil{%
   \edef\POE@temp{#1}%
   \ifnum9<1#1\relax
     \def\POE@tempa{1}
@@ -14880,7 +14916,7 @@
   \else
     \edef\POE@comps{\POE@comps{#1#2}}%
   \fi
-  \POE@resolvecomprange@i%
+  \POE@normalizecomps@i%
 }%
 %    \end{macrocode}
 % \end{macro}
