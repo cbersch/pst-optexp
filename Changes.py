@@ -20,6 +20,6 @@ with open("Changes", "w") as f:
         txt_split = ' '.join(pat.findall(txt)).split('\\item')
         for m in txt_split:
             if m:
-                f.write("       * " + "\n           ".join(textwrap.wrap(m, 65)) + "\n")
+                f.write("       *" + "\n           ".join(textwrap.wrap(m, 65)) + "\n")
 
         f.write("\n")
