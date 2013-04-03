@@ -18,7 +18,7 @@
 %<stylefile>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<stylefile>\ProvidesPackage{pst-optexp}
 %<*stylefile>
-    [2013/03/20 v4.0alpha Optical experimental setups with PSTricks]
+    [2013/04/03 v4.0alpha Optical experimental setups with PSTricks]
 %</stylefile>
 %
 %<*driver>
@@ -251,7 +251,7 @@
 }
 \def\POE@styleitem@i[#1]#2{%
   \item[{#2}]%
-  \label{sty:#2}%
+  \label{sty:#2}\xdefLstyle{#2}%
   \begingroup\raggedright
   \prm{psstyle}%
   \settowidth\@tempdimb{\prm{psstyle}}%
@@ -267,6 +267,29 @@
     {\parbox[t]{\@tempdima}{\raggedleft default:~\ltd@textverb{#1}}}%
   \par\endgroup}
 
+\def\POE@option#1#2#3{%
+  \item[#1]%
+  \begingroup\raggedright
+  \ltd@textverb{=}%
+  \settowidth\@tempdimb{\ltd@textverb{=}}%
+  \settowidth\@tempdimc{#1}%
+  \@tempdimc=\dimexpr\labelwidth-\@tempdimc\relax
+  \ifdim\@tempdimc<0pt
+    \@tempdima=\dimexpr\linewidth-\@tempdimb+\@tempdimc-2em\relax
+  \else
+    \@tempdima=\dimexpr\linewidth-\@tempdimb-2em\relax
+  \fi
+  \ifblank{#3}
+    {}
+    {\settowidth\@tempdimb{default: #3}%
+     \@tempdima=\dimexpr\@tempdima-\@tempdimb-2em\relax}%
+  \parbox[t]{\@tempdima}{\raggedright #2}%
+  \ifblank{#3}
+    {}
+    {\hfill default:~#3}%
+  \par\endgroup
+  \nobreak\vspace{\itemsep}}
+
 \def\POE@optitem{%
   \@ifstar
     {\boolfalse{@tempswa}\POE@optitem@i}
@@ -276,8 +299,8 @@
     {\label{prm:#2}\xdefLkeyword{#2}}%
     {\xLkeyword{#2}}%
   \ifblank{#1}
-    {\ltd@option{#2}{#2}{#3}{}}
-    {\ltd@option{#2}{#2}{#3}{\ltd@textverb{#1}}}}%
+    {\POE@option{#2}{#3}{}}
+    {\POE@option{#2}{#3}{\ltd@textverb{#1}}}}%
 
 \def\POE@valitem{%
   \@ifstar
@@ -288,8 +311,8 @@
     {\label{prm:#2}\xdefLkeyword{#2}}%
     {\xLkeyword{#2}}%
   \ifblank{#1}
-    {\ltd@option{#2}{#2}{\prm{#3}}{}}
-    {\ltd@option{#2}{#2}{\prm{#3}}{\ltd@textverb{#1}}}}%
+    {\POE@option{#2}{\prm{#3}}{}}
+    {\POE@option{#2}{\prm{#3}}{\ltd@textverb{#1}}}}%
 
 \def\POE@choitem{%
   \@ifstar
@@ -300,8 +323,8 @@
     {\label{prm:#2}\xdefLkeyword{#2}}%
     {\xLkeyword{#2}}%
   \ifblank{#1}
-    {\ltd@option{#2}{#2}{\ltd@verblist{#3}}{}}
-    {\ltd@option{#2}{#2}{\ltd@verblist{#3}}{\ltd@textverb{#1}}}}%
+    {\POE@option{#2}{\ltd@verblist{#3}}{}}
+    {\POE@option{#2}{\ltd@verblist{#3}}{\ltd@textverb{#1}}}}%
 
 \def\POE@boolitem{%
   \@ifstar
@@ -312,8 +335,8 @@
     {\label{prm:#2}\xdefLkeyword{#2}}%
     {\xLkeyword{#2}}%
   \ifblank{#1}
-    {\ltd@option{#2}{#2}{\ltd@verblist{true,false}}{}}
-    {\ltd@option{#2}{#2}{\ltd@verblist{true,false}}{\ltd@textverb{#1}}}}%
+    {\POE@option{#2}{\ltd@verblist{true,false}}{}}
+    {\POE@option{#2}{\ltd@verblist{true,false}}{\ltd@textverb{#1}}}}%
 
 \def\POE@intitem{%
   \@ifstar
@@ -324,8 +347,8 @@
     {\label{prm:#2}\xdefLkeyword{#2}}%
     {\xLkeyword{#2}}%
   \ifblank{#1}
-    {\ltd@option{#2}{#2}{\prm{int}}{}}
-    {\ltd@option{#2}{#2}{\prm{int}}{\ltd@textverb{#1}}}}%
+    {\POE@option{#2}{\prm{int}}{}}
+    {\POE@option{#2}{\prm{int}}{\ltd@textverb{#1}}}}%
 
 \def\POE@numitem{%
   \@ifstar
@@ -336,8 +359,8 @@
     {\label{prm:#2}\xdefLkeyword{#2}}%
     {\xLkeyword{#2}}%
   \ifblank{#1}
-    {\ltd@option{#2}{#2}{\prm{num}}{}}
-    {\ltd@option{#2}{#2}{\prm{num}}{\ltd@textverb{#1}}}}%
+    {\POE@option{#2}{\prm{num}}{}}
+    {\POE@option{#2}{\prm{num}}{\ltd@textverb{#1}}}}%
 
 \def\POE@psnumitem{%
   \@ifstar
@@ -348,8 +371,8 @@
     {\label{prm:#2}\xdefLkeyword{#2}}%
     {\xLkeyword{#2}}%
   \ifblank{#1}
-    {\ltd@option{#2}{#2}{\prm{psnum}}{}}
-    {\ltd@option{#2}{#2}{\prm{psnum}}{\ltd@textverb{#1}}}}%
+    {\POE@option{#2}{\prm{psnum}}{}}
+    {\POE@option{#2}{\prm{psnum}}{\ltd@textverb{#1}}}}%
 
 \def\ltd@csitem{%
   \@ifstar
@@ -1828,9 +1851,12 @@
 %
 % \begin{optionlist}
 % \numitem[0.8]{labeloffset}
-% \ifGERMAN Der Abstand des Referenzknotens für die Beschriftung (roter Punkt) zur Komponentenmitte (blaues Kreuz).\fi
-% \ifENGLISH The offset of the label reference node (red dot) from the component
-% center (blue cross).\fi
+% \ifGERMAN Der Abstand des Referenzknotens für die Beschriftung (roter
+% Punkt) zur Komponentenmitte (blaues Kreuz).
+% \fi
+% \ifENGLISH The offset of the label reference node (red dot) from the
+% component center (blue cross).
+% \fi
 % \iffalse
 %<*ignore>
 % \fi
@@ -2710,7 +2736,7 @@
 % \fi
 \begin{LTXexample}[morekeywords={[21]{lenswidth}}]
 \begin{pspicture}(3,2)
-  \lens[lenswidth=0.5, beam](0,1)(2,1){thicklens}
+  \lens[lenswidth=0.5, beam](0,1)(2,1){thick lens}
   \lens[lenswidth=0.1, beam](2,1)(3,1)
 \end{pspicture}
 \end{LTXexample}
@@ -3311,15 +3337,15 @@
 %</ignore>
 % \fi
 % 
-% \ifGERMAN\section{Glan--Thompson prism}\fi
-% \ifENGLISH\section{Glan-Thompson-Prisma}\fi
+% \ifGERMAN\section{Glan-Thompson-Prisma}\fi
+% \ifENGLISH\section{Glan--Thompson prism}\fi
 %
 % \begin{ltxsyntax}
 % \dipoledesc{glanthompson}
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}[morekeywords={[21]{glanthompson}}] 
+\begin{LTXexample}[morekeywords={[21]{glanthompson}}]
 \begin{pspicture}(3,1.5)
   \glanthompson[beam](0,1)(3,1){Glan-Thompson}
 \end{pspicture}
@@ -4715,7 +4741,7 @@
 % this value. Two numbers define width and height directly.
 % \fi
 %
-% \numitem[0.1]{couplersep} 
+% \numitem[0.05]{couplersep} 
 % \ifGERMAN Der vertikale Abstand zwischen zwei Faserports.\fi
 % \ifENGLISH The vertical distance between two fiber ports.\fi
 % \iffalse
@@ -4729,7 +4755,32 @@
 % \iffalse
 %</ignore>
 % \fi
-% 
+%
+% \ifENGLISH If this value is set to \{\}, the separation is calculated
+% automatically according to the \Lkeyword{couplertype} and
+% \Lkeyword{couplersize}.
+% \fi
+% \ifGERMAN Wird dieser Wert auf \{\} gesetzt, dann wird der Abstand
+% automatisch berechnet, abhängig von \Lkeyword{couplertype} und
+% \Lkeyword{couplersize}.
+% \fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[morekeywords={[21]{couplersep}}]
+\begin{pspicture}(3,4.5)
+  \psset{couplersep={}, couplersize=0.5, labeloffset=0.5}
+  \optcoupler[couplertype=none]%
+       (0,4.5)(0,3.5)(3,4.5)(3,3.5){none}
+  \optcoupler[couplertype=rectangle]%
+       (0,3)(0,2)(3,3)(3,2){rectangle}
+  \optcoupler[couplertype=ellipse]%
+       (0,1.5)(0,0.5)(3,1.5)(3,0.5){ellipse}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % \choitem[ellipse]{couplertype}{none, ellipse, rectangle, cross}
 % \ifGERMAN Wählt zwischen unterschiedlichen Kopplertypen.\fi
 % \ifENGLISH Select between different coupler types.\fi
@@ -8231,38 +8282,39 @@
 %
 % \ifENGLISH
 % All available components can be connected with fiber connections, the
-% fiber components are connected automatically.
+% fiber components in \prettyref{chap:fibercomp} are connected automatically.
 % \fi
 % \ifGERMAN
 % Alle Komponenten können mit Fasern verbunden werden, die Faserkomponenten
-% werden automatisch verbunden.
+% in \prettyref{chap:fibercomp} werden automatisch verbunden.
 % \fi
 %
 % \begin{ltxsyntax}
 %   \xLcs{drawfiber}\cmditem{drawfiber}[options]{obj$_1$}{obj$_2$}\ldots
 % \end{ltxsyntax}
 %   \ifENGLISH
-%   This command can take a variable number of arguments (minimum of
-%   two) which can be either an ID, an ID range, a \Lkeyword{compname},
-%   or a PSTricks nodes (see \prettyref{sec:accessobj}). To distinguish
-%   between nodes and components, nodes must be either enclosed in
-%   parenthesis within the brackets, or enclosed only in parenthesis:
+%   This macro draws fiber connections and takes a variable number of
+%   arguments (minimum of two) which can be either an ID, an ID range, a
+%   \Lkeyword{compname}, or a PSTricks node (see
+%   \prettyref{sec:accessobj}). To distinguish between nodes and
+%   components, nodes must be either enclosed in parenthesis within the
+%   brackets, or enclosed only in parenthesis:
 %   \Lcs{drawbeam}\opt{\{(node)\}\{comp\}}, or
 %   \Lcs{drawbeam}\opt{(node)\{comp\}}. If you specify more than two
-%   arguments, you get connections $1\rightarrow 2$, $2\rightarrow 3$,
-%   and so on.
+%   arguments, it draws the connections $1\rightarrow 2$, $2\rightarrow
+%   3$, and so on.
 %
 %   The automatic fiber connections are drawn internally with
 %   \Lcs{drawfiber} commands from each reference node to the component.
 %   \fi
 %   \ifGERMAN 
-%   Dieses Makro akzeptiert eine variable Anzahl an Argumenten
-%   (mindestens zwei), die entweder eine ID, ein ID-Intervall, ein
-%   \Lkeyword{compname} oder ein PSTricks-Knoten sein können (siehe
-%   \prettyref{sec:accessobj}. Um zwischen Knoten und Komponenten
-%   unterscheiden zu können, müssen Knoten entweder in runde Klammern
-%   innerhalb der geschweiften Klammern eingeschlossen werden oder
-%   dürfen nur runde Klammern haben:
+%   Dieses Makro zeichnet Faserverbindungen und akzeptiert eine variable
+%   Anzahl an Argumenten (mindestens zwei), die entweder eine ID, ein
+%   ID-Intervall, ein \Lkeyword{compname} oder ein PSTricks-Knoten sein
+%   können (siehe \prettyref{sec:accessobj}. Um zwischen Knoten und
+%   Komponenten unterscheiden zu können, müssen Knoten entweder in runde
+%   Klammern innerhalb der geschweiften Klammern eingeschlossen werden
+%   oder dürfen nur runde Klammern haben:
 %   \Lcs{drawbeam}\opt{\{(node)\}\{comp\}}, oder
 %   \Lcs{drawbeam}\opt{(node)\{comp\}}. Werden mehr als zwei Argumente
 %   mitgegeben, werden die Verbindungen $1\rightarrow 2$, $2\rightarrow
@@ -8331,7 +8383,7 @@
 % the component node.
 %
 % Considering the following example, this means that the start angles of the red
-% fibers are rotated by 180° with respect to the green fibers. The angles at the
+% fibers are rotated by 180° with respect to the blue fibers. The angles at the
 % component do not change.
 % \fi
 % \ifGERMAN
@@ -8341,7 +8393,7 @@
 % Richtung des entsprechenden Komponentenknotens orientiert. 
 %
 % Das führt dazu, dass im folgenden Beispiel die Anfangswinkel der roten Fasern
-% um 180° gegenüber den grünen Fasern gedreht sind, die Winkel an der Komponente
+% um 180° gegenüber den blauen Fasern gedreht sind, die Winkel an der Komponente
 % bleiben unverändert.
 % \fi
 %
@@ -8351,11 +8403,11 @@
 \begin{LTXexample}[linerange={1-1,4-4,7-14}]
 \begin{pspicture}(-2,-1.6)(2,2)
   \psset[optexp]{optboxsize=1.6 0.8}
-  \addtopsstyle{Fiber}{ArrowInside=->, arrowscale=1.5}
+  \addtopsstyle{Fiber}{ArrowInside=->, ArrowInsidePos=0.3, arrowscale=1.5}
   \optbox[position=end](0,1)(0,0)
   \psarc[fillstyle=solid,fillcolor=gray!20, linestyle=none](0,0){2}{0}{180}
   \psline[linestyle=dashed]([Xnodesep=-2]\oenodeIn{})([Xnodesep=2]\oenodeIn{})
-  \addtopsstyle{Fiber}{linecolor=green!90!black}
+  \addtopsstyle{Fiber}{linecolor=blue}
   \multido{\i=10+40}{5}{%
     \drawfiber(2;\i){}
   }
@@ -8377,9 +8429,9 @@
 % maybe in a loop or similar, see \prettyref{ex:nalm} and
 % \prettyref{ex:recirc-loop}.
 %
-% In this case, the curve angles are determined by the component which the
-% respective curve end is connected to. The fibers are always directed away from
-% the component center.
+% In this case, the curve angles are determined by the orientation of
+% the component which the respective curve end is connected to. The
+% fibers are always directed away from the component center.
 % \fi
 % \ifGERMAN
 % Diese Variante ist sehr nützlich um glattere Verbindungen zwischen Komponenten
@@ -8445,8 +8497,8 @@
 % \fi
 \begin{LTXexample}[linerange={1-5,10-11}]
 \begin{pspicture}(1,-1.7)(7,1.7)
-  \pnode(0,0){A}\pnode(3,0){B}
-  \pnode(4,0){C}\pnode(7,0){D}
+  \pnode(0,0){A}\pnode(4,0){B}
+  \pnode(3,0){C}\pnode(7,0){D}
   \optbox[angle=30](A)(B)
   \optbox[angle=-30](C)(D)
   \psline[style=Refline, linestyle=dashed](\oenodeTrefA{1})(\oenodeTrefB{1})
@@ -8461,19 +8513,21 @@
 % \fi
 %
 % \item[center] 
-%   \ifENGLISH The fiber angles both at the node and the component are relative
-%   to the connection between the involved interface node and the center node of
-%   the component. In most cases this is equivalent to \opt{relative}, but
-%   necessary e.g. for \Lcomp{optcirculator}. In the example, the green fiber
-%   shows the correct alignment, while the red one is with \opt{relative}
-%   alignment.
+%   \ifENGLISH 
+%   The fiber angles both at the node and the component are relative to
+%   the connection between the involved interface node and the center
+%   node of the component. In most cases this is equivalent to
+%   \opt{relative}, but necessary e.g. for \Lcomp{optcirculator} and
+%   \Lcomp{elecmixer}. In the example, the green fiber shows the correct
+%   alignment, while the red one is with \opt{relative} alignment.
 %   \fi
 %   \ifGERMAN
-%   Die Winkel sowohl am Knoten als auch an der Komponente sind relativ zu der
-%   Verbindung zwischen dem betroffenen Komponentenknoten und der
-%   Komponentenmitte. Meistens ist das äquivalent zu \opt{relative}, wird aber
-%   z.B. für \Lcomp{optcirculator} benötigt. In dem Beispiel hat die grüne Faser
-%   die korrekte Ausrichtung, während die rote \opt{relative} ausgerichtet wird.
+%   Die Winkel sowohl am Knoten als auch an der Komponente sind relativ
+%   zu der Verbindung zwischen dem betroffenen Komponentenknoten und der
+%   Komponentenmitte. Meistens ist das äquivalent zu \opt{relative},
+%   wird aber z.B. für \Lcomp{optcirculator} und \Lcomp{elecmixer}
+%   benötigt. In dem Beispiel hat die grüne Faser die korrekte
+%   Ausrichtung, während die rote \opt{relative} ausgerichtet wird.
 %   \fi
 %
 % \iffalse
@@ -8533,7 +8587,25 @@
 %   \numitem[0]{fiberangleB}
 %   \ifENGLISH Like \Lkeyword{fiberangleA}, but for the end angle.\fi
 %   \ifGERMAN Wie \Lkeyword{fiberangleB}, aber für den Endwinkel.\fi
-% 
+%
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[morekeywords={[21]fiberangleA, fiberangleB}, linerange={1-3,7-9}]
+\begin{pspicture}(0,-1)(4,1)
+  \pnode(0,0){A}\pnode(4,0){B}
+  \optbox[angle=30](A)(B)
+  \psline[style=Refline, linestyle=dashed](\oenodeTrefA{})(\oenodeTrefB{})
+  \psline[style=Refline, linestyle=dashed](\oenodeRefA{})(\oenodeRefB{})
+  \psdot(\oenodeRefA{})\psdot(\oenodeRefB{})
+  \drawfiber[fiberangleA=-90](A){}
+  \drawfiber[fiberangleB=-90]{}(B)
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
 %   \choitem[auto]{startnode}{auto, N, 1, 2, \ldots}
 %   \ifGERMAN Für die Verbindungen mit \Lcs{drawfiber} werden die Knoten
 %   genommen, die sich am nächsten sind. Das passt häufig, aber nicht
@@ -8569,10 +8641,10 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}
+\begin{LTXexample}[linerange={1-1,3-6}]
 \begin{pspicture}(3,2)
-  \pnode(-0.5,1){A}\pnode(1.5,1){B}\pnode(3.5,1){C}
   \psset{label=0, optboxwidth=1}
+  \pnode(-0.5,1){A}\pnode(1.5,1){B}\pnode(3.5,1){C}
   \optbox(A)(B){Box1}\optbox(B)(C){Box2}
   \drawfiber{1}{2}
 \end{pspicture}
@@ -8593,11 +8665,11 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}
-\begin{pspicture}(3,2)
-  \pnode(0,0.5){A}\pnode(3,0.5){B}
-  \pnode([offset=1]B){C}\pnode(A|C){D}
+\begin{LTXexample}[linerange={1-1,3-7}]
+\begin{pspicture}(2,2)
   \psset{label=0}
+  \pnode(0,0.5){A}\pnode(2,0.5){B}
+  \pnode([offset=1]B){C}\pnode(A|C){D}
   \optbox(A)(B){Box1}\optbox(C)(D){Box2}
   \drawfiber{1}{2}
 \end{pspicture}
@@ -8625,9 +8697,9 @@
 % \fi
 \begin{LTXexample}[morekeywords={[21]startnode}]
 \begin{pspicture}(2,2)
+  \psset{label=0}
   \pnode(0,0.5){A}\pnode(2,0.5){B}
   \pnode([offset=1]B){C}\pnode(A|C){D}
-  \psset{label=0}
   \optbox(A)(B){Box1}\optbox(C)(D){Box2}
   \drawfiber[startnode=1]{1}{2}
   \drawfiber[startnode=N, linecolor=black]{1}{2}
@@ -8652,7 +8724,7 @@
 \begin{pspicture}(2.1,3)
   \pnode(0,0){A}\pnode(2,0){B}
   \pnode(0.3,3){C}\pnode(1.7,3){D}
-  \psset{fiber=none}
+  \psset{fiber=none, arrowscale=1.2, arrowinset=0}
   \optcoupler[fiber=l,
                 addtoFiberIn1={angleA=0, ArrowInside=->},
                 addtoFiberIn2={angleA=180, arrows=<-},
@@ -8689,6 +8761,8 @@
 %
 %   \valitem{addtoFiber}{list}
 %     \addtostylemsg{Fiber}
+%   \ifGERMAN Siehe z.B. \prettyref{ex:recirc-loop}.\fi
+%   \ifENGLISH See for example \prettyref{ex:recirc-loop}.\fi
 %
 %   \valitem{newFiber}{list}
 %     \newstylemsg{Fiber}
@@ -8810,35 +8884,19 @@
 %   \ifENGLISH See \Lkeyword{fiberangleB}.\fi
 %
 %   \valitem[angle]{wirestyle}{string}
-%   \ifGERMAN Siehe \Lkeyword{fiberstyle}, lediglich der Vorgabewert ist hier \opt{angle}.\fi
-%   \ifENGLISH See \Lkeyword{fiberangleB}, the default value is \opt{angle}.\fi
-%
-%   \choitem[all]{wire}{[*+]none,all,i,o,\prm{refpoint}}
-%   \ifENGLISH 
-%   This parameter selects which wire connections are drawn.  The value
-%   of this parameter can affect either only the electrical components
-%   (if the value is prefixed with \opt{*}), only free-ray and fiber
-%   components (prefixed with \opt{+}), or all components otherwise.
-%
-%   See \Lkeyword{fiber} for details and examples.
-%   \fi
-%   \ifGERMAN
-%   Dieser Parameter gibt an, welche elektrische Verbindungen gezeichnet werden. Der
-%   Parameter kann nur die elektrischen Komponenten betreffen (falls ein \opt{*}
-%   vorangestellt ist), nur die Faser- und Freistrahlkomponenten (\opt{+} wird
-%   vorangestellt), oder alle Komponenten. 
-%
-%   Siehe \Lkeyword{fiber} für Details und Beispiele.
-%   \fi
+%   \ifGERMAN Siehe \Lkeyword{fiberstyle}, der Vorgabewert ist jedoch \opt{angle}.\fi
+%   \ifENGLISH See \Lkeyword{fiberstyle}, the default value is \opt{angle}.\fi
 % 
 %   \styleitem{Wire}
 %   \ifENGLISH
-%   The appearance of wires is controlled with this style. The optional
-%   argument of \Lcs{drawwire} can be used as well, these options can overwrite
+%   The appearance of wires is controlled with this style, compare with
+%   \prettyref{sec:fiberappearance}. The optional argument of
+%   \Lcs{drawwire} can be used as well, these options can overwrite
 %   settings from the \Lstyle{Wire} style.
 %   \fi
 %   \ifGERMAN
-%   Das Aussehen der elektrischen Verbindungen wird durch diesen Stil vorgegeben. Das optionale
+%   Das Aussehen der elektrischen Verbindungen wird durch diesen Stil
+%   vorgegeben, analog zu \prettyref{sec:fiberappearance}. Das optionale
 %   Argument von \Lcs{drawwire} kann ebenfalls verwendet werden, die
 %   entsprechenden Parameter können die Einstellungen von \Lstyle{Wire}
 %   überschreiben.
@@ -9015,6 +9073,26 @@
 % \fi
 % \end{enumerate}
 %
+% \begin{optionlist}
+%   \choitem[all]{wire}{[*+]none,all,i,o,\prm{refpoint}}
+%   \ifENGLISH 
+%   This parameter selects which wire connections are drawn.  The value
+%   of this parameter can affect either only the electrical components
+%   (if the value is prefixed with \opt{*}), only free-ray and fiber
+%   components (prefixed with \opt{+}), or all components otherwise.
+%
+%   See \Lkeyword{fiber} for details and examples.
+%   \fi
+%   \ifGERMAN
+%   Dieser Parameter gibt an, welche elektrische Verbindungen gezeichnet werden. Der
+%   Parameter kann nur die elektrischen Komponenten betreffen (falls ein \opt{*}
+%   vorangestellt ist), nur die Faser- und Freistrahlkomponenten (\opt{+} wird
+%   vorangestellt), oder alle Komponenten. 
+%
+%   Siehe \Lkeyword{fiber} für Details und Beispiele.
+%   \fi
+% \end{optionlist}
+%
 %
 % \ifENGLISH\subsection{Appearance of automatic connections}\fi
 % \ifGERMAN\subsection{Aussehen der automatischen Verbindungen}\fi
@@ -9180,18 +9258,30 @@
 %   \opt{new}\prm{style}\\
 %   \opt{addto}\prm{style}
 %   \end{tabular}}]
-%   \xLkeyword{newFiberIn}\xLkeyword{addtoFiberIn}
+%   \xLkeyword{newFiberIn}\xLkeyword{addtoFiberIn}%
+%   \label{prm:newFiberIn}\label{prm:addtoFiberIn}
 %   \xLkeyword{newFiberIn1}\xLkeyword{addtoFiberIn1}
+%   \label{prm:newFiberIn1}\label{prm:addtoFiberIn1}
 %   \xLkeyword{newFiberIn2}\xLkeyword{addtoFiberIn2}
+%   \label{prm:newFiberIn2}\label{prm:addtoFiberIn2}
 %   \xLkeyword{newFiberOut}\xLkeyword{addtoFiberOut}
+%   \label{prm:newFiberOut}\label{prm:addtoFiberOut}
 %   \xLkeyword{newFiberOut1}\xLkeyword{addtoFiberOut1}
+%   \label{prm:newFiberOut1}\label{prm:addtoFiberOut1}
 %   \xLkeyword{newFiberOut2}\xLkeyword{addtoFiberOut2} 
+%   \label{prm:newFiberOut2}\label{prm:addtoFiberOut2}
 %   \xLkeyword{newWireIn}\xLkeyword{addtoWireIn}
+%   \label{prm:newWireIn}\label{prm:addtoWireIn}
 %   \xLkeyword{newWireIn1}\xLkeyword{addtoWireIn1}
+%   \label{prm:newWireIn1}\label{prm:addtoWireIn1}
 %   \xLkeyword{newWireIn2}\xLkeyword{addtoWireIn2}
+%   \label{prm:newWireIn2}\label{prm:addtoWireIn2}
 %   \xLkeyword{newWireOut}\xLkeyword{addtoWireOut}
+%   \label{prm:newWireOut}\label{prm:addtoWireOut}
 %   \xLkeyword{newWireOut1}\xLkeyword{addtoWireOut1}
+%   \label{prm:newWireOut1}\label{prm:addtoWireOut1}
 %   \xLkeyword{newWireOut2}\xLkeyword{addtoWireOut2} 
+%   \label{prm:newWireOut2}\label{prm:addtoWireOut2}
 %   \ifENGLISH 
 %   For every style two appropriate keys \opt{new}\prm{style} and
 %   \opt{addto}\prm{style} are provided which can be used to change the
@@ -11565,17 +11655,10 @@
 % \let\index@preamble=\relax
 % \renewcommand{\setindexpreamble}[1]{\def\index@preamble{#1}}
 % \renewcommand*{\idx@heading}{%
-%^^A   \twocolumn[\idx@@heading{\indexname}]%
+%   \addchap{\indexname}%
 %   \@mkboth{\indexname}{\indexname}%
 % }
 % \renewenvironment{theindex}{%
-%^^A   \if@twocolumn
-%^^A     \@restonecolfalse
-%^^A   \else
-%^^A     \@restonecoltrue
-%^^A   \fi
-%^^A   \columnseprule \z@
-%^^A   \columnsep 35\p@
 %   \idx@heading%
 %   \index@preamble\par\nobreak
 %   \thispagestyle{\indexpagestyle}\parindent\z@
@@ -11583,7 +11666,6 @@
 %   \setlength{\parfillskip}{\z@ \@plus 1fil}%
 %   \let\item\@idxitem
 % }{%
-%^^A   \if@restonecol\onecolumn\else\clearpage\fi
 %  \clearpage
 % }
 % \renewcommand*\@idxitem{\par\hangindent 40\p@}
@@ -11643,7 +11725,9 @@
 %   \item Added component \cs{optbarcomp}\see{comp:optbarcomp}
 %   \item Improved \cs{optdetector}\see{comp:optdetector}
 %   \item Extended \cs{drawfiber} to support component
-%     ranges\see{cmd:drawfiber}
+%     ranges\see{cs:drawfiber}
+%   \item Extended \opt{couplersep} to support automatic
+%     calculation\see{prm:couplersep}
 %   \item Fixed appearance of \cs{optfiber}\see{sec:bwd-comp-4.0}
 %   \item Fixed \opt{extnodealign} to affect also
 %     multipoles\see{prm:extnodealign}
@@ -13248,7 +13332,7 @@
   \fi
 }%
 \define@key[psset]{optexp}{couplersep}{%
-  \pst@checknum{#1}\POE@key@couplersep
+  \edef\POE@key@couplersep{#1}%
 }
 \define@choicekey+[psset]{optexp}{couplertype}%
   [\val\nr]{none,elliptic,ellipse,cross,rectangle}%
@@ -13358,7 +13442,7 @@
   \fi
 }%
 \define@key[psset]{optexp}{eleccouplersep}{%
-  \pst@checknum{#1}\POE@key@eleccouplersep
+  \edef\POE@key@eleccouplersep{#1}%
 }
 \define@choicekey+[psset]{optexp}{eleccouplertype}%
   [\val\nr]{standard, directional}%
@@ -18126,12 +18210,11 @@
 % \begin{macro}{\optcoupler@nodes}
 %    \begin{macrocode}
 \def\optcoupler@nodes{%
-  \edef\@sep{\POE@key@couplersep\space 0.5 mul }%
   \newOptexpFiberComp{%
-    {@@x neg @@y0 \@sep add}
-    {@@x neg @@y0 \@sep sub}
-    {@@x @@y0 \@sep add}
-    {@@x @@y0 \@sep sub} }%
+    {@@x neg @@y0 @@sep add}
+    {@@x neg @@y0 @@sep sub}
+    {@@x @@y0 @@sep add}
+    {@@x @@y0 @@sep sub} }%
   \pnode(0,0){\oenodeCenter{}}
 }%
 %    \end{macrocode}
@@ -18141,22 +18224,34 @@
 %    \begin{macrocode}
 \def\POE@coupler@ref{%
   \POE@setref{%
-    /@@y0
-    \ifx\POE@key@coupleralign\POE@str@top
-      \POE@key@couplersep\space -0.5 mul
-    \else\ifx\POE@key@coupleralign\POE@str@bottom
-      \POE@key@couplersep\space 0.5 mul
-    \else
-      0
-    \fi\fi
-    def
     /@@x \POE@key@couplerwidth\space 0.5 mul def
     \ifx\POE@key@couplertype\POE@str@none
-      \POE@key@couplersep
+      \ifx\POE@key@couplersep\@empty
+        /@@y \POE@key@couplerheight\space 0.5 mul 0.05 0.2 0.8 mul div mul def
+      \else
+        /@@y \POE@key@couplersep\space 0.5 mul def
+      \fi
+      /@@sep @@y def
     \else
-      \POE@key@couplerheight\space 0.5 mul
+      /@@y \POE@key@couplerheight\space 0.5 mul def
+      \ifx\POE@key@couplersep\@empty
+        \ifx\POE@key@couplertype\POE@str@ellipse
+          /@@sep @@y 0.05 0.2 0.8 mul div mul def
+        \else
+          /@@sep @@y 0.5 mul def
+        \fi
+      \else
+        /@@sep \POE@key@couplersep\space 0.5 mul def
+      \fi
     \fi
-    \space /@@y ED
+    /@@y0 @@sep
+    \ifx\POE@key@coupleralign\POE@str@bottom
+    \else\ifx\POE@key@coupleralign\POE@str@top
+      neg
+    \else
+      pop 0
+    \fi\fi
+    def
   }%
 }%
 %    \end{macrocode}
@@ -18516,18 +18611,21 @@
 %    \begin{macrocode}
 \def\eleccoupler@ref{%
   \POE@setref{%
-    /@@y0
-    \ifx\POE@key@eleccoupleralign\POE@str@top
-      \POE@key@eleccouplersep\space -0.5 mul
-    \else\ifx\POE@key@eleccoupleralign\POE@str@bottom
-      \POE@key@eleccouplersep\space 0.5 mul
-    \else
-      0
-    \fi\fi
-    def
-    /@@sep \POE@key@eleccouplersep\space 0.5 mul def
     /@@x \POE@key@eleccouplerwidth\space 0.5 mul def
     /@@y \POE@key@eleccouplerheight\space 0.5 mul def
+    \ifx\POE@key@eleccouplersep\@empty
+      /@@sep @@y 0.75 mul def
+    \else
+      /@@sep \POE@key@eleccouplersep\space 0.5 mul def
+    \fi
+    /@@y0 @@sep
+    \ifx\POE@key@eleccoupleralign\POE@str@bottom
+    \else\ifx\POE@key@eleccoupleralign\POE@str@top
+      neg
+    \else
+      pop 0
+    \fi\fi
+    def
   }%
 }%
 %    \end{macrocode}
@@ -18536,12 +18634,11 @@
 % \begin{macro}{\eleccoupler@nodes}
 %    \begin{macrocode}
 \def\eleccoupler@nodes{%
-  \edef\@sep{\POE@key@eleccouplersep\space 0.5 mul }%
   \newOptexpElecComp{%
-    {@@x neg @@y0 \@sep add}
-    {@@x neg @@y0 \@sep sub}
-    {@@x @@y0 \@sep add}
-    {@@x @@y0 \@sep sub} }%
+    {@@x neg @@y0 @@sep add}
+    {@@x neg @@y0 @@sep sub}
+    {@@x @@y0 @@sep add}
+    {@@x @@y0 @@sep sub} }%
   \pnode(0,0){\oenodeCenter{}}
 }%
 %    \end{macrocode}
