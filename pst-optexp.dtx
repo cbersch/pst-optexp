@@ -258,13 +258,13 @@
   \settowidth\@tempdimc{#2}%
   \@tempdimc=\dimexpr\@tempdimc+\labelsep-\labelwidth\relax
   \ifdim\@tempdimc>0pt%
-    \@tempdima=\dimexpr\linewidth-\@tempdimb-\@tempdimc\relax
+    \@tempdima=\dimexpr\linewidth-\@tempdimb-\@tempdimc-1em\relax
   \else
-    \@tempdima=\dimexpr\linewidth-\@tempdimb\relax
+    \@tempdima=\dimexpr\linewidth-\@tempdimb-1em\relax
   \fi
   \ifblank{#1}
     {}
-    {\parbox[t]{\@tempdima}{\raggedleft default:~\ltd@textverb{#1}}}%
+    {\hfill\parbox[t]{\@tempdima}{\raggedleft default:~\ltd@textverb{#1}}}%
   \par\endgroup}
 
 \def\POE@option#1#2#3{%
@@ -3496,7 +3496,7 @@
 % \end{optionlist}
 %
 % \begin{stylelist}
-% \styleitem[arrowscale=0.8, linewidth=\cs{pslinewidth}, dotsize=3\cs{pslinewidth}]{Polarization}
+% \styleitem[arrowscale=0.8, linewidth=0.7\cs{pslinewidth}, dotsize=3\cs{pslinewidth}]{Polarization}
 % \ifGERMAN Bestimmt das Aussehen der Polarisationssymbole.\fi
 % \ifENGLISH Affects the style of the polarisation symbols.\fi
 % \end{stylelist}
@@ -5617,8 +5617,8 @@
 % \fi
 \begin{LTXexample}
 \begin{pspicture}(3,1.5)
-  \newpsstyle{OptComp}{linewidth=2\pslinewidth}
-  \newpsstyle{DetectorStyle}{linewidth=0.5\pslinewidth}
+  \newpsstyle{OptComp}{linewidth=3\pslinewidth}
+  \newpsstyle{DetectorStyle}{linewidth=0.333\pslinewidth}
   \optdetector[dettype=diode](0,1)(2,1)
 \end{pspicture}
 \end{LTXexample}
