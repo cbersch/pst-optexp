@@ -2180,8 +2180,12 @@
 % \fi
 %
 % \boolitem{endbox}
-% \ifGERMAN Dieser Parameter ist äquivalent zu \Lkeyword{position}\opt{=end}.\fi
-% \ifENGLISH This parameter is equivalent to \Lkeyword{position}\opt{=end}.\fi
+% \ifGERMAN Dieser Parameter sollte nicht mehr verwendet werden, er ist
+% äquivalent zu \Lkeyword{position}\opt{=end}.
+% \fi
+% \ifENGLISH This parameter should not be used any more, it is
+% equivalent to \Lkeyword{position}\opt{=end}.
+% \fi
 % \end{optionlist}
 % 
 %
@@ -6572,31 +6576,52 @@
 % \label{chap:connecting}
 % 
 % \ifGERMAN 
-% Das \nxLPack{pst-optexp}-Paket stellt unterschiedlichen Methoden bereit,
-% Komponenten vollautomatisch oder manuell, mit Fasern oder mit Lichtstrahlen zu
-% verbinden.
+% Das \nxLPack{pst-optexp}-Paket stellt unterschiedlichen Methoden
+% bereit, Komponenten vollautomatisch oder manuell, mit Lichtstrahlen,
+% Fasern oder Drähten zu verbinden.
 % \begin{compactitem}
-% \item In \prettyref{sec:accessobj} wird beschrieben wie Komponenten und Knoten für Verbindungen angesprochen werden.
-% \item Strahlverbindungen im Allgemeinen und das Verhalten von Einzelstrahlen wir in \prettyref{sec:drawbeam} beschrieben.
-% \item \prettyref{sec:drawwidebeam} erweitert diese Beschreibung von Strahlverbindungen auf ausgedehnte Strahlen.
-% \item In \prettyref{sec:error-handling} wird gezeigt, wie fehlerhafte Strahlverbindungen (verfehlen von Grenzflächen) gehandhabt wird).
-% \item \prettyref{sec:custombeam} erläutert, wie stückweise definierte Strahlengänge einfach realisiert werden können.
-% \item Manuelle und automatische Faserverbindungen werden in \prettyref{sec:drawfiber} behandelt.
-% \item \prettyref{sec:layers} erklärt das Konzept der «front» und «back»-Ebene.
+% \item In \prettyref{sec:accessobj} wird beschrieben wie Komponenten
+%   und Knoten für Verbindungen angesprochen werden.
+% \item Strahlverbindungen im Allgemeinen und das Verhalten von
+%   Einzelstrahlen wird in \prettyref{sec:drawbeam} beschrieben.
+% \item \prettyref{sec:drawwidebeam} erweitert diese Beschreibung von
+%   Strahlverbindungen auf ausgedehnte Strahlen und deren Eigenheiten.
+% \item In \prettyref{sec:error-handling} wird gezeigt, wie fehlerhafte
+%   Strahlverbindungen (verfehlen von Grenzflächen) gehandhabt wird).
+% \item \prettyref{sec:custombeam} erläutert, wie bestimmte, stückweise
+%   definierte Strahlengänge, wie z.B. bei eine Teleskop, einfach
+%   realisiert werden können.
+% \item Manuelle Faserverbindungen werden in \prettyref{sec:drawfiber}
+%   behandelt, manuelle elektrischen Verbindungen, die sehr ähnlich
+%   funktionieren, in \prettyref{sec:drawwire}.
+% \item Automatische Verbindungen werden in
+%   \prettyref{sec:drawconn-auto} erklärt.
+% \item \prettyref{sec:layers} erklärt das Konzept der «front» und
+%   «back»-Ebene.
 % \end{compactitem}
 % \fi
 % \ifENGLISH
-% The \LPack{pst-optexp} package provides several methods for automatic and
-% manual beam and fiber drawing.  
-% 
+% The \LPack{pst-optexp} package provides several methods for automatic
+% and manual connections of components with beams, fibers, or wires.
 % \begin{compactitem}
-% \item \prettyref{sec:accessobj} describes how to access objects and nodes for use with connections.
-% \item Beam drawing in general and the behavior of single beams is explained in \prettyref{sec:drawbeam}.
-% \item \prettyref{sec:drawwidebeam} extends this description of beam drawing to wide beams.
-% \item \prettyref{sec:error-handling} shows how errors in beam connections (missed interfaces etc.) are handled.
-% \item \prettyref{sec:custombeam} explains how customized, piecewise defined beam paths are constructed.
-% \item Manual and automatic fiber connections are described in \prettyref{sec:drawfiber}.
-% \item \prettyref{sec:layers} introduces the concept of front and back layer for the drawings.
+% \item \prettyref{sec:accessobj} describes how to access objects and
+%   nodes for use with the connection macros.
+% \item Beam drawing in general and the behavior of single beams is
+%   explained in \prettyref{sec:drawbeam}.
+% \item \prettyref{sec:drawwidebeam} extends this description of beam
+%   drawing to wide beams and their special properties.
+% \item \prettyref{sec:error-handling} shows how errors in beam
+%   connections (missed interfaces etc.) are handled.
+% \item \prettyref{sec:custombeam} explains how customized, piecewise
+%   defined beam paths, like e.g. in a telescope, can be easily
+%   constructed.
+% \item Manual fiber connections are described in
+%   \prettyref{sec:drawfiber}, manuel wire connections, which show the
+%   same behavior, are treated in \prettyref{sec:drawwire}.
+% \item Automatic connections are explained in
+%   \prettyref{sec:drawconn-auto}.
+% \item \prettyref{sec:layers} introduces the concept of front and back
+%   layer for the drawings.
 % \end{compactitem}
 % \fi
 % \ifGERMAN\section{Zugriff auf Komponenten}\fi
@@ -7892,14 +7917,18 @@
 % \label{sec:error-handling}
 %
 % \ifGERMAN
-% Da alle Strahlen direkt mit Postscript berechnet und gezeichnet werden, ist
-% eine umfassende Fehlerbehandlung zur Zeit der Kompilation nicht möglich. Um
-% jedoch trotzdem fehlerfreie Bilder zu bekommen, wird der Strahlengang
-% abgebrochen, sobald eine Situation eintritt, die nicht unterstützt wird. Das kann
-% eintreten, falls der Strahl eine Grenzfläche nicht trifft, oder
-% Totalreflektion auftritt.
+% Alle Strahlen werden direkt mit Postscript berechnet und gezeichnet,
+% so dass eine umfassende Fehlerbehandlung zur Zeit der Kompilation
+% nicht möglich ist. Um jedoch trotzdem fehlerfreie Bilder zu bekommen,
+% wird der Strahlengang abgebrochen, sobald eine Situation eintritt, die
+% nicht unterstützt wird. Das kann eintreten, falls der Strahl eine
+% Grenzfläche nicht trifft, Totalreflektion auftritt oder wenn die
+% folgende Komponente keine Freistrahlverbindungen unterstützt. Die
+% folgenden Beispiele zeigen Situationen, in denen diese Fehler
+% auftreten:
 % \fi
-% \ifENGLISH All beam are calculated and drawn directly in Postscript, so that a
+% \ifENGLISH 
+% All beam are calculated and drawn directly in Postscript, so that a
 % comprehensive error handling at compilation time is not possible. If a
 % situation arises which is not supported by the drawing algorithm, the beam
 % path is truncated at this point. This happens in the following cases:
@@ -7932,7 +7961,7 @@
 % \fi
 %
 % \item
-%   \ifENGLISH When total internal reflection occurs at an interface which is
+%   \ifENGLISH Total internal reflection occurs at an interface which is
 %   not set up for this. The red beam in the following example would be
 %   reflected, but this is not supported and the beam is truncated at the
 %   interface where the total internal reflection occurs.
@@ -7958,7 +7987,6 @@
 % \iffalse
 %</ignore>
 % \fi
-% \end{enumerate}
 %
 % \ifGERMAN Dasselbe gilt ebenfalls für aufgeweitete Strahlen (siehe
 % \prettyref{sec:drawwidebeam}). Bei diesen wird der Strahlengang abgebrochen,
@@ -7968,6 +7996,45 @@
 % well, the beam path is interrupted as soon as one of the marginal rays has an
 % error.
 % \fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(3,2.5)
+  \pnode(0,2){A}\pnode(3,0){B}
+  \optplane(A)
+  \optprism[n=1.8](A)([Xnodesep=1.5]A)(B)
+  \optplane(B)
+  \drawwidebeam[beamdiv=10, linecolor=red]{-}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
+% \item 
+%   \ifGERMAN Eine Komponente soll verbunden werden, die jedoch keine
+%   Freistrahlverbindungen unterstützt.
+%   \fi
+%   \ifENGLISH A component is to be connected, which does not support
+%   free-ray connections.
+%   \fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(3,2.7)
+  \pnode(0,1){A}\pnode(2,1){B}
+  \optplate[position=start](A)(B)
+  \lens[lens=4 4 2, abspos=0.5, n=2.5](A)(B)
+  \fiberdelayline[fdlsize=1 0.7, position=end, fiber=none](A)(B)
+  \drawbeam[beampos=0.2, linecolor=red]{-}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+% \end{enumerate}
 %
 % \begin{optionlist}
 %   \boolitem[false]{pswarning} 
@@ -11064,10 +11131,11 @@
 %
 % \noindent
 % \begin{pspicture}(0, -0.5)(3,1)
-%   \pnode(0,0.5){A}\pnode(2.5,0.5){B}
+%   \pnode(0,0.5){A}\pnode(2,0.5){B}
 %   \optdetector(A)(B)
 %   \drawbeam(A){}
-%   \psdot(\oenodeIn{})\uput[-135](\oenodeIn{}){1, N}
+%   \psdot(\oenodeIn{})\uput[-135](\oenodeIn{}){1}
+%   \psdot(\oenodeOut{})\uput[-45](\oenodeOut{}){N}
 %   \rput[bl](0,-0.4){\ttfamily\textbackslash optdetector}
 % \end{pspicture}%
 % \hspace{\fill}%
@@ -11260,7 +11328,8 @@
 % \noindent\begin{pspicture}(0, -0.5)(3,1.7)
 %   \pnode(2,1.2){A}\pnode(3,1.2){B}
 %   \elecsynthesizer(A)(B)
-%   \psdot(\oenodeIn{})\uput[135](\oenodeIn{}){1, N}
+%   \psdot(\oenodeIn{})\uput[135](\oenodeIn{}){1}
+%   \psdot(\oenodeOut{})\uput[45](\oenodeOut{}){N}
 %   \rput[bl](0,-0.4){\ttfamily\textbackslash elecsynthesizer}
 % \end{pspicture}\hspace{\fill}%
 % \begin{pspicture}(0,-0.5)(3,1.7)
@@ -11335,7 +11404,7 @@
 % \fi
 %
 % \makeatletter
-% \begin{pspicture}[showgrid](0,-0.3)(6,2)
+% \begin{pspicture}[showgrid](0,-0.3)(6,1.4)
 % \newOptexpFiberDipole{optfiber@old}
 % \def\optfiber@old@ref{%
 %   \POE@setref{/@@x 0.3 \POE@key@fiberloops\space 1 sub mul 0.5 mul def }%
@@ -11354,17 +11423,17 @@
 %   }%
 % \ignorespaces}%
 % \psset[optexp]{label=0.5 . b, showifcnodes}
-% \optfiber@old[fiberloops=2](0,1)(2,1)
-% \optfiber@old[fiberloops=3](2,1)(4,1){old}
-% \optfiber@old[fiberloops=4](4,1)(6,1)
+% \optfiber@old[fiberloops=2](0,0.5)(2,0.5)
+% \optfiber@old[fiberloops=3](2,0.5)(4,0.5){old}
+% \optfiber@old[fiberloops=4](4,0.5)(6,0.5)
 % \end{pspicture}
 % \makeatother
 % \hspace{\fill}
-% \begin{pspicture}[showgrid](0,-0.3)(6,2)
+% \begin{pspicture}[showgrid](0,-0.3)(6,1.4)
 % \psset[optexp]{label=0.5 . b, showifcnodes}
-% \optfiber[fiberloops=2](0,1)(2,1)
-% \optfiber[fiberloops=3](2,1)(4,1){new}
-% \optfiber[fiberloops=4](4,1)(6,1)
+% \optfiber[fiberloops=2](0,0.5)(2,0.5)
+% \optfiber[fiberloops=3](2,0.5)(4,0.5){new}
+% \optfiber[fiberloops=4](4,0.5)(6,0.5)
 % \end{pspicture}
 % 
 % \ifGERMAN Das Makro \Lcs*{newOptexpDipoleNolabel} wurde entfernt und
