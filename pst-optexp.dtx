@@ -8014,10 +8014,12 @@
 %
 % \item 
 %   \ifGERMAN Eine Komponente soll verbunden werden, die jedoch keine
-%   Freistrahlverbindungen unterstützt.
+%   Freistrahlverbindungen unterstützt. In diesem Fall wird die falsche
+%   Komponente und alle Folgenden ignoriert.
 %   \fi
 %   \ifENGLISH A component is to be connected, which does not support
-%   free-ray connections.
+%   free-ray connections. In this case, the wrong component and all
+%   following ones are ignored.
 %   \fi
 % \iffalse
 %<*ignore>
@@ -8029,6 +8031,7 @@
   \lens[lens=4 4 2, abspos=0.5, n=2.5](A)(B)
   \fiberdelayline[fdlsize=1 0.7, position=end, fiber=none](A)(B)
   \drawbeam[beampos=0.2, linecolor=red]{-}
+  \drawbeam[beampos=-0.2, linecolor=blue, beaminsidelast]{-}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -8038,14 +8041,18 @@
 %
 % \begin{optionlist}
 %   \boolitem[false]{pswarning} 
-%   \ifENGLISH To simplify debugging, you can print a message to
-%   standard output if a beam misses an interface or if total internal
-%   reflection occured at some point.
+%   \ifENGLISH To simplify debugging, you can have a message printed out
+%   if any of these situations arises. The message will be printed to
+%   standard output, when a Postscript interpreter reads the file,
+%   e.g. when you view the file, or you convert it with \opt{ps2pdf} or
+%   similar.
 %   \fi
-%   \ifGERMAN Um eine Fehlersuche zu vereinfachen kann ein Hinweis ausgegeben
-%   werden sobald ein Strahlengang vorzeitig beendet wird weil entweder eine
-%   Grenzfläche verpasst wird, oder totale interne Reflektion auftritt.
-%\fi
+%   \ifGERMAN Um eine Fehlersuche zu vereinfachen kann ein Hinweis
+%   ausgegeben werden sobald ein Strahlengang vorzeitig beendet. Die
+%   Fehlermeldung wird auf die Standardausgabe geschrieben, wenn die
+%   Datei mit einem Postscript-Interpreter gelesen wird, also mit einem
+%   Betrachter geöffnet oder z.B. mit \opt{ps2pdf} konvertiert wird.
+%   \fi
 % \end{optionlist}
 % 
 % \ifGERMAN\section{Angepasste Strahlen}\fi
@@ -11800,6 +11807,7 @@
 %   \item Fixed appearance of \cs{optfiber}\see{sec:bwd-comp-4.0}
 %   \item Fixed \opt{extnodealign} to affect also
 %     multipoles\see{prm:extnodealign}
+%   \item Fixed \opt{pswarning}.
 %   \item Removed old, buggy beam connection code\see{sec:bwd-comp-4.0}
 %   \item Removed option \opt{conn}\see{sec:bwd-comp-4.0}
 %   \item Removed option \opt{connjoin}\see{sec:bwd-comp-4.0}
