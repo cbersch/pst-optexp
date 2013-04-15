@@ -7,15 +7,12 @@
 \usepackage{marvosym}
 \usepackage{pst-circ, pst-func, pst-optexp}
 \begin{document}
-\begin{pspicture}[showgrid](5,2)
-  \optbox[position=start](2,1)(5,1)
-  \psdot[dotstyle=x](\oenodeIn{})
-  \psdot(\oenodeOut{})
-\end{pspicture}%
-\hspace*{1cm}%
-\begin{pspicture}[showgrid](5,2)
-  \optdetector(5,1)(2,1)
-  \psdot[dotstyle=x](\oenodeIn{})
-  \psdot(\oenodeOut{})
-\end{pspicture}
+\newpsstyle{Beam}{linecolor=green, ArrowInside=->, arrowscale=2}
+\newpsstyle{Fiber}{linecolor=red, linewidth=3\pslinewidth, linestyle=dashed, dash=5pt 5pt}
+\newpsstyle{Wire}{linecolor=blue, linewidth=1.5\pslinewidth}
+\begin{pspicture}(0,0.5)(3,8.5)
+  \psset[optexp]{wire=i, fiber=+i}
+  \rput[b](1.5,7.7){\parbox{3\psxunit}{\centering wire=i\\ fiber=+i}}
+  \fiberdelayline(0,4)(3,4)
+\end{pspicture}\hspace*{\fill}%
 \end{document}

@@ -18,7 +18,7 @@
 %<stylefile>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<stylefile>\ProvidesPackage{pst-optexp}
 %<*stylefile>
-    [2013/04/03 v4.0alpha Optical experimental setups with PSTricks]
+    [2013/04/15 v4.0 Optical experimental setups with PSTricks]
 %</stylefile>
 %
 %<*driver>
@@ -5211,13 +5211,13 @@
 % sind, anders als beim optischen Koppler, alle auf die Komponente
 % gerichtet. Das ergibt ein symmetrisches Layout der automatischen
 % Verbindungen des elektrischen Kopplers bei Verwendung der Vorgabe
-% \Lkeyword{wireangle}\opt{=angle}.
+% \Lkeyword{wirestyle}\opt{=angle}.
 % \fi
 % \ifENGLISH The automatic connections of the electrical coupler are all
 % directed towards the component, in contrast to the optical
 % coupler. This gives a symmetric layout of the automatic electrical coupler
 % connections when using the default of
-% \Lkeyword{wireangle}\opt{=angle}.
+% \Lkeyword{wirestyle}\opt{=angle}.
 % \fi
 %
 % \iffalse
@@ -6699,7 +6699,7 @@
 %   defined beam paths, like e.g. in a telescope, can be easily
 %   constructed.
 % \item Manual fiber connections are described in
-%   \prettyref{sec:drawfiber}, manuel wire connections, which show the
+%   \prettyref{sec:drawfiber}, manual wire connections, which show the
 %   same behavior, are treated in \prettyref{sec:drawwire}.
 % \item Automatic connections are explained in
 %   \prettyref{sec:drawconn-auto}.
@@ -9104,9 +9104,9 @@
 %   \ifENGLISH This parameter selects which fiber connections are drawn.
 %   The value of this parameter can affect either only the fiber
 %   components (if the value is prefixed with \opt{*}), only free-ray
-%   components (prefixed with \opt{+}), or both component types
+%   and electrical components (prefixed with \opt{+}), or all component types
 %   otherwise. Typical free-ray components which are often used with
-%   fibers as well are \Lcomp{optbox} and \Lcomp{optdetector}.  Please
+%   fibers as well are \Lcomp{optbox} and \Lcomp{optdetector}. Please
 %   note, that electrical components cannot be connected automatically
 %   with fibers, in these cases you must use \Lcs{drawfiber}
 %   explicitely.
@@ -9127,12 +9127,13 @@
 %   \ifGERMAN
 %   Dieser Parameter gibt an, welche Faserverbindungen gezeichnet
 %   werden. Der Parameter kann nur die Faserkomponenten betreffen (falls
-%   ein \opt{*} vorangestellt ist), nur die Freistrahlkomponenten
-%   (\opt{+} wird vorangestellt), oder beide Komponententypen. Typische
-%   Freistrahlkomponenten, die häufig als Faserkomponenten verwendet
-%   werden, sind \Lcomp{optbox} und \Lcomp{optdetector}. Beachten Sie,
-%   dass elektrische Komponenten nicht automatisch mit Fasern verbunden
-%   werden können, Sie müssen dann explizit \Lcs{drawfiber} verwenden.
+%   ein \opt{*} vorangestellt ist), nur die elektrischen und
+%   Freistrahlkomponenten (\opt{+} wird vorangestellt), oder alle
+%   Komponententypen. Typische Freistrahlkomponenten, die häufig als
+%   Faserkomponenten verwendet werden, sind \Lcomp{optbox} und
+%   \Lcomp{optdetector}. Beachten Sie, dass elektrische Komponenten
+%   nicht automatisch mit Fasern verbunden werden können, Sie müssen
+%   dann explizit \Lcs{drawfiber} verwenden.
 %
 %   Es können alle Verbindungen gezeichnet werden (\opt{all}), keine
 %   (\opt{none}), oder es können bestimmte ausgewählt werden. Die Werte \opt{i}
@@ -9151,8 +9152,8 @@
 %
 % \begin{enumerate}
 % \item 
-%   \ifENGLISH Enable all fiber connections for fiber and free-ray components.\fi
-%   \ifGERMAN Zeichne alle Fasern für Freistrahl- und Faserkomponenten.\fi
+%   \ifENGLISH Enable all fiber connections all components.\fi
+%   \ifGERMAN Zeichne alle Fasern für alle Komponenten.\fi
 %
 % \iffalse
 %<*ignore>
@@ -9162,7 +9163,7 @@
   \psset{fiber}
   \optbox(0,2.5)(3,2.5)
   \optmzm(0,1.5)(3,1.5)
-  \elecsynthesizer(1,0.5)(3,0.5)
+  \elecsynthesizer[position=0.5](1,0.5)(3,0.5)
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -9185,7 +9186,7 @@
   \psset{fiber=*i}
   \optbox(0,2.5)(3,2.5)
   \optmzm(0,1.5)(3,1.5)
-  \elecsynthesizer(1,0.5)(3,0.5)
+  \elecsynthesizer[position=0.5](1,0.5)(3,0.5)
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -9193,11 +9194,12 @@
 % \fi
 % 
 % \item 
-%   \ifENGLISH Draw only the output fiber of a free-ray component
-%   (\Lcomp{optbox}), but all connections of the fiber component (\Lcomp{optmzm}).
+%   \ifENGLISH All connections of the fiber component are drawn, the
+%   other components get only the output fiber.
 %   \fi
-%   \ifGERMAN Von der Freistahlkomponente wird nur die Ausgangsverbindung
-%   gezeichnet, die Faserkomponente erhält jedoch alle Verbindungen.
+%   \ifGERMAN Von der Faserkomponente werden alle Verbindungen
+%   gezeichnet, die anderen Komponenten erhalten nur eine
+%   Ausgangsverbindung.
 %   \fi
 %
 % \iffalse
@@ -9208,7 +9210,7 @@
   \psset{fiber=+o}
   \optbox(0,2.5)(3,2.5)
   \optmzm(0,1.5)(3,1.5)
-  \elecsynthesizer(1,0.5)(3,0.5)
+  \elecsynthesizer[position=0.5](1,0.5)(3,0.5)
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -9258,10 +9260,11 @@
 %   components (prefixed with \opt{+}), or all components otherwise.
 %   \fi
 %   \ifGERMAN
-%   Dieser Parameter gibt an, welche elektrische Verbindungen gezeichnet werden. Der
-%   Parameter kann nur die elektrischen Komponenten betreffen (falls ein \opt{*}
-%   vorangestellt ist), nur die Faser- und Freistrahlkomponenten (\opt{+} wird
-%   vorangestellt), oder alle Komponenten. 
+%   Dieser Parameter gibt an, welche elektrische Verbindungen gezeichnet
+%   werden. Der Parameter kann nur die elektrischen Komponenten
+%   betreffen (falls ein \opt{*} vorangestellt ist), nur die Faser- und
+%   Freistrahlkomponenten (\opt{+} wird vorangestellt), oder alle
+%   Komponenten.
 %   \fi
 % \end{optionlist}
 % \begin{enumerate}
@@ -9578,7 +9581,46 @@
 %</ignore>
 % \fi
 % \end{stylelist}
-% 
+%
+%
+% \ifGERMAN\subsection{Bekannte Einschränkungen}\fi
+% \ifENGLISH\subsection{Known limitations}\fi
+%
+% \ifGERMAN Die Kombination von \Lkeyword{fiber} und \Lkeyword{wire}
+% erlaubt in der derzeitigen Implementierung (Version \fileversion)
+% nicht die beliebige Kombination aller Parametervarianten. Die meisten
+% funktionieren, aber das folgende Beispiel zeigt eine Variante, die
+% nicht korrekt funktioniert (der \Lcomp{elecsynthesizer} sollte eine
+% Eingangsfaser haben):
+% \fi
+% \ifENGLISH The combination of \Lkeyword{fiber} and \Lkeyword{wire}
+% does not allow any arbitrary combination of all parameter values in
+% the current implementation (version \fileversion). Most combinations
+% do work, but the following examples shows a variant, which does not
+% work correctly (the \Lcomp{elecsynthesizer} should have an input fiber):
+% \fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[morekeywords={[21]{fiber, wire}}]
+\begin{pspicture}(3,3)
+  \psset[optexp]{fiber=i, wire=+i}
+  \fiberdelayline(0,2.5)(3,2.5)
+  \optbox(0,1.5)(3,1.5)
+  \elecsynthesizer[position=0.5](0,0.5)(3,0.5)
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
+% \ifGERMAN In solchen speziellen Fällen muss auf manuelle Verbindungen
+% zurückgegriffen werden.
+% \fi
+% \ifENGLISH In such special cases one must resort to manual
+% connections.
+% \fi
+%
 % \ifGERMAN\section{Zeichenebenen}\fi
 % \ifENGLISH\section{Layers}\fi
 % \label{sec:layers}
@@ -11985,7 +12027,7 @@
 %
 % \begin{changelog}
 %\patchcmd{\release}{\setlength{\itemsep}{0pt}}{\setlength{\itemsep}{0pt}\setlength{\parsep}{0pt}}{}{}
-%   \begin{release}{4.0}{2013-xx-xx}
+%   \begin{release}{4.0}{2013-04-15}
 %   \item Added electrical components\see{chap:electrcomp}
 %   \item Added wire connections with \cs{drawwire}\see{sec:drawwire}
 %   \item Added component \cs{optarrowcomp}\see{comp:optarrowcomp}
@@ -13963,22 +14005,22 @@
 }%
 \def\POE@unset@wire{%
   \ifPOE@fiberin@
-    \setkeys[psset]{optexp}{wirein@=false}%
+    \setkeys[psset]{optexp}{wirepresetin@=false}%
   \fi
   \ifPOE@fiberout@
-    \setkeys[psset]{optexp}{wireout@=false}%
+    \setkeys[psset]{optexp}{wirepresetout@=false}%
   \fi
   \ifPOE@fiberin@top
-    \setkeys[psset]{optexp}{wirein@top=false}%
+    \setkeys[psset]{optexp}{wirepresetin@top=false}%
   \fi
   \ifPOE@fiberin@bottom
-    \setkeys[psset]{optexp}{wirein@bottom=false}%
+    \setkeys[psset]{optexp}{wirepresetin@bottom=false}%
   \fi
   \ifPOE@fiberout@top
-    \setkeys[psset]{optexp}{wireout@top=false}%
+    \setkeys[psset]{optexp}{wirepresetout@top=false}%
   \fi
   \ifPOE@fiberout@bottom
-    \setkeys[psset]{optexp}{wireout@bottom=false}%
+    \setkeys[psset]{optexp}{wirepresetout@bottom=false}%
   \fi
 }%
 %    \end{macrocode}
@@ -14199,38 +14241,6 @@
   \ifPOE@wireout@bottom
     \setkeys[psset]{optexp}{fiberpresetout@bottom=false, fiberout@bottom=false}%
   \fi
-}%
-\def\POE@debug@wire{%
-  \message{^^Jwirein@=\ifPOE@wirein@ true\else false\fi}%
-  \message{^^Jwirein@top=\ifPOE@wirein@top true\else false\fi}%
-  \message{^^Jwirein@bottom=\ifPOE@wirein@bottom true\else false\fi}%
-  \message{^^Jwireout@=\ifPOE@wireout@ true\else false\fi}%
-  \message{^^Jwireout@top=\ifPOE@wireout@top true\else false\fi}%
-  \message{^^Jwireout@bottom=\ifPOE@wireout@bottom true\else false\fi^^J}%
-}%
-\def\POE@debug@wirepreset{%
-  \message{^^Jwirepresetin@=\ifPOE@wirepresetin@ true\else false\fi}%
-  \message{^^Jwirepresetin@top=\ifPOE@wirepresetin@top true\else false\fi}%
-  \message{^^Jwirepresetin@bottom=\ifPOE@wirepresetin@bottom true\else false\fi}%
-  \message{^^Jwirepresetout@=\ifPOE@wirepresetout@ true\else false\fi}%
-  \message{^^Jwirepresetout@top=\ifPOE@wirepresetout@top true\else false\fi}%
-  \message{^^Jwirepresetout@bottom=\ifPOE@wirepresetout@bottom true\else false\fi^^J}%
-}%
-\def\POE@debug@fiber{%
-  \message{^^Jfiberin@=\ifPOE@fiberin@ true\else false\fi}%
-  \message{^^Jfiberin@top=\ifPOE@fiberin@top true\else false\fi}%
-  \message{^^Jfiberin@bottom=\ifPOE@fiberin@bottom true\else false\fi}%
-  \message{^^Jfiberout@=\ifPOE@fiberout@ true\else false\fi}%
-  \message{^^Jfiberout@top=\ifPOE@fiberout@top true\else false\fi}%
-  \message{^^Jfiberout@bottom=\ifPOE@fiberout@bottom true\else false\fi^^J}%
-}%
-\def\POE@debug@fiberpreset{%
-  \message{^^Jfiberpresetin@=\ifPOE@fiberpresetin@ true\else false\fi}%
-  \message{^^Jfiberpresetin@top=\ifPOE@fiberpresetin@top true\else false\fi}%
-  \message{^^Jfiberpresetin@bottom=\ifPOE@fiberpresetin@bottom true\else false\fi}%
-  \message{^^Jfiberpresetout@=\ifPOE@fiberpresetout@ true\else false\fi}%
-  \message{^^Jfiberpresetout@top=\ifPOE@fiberpresetout@top true\else false\fi}%
-  \message{^^Jfiberpresetout@bottom=\ifPOE@fiberpresetout@bottom true\else false\fi^^J}%
 }%
 %    \end{macrocode}
 % Set the fiber parameters for fiber-optical components only (use fiber=*...).
@@ -15282,12 +15292,16 @@
   \ifPOE@startbox\else
     \ifPOE@wirepresetin@
       \drawwire@{WireIn}(\oenodeRefA{}){}
-    \fi
+    \else\ifPOE@fiberin@
+      \drawfiber@{FiberIn}(\oenodeRefA{}){}
+    \fi\fi
   \fi
   \ifPOE@endbox\else
     \ifPOE@wirepresetout@
       \drawwire@{WireOut}{}(\oenodeRefB{})
-    \fi
+    \else\ifPOE@fiberout@
+      \drawfiber@{FiberOut}{}(\oenodeRefB{})
+    \fi\fi
   \fi
 }%
 %    \end{macrocode}
@@ -18763,13 +18777,19 @@
     \ifPOE@backlayer
       \ifPOE@wirepresetin@top
         \drawwire@{WireIn}[stopnode=1](#1){}
-      \fi
+      \else\ifPOE@fiberin@top
+        \drawfiber@{FiberIn}[stopnode=1](#1){}
+      \fi\fi
       \ifPOE@wirepresetout@top
         \drawwire@{WireOut1}[startnode=N]{}(#2)
-      \fi
+      \else\ifPOE@fiberout@top
+        \drawfiber@{FiberOut1}[startnode=N]{}(#2)
+      \fi\fi
       \ifPOE@wirepresetout@bottom
         \drawwire@{WireOut2}[startnode=2, wirealign=center]{}(#3)
-      \fi
+      \else\ifPOE@fiberout@bottom
+        \drawfiber@{FiberOut2}[starnode=2, fiberalign=center]{}(#3)
+      \fi\fi
     \fi
   \end@OptexpObj
 }%
@@ -18847,27 +18867,39 @@
       }%
       \ifPOE@wirepresetin@top
         \drawwire@{WireIn1}[stopnode=1](#1){}
-      \fi
+      \else\ifPOE@fiberin@top
+        \drawfiber@{FiberIn1}[stopnode=1](#1){}
+      \fi\fi
       \ifPOE@wirepresetout@top
         \drawwire@{WireOut1}[startnode=3](#3){}
-      \fi
+      \else\ifPOE@fiberout@top
+        \drawfiber@{FiberOut1}[startnode=3](#3){}
+      \fi\fi
       \ifx\POE@key@eleccouplertype\POE@str@directional
         \ifx\POE@key@eleccouplerinput\POE@str@left
           \ifPOE@wirepresetout@bottom
             \drawwire@{WireOut2}[startnode=N](#4){}
-          \fi
+          \else\ifPOE@fiberout@bottom
+            \drawfiber@{FiberOut2}[startnode=N](#4){}
+          \fi\fi
         \else
           \ifPOE@wirepresetin@bottom
             \drawwire@{WireIn2}[stopnode=2](#2){}
-          \fi
+          \else\ifPOE@fiberin@bottom
+            \drawfiber@{FiberIn2}[stopnode=2](#2){}
+          \fi\fi
         \fi
       \else
         \ifPOE@wirepresetout@bottom
           \drawwire@{WireOut2}[startnode=N](#4){}
-        \fi
+        \else\ifPOE@fiberout@bottom
+          \drawfiber@{FiberOut2}[startnode=N](#4){}
+        \fi\fi
         \ifPOE@wirepresetin@bottom
           \drawwire@{WireIn2}[stopnode=2](#2){}
-        \fi
+        \else\ifPOE@fiberin@bottom
+          \drawfiber@{FiberIn2}[stopnode=2](#2){}
+        \fi\fi
       \fi
     \fi
   \end@OptexpObj
