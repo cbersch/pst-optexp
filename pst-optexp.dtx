@@ -18,7 +18,7 @@
 %<stylefile>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<stylefile>\ProvidesPackage{pst-optexp}
 %<*stylefile>
-    [2013/04/15 v4.0 Optical experimental setups with PSTricks]
+    [2013/05/21 v4.1alpha Optical experimental setups with PSTricks]
 %</stylefile>
 %
 %<*driver>
@@ -4044,6 +4044,29 @@
 \begin{LTXexample}[morekeywords={[21]prismangle}]
 \begin{pspicture}(3,2)
   \optprism[prismangle=30, beam](0,1)(2,1)(3,0){Prism}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
+% \choitem[transmittive]{prismtype}{transmittive, reflective}
+% \ifGERMAN Ist dieser Parameter auf \opt{reflective} gesetzt, so wird
+% die Grundfläche als zusätzliche, reflektierende Grenzfläche
+% verwendet.
+% \fi
+% \ifENGLISH If this parameter is set to \opt{reflective}, the prism
+% base is used as additional, reflective interface.
+% \fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[morekeywords={[21]prismtype}]
+\begin{pspicture}(1.5,0.6)(5.1,2.2)
+  \optprism[prismtype=reflective](0,1)(3,1.1)(6,1)
+  \lens(1,2)(\oenodeIfc{2}{1})
+  \lens(\oenodeIfc{2}{1})(5,2)
+  \drawwidebeam[beamwidth=0.3, fillstyle=solid, fillcolor=green, opacity=0.3](1,2){2}{1}{3}(5,2)
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -12027,6 +12050,9 @@
 %
 % \begin{changelog}
 %\patchcmd{\release}{\setlength{\itemsep}{0pt}}{\setlength{\itemsep}{0pt}\setlength{\parsep}{0pt}}{}{}
+%   \begin{release}{4.1}{2013-xx-xx}
+%   \item Added option \opt{prismtype}\see{prm:prismtype}
+%   \end{release}
 %   \begin{release}{4.0}{2013-04-15}
 %   \item Added electrical components\see{chap:electrcomp}
 %   \item Added wire connections with \cs{drawwire}\see{sec:drawwire}
@@ -12422,6 +12448,7 @@
 \def\POE@str@center{center}
 \def\POE@str@circle{circle}
 \def\POE@str@closed{closed}
+\def\POE@str@coupling{coupling}
 \def\POE@str@cross{cross}
 \def\POE@str@cube{cube}
 \def\POE@str@custom{custom}
@@ -13402,14 +13429,14 @@
   {\def\POE@key@prismalign{#1}}%
   {\PackageError{pst-optexp}{Unknown value '\val' for prismalign}}%
 \define@choicekey+[psset]{optexp}{prismtype}[\val\nr]%
-  {transmission, coupling}%
+  {transmittive, reflective, coupling}%
   {\def\POE@key@prismtype{#1}}%
   {\PackageError{pst-optexp}{Unknown value '\val' for prismtype}}%
 \psset[optexp]{%
   prismsize=1,
   prismangle=60,
   prismalign=auto,
-  prismtype=transmission
+  prismtype=transmittive
 }%
 %    \end{macrocode}
 %
@@ -17890,28 +17917,18 @@
       0
     \fi
   }%
-  \def\POE@tempA{transmission}%
-  \ifx\POE@key@prismtype\POE@tempA
-    \newOptexpComp{%
-      {\@sz -0.6 mul \@ang tan mul \@hshift neg} 
-      {90 \@ang sub dup cos exch sin} 
-      \@sz \@ang cos div dup -0.4 mul exch 0.6 mul trans {PlainIfc}
-      {\@sz 0.6 mul \@ang tan mul \@hshift neg} 
-      {90 \@ang add dup cos exch sin} 
-      \@sz \@ang cos div dup -0.4 mul exch 0.6 mul trans {PlainIfc} 
-      \POE@key@n true }%
-  \else
-    \newOptexpCompAmb{%
-      {\@sz -0.6 mul \@ang tan mul \@hshift neg} 
-      {90 \@ang sub dup cos exch sin} 
-      \@sz \@ang cos div dup -0.4 mul exch 0.6 mul trans {PlainIfc}
-      {0 \@sz -0.4 mul \@hshift sub } {1 0} \@ang tan \@sz mul dup neg exch 
-      trans {PlainIfc}
-      {\@sz 0.6 mul \@ang tan mul \@hshift neg} 
-      {90 \@ang add dup cos exch sin} 
-      \@sz \@ang cos div dup -0.4 mul exch 0.6 mul trans {PlainIfc} 
-      2 \POE@key@n true }%
-  \fi
+  \newOptexpComp{%
+    {\@sz -0.6 mul \@ang tan mul \@hshift neg} 
+    {90 \@ang sub dup cos exch sin} 
+    \@sz \@ang cos div dup -0.4 mul exch 0.6 mul trans {PlainIfc}
+    \ifx\POE@key@prismtype\POE@str@transmittive\else
+      {0 \@sz -0.4 mul \@hshift sub } 
+      {1 0} \@ang tan \@sz mul dup neg exch refl {PlainIfc}
+    \fi
+    {\@sz 0.6 mul \@ang tan mul \@hshift neg} 
+    {90 \@ang add dup cos exch sin} 
+    \@sz \@ang cos div dup -0.4 mul exch 0.6 mul trans {PlainIfc} 
+    \POE@key@n true }%
   \pnode(! 0 \@hshift neg){\oenodeCenter{}}
 }%
 %    \end{macrocode}
