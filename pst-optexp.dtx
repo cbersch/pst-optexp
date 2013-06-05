@@ -7508,6 +7508,27 @@
 % Anfang Segmente mit \Lkeyword{beampathskip} übersprungen, so werden
 % diese nicht mitgezählt. 
 % \fi
+% \ifENGLISH
+% Number of beam segments, which are drawn. Skipped segments at the beam
+% start do not count.
+% \fi
+%
+% \numitem[-1]{startinsidecount}
+% \ifGERMAN
+% Anzahl der Segmente, die innerhalb der ersten Komponente verwendet
+% werden. Diese Option hat nur eine Wirkung, wenn
+% \Lkeyword{beaminsidefirst} oder \Lkeyword{startinside} auf \opt{true}
+% gesetzt sind.
+% \fi
+%
+% \numitem[-1]{stopinsidecount}
+% \ifGERMAN
+% Anzahl der Segmente, die innerhalb der letzten Komponente verwendet
+% werden. Diese Option hat nur eine Wirkung, wenn
+% \Lkeyword{beaminsidelast} oder \Lkeyword{stopinside} auf \opt{true}
+% gesetzt sind.
+% \fi
+%
 % \end{optionlist}
 %
 % \ifGERMAN\subsection{Interner Strahlengang}\fi
@@ -12068,8 +12089,8 @@
 % \begin{changelog}
 %\patchcmd{\release}{\setlength{\itemsep}{0pt}}{\setlength{\itemsep}{0pt}\setlength{\parsep}{0pt}}{}{}
 %   \begin{release}{4.2}{2013-xx-xx}
-%   \item Added option \opt{startinsidecnt}\see{prm:startinsidecnt}
-%   \item Added option \opt{stopinsidecnt}\see{prm:stopinsidecnt}
+%   \item Added option \opt{startinsidecount}\see{prm:startinsidecount}
+%   \item Added option \opt{stopinsidecount}\see{prm:stopinsidecount}
 %   \item Added option \opt{beampathcount}\see{prm:beampathcount}
 %   \item Fixed a bug of \cs{optprism} and \cs{rightangleprism} inside
 %     an \env{optexp} environment
@@ -13909,11 +13930,11 @@
 }%
 \define@boolkey[psset]{optexp}[POE@]{startinside}[true]{}%
 \define@boolkey[psset]{optexp}[POE@]{stopinside}[true]{}%
-\define@key[psset]{optexp}{startinsidecnt}{%
-  \pst@checknum{#1}\POE@key@startinsidecnt
+\define@key[psset]{optexp}{startinsidecount}{%
+  \pst@checknum{#1}\POE@key@startinsidecount
 }
-\define@key[psset]{optexp}{stopinsidecnt}{%
-  \pst@checknum{#1}\POE@key@stopinsidecnt
+\define@key[psset]{optexp}{stopinsidecount}{%
+  \pst@checknum{#1}\POE@key@stopinsidecount
 }
 \define@boolkey[psset]{optexp}[POE@]{beaminsidefirst}[true]{}%
 \define@boolkey[psset]{optexp}[POE@]{beaminsidelast}[true]{}%
@@ -14028,8 +14049,8 @@
   ,n=1.5
   ,beampathskip=0
   ,beampathcount=-1
-  ,stopinsidecnt=-1
-  ,startinsidecnt=-1
+  ,stopinsidecount=-1
+  ,startinsidecount=-1
   ,ArrowInsideMinLength=0.2
   ,ArrowInsideMaxLength=-1
 }%
@@ -14713,16 +14734,16 @@
      /beamdiv \POE@key@beamdiv\space def
      /savebeampoints \POE@key@savebeampoints\space def
      /savebeam \ifPOE@savebeam true \else false \fi def
-     /startinsidecnt \POE@key@startinsidecnt\space cvi def
-     startinsidecnt 0 eq {
+     /startinsidecount \POE@key@startinsidecount\space cvi def
+     startinsidecount 0 eq {
        /beaminsidefirst false def
        /startinside false def
      } {
        /beaminsidefirst \ifPOE@beaminsidefirst true \else false \fi def
        /startinside \ifPOE@startinside true \else false \fi def
      } ifelse
-     /stopinsidecnt \POE@key@stopinsidecnt\space cvi def
-     stopinsidecnt 0 eq {
+     /stopinsidecount \POE@key@stopinsidecount\space cvi def
+     stopinsidecount 0 eq {
        /beaminsidelast false def
        /stopinside false def
      } {
@@ -21043,15 +21064,20 @@ tx@OptexpDict begin
             pop pop
             2 copy 5 2 roll
           } {
-            startinsidecnt 0 gt N startinsidecnt sub 1 gt and {
+            startinsidecount 0 gt N startinsidecount sub 1 gt and {
 %    \end{macrocode}
 % we do not use all segments of the first component
 %    \begin{macrocode}
               3 -1 roll dup 4 1 roll
-              N 1 sub startinsidecnt sub mul
+              N 1 sub startinsidecount sub mul
               6 -2 roll pop add dup 5 2 roll
             } if
           } ifelse
+        } if
+        last stopinsidecount 0 gt N stopinsidecount sub 1 gt and and {
+          % 1 1 1 N N
+          3 -1 roll dup 4 1 roll stopinsidecount mul
+          6 -1 roll dup 7 1 roll add 3 1 roll pop pop dup
         } if
         5 1 roll
         {
