@@ -18,7 +18,7 @@
 %<stylefile>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<stylefile>\ProvidesPackage{pst-optexp}
 %<*stylefile>
-    [2013/06/04 v4.2alpha Optical experimental setups with PSTricks]
+    [2013/06/05 v4.2alpha Optical experimental setups with PSTricks]
 %</stylefile>
 %
 %<*driver>
@@ -7501,6 +7501,13 @@
 % \iffalse
 %</ignore>
 % \fi
+%
+% \numitem[-1]{beampathcount}
+% \ifGERMAN
+% Anzahl der Strahlsegmente, die gezeichnet werden sollen. Werden am
+% Anfang Segmente mit \Lkeyword{beampathskip} übersprungen, so werden
+% diese nicht mitgezählt. 
+% \fi
 % \end{optionlist}
 %
 % \ifGERMAN\subsection{Interner Strahlengang}\fi
@@ -12060,6 +12067,13 @@
 %
 % \begin{changelog}
 %\patchcmd{\release}{\setlength{\itemsep}{0pt}}{\setlength{\itemsep}{0pt}\setlength{\parsep}{0pt}}{}{}
+%   \begin{release}{4.2}{2013-xx-xx}
+%   \item Added option \opt{startinsidecnt}\see{prm:startinsidecnt}
+%   \item Added option \opt{stopinsidecnt}\see{prm:stopinsidecnt}
+%   \item Added option \opt{beampathcount}\see{prm:beampathcount}
+%   \item Fixed a bug of \cs{optprism} and \cs{rightangleprism} inside
+%     an \env{optexp} environment
+%   \end{release}
 %   \begin{release}{4.1}{2013-05-21}
 %   \item Added option \opt{prismtype}\see{prm:prismtype}
 %   \end{release}
@@ -13895,6 +13909,12 @@
 }%
 \define@boolkey[psset]{optexp}[POE@]{startinside}[true]{}%
 \define@boolkey[psset]{optexp}[POE@]{stopinside}[true]{}%
+\define@key[psset]{optexp}{startinsidecnt}{%
+  \pst@checknum{#1}\POE@key@startinsidecnt
+}
+\define@key[psset]{optexp}{stopinsidecnt}{%
+  \pst@checknum{#1}\POE@key@stopinsidecnt
+}
 \define@boolkey[psset]{optexp}[POE@]{beaminsidefirst}[true]{}%
 \define@boolkey[psset]{optexp}[POE@]{beaminsidelast}[true]{}%
 \define@choicekey+[psset]{optexp}{savebeampoints}%
@@ -13965,6 +13985,9 @@
 \define@key[psset]{optexp}{beampathskip}{%
   \pst@checknum{#1}\POE@key@beampathskip
 }%
+\define@key[psset]{optexp}{beampathcount}{%
+  \pst@getint{#1}\POE@key@beampathcount
+}%
 \define@choicekey+[psset]{optexp}{beamalign}%
   [\val\nr]{rel,abs,relative,absolute}%
   {%
@@ -14004,6 +14027,9 @@
   ,beamdiv=0
   ,n=1.5
   ,beampathskip=0
+  ,beampathcount=-1
+  ,stopinsidecnt=-1
+  ,startinsidecnt=-1
   ,ArrowInsideMinLength=0.2
   ,ArrowInsideMaxLength=-1
 }%
@@ -14464,7 +14490,7 @@
 %
 % \section{Layering}
 %    \begin{macrocode}
-\newenvironment{optexp}{\Collect@Body\POE@collect}{}
+\newenvironment{optexp}{\Collect@Body\POE@collect}{}%
 \long\def\POE@collect#1{%
   \psset[optexp]{optexpenv}
   \global\POE@oldcnt=\POE@cnt
@@ -14687,11 +14713,23 @@
      /beamdiv \POE@key@beamdiv\space def
      /savebeampoints \POE@key@savebeampoints\space def
      /savebeam \ifPOE@savebeam true \else false \fi def
-     /beaminsidefirst \ifPOE@beaminsidefirst true \else false \fi def
-     /beaminsidelast \ifPOE@beaminsidelast true \else false \fi def
+     /startinsidecnt \POE@key@startinsidecnt\space cvi def
+     startinsidecnt 0 eq {
+       /beaminsidefirst false def
+       /startinside false def
+     } {
+       /beaminsidefirst \ifPOE@beaminsidefirst true \else false \fi def
+       /startinside \ifPOE@startinside true \else false \fi def
+     } ifelse
+     /stopinsidecnt \POE@key@stopinsidecnt\space cvi def
+     stopinsidecnt 0 eq {
+       /beaminsidelast false def
+       /stopinside false def
+     } {
+       /beaminsidelast \ifPOE@beaminsidelast true \else false \fi def
+       /stopinside \ifPOE@stopinside true \else false \fi def
+     } ifelse
      /beaminside \ifPOE@beaminside true \else false \fi def
-     /startinside \ifPOE@startinside true \else false \fi def
-     /stopinside \ifPOE@stopinside true \else false \fi def
      /connectifc \ifPOE@raytrace false \else true \fi def
      /beamalign 
        \ifx\POE@key@beamalign\POE@str@absolute\space 
@@ -14700,6 +14738,7 @@
          relative
        \fi def
      /beampathskip \POE@key@beampathskip\space def
+     \POE@key@beampathcount\space dup -1 gt { beampathskip add } if /beampathcount ED
      /useNA \ifPOE@useNA true \else false \fi def
   }%
 }%
@@ -17911,6 +17950,19 @@
 % 
 % \subsubsection{optprism}
 %
+% \begin{macro}{\optprism@ref}
+%    \begin{macrocode}
+\def\optprism@ref{%
+  \ifPOE@backlayer
+    \POE@Verb{/OEangle\the\POE@cnt\space OEangle def }
+  \fi
+  \ifPOE@frontlayer
+    \POE@Verb{/OEangle OEangle\the\POE@cnt\space def }
+  \fi
+}%
+%    \end{macrocode}
+% \end{macro}
+%
 % \begin{macro}{\optprism@nodes}
 %    \begin{macrocode}
 \def\optprism@nodes{%
@@ -17972,6 +18024,12 @@
 % \begin{macro}{\rightangleprism@ref}
 %    \begin{macrocode}
 \def\rightangleprism@ref{%
+  \ifPOE@backlayer
+    \POE@Verb{/OEangle\the\POE@cnt\space OEangle def }
+  \fi
+  \ifPOE@frontlayer
+    \POE@Verb{/OEangle OEangle\the\POE@cnt\space def }
+  \fi
   \POE@setref{%
     tx@EcldDict begin
       OEangle 0.5 mul
@@ -20236,6 +20294,9 @@ tx@OptexpDict begin
       exit
     } if
     (checked) DebugMsg
+    beampathcount 0 eq {
+      cleartomark mark exit
+    } if
 %    \end{macrocode}
 % iterate over all planes
 %    \begin{macrocode}
@@ -20288,6 +20349,10 @@ tx@OptexpDict begin
         IfcCnt PN sub {pop} repeat
         (Total internal reflection occured, this is not supported)
         Warning
+        exit
+      } if
+      beampathcount 1 add PN eq {
+        IfcCnt PN sub {pop} repeat
         exit
       } if
       /PN PN 1 add def
@@ -20412,6 +20477,9 @@ tx@OptexpDict begin
   {
     PN IfcCnt gt {
       exit
+    } if
+    beampathcount 0 eq {
+      cleartomark mark exit
     } if
     dup xcheck not {
 %    \end{macrocode}
@@ -20547,13 +20615,14 @@ tx@OptexpDict begin
     strokeBeam {
       CurrUp draw CurrLow draw counttomark 1 add 6 roll
     } if
-    PN IfcCnt eq ret tir eq or {
+    PN IfcCnt eq ret tir eq or 
+    beampathcount 1 add PN eq or {
       DrawnSegm 0 gt currentdict /fillBeam known and { 
         fillBeam newpath 
         /DrawnSegm 0 def
       } if
+      IfcCnt PN sub {pop} repeat
       ret tir eq {
-        IfcCnt PN sub {pop} repeat
         (Total internal reflection occured, this is not supported) 
         Warning
       } if
@@ -20965,13 +21034,24 @@ tx@OptexpDict begin
         } {
           1 1 1 N N
         } ifelse
-        first startinside not and {
+        first {
+          startinside not {
 %    \end{macrocode}
 % first comp and we do not start inside
 %    \begin{macrocode}
-          5 -2 roll
-          pop pop
-          2 copy 5 2 roll
+            5 -2 roll
+            pop pop
+            2 copy 5 2 roll
+          } {
+            startinsidecnt 0 gt N startinsidecnt sub 1 gt and {
+%    \end{macrocode}
+% we do not use all segments of the first component
+%    \begin{macrocode}
+              3 -1 roll dup 4 1 roll
+              N 1 sub startinsidecnt sub mul
+              6 -2 roll pop add dup 5 2 roll
+            } if
+          } ifelse
         } if
         5 1 roll
         {
