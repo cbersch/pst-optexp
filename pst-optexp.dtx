@@ -4063,7 +4063,7 @@
 % \fi
 \begin{LTXexample}[morekeywords={[21]prismtype}]
 \begin{pspicture}(1.5,0.6)(5.1,2.2)
-  \optprism[prismtype=reflective](0,1)(3,1.1)(6,1)
+  \optprism[prismtype=reflective](0,1)(3,0.9)(6,1)
   \lens(1,2)(\oenodeIfc{2}{1})
   \lens(\oenodeIfc{2}{1})(5,2)
   \drawwidebeam[beamwidth=0.3, fillstyle=solid, fillcolor=green, opacity=0.3](1,2){2}{1}{3}(5,2)
@@ -7474,10 +7474,17 @@
 %
 % \numitem[0]{beampathskip}
 % \ifGERMAN
-% Überspringt \prm{num} Segmente am Anfang des Strahlengangs.
+% Überspringt \prm{num} Segmente am Anfang des Strahlengangs. Diese
+% Option beinflusst lediglich ab welchem Segment der Strahlgang
+% gezeichnet wird, das Raytracing beginnt immer noch an der ersten
+% Grenzfläche. Um das zu ändern können Sie \Lkeyword{startinsidecount}
+% verwenden.
 % \fi
 % \ifENGLISH
-% Skip \prm{num} segments at the beginning of the beam path. 
+% Skip \prm{num} segments at the beginning of the beam path. This option
+% determines only at which segment the beam is drawn, the ray tracing
+% always starts at the first interface. To change this, see option
+% \Lkeyword{startinsidecount}.
 % \fi
 % \iffalse
 %<*ignore>
@@ -7509,26 +7516,23 @@
 % diese nicht mitgezählt. 
 % \fi
 % \ifENGLISH
-% Number of beam segments, which are drawn. Skipped segments at the beam
-% start do not count.
+% Number of beam segments, which are drawn. Segments which are skipped
+% at the beam start with \Lkeyword{beampathskip} do not count.
 % \fi
-%
-% \numitem[-1]{startinsidecount}
-% \ifGERMAN
-% Anzahl der Segmente, die innerhalb der ersten Komponente verwendet
-% werden. Diese Option hat nur eine Wirkung, wenn
-% \Lkeyword{beaminsidefirst} oder \Lkeyword{startinside} auf \opt{true}
-% gesetzt sind.
+% \iffalse
+%<*ignore>
 % \fi
-%
-% \numitem[-1]{stopinsidecount}
-% \ifGERMAN
-% Anzahl der Segmente, die innerhalb der letzten Komponente verwendet
-% werden. Diese Option hat nur eine Wirkung, wenn
-% \Lkeyword{beaminsidelast} oder \Lkeyword{stopinside} auf \opt{true}
-% gesetzt sind.
+\begin{LTXexample}[morekeywords = {[21]{beampathcount}}]
+\begin{pspicture}(3,2)
+  \pnode(0,2){A}\pnode(2,0.8){B}\pnode(4,2){C}
+  \optprism[compname=P, prismtype=reflective, prismangle=90](A)(B)(C)
+  \lens[abspos=1.33](\oenodeIfc{2}{P})(A)%
+  \drawwidebeam[beamwidth=0.2, beaminsidelast, beampathcount=4](A){2}{1}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
 % \fi
-%
 % \end{optionlist}
 %
 % \ifGERMAN\subsection{Interner Strahlengang}\fi
@@ -7690,6 +7694,39 @@
   \optbox[position=0.6](A)(B)
   \optbox[position=0.8](A)(B)
   \drawbeam[beaminside=false](A){-}(B)
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
+% \numitem[-1]{startinsidecount}
+% \ifGERMAN
+% Anzahl der Segmente, die innerhalb der ersten Komponente verwendet
+% werden. Diese Option hat nur eine Wirkung, wenn
+% \Lkeyword{beaminsidefirst} oder \Lkeyword{startinside} auf \opt{true}
+% gesetzt sind.
+% \fi
+%
+% \numitem[-1]{stopinsidecount}
+% \ifGERMAN
+% Anzahl der Segmente, die innerhalb der letzten Komponente verwendet
+% werden. Diese Option hat nur eine Wirkung, wenn
+% \Lkeyword{beaminsidelast} oder \Lkeyword{stopinside} auf \opt{true}
+% gesetzt sind.
+% \fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[morekeywords = {[21]{stopinsidecount, startinsidecout}}]
+\begin{pspicture}(4,2)
+  \pnode(0,2){A}\pnode(2,0.8){B}\pnode(4,2){C}
+  \optprism[compname=P, prismtype=reflective, prismangle=90](A)(B)(C)
+  \lens[abspos=1.33](\oenodeIfc{2}{P})(A)%
+  \lens[abspos=1.33](\oenodeIfc{2}{P})(C)%
+  \newpsstyle{Beam}{linestyle=none, fillstyle=solid}%
+  \drawwidebeam[fillcolor=green, beamwidth=0.2, beaminsidelast, stopinsidecount=1](A){2}{1}
+  \drawwidebeam[fillcolor=orange, beaminsidefirst, startinsidecount=1, loadbeam]{1}{3}(C)
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -8310,7 +8347,7 @@
 % \fi
 %
 % \begin{optionlist}
-%   \boolitem[true]{savebeam}
+%   \choitem[true]{savebeam}{true,false,\prm{int}}
 %   \ifGERMAN Speichert die Endzustände, d.h. Endpunkte und Ausgangsvektoren,
 %   eines \nxLcs{draw*beam} Makros, vorangegangene Werte werden
 %   überschrieben. \Lcs{drawbeam} und \Lcs{drawwidebeam} werden getrennt
@@ -8326,7 +8363,7 @@
 %   is sufficient.
 %   \fi
 %
-%   \boolitem[false]{loadbeam}
+%   \choitem[false]{loadbeam}{true,false,\prm{int}}
 %   \ifGERMAN Verwende den Endzustand (Punkte und Richtung) eines
 %   vorangegangenen Strahls als Anfangszustand. Der Parameter
 %   \Lkeyword{beamangle} kann verwendet werden um die Richtung relativ zu der
@@ -11463,7 +11500,7 @@
 % \hspace{\fill}% 
 % \begin{pspicture}(3,1.5) 
 %   \pnode(0,1.5){A}\pnode(1.5,1){B}\pnode(3,1.5){C}
-%   \optprism[angle=180, prismtype=reflective](A)(B)(C)
+%   \optprism[prismtype=reflective](A)(B)(C)
 %   \drawbeam[raytrace=false](A){}(C)
 %   \psdot(\oenodeIn{})\uput[110](\oenodeIn{}){1}
 %   \psdot(\oenodeOut{})\uput[70](\oenodeOut{}){N}
@@ -11672,6 +11709,25 @@
 % Version beachten müssen, und was sie bei älteren Dokumenten gegebenenfalls
 % ändern müssen um mit der neuen Version korrekt zu funktionieren.  \fi
 %
+% \subsection{Version 4.2}\label{sec:bwd-comp-4.2}
+%
+% \begin{optionlist}
+%   \poeitem{prismtype}
+%   \ifGERMAN
+%   Die in Version 4.1 eingeführte Option \Lkeyword{prismtype} benötigte
+%   immer eine zusätzliche Drehung der Komponente um 180\textdegree. Das
+%   entfällt nun, da die Komponentenausrichtung korrigiert wurde,
+%   erfordert aber gegebenenfalls eine Korrektur von Skizzen, die mit
+%   Version 4.1 erstellt wurden.
+%   \fi
+%   \ifENGLISH
+%   The option \Lkeyword{prismtype}, introduced in version 4.1, always
+%   needed an additional angle rotation of 180\textdegree. This is not
+%   necessary anymore, the component behavior was corrected, but this may
+%   require adjustment of drawings created with version 4.1.
+%   \fi
+% \end{optionlist}
+% 
 % \subsection{Version 4.0}\label{sec:bwd-comp-4.0}
 % 
 % \ifGERMAN Die Option \Lkeyword*{conn} und das alte, fehlerhafte
@@ -12092,8 +12148,10 @@
 %   \item Added option \opt{startinsidecount}\see{prm:startinsidecount}
 %   \item Added option \opt{stopinsidecount}\see{prm:stopinsidecount}
 %   \item Added option \opt{beampathcount}\see{prm:beampathcount}
+%   \item Modified the orientation of a reflective \cs{optprism}\see{comp:sec:bwd-comp-4.2}
 %   \item Fixed a bug of \cs{optprism} and \cs{rightangleprism} inside
 %     an \env{optexp} environment
+%   \item Fixed buggy handling of multiple saved beams\see{prm:savebeam}
 %   \end{release}
 %   \begin{release}{4.1}{2013-05-21}
 %   \item Added option \opt{prismtype}\see{prm:prismtype}
@@ -12458,6 +12516,7 @@
 \newif\ifPOE@raytrace
 \newif\ifPOE@pswarning
 \newif\ifPOE@useNA
+\newif\ifPOE@adjustrelauto
 %    \end{macrocode}
 % This is to check if \nxLkeyword{compname} is set inside or outside of a component. For this no boolean key is provided.
 %    \begin{macrocode}
@@ -14003,6 +14062,7 @@
 \define@boolkey[psset]{optexp}[POE@]{forcebeaminside}[true]{}%
 \define@boolkey[psset]{optexp}[POE@]{raytrace}[true]{}%
 \define@boolkey[psset]{optexp}[POE@]{useNA}[true]{}%
+\define@boolkey[psset]{optexp}[POE@]{adjustrelauto}[true]{}%
 \define@key[psset]{optexp}{beampathskip}{%
   \pst@checknum{#1}\POE@key@beampathskip
 }%
@@ -14030,6 +14090,7 @@
 \psset[optexp]{%
   raytrace=true
   ,useNA=true
+  ,adjustrelauto=false
   ,startinside=false
   ,stopinside=false
   ,allowbeaminside=true
@@ -14761,6 +14822,7 @@
      /beampathskip \POE@key@beampathskip\space def
      \POE@key@beampathcount\space dup -1 gt { beampathskip add } if /beampathcount ED
      /useNA \ifPOE@useNA true \else false \fi def
+     /adjustrelauto \ifPOE@adjustrelauto true \else false \fi def
   }%
 }%
 %    \end{macrocode}
@@ -15660,6 +15722,14 @@
 \def\oeBeamVec#1{\POE@beamvec{}{#1}}%
 \def\oeBeamVecUp#1{\POE@beamvec{Up}{#1}}%
 \def\oeBeamVecLow#1{\POE@beamvec{Low}{#1}}%
+\def\oeBeamVecMean#1{%
+  \oeBeamVecUp{#1} \oeBeamVecLow{#1} \POE@dict{VecAdd NormalizeVec}
+}%
+\def\oeBeamCenter#1{%
+  \psGetNodeCenter{\oenodeBeamUp{#1}} \oenodeBeamUp{#1}.x \oenodeBeamUp{#1}.y
+  \psGetNodeCenter{\oenodeBeamLow{#1}} \oenodeBeamLow{#1}.x \oenodeBeamLow{#1}.y
+  \POE@dict{VecAdd 0.5 VecScale}
+}%
 %    \end{macrocode}
 % \end{macro}
 % 
@@ -18000,19 +18070,32 @@
       0
     \fi
   }%
-  \newOptexpComp{%
-    {\@sz -0.6 mul \@ang tan mul \@hshift neg} 
-    {90 \@ang sub dup cos exch sin} 
-    \@sz \@ang cos div dup -0.4 mul exch 0.6 mul trans {PlainIfc}
-    \ifx\POE@key@prismtype\POE@str@transmittive\else
-      {0 \@sz -0.4 mul \@hshift sub } 
-      {1 0} \@ang tan \@sz mul dup neg exch refl {PlainIfc}
+  \begingroup
+    \ifx\POE@key@prismtype\POE@str@reflective
+      \pst@def{ScreenCoor}< \pst@number\psyunit neg mul exch \pst@number\psxunit mul exch >
+      \pnode(! 0 \@hshift){\oenodeCenter{}}
+    \else
+      \pnode(! 0 \@hshift neg){\oenodeCenter{}}
     \fi
-    {\@sz 0.6 mul \@ang tan mul \@hshift neg} 
-    {90 \@ang add dup cos exch sin} 
-    \@sz \@ang cos div dup -0.4 mul exch 0.6 mul trans {PlainIfc} 
-    \POE@key@n true }%
-  \pnode(! 0 \@hshift neg){\oenodeCenter{}}
+    \newOptexpComp{%
+      {\@sz -0.6 mul \@ang tan mul \@hshift neg} 
+      {90 \@ang sub dup cos exch sin} 
+      \@sz \@ang cos div dup -0.4 mul exch 0.6 mul trans {PlainIfc}
+      {\@sz 0.6 mul \@ang tan mul \@hshift neg} 
+      {90 \@ang add dup cos exch sin} 
+      \@sz \@ang cos div dup -0.4 mul exch 0.6 mul trans {PlainIfc} 
+%    \end{macrocode}
+% Need to change the order of the two interfaces on the stack and add an
+% additional interface.
+%    \begin{macrocode}
+      \ifx\POE@key@prismtype\POE@str@reflective
+        12 6 roll
+        {0 \@sz -0.4 mul \@hshift sub } 
+        {1 0} \@ang tan \@sz mul dup neg exch refl {PlainIfc}
+        12 6 roll
+      \fi
+      \POE@key@n true }%
+  \endgroup
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -18033,9 +18116,10 @@
       0
     \fi
   }%
-  \pspolygon(! \@sz neg \@altan mul \@sz -0.4 mul \@hshift sub)
-            (! \@sz \@altan mul \@sz -0.4 mul \@hshift sub)
-            (! 0 \@sz 0.6 mul \@hshift sub)
+  \edef\POE@temp{\ifx\POE@key@prismtype\POE@str@reflective -1 mul \fi}%
+  \pspolygon(! \@sz neg \@altan mul \@sz -0.4 mul \@hshift sub \POE@temp)
+            (! \@sz \@altan mul \@sz -0.4 mul \@hshift sub \POE@temp)
+            (! 0 \@sz 0.6 mul \@hshift sub \POE@temp)
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -20661,9 +20745,6 @@ tx@OptexpDict begin
     /DrawnSegm 0 def
   } if
   ret missed eq not {
-    currentdict /lastVecTmpUp known currentdict /lastVecTmpLow known and dup {
-      /lastVecTmpUp load /lastVecTmpLow load 3 -1 roll
-    } if
 %    \end{macrocode}
 % Check if Up and Low must be swapped for next beam. This depends both
 % on the relative orientation (chirality) of the incoming beam vector
@@ -20696,9 +20777,7 @@ tx@OptexpDict begin
       /lastVecTmpUp /CurrVecUp load def
       /lastVecTmpLow /CurrVecLow load def
     } ifelse
-    not {
-      /lastVecTmpUp load /lastVecTmpLow load
-    } if
+    /lastVecTmpUp load /lastVecTmpLow load
     /prevVecLow ED /prevVecUp ED
   } if
   DebugEnd
@@ -20813,7 +20892,11 @@ tx@OptexpDict begin
       CompMtrx transform CM itransform
       currentdict /RX known { RX RY }{ DX DY } ifelse
       CompMtrx dtransform CM idtransform
+      currentdict /RX known not 
     end
+    currentdict /adjustRel known and adjustrelauto and {
+      Xin Yin NormalVec
+    } if
   end
   DebugEnd
 } bind def
