@@ -3,25 +3,32 @@
 \usepackage{pst-optexp}
 \thispagestyle{empty}
 \newpsstyle{Glass}{fillcolor=blue, fillstyle=solid, opacity=0.15, linecolor=blue!30!white}
+\psset{detsize=0.6 0.5}
 \begin{document}
 \begin{pspicture}[showgrid](0.6,2.4)(7,7.8)
   \pnode(1,6){Laser}\pnode(1,5){M}
   \pnode(3,4){PR}\pnode(5,5){PT}\pnode(6,7){D1}
   \begin{optexp}
   \optbox[position=start, innerlabel, optboxwidth=1.8](Laser)(M){Nd:YAG}
-  \optprism[style=Glass, compname=P, prismtype=reflective, n=1, angle=180, label=1 -45](M)(PR)(PT){\begin{tabular}{@{}c@{}}diamond\\ prism\end{tabular}}
+  \optprism[style=Glass, compname=P, prismtype=reflective, prismangle=90, label=1 135](M)(PR)(PT){\begin{tabular}{@{}c@{}}diamond\\ prism\end{tabular}}
   \mirror(Laser)(M)(\oenodeIfc{2}{P})%
-  \lens[abspos=1, n=1.53, style=Glass](\oenodeIfc{2}{P})(M)%
+  \lens[abspos=1.33, style=Glass](\oenodeIfc{2}{P})(M)%
   \optprism[compname=PDet, style=Glass](\oenodeIfc{2}{P})(PT)(D1)%
-  \lens[abspos=1, n=1.53, style=Glass](\oenodeIfc{2}{P})(\oenodeOut{PDet})%
+  \lens[abspos=1.33, style=Glass](\oenodeIfc{2}{P})(\oenodeOut{PDet})%
   \newpsstyle{Beam}{linestyle=none, fillstyle=solid}%
   \drawwidebeam[fillcolor=green, beamwidth=0.2, beaminsidelast, beampathcount=5]{1}{3}{4}{2}%
   \drawwidebeam[fillcolor=orange, beaminsidefirst, startinsidecount=1, loadbeam, beaminsidelast]{2}{6}%
-  \psset{savebeam=false, loadbeam}%
+  \psset{savebeam=false, loadbeam, adjustrelauto}%
   \drawwidebeam[fillcolor=orange]{6}{5}%
-  \drawwidebeam[fillcolor=green, n=1.2, beampathskip=1]{6}{5}(D1)%
-  \drawwidebeam[fillcolor=red, beampathskip=1, n=1.4]{6}{5}(D1)
-  \drawwidebeam[fillcolor=red!50!black, beampathskip=1, n=1.55]{6}{5}(D1)
+  \drawwidebeam[fillcolor=green, n=1.2, beampathskip=1, savebeam=2]{6}{5}(D1)
+  \drawwidebeam[fillcolor=red, beampathskip=1, n=1.4, savebeam=3]{6}{5}(D1)
+  \drawwidebeam[fillcolor=red!50!black, beampathskip=1, n=1.57, savebeam=4]{6}{5}(D1)
+  \multido{\i=2+1}{3}{%
+    \backlayer{%
+      \pnode(!\oeBeamCenter{\i}){Det\i}
+      \nodexn{(Det\i)-(!\oeBeamVecMean{\i})}{Det\i'}}
+    \optdetector(Det\i')(Det\i)
+  }
 \end{optexp}
 \pscircle[style=Glass]([offset=-0.5]\oenodeIfc{2}{P}){0.5}
 \rput[l]([offset=-0.5,Xnodesep=0.7]\oenodeIfc{2}{P}){WGM}
