@@ -48,3 +48,21 @@
   \drawbeam[linecolor=blue, arrows=->, loadbeam]{1}(C)
   \drawbeam[linecolor=red, arrows=->](Out)(C)
 \end{pspicture}
+\vspace*{1cm}
+
+\begin{pspicture}[showgrid](3.5,2.6)
+  \pnode(0,2){A}\pnode(1,2){B}\pnode(3,1){C}
+  \optprism(A)(B)(C)
+  \newpsstyle{Beam}{linestyle=none, fillstyle=solid, beamwidth=0.2, adjustrelauto}
+  \drawwidebeam[fillcolor=orange](A){}
+  \psset[optexp]{beampathskip=1}
+  \drawwidebeam[fillcolor=green, n=1.2, savebeam=2](A){}(C)
+  \drawwidebeam[fillcolor=red, n=1.4, savebeam=3](A){}(C)
+  \drawwidebeam[fillcolor=red!50!black, n=1.57, savebeam=4](A){}(C)
+  \multido{\i=2+1}{3}{%
+    \backlayer{%
+      \pnode(!\oeBeamCenter{\i}){Det\i}
+      \nodexn{(Det\i)-(!\oeBeamVecMedian{\i})}{Det\i'}}
+    \optdetector[detsize=0.4 0.5](Det\i')(Det\i)
+  }
+\end{pspicture}
