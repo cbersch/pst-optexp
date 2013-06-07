@@ -7,12 +7,11 @@
 \usepackage{marvosym}
 \usepackage{pst-circ, pst-func, pst-optexp}
 \begin{document}
-\newpsstyle{Beam}{linecolor=green, ArrowInside=->, arrowscale=2}
-\newpsstyle{Fiber}{linecolor=red, linewidth=3\pslinewidth, linestyle=dashed, dash=5pt 5pt}
-\newpsstyle{Wire}{linecolor=blue, linewidth=1.5\pslinewidth}
-\begin{pspicture}(0,0.5)(3,8.5)
-  \psset[optexp]{wire=i, fiber=+i}
-  \rput[b](1.5,7.7){\parbox{3\psxunit}{\centering wire=i\\ fiber=+i}}
-  \fiberdelayline(0,4)(3,4)
-\end{pspicture}\hspace*{\fill}%
+\begin{pspicture}[showgrid](6,5)
+  \psset{pswarning}
+  \pnode(0,0.5){A}\pnode(3,0.5){B}
+  \lens[compshift=1, abspos=1, lens=2 2 2](A)(B)
+  \drawwidebeam[linestyle=none, fillstyle=solid, beamwidth=0.6, fillcolor=red](A){}(4,3)
+  \drawwidebeam[linestyle=none, fillstyle=solid, beamwidth=0.6, fillcolor=green, beamnodealign=vector](A){}(4,3)
+\end{pspicture}
 \end{document}
