@@ -18,7 +18,7 @@
 %<stylefile>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<stylefile>\ProvidesPackage{pst-optexp}
 %<*stylefile>
-    [2013/06/05 v4.2alpha Optical experimental setups with PSTricks]
+    [2013/06/07 v4.2alpha Optical experimental setups with PSTricks]
 %</stylefile>
 %
 %<*driver>
@@ -6657,11 +6657,11 @@
 %</ignore>
 % \fi
 % 
-% \begin{ltxsysntax}
+% \begin{ltxsyntax}
 %   \cmditem{oeBeamVecMedian}{num}
 %   \ifGERMAN Der Mittelwert aus oberem und unterem Strahlvektor.\fi
 %   \ifENGLISH The mean of upper and lower beam vector.\fi
-% \end{ltxsysntax}
+% \end{ltxsyntax}
 %
 % \iffalse
 %<*ignore>
@@ -6670,7 +6670,7 @@
 \begin{pspicture}(3.5,2.6)
   \pnode(0,2){A}\pnode(1,2){B}\pnode(3,1){C}
   \optprism(A)(B)(C)
-  \newpsstyle{Beam}{linestyle=none, fillstyle=solid, beamwidth=0.2, adjustrelauto}
+  \newpsstyle{Beam}{linestyle=none, fillstyle=solid, beamwidth=0.2, beamnodealign=vector}
   \drawwidebeam[fillcolor=orange](A){}
   \psset[optexp]{beampathskip=1}
   \drawwidebeam[fillcolor=green, n=1.2, savebeam=2](A){}(C)
@@ -7783,22 +7783,30 @@
 % \ifGERMAN\subsection{Verbinden mit Knoten}\fi
 %
 % \ifENGLISH
-% As mentioned earlier in this chapter, beams can connect components also with
-% nodes. For raytracing you need in general a plane, which imposes some problems
-% when connecting with nodes. This is handled such, that a temporary plane is
-% constructed, which goes through the specified node and is perpendicular to the
-% connection between the node and the preceeding component. If a beam starts
-% with a node, the orientation is determined by the node and the following
-% component.
+% As mentioned earlier in this chapter, beams can connect components
+% also with nodes. For raytracing you need a plane, which can be created
+% automatically or manually in different ways.
 % \fi
 % \ifGERMAN
-% Wie vorher schon einmal erwähnt können Komponenten auch mit Knoten verbunden
-% werden. Für Raytracing wird in der Regel eine Ebene benötigt, was ein Problem
-% hinsichtlich der Knoten darstellt. Das wird so gehandhabt, das eine temporäre
-% Ebene definiert wird, die durch den Knoten verläuft und vertikal zur
-% Verbindung zwischen dem Knoten und der vorangegangenen Komponente steht. Fängt
-% ein Strahlengang mit einem Knoten an, so wird die Ausrichtung durch den Knoten
-% und die folgende Komponente bestimmt.
+% Wie vorher schon einmal erwähnt können Komponenten auch mit Knoten
+% verbunden werden. Für Raytracing wird in der Regel eine Ebene
+% benötigt, die auf unterschiedliche Weise automatisch oder manuell
+% erstellt werden kann.
+% \fi
+%
+% \begin{optionlist}
+% \choitem[connection]{beamnodealign}{vec, conn, vector, connection}
+% \ifENGLISH
+% This parameter controls the alignment of the automatically created
+% node interfaces. By default (\opt{connection}) the interface is
+% aligned perpendicular to the direct connection between node and the
+% previous interface node.
+% \fi
+% \ifGERMAN 
+% Dieser Parameter bestimmt die Ausrichtung der automatisch erstellen
+% Grenzflächen. In der Voreinstellung (\opt{connection}) wird die Ebene
+% vertikal zur direkten Verbindung zwischen dem Knoten und dem
+% vorangegangenen Grenzflächenknoten ausgerichtet.
 % \fi
 % \iffalse
 %<*ignore>
@@ -7811,22 +7819,87 @@
     \drawbeam[beampos=\r](A){}(B)}
 \end{pspicture}
 \end{LTXexample}
+\begin{LTXexample}
+\begin{pspicture}(3,2)
+  \pnode(0,1){A}\pnode(3,1){B}
+  \lens[abspos=0.5](A)(B)
+  \addtopsstyle{Beam}{linecolor=black, fillstyle=solid, beamwidth=0.2, fillcolor=red, opacity=0.5, beaminside=false}
+  \multido{\r=-0.3+0.3}{3}{\drawwidebeam[beampos=\r](A){}(B)}
+\end{pspicture}
+\end{LTXexample}
 % \iffalse
 %</ignore>
 % \fi
 %
+% \ifGERMAN 
+% Ist der Wert auf \opt{vector} gesetzt, dann wird die Ebene vertikal
+% zum einfallenden Strahlvektor ausgerichtet. Bei weiten Strahlen wird
+% der gemittelte Strahlenvektor (siehe \Lcs{oeBeamVecMedian}) als
+% Referenz verwendet. Beispiele in dem das sehr praktisch ist, sind
+% \prettyref{ex:beamcenter} und \prettyref{ex:wgm-pdc}.
+% \fi
 % \ifENGLISH
-% This is very handy in many cases, but does not allow to rotate the node planes
-% and can give again problems with shifted and rotated components (see
-% \prettyref{sec:rotshift}).
-% For more flexibility, the package provides an «invisible» plane which can be
-% used for this purpose.
+% For a value \opt{vector}, the plane is aligned vertical to the
+% incoming beam vector. For wide beams the mean beam vector is used (see
+% \Lcs{oeBeamVecMedian}). Examples where this is very convenient are
+% \prettyref{ex:beamcenter} and \prettyref{ex:wgm-pdc}.
+% \fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[morekeywords={[21]beamnodealign}]
+\begin{pspicture}(3,2)
+  \pnode(0,1){A}\pnode(3,1){B}
+  \lens[abspos=0.5](A)(B)
+  \addtopsstyle{Beam}{linecolor=black, fillstyle=solid, beamwidth=0.2, beamnodealign=vector, fillcolor=green, opacity=0.5, beaminside=false}
+  \multido{\r=-0.3+0.3}{3}{\drawwidebeam[beampos=\r](A){}(B)}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+% \end{optionlist}
+%
+% \ifENGLISH
+% The automatic alignment is very handy in many cases, but does not
+% allow to rotate the node planes to a fixed angle and can give again
+% problems with shifted and rotated components (see
+% \prettyref{sec:rotshift}). In the following example the green beam is
+% with \Lkeyword{beamnodealign} set to \opt{vector}, for the red beam it
+% is set to \opt{connection}:
 % \fi
 % \ifGERMAN
-% Das ist in vielen Fällen sehr praktisch, kann aber wiederum unerwünschte
-% Ergebnisse bei gedrehten und verschobenen Komponenten ergeben und die
-% Ebenenausrichtung kann nicht beliebig gesetzt werden.  Das kann mit einer
-% unsichtbaren Ebene erreicht werden, die mit \Lcomp{optplane} definiert wird.
+% Die automatische Ausrichtung ist in vielen Fällen sehr praktisch, kann
+% aber wiederum unerwünschte Ergebnisse bei gedrehten und verschobenen
+% Komponenten ergeben und die Ebenenausrichtung kann nicht beliebig
+% gesetzt werden. Im folgenden Beispiel ist beim grünen Strahl
+% \Lkeyword{beamnodealign} auf \opt{vector} gesetzt, bei dem roten
+% Strahl hingegen auf \opt{connection}:
+% \fi
+%
+% \hspace*{\fill}%
+% \begin{pspicture}(4,2.7)
+%   \pnode(0,0.5){A}\pnode(4,0.5){B}
+%   \lens[compshift=0.5, abspos=1, lens=1.5 1.5 2](A)(B)
+%   \drawwidebeam[beamalign=absolute, linecolor=black, fillstyle=solid, beamwidth=0.6, fillcolor=green, opacity=0.5, beamnodealign=vector](A){}(B)
+%   \rput[rb](4,0){\ttfamily vector}
+% \end{pspicture}
+% \hspace*{1cm}%
+% \begin{pspicture}(5,3)
+%   \pnode(0,0.5){A}\pnode(4,0.5){B}
+%   \lens[compshift=0.5, abspos=1, lens=1.5 1.5 2](A)(B)
+%   \drawwidebeam[beamalign=absolute, linecolor=black, fillstyle=solid, beamwidth=0.6, fillcolor=red, opacity=0.5](A){}(B)
+%   \rput[rb](5,0){\ttfamily connection}
+% \end{pspicture}
+% \hspace*{\fill}%
+%
+% \ifENGLISH
+% For more flexibility, the package provides an «invisible» plane which
+% can be used for this purpose.
+% \fi
+% \ifGERMAN
+% Das kann mit einer «unsichtbaren» Ebene erreicht werden, die mit
+% \Lcomp{optplane} definiert wird.
 % \fi
 %
 % \begin{ltxsyntax}
@@ -11058,6 +11131,8 @@
 \end{pspicture}
 \end{LTXexample}
 
+\begingroup
+\captionsetup[lstlisting]{format=poecaption}
 \begin{LTXexample}[pos=t, caption={\ifGERMAN Angepasst von \fi\ifENGLISH Adapted from \fi\doiurl{10.1103/PhysRevLett.105.263904}}, label={ex:wgm-pdc}]]
 \begin{pspicture}(0.6,2.3)(6.8,7.8)
 \pnode(1,6){Laser}\pnode(1,5){M}
@@ -11073,7 +11148,7 @@
   \newpsstyle{Beam}{linestyle=none, fillstyle=solid}%
   \drawwidebeam[fillcolor=green, beamwidth=0.2, beaminsidelast, beampathcount=5]{1}{3}{4}{2}%
   \drawwidebeam[fillcolor=orange, beaminsidefirst, startinsidecount=1, loadbeam, beaminsidelast]{2}{6}%
-  \psset{savebeam=false, loadbeam, adjustrelauto}%
+  \psset{savebeam=false, loadbeam, beamnodealign=vector}%
   \drawwidebeam[fillcolor=orange]{6}{5}%
   \drawwidebeam[fillcolor=green, n=1.2, beampathskip=1, savebeam=2]{6}{5}(D1)
   \drawwidebeam[fillcolor=red, beampathskip=1, n=1.4, savebeam=3]{6}{5}(D1)
@@ -11088,6 +11163,7 @@
 \rput[l]([offset=-0.5,Xnodesep=0.7]\oenodeIfc{2}{P}){WGM}
 \end{pspicture}
 \end{LTXexample}
+\endgroup
 
 \begin{LTXexample}[pos=t, linerange={1-1}, caption={caption}]
 
@@ -12224,6 +12300,7 @@
 %   \item Added option \opt{startinsidecount}\see{prm:startinsidecount}
 %   \item Added option \opt{stopinsidecount}\see{prm:stopinsidecount}
 %   \item Added option \opt{beampathcount}\see{prm:beampathcount}
+%   \item Added option \opt{beamnodealign}\see{prm:beamnodealign}
 %   \item Added \cs{oeBeamVecMedian}\see{cs:oeBeamVecMedian}
 %   \item Added \cs{oeBeamCenter}\see{cs:oeBeamCenter}
 %   \item Modified the orientation of a reflective \cs{optprism}\see{comp:sec:bwd-comp-4.2}
@@ -12595,7 +12672,6 @@
 \newif\ifPOE@raytrace
 \newif\ifPOE@pswarning
 \newif\ifPOE@useNA
-\newif\ifPOE@adjustrelauto
 %    \end{macrocode}
 % This is to check if \nxLkeyword{compname} is set inside or outside of a component. For this no boolean key is provided.
 %    \begin{macrocode}
@@ -12631,6 +12707,7 @@
 \def\POE@str@center{center}
 \def\POE@str@circle{circle}
 \def\POE@str@closed{closed}
+\def\POE@str@connection{connection}
 \def\POE@str@coupling{coupling}
 \def\POE@str@cross{cross}
 \def\POE@str@cube{cube}
@@ -12670,6 +12747,7 @@
 \def\POE@str@top{top}
 \def\POE@str@transmittive{transmittive}
 \def\POE@str@triangle{triangle}
+\def\POE@str@vector{vector}
 \def\POE@str@verbose{verbose}
 %    \end{macrocode}
 %
@@ -14141,7 +14219,18 @@
 \define@boolkey[psset]{optexp}[POE@]{forcebeaminside}[true]{}%
 \define@boolkey[psset]{optexp}[POE@]{raytrace}[true]{}%
 \define@boolkey[psset]{optexp}[POE@]{useNA}[true]{}%
-\define@boolkey[psset]{optexp}[POE@]{adjustrelauto}[true]{}%
+\define@choicekey+[psset]{optexp}{beamnodealign}%
+  [\val\nr]{vec, conn, vector, connection}%
+  {%
+    \ifcase\nr\relax
+      \let\POE@key@beamnodealign\POE@str@vector
+    \or
+      \let\POE@key@beamnodealign\POE@str@connection
+    \else
+      \def\POE@key@beamnodealign{#1}%
+    \fi
+  }%
+  {\PackageError{pst-optexp}{Unknown value '\val' for beamnodealign}}
 \define@key[psset]{optexp}{beampathskip}{%
   \pst@checknum{#1}\POE@key@beampathskip
 }%
@@ -14169,7 +14258,7 @@
 \psset[optexp]{%
   raytrace=true
   ,useNA=true
-  ,adjustrelauto=false
+  ,beamnodealign=connection
   ,startinside=false
   ,stopinside=false
   ,allowbeaminside=true
@@ -14901,7 +14990,7 @@
      /beampathskip \POE@key@beampathskip\space def
      \POE@key@beampathcount\space dup -1 gt { beampathskip add } if /beampathcount ED
      /useNA \ifPOE@useNA true \else false \fi def
-     /adjustrelauto \ifPOE@adjustrelauto true \else false \fi def
+     /aligntovector \ifx\POE@key@beamnodealign\POE@str@vector true \else false \fi def
   }%
 }%
 %    \end{macrocode}
@@ -20507,13 +20596,19 @@ tx@OptexpDict begin
       { relAngle } { 0 } ifelse connectInterfaces
       /relAngle ED
     } if
+%    \end{macrocode}
+% Adjust the alignment of a node interface, if it is to be aligned
+% perpendicular to the beam vector (beamnodealign=vector).
+%    \begin{macrocode}
     CompName cvn load begin 
-      currentdict /adjustRel known adjustrelauto and {
+      currentdict /adjustRel known aligntovector and {
         IfcNum IfcName load begin
           currentdict /RX known not {
-            2 copy
-            DX DY CompMtrx dtransform CM idtransform 4 2 roll NormalVec
-            CM dtransform CompMtrx idtransform
+%    \end{macrocode}
+% Only exchange the coordinates of the beam vector, the sign is not
+% important for the interface vector.
+%    \begin{macrocode}
+            2 copy neg exch CM dtransform CompMtrx idtransform
             /DY ED /DX ED
           } if
         end
@@ -20709,7 +20804,12 @@ tx@OptexpDict begin
 %    \begin{macrocode}
     GetIfcCenter ToVec /CurrPCenter ED
     /oldn1 n1 def
-    CompName cvn load /adjustRel known adjustrelauto and {
+%    \end{macrocode}
+% Adjust the alignment of a node interface, if it is to be aligned
+% perpendicular to the beam vector (beamnodealign=vector). The alignment
+% is carried out with the median vector of upper and lower beam.
+%    \begin{macrocode}
+    CompName cvn load /adjustRel known aligntovector and {
       connectifc PrevCorrect PN 2 gt and PN 2 eq or and {
         CurrVecUp CurrVecUp CurrPCenter PrevPCenter PrevMode 
         currentdict /relAngleUp known { relAngleUp } { 0 } ifelse 
@@ -20720,13 +20820,12 @@ tx@OptexpDict begin
       } {
         CurrVecUp CurrVecLow
       } ifelse
-      VecAdd % median input vector
+      VecAdd NormalizeVec
       CompName cvn load begin
         IfcNum IfcName load begin
           currentdict /RX known not {
-            DX DY  CompMtrx dtransform CM idtransform 4 2 roll NormalVec
             CM dtransform CompMtrx idtransform
-            /DY ED /DX ED
+            /DX ED neg /DY ED
           } {
             pop pop
           } ifelse
@@ -21166,14 +21265,16 @@ tx@OptexpDict begin
 % 
 % \begin{macro}{AdjustRelRot}
 %   Adjusts the relative orientation of \PSstring{CompB} based on the
-%   relative connection between \PSstring{CompA} and \PSstring{CompB}.
+%   relative connection between \PSstring{CompA} and
+%   \PSstring{CompB}. This is only done for ``node interfaces'', which
+%   are created automatically when drawing beams through nodes.
 %   \begin{pssyntax}
 %     \PSstring{CompA} \PSvar{desc|asc} \PSstring{CompB} \PSvar{desc|asc} \PSop{AdjustRelRot}
 %   \end{pssyntax}
 %    \begin{macrocode}
 /AdjustRelRot {
   (AdjustRelRot) DebugBegin
-  exch dup cvn load /adjustRel known {
+  exch dup cvn load /adjustRel known aligntovector not and {
     dup dup 4 2 roll isAmbiguous { 
       exch pop (C)
     }{ 
@@ -21720,7 +21821,7 @@ tx@OptexpDict begin
     } {
       ReflectVec ok
     } ifelse /n1 n2 def
-    5 -2 roll 2 copy 7 2 roll X0 Y0 @ABVect Xin Yin DotProd 0 lt 
+    5 -2 roll 2 copy 7 2 roll X0 Y0 @ABVect Xin Yin DotProd 0 lt
     PN 1 gt and {
       pop missed
     } if
