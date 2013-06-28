@@ -18,7 +18,7 @@
 %<stylefile>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<stylefile>\ProvidesPackage{pst-optexp}
 %<*stylefile>
-    [2013/06/28 v4.3alpha Optical experimental setups with PSTricks]
+    [2013/06/28 v4.3 Optical experimental setups with PSTricks]
 %</stylefile>
 %
 %<*driver>
@@ -4171,20 +4171,35 @@
 % \ifENGLISH The length of the input plane.\fi
 %
 % \choitem[auto]{raprismalign}{auto, center}
-% \iffalse
-%<*ignore>
+% \ifGERMAN Schaltet die automatische Positionierung der Komponente
+% vertikal zur Eingangsfläche ein oder aus:
 % \fi
-\begin{LTXexample}
-\begin{pspicture}(3.5,2)
-  \pnode(0,2){A}\pnode(2.5,0.5){G}\pnode(0,1.5){B}
-  \begin{optexp}
-  \rightangleprism[beam, showifcnodes, showoptdots](A)(G)(B){RA}
-  \end{optexp}
-\end{pspicture}
-\end{LTXexample}
-% \iffalse
-%</ignore>
+% \ifENGLISH Switch between automatic and fixed alignment of the
+% component vertical to the entrance interface:
 % \fi
+%
+% \begin{pspicture}(0,-0.5)(6,2)
+%   \pnode(0,1.6){A}\pnode(0,0.4){B}
+%   \rightangleprism(A)(2,1)(B)\psdot(\oenodeCenter{})
+%   \drawbeam(A){}(B)
+%
+%   \pnode(3,1.2){A}\pnode(3,0.8){B}
+%   \rightangleprism(A)(5,1)(B)\psdot(\oenodeCenter{})
+%   \drawbeam(A){}(B)
+%   \rput[t](3,0){\opt{raprismalign=auto}}
+% \end{pspicture}
+% \hspace*{\fill}
+% \begin{pspicture}(0,-0.5)(6,2)
+%   \psset{raprismalign=center}
+%   \pnode(0,1.6){A}\pnode(0,0.4){B}
+%   \rightangleprism(A)(2,1)(B)\psdot(\oenodeCenter{})
+%   \drawbeam(A){}(B)
+%
+%   \pnode(3,1.2){A}\pnode(3,0.8){B}
+%   \rightangleprism(A)(5,1)(B)\psdot(\oenodeCenter{})
+%   \drawbeam(A){}(B)
+%   \rput[t](3,0){\opt{raprismalign=center}}
+% \end{pspicture}
 % \end{optionlist}
 % 
 % \ifGERMAN\section{Pentaprisma}\fi
@@ -12312,7 +12327,7 @@
 %
 % \begin{changelog}
 %\patchcmd{\release}{\setlength{\itemsep}{0pt}}{\setlength{\itemsep}{0pt}\setlength{\parsep}{0pt}}{}{}
-%   \begin{release}{4.3}{xxx-xx-xx}
+%   \begin{release}{4.3}{2013-06-28}
 %   \item Added option \opt{raprismalign}\see{prm:raprismalign}
 %   \item Fixed alignment of \cs{rightangleprism} and rotation of its
 %     label.
