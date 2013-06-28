@@ -18,7 +18,7 @@
 %<stylefile>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<stylefile>\ProvidesPackage{pst-optexp}
 %<*stylefile>
-    [2013/06/07 v4.2 Optical experimental setups with PSTricks]
+    [2013/06/28 v4.3alpha Optical experimental setups with PSTricks]
 %</stylefile>
 %
 %<*driver>
@@ -4169,6 +4169,22 @@
 % \numitem[1.5]{raprismsize}
 % \ifGERMAN Die Länge der Eingangsfläche.\fi
 % \ifENGLISH The length of the input plane.\fi
+%
+% \choitem[auto]{raprismalign}{auto, center}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(3.5,2)
+  \pnode(0,2){A}\pnode(2.5,0.5){G}\pnode(0,1.5){B}
+  \begin{optexp}
+  \rightangleprism[beam, showifcnodes, showoptdots](A)(G)(B){RA}
+  \end{optexp}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % \end{optionlist}
 % 
 % \ifGERMAN\section{Pentaprisma}\fi
@@ -12296,6 +12312,11 @@
 %
 % \begin{changelog}
 %\patchcmd{\release}{\setlength{\itemsep}{0pt}}{\setlength{\itemsep}{0pt}\setlength{\parsep}{0pt}}{}{}
+%   \begin{release}{4.3}{xxx-xx-xx}
+%   \item Added option \opt{raprismalign}\see{prm:raprismalign}
+%   \item Fixed alignment of \cs{rightangleprism} and rotation of its
+%     label.
+%   \end{release}
 %   \begin{release}{4.2}{2013-06-07}
 %   \item Added option \opt{startinsidecount}\see{prm:startinsidecount}
 %   \item Added option \opt{stopinsidecount}\see{prm:stopinsidecount}
@@ -12303,10 +12324,12 @@
 %   \item Added option \opt{beamnodealign}\see{prm:beamnodealign}
 %   \item Added \cs{oeBeamVecMedian}\see{cs:oeBeamVecMedian}
 %   \item Added \cs{oeBeamCenter}\see{cs:oeBeamCenter}
-%   \item Modified the orientation of a reflective \cs{optprism}\see{sec:bwd-comp-4.2}
+%   \item Modified the orientation of a reflective
+%     \cs{optprism}\see{sec:bwd-comp-4.2}
 %   \item Fixed bug of \cs{optprism} and \cs{rightangleprism} inside
 %     an \env{optexp} environment.
-%   \item Fixed bug of wrong \cs{rightangleprism} rotation in special cases.
+%   \item Fixed bug of wrong \cs{rightangleprism} rotation in special
+%     cases.
 %   \item Fixed buggy handling of multiple saved beams\see{prm:savebeam}
 %   \end{release}
 %   \begin{release}{4.1}{2013-05-21}
@@ -13675,7 +13698,14 @@
 \define@key[psset]{optexp}{raprismsize}{%
   \pst@checknum{#1}\POE@key@raprismsize
 }
-\psset[optexp]{raprismsize=1.5}
+\define@choicekey+[psset]{optexp}{raprismalign}[\val\nr]%
+  {auto,center}%
+  {\def\POE@key@raprismalign{#1}}%
+  {\PackageError{pst-optexp}{Unknown value '\val' for raprismalign}}%
+\psset[optexp]{%
+  raprismsize=1.5,
+  raprismalign=auto
+}
 %    \end{macrocode}
 % Prism
 %    \begin{macrocode}
@@ -15825,6 +15855,14 @@
 \def\oenode@TrefB#1{\oenode{@TrefB}{#1}}%
 %    \end{macrocode}
 % \end{macro}
+% \begin{macro}{\oenode@Origin}
+%   The origin of the component, available only for tripoles. Introduced
+%   to be able to compute the angle between AO and BO at later times
+%   (for \cs{rightangleprism} and \cs{optprism}.
+%    \begin{macrocode}
+\def\oenode@Origin#1{\oenode{Origin}{#1}}%
+%    \end{macrocode}
+% \end{macro}
 % \begin{macro}{\oenodeIfc}
 %   The node of the interface no. \#1 of component \#2. Only integer
 %   number, N or C are allowed. You should always use this e.g. to
@@ -16677,7 +16715,49 @@
     calcNodes
     X@A Y@A}){\oenode@RefA{}}%
   \pnode(! \POE@dict{X@B Y@B}){\oenode@RefB{}}%
+  \pnode(#2){\oenode@Origin{}}%
 }\ignorespaces}%
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\POE@calcAngle}
+%   Calculate the angle between the vectors A->O and B->0, which is
+%   needed by \cs{rightangleprism} and \cs{optprism}. Also calculate the
+%   angle difference between 'Winkelhalbierende' and
+%   'Seitenhalbierende', which is required for some corrections in
+%   \cs{rightangleprism}.
+%    \begin{macrocode}
+\def\POE@calcAngle{%
+  \pst@getcoor{\oenodeRefA{}}\POE@tempa%
+  \pst@getcoor{\oenodeRefB{}}\POE@tempb%
+  \pst@getcoor{\oenode@Origin{}}\POE@tempc%
+  \POE@Verb{%
+    gsave
+      STV CP T
+      \POE@tempc \POE@tempa VecSub /ay ED /ax ED
+      \POE@tempc \POE@tempb VecSub /by ED /bx ED
+%    \end{macrocode}
+% Winkelhalbierende (cx, cy)
+%    \begin{macrocode}
+      ax ay NormalizeVec bx by NormalizeVec VecAdd NormalizeVec 2 copy
+%    \end{macrocode}
+% Seitenhalbierende
+%    \begin{macrocode}
+      ax ay bx by VecAdd NormalizeVec 
+      4 copy 4 copy
+      DotProd Acos 5 1 roll Chirality mul 
+      /dOEangle exch def
+      ax ay Pyth bx by Pyth
+      2 copy dup mul exch dup mul add
+      ax bx sub ay by sub Pyth dup mul exch sub
+      3 1 roll -2 mul mul div Acos /OEangle exch def
+%    \end{macrocode}
+% project vector (ax, by) on the normal to the bisector
+%    \begin{macrocode}
+      neg exch ax ay \tx@UserCoor DotProd abs /@myht exch def
+    grestore
+  }%
+\ignorespaces}%
 %    \end{macrocode}
 % \end{macro}
 % 
@@ -18212,12 +18292,7 @@
 % \begin{macro}{\optprism@ref}
 %    \begin{macrocode}
 \def\optprism@ref{%
-  \ifPOE@backlayer
-    \POE@Verb{/OEangle\the\POE@cnt\space OEangle def }%
-  \fi
-  \ifPOE@frontlayer
-    \POE@Verb{/OEangle OEangle\the\POE@cnt\space def }%
-  \fi
+  \POE@calcAngle
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -18293,33 +18368,23 @@
 % \subsubsection{rightangleprism}
 %
 % \begin{macro}{\rightangleprism@ref}
+%   All tripole components are aligned such, that the x-axis is normal
+%   to the angle bisector (Winkelhalbierende), but for the right angle
+%   prism the x-axis must be oriented normal to the bisector
+%   (Seitenhalbierende). So we must correct for the difference in both
+%   orientations, which is stored in dOEangle.
 %    \begin{macrocode}
 \def\rightangleprism@ref{%
-  \ifPOE@backlayer
-    \POE@Verb{/OEangle\the\POE@cnt\space OEangle def }%
-  \fi
-  \ifPOE@frontlayer
-    \POE@Verb{/OEangle OEangle\the\POE@cnt\space def }%
-  \fi
-  \POE@setref{%
-    OEangle 0.5 mul
-    { x sin modA mul } 
-    { OEangle x sub sin modB mul }
-    tx@EcldDict begin
-%    \end{macrocode}
-% Need to redefine /ZeroEq locally, because 1e-6 is too low for
-% e.g. \cs{rightangleprism(2,2)(4,1)(2,0)}, which oscillates around \pm
-% 1.7e-6.
-%    \begin{macrocode}
-      10 dict begin
-        /ZeroEq { abs 5e-6 lt } bind def
-        NewtonSolving pop
-      end
-    end
-    /@htA exch def
-    OEangle 0.5 mul exch sub /dOEangle exch def
+  \POE@calcAngle
+  \POE@Verb{%
+    /@htA @myht def
     /@OEtrafo {dOEangle matrix rotate dtransform } bind def
   }%
+%    \end{macrocode}
+% Correct also the label reference angle for nonsymmetric reference nodes.
+%    \begin{macrocode}
+  \let\POE@temp\POE@key@labelrefangle
+  \edef\POE@key@labelrefangle{\POE@temp \POE@dict{dOEangle add} }%
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -18327,17 +18392,23 @@
 % \begin{macro}{\rightangleprism@nodes}
 %    \begin{macrocode}
 \def\rightangleprism@nodes{%
-  \edef\@sz{\POE@key@raprismsize\space}%
-  \edef\@ht{\POE@dict{OEangle 0.5 mul sin modA mul} }%
+  \edef\@sz{\POE@key@raprismsize\space 0.5 mul }%
+  \POE@Verb{%
+    \ifx\POE@key@raprismalign\POE@str@auto
+      /@corrshift {} bind def
+    \else
+      /@corrshift {@htA sub \@sz 0.5 mul add } bind def%
+    \fi
+  }%
   \newOptexpComp{%
-    {@htA neg @htA \@sz 0.5 mul sub @OEtrafo} {1 0 @OEtrafo} 
-    @htA \@sz 0.5 mul sub @htA trans {PlainIfc}
-    {@htA neg 0 @OEtrafo} {1 1 @OEtrafo} 
-    @htA 2 sqrt mul dup \@sz 2 sqrt div sub exch refl {PlainIfc}
-    {@htA 0 @OEtrafo} {-1 1 @OEtrafo} 
-    @htA 2 sqrt mul dup \@sz 2 sqrt div sub exch refl {PlainIfc}
-    {@htA dup \@sz 0.5 mul sub @OEtrafo} {1 0 @OEtrafo} 
-    @htA neg \@sz 0.5 mul @htA sub trans {PlainIfc} 
+    {@htA neg @htA \@sz sub @corrshift @OEtrafo} {1 0 @OEtrafo} 
+    @htA \@sz sub @htA trans {PlainIfc}
+    {@htA neg 0 @corrshift @OEtrafo} {1 1 @OEtrafo} 
+    @htA 2 sqrt mul dup \@sz 0.5 sqrt div sub exch refl {PlainIfc}
+    {@htA 0 @corrshift @OEtrafo} {-1 1 @OEtrafo} 
+    @htA 2 sqrt mul dup \@sz 0.5 sqrt div sub exch refl {PlainIfc}
+    {@htA dup \@sz sub @corrshift @OEtrafo} {1 0 @OEtrafo} 
+     @htA neg \@sz @htA sub trans {PlainIfc} 
     \POE@key@n 
   }%
 \ignorespaces}%
@@ -18348,9 +18419,15 @@
 %    \begin{macrocode}
 \def\rightangleprism@comp{%
   \edef\@sz{\POE@key@raprismsize\space 0.5 mul }%
-  \pspolygon(!\POE@dict{\@sz neg @htA \@sz sub @OEtrafo})
-            (!\POE@dict{\@sz @htA \@sz sub @OEtrafo})
-            (! 0 \POE@dict{@htA @OEtrafo})%
+  \ifx\POE@key@raprismalign\POE@str@auto
+    \pspolygon(!\POE@dict{\@sz neg @htA \@sz sub @OEtrafo})
+              (!\POE@dict{\@sz @htA \@sz sub @OEtrafo})
+              (! 0 \POE@dict{@htA @OEtrafo})%
+  \else
+    \pspolygon(!\POE@dict{\@sz \@sz -0.5 mul @OEtrafo})%
+              (!\POE@dict{\@sz neg \@sz -0.5 mul @OEtrafo})%
+              (!\POE@dict{0 \@sz 0.5 mul @OEtrafo})
+  \fi
 \ignorespaces}%
 %    \end{macrocode}
 % \end{macro}
@@ -19621,36 +19698,24 @@ tx@OptexpDict begin
 % 
 % \begin{macro}{calcNodes}
 %   Calculate the reference node coordinates for reflective components and
-%   stores them as \PSvar{X@A}, \PSvar{Y@A}, \PSvar{X@B} and \PSvar{Y@B}. Some
-%   other values (\PSvar{modA}, \PSvar{modB}, and \PSvar{OEangle}) are also
-%   stored for some special components
+%   stores them as \PSvar{X@A}, \PSvar{Y@A}, \PSvar{X@B} and \PSvar{Y@B}.
 % \begin{pssyntax}
-%   \PSvar{XB} \PSvar{YB} \PSvar{XA} \PSvar{YA} \PSvar{XG} \PSvar{YG} \PSop{calcNodes}
+%   \PSvar{XA} \PSvar{YA} \PSvar{XB} \PSvar{YB} \PSvar{XG} \PSvar{YG} \PSop{calcNodes}
 % \end{pssyntax}
 %    \begin{macrocode}
 /calcNodes {
   (calcNode) DebugBegin
   /YG exch def /XG exch def
-  /ay YG 3 -1 roll sub def
-  /ax XG 3 -1 roll sub def
   /by exch YG sub def
   /bx exch XG sub def
+  /ay YG 3 -1 roll sub def
+  /ax XG 3 -1 roll sub def
   /a ax ay Pyth def
-%    \end{macrocode}
-% Used by \cs{rightangleprism}.
-%    \begin{macrocode}
-  /modA a def
   /b bx by Pyth def
-  /modB b def
   /cx ax a div bx b div add def
   /cy ay a div by b div add def
   /c@tmp cx cy Pyth def
   /c ax bx add ay by add Pyth def
-%    \end{macrocode}
-% Used by \cs{rightangleprism} and \cs{optprism}.
-%    \begin{macrocode}
-  /OEangle c dup mul a dup mul sub b dup mul sub 
-             -2 a b mul mul div Acos def
 %    \end{macrocode}
 % If $c=0$, then set the coordinates of the vector manually depending whether
 % \PSvar{a} and \PSvar{b} are parallel or antiparallel.
@@ -19682,7 +19747,6 @@ tx@OptexpDict begin
     /Y@A Y@B def
     /X@B exch def
     /Y@B exch def
-    modA modB /modA exch def /modB exch def
   } if
   DebugEnd
 } bind def
@@ -21560,6 +21624,18 @@ tx@OptexpDict begin
 %    \begin{macrocode}
 /VecAdd {
     3 -1 roll add 3 1 roll add exch
+} bind def
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{VecSub}
+% Subtraction of two vectors.
+% \begin{pssyntax}
+%   \PSvar{Xa Ya Xb Yb} \PSop{VecSub} \PSvar{Xa-Xb Ya-Yb}
+% \end{pssyntax}
+%    \begin{macrocode}
+/VecSub {
+    neg 3 -1 roll add 3 1 roll neg add exch
 } bind def
 %    \end{macrocode}
 % \end{macro}
