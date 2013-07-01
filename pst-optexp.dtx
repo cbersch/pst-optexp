@@ -18,7 +18,7 @@
 %<stylefile>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<stylefile>\ProvidesPackage{pst-optexp}
 %<*stylefile>
-    [2013/06/28 v4.3 Optical experimental setups with PSTricks]
+    [2013/07/01 v4.3 Optical experimental setups with PSTricks]
 %</stylefile>
 %
 %<*driver>
@@ -4178,28 +4178,24 @@
 % component vertical to the entrance interface:
 % \fi
 %
-% \begin{pspicture}(0,-0.5)(6,2)
+% \begin{pspicture}(0,-0.5)(13,2)
 %   \pnode(0,1.6){A}\pnode(0,0.4){B}
 %   \rightangleprism(A)(2,1)(B)\psdot(\oenodeCenter{})
 %   \drawbeam(A){}(B)
-%
 %   \pnode(3,1.2){A}\pnode(3,0.8){B}
 %   \rightangleprism(A)(5,1)(B)\psdot(\oenodeCenter{})
 %   \drawbeam(A){}(B)
 %   \rput[t](3,0){\opt{raprismalign=auto}}
-% \end{pspicture}
-% \hspace*{\fill}
-% \begin{pspicture}(0,-0.5)(6,2)
 %   \psset{raprismalign=center}
-%   \pnode(0,1.6){A}\pnode(0,0.4){B}
-%   \rightangleprism(A)(2,1)(B)\psdot(\oenodeCenter{})
+%   \pnode(7,1.6){A}\pnode(7,0.4){B}
+%   \rightangleprism(A)(9,1)(B)\psdot(\oenodeCenter{})
 %   \drawbeam(A){}(B)
-%
-%   \pnode(3,1.2){A}\pnode(3,0.8){B}
-%   \rightangleprism(A)(5,1)(B)\psdot(\oenodeCenter{})
+%   \pnode(10,1.2){A}\pnode(10,0.8){B}
+%   \rightangleprism(A)(12,1)(B)\psdot(\oenodeCenter{})
 %   \drawbeam(A){}(B)
-%   \rput[t](3,0){\opt{raprismalign=center}}
+%   \rput[t](10,0){\opt{raprismalign=center}}
 % \end{pspicture}
+%
 % \end{optionlist}
 % 
 % \ifGERMAN\section{Pentaprisma}\fi
@@ -11165,17 +11161,17 @@
 \begingroup
 \captionsetup[lstlisting]{format=poecaption}
 \begin{LTXexample}[pos=t, caption={\ifGERMAN Angepasst von \fi\ifENGLISH Adapted from \fi\doiurl{10.1103/PhysRevLett.105.263904}}, label={ex:wgm-pdc}]]
-\begin{pspicture}(0.6,2.3)(6.8,7.8)
+\begin{pspicture}(0.6,2.8)(6.8,7.8)
 \pnode(1,6){Laser}\pnode(1,5){M}
 \pnode(3,4){PR}\pnode(5,5){PT}\pnode(6,7){D1}
 \newpsstyle{Glass}{fillcolor=blue, fillstyle=solid, opacity=0.15, linecolor=blue!30!white}
 \begin{optexp}
   \optbox[position=start, innerlabel, optboxwidth=1.8](Laser)(M){Nd:YAG}
-  \optprism[style=Glass, compname=P, prismtype=reflective, prismangle=90, label=1 135](M)(PR)(PT){\begin{tabular}{@{}c@{}}diamond\\ prism\end{tabular}}
+  \optprism[style=Glass, compname=P, n=1, prismtype=reflective, prismangle=60, labeloffset=1.2](M)(PR)(PT){\begin{tabular}{@{}c@{}}diamond\\ prism\end{tabular}}
   \mirror(Laser)(M)(\oenodeIfc{2}{P})%
-  \lens[abspos=1.33, style=Glass](\oenodeIfc{2}{P})(M)%
+  \lens[abspos=1.05, style=Glass](\oenodeIfc{2}{P})(M)%
   \optprism[compname=PDet, style=Glass](\oenodeIfc{2}{P})(PT)(D1)%
-  \lens[abspos=1.33, style=Glass](\oenodeIfc{2}{P})(\oenodeOut{PDet})%
+  \lens[abspos=1.05, style=Glass](\oenodeIfc{2}{P})(\oenodeOut{PDet})%
   \newpsstyle{Beam}{linestyle=none, fillstyle=solid}%
   \drawwidebeam[fillcolor=green, beamwidth=0.2, beaminsidelast, beampathcount=5]{1}{3}{4}{2}%
   \drawwidebeam[fillcolor=orange, beaminsidefirst, startinsidecount=1, loadbeam, beaminsidelast]{2}{6}%
@@ -12327,10 +12323,12 @@
 %
 % \begin{changelog}
 %\patchcmd{\release}{\setlength{\itemsep}{0pt}}{\setlength{\itemsep}{0pt}\setlength{\parsep}{0pt}}{}{}
-%   \begin{release}{4.3}{2013-06-28}
+%   \begin{release}{4.3}{2013-07-01}
 %   \item Added option \opt{raprismalign}\see{prm:raprismalign}
 %   \item Fixed alignment of \cs{rightangleprism} and rotation of its
 %     label.
+%   \item Again fixed the alignment of reflective \cs{optprism}.
+%   \item Fixed improper alignment of \cs{optprism} label.
 %   \end{release}
 %   \begin{release}{4.2}{2013-06-07}
 %   \item Added option \opt{startinsidecount}\see{prm:startinsidecount}
@@ -13079,7 +13077,7 @@
   labelstyle=,
   labelalign=c,
   labelref=relgrav,
-  ref@angle=0
+  ref@angle=180
 }%
 %    \end{macrocode}
 % External node
@@ -16355,7 +16353,7 @@
     }%
     \expandafter\def\csname #2@ii\endcsname(##1)(##2)(##3)##4{%
       \addbefore@par{#3}%
-      \addafter@par{ref@angle=180,#1}%
+      \addafter@par{ref@angle=0,#1}%
       \begin@OptexpTripole
         \ifPOE@backlayer
           \POE@calcNodes{##1}{##2}{##3}%
@@ -16575,7 +16573,7 @@
   \fi
 }%
 \def\optcirculator@ii(#1)(#2)(#3)#4{%
-  \addafter@par{ref@angle=180}%
+  \addafter@par{ref@angle=0}%
   \begin@OptexpObj
     \POE@calcCircRefNodes{#1}{#2}{#3}%
     \POE@drawcomponent{optcirculator}{#4}
@@ -16743,22 +16741,35 @@
 %   \cs{rightangleprism}.
 %    \begin{macrocode}
 \def\POE@calcAngle{%
-  \pst@getcoor{\oenodeRefA{}}\POE@tempa%
-  \pst@getcoor{\oenodeRefB{}}\POE@tempb%
-  \pst@getcoor{\oenode@Origin{}}\POE@tempc%
   \POE@Verb{%
     gsave
       STV CP T
-      \POE@tempc \POE@tempa VecSub /ay ED /ax ED
-      \POE@tempc \POE@tempb VecSub /by ED /bx ED
+      /N@\oenode@Origin{} @GetCenter 2 copy
+      /N@\oenodeRefA{} @GetCenter VecSub /ay ED /ax ED
+      /N@\oenodeRefB{} @GetCenter VecSub /by ED /bx ED
 %    \end{macrocode}
 % Winkelhalbierende (cx, cy)
 %    \begin{macrocode}
-      ax ay NormalizeVec bx by NormalizeVec VecAdd NormalizeVec 2 copy
+      ax ay NormalizeVec bx by NormalizeVec VecAdd 
+      2 copy Pyth abs 1e-4 lt {
+%    \end{macrocode}
+% vectors a and b are antiparallel
+%    \begin{macrocode}
+        pop pop
+        ax ay 90 matrix rotate dtransform
+      } if
+      NormalizeVec 2 copy
 %    \end{macrocode}
 % Seitenhalbierende
 %    \begin{macrocode}
-      ax ay bx by VecAdd NormalizeVec 
+      ax ay bx by VecAdd 
+      2 copy Pyth abs 1e-4 lt {
+%    \end{macrocode}
+% vectors a and b are parallel
+%    \begin{macrocode}
+        pop pop ax ay
+      } if
+      NormalizeVec 
       4 copy 4 copy
       DotProd Acos 5 1 roll Chirality mul 
       /dOEangle exch def
@@ -16812,14 +16823,10 @@
 %    \begin{macrocode}
 \def\POE@pnode@shiftedrot(#1)#2#3#4{%
   \pst@getcoor{#1}\POE@temp%
-  \pnode(!%
-    \POE@temp /YDiff ED /XDiff ED %
-    \pst@nodedict /N@#2 load GetCenter end /YShifted ED /XShifted ED
-    /rot@angle #4 \POE@key@labelrefangle\space add def
-    /XDiff@Rot rot@angle cos XDiff mul rot@angle sin YDiff mul add def
-    /YDiff@Rot rot@angle cos YDiff mul rot@angle sin XDiff mul sub def
-    XShifted XDiff@Rot add YShifted YDiff@Rot add neg \tx@UserCoor
-  ){#3}%
+  \pnode(! \POE@dict{
+    /N@#2 @GetCenter \POE@temp 
+    #4 \POE@key@labelrefangle\space add matrix rotate dtransform 
+    VecAdd \tx@UserCoor }){#3}%
   \psset[optexp]{ref@angle=0}
 }%
 %    \end{macrocode}
@@ -17008,7 +17015,7 @@
 % Define all free-ray tripoles
 %    \begin{macrocode}
 \newOptexpTripole{mirror}
-\newOptexpTripole[ref@angle=-135]{beamsplitter}
+\newOptexpTripole[ref@angle=45]{beamsplitter}
 \newOptexpTripole{optgrating}
 \def\optgrid{%
   \PackageWarning{pst-optexp}{%
@@ -17016,9 +17023,9 @@
     use \string\optgrating\space instead.}%
   \optgrating%
 }%
-\newOptexpTripole[ref@angle=-135]{pentaprism}
-\newOptexpTripole[ref@angle=-135]{rightangleprism}
-\newOptexpTripole[ref@angle=-135]{optprism}
+\newOptexpTripole[ref@angle=45]{pentaprism}
+\newOptexpTripole[ref@angle=45]{rightangleprism}
+\newOptexpTripole[ref@angle=45]{optprism}
 %    \end{macrocode}
 %
 % \begin{macro}{\optdipole}
@@ -17066,7 +17073,7 @@
     {\opttripole@ii(#1)(#2)(#3){#4}{}}%
 }%
 \def\opttripole@ii(#1)(#2)(#3)#4#5{%
-  \addafter@par{ref@angle=180}
+  \addafter@par{ref@angle=0}
   \begin@OptexpTripole
     \ifPOE@backlayer   
       \POE@calcNodes{#1}{#2}{#3}%
@@ -18308,6 +18315,9 @@
 %    \begin{macrocode}
 \def\optprism@ref{%
   \POE@calcAngle
+  \ifx\POE@key@prismtype\POE@str@reflective
+    \edef\POE@key@labelrefangle{180}%
+  \fi
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -18329,16 +18339,14 @@
     \fi
   }%
   \begingroup
-    \ifx\POE@key@prismtype\POE@str@reflective
-      \pst@def{ScreenCoor}< \pst@number\psyunit neg mul exch \pst@number\psxunit mul exch >
-    \fi
-    \pnode(! 0 \@hshift neg){\oenodeCenter{}}
+    \edef\POE@temp{\ifx\POE@key@prismtype\POE@str@reflective neg \fi}%
+    \pnode(! 0 \@hshift neg){\oenodeCenter{}}%
     \newOptexpComp{%
       {\@sz -0.6 mul \@ang tan mul \@hshift neg} 
-      {90 \@ang sub dup cos exch sin} 
+      {90 \@ang sub dup cos exch sin \POE@temp} 
       \@sz \@ang cos div dup -0.4 mul exch 0.6 mul trans {PlainIfc}
       {\@sz 0.6 mul \@ang tan mul \@hshift neg} 
-      {90 \@ang add dup cos exch sin} 
+      {90 \@ang add dup cos exch sin \POE@temp} 
       \@sz \@ang cos div dup -0.4 mul exch 0.6 mul trans {PlainIfc} 
 %    \end{macrocode}
 % Need to change the order of the two interfaces on the stack and add an
@@ -18346,7 +18354,7 @@
 %    \begin{macrocode}
       \ifx\POE@key@prismtype\POE@str@reflective
         12 6 roll
-        {0 \@sz -0.4 mul \@hshift sub } 
+        {0 \@sz 0.4 mul \@hshift sub } 
         {1 0} \@ang tan \@sz mul dup neg exch refl {PlainIfc}
         12 6 roll
       \fi
@@ -18373,9 +18381,9 @@
     \fi
   }%
   \edef\POE@temp{\ifx\POE@key@prismtype\POE@str@reflective -1 mul \fi}%
-  \pspolygon(! \@sz neg \@altan mul \@sz -0.4 mul \@hshift sub \POE@temp)
-            (! \@sz \@altan mul \@sz -0.4 mul \@hshift sub \POE@temp)
-            (! 0 \@sz 0.6 mul \@hshift sub \POE@temp)
+  \pspolygon(! \@sz neg \@altan mul \@sz -0.4 mul \POE@temp \@hshift sub)
+            (! \@sz \@altan mul \@sz -0.4 mul \POE@temp \@hshift sub)
+            (! 0 \@sz 0.6 mul \POE@temp \@hshift sub)
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -19227,7 +19235,7 @@
     {\elecmixer@ii(#1)(#2)(#3){}}%
 }%
 \def\elecmixer@ii(#1)(#2)(#3)#4{%
-  \addafter@par{ref@angle=180}%
+  \addafter@par{ref@angle=0}%
   \begin@OptexpObj
     \POE@calcCircRefNodes{#1}{#2}{#3}%
     \POE@drawcomponent{elecmixer}{#4}
@@ -19725,11 +19733,11 @@ tx@OptexpDict begin
   /bx exch XG sub def
   /ay YG 3 -1 roll sub def
   /ax XG 3 -1 roll sub def
-  /a ax ay Pyth def
-  /b bx by Pyth def
-  /cx ax a div bx b div add def
-  /cy ay a div by b div add def
-  /c@tmp cx cy Pyth def
+  ax ay NormalizeVec bx by NormalizeVec VecAdd
+  2 copy Pyth abs 1e-4 lt { 
+    pop pop ax ay -90 matrix rotate dtransform
+  } if
+  /cy ED /cx ED
   /c ax bx add ay by add Pyth def
 %    \end{macrocode}
 % If $c=0$, then set the coordinates of the vector manually depending whether
@@ -19746,12 +19754,10 @@ tx@OptexpDict begin
       /cx ay def
       /cy ax neg def
     } ifelse
-    /c@tmp a def
   } if
-  /X@A XG cx c@tmp div add def
-  /Y@A YG cy c@tmp div add def
-  /X@B XG cx c@tmp div sub def
-  /Y@B YG cy c@tmp div sub def
+  cx cy NormalizeVec 2 copy
+  XG YG VecAdd /Y@A ED /X@A ED
+  XG YG 4 2 roll VecSub /Y@B ED /X@B ED
 %    \end{macrocode}
 % Test the chirality (the order) of the input points. Input angles $> 90$\textdegree
 % don't make sense, in this case we exhange the calculated reference nodes.
