@@ -8,9 +8,9 @@
   \drawbeam[raytrace=false, linecolor=black]{(A)}{1}{2}  
 \end{pspicture}
 
-\begin{pspicture}[showgrid](13,3)
+\begin{pspicture}[showgrid](0,-0.5)(14,3.2)
   \footnotesize
-  \pnode(0,0){A}\pnode(3,1.8){B}\pnode(6,0){C}
+  \pnode(0,1){A}\pnode(2,2){B}\pnode(4,1){C}
   \psdot(A)\uput[90](A){A}
   \psdot(B)\uput[90](B){B}
   \psdot(C)\uput[90](C){C}
@@ -20,9 +20,10 @@
   \psdot[style=IfcDot](\oenodeCenter{})\uput{0.1}[-90](\oenodeCenter{}){\prm{center}}
   \psdot[style=IfcDot](\oenodeIn{})\uput{0.1}[150](\oenodeIn{}){\prm{in}}
   \psdot[style=IfcDot](\oenodeOut{})\uput{0.1}[30](\oenodeOut{}){\prm{out}}
-  \rput[b](\oenodeCenter{}|0,0){\opt{prismalign=auto}}
+  \rput[t](\oenodeCenter{}|0,0.2){%
+    \begin{tabular}{@{}c@{}}\opt{prismalign=auto}\\\opt{prismtype=transmittive}\end{tabular}}
 %
-  \pnode(7,0){A}\pnode(10,1.8){B}\pnode(13,0){C}
+  \pnode(5,1){A}\pnode(7,2){B}\pnode(9,1){C}
   \psdot(A)\uput[90](A){A}
   \psdot(B)\uput[90](B){B}
   \psdot(C)\uput[90](C){C}
@@ -32,7 +33,21 @@
   \psdot[style=IfcDot](\oenodeCenter{})\uput{0.1}[-90](\oenodeCenter{}){\prm{center}}
   \psdot[style=IfcDot](\oenodeIn{})\uput{0.1}[150](\oenodeIn{}){\prm{in}}
   \psdot[style=IfcDot](\oenodeOut{})\uput{0.1}[30](\oenodeOut{}){\prm{out}}
-  \rput[b](\oenodeCenter{}|0,0){\opt{prismalign=center}}
+  \rput[t](\oenodeCenter{}|0,0.2){%
+    \begin{tabular}{@{}c@{}}\opt{prismalign=center}\\\opt{prismtype=transmittive}\end{tabular}}
+%
+  \pnode(10,2){A}\pnode(12,1){B}\pnode(14,2){C}
+  \psdot(A)\uput[90](A){A}
+  \psdot(B)\uput[-90](B){B}
+  \psdot(C)\uput[90](C){C}
+  \optprism[prismsize=2, prismtype=reflective](A)(B)(C)
+  \psline[style=Refline, linestyle=dashed](A)(B)(C)
+  \newpsstyle{IfcDot}{dotstyle=+, linecolor=red, linewidth=1.5\pslinewidth}
+  \psdot[style=IfcDot](\oenodeCenter{})\uput{0.1}[90](\oenodeCenter{}){\prm{center}}
+  \psdot[style=IfcDot](\oenodeIn{})\uput{0.1}[-160](\oenodeIn{}){\prm{in}}
+  \psdot[style=IfcDot](\oenodeOut{})\uput{0.1}[-20](\oenodeOut{}){\prm{out}}
+  \rput[t](\oenodeCenter{}|0,0.2){%
+    \begin{tabular}{@{}c@{}}\opt{prismalign=auto}\\\opt{prismtype=reflective}\end{tabular}}
 \end{pspicture}
 
 \newpage
