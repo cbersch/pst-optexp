@@ -18,7 +18,7 @@
 %<stylefile>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<stylefile>\ProvidesPackage{pst-optexp}
 %<*stylefile>
-    [2013/07/01 v4.3 Optical experimental setups with PSTricks]
+    [2013/07/02 v4.3 Optical experimental setups with PSTricks]
 %</stylefile>
 %
 %<*driver>
@@ -4093,29 +4093,46 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{pspicture}(13,3)
+\begin{pspicture}(0,-0.5)(14,3.2)
   \footnotesize
-  \pnode(0,0){A}\pnode(3,1.8){B}\pnode(6,0){C}
-  \psdot(A)\uput[90](A){\prm{in}}
-  \psdot(B)\uput[90](B){\prm{center}}
-  \psdot(C)\uput[90](C){\prm{out}}
+  \pnode(0,1){A}\pnode(2,2){B}\pnode(4,1){C}
+  \psdot(A)\uput[90](A){A}
+  \psdot(B)\uput[90](B){B}
+  \psdot(C)\uput[90](C){C}
   \optprism[prismsize=2](A)(B)(C)
   \psline[style=Refline, linestyle=dashed](A)(B)(C)
-  \newpsstyle{IfcDot}{dotstyle=+, linecolor=red, dotscale=1.5}
-  \psdot[style=CenterNode](\oenodeCenter{})
-  \psdot[style=IfcDot](\oenodeIn{})
-  \psdot[style=IfcDot](\oenodeOut{})
-  \rput[b](\oenodeCenter{}|0,0){\opt{prismalign=auto}}
-  \pnode(7,0){A}\pnode(10,1.8){B}\pnode(13,0){C}
-  \psdot(A)\uput[90](A){\prm{in}}
-  \psdot(B)\uput[90](B){\prm{center}}
-  \psdot(C)\uput[90](C){\prm{out}}
+  \newpsstyle{IfcDot}{dotstyle=+, linecolor=red, linewidth=1.5\pslinewidth}
+  \psdot[style=IfcDot](\oenodeCenter{})\uput{0.1}[-90](\oenodeCenter{}){\prm{center}}
+  \psdot[style=IfcDot](\oenodeIn{})\uput{0.1}[150](\oenodeIn{}){\prm{in}}
+  \psdot[style=IfcDot](\oenodeOut{})\uput{0.1}[30](\oenodeOut{}){\prm{out}}
+  \rput[t](\oenodeCenter{}|0,0.2){%
+    \begin{tabular}{@{}c@{}}\opt{prismalign=auto}\\\opt{prismtype=transmittive}\end{tabular}}
+
+  \pnode(5,1){A}\pnode(7,2){B}\pnode(9,1){C}
+  \psdot(A)\uput[90](A){A}
+  \psdot(B)\uput[90](B){B}
+  \psdot(C)\uput[90](C){C}
   \optprism[prismsize=2, prismalign=center](A)(B)(C)
   \psline[style=Refline, linestyle=dashed](A)(B)(C)
-  \psdot[style=CenterNode](\oenodeCenter{})
-  \psdot[style=IfcDot](\oenodeIn{})
-  \psdot[style=IfcDot](\oenodeOut{})
-  \rput[b](\oenodeCenter{}|0,0){\opt{prismalign=center}}
+  \newpsstyle{IfcDot}{dotstyle=+, linecolor=red, linewidth=1.5\pslinewidth}
+  \psdot[style=IfcDot](\oenodeCenter{})\uput{0.1}[-90](\oenodeCenter{}){\prm{center}}
+  \psdot[style=IfcDot](\oenodeIn{})\uput{0.1}[150](\oenodeIn{}){\prm{in}}
+  \psdot[style=IfcDot](\oenodeOut{})\uput{0.1}[30](\oenodeOut{}){\prm{out}}
+  \rput[t](\oenodeCenter{}|0,0.2){%
+    \begin{tabular}{@{}c@{}}\opt{prismalign=center}\\\opt{prismtype=transmittive}\end{tabular}}
+
+  \pnode(10,2){A}\pnode(12,1){B}\pnode(14,2){C}
+  \psdot(A)\uput[90](A){A}
+  \psdot(B)\uput[-90](B){B}
+  \psdot(C)\uput[90](C){C}
+  \optprism[prismsize=2, prismtype=reflective](A)(B)(C)
+  \psline[style=Refline, linestyle=dashed](A)(B)(C)
+  \newpsstyle{IfcDot}{dotstyle=+, linecolor=red, linewidth=1.5\pslinewidth}
+  \psdot[style=IfcDot](\oenodeCenter{})\uput{0.1}[90](\oenodeCenter{}){\prm{center}}
+  \psdot[style=IfcDot](\oenodeIn{})\uput{0.1}[-160](\oenodeIn{}){\prm{in}}
+  \psdot[style=IfcDot](\oenodeOut{})\uput{0.1}[-20](\oenodeOut{}){\prm{out}}
+  \rput[t](\oenodeCenter{}|0,0.2){%
+    \begin{tabular}{@{}c@{}}\opt{prismalign=auto}\\\opt{prismtype=reflective}\end{tabular}}
 \end{pspicture}
 % \iffalse
 %</ignore>
@@ -10775,7 +10792,7 @@
 \beamsplitter(M4f3)(BS4f)(CCD){BS}
 \optbox[position=end, label=0, optboxwidth=1](BS4f)(CCD){CCD}
 \lens[abspos=0.7](BS4f)(BSFwd){L}\lens[abspos=0.7](BSBwd)(M4f1){L}
-\addtopsstyle{Beam}{linewidth=2\pslinewidth}
+\addtopsstyle{Beam}{linewidth=2\pslinewidth, linejoin=2}
 \drawbeam{1-6}{11-14}{13}{12}{15}{18}{16}{17}{25}{23}{24}
 \drawbeam[beaminsidefirst]{6}{7}{10}{17}{16}{18}{26}{19-24}
 \end{pspicture}
@@ -12323,7 +12340,7 @@
 %
 % \begin{changelog}
 %\patchcmd{\release}{\setlength{\itemsep}{0pt}}{\setlength{\itemsep}{0pt}\setlength{\parsep}{0pt}}{}{}
-%   \begin{release}{4.3}{2013-07-01}
+%   \begin{release}{4.3}{2013-07-02}
 %   \item Added option \opt{raprismalign}\see{prm:raprismalign}
 %   \item Fixed alignment of \cs{rightangleprism} and rotation of its
 %     label.

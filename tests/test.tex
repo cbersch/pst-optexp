@@ -6,22 +6,30 @@
 \usepackage{bera}
 \usepackage{marvosym}
 \usepackage{pst-circ, pst-func, pst-optexp}
+\newcommand{\opt}[1]{#1}
+\newcommand{\prm}[1]{#1}
 \begin{document}
-\psset{beamwidth=0.2}
-\begin{pspicture}[showgrid](4,4)
-  \optprism[showifcnodes, showoptdots, prismtype=reflective, label=1](0,1)(2,0)(4,1){lbl}
-  \drawwidebeam(0,1){}(4,1)
-
-  \optprism[showifcnodes, showoptdots, label=1](0,2)(2,3)(4,2){lbl}
-  \drawwidebeam(0,2){}(4,2)
+\begin{pspicture}(13,3)
+  \footnotesize
+  \pnode(0,0){A}\pnode(3,1.8){B}\pnode(6,0){C}
+  \psdot(A)\uput[90](A){\prm{in}}
+  \psdot(B)\uput[90](B){\prm{center}}
+  \psdot(C)\uput[90](C){\prm{out}}
+  \optprism[prismsize=2](A)(B)(C)
+  \psline[style=Refline, linestyle=dashed](A)(B)(C)
+  \newpsstyle{IfcDot}{dotstyle=+, linecolor=red, dotscale=1.5}
+  \psdot[style=CenterNode](\oenodeCenter{})
+  \psdot[style=IfcDot](\oenodeIn{})
+  \psdot[style=IfcDot](\oenodeOut{})
+  \rput[b](\oenodeCenter{}|0,0){\opt{prismalign=auto}}
+  \pnode(7,0){A}\pnode(10,1.8){B}\pnode(13,0){C}
+  \psdot(A)\uput[90](A){\prm{in}}
+  \psdot(B)\uput[90](B){\prm{center}}
+  \psdot(C)\uput[90](C){\prm{out}}
+  \optprism[prismsize=2, prismalign=center](A)(B)(C)
+  \psline[style=Refline, linestyle=dashed](A)(B)(C)
+  \psdot[style=CenterNode](\oenodeCenter{})
+  \psdot[style=IfcDot](\oenodeIn{})
+  \psdot[style=IfcDot](\oenodeOut{})
+  \rput[b](\oenodeCenter{}|0,0){\opt{prismalign=center}}
 \end{pspicture}
-\hspace*{1cm}%
-\begin{pspicture}[showgrid](4,4)
-  \psset{prismalign=center}
-  \optprism[showifcnodes, showoptdots, prismtype=reflective, label=1](0,1)(2,0)(4,1){lbl}
-  \drawwidebeam(0,1){}(4,1)
-
-  \optprism[showifcnodes, showoptdots, label=1](0,2)(2,3)(4,2){lbl}
-  \drawwidebeam(0,2){}(4,2)
-\end{pspicture}
-\end{document}
