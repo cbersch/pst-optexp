@@ -11209,6 +11209,45 @@
 \end{LTXexample}
 \endgroup
 
+\begin{LTXexample}[caption={caption}]
+\begin{pspicture}(2.2,2.2)
+\definecolor[ps]{bl}{rgb}{tx@addDict begin Red Green Blue end}%
+\pnode(0,0.5){In}\pnode(2,0.5){G1}
+\pnode([Xnodesep=-1.5, offset=1.3]G1){G2}\pnode(G1|G2){MG}
+\begin{optexp}
+  \optgrating[angle=40, gratingalign=c](In)(G1)(G2)
+  \optgrating[reverse, angle=40, gratingalign=c](G1)(G2)(MG)
+  \mirror[mirrorwidth=1, mirrortype=extended](G2)(MG)(G2)
+  \drawbeam[linecolor=red](In){1}
+  \multido{\i=0+1}{40}{%
+    \pstVerb{\i\space 650 400 sub 39 div mul 400 add 
+             tx@addDict begin wavelengthToRGB end }%
+    \drawbeam[linecolor=bl, beamangle=\i\space 16 sub 0.2 mul]{1-2}%
+    \drawbeam[linecolor=bl, loadbeampoints]{2-3}
+  }%
+\end{optexp}
+\end{pspicture}
+\end{LTXexample}
+
+\begin{LTXexample}[pos=t, caption={caption}]
+\begin{pspicture}(5.6,3)
+\pnode(0,0.5){S1}\pnode(2,2.5){S2}\pnode(3,1.5){S3}\pnode(4,0.5){S4}\pnode(4.5,1){S5}
+\psset{prismangle=30, mirrortype=extended}
+\definecolor[ps]{bl}{rgb}{tx@addDict begin Red Green Blue end}%
+\begin{optexp}
+  \optprism(S1)(S2)(S3)\optprism(S3)(S4)(S5)
+  \mirror[compshift=-0.07](\oenodeIn{2})([offset=1,Xnodesep=1]\oenodeIn{2})(\oenodeIn{2})
+  \drawbeam[linecolor=orange, ArrowInside=->, ArrowInsidePos=0.2, arrowscale=1.5](S1){1}
+  \addtopsstyle{Beam}{linecolor=bl, linewidth=0.35\pslinewidth, beampathskip=1}
+  \multido{\r=0+0.5}{120}{%
+    \pstVerb{\r\space 620 590 sub 59 div mul 590 add 
+             tx@addDict begin wavelengthToRGB end }%
+    \drawbeam[n=3.42 -0.002 \r\space mul add, beampos=\r\space 60 sub 0.0002 mul](S1){1-3}
+  }%
+\end{optexp}
+\end{pspicture}
+\end{LTXexample}
+
 \begin{LTXexample}[pos=t, linerange={1-1}, caption={caption}]
 
 \psset{unit=1.1, usefiberstyle=false}
@@ -11939,12 +11978,12 @@
 %
 % \begin{optionlist}
 % \poeitem{\cs{rightangleprism}}
-% \ifGERMAN Die Ausrichtung des \Lcs{rightangleprism} und die
+% \ifGERMAN Die Ausrichtung des \Lcomp{rightangleprism} und die
 % Positionierung der Beschriftung war falsch. Das kommt aber nur zum
 % tragen, wenn Eingangs- und Ausgangsvektor sehr unterschiedliche Längen
 % haben.
 % \fi
-% \ifENGLISH The alignment of the \Lcs{rightangleprism} and the
+% \ifENGLISH The alignment of the \Lcomp{rightangleprism} and the
 % positioning of the label was wrong. This became apparent only if the
 % input and output vectors had very different lenghts. 
 % \fi
@@ -12386,7 +12425,7 @@
 % \begin{changelog}
 %\patchcmd{\release}{\setlength{\itemsep}{0pt}}{\setlength{\itemsep}{0pt}\setlength{\parsep}{0pt}}{}{}
 %   \begin{release}{4.4}{xxxx-xx-xx}
-%   \item Modified \opt{innerlabel} to explicitely set \opt{labelalign=c}
+%   \item Modified \opt{innerlabel} to explicitly set \opt{labelalign=c}
 %   \end{release}
 %   \begin{release}{4.3a}{2013-07-02}
 %   \item Fixed tripole alignment bugs introduced in version 4.3.
