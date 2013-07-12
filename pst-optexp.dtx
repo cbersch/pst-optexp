@@ -18,7 +18,7 @@
 %<stylefile>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<stylefile>\ProvidesPackage{pst-optexp}
 %<*stylefile>
-    [2013/07/02 v4.3a Optical experimental setups with PSTricks]
+    [2013/07/12 v4.4alpha Optical experimental setups with PSTricks]
 %</stylefile>
 %
 %<*driver>
@@ -2212,7 +2212,7 @@
 % \fi
 % 
 % \begin{optionlist}
-% \numitem[0]{angle}
+% \psnumitem[0]{angle}
 % \ifGERMAN Dreht eine Komponente um den Winkel \prm{num} (in Grad). Die
 % Ausgangsposition ist grau gestrichelt eingezeichnet.
 % \fi
@@ -12426,6 +12426,8 @@
 %\patchcmd{\release}{\setlength{\itemsep}{0pt}}{\setlength{\itemsep}{0pt}\setlength{\parsep}{0pt}}{}{}
 %   \begin{release}{4.4}{xxxx-xx-xx}
 %   \item Modified \opt{innerlabel} to explicitly set \opt{labelalign=c}
+%   \item Fixed trailing spaces in \opt{savebeampoints} (and \opt{savebeam}).
+%   \item Allow Postscript code in \opt{angle}.
 %   \end{release}
 %   \begin{release}{4.3a}{2013-07-02}
 %   \item Fixed tripole alignment bugs introduced in version 4.3.
@@ -12702,6 +12704,7 @@
 %<*stylefile>
 % \section{Requirements}
 %    \begin{macrocode}
+\RequirePackage{fp}
 \RequirePackage{ifthen}
 \RequirePackage{pstricks}
 \RequirePackage{pst-xkey}
@@ -14307,13 +14310,13 @@
 \define@choicekey+[psset]{optexp}{savebeampoints}%
   [\val\nr]{true,false}[true]{%
     \ifcase\nr\relax
-      \def\POE@key@savebeampoints{1}
+      \def\POE@key@savebeampoints{1}%
     \or
-      \def\POE@key@savebeampoints{0}
+      \def\POE@key@savebeampoints{0}%
     \fi
   }{%
     \ifnum9<1#1
-      \def\POE@key@savebeampoints{#1}
+      \def\POE@key@savebeampoints{#1}%
     \else
       \PackageError{pst-optexp}%
         {savebeampoints must be a positive integer or 0}%
@@ -17000,21 +17003,13 @@
        \POE@key@rotate@xref\space
        \POE@key@rotate@yref\space
        DefineExtNode}){\oenodeRotref{}}%
-     \ifdim\POE@key@angle pt=0pt
-        #1%
-        \POE@pnode@shiftedrot(0,\POE@key@labeloffset)%
-                             {\oenodeCenter{}}%
-                             {\oenodeLabel{}}%
-                             {\POE@key@labelangle}%
-     \else
-        \psrotate(\oenodeRotref{}){\POE@key@angle}{%
-          #1%
-          \POE@pnode@shiftedrot(0,\POE@key@labeloffset)%
-                               {\oenodeCenter{}}%
-                               {\oenodeLabel{}}%
-                               {\POE@key@labelangle}%
-        }%
-     \fi%
+     \psrotate(\oenodeRotref{}){!\POE@key@angle}{%
+       #1%
+       \POE@pnode@shiftedrot(0,\POE@key@labeloffset)%
+                            {\oenodeCenter{}}%
+                            {\oenodeLabel{}}%
+                            {\POE@key@labelangle}%
+     }%
    }%
 }%
 %    \end{macrocode}
