@@ -115,7 +115,7 @@
     polcontrol, optisolator, optswitch, fiberdelayline,
     optfiberpolarizer, fibercollimator, optcoupler, wdmcoupler,
     wdmsplitter, optcirculator, fiberbox, eleccoupler, elecsynthesizer,
-    elecmixer, optarrowcomp, optbarcomp, drawbeam, drawwidebeam,
+    elecmixer, optarrowcomp, optbarcomp, transmissiongrating, drawbeam, drawwidebeam,
     drawfiber, drawwire, frontlayer, backlayer, newOptexpDipole,
     newOptexpTripole, newOptexpFiberDipole, newOptexpComp,
     newOptexpFiberComp, optplane},
@@ -4003,6 +4003,51 @@
 % \fi
 % \vspace*{2cm}
 % \end{stylelist}
+%
+%
+% \ifGERMAN\section{Transmissionsgitter}\fi
+% \ifENGLISH\section{Transmission grating}\fi
+% 
+% \begin{ltxsyntax}
+% \tripoledesc{transmissiongrating}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(3,2)
+  \transmissiongrating[beam](0,1)(1.5,1)(3,0.5){TG}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+% \end{ltxsyntax}
+%
+% \begin{pspicture}(2.6,2.4)
+%   \pnode(0,1.3){A}\pnode(2,1.3){B}\pnode(1,0.3){C}
+%   \optgrating[reverse, gratingcount=9](A)(B)(C)
+%   \optplane[angle=45](C)
+%   \addtopsstyle{Beam}{ArrowInside=->, ArrowInsidePos=0.8, arrowinset=0, arrowscale=1.5}
+%   \drawbeam[linecolor=black](A){1}
+%   \addtopsstyle{Beam}{loadbeam, savebeam=false}
+%   \drawbeam[linecolor=green]{1-2}
+%   \drawbeam[linecolor=red, beamangle=15]{1-2}
+%   \drawbeam[linecolor=blue, beamangle=-15]{1-2}
+%   \rput[lB](0,2){\ifENGLISH reflection grating\fi\ifGERMAN Reflexionsgitter\fi}
+% \end{pspicture}
+% \hspace*{2cm}
+% \begin{pspicture}(5,2.4)
+%   \pnode(0,1.3){A}\pnode(2,1.3){B}\pnode(4,1){C}
+%   \transmissiongrating[reverse, gratingcount=9](A)(B)(C){TG}
+%   \optplane[angle=-30](C)
+%   \addtopsstyle{Beam}{ArrowInside=->, ArrowInsidePos=0.8, arrowinset=0, arrowscale=1.5}
+%   \drawbeam[linecolor=black](A){1}
+%   \addtopsstyle{Beam}{loadbeam, savebeam=false}
+%   \drawbeam[linecolor=green]{1-2}
+%   \drawbeam[linecolor=red, beamangle=5]{1-2}
+%   \drawbeam[linecolor=blue, beamangle=-5]{1-2}
+%   \rput[lB](0,2){\ifENGLISH transmission grating\fi\ifGERMAN Transmissionsgitter\fi}
+% \end{pspicture}
 % 
 % \ifGERMAN\section{Prisma}\fi
 % \ifENGLISH\section{Prism}\fi
@@ -11619,6 +11664,14 @@
 %   \POE@extnodes[style=ExtNodeStyle, optdipolesize=1]{optdipole}
 %   \makeatother
 % \end{pspicture}
+% \begin{pspicture}(3,2)
+%   \transmissiongrating(0,1.5)(1.5,1.5)(3,1)
+%   \rput[t](1.5,0.9){\ttfamily\small
+%     \begin{tabular}{@{}c@{}}\textbackslash transmissiongrating\end{tabular}}
+%   \makeatletter
+%   \POE@extnodes[style=ExtNodeStyle]{transmissiongrating}
+%   \makeatother
+% \end{pspicture}
 %
 % \ifENGLISH\subsubsection*{Fiber components}\fi
 % \ifGERMAN\subsubsection*{Faserkomponenten}\fi
@@ -11775,6 +11828,13 @@
 %   \rput[bl](0,-0.4){\ttfamily\textbackslash optdipole}
 % \end{pspicture}%
 % \hspace{\fill}%
+% \begin{pspicture}(0,-0.5)(3,1.7)
+%   \pnode(0,0.7){A}\pnode(1.5,0.7){B}\pnode(3,0.4){C}
+%   \transmissiongrating(A)(B)(C)
+%   \drawbeam(A){}(C)
+%   \psdot(\oenodeIn{})\uput[45](\oenodeIn{}){1, N}
+%   \rput[bl](0,-0.4){\ttfamily\textbackslash transmissiongrating}
+% \end{pspicture}%
 %
 % \noindent\begin{pspicture}(3,2.5)
 %   \pnode(0,1.5){A}\pnode(2.5,1.5){B}\pnode(2.5,0.4){C}
@@ -12425,6 +12485,7 @@
 % \begin{changelog}
 %\patchcmd{\release}{\setlength{\itemsep}{0pt}}{\setlength{\itemsep}{0pt}\setlength{\parsep}{0pt}}{}{}
 %   \begin{release}{4.4}{xxxx-xx-xx}
+%   \item Added component \cs{transmissiongrating}\see{comp:transmissiongrating}
 %   \item Modified \opt{innerlabel} to explicitly set \opt{labelalign=c}
 %   \item Fixed trailing spaces in \opt{savebeampoints} (and \opt{savebeam}).
 %   \item Allow Postscript code in \opt{angle}.
@@ -12704,7 +12765,6 @@
 %<*stylefile>
 % \section{Requirements}
 %    \begin{macrocode}
-\RequirePackage{fp}
 \RequirePackage{ifthen}
 \RequirePackage{pstricks}
 \RequirePackage{pst-xkey}
@@ -17119,6 +17179,7 @@
 \newOptexpTripole{mirror}
 \newOptexpTripole[ref@angle=45]{beamsplitter}
 \newOptexpTripole{optgrating}
+\newOptexpTripole[ref@angle=90]{transmissiongrating}
 \def\optgrid{%
   \PackageWarning{pst-optexp}{%
     \string\optgrid\space is deprecated,\MessageBreak
@@ -18104,6 +18165,47 @@
          \POE@key@gratingheight\space 0.5 mul){0.6}{160}{200}
    \fi
 \ignorespaces}%
+%    \end{macrocode}
+% \end{macro}
+% 
+% \subsubsection{transmissiongrating}
+%
+% \begin{macro}{\transmissiongrating@ref}
+%    \begin{macrocode}
+\def\transmissiongrating@ref{%
+  \POE@calcAngle
+  \POE@setref{/@@x \POE@key@gratingwidth\space 0.5 mul def}%
+  \edef\POE@key@angle{%
+    \POE@dict{ ax by mul ay bx mul sub 0 le { -90 }{ 90 } ifelse }
+    \POE@key@angle\space add
+  }%
+  \edef\POE@temp{\POE@key@extnode@xref}%
+  \edef\POE@key@extnode@xref{%
+    \POE@dict{%
+      \POE@key@extnode@yref\space 
+      ax by mul ay bx mul sub 0 le { -1 mul } if } }%
+  \edef\POE@key@extnode@yref{%
+    \POE@dict{%
+      \POE@temp\space 
+      ax by mul ay bx mul sub 0 le { -1 mul } if } }%
+    
+}%
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\transmissiongrating@nodes}
+%    \begin{macrocode}
+\def\transmissiongrating@nodes{%
+  \newOptexpComp{%
+    {0 0} \POE@key@gratingwidth\space 0.5 mul dup neg exch
+    OEangle 180 sub abs 1e-5 lt {
+      trans {1 0}
+    } {
+      refl {0 1} 
+    } ifelse 
+    4 1 roll {PlainIfc} 1}%
+}%
+\let\transmissiongrating@comp\optgrating@comp
 %    \end{macrocode}
 % \end{macro}
 % 
