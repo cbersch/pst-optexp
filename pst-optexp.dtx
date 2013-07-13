@@ -18197,13 +18197,7 @@
 %    \begin{macrocode}
 \def\transmissiongrating@nodes{%
   \newOptexpComp{%
-    {0 0} \POE@key@gratingwidth\space 0.5 mul dup neg exch
-    OEangle 180 sub abs 1e-5 lt {
-      trans {1 0}
-    } {
-      refl {0 1} 
-    } ifelse 
-    4 1 roll {PlainIfc} 1}%
+    {0 0} {0 1} 0 0 refltrans {PlainIfc} 1}%
 }%
 \let\transmissiongrating@comp\optgrating@comp
 %    \end{macrocode}
@@ -20261,7 +20255,7 @@ tx@OptexpDict begin
 % Define some constants.
 %    \begin{macrocode}
 /relative 0 def /absolute 1 def /center 2 def
-/refl 0 def /trans 1 def /absorb 2 def /undefined -1 def
+/refl 0 def /trans 1 def /absorb 2 def /refltrans 3 def /undefined -1 def
 /desc 0 def /asc 1 def /amb 2 def
 /ok 0 def /tir 1 def /missed 2 def
 /bgRefIndex 0 def
@@ -21995,7 +21989,7 @@ tx@OptexpDict begin
 % 
 % \begin{macro}{RefractVec}
 %   Calculate the refracted vector, the normal plane vector must be
-%   constructed with \PSvar{NormVec}, see
+%   constructed with \PSvar{NormalVec}, see
 %   \url{http://en.wikipedia.org/wiki/Snell%27s_law#Vector_form} for the
 %     formulas.
 %     \begin{pssyntax}
@@ -22032,7 +22026,7 @@ tx@OptexpDict begin
 % 
 % \begin{macro}{ReflectVec}
 %   Calculate the reflected vector, the normal plane vector must be
-%   constructed with \PSvar{NormVec}.
+%   constructed with \PSvar{NormalVec}.
 %   \begin{pssyntax}
 %     \PSvar{Xin Yin Xnorm Ynorm} \PSop{ReflectVec} \PSvar{Xout Yout}
 %   \end{pssyntax}
@@ -22111,21 +22105,35 @@ tx@OptexpDict begin
 /PlainInterface {%
   (PlainInterface) DebugBegin
   /dYp ED /dXp ED /Yp ED /Xp ED
-  Xp Yp Xp dXp add Yp dYp add X0 Y0 X0 Xin add Y0 Yin add 
-  @InterLines missed eq {
-    0 0 missed
-  } {
-    Xin Yin Xin Yin dXp dYp NormalVec
-    mode trans eq {
-      n1 n2 RefractVec
-      2 copy 0 eq exch 0 eq and { tir } { ok } ifelse
+  Xp Yp 2 copy dXp dYp VecAdd 
+  X0 Y0 2 copy Xin Yin VecAdd
+  mode refltrans eq {
+%    \end{macrocode}
+% used only by the transmissiongrating
+%    \begin{macrocode}
+    6 -2 roll 90 matrix rotate dtransform 6 2 roll
+    @InterLines missed eq {
+      0 0 missed
     } {
+      Xin Yin Xin Yin dXp dYp NormalVec
       ReflectVec ok
-    } ifelse /n1 n2 def
-    5 -2 roll 2 copy 7 2 roll X0 Y0 @ABVect Xin Yin DotProd 0 lt
-    PN 1 gt and {
-      pop missed
-    } if
+    } ifelse
+  } {
+    @InterLines missed eq {
+      0 0 missed
+    } {
+      Xin Yin Xin Yin dXp dYp NormalVec
+      mode trans eq {
+        n1 n2 RefractVec
+        2 copy 0 eq exch 0 eq and { tir } { ok } ifelse
+      } {
+        ReflectVec ok
+      } ifelse /n1 n2 def
+      5 -2 roll 2 copy 7 2 roll X0 Y0 @ABVect Xin Yin DotProd 0 lt
+      PN 1 gt and {
+        pop missed
+      } if
+    } ifelse
   } ifelse
   DebugEnd
 } bind def
