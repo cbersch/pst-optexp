@@ -18,7 +18,7 @@
 %<stylefile>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<stylefile>\ProvidesPackage{pst-optexp}
 %<*stylefile>
-    [2013/07/12 v4.4alpha Optical experimental setups with PSTricks]
+    [2013/07/14 v4.4 Optical experimental setups with PSTricks]
 %</stylefile>
 %
 %<*driver>
@@ -4023,6 +4023,18 @@
 % \fi
 % \end{ltxsyntax}
 %
+% \ifGERMAN 
+% Das Transmissiongitter unterstützt alle Optionen von
+% \Lcomp{optgrating}. Der Strahlengang wird so berechnet, dass der
+% Strahl an einer Ebene senkrecht zum dargestellten Gitter reflektiert
+% wird. 
+% \fi
+% \ifENGLISH
+% The transmission grating supports all options of
+% \Lcomp{optgrating}. The beam path is calculated such, that the beam is
+% reflected at an interface which is perpendicular to the drawn grating.
+% \fi
+%
 % \begin{pspicture}(2.6,2.4)
 %   \pnode(0,1.3){A}\pnode(2,1.3){B}\pnode(1,0.3){C}
 %   \optgrating[reverse, gratingcount=9](A)(B)(C)
@@ -4049,6 +4061,31 @@
 %   \rput[lB](0,2){\ifENGLISH transmission grating\fi\ifGERMAN Transmissionsgitter\fi}
 % \end{pspicture}
 % 
+% \ifENGLISH If this is not what you want, you may e.g. rotate the
+% component further with \Lkeyword{angle}, and then adjust also the
+% \Lkeyword{beamangle}.
+% \fi 
+% \ifGERMAN Ist dieses Verhalten nicht gewünscht, so kann man z.B. die
+% Komponente mit \Lkeyword{angle} weiter drehen, und den Strahlwinkel
+% mit \Lkeyword{beamangle} entsprechend korrigieren.
+% \fi
+%
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(3,1.4)
+  \pnode(0,1){A}\pnode(1,1){B}\pnode(3,0.6){C}
+  \transmissiongrating[angle=-10, reverse](A)(B)(C){TG}
+  \addtopsstyle{Beam}{ArrowInside=->, ArrowInsidePos=0.8, arrowinset=0, arrowscale=1.5}
+  \drawbeam[linecolor=black](A){1}
+  \drawbeam[linecolor=green, loadbeam, beamangle=20]{1}(C)
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
 % \ifGERMAN\section{Prisma}\fi
 % \ifENGLISH\section{Prism}\fi
 % 
@@ -12484,7 +12521,7 @@
 %
 % \begin{changelog}
 %\patchcmd{\release}{\setlength{\itemsep}{0pt}}{\setlength{\itemsep}{0pt}\setlength{\parsep}{0pt}}{}{}
-%   \begin{release}{4.4}{xxxx-xx-xx}
+%   \begin{release}{4.4}{2013-07-14}
 %   \item Added component \cs{transmissiongrating}\see{comp:transmissiongrating}
 %   \item Modified \opt{innerlabel} to explicitly set \opt{labelalign=c}
 %   \item Fixed trailing spaces in \opt{savebeampoints} (and \opt{savebeam}).
@@ -16895,7 +16932,7 @@
     \POE@tempa \tx@UserCoor
     \POE@tempc \tx@UserCoor
     \POE@tempb \tx@UserCoor
-    calcNodes
+    calcNodes /exch@ref@\oenode{}{} ED
     X@A Y@A}){\oenode@RefA{}}%
   \pnode(! \POE@dict{X@B Y@B}){\oenode@RefB{}}%
   \pnode(#2){\oenode@Origin{}}%
@@ -18176,19 +18213,18 @@
   \POE@calcAngle
   \POE@setref{/@@x \POE@key@gratingwidth\space 0.5 mul def}%
   \edef\POE@key@angle{%
-    \POE@dict{ ax by mul ay bx mul sub 0 le { -90 }{ 90 } ifelse }
+    \POE@dict{ exch@ref@\oenode{}{} { -90 }{ 90 } ifelse }
     \POE@key@angle\space add
   }%
   \edef\POE@temp{\POE@key@extnode@xref}%
   \edef\POE@key@extnode@xref{%
     \POE@dict{%
       \POE@key@extnode@yref\space 
-      ax by mul ay bx mul sub 0 le { -1 mul } if } }%
+      exch@ref@\oenode{}{} { -1 mul } if } }%
   \edef\POE@key@extnode@yref{%
     \POE@dict{%
       \POE@temp\space 
-      ax by mul ay bx mul sub 0 le { -1 mul } if } }%
-    
+      exch@ref@\oenode{}{} { -1 mul } if } }%
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -18197,7 +18233,8 @@
 %    \begin{macrocode}
 \def\transmissiongrating@nodes{%
   \newOptexpComp{%
-    {0 0} {0 1} 0 0 refltrans {PlainIfc} 1}%
+    {0 0} {1 0} \POE@key@gratingwidth\space -0.5 mul dup neg 
+    refltrans {PlainIfc} 1}%
 }%
 \let\transmissiongrating@comp\optgrating@comp
 %    \end{macrocode}
@@ -19960,7 +19997,9 @@ tx@OptexpDict begin
 % Test the chirality (the order) of the input points. Input angles $> 90$\textdegree
 % don't make sense, in this case we exhange the calculated reference nodes.
 %    \begin{macrocode}
+  true
   ax by mul ay bx mul sub 0 le {
+    pop false
     Y@A X@A 
     /X@A X@B def
     /Y@A Y@B def
@@ -22105,35 +22144,27 @@ tx@OptexpDict begin
 /PlainInterface {%
   (PlainInterface) DebugBegin
   /dYp ED /dXp ED /Yp ED /Xp ED
-  Xp Yp 2 copy dXp dYp VecAdd 
-  X0 Y0 2 copy Xin Yin VecAdd
-  mode refltrans eq {
-%    \end{macrocode}
-% used only by the transmissiongrating
-%    \begin{macrocode}
-    6 -2 roll 90 matrix rotate dtransform 6 2 roll
-    @InterLines missed eq {
-      0 0 missed
-    } {
-      Xin Yin Xin Yin dXp dYp NormalVec
-      ReflectVec ok
-    } ifelse
+  Xp Yp Xp dXp add Yp dYp add X0 Y0 X0 Xin add Y0 Yin add
+  @InterLines missed eq {
+    0 0 missed
   } {
-    @InterLines missed eq {
-      0 0 missed
+    Xin Yin Xin Yin dXp dYp
+    mode refltrans eq {
+      neg exch NormalVec ReflectVec ok
     } {
-      Xin Yin Xin Yin dXp dYp NormalVec
+      NormalVec
       mode trans eq {
         n1 n2 RefractVec
         2 copy 0 eq exch 0 eq and { tir } { ok } ifelse
       } {
         ReflectVec ok
-      } ifelse /n1 n2 def
-      5 -2 roll 2 copy 7 2 roll X0 Y0 @ABVect Xin Yin DotProd 0 lt
-      PN 1 gt and {
-        pop missed
-      } if
+      } ifelse 
     } ifelse
+    /n1 n2 def
+    5 -2 roll 2 copy 7 2 roll X0 Y0 @ABVect Xin Yin DotProd 0 lt
+    PN 1 gt and {
+      pop missed
+    } if
   } ifelse
   DebugEnd
 } bind def
