@@ -18,7 +18,7 @@
 %<stylefile>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<stylefile>\ProvidesPackage{pst-optexp}
 %<*stylefile>
-    [2013/07/14 v4.4 Optical experimental setups with PSTricks]
+    [2013/07/16 v4.5alpha Optical experimental setups with PSTricks]
 %</stylefile>
 %
 %<*driver>
@@ -4353,19 +4353,44 @@
 % \begin{optionlist}
 %   \boolitem{usefiberstyle} 
 %   \ifGERMAN
-%   Bei manchen Komponenten (z.B. \Lcomp{optfilter} oder \Lcomp{optmzm}) kann es
-%   vorteilhaft sein interne Faserteile hervorzuheben. Mit diesem Parameter
-%   werden z.B. die durchlässigen Teile eines Filter angezeigt und mit dem
-%   \Lstyle{Fiber}-Stil gezeichnet. In der Dokumentation ist dieses Verhalten
-%   angeschaltet um die betroffenen Bereiche hervorzuheben.
+%   Bei manchen Komponenten (z.B. \Lcomp{optfilter} oder \Lcomp{optmzm})
+%   kann es vorteilhaft sein interne Faserteile hervorzuheben. Mit
+%   diesem Parameter werden z.B. die durchlässigen Teile eines Filter
+%   angezeigt und mit dem \Lstyle{Fiber}-Stil gezeichnet. In der
+%   Dokumentation ist dieses Verhalten angeschaltet um die betroffenen
+%   Bereiche hervorzuheben. Hat Vorrang vor der Option
+%   \Lkeyword{usewirestyle}, sind beide Optionen gesetzt, dann wird eine
+%   Faser gezeichnet.
 %   \fi
 %   \ifENGLISH
-%   For some components (e.g. \Lcomp{optfilter} or \Lcomp{optmzm}) it can be nice
-%   to highlight some internals. For example, if this option is enabled the
-%   passing parts of the optical filter are drawn with the \Lstyle{Fiber}
-%   style. In the documentation this parameter is enabled to show the parts
-%   which are affected.
+%   For some components (e.g. \Lcomp{optfilter} or \Lcomp{optmzm}) it
+%   can be nice to highlight some internals. For example, if this option
+%   is enabled the passing parts of the optical filter are drawn with
+%   the \Lstyle{Fiber} style. In the documentation this parameter is
+%   enabled to show the parts which are affected. Takes precedence over
+%   \Lkeyword{usewirestyle}.
 %   \fi
+%   \boolitem{usewirestyle} 
+%   \ifGERMAN
+%   Kann verwendet werden, um interne Verbindungen als \Lstyle{Wire}
+%   darzustellen. Setzt \Lkeyword{usefiberstyle} auf \opt{false}, daher
+%   kann es sinnvoll sein, z.B. einen elektrischen Filter zu definieren:
+%   \fi
+%   \ifENGLISH
+%   Can be used to draw internal connections als \Lstyle{Wire}. Sets
+%   \Lkeyword{usefiberstyle} to \opt{false}, therefore it can be useful
+%   to define e.g. an electrical filter:
+%   \fi
+%
+% \iffalse
+%<*ignore>
+% \fi
+\begin{lstlisting}
+\newpsobject{elecfilter}{optfilter}{usewirestyle}
+\end{lstlisting}
+% \iffalse
+%</ignore>
+% \fi
 % \end{optionlist}
 %
 % \ifGERMAN\section{Optische Faser}\fi
@@ -11509,10 +11534,137 @@
 \end{pspicture}
 \end{LTXexample}
 \endgroup
+
+\begin{LTXexample}[pos=t, linerange={1-1}, caption={caption}]
+
+\begin{pspicture}(-0.5,-0.4)(13,11)
+\psset{%
+  optboxsize=0.8 0.6, 
+  arrowcompsize=0.8 0.5,
+  optmzmsize=0.8 0.6,
+  isolatorsize=0.8 0.5,
+  filtersize=0.6,
+  detsize=0.5 0.6,
+  fiber=none, wire=none,
+  usefiberstyle=false,
+  labeloffset=0.5, labelstyle=\footnotesize
+}
+\footnotesize
+\newpsobject{elecfilter}{optfilter}{usewirestyle}
+\addtopsstyle{Wire}{arrowscale=1.2, arrows=->, linewidth=1.5\pslinewidth}
+\newpsstyle{FiberComp}{linecolor=red!80!black}
+\newpsstyle{Fiber}{style=FiberComp, arrows=->, linewidth=1.5\pslinewidth}
+  \pnode(1,10){Syn}\pnode([Xnodesep=8]Syn){Pm}
+  \elecsynthesizer[compname=Syn, labelalign=t](Syn)(Pm){10\,GHz}
+  \fiberdelayline[compname=Voa1, abspos=2.5, label= 0.6 . t](Syn)(Pm){VOA}
+  \optbox[compname=Am, abspos=4, innerlabel, extnode=b](Syn)(Pm){AM}
+  \fiberdelayline[compname=DelayPm, abspos=5.5, label=0.6 . t](Syn)(Pm){DLY}
+  \optbox[fiber, addtoFiber={arrows=->}, style=FiberComp, label=0, compname=Pm, extnode=t, optboxheight=0.7]([offset=-1]Pm)([offset=1]Pm){PM}
+  \elecsynthesizer[synthtype=rectangle, synthrectwidth=0.3, wire, addtoWire={arrows=->}, label=. -45 l]([offset=-0.5]\oenodeExt{Am})(\oenodeExt{Am}){AWG}
+  \pnode([offset=-0.5, Xnodesep=-1]\oenodeIn{Voa1}){A}
+  \pnode([offset=-1.5]A){B}
+  \eleccoupler[eleccouplertype=directional, eleccouplerinput=right, compname=Cpl](B)(A)
+  \pnode([Xnodesep=-1.2]\oenodeIn{}){EamIn}
+  \pnode([Xnodesep=0.5,offset=-0.3]\oenodeIfc{2}{}){N1}
+  \pnode([offset=-1.3]N1){N2}
+  \optisolator[label=0.4 . r, compname=Iso1](N1)(N2){Isolator}
+  \optarrowcomp[compname=DelayPpg, labelalign=l]([offset=-1.4]N2)(N2){DLY}
+  \fiberbox[position=start, 
+            label=0, 
+            fiberboxsize=0.7 1, 
+            fiberboxcount=2x1,
+            fiberboxsepin=0.2, 
+            compname=Ppg]([offset=-0.4]\oenodeIn{DelayPpg})(\oenodeIn{DelayPpg}){PPG}
+  \pnode([offset=-0.5,Xnodesep=-0.5]\oenodeIn{Ppg}){MzmAmp1}
+  \pnode([offset=-0.5,Xnodesep=0.5]\oenodeIfc{2}{Ppg}){MzmAmp2}
+  \pnode([offset=-1.5,Xnodesep=-0.9]MzmAmp1){MzmIn}
+  \pnode([offset=-1.5,Xnodesep=0.9]MzmAmp2){MzmOut}
+  \optamp[abspos=0.5, compname=MzmAmp1](MzmAmp1)(MzmAmp1|MzmIn)
+  \optamp[abspos=0.5, compname=MzmAmp2](MzmAmp2)(MzmAmp2|MzmIn)
+  \optmzm[abspos=0.9, usefiberstyle, style=FiberComp, compname=Mzm1, extnode=t, labelalign=t](MzmIn)(MzmOut){MZM}
+  \optmzm[abspos=2.3, usefiberstyle, style=FiberComp, compname=Mzm2, extnode=t, labelalign=t](MzmIn)(MzmOut){MZM}
+  \rput(\oenodeCenter{Ppg}|[offset=-0.2]\oenodeCenter{MzmAmp1}){AMP}
+  \pnode([Xnodesep=-1]\oenodeIn{Mzm1}){Eam}
+  \optbox[style=FiberComp, 
+          label=0, 
+          optboxsize=1 0.6, 
+          compname=Eam, 
+          extnode=t]([Xnodesep=-1]Eam)([Xnodesep=0.8]Eam){EAM}
+  \drawfiber[style=FiberComp, arrows=->]([Xnodesep=-1.2]Eam){Eam}{Mzm1}{Mzm2}(MzmOut)
+  \pnode([Xnodesep=8]N2){N3}
+  \optfilter[abspos=2, label=. 180 b, compname=Bpf1](N2)(N3){\parbox{\widthof{10\,GHz}}{\centering BPF\\[-1pt] 10\,GHz}}
+  \makeatletter\edef\mystart{\the\POE@cnt}\makeatother
+  \optbox[label=0, 
+          abspos=3.2, 
+          optboxsize=0.6 0.6](N2)(N3){$\div 8$}
+  \makeatletter\edef\mystartb{\the\POE@cnt}\makeatother
+  \optamp[abspos=4.7, label=. 180 b](N2)(N3){AMP}
+  \optbox[label=0, 
+          abspos=6, 
+          optboxsize=0.6 0.6, 
+          compname=Div5](N2)(N3){$\div 5$}
+  \optfilter[abspos=7.3, label=. 180 b](N2)(N3){\parbox{\widthof{250\,MHz}}{\centering BPF\\[-1pt] 250\,MHz}}
+  \pnode([offset=-1]N3){N4}
+  \pnode([offset=-2.4]N4){Mixer}
+  \optamp[abspos=0.4, label=. 0 l global](N4)(Mixer){AMP}
+  \optfilter[innercompalign=abs,
+             filtertype=lowpass, 
+             abspos=1.4, 
+             compname=Bpf,
+             extnode=t,
+             label=. 0 l global](N4)(Mixer){%
+    \parbox{\widthof{300\,MHz}}{LPF\\[-1pt]300\,MHz}%
+  }
+  \pnode([Xnodesep=-4]Mixer){MixerI}
+  \pnode([offset=-2.5]Mixer){MixerR}
+  \elecmixer[compname=Mixer, elecmixersize=0.7, labelalign=l](Mixer)(MixerR)(MixerI){Mixer}
+  \pnode([Xnodesep=-9.8]MixerR){Menlo}
+  \optbox[position=start, 
+          compname=Lo, 
+          innerlabel, 
+          style=FiberComp](Menlo)(MixerR){LO}
+  \optdetector[extnode=r, 
+               labelalign=t,
+               compname=Pd](Menlo)([Xnodesep=0.5]Menlo){\parbox{\widthof{2\,GHz}}{\centering PD\\[-1pt]2\,GHz}}
+  \optfilter[abspos=1.5, labelalign=t,
+             compname=LoBpf](\oenodeExt{Pd})(MixerR){\parbox{\widthof{250\,MHz}}{\centering BPF\\[-1pt]250\,MHz}}
+  \optamp[abspos=3, labelalign=t,
+          compname=LoAmp](\oenodeExt{Pd})(MixerR){AMP}
+  \drawfiber[arrows=->]{Lo}{Pd}
+  \drawwire(\oenodeExt{Pd}){LoBpf}{LoAmp}
+  \drawwire[stopnode=N]{LoAmp}{Mixer}
+  \optfilter[filtertype=lowpass, 
+             abspos=1, 
+             label=1.1 180 t, 
+             compname=LpfP2](MixerI)(\oenodeIfc{2}{Mixer}){%
+               \parbox{\widthof{500\,kHz}}{\centering LPF\\[-1pt]500\,kHz}%
+  }
+  \optfilter[filtertype=lowpass, 
+             abspos=2.7, 
+             label=1.1 180 t, 
+             compname=LpfP1](MixerI)(\oenodeIfc{2}{Mixer}){%
+               \parbox{\widthof{10.7\,MHz}}{\centering LPF\\[-1pt]10.7\,MHz}%
+  }
+  \optbox[compname=T0,
+          extnode=b,
+          position=start,
+          optboxsize=2.2 0.8,
+          innerlabel](MixerI)(\oenodeIfc{2}{Mixer}){$T_0$-Messung}
+  \drawwire[wirealign=center]{Mixer}{LpfP1}{LpfP2}{}
+  \psline[style=Wire](\oenodeExt{T0}|Menlo)(\oenodeExt{T0})
+  \uput{0.4}[-60](\oenodeExt{T0}){\rput[l](0,0){Takt}}
+  \drawwire[arrows=<-](\oenodeExt{Eam}){Cpl}
+  \drawwire{Syn}{Voa1}{Am}{DelayPm}(\oenodeExt{Pm})
+  \drawwire{Syn}{Cpl}{Iso1}{DelayPpg}{Ppg}{MzmAmp1}(\oenodeExt{Mzm1})
+  \drawwire{Ppg}{MzmAmp2}(\oenodeExt{Mzm2})
+  \drawwire{Iso1}{Bpf1}
+  \multido{\i=\mystart+1,\ii=\mystartb+1}{7}{%
+    \drawwire{\i}{\ii}}
+\end{pspicture}
+\end{LTXexample}
 % \iffalse
 %</ignore>
 % \fi
-%
 % 
 % \ifGERMAN\chapter{Zusatzinformationen}\fi
 % \ifENGLISH\chapter{Additional information}\fi
@@ -12521,6 +12673,9 @@
 %
 % \begin{changelog}
 %\patchcmd{\release}{\setlength{\itemsep}{0pt}}{\setlength{\itemsep}{0pt}\setlength{\parsep}{0pt}}{}{}
+%   \begin{release}{4.5}{xxxx-xx-xx}
+%   \item Added option \opt{usewirestyle}\see{prm:usewirestyle}
+%   \end{release}
 %   \begin{release}{4.4}{2013-07-14}
 %   \item Added component \cs{transmissiongrating}\see{comp:transmissiongrating}
 %   \item Modified \opt{innerlabel} to explicitly set \opt{labelalign=c}
@@ -12880,6 +13035,7 @@
 \newif\ifPOE@startbox
 \newif\ifPOE@thicklens
 \newif\ifPOE@usefiberstyle
+\newif\ifPOE@usewirestyle
 \newif\ifPOE@fiberin@
 \newif\ifPOE@fiberin@top
 \newif\ifPOE@fiberin@bottom
@@ -13146,6 +13302,15 @@
 %    \begin{macrocode}
 \define@boolkey[psset]{optexp}[POE@component@]{optional}[true]{}
 \define@boolkey[psset]{optexp}[POE@]{usefiberstyle}[true]{}
+\define@choicekey[psset]{optexp}{usewirestyle}%
+  [\val\nr]{true,false}[true]{%
+    \psset[optexp]{usewirestyle=false}%
+    \ifcase\nr\relax
+      \POE@usewirestyletrue
+    \or
+      \POE@usewirestylefalse
+    \fi}%
+\define@boolkey[psset]{optexp}[POE@]{usewirestyle}[true]{}
 \define@boolkey[psset]{optexp}[POE@debug@]{showoptdots}[true]{}
 \define@boolkey[psset]{optexp}[POE@debug@]{showifcnodes}[true]{}
 %    \end{macrocode}
@@ -15936,6 +16101,18 @@
 %    \end{macrocode}
 % \end{macro}
 %
+% \begin{macro}{\POE@usefiberorwirestyle}
+%    \begin{macrocode}
+\def\POE@usefiberorwirestyle{%
+  \ifPOE@usefiberstyle
+    \psset{style=Fiber, arrows=-, ArrowInside=-}%
+  \else\ifPOE@usewirestyle
+    \psset{style=Wire, arrows=-, ArrowInside=-}%
+  \fi\fi
+}%
+%    \end{macrocode}
+% \end{macro}
+% 
 % \section{Accessing component nodes} 
 % \begin{macro}{\POE@checkcompname}
 % Check if a component with name \#1 was already defined.
@@ -18747,9 +18924,7 @@
 \def\optmzm@comp{%
   \POE@comp@rectangle
   \begingroup
-    \ifPOE@usefiberstyle
-      \psset{style=Fiber, arrows=-, ArrowInside=-}
-    \fi
+    \POE@usefiberorwirestyle
     \psline(! \POE@dict{@@x} neg 0)(! \POE@dict{@@x} -0.7 mul 0)%
            (! \POE@dict{@@x} -0.4 mul \POE@dict{@@y} 0.6 mul)%
            (! \POE@dict{@@x 0.4 mul @@y 0.6 mul})%
@@ -18797,33 +18972,25 @@
     \ifx\POE@key@filtertype\POE@str@bandpass
       \rput(!\POE@dict{0 @@x -0.5 mul}){\POE@strike@line\POE@filter@curve}
       \rput(0, 0){%
-        \ifPOE@usefiberstyle
-          \psset{style=Fiber}
-        \fi
+        \POE@usefiberorwirestyle
         \POE@filter@curve}
       \rput(!\POE@dict{0 @@x 0.5 mul}){\POE@strike@line\POE@filter@curve}
     \else\ifx\POE@key@filtertype\POE@str@bandstop
       \begingroup
-        \ifPOE@usefiberstyle
-          \psset{style=Fiber}
-        \fi
+        \POE@usefiberorwirestyle
         \rput(!\POE@dict{0 @@x -0.5 mul}){\POE@filter@curve}
         \rput(!\POE@dict{0 @@x 0.5 mul}){\POE@filter@curve}
       \endgroup
       \rput(0,0){\POE@strike@line\POE@filter@curve}
     \else\ifx\POE@key@filtertype\POE@str@lowpass
       \rput(!\POE@dict{0 @@x -0.5 mul}){%
-        \ifPOE@usefiberstyle
-          \psset{style=Fiber}
-        \fi
+        \POE@usefiberorwirestyle
         \POE@filter@curve}
         \rput(0, 0){\POE@strike@line\POE@filter@curve}
         \rput(!\POE@dict{0 @@x 0.5 mul}){\POE@strike@line\POE@filter@curve}
     \else\ifx\POE@key@filtertype\POE@str@highpass
       \rput(!\POE@dict{0 @@x 0.5 mul}){%
-        \ifPOE@usefiberstyle
-          \psset{style=Fiber}
-        \fi
+        \POE@usefiberorwirestyle
         \POE@filter@curve}
         \rput(0, 0){\POE@strike@line\POE@filter@curve}
         \rput(!\POE@dict{0 @@x -0.5 mul}){\POE@strike@line\POE@filter@curve}
@@ -18892,9 +19059,7 @@
     \psline[style=Fiber, arrows=-, ArrowInside=-](\oenodeIn{})(\oenodeOut{})
   \fi
   \bgroup
-    \ifPOE@usefiberstyle
-      \psset{style=Fiber, arrows=-, ArrowInside=-}%
-    \fi
+    \POE@usefiberorwirestyle
     \ifx\POE@key@polcontroltype\POE@str@linear
       \multips(! -2 \@sz mul \@sz)(! 2 \@sz mul 0){3}{%
         \pscircle(0,0){\POE@key@polcontrolsize}%
@@ -18979,25 +19144,21 @@
 %    \begin{macrocode}
   \pstVerb{tx@Dict begin /@lw \POE@clw def end}%
   \bgroup
-    \ifPOE@usefiberstyle
-      \psset{style=Fiber, arrows=-, ArrowInside=-}
-    \fi
-    \psline[arrows=-](! \POE@dict{@@x} neg 0)%
-                     (! \POE@dict{@@x} -0.6 mul @lw sub 0)%
-    \psline[arrows=-](! \POE@dict{@@x} 0.6 mul 0)(! \POE@dict{@@x} 0)%
+    \POE@usefiberorwirestyle
+    \psset{arrows=-, ArrowInside=-}%
+    \psline(! \POE@dict{@@x} neg 0)(! \POE@dict{@@x} -0.6 mul @lw sub 0)%
+    \psline(! \POE@dict{@@x} 0.6 mul 0)(! \POE@dict{@@x} 0)%
   \egroup
   \ifx\POE@key@switchstyle\POE@str@closed%
     \bgroup
-      \ifPOE@usefiberstyle
-        \psset{style=Fiber}
-      \fi
+      \POE@usefiberorwirestyle
       \psdot[dotsize=3\pslinewidth](! \POE@dict{@@x} 0.6 mul 0)%
       \psdot[dotsize=3\pslinewidth](! \POE@dict{@@x} -0.6 mul 0)%
-      \psline[arrows=-, linewidth=1.5\pslinewidth]%
+      \psline[arrows=-, ArrowInside=-, linewidth=1.5\pslinewidth]%
         (! \POE@dict{@@x} -0.6 mul @lw)(! \POE@dict{@@x} 0.6 mul @lw)%      
     \egroup
   \else
-    \psline[arrows=-, linewidth=1.5\pslinewidth]%
+    \psline[arrows=-, ArrowInside=-, linewidth=1.5\pslinewidth]%
       (! \POE@dict{@@x} -0.6 mul @lw add @lw)%
       (! \POE@dict{@@x 0.6 mul @@y 0.6 mul})%
     \pscircle(! \POE@dict{@@x} -0.6 mul 0){\pslinewidth}%
