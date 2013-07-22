@@ -43,7 +43,8 @@ f.write(r"""\documentclass[landscape]{scrartcl}
     \setlength{\parsep}{0pt}%
     \setlength{\itemsep}{0pt}}}
   {\endlist}
-\def\styleitem#1{\item[#1]\prm{psstyle}\par}
+\def\styleitem#1{\item[#1\hspace*{5pt}]\prm{psstyle}\par}
+\def\typeitem#1#2{\item[#1\hspace*{5pt}]#2\par}
 \def\numitem#1{\item[#1]=\prm{num}\par}
 \def\valitem#1#2{\item[#1]=\prm{#2}\par}
 \def\intitem#1{\item[#1]=\prm{int}\par}
