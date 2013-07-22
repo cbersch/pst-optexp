@@ -18,7 +18,7 @@
 %<stylefile>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<stylefile>\ProvidesPackage{pst-optexp}
 %<*stylefile>
-    [2013/07/16 v4.5alpha Optical experimental setups with PSTricks]
+    [2013/07/21 v4.5 Optical experimental setups with PSTricks]
 %</stylefile>
 %
 %<*driver>
@@ -231,7 +231,8 @@
      \setlength{\labelsep}{0.5\marglistsep}%
      \setlength{\leftmargin}{0pt}%
      \renewcommand*{\makelabel}[1]{\hss\optionlistfont##1}}%
-     \let\styleitem\POE@styleitem}%
+     \let\styleitem\POE@styleitem
+     \let\typeitem\POE@typeitem}%
   {\endlist}
 
 \def\ltd@optionlist{%
@@ -243,7 +244,8 @@
   \let\numitem\POE@numitem
   \let\psnumitem\POE@psnumitem
   \let\poeitem\ltd@item
-  \let\styleitem\POE@styleitem}
+  \let\styleitem\POE@styleitem
+  \let\typeitem\POE@typeitem}
 
 \def\POE@styleitem{%
   \@ifnextchar[%]
@@ -263,6 +265,21 @@
     \@tempdima=\dimexpr\linewidth-\@tempdimb-1em\relax
   \fi
   \ifblank{#1}{}{\hfill\parbox[t]{\@tempdima}{\raggedleft default:~\ltd@textverb{#1}}}%
+  \par\endgroup}
+
+\def\POE@typeitem#1#2{%
+  \item[{#1}]%
+  \label{prm:#1}\docindexdef{#1=\nxLkeyword{#1}}%
+  \begingroup\raggedright
+  #2%
+  \settowidth\@tempdimb{\prm{psstyle}}%
+  \settowidth\@tempdimc{#1}%
+  \@tempdimc=\dimexpr\@tempdimc+\labelsep-\labelwidth\relax
+  \ifdim\@tempdimc>0pt%
+    \@tempdima=\dimexpr\linewidth-\@tempdimb-\@tempdimc-1em\relax
+  \else
+    \@tempdima=\dimexpr\linewidth-\@tempdimb-1em\relax
+  \fi
   \par\endgroup}
 
 \def\POE@option#1#2#3{%
@@ -8202,6 +8219,114 @@
 %</ignore>
 % \fi
 %
+% \begin{stylelist}
+% \typeitem{fade}{\prm{linestyle}}
+% \ifENGLISH 
+% Fade from the current \opt{linecolor} to another color, defined by
+% \Lkeyword{fadeto}. The line style currently works only for line, not
+% for curves. The complete path is divided in \Lkeyword{fadepoints}$ -
+% 1$ segments.
+% \fi
+% \ifGERMAN
+% Erzeugt einen Farbverlauf von der aktuellen \opt{linecolor} zu einer
+% anderen Farbe, definiert durch \Lkeyword{fadeto}. Der Linienstil
+% funktioniert momentan nur vernünftig mit Linien, nicht jedoch mit
+% Kurven. Der gesamte Pfad wird in \Lkeyword{fadepoints}$- 1$ Segmente
+% unterteilt.
+% \fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(3,1)
+  \psline[linewidth=0.2, linecolor=red, linestyle=fade, fadepoints=50](0,0.5)(3,0.5)
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+% \end{stylelist}
+% \begin{optionlist}
+% \choitem[white]{fadeto}{white, black, transparency}
+% \ifENGLISH 
+% The color at the fade end, depends on \Lkeyword{fadefuncname} and
+% \Lkeyword{fadefunc}.
+% \fi
+% \ifGERMAN
+% Die Endfarbe des Farbverlaufs, hängt auch von \Lkeyword{fadefuncname}
+% und \Lkeyword{fadefunc} ab.
+% \fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(3,1)
+  \psset{linewidth=0.2, linecolor=red, linestyle=fade, fadepoints=50}
+  \psline[fadeto=white](0,0.9)(3,0.9)
+  \psline[fadeto=black](0,0.5)(3,0.5)
+  \psline[fadeto=transparency](0,0.1)(3,0.1)
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
+% \numitem[200]{fadepoints}
+% \ifENGLISH
+% Number of points used for lines with style \opt{fade}.
+% \fi
+% \ifGERMAN
+% Anzahl der Punkte, die für den Linienstil \opt{fade} verwendet werden.
+% \fi
+%
+% \choitem[linear]{fadefuncname}{gauss, linear, squared, exp, custom}
+% \ifENGLISH 
+% Some predefined fade functions, which determine the color gradient. If
+% set to \opt{custom}, the Postscript code in \Lkeyword{fadefunc} is
+% used.
+% \fi
+% \ifGERMAN
+% Ein paar vordefinierte Funktionen, die den Farbverlauf bestimmen. Wird
+% \opt{custom} angegeben, dann wird der Postscript-Code aus
+% \Lkeyword{fadefunc} verwendet.
+% \fi
+%
+% \valitem{fadefunc}{PS code}
+% \ifENGLISH 
+% Define a custom gradient for line style \Lkeyword{fade}. The \prm{PS
+% code} must evaluate a number on the stack in the range $[0,1]$ (0:
+% path start, 1: path end) to $[0,1]$ (0: \Lkeyword{fadeto} color, 1:
+% current line color). The function values are clipped to $[0,1]$.
+% \fi
+% \ifGERMAN
+% Eine benutzerdefinierte Funktion für den Farbverlauf des Linienstils
+% \Lkeyword{fade}. Der \prm{PS code} muss eine Zahl auf dem Stack im
+% Intervall $[0,1]$ (0: Pfadanfang, 1: Pfadende) auf das Intervall $[0,
+% 1]$ abbilden (0: \Lkeyword{fadeto}-Farbe, 1: aktuelle
+% Linienfarbe). Die Funktionswerte werden auf das Intervall $[0, 1]$
+% abgeschnitten.
+% \fi
+%
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(3,1)
+  \psset{linewidth=0.2, linecolor=red, linestyle=fade, fadepoints=50}
+  \psline[fadefuncname=gauss](0,1)(3,1)
+  \psline[fadefuncname=exp](0,0.7)(3,0.7)
+  \psline[fadefuncname=custom, fadefunc={360 mul cos 1 add 0.5 mul}](0,0.4)(3,0.4)
+  \psline[fadefuncname=custom, fadefunc={neg 1 add 2 mul}](0,0.1)(3,0.1)
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
+% \ifENGLISH For a nice example see \prettyref{ex:dsotm}.\fi
+% \ifGERMAN Ein schönes Beispiel ist \prettyref{ex:dsotm}.\fi
+% \end{optionlist}
+% 
 % \ifGERMAN\section{Aufgeweitete Strahlen}\fi
 % \ifENGLISH\section{Drawing wide beams}\fi
 % \label{sec:drawwidebeam}
@@ -11355,6 +11480,29 @@
 \end{pspicture}
 \end{LTXexample}
 
+\begin{LTXexample}[pos=t, caption={caption}, label=ex:dsotm]
+\begin{pspicture}(3,1.7)
+\pnode(-1,0){A}\pnode(1,1){B}\pnode(3,0){C}
+\psframe*(0,0)(3,1.7)
+\begin{optexp}
+  \optplane(0,0.7)
+  \optprism[prismalign=center, linecolor=white](A)(B)(C)
+  \optplane(C)
+  \addtopsstyle{Beam}{linecolor=white}
+  \drawbeam[ArrowInside=->]{1-2}
+  \definecolor[ps]{bl}{rgb}{%
+    tx@addDict begin Red Green Blue end}%
+  \addtopsstyle{Beam}{linestyle=fade, beaminsidelast, fadeto=black}
+  \multido{\i=0+1}{60}{%
+    \drawbeam[n=1.5 \i\space 0.003 mul add, linecolor=white, beampathskip=1, fadefuncname=gauss]{1-2}
+    \pstVerb{\i\space 650 400 sub 59 div mul 400 add 
+      tx@addDict begin wavelengthToRGB end }%
+    \drawbeam[n=1.5 \i\space 0.003 mul add, linecolor=bl, beampathskip=2, linewidth=0.3\pslinewidth]{-}%
+  }%
+\end{optexp}   
+\end{pspicture}  
+\end{LTXexample}
+
 \begin{LTXexample}[pos=t, linerange={1-1}, caption={caption}]
 
 \psset{unit=1.1, usefiberstyle=false}
@@ -12673,8 +12821,11 @@
 %
 % \begin{changelog}
 %\patchcmd{\release}{\setlength{\itemsep}{0pt}}{\setlength{\itemsep}{0pt}\setlength{\parsep}{0pt}}{}{}
-%   \begin{release}{4.5}{xxxx-xx-xx}
+%   \begin{release}{4.5}{2013-07-21}
 %   \item Added option \opt{usewirestyle}\see{prm:usewirestyle}
+%   \item Added line style \opt{fade}, with options \opt{fadeto},
+%     \opt{fadepoints}, \opt{fadefunc}, and
+%     \opt{fadefuncname}\see{prm:fade}
 %   \end{release}
 %   \begin{release}{4.4}{2013-07-14}
 %   \item Added component \cs{transmissiongrating}\see{comp:transmissiongrating}
@@ -13013,6 +13164,10 @@
 \def\pst@optexpdict{tx@OptexpDict begin }
 \def\POE@dict#1{\pst@optexpdict #1 end}
 \def\POE@Verb#1{\pst@Verb{\pst@optexpdict #1 end }}%
+%    \end{macrocode}
+% Save the pstricks-add line definition for use with the beams
+%    \begin{macrocode}
+\let\POE@tx@Line\tx@Line
 \SpecialCoor
 %    \end{macrocode}
 %
@@ -13101,7 +13256,7 @@
 \def\POE@str@bandpass{bandpass}
 \def\POE@str@bandstop{bandstop}
 \def\POE@str@binary{binary}
-\def\POE@str@blazed{blazed}                                                                                                                  
+\def\POE@str@blazed{blazed}
 \def\POE@str@bottom{bottom}
 \def\POE@str@center{center}
 \def\POE@str@circle{circle}
@@ -13145,6 +13300,7 @@
 \def\POE@str@standard{standard}
 \def\POE@str@top{top}
 \def\POE@str@transmittive{transmittive}
+\def\POE@str@transparency{transparency}
 \def\POE@str@triangle{triangle}
 \def\POE@str@vector{vector}
 \def\POE@str@verbose{verbose}
@@ -13304,7 +13460,7 @@
 \define@boolkey[psset]{optexp}[POE@]{usefiberstyle}[true]{}
 \define@choicekey[psset]{optexp}{usewirestyle}%
   [\val\nr]{true,false}[true]{%
-    \psset[optexp]{usewirestyle=false}%
+    \psset[optexp]{usefiberstyle=false}%
     \ifcase\nr\relax
       \POE@usewirestyletrue
     \or
@@ -14670,6 +14826,32 @@
 \define@key[psset]{optexp}{ArrowInsideMaxLength}{%
   \def\POE@key@ArrowInsideMaxLength{#1}%
 }%
+\define@choicekey[psset]{optexp}{fadeto}[\val\nr]{white,black,transparency}{%
+  \def\POE@key@fadeto{#1}%
+}%
+\define@key[psset]{optexp}{fadefunc}{%
+  \def\POE@key@fadefunc{#1}%
+}%
+\define@key[psset]{optexp}{fadefuncname}{%
+  \def\POE@key@fadefuncname{#1}%
+}%
+\define@key[psset]{optexp}{fadepoints}{%
+  \def\POE@key@fadepoints{#1}%
+}%
+\def\psls@fade{%
+  \pst@optexpdict
+    \ifx\POE@key@fadefunc\@empty\else
+      /fadefunc@custom {\POE@key@fadefunc} def
+    \fi
+    /fadecorrect \ifx\POE@key@fadeto\POE@str@transparency 0 \else 0.1 \fi def
+    \pst@usecolor\pslinecolor
+    \POE@key@fadepoints\space
+    \psk@strokeopacityalpha
+    currentdict /fadeto@\POE@key@fadeto\space dup 3 1 roll known not { pop /fadeto@white } if load
+    currentdict /fadefunc@\POE@key@fadefuncname\space dup 3 1 roll known not { pop /fadefunc@linear } if load
+    FadeStroke
+  end
+}%
 \psset[optexp]{%
   raytrace=true
   ,useNA=true
@@ -14697,6 +14879,10 @@
   ,startinsidecount=-1
   ,ArrowInsideMinLength=0.2
   ,ArrowInsideMaxLength=-1
+  ,fadepoints=200
+  ,fadeto=white
+  ,fadefunc=\@empty
+  ,fadefuncname=linear
 }%
 %    \end{macrocode}
 %
@@ -15407,6 +15593,7 @@
      /useNA \ifPOE@useNA true \else false \fi def
      /aligntovector \ifx\POE@key@beamnodealign\POE@str@vector true \else false \fi def
   }%
+  \let\tx@Line\POE@tx@Line
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -16517,6 +16704,7 @@
       \POE@transformnode{\oenodeRefA{}}{\oenodeTrefA{}}%
       \POE@transformnode{\oenodeRefB{}}{\oenodeTrefB{}}%
     }%
+    \def\tx@Line{Line }%
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -22722,6 +22910,87 @@ tx@OptexpDict begin
   } ifelse
   DebugEnd
 } bind def
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{ClipFadeValue}
+% Clip a number to the range [0:1].
+%   \begin{pssyntax}
+%     \PSvar{value} \PSop{ClipFadeValue} \PSvar{clippedvalue}
+%   \end{pssyntax}
+%    \begin{macrocode}
+/ClipFadeValue {
+  dup 0 lt { pop 0 }{ dup 1 gt { pop 1 } if } ifelse
+} bind def
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{}
+% The different fadeto modes.
+%    \begin{macrocode}
+/fadeto@white {
+  FadeFunc ClipFadeValue @S mul @H exch @B sethsbcolor
+} bind def
+/fadeto@black {
+  FadeFunc ClipFadeValue @B mul @H exch @S exch sethsbcolor
+} bind def
+/fadeto@transparency {
+  FadeFunc ClipFadeValue @T mul .setopacityalpha
+} bind def
+%    \end{macrocode}
+% \end{macro}
+% 
+% \begin{macro}{}
+%   The default fade functions, which are selected with the parameter
+%   'fadefuncname'. The clipping is done afterwards.
+%    \begin{macrocode}
+/fadefunc@linear {
+  neg 1 add
+} bind def
+/fadefunc@squared {
+  dup mul neg 1 add
+} bind def
+/fadefunc@gauss {
+  0.4 div dup mul neg Euler exch exp
+} bind def
+/fadefunc@exp {
+  -6 mul Euler exch exp
+} bind def
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{FadeStroke}
+% Implement the 'fade' linestyle.
+%    \begin{macrocode}
+/FadeStroke {
+  /FadeFunc ED /FadeToColor ED /@T ED
+  PathLength dup /@L ED exch div /@dl ED
+  mark
+  { false counttomark 3 roll }
+  { true counttomark 3 roll }
+  {} {} pathforall
+  currenthsbcolor /@B ED /@S ED /@H ED
+  newpath /currL 0 def
+  counttomark 3 idiv 1 1 3 -1 roll {
+    pop
+    { % lineto 
+      /y2 ED /x2 ED  x2 x1 sub y2 y1 sub 2 copy 
+      dup mul exch dup mul add sqrt dup  @L div exch
+      @dl div 1 add floor dup dup
+      4 2 roll div 5 1 roll
+      1 1 3 -1 roll {
+        5 copy 4 copy 2 copy eq not { fadecorrect add } if exch div VecScale
+        6 2 roll 1 sub dup 0 eq not { fadecorrect sub } if exch div VecScale
+        x1 y1 VecAdd moveto x1 y1 VecAdd lineto
+        mul currL add FadeToColor
+        stroke
+      } for
+      4 1 roll pop pop mul currL add /currL ED
+      /y1 y2 def /x1 x2 def
+    } { % moveto 
+      /y1 ED /x1 ED
+    } ifelse
+  } for
+  pop
+} def
 %    \end{macrocode}
 % \end{macro}
 %
