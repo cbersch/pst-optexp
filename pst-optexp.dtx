@@ -18,7 +18,7 @@
 %<stylefile>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<stylefile>\ProvidesPackage{pst-optexp}
 %<*stylefile>
-    [2013/07/21 v4.6alpha Optical experimental setups with PSTricks]
+    [2013/11/26 v4.6alpha Optical experimental setups with PSTricks]
 %</stylefile>
 %
 %<*driver>
@@ -4044,15 +4044,26 @@
 % Das Transmissiongitter unterstützt alle Optionen von
 % \Lcomp{optgrating}. Der Strahlengang wird so berechnet, dass der
 % Strahl an einer Ebene senkrecht zum dargestellten Gitter reflektiert
-% wird. 
+% wird. Diese Ebene ist im folgenden Beispiel dargestellt:
 % \fi
 % \ifENGLISH
 % The transmission grating supports all options of
 % \Lcomp{optgrating}. The beam path is calculated such, that the beam is
-% reflected at an interface which is perpendicular to the drawn grating.
+% reflected at an interface which is perpendicular to the drawn grating. This virtual interface is shown in the following example:
 % \fi
 %
-% \begin{pspicture}(2.6,2.4)
+% \hspace*{\fill}%
+% \begin{pspicture}(3,3)
+%  \transmissiongrating[beam, label=0 . . relative](0,1)(1.5,1)(3,0.5){\psline[linewidth=0.7\pslinewidth, linestyle=dashed](0,-1)(0,1)}
+%   \ifENGLISH
+%     \rput[lB](0,2.4){\parbox{3cm}{virtual reflection interface}}
+%   \fi
+%   \ifGERMAN
+%     \rput[lB](0,2.4){\parbox{3cm}{Virtuelle \\ Reflexionsebene}}
+%   \fi
+% \end{pspicture}
+% \hspace*{\fill}%
+% \begin{pspicture}(3.5,3)
 %   \pnode(0,1.3){A}\pnode(2,1.3){B}\pnode(1,0.3){C}
 %   \optgrating[reverse, gratingcount=9](A)(B)(C)
 %   \optplane[angle=45](C)
@@ -4062,12 +4073,17 @@
 %   \drawbeam[linecolor=green]{1-2}
 %   \drawbeam[linecolor=red, beamangle=15]{1-2}
 %   \drawbeam[linecolor=blue, beamangle=-15]{1-2}
-%   \rput[lB](0,2){\ifENGLISH reflection grating\fi\ifGERMAN Reflexionsgitter\fi}
+%   \ifENGLISH
+%     \rput[lB](0,2.4){\parbox{5cm}{reflection grating\\\Lcomp{optgrating}}}
+%   \fi
+%   \ifGERMAN
+%     \rput[lB](0,2.4){\parbox{5cm}{Reflexionsgitter\\\Lcomp{optgrating}}}
+%   \fi
 % \end{pspicture}
-% \hspace*{2cm}
-% \begin{pspicture}(5,2.4)
+% \hspace*{\fill}%
+% \begin{pspicture}(4,3)
 %   \pnode(0,1.3){A}\pnode(2,1.3){B}\pnode(4,1){C}
-%   \transmissiongrating[reverse, gratingcount=9](A)(B)(C){TG}
+%   \transmissiongrating[reverse, gratingcount=9](A)(B)(C)
 %   \optplane[angle=-30](C)
 %   \addtopsstyle{Beam}{ArrowInside=->, ArrowInsidePos=0.8, arrowinset=0, arrowscale=1.5}
 %   \drawbeam[linecolor=black](A){1}
@@ -4075,8 +4091,14 @@
 %   \drawbeam[linecolor=green]{1-2}
 %   \drawbeam[linecolor=red, beamangle=5]{1-2}
 %   \drawbeam[linecolor=blue, beamangle=-5]{1-2}
-%   \rput[lB](0,2){\ifENGLISH transmission grating\fi\ifGERMAN Transmissionsgitter\fi}
+%   \ifENGLISH
+%     \rput[lB](0,2.4){\parbox{5cm}{transmission grating\\\Lcomp{transmissiongrating}}}
+%   \fi
+%   \ifGERMAN
+%     \rput[lB](0,2.4){\parbox{5cm}{Transmissionsgitter\\\Lcomp{transmissiongrating}}}
+%   \fi
 % \end{pspicture}
+% \hspace*{\fill}%
 % 
 % \ifENGLISH If this is not what you want, you may e.g. rotate the
 % component further with \Lkeyword{angle}, and then adjust also the
@@ -6353,6 +6375,24 @@
     \mirror(0,0)(1.5;\i)(2.1212;\ii){\i}
     \psdot(\oenodeExt{})
   }%
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
+% \valitem{extnodes}{list}
+% \ifGERMAN Erlaubt die Definition mehrerer externer Knoten, \prm{list}
+% ist eine Liste von \prm{refpoint}, wie sie von \Lkeyword{extnode}
+% verwendet werden.
+% \fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[morekeywords={[21]extnodes}]
+\begin{pspicture}(2,1)
+  \optbox[extnodes={tl,tr,bl,br}](0,0.5)(2,0.5)
+  \multido{\i=1+1}{4}{\psdot[dotstyle=o](\oenode{Ext\i}{})}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -10338,6 +10378,33 @@
 %</ignore>
 % \fi
 %
+%   \optitem{optdipolecomp}{\prm{\textbackslash macro}}
+%   \ifGERMAN 
+%   Mit dieser Option kann die Zeichnung einer Komponente definiert werden. Dies erlaubt die einfache Definition einer neuen Komponente basierend auf \Lcomp{optdipole} mit \Lcs{newpsobject}.
+%   \fi
+%   \ifENGLISH
+%   \fi
+%
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[morekeywords={[21]optdipolecomp}]
+\begin{pspicture}(3,2)
+\def\phasemodulatorcomp{%
+  \psframe(-1,-0.4)(1,0.4)
+  \psframe[fillstyle=hlines](-1.3,-0.5)(1.3,-0.4)
+  \psframe[fillstyle=hlines](-1.3,0.5)(1.3,0.4)}
+\newpsobject{phasemodulator}{optdipole}{optdipolecomp={\phasemodulatorcomp}, optdipolesize=2 0.8}
+\pnode(0,1){A}\pnode(3,1){B}
+\phasemodulator(A)(B){LiNbO$_3$}
+\drawwidebeam[beamwidth=0.3, beaminside=false](A){}(B)
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
+%   \optitem{opttripolecomp}{\prm{\textbackslash macro}}
 % \ifGERMAN  
 % Weitere Beispiel sind \prettyref{ex:lclv} und
 % \prettyref{ex:absspektr}.
@@ -12821,6 +12888,11 @@
 %
 % \begin{changelog}
 %\patchcmd{\release}{\setlength{\itemsep}{0pt}}{\setlength{\itemsep}{0pt}\setlength{\parsep}{0pt}}{}{}
+%   \begin{release}{4.6alpha}{xxxx-xx-xx}
+%   \item Added option \opt{extnodes}\see{prm:extnodes}
+%   \item Added option \opt{optdipolecomp}\see{prm:optdipolecomp}
+%   \item Added option \opt{opttripolecomp}\see{prm:opttripolecomp}
+%   \end{release}
 %   \begin{release}{4.5}{2013-07-21}
 %   \item Added option \opt{usewirestyle}\see{prm:usewirestyle}
 %   \item Added line style \opt{fade}, with options \opt{fadeto},
@@ -13266,6 +13338,7 @@
 \def\POE@str@cross{cross}
 \def\POE@str@cube{cube}
 \def\POE@str@custom{custom}
+\def\POE@str@default{default}
 \def\POE@str@diode{diode}
 \def\POE@str@directional{directional}
 \def\POE@str@ellipse{ellipse}
@@ -13298,6 +13371,7 @@
 \def\POE@str@semitrans{semitrans}
 \def\POE@str@sine{sine}
 \def\POE@str@standard{standard}
+\def\POE@str@symmetric{symmetric}
 \def\POE@str@top{top}
 \def\POE@str@transmittive{transmittive}
 \def\POE@str@transparency{transparency}
@@ -13625,11 +13699,40 @@
 %    \end{macrocode}
 % This part was copied and adapted from \cs{psset@@ref} from pstricks.tex
 %    \begin{macrocode}
+\define@key[psset]{optexp}{extnodes}{%
+  \edef\POE@key@extnode{#1}%
+  \ifx\@empty\POE@key@extnode
+    \edef\POE@key@extnode@cnt{1}%
+    \edef\POE@key@extnode@xrefs{0 }%
+    \edef\POE@key@extnode@yrefs{0 }%
+  \else
+    \def\POE@key@extnode@xrefs{}%
+    \def\POE@key@extnode@yrefs{}%
+    \psForeach{\POE@tempD}{#1,}{%
+      \ifx\POE@tempD\@empty
+        \advance\psLoopIndex by -1
+      \else
+        \pst@expandafter\POE@psset@@extnode{\POE@tempD}\@empty,,\@nil
+        \edef\POE@key@extnode@xrefs{\POE@key@extnode@xrefs\POE@key@extnode@xref\space}%
+        \edef\POE@key@extnode@yrefs{\POE@key@extnode@yrefs\POE@key@extnode@yref\space}%
+      \fi
+    }%
+    \edef\POE@key@extnode@cnt{\the\psLoopIndex}%
+  \fi
+}%
+%    \end{macrocode}
+% Need to have two options 'extnode' and 'extnodes' to allow extnode={-0.5,1} without 
 \define@key[psset]{optexp}{extnode}{%
-   \edef\POE@key@extnode{#1}%
-   \ifx\@empty\POE@key@extnode\else
-      \pst@expandafter\POE@psset@@extnode{#1}\@empty,,\@nil
-   \fi
+  \edef\POE@key@extnode{#1}%
+  \edef\POE@key@extnode@cnt{1}%
+  \ifx\@empty\POE@key@extnode
+    \edef\POE@key@extnode@xrefs{0 }%
+    \edef\POE@key@extnode@yrefs{0 }%
+  \else
+    \pst@expandafter\POE@psset@@extnode{#1}\@empty,,\@nil
+    \edef\POE@key@extnode@xrefs{\POE@key@extnode@xref}%
+    \edef\POE@key@extnode@yrefs{\POE@key@extnode@yref}%
+  \fi
 }%
 \def\POE@key@extnode@xref{0}%
 \def\POE@key@extnode@yref{0}%
@@ -14285,7 +14388,17 @@
   \fi
   \pst@checknum{#1}\POE@key@optdipolewidth
 }%
-\psset[optexp]{optdipolesize=0 0}%
+\define@key[psset]{optexp}{optdipolecomp}{%
+  \def\POE@key@optdipolecomp{#1}%
+}
+\define@key[psset]{optexp}{opttripolecomp}{%
+  \def\POE@key@opttripolecomp{#1}%
+}
+\psset[optexp]{%
+  optdipolesize=0 0,
+  optdipolecomp=,
+  opttripolecomp=%
+}%
 % \subsection{Parameters of fiber-optical components}
 % \subsubsection{fiber}
 %    \begin{macrocode}
@@ -17206,6 +17319,7 @@
         \pnode(!\POE@tempc \POE@tempd
                 \POE@dict{VecAdd 0.5 VecScale}
                 \tx@UserCoor){\oenodeRefB{}}
+        \POE@regNodes@
         \POE@Verb{%
           gsave
             STV CP T 
@@ -17367,9 +17481,19 @@
 \def\POE@regNodes#1#2{%
   \pnode(#1){\oenodeRefA{}}
   \pnode(#2){\oenodeRefB{}}
+  \POE@regNodes@
+\ignorespaces}%
+%    \end{macrocode}
+% \end{macro}
+% 
+% \begin{macro}{\POE@regNodes@}
+% Some additional work which needs to be done in \cs{POE@regNodes}, but must be
+% called separately in some cases (e.g. \cs{fiberbox}).
+%    \begin{macrocode}
+\def\POE@regNodes@{%
   \POE@Verb{%
-    /@xref \POE@key@extnode@xref\space def 
-    /@yref \POE@key@extnode@yref\space def
+    /@xref [\POE@key@extnode@xrefs] def
+    /@yref [\POE@key@extnode@yrefs] def
     /@@ang 
     \ifx\POE@key@innercompalign\POE@str@absolute
       /N@\POE@refnodeA\space /N@\POE@refnodeB\space SlopeAngle
@@ -17386,9 +17510,6 @@
     }%
   \fi
 \ignorespaces}%
-%    \end{macrocode}
-% \end{macro}
-% 
 % \begin{macro}{\POE@pnode@shiftedrot}
 % Define a new node \#3 shifted by (\#1) relative to existing node \#2.
 % Aditionally rotate the new node by \#4 degree around existing node as origin.
@@ -17596,19 +17717,49 @@
 % \begin{macro}{\optdipole}
 %    \begin{macrocode}
 \def\optdipole{\pst@object{optdipole}}
-\def\optdipole@i(#1)(#2)#3{%
+\def\optdipole@i(#1)(#2){%
   \@ifnextchar\bgroup%
-    {\optdipole@ii(#1)(#2){#3}}%
-    {\optdipole@ii(#1)(#2){#3}{}}%
+    {\optdipole@iii(#1)(#2)}%
+    {\optdipole@ii(#1)(#2)}%
 }%
-\def\optdipole@ii(#1)(#2)#3#4{%
+\def\optdipole@ii(#1)(#2){%
+  \optdipole@v(#1)(#2){}{}%
+}%
+\def\optdipole@iii(#1)(#2)#3{%
+  \@ifnextchar\bgroup%
+    {\optdipole@iv(#1)(#2){#3}}%
+    {\optdipole@v(#1)(#2){#3}}%
+}%
+\def\optdipole@iv(#1)(#2)#3#4{%
+   \addbefore@par{innercompalign=relative}%
+   \begin@OptexpObj
+      \ifPOE@backlayer
+        \POE@regNodes{#1}{#2}%
+      \fi
+      \def\optdipole@comp{\psrotate(0,0){!\POE@dict{@@ang}}{#3}}%
+      \POE@drawcomponent{optdipole}{#4}%
+      \ifPOE@backlayer
+        \POE@InternalConn
+      \fi
+   \end@OptexpObj
+}%
+%    \end{macrocode}
+% Only one argument given, decide if this is supposed to be the label,
+% or the component.
+%    \begin{macrocode}
+\def\optdipole@v(#1)(#2)#3{%
    \addbefore@par{innercompalign=relative}%
    \begin@OptexpObj
       \ifPOE@backlayer
         \POE@regNodes{#1}{#2}
       \fi
-      \def\optdipole@comp{\psrotate(0,0){!\POE@dict{@@ang}}{#3}}%
-      \POE@drawcomponent{optdipole}{#4}
+      \ifx\POE@key@optdipolecomp\@empty
+        \def\optdipole@comp{\psrotate(0,0){!\POE@dict{@@ang}}{#3}}%
+        \POE@drawcomponent{optdipole}{}
+      \else
+        \def\optdipole@comp{\psrotate(0,0){!\POE@dict{@@ang}}{\POE@key@optdipolecomp}}%
+        \POE@drawcomponent{optdipole}{#3}
+      \fi
       \ifPOE@backlayer
         \POE@InternalConn
       \fi
@@ -17632,12 +17783,20 @@
 % \begin{macro}{\opttripole}
 %    \begin{macrocode}
 \def\opttripole{\pst@object{opttripole}}
-\def\opttripole@i(#1)(#2)(#3)#4{%
-  \@ifnextchar\bgroup%
-    {\opttripole@ii(#1)(#2)(#3){#4}}%
-    {\opttripole@ii(#1)(#2)(#3){#4}{}}%
+\def\opttripole@i(#1)(#2)(#3){%
+  \@ifnextchar\bgroup
+    {\opttripole@iii(#1)(#2)(#3)}%
+    {\opttripole@ii(#1)(#2)(#3)}%
 }%
-\def\opttripole@ii(#1)(#2)(#3)#4#5{%
+\def\opttripole@ii(#1)(#2)(#3){%
+  \opttripole@v(#1)(#2)(#3){}{}%
+}%
+\def\opttripole@iii(#1)(#2)(#3)#4{%
+  \@ifnextchar\bgroup
+    {\opttripole@iv(#1)(#2)(#3){#4}}%
+    {\opttripole@v(#1)(#2)(#3){#4}}%
+}%
+\def\opttripole@iv(#1)(#2)(#3)#4#5{%
   \addafter@par{ref@angle=0}
   \begin@OptexpTripole
     \ifPOE@backlayer   
@@ -17646,6 +17805,28 @@
     \fi
     \def\opttripole@comp{#4}%
     \POE@drawcomponent{opttripole}{#5}
+    \ifPOE@backlayer
+      \POE@InternalConn
+    \fi
+  \end@OptexpTripole
+}%
+%    \end{macrocode}
+% Only one argument given, decide if this is supposed to be the label, or the component
+%    \begin{macrocode}
+\def\opttripole@v(#1)(#2)(#3)#4{%
+  \addafter@par{ref@angle=0}
+  \begin@OptexpTripole
+    \ifPOE@backlayer   
+      \POE@calcNodes{#1}{#2}{#3}%
+      \POE@regNodes{#1}{#3}%
+    \fi
+    \ifx\POE@key@opttripolecomp\@empty
+      \def\opttripole@comp{#3}%
+      \POE@drawcomponent{opttripole}{}%
+    \else
+      \def\opttripole@comp{\POE@key@opttripolecomp}%
+      \POE@drawcomponent{opttripole}{#4}%
+    \fi
     \ifPOE@backlayer
       \POE@InternalConn
     \fi
@@ -17734,10 +17915,13 @@
     \fi
     \ifx\POE@key@extnode\@empty\else
       \ifPOE@backlayer
-        \pnode(! \POE@dict{
-          \POE@key@extnode@xref\space
-          \POE@key@extnode@yref\space
-          DefineExtNode}){\oenodeExt{}}%
+        \multido{\i=1+1}{\POE@key@extnode@cnt}{%
+          \pnode(! \POE@dict{
+            @xref \i\space 1 sub get 
+            @yref \i\space 1 sub get
+            DefineExtNode}){\oenode{Ext\i}{}}%
+          \pnode(\oenode{Ext1}{}){\oenodeExt{}}%
+        }%
         \POE@Verb{%
           tx@NodeDict begin /N@\oenodeExt{} load
           \ifnum9<1\POE@key@compname
@@ -18581,15 +18765,14 @@
     \POE@dict{ exch@ref@\oenode{}{} { -90 }{ 90 } ifelse }
     \POE@key@angle\space add
   }%
-  \edef\POE@temp{\POE@key@extnode@xref}%
-  \edef\POE@key@extnode@xref{%
-    \POE@dict{%
-      \POE@key@extnode@yref\space 
-      exch@ref@\oenode{}{} { -1 mul } if } }%
-  \edef\POE@key@extnode@yref{%
-    \POE@dict{%
-      \POE@temp\space 
-      exch@ref@\oenode{}{} { -1 mul } if } }%
+  \POE@Verb{%
+    @xref @yref
+    exch@ref@\oenode{}{} { 
+      [ exch { neg } forall ]
+      exch [ exch { neg } forall ]
+    } if
+    /@yref ED /@xref ED
+  }%
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -19347,8 +19530,8 @@
     \egroup
   \else
     \psline[arrows=-, ArrowInside=-, linewidth=1.5\pslinewidth]%
-      (! \POE@dict{@@x} -0.6 mul @lw add @lw)%
-      (! \POE@dict{@@x 0.6 mul @@y 0.6 mul})%
+      (! \POE@dict{@@x} -0.6 mul @lw add @lw 0.5 mul)%
+      (! \POE@dict{@@x 0.45 mul @@y 0.6 mul})%
     \pscircle(! \POE@dict{@@x} -0.6 mul 0){\pslinewidth}%
     \psdot[dotsize=3\pslinewidth](! \POE@dict{@@x} 0.6 mul 0)%
   \fi
@@ -20504,8 +20687,8 @@ tx@OptexpDict begin
   /@@y 0 def
   /@@x0 0 def
   /@@y0 0 def
-  /@xref 0 def
-  /@yref 0 def
+  /@xref [0] def
+  /@yref [0] def
   /RefFac 1 def
 } bind def
 %    \end{macrocode}
@@ -21124,11 +21307,11 @@ tx@OptexpDict begin
 % if the ambiguous interface is the first, always draw to it
 %    \begin{macrocode}
       IfcCntTmp IfcCnt eq { true }{ draw } ifelse
-      ] cvx
+      ] cvx 
       (C) name 4 -1 roll
       connectifc { bgRefIndex }{ name GetRefIndex } ifelse
       CurrTmp CurrVecTmp
-      10 dict begin HandleInterface end pop 
+      10 dict begin HandleInterface end pop
       ToVec /CurrVecTmp ED ToVec /CurrTmp ED
 %    \end{macrocode}
 % now check which is the outgoing plane
