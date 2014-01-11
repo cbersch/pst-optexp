@@ -1,6 +1,6 @@
 % \iffalse meta-comment
 %
-% Copyright (C) 2007-2013 by Christoph Bersch <usenet@bersch.net>
+% Copyright (C) 2007-2014 by Christoph Bersch <usenet@bersch.net>
 %
 % This work may be distributed and/or modified under the
 % conditions of the LaTeX Project Public License, either version 1.3c
@@ -18,7 +18,7 @@
 %<stylefile>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<stylefile>\ProvidesPackage{pst-optexp}
 %<*stylefile>
-    [2013/11/27 v4.6 Optical experimental setups with PSTricks]
+    [2014/01/11 v4.7dev Optical experimental setups with PSTricks]
 %</stylefile>
 %
 %<*driver>
@@ -111,7 +111,7 @@
     oeBeamCenter, optplate, optretplate, pinhole, crystal, optdetector,
     optdiode, doveprism, glanthompson, polarization, mirror,
     beamsplitter, optgrating, optprism, rightangleprism, pentaprism,
-    optdipole, optripole, optfiber, optamp, optmzm, optfilter,
+    optdipole, opttripole, optfiber, optamp, optmzm, optfilter,
     polcontrol, optisolator, optswitch, fiberdelayline,
     optfiberpolarizer, fibercollimator, optcoupler, wdmcoupler,
     wdmsplitter, optcirculator, fiberbox, eleccoupler, elecsynthesizer,
@@ -968,24 +968,27 @@
 % \ifGERMAN
 % Ich danke allen Aktiven auf der PSTricks-Mailingliste für ihre Hilfe,
 % insbesondere Herbert Voß. Mein Dank gilt ebenfalls unterschiedlichen
-% Paketautoren, von denen ich Code kopiert und viel gelernt habe: Florent
-% Chervet, Rolf Niepraschk und Heiko Oberdiek. Christine Römer hat mich mit
-% ihrem Artikel in der DTK\footnote{Pakete in Deutsch dokumentieren. in Die
-% TeXnische Komödie. Heft 2/2011, S. 28-35.} überzeugt, ebenfalls eine deutsche
-% Dokumentation bereitzustellen. Der Dokumentationsstil ist eine Mischung aus
-% der \opt{pst-doc} Klasse (Herbert Voß) und dem \opt{ltxdockit} Paket für die
-% \opt{biblatex} Dokumentation (Philipp Lehmann).
+% Paketautoren, von denen ich Code kopiert und viel gelernt habe: David
+% Carlisle, Florent Chervet, Enrico Gregorio, Rolf Niepraschk und Heiko
+% Oberdiek. Christine Römer hat mich mit ihrem Artikel in der
+% DTK\footnote{Pakete in Deutsch dokumentieren. in Die TeXnische
+% Komödie. Heft 2/2011, S. 28-35.} überzeugt, ebenfalls eine deutsche
+% Dokumentation bereitzustellen. Der Dokumentationsstil ist eine
+% Mischung aus der \opt{pst-doc} Klasse (Herbert Voß) und dem
+% \opt{ltxdockit} Paket für die \opt{biblatex} Dokumentation (Philipp
+% Lehmann).
 % \fi
 % \ifENGLISH
-% I thank all the people of the PSTricks mailinglist for the continuous help,
-% especially Herbert Voß. Thanks also to various package authors from which I
-% learned and adopted code for this package, Florent Chervet, Rolf Niepraschk
-% and Heiko Oberdiek. Christine Römer convinced me with her article in the
-% german DTK\footnote{Pakete in Deutsch dokumentieren. in Die TeXnische
-% Komödie. Heft 2/2011, S. 28-35.} to provide a german translation of the
-% documentation. The documentation style is a mixture of the \opt{pst-doc} class
-% (Herbert Voß) and the \opt{ltxdockit} package for the \opt{biblatex}
-% documentation (Philipp Lehman).
+% I thank all the people of the PSTricks mailinglist for the continuous
+% help, especially Herbert Voß. Thanks also to various package authors
+% from which I learned and adopted code for this package: David
+% Carlisle, Florent Chervet, Enrico Gregorio, Rolf Niepraschk and Heiko
+% Oberdiek. Christine Römer convinced me with her article in the german
+% DTK\footnote{Pakete in Deutsch dokumentieren. in Die TeXnische
+% Komödie. Heft 2/2011, S. 28-35.} to provide a german translation of
+% the documentation. The documentation style is a mixture of the
+% \opt{pst-doc} class (Herbert Voß) and the \opt{ltxdockit} package for
+% the \opt{biblatex} documentation (Philipp Lehman).
 % \fi
 %
 % \ifGERMAN
@@ -16188,43 +16191,77 @@
     \else
       \@tempcnta=#1
     \fi
-    \POE@getlastcomp#2%
-    \ifnum\@tempcnta>\POE@cnt
-      \ifnum\@tempcntb>\POE@cnt
-        \PackageError{pst-optexp}%
-          {All components \the\@tempcnta-\the\@tempcntb\space out of range}%
-      \fi
+    \edef\POE@temp{\POE@getfirstchar#2\@nil}%
+    \expandafter\ifx\POE@temp<\relax
+      \POE@getlastcompprev#2
+    \else
+      \POE@getlastcomp#2
     \fi
-    \ifnum\@tempcnta<\@ne
-      \PackageWarning{pst-optexp}%
-        {Component ID \the\@tempcnta\space is not valid, setting to 1.}%
-      \@tempcnta=\@ne
-    \else\ifnum\@tempcnta>\POE@cnt
-      \PackageWarning{pst-optexp}%
-        {Component ID \the\@tempcnta\space is not valid, setting to \MessageBreak
-         the last defined value (\the\POE@cnt).}%
-      \@tempcnta=\POE@cnt%
-    \fi\fi
-    \ifnum\@tempcntb>\POE@cnt
-      \PackageWarning{pst-optexp}%
-        {Component ID \the\@tempcntb\space is not valid, setting to \MessageBreak
-         the last defined value (\the\POE@cnt).}%
-      \@tempcntb=\POE@cnt%
-    \else\ifnum\@tempcntb<\@ne
-      \PackageWarning{pst-optexp}%
-        {Component ID \the\@tempcntb\space is not valid, setting to 1.}%
-      \@tempcntb=\@ne
-    \fi\fi
+    \POE@checkandfixcomprange
   \fi
 }%
+\def\POE@getcomprangeprev<#1-#2\@nil{%
+  \@tempcnta=\POE@cnt
+  \@tempcntb=\POE@cnt
+  \ifx\\#1\\%
+    \advance\@tempcnta by -1
+  \else
+    \advance\@tempcnta by -#1
+  \fi
+  \ifx\\#2\\\else
+    \edef\POE@temp{\POE@getfirstchar#2\@nil}%
+    \expandafter\ifx\POE@temp<\relax
+      \POE@getlastcompprev#2
+    \else
+      \POE@getlastcomp#2
+    \fi
+  \fi
+  \POE@checkandfixcomprange
+}%
+\def\POE@checkandfixcomprange{%
+  \ifnum\@tempcnta>\POE@cnt
+    \ifnum\@tempcntb>\POE@cnt
+      \PackageError{pst-optexp}%
+        {All components \the\@tempcnta-\the\@tempcntb\space out of range}%
+    \fi
+  \fi
+  \ifnum\@tempcnta<\@ne
+    \PackageWarning{pst-optexp}%
+      {Component ID \the\@tempcnta\space is not valid, setting to 1.}%
+    \@tempcnta=\@ne
+  \else\ifnum\@tempcnta>\POE@cnt
+    \PackageWarning{pst-optexp}%
+      {Component ID \the\@tempcnta\space is not valid, setting to \MessageBreak
+       the last defined value (\the\POE@cnt).}%
+    \@tempcnta=\POE@cnt%
+  \fi\fi
+  \ifnum\@tempcntb>\POE@cnt
+    \PackageWarning{pst-optexp}%
+      {Component ID \the\@tempcntb\space is not valid, setting to \MessageBreak
+       the last defined value (\the\POE@cnt).}%
+    \@tempcntb=\POE@cnt%
+  \else\ifnum\@tempcntb<\@ne
+    \PackageWarning{pst-optexp}%
+      {Component ID \the\@tempcntb\space is not valid, setting to 1.}%
+    \@tempcntb=\@ne
+  \fi\fi
+}%
 \def\POE@getlastcomp#1-{%
-  \ifx\@empty#1\relax
+  \ifx\\#1\\%
     \ifnum\@tempcnta>\POE@cnt
       \PackageError{pst-optexp}{All components \the\@tempcnta- out of range.}%
-    \fi
+    \fi%
     \@tempcntb=\POE@cnt
   \else
-    \@tempcntb=#1
+    \@tempcntb=#1%
+  \fi
+}%
+\def\POE@getlastcompprev<#1-{%
+  \@tempcntb=\POE@cnt
+  \ifx\\#1\\%
+    \advance\@tempcntb by -1
+  \else
+    \advance\@tempcntb by -#1
   \fi
 }%
 %    \end{macrocode}
@@ -16244,32 +16281,42 @@
 \def\POE@getcomps@ii{%
   \@ifnextchar\bgroup{\POE@getcomps@iii}{\POE@aftercomps}%
 }%
+\def\POE@getfirstchar#1#2\@nil{#1}%
+\def\POE@getprevcompid<#1\@nil{%
+  \ifx\\#1\\%
+    \number\numexpr\POE@cnt-1\relax
+  \else
+    \number\numpexp\POE@cnt-#1\relax
+  \fi
+}%    
 \def\POE@getcomps@iii#1{%
-  \def\POE@temp{#1\@empty}%
-  \expandafter\POE@getcomps@iv\POE@temp\@nil
-}%
-\def\POE@getcomps@iv#1#2\@nil{%
-  \edef\POE@temp{#1}%
+  \edef\POE@temp{\POE@getfirstchar#1{}\@nil}%
   \ifx\POE@temp\@empty
     \POE@getcomp{(\oenode{}{})}%
-  \else\ifx(#1\relax%)
-    \POE@getplanenode#1#2%
-  \else\ifnum9<1#1\relax
-    \POE@getcomprange#1#2-\@nil
+  \else\expandafter\ifx\POE@temp(\relax%)
+    \POE@getplanenode#1%
+  \else\ifnum9<1\POE@temp\relax
+    \expandafter\POE@getcomprange#1-\@nil
     \POE@getcomp{%
       (\POE@str@basicname@prefix\POE@str@basicname@default)
       \the\@tempcnta\space\the\@tempcntb\space GetCompRange %
     }%
-  \else\ifx-#1\relax
-    \POE@getcomprange#1#2-\@nil
+  \else\expandafter\ifx\POE@temp<\relax
+    \expandafter\POE@getcomprangeprev#1-\@nil
+    \POE@getcomp{%
+      (\POE@str@basicname@prefix\POE@str@basicname@default)
+      \the\@tempcnta\space\the\@tempcntb\space GetCompRange %
+    }%
+  \else\expandafter\ifx\POE@temp-\relax
+    \POE@getcomprange#1-\@nil
     \POE@getcomp{%
       (\POE@str@basicname@prefix\POE@str@basicname@default) 
       \the\@tempcnta\space\the\@tempcntb\space GetCompRange %
     }%
   \else
-    \POE@checkcompname{#1#2}%
-    \POE@getcomp{(\oenode{}{#1#2})}%
-  \fi\fi\fi\fi%
+    \POE@checkcompname{#1}%
+    \POE@getcomp{(\oenode{}{#1})}%
+  \fi\fi\fi\fi\fi%
   \POE@getcomps@i%
 }%
 %    \end{macrocode}
@@ -16484,10 +16531,28 @@
       \POE@str@basicname@default
       #2%
     \else
-      #2\POE@str@basicname@sep%
+      \POE@prevnode#2\@nil
+      \POE@str@basicname@sep%
     \fi%
   \fi%
   #1%
+}%
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{POE@prevnode}
+%    \begin{macrocode}
+\def\POE@prevnode#1#2\@nil{%
+  \ifx<#1%
+    \POE@str@basicname@default
+    \ifx\\#2\\%
+      \number\numexpr\POE@cnt-1\relax
+    \else
+      \number\numexpr\POE@cnt-#2\relax
+    \fi
+  \else
+    #1#2%
+  \fi
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -17540,6 +17605,9 @@
     }%
   \fi
 \ignorespaces}%
+%    \end{macrocode}
+% \end{macro}
+% 
 % \begin{macro}{\POE@pnode@shiftedrot}
 % Define a new node \#3 shifted by (\#1) relative to existing node \#2.
 % Aditionally rotate the new node by \#4 degree around existing node as origin.
