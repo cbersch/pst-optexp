@@ -16373,20 +16373,16 @@
   \@ifnextchar\bgroup{\POE@normalizecomps@iv}{\POE@aftercomps}%
 }%
 \def\POE@normalizecomps@iv#1{%
-  \def\POE@temp{#1\@empty}%
-  \expandafter\POE@normalizecomps@v\POE@temp\@nil
-}%
-\def\POE@normalizecomps@v#1#2\@nil{%
-  \edef\POE@temp{#1}%
-  \ifnum9<1#1\relax
-    \def\POE@tempa{1}
-  \else\ifx-#1\relax
-    \def\POE@tempa{1}
+  \edef\POE@temp{\POE@getfirstchar#1{}\@nil}%
+  \ifnum9<1\POE@temp\relax
+    \def\POE@tempa{1}%
+  \else\expandafter\ifx\POE@temp-\relax
+    \def\POE@tempa{1}%
   \else
-    \def\POE@tempa{0}
+    \def\POE@tempa{0}%
   \fi\fi
   \ifodd\POE@tempa
-    \POE@getcomprange#1#2-\@nil
+    \POE@getcomprange#1-\@nil
     \ifnum\@tempcnta<\@tempcntb \def\POE@rel{<}\def\POE@inc{\@ne}%
     \else \def\POE@rel{>}\def\POE@inc{\m@ne}\fi
     \advance\@tempcntb\POE@inc
@@ -16395,7 +16391,7 @@
       \advance\@tempcnta\POE@inc
     }%
   \else
-    \edef\POE@comps{\POE@comps{#1#2}}%
+    \edef\POE@comps{\POE@comps{#1}}%
   \fi
   \POE@normalizecomps@i%
 }%
@@ -16503,29 +16499,13 @@
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}{\POE@getlastcompname}
-% Get the last component name which was defined.
-%    \begin{macrocode}
-\def\POE@getlastcompname{%
-  \expandafter\POE@getlastcompname@i \POE@complist,\relax,\@nil
-}%
-\def\POE@getlastcompname@i#1,#2,#3\@nil{#1}%
-%    \end{macrocode}
-% \end{macro}
-%
 % \begin{macro}{\oenode}
 % Get the full node name of the node \#1 defined in component \#2.
 %    \begin{macrocode}
 \def\oenode#1#2{%
   \POE@str@basicname@prefix%
   \ifx\\#2\\%
-    \ifnum9<1\POE@getlastcompname\space%
-      \POE@str@basicname@default
-      \POE@getlastcompname
-    \else
-      \POE@getlastcompname
-      \POE@str@basicname@sep
-    \fi
+    \POE@str@basicname@default\the\POE@cnt
   \else
     \ifnum9<1#2
       \POE@str@basicname@default
@@ -16815,22 +16795,23 @@
 % \end{macro}
 %
 % \begin{macro}{\POE@compalias}
-%   Components which have a \opt{compname} assigned, must also be available by
-%   their component number. Here, all necessary informations (nodes, component
-%   dictionary) are referenced such that any information is accessible via
-%   numeber or name.
+%   Components which have a \opt{compname} assigned, must also be
+%   available by their component number. Here, all necessary
+%   informations (nodes, component dictionary) are referenced such that
+%   any information is accessible via number or name. First parameter is
+%   the component name, second one the component id.
 %    \begin{macrocode}
 \def\POE@compalias#1#2{%
   \POE@Verb{%
 %    \end{macrocode}
 % Copy the component dictionary
 %    \begin{macrocode}
-    /\oenode{}{#1} dup currentdict exch known { 
-      load /#2 ED 
+    /\oenode{}{#2} dup currentdict exch known { 
+      load /\oenode{}{#1} ED 
     } { 
       pop 
     } ifelse
-    (#2) (\oenode{}{#1})
+    (\oenode{}{#1}) (\oenode{}{#2})
     tx@NodeDict begin
 %    \end{macrocode}
 % Copy all interface nodes of the component.
@@ -16958,7 +16939,7 @@
 %    \begin{macrocode}
 \def\end@OptexpObj{%
   \ifnum9<1\POE@key@compname\else
-    \POE@compalias{\POE@key@compname}{\oenode{}{\the\POE@cnt}}%
+    \POE@compalias{\POE@key@compname}{\the\POE@cnt}%
   \fi
   \endgroup
   \ignorespaces%
