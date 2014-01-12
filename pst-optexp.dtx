@@ -16372,17 +16372,25 @@
 \def\POE@normalizecomps@iii{%
   \@ifnextchar\bgroup{\POE@normalizecomps@iv}{\POE@aftercomps}%
 }%
+%    \end{macrocode}
+%
+% Analyze the content of the comp id and expand it accordingly.
+%    \begin{macrocode}
 \def\POE@normalizecomps@iv#1{%
   \edef\POE@temp{\POE@getfirstchar#1{}\@nil}%
+  \let\POE@tempb\POE@getcomprange
   \ifnum9<1\POE@temp\relax
     \def\POE@tempa{1}%
   \else\expandafter\ifx\POE@temp-\relax
     \def\POE@tempa{1}%
+  \else\expandafter\ifx\POE@temp<\relax
+    \def\POE@tempa{1}%
+    \let\POE@tempb\POE@getcomprangeprev
   \else
     \def\POE@tempa{0}%
-  \fi\fi
+  \fi\fi\fi
   \ifodd\POE@tempa
-    \POE@getcomprange#1-\@nil
+    \POE@tempb#1-\@nil
     \ifnum\@tempcnta<\@tempcntb \def\POE@rel{<}\def\POE@inc{\@ne}%
     \else \def\POE@rel{>}\def\POE@inc{\m@ne}\fi
     \advance\@tempcntb\POE@inc

@@ -1,18 +1,6 @@
-%\begin{pspicture}[showgrid](12,2)
-%  \pnodes(0,1){A}(12,1){B}
-%  \multido{\r=1+2.5}{6}{\optbox[abspos=\r](A)(B)}
-  %\drawbeam{-}
-  %\drawbeam[beampos=0.1, linecolor=red]{4}{5}{6}
-  %\drawbeam[beampos=-0.1, linecolor=blue]{-2}
-%  \psdot[linecolor=red](\oenodeOut{<0})
-%  \psdot(\oenodeOut{<})
-%  \psdot(\oenodeOut{<1})
-%  \drawbeam[beampos=-0.2, linecolor=cyan]{2-}
-  %\drawbeam{-}
-%  \drawbeam{-}
-%\end{pspicture}
-
- \begin{pspicture}[showgrid](12,2)
+\addtopsstyle{Fiber}{linewidth=2\pslinewidth}
+\addtopsstyle{Beam}{linewidth=2\pslinewidth}
+\begin{pspicture}[showgrid](12,2)
    \pnodes(0,1){A}(12,1){B}
    \optbox[abspos=1](A)(B)
    \multido{}{6}{\optbox[abspos=1](\oenodeOut{<})(B)}
@@ -20,5 +8,22 @@
    \drawbeam[linecolor=red, beampos=0.1]{-<2}
    \drawbeam[linecolor=blue, beampos=-0.1]{-<}
    \drawbeam[linecolor=magenta, beampos=-0.2]{<-}
-   \drawbeam[linecolor=cyan, beampos=0.2]{<3-<2}
+   \drawbeam[linecolor=cyan, beampos=0.2]{<2-<1}
+\end{pspicture}
+
+\begin{pspicture}[showgrid](12,2)
+   \pnodes(0,1){A}(12,1){B}
+   \optbox[abspos=1](A)(B)
+   \multido{}{6}{\optbox[abspos=1](\oenodeOut{<})(B)}
+   \drawfiber[fiberangleA=80, fiberangleB=-80, ncurv=3, linecolor=green]{1-2}
+   \drawfiber[linecolor=blue]{-<}
+\end{pspicture}
+ 
+\begin{pspicture}[showgrid](12,2)
+   \pnodes(0,1){A}(12,1){B}
+   \optbox[abspos=1](A)(B)
+   \multido{}{6}{\optbox[abspos=1](\oenodeOut{<})(B)}
+   \drawfiber[linecolor=red]{-<2}
+   \drawfiber[linecolor=magenta!50]{<-}
+   \drawfiber[linecolor=cyan]{<2-<1}
 \end{pspicture}
