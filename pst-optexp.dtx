@@ -18,7 +18,7 @@
 %<stylefile>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<stylefile>\ProvidesPackage{pst-optexp}
 %<*stylefile>
-    [2014/01/12 v4.7 Optical experimental setups with PSTricks]
+    [2014/01/16 v4.8dev Optical experimental setups with PSTricks]
 %</stylefile>
 %
 %<*driver>
@@ -12041,6 +12041,11 @@
 %</ignore>
 % \fi
 %
+% \begin{optionlist}
+% \boolitem[false]{showinterfaces}
+% \styleitem[linestyle=dashed, dash=1pt 1pt, linecolor=red!70!black]{IfcStyle}
+% \end{optionlist}
+%
 % \ifENGLISH\section{Overview of special nodes}\fi
 % \ifGERMAN\section{Übersicht der Spezialknoten}\fi
 %
@@ -12974,6 +12979,9 @@
 %
 % \begin{changelog}
 %\patchcmd{\release}{\setlength{\itemsep}{0pt}}{\setlength{\itemsep}{0pt}\setlength{\parsep}{0pt}}{}{}
+%   \begin{release}{4.8}{2014-xx-xx}
+%   \item Added option \opt{showinterfaces}\see{prm:showinterfaces}
+%   \end{release}
 %   \begin{release}{4.7}{2014-01-12}
 %   \item Added syntax \opt{<}\prm{num} for accessing relative component
 %     IDs\see{sec:namingobj}
@@ -13348,6 +13356,7 @@
 \newif\ifPOE@component@optional
 \newif\ifPOE@debug@showoptdots
 \newif\ifPOE@debug@showifcnodes
+\newif\ifPOE@debug@showinterfaces
 \newif\ifPOE@endbox
 \newif\ifPOE@startbox
 \newif\ifPOE@thicklens
@@ -13483,6 +13492,7 @@
 }
 \newpsstyle{OptionalStyle}{linestyle=dashed,dash=1.5pt 1pt}%
 \newpsstyle{IfcNodeStyle}{dotstyle=x, dotscale=1.5, linecolor=blue}%
+\newpsstyle{IfcStyle}{linestyle=dashed, dash=1pt 1pt, linecolor=red!70!black}%
 \newpsstyle{Beam}{linecolor=green!90!black, linejoin=1}%
 \define@key[psset]{optexp}{newBeam}{%
   \newpsstyle{Beam}{#1}%
@@ -13633,6 +13643,7 @@
 \define@boolkey[psset]{optexp}[POE@]{usewirestyle}[true]{}
 \define@boolkey[psset]{optexp}[POE@debug@]{showoptdots}[true]{}
 \define@boolkey[psset]{optexp}[POE@debug@]{showifcnodes}[true]{}
+\define@boolkey[psset]{optexp}[POE@debug@]{showinterfaces}[true]{}
 %    \end{macrocode}
 % The positioning parameters.
 %    \begin{macrocode}
@@ -18143,6 +18154,11 @@
              dotscale=1.5](\oenodeTrefB{})
     \fi
   \fi
+  \ifPOE@debug@showinterfaces
+    \ifPOE@frontlayer
+      \POE@drawinterfaces[style=IfcStyle]
+    \fi
+  \fi
   \ifPOE@debug@showifcnodes
     \ifPOE@frontlayer
       \POE@ifcnodes[style=IfcNodeStyle]
@@ -18191,6 +18207,35 @@
       pop}
     }%
   \end@SpecialObj
+}%
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\POE@drawinterfaces}
+%    \begin{macrocode}
+\def\POE@drawinterfaces{\pst@object{POE@drawinterfaces}}
+\def\POE@drawinterfaces@i{%
+  \begin@OpenObj%
+  \addto@pscode{%
+    \psk@dotsize
+    \@nameuse{psds@\psk@dotstyle}
+    \pst@optexpdict
+    /\oenode{}{} load begin
+      1 1 N {
+        IfcName load begin
+          X Y
+          CompMtrx transform CM itransform 2 copy
+          currentdict /RX known { 0 0 }{ DX DY } ifelse
+          CompMtrx dtransform CM idtransform 2 copy
+          NAlow 0 eq not { \tx@UserCoor NAlow } { -0.5 } ifelse VecScale
+          4 2 roll NAup 0 eq not { \tx@UserCoor NAup } { 0.5 } ifelse VecScale
+        end
+        8 -2 roll VecAdd moveto VecAdd lineto
+      } for
+    end end }%
+  \pst@stroke
+  \use@pscode
+  \end@OpenObj
 }%
 %    \end{macrocode}
 % \end{macro}
