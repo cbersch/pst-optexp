@@ -1,6 +1,28 @@
 \documentclass{article}
 \usepackage{pst-optexp}
 \begin{document}
+\begin{pspicture}[showgrid](3,2)
+  \optaom[beam](0,1.5)(3,0.5)(3,1.5){AOM}
+\end{pspicture}
+
+\begin{pspicture}[showgrid](3,2)
+  \psset{showinterfaces}
+  \pnodes(0,1.5){A}(3,0.5){B}(3,1.5){C}
+  \optaom[aomalign=symmetric](A)(B)(C){symmetric}
+  \addtopsstyle{Beam}{fillstyle=solid, linestyle=none, beamwidth=0.1}
+  \drawwidebeam[fillcolor=red!50](A){}(C)
+  \drawwidebeam[fillcolor=red](A){}(B)
+\end{pspicture}
+
+\begin{pspicture}[showgrid](3,2)
+  \psset{showinterfaces, pswarning, useNA=false}
+  \pnodes(0,1){A}(3,1){B}(3,1.5){C}\psdot(B)
+  \optaom[aomalign=straight](A)(B)(C){straight}
+  \addtopsstyle{Beam}{fillstyle=solid, linestyle=none, beamwidth=0.1}
+%  \drawwidebeam[fillcolor=red!50](A){}(C)
+  \drawwidebeam[fillcolor=red](A){}(B)
+\end{pspicture}
+
 \begin{pspicture}[showgrid](5,2.4)
   \optbox[extnode=](0,1)(5,1)
   \psdot[dotstyle=o](\oenode{Ext1}{})

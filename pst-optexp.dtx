@@ -110,7 +110,7 @@
     oenodeIfc, oeBeamVec, oeBeamVecUp, oeBeamVecLow, oeBeamVecMedian,
     oeBeamCenter, optplate, optretplate, pinhole, crystal, optdetector,
     optdiode, doveprism, glanthompson, polarization, mirror,
-    beamsplitter, optgrating, optprism, rightangleprism, pentaprism,
+    beamsplitter, optgrating, optprism, rightangleprism, pentaprism, optaom,
     optdipole, opttripole, optfiber, optamp, optmzm, optfilter,
     polcontrol, optisolator, optswitch, fiberdelayline,
     optfiberpolarizer, fibercollimator, optcoupler, wdmcoupler,
@@ -4047,7 +4047,8 @@
 % \ifENGLISH
 % The transmission grating supports all options of
 % \Lcomp{optgrating}. The beam path is calculated such, that the beam is
-% reflected at an interface which is perpendicular to the drawn grating. This virtual interface is shown in the following example:
+% reflected at an interface which is perpendicular to the drawn
+% grating. This virtual interface is shown in the following example:
 % \fi
 %
 % \hspace*{\fill}%
@@ -4123,6 +4124,101 @@
 %</ignore>
 % \fi
 %
+% \ifGERMAN\section{Akustooptischer Modulator}\fi
+% \ifENGLISH\section{Acousto-optic modulator}\fi
+%
+% \begin{ltxsyntax}
+%   \xLtripole{optaom}\compitem{optaom}[options](in)(trans)(diff){label}
+% \end{ltxsyntax}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(3,2)
+  \optaom[beam](0,1.5)(3,0.5)(3,1.5){AOM}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
+% \begin{optionlist}
+% \numitem[1]{aomheight}
+% \ifGERMAN Die Höhe des Modulators.\fi
+% \ifENGLISH The height of the modulator.\fi
+%
+% \numitem[1.5]{aomwidth}
+% \ifGERMAN Die Breite des Modulators.\fi
+% \ifENGLISH The width of the modulator.\fi
+%
+% \optitem{aomsize}{\prm{width} \prm{height}}
+% \ifGERMAN Die Breite und Höhe des Modulators, äquivalent zum Aufruf von
+% \Lkeyword{aomwidth} und \Lkeyword{aomheight}.
+% \fi
+% \ifENGLISH The width and height of the modulator, is equivalent to calling both
+% \Lkeyword{aomwidth} and \Lkeyword{aomheight}.
+% \fi
+%
+% \intitem[9]{aomgratingcount}
+% \ifGERMAN 
+% Gibt die Anzahl der Gitterlinien an. Werden weitere Änderungen des
+% Gitters oder des Modulators allgemein gewünscht, dann muss
+% \Lkeyword{aomcomp} verwendet werden. 
+% \fi
+% \ifENGLISH 
+% Changes the number of grating lines. For other changes of the grating
+% you must use \Lkeyword{aomcomp} to redefine the grating.
+% \fi
+%
+% \choitem[symmetric]{aomalign}{symmetric, straight}
+% \ifGERMAN \fi
+% \ifENGLISH \fi
+%
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(3,2)
+  \pnodes(0,1.5){A}(3,0.5){B}(3,1.5){C}
+  \optaom[aomalign=symmetric](A)(B)(C){symmetric}
+  \addtopsstyle{Beam}{fillstyle=solid, linestyle=none, beamwidth=0.1}
+  \drawwidebeam[fillcolor=red!50](A){}(C)
+  \drawwidebeam[fillcolor=red](A){}(B)
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(3,2)
+  \pnodes(0,1.5){A}(3,0.5){B}(3,1.5){C}
+  \optaom[aomalign=straight](A)(B)(C){straight}
+  \addtopsstyle{Beam}{fillstyle=solid, linestyle=none, beamwidth=0.1}
+  \drawwidebeam[fillcolor=red!50](A){}(C)
+  \drawwidebeam[fillcolor=red](A){}(B)
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
+% \choitem[perp]{aomreflalign}{perp, parallel}
+% \ifGERMAN \fi
+% \ifENGLISH \fi
+%
+% \choitem[default]{aomcomp}{default, \prm{macro}}
+% \ifGERMAN \fi
+% \ifENGLISH \fi
+%
+% \intitem[2]{diffractionorder}
+% \ifGERMAN \fi
+% \ifENGLISH \fi
+%
+% \end{optionlist}
 % \ifGERMAN\section{Prisma}\fi
 % \ifENGLISH\section{Prism}\fi
 % 
@@ -14507,12 +14603,15 @@
 %    \begin{macrocode}
 \define@key[psset]{optexp}{aomwidth}{%
   \pst@checknum{#1}\POE@key@aomwidth
-}
+}%
 \define@key[psset]{optexp}{aomheight}{%
   \pst@checknum{#1}\POE@key@aomheight
-}
+}%
 \define@key[psset]{optexp}{aomsize}{%
   \pst@expandafter\POE@psset@@aomsize{#1} {} {} {}\@nil
+}%
+\define@key[psset]{optexp}{aomgratingcount}{%
+  \edef\POE@key@aomgratingcount{#1}%
 }%
 \define@choicekey+[psset]{optexp}{aomalign}%
   [\val\nr]{sym,symmetric,straight}%
@@ -14542,10 +14641,11 @@
   \def\POE@key@diffractionorders{#1}%
 }%
 \psset[optexp]{%
-  aomsize=1.5 2, 
+  aomsize=1.5 1, 
   aomcomp=default, 
   aomalign=sym,
   aomreflalign=parallel,
+  aomgratingcount=9,
   diffractionorders=2,
 }%
 %    \end{macrocode}
@@ -19079,6 +19179,7 @@
   \newOptexpComp{%
     {0 0} {1 0} \POE@key@gratingwidth\space -0.5 mul dup neg 
     refltrans {PlainIfc} 1}%
+  \POE@saveDiffractionNodes
 }%
 \let\transmissiongrating@comp\optgrating@comp
 %    \end{macrocode}
@@ -19572,12 +19673,14 @@
         {1 0 180 OEangle sub 0.5 mul matrix rotate dtransform}
       \fi
       0 0 trans {PlainIfc}
-      {@@x 0} {0 1} @@y neg @@y
+      {@@x @@y} {0 1} @@y -2 mul 0
+      trans {PlainIfc}
+      {@@x @@y neg} {0 1} 0 @@y 2 mul
       trans {PlainIfc}
       2 1
     }%
   \else
-    \newOptexpComp{%
+    \newOptexpCompAmb{%
       {@@x neg 0} {0 1} @@y neg @@y trans {PlainIfc}
       {0 0}
       \ifx\POE@key@aomalign\POE@str@symmetric
@@ -19586,8 +19689,11 @@
         {0 1 180 OEangle sub 0.5 mul matrix rotate dtransform}
       \fi
       0 0 refltrans {PlainIfc}
-      {@@x 0} {0 1} @@y neg @@y trans {PlainIfc}
-      1
+      {@@x @@y} {0 1} @@y -2 mul 0
+      trans {PlainIfc}
+      {@@x @@y neg} {0 1} 0 @@y 2 mul
+      trans {PlainIfc}     % {@@x 0} {0 1} @@y neg @@y trans {PlainIfc}
+      2 1
     }%
   \fi
   \POE@saveDiffractionNodes
@@ -19600,9 +19706,10 @@
 \def\optaom@comp{%
   \POE@comp@rectangle
   \ifx\POE@key@aomcomp\POE@str@default
-    \multido{\i=-4+1}{9}{%
-      \psrline(!\POE@dict{@@x -0.7 mul @@y 5.5 div \i\space mul})%
-              (!\POE@dict{@@x 1.4 mul 0})
+    \multido{\i=0+1}{\POE@key@aomgratingcount}{%
+      \psrline(!\POE@dict{@@x -0.7 mul \POE@key@aomgratingcount\space 2 div dup 1.5 add 
+                 @@y exch div exch 0.5 sub \i\space sub mul})%
+              (!\POE@dict{@@x 1.4 mul 0})%
     }%
   \else
     \POE@key@aomcomp
@@ -21672,9 +21779,10 @@ tx@OptexpDict begin
 %    \begin{macrocode}
       [ (C) name
       name GetRefIndex
-      CurrVecTmp (C) name GetPlaneVec NormalVec outToPlane 
-      GetIfcCenter (C) name GetIfcCenter @ABVect DotProd
-      0 lt { trans } { refl } ifelse
+      CurrVecTmp (C) name GetPlaneVec 
+      name (C) GetIfcMode refltrans eq { -90 matrix rotate dtransform } if
+      NormalVec outToPlane GetIfcCenter (C) name GetIfcCenter @ABVect DotProd
+      0 lt { trans } { name (C) GetIfcMode refltrans eq { refltrans } { refl } ifelse } ifelse
       dup 6 1 roll
 %    \end{macrocode}
 % if the ambiguous interface is the first, always draw to it
