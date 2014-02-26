@@ -21,13 +21,9 @@ doc-DE : $(PACKAGE)-DE.pdf
 
 quickref: $(PACKAGE)-quickref.pdf
 
-dist : doc doc-DE quickref Changes
+dist : $(ARCHFILES)
 	mkdir -p pst-optexp
-	cp $(ARCHFILES) pst-optexp
-	tar chvzf $(ARCHNAME).tar.gz pst-optexp
-	rm -rf pst-optexp
-	@ echo
-	@ echo $(ARCHNAME).tar.gz
+	cp $(ARCHFILES) $(PACKAGE)
 
 $(PACKAGE).dvi: L = english
 $(PACKAGE)-DE.dvi: L = ngerman
@@ -66,7 +62,7 @@ $(PACKAGE)-quickref.tex: $(PACKAGE)-quickref.py $(PACKAGE).dtx
 $(PACKAGE)-quickref.pdf: $(PACKAGE)-quickref.tex
 	pdflatex $<
 
-$(PACKAGE).sty $(PACKAGE).pro $(PACKAGE).tex $(PACKAGE).ist: $(PACKAGE).ins $(PACKAGE).dtx
+$(PACKAGE).sty $(PACKAGE).pro $(PACKAGE).ist: $(PACKAGE).ins $(PACKAGE).dtx
 	tex $<
 
 Changes: Changes.py $(PACKAGE).dtx
@@ -75,25 +71,26 @@ Changes: Changes.py $(PACKAGE).dtx
 arch : Changes
 	zip $(ARCHNAME).zip $(ARCHFILES)
 
-arch-tds : Changes
+arch-tds : dist
 	$(RM) $(ARCHNAME_TDS).zip
-	mkdir -p tds/tex/latex/pst-optexp
-	mkdir -p tds/doc/latex/pst-optexp
-	mkdir -p tds/source/latex/pst-optexp
-	mkdir -p tds/dvips/pst-optexp
-	cp pst-optexp.sty tds/tex/latex/pst-optexp/
-	cp pst-optexp.pro tds/dvips/pst-optexp/
-	cp Changes pst-optexp.pdf pst-optexp-DE.pdf \
-          README pst-optexp-quickref.pdf \
-	  tds/doc/latex/pst-optexp/
-	cp pst-optexp.dtx pst-optexp.ins Makefile \
-	  tds/source/latex/pst-optexp/
+	mkdir -p tds/tex/latex/$(PACKAGE)
+	mkdir -p tds/doc/latex/$(PACKAGE)
+	mkdir -p tds/source/latex/$(PACKAGE)
+	mkdir -p tds/dvips/$(PACKAGE)
+	cp $(PACKAGE).sty tds/tex/latex/$(PACKAGE)/
+	cp $(PACKAGE).pro tds/dvips/$(PACKAGE)/
+	cp Changes $(PACKAGE).pdf $(PACKAGE)-DE.pdf \
+          README $(PACKAGE)-quickref.pdf \
+	  tds/doc/latex/$(PACKAGE)/
+	cp $(PACKAGE).dtx $(PACKAGE).ins Makefile \
+	  tds/source/latex/$(PACKAGE)/
 	cd tds ; zip -r ../$(ARCHNAME_TDS).zip tex doc source dvips
 	cd ..
 	rm -rf tds
 
 ctan : dist arch-tds
-	tar cf $(PACKAGE).tar $(ARCHNAME_TDS).zip $(ARCHNAME).tar.gz
+	zip -r $(PACKAGE).zip $(ARCHNAME_TDS).zip $(PACKAGE)
+	$(RM) -rf $(PACKAGE)/
 
 clean :
 	$(RM) $(foreach prefix, $(PACKAGE) $(PACKAGE)-DE $(PACKAGE)-quickref, \
