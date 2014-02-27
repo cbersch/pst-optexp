@@ -18,7 +18,7 @@
 %<stylefile>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<stylefile>\ProvidesPackage{pst-optexp}
 %<*stylefile>
-    [2014/01/16 v4.8dev Optical experimental setups with PSTricks]
+    [2014/02/26 v4.8dev Optical experimental setups with PSTricks]
 %</stylefile>
 %
 %<*driver>
@@ -4142,6 +4142,22 @@
 %</ignore>
 % \fi
 %
+% \ifGERMAN 
+% Dieses Makro stellt einen akustooptischen Modulator dar. Dieser kann,
+% ähnlich einem \Lcomp{beamsplitter} entweder transmittierend oder
+% reflektierend sein. Diese erste Umsetzung des AOM in Version 4.8 ist
+% noch etwas experimentell, da ich nicht genügend Testfälle hatte um
+% alle Eventualitäten zu prüfen. Es könnten sich also noch Änderungen
+% ergeben, die nicht abwärts kompatibel sind. 
+% \fi
+% \ifENGLISH
+% This macro draw an acousto-optic modulator, which either be
+% transmittive or reflective, like a \Lcomp{beamsplitter}. This first
+% implementation in version 4.8 is still experimental, because I didn't
+% have enough test cases to check all possible cases. Therefore, future
+% versions may have changes, which are not backwards compatible.
+% \fi
+%
 % \begin{optionlist}
 % \numitem[1]{aomheight}
 % \ifGERMAN Die Höhe des Modulators.\fi
@@ -4162,61 +4178,151 @@
 % \intitem[9]{aomgratingcount}
 % \ifGERMAN 
 % Gibt die Anzahl der Gitterlinien an. Werden weitere Änderungen des
-% Gitters oder des Modulators allgemein gewünscht, dann muss
-% \Lkeyword{aomcomp} verwendet werden. 
+% Gitters oder des Modulators allgemein gewünscht, dann muss der Parameter
+% \Lkeyword{aomcomp} verwendet werden.
 % \fi
 % \ifENGLISH 
 % Changes the number of grating lines. For other changes of the grating
-% you must use \Lkeyword{aomcomp} to redefine the grating.
+% you must use the \Lkeyword{aomcomp} parameter to redefine the whole grating.
 % \fi
 %
 % \choitem[symmetric]{aomalign}{symmetric, straight}
-% \ifGERMAN \fi
-% \ifENGLISH \fi
+% \ifGERMAN 
+% Die Ausrichtung eines \Lcomp{optaom} bezüglich der drei Referenzknoten
+% kann mit diesem Parameter eingestellt werden. Die symmetrische
+% (\opt{symmetric}) Ausrichtung ist im folgenden Beispiel zu sehen:
+% \fi
+% \ifENGLISH 
+% The alignment of an \Lcomp{optaom} with respect to the three reference
+% nodes can be set with this option. The \opt{symmetric} alignment is
+% shown in the following example:
+% \fi
 %
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}
+\begin{LTXexample}[linerange={1-6,11-11}]
 \begin{pspicture}(3,2)
   \pnodes(0,1.5){A}(3,0.5){B}(3,1.5){C}
   \optaom[aomalign=symmetric](A)(B)(C){symmetric}
   \addtopsstyle{Beam}{fillstyle=solid, linestyle=none, beamwidth=0.1}
   \drawwidebeam[fillcolor=red!50](A){}(C)
   \drawwidebeam[fillcolor=red](A){}(B)
+  \color{Refline}
+  \psdot(A)\uput[-90](A){A}
+  \psdot(B)\uput[-90](B){B}
+  \psdot(C)\uput[90](C){C}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
 %</ignore>
+% \fi
+%
+% \ifGERMAN
+% In der geraden (\opt{straight}) Ausrichtung sieht der Strahlengang wie
+% folgt aus:
+% \fi
+% \ifENGLISH
+% For \opt{straight} alignment the sketch looks like
 % \fi
 %
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}
+\begin{LTXexample}[linerange={1-6,11-11}]
 \begin{pspicture}(3,2)
-  \pnodes(0,1.5){A}(3,0.5){B}(3,1.5){C}
+  \pnodes(0,1){A}(3,1){B}(3,1.5){C}
   \optaom[aomalign=straight](A)(B)(C){straight}
   \addtopsstyle{Beam}{fillstyle=solid, linestyle=none, beamwidth=0.1}
   \drawwidebeam[fillcolor=red!50](A){}(C)
   \drawwidebeam[fillcolor=red](A){}(B)
+  \color{Refline}
+  \psdot(A)\uput[-90](A){A}
+  \psdot(B)\uput[-90](B){B}
+  \psdot(C)\uput[90](C){C}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
 %</ignore>
 % \fi
 %
-% \choitem[perp]{aomreflalign}{perp, parallel}
-% \ifGERMAN \fi
-% \ifENGLISH \fi
+% \choitem[parallel]{aomreflalign}{perp, parallel}
+% \ifGERMAN 
+% Die Ausrichtung der reflektiven Grenzfläche kann entweder
+% \opt{parallel} oder senkrecht (\opt{perp}) zur Komponente
+% liegen. Diese Option ist lediglich aus technischer Sicht notwendig,
+% die Richtung des reflektierten Strahls wird dadurch nicht
+% verändert.
+% \fi
+% \ifENGLISH 
+% The reflective interface can be oriented either \opt{parallel} or
+% \opt{perp}endicular to the component. This option was necessary in
+% first place for technical reasons, the direction of the reflected ray
+% is not affected by this option.
+% \fi
+%
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[linerange={1-5,10-10}]
+\begin{pspicture}[showgrid](3,2)
+  \pnodes(0,1.5){A}(3,0.5){B}(3,1.5){C}
+  \optaom[aomreflalign=parallel](A)(B)(C){parallel}
+  \addtopsstyle{Beam}{fillstyle=solid, linestyle=none, beamwidth=0.2}
+  \drawwidebeam[fillcolor=red!50](A){}(C)
+  \color{Refline}
+  \psdot(A)\uput[-90](A){A}
+  \psdot(B)\uput[-90](B){B}
+  \psdot(C)\uput[90](C){C}
+\end{pspicture}
+\end{LTXexample}
+
+\begin{LTXexample}[linerange={1-5,10-10}]
+\begin{pspicture}[showgrid](3,2)
+  \pnodes(0,1.5){A}(3,0.5){B}(3,1.5){C}
+  \optaom[aomreflalign=perp](A)(B)(C){perp}
+  \addtopsstyle{Beam}{fillstyle=solid, linestyle=none, beamwidth=0.2}
+  \drawwidebeam[fillcolor=red!50](A){}(C)
+  \color{Refline}
+  \psdot(A)\uput[-90](A){A}
+  \psdot(B)\uput[-90](B){B}
+  \psdot(C)\uput[90](C){C}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
+% \ifGERMAN
+% Das folgende Beispiel zeigt einen Fall, der mit
+% \Lkeyword{aomreflalign}\opt{=parallel} nicht funktioniert, da der
+% Einfallswinkel so flach ist, dass die Schnittpunkte mit der
+% reflektierenden Grenzfläche außerhalb der Komponente liegen:
+% \fi
+% \ifENGLISH
+% The following example show a use case, which doesn't work properly
+% with \Lkeyword{aomreflaling}\opt{=parallel}, because the incident
+% angle is so shallow, that the intersection points with the interface
+% lay outside of the component.
+% \fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(3,1.5)
+  \pnodes(0,1.1){A}(3,0.8){B}(3,1.1){C}
+  \optaom[aomreflalign=parallel](A)(B)(C){parallel}
+  \addtopsstyle{Beam}{fillstyle=solid, linestyle=none, beamwidth=0.2}
+  \drawwidebeam[fillcolor=red!50](A){}(C)
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 %
 % \choitem[default]{aomcomp}{default, \prm{macro}}
-% \ifGERMAN \fi
-% \ifENGLISH \fi
-%
-% \intitem[2]{diffractionorder}
-% \ifGERMAN \fi
-% \ifENGLISH \fi
+% \ifGERMAN Tauscht die Gitterlinien durch eine beliebige Zeichung aus.\fi
+% \ifENGLISH Changes the grating lines to an arbitrary drawing.\fi
 %
 % \end{optionlist}
 % \ifGERMAN\section{Prisma}\fi
@@ -10545,7 +10651,7 @@
 %   \fi
 %   \ifENGLISH
 %   This option defines the drawing of a component, and can be used to
-%   define a new component based in \Lcomp{optdiple} with
+%   define a new component based in \Lcomp{optdipole} with
 %   \Lcs*{newpsobject}.
 %   \fi
 %
@@ -14640,6 +14746,9 @@
 \define@key[psset]{optexp}{diffractionorders}{%
   \def\POE@key@diffractionorders{#1}%
 }%
+\define@key[psset]{optexp}{beamdiffractionorder}{%
+  \def\POE@key@beamdiffractionorder{#1}%
+}%
 \psset[optexp]{%
   aomsize=1.5 1, 
   aomcomp=default, 
@@ -14647,6 +14756,7 @@
   aomreflalign=parallel,
   aomgratingcount=9,
   diffractionorders=2,
+  beamdiffractionorder=0
 }%
 %    \end{macrocode}
 %
@@ -15956,6 +16066,7 @@
      \POE@key@beampathcount\space dup -1 gt { beampathskip add } if /beampathcount ED
      /useNA \ifPOE@useNA true \else false \fi def
      /aligntovector \ifx\POE@key@beamnodealign\POE@str@vector true \else false \fi def
+     /beamdiffractionorder \POE@key@beamdiffractionorder\space def
   }%
   \let\tx@Line\POE@tx@Line
 }%
@@ -17370,7 +17481,7 @@
     {\optaom@ii(#1)(#2)(#3){}}%
 }%
 \def\optaom@ii(#1)(#2)(#3)#4{%
-  \addafter@par{ref@angle=0}%
+  \addafter@par{ref@angle=180}%
   \begin@OptexpTripole
     \ifPOE@backlayer
       \ifx\POE@key@abspos\@empty
@@ -18430,8 +18541,11 @@
           CompMtrx transform CM itransform 2 copy
           currentdict /RX known { 0 0 }{ DX DY } ifelse
           CompMtrx dtransform CM idtransform 2 copy
-          NAlow 0 eq not { \tx@UserCoor NAlow } { -0.5 } ifelse VecScale
-          4 2 roll NAup 0 eq not { \tx@UserCoor NAup } { 0.5 } ifelse VecScale
+          NAlow 0 eq NAup 0 eq and { 
+            -0.5 VecScale 4 2 roll 0.5 VecScale
+          } {
+            \tx@UserCoor NAlow VecScale 4 2 roll \tx@UserCoor NAup VecScale
+          } ifelse
         end
         8 -2 roll VecAdd moveto VecAdd lineto
       } for
@@ -19646,6 +19760,7 @@
   \ifx\POE@key@aomalign\POE@str@symmetric\else
     \edef\POE@key@angle{\POE@key@angle\space 180 \POE@dict{OEangle} sub 0.5 mul sub }%
   \fi
+  \edef\POE@key@angle{\POE@key@angle\space 180 add }%
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -19692,10 +19807,26 @@
       {@@x @@y} {0 1} @@y -2 mul 0
       trans {PlainIfc}
       {@@x @@y neg} {0 1} 0 @@y 2 mul
-      trans {PlainIfc}     % {@@x 0} {0 1} @@y neg @@y trans {PlainIfc}
+      trans {PlainIfc}
       2 1
     }%
   \fi
+  \POE@Verb{%
+    gsave
+      tx@Dict begin
+        STV {CP T} stopped pop
+      end
+      (C) (\oenode{}{}) GetPlaneVec 2 copy
+      /N@\oenodeRefA{} @GetCenter
+      /N@\oenodeCenter{} @GetCenter 
+      @ABVect 90 matrix rotate dtransform
+      NormalVec ReflectVec ToVec
+      \oenode{}{} begin
+        {0 0} exch 0 0 refltrans name (C') {PlainIfc} {sc} NewCompIfc
+        /grating true def
+      end
+    grestore 
+  }%
   \POE@saveDiffractionNodes
 \ignorespaces}%
 %    \end{macrocode}
@@ -21339,8 +21470,7 @@ tx@OptexpDict begin
 %   from \TeX{} to Postscript scaling. In should always be defined as
 %   \PSproc{\textbackslash psxunit, \textbackslash psyunit}.
 %
-%   \psargitem{\PSvar{ambiguous}} There is a class of components (at the
-%   moment only \nxLcs{beamsplitter}), which have a central interface
+%   \psargitem{\PSvar{ambiguous}} There is a class of components, which have a central interface
 %   \PSvar{P@C} which can be either transmittive or reflective,
 %   depending on the previous and following component positions. The
 %   mode of the \PSvar{P@C} is determined at the time of the beam
@@ -21362,11 +21492,12 @@ tx@OptexpDict begin
   (NewOptexpComp) DebugBegin
   /sc ED dup cvn
   gsave
-  12 dict dup 3 1 roll def begin
+  13 dict dup 3 1 roll def begin
   /name ED
   /forcebeaminside ED
   /allowbeaminside ED
   /ambiguous ED
+  /grating false def
   dup type /booleantype eq not { false } if /correct ED
   tx@Dict begin
     STV {CP T} stopped pop
@@ -21483,42 +21614,6 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}{GetIfcCenter}
-% Get the center node of a interface, either by specifying the name of the component and the interface number
-%   \begin{pssyntax}
-%     \PSvar{IfcNum} \PSstring{CompName} \PSop{GetIfcCenter} \PSvar{X Y}
-%   \end{pssyntax}
-% or by passing an interface procedure generated by \PSvar{PushAllPlanesOnStack}.
-%   \begin{pssyntax}
-%     \PSproc{Ifc} \PSop{GetIfcCenter} \PSvar{X Y}
-%   \end{pssyntax}
-%    \begin{macrocode}
-/GetIfcCenter {
-  (GetIfcCenter) DebugBegin
-  dup type /stringtype eq not {
-    dup xcheck not {
-%    \end{macrocode}
-% ambiguous
-%    \begin{macrocode}
-      0 get (C) exch
-    } {
-      exec pop pop pop
-    } ifelse
-  } if
-  cvn load begin
-    IfcName load begin
-      currentdict /RX known {
-        X RX sub Y RY sub
-      } {
-        X Y
-      } ifelse
-      CompMtrx transform CM itransform
-    end
-  end
-  DebugEnd
-} bind def
-%    \end{macrocode}
-% \end{macro}
 % \begin{macro}{GetIfcCenter}
 % Get the center node of a interface, either by specifying the name of the component and the interface number
 %   \begin{pssyntax}
@@ -21674,7 +21769,7 @@ tx@OptexpDict begin
     exch dup 3 1 roll % nextifc ambcomp nextifc
     dup xcheck not {
 %    \end{macrocode}
-% the next component is also ambiguos, use its center point as reference.
+% the next component is also ambiguous, use its center point as reference.
 %    \begin{macrocode}
       0 get (C) exch
     } {
@@ -21777,19 +21872,21 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % Otherwise put the ambiguous interface on the stack and check its mode.
 %    \begin{macrocode}
-      [ (C) name
+      beamdiffractionorder 0 lt name cvn load /grating get and { (C') } { (C) } ifelse
+      /@@centerifc ED
+      [ @@centerifc name
       name GetRefIndex
-      CurrVecTmp (C) name GetPlaneVec 
-      name (C) GetIfcMode refltrans eq { -90 matrix rotate dtransform } if
-      NormalVec outToPlane GetIfcCenter (C) name GetIfcCenter @ABVect DotProd
-      0 lt { trans } { name (C) GetIfcMode refltrans eq { refltrans } { refl } ifelse } ifelse
+      CurrVecTmp @@centerifc name GetPlaneVec 
+      name @@centerifc GetIfcMode refltrans eq { -90 matrix rotate dtransform } if
+      NormalVec outToPlane GetIfcCenter @@centerifc name GetIfcCenter @ABVect DotProd
+      0 lt { trans } { name @@centerifc GetIfcMode refltrans eq { refltrans } { refl } ifelse } ifelse
       dup 6 1 roll
 %    \end{macrocode}
 % if the ambiguous interface is the first, always draw to it
 %    \begin{macrocode}
       IfcCntTmp IfcCnt eq { true }{ draw } ifelse
       ] cvx 
-      (C) name 4 -1 roll
+      @@centerifc name 4 -1 roll
       connectifc { bgRefIndex }{ name GetRefIndex } ifelse
       CurrTmp CurrVecTmp
       10 dict begin HandleInterface end pop
@@ -23077,7 +23174,7 @@ tx@OptexpDict begin
 % \end{macro}
 % 
 % \begin{macro}{ReflectVec}
-%   Calculate the reflected vector, the normal plane vector must be
+%   Calculate the reflected vector, the normal plane vector must have been
 %   constructed with \PSvar{NormalVec}.
 %   \begin{pssyntax}
 %     \PSvar{Xin Yin Xnorm Ynorm} \PSop{ReflectVec} \PSvar{Xout Yout}
@@ -23088,6 +23185,13 @@ tx@OptexpDict begin
   /Ynorm ED /Xnorm ED NormalizeVec /Yin ED /Xin ED
   /costheta1 Xnorm Ynorm Xin neg Yin neg DotProd def
   Xin Yin 2 costheta1 mul dup Xnorm mul exch Ynorm mul VecAdd
+  DebugEnd
+} bind def
+/ReflectGratVec {
+  (ReflectGratVec) DebugBegin
+  /Ynorm ED /Xnorm ED NormalizeVec /Yin ED /Xin ED
+  /costheta1 Xnorm Ynorm Xin neg Yin neg DotProd def
+  Xin Yin -2 costheta1 mul dup Xnorm mul exch Ynorm mul VecAdd
   DebugEnd
 } bind def
 %    \end{macrocode}
@@ -23588,7 +23692,7 @@ tx@OptexpDict begin
 } bind def
 %    \end{macrocode}
 % \end{macro}
-% \begin{macro}{}
+% \begin{macro}{fadeto@}
 % The different fadeto modes.
 %    \begin{macrocode}
 /fadeto@white {
@@ -23603,7 +23707,7 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}{}
+% \begin{macro}{fadefunc@}
 %   The default fade functions, which are selected with the parameter
 %   'fadefuncname'. The clipping is done afterwards.
 %    \begin{macrocode}
