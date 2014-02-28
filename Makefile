@@ -7,18 +7,18 @@ LATEX = latex
 ARCHNAME = $(PACKAGE)-$(shell date +"%y%m%d")
 ARCHNAME_TDS = $(PACKAGE).tds
 
-ARCHFILES = $(PACKAGE).dtx $(PACKAGE).ins Makefile \
-            README Changes $(PACKAGE)-quickref.pdf \
-            $(PACKAGE).pdf $(PACKAGE)-DE.pdf
+ARCHFILES = Makefile README Changes \
+	    $(addprefix $(PACKAGE), -quickref.pdf .dtx .ins .pdf -DE.pdf -code.pdf)
 
 PS2PDF = GS_OPTIONS=-dPDFSETTINGS=/prepress ps2pdf
 
-all : doc doc-DE quickref
+all : doc-all Changes
 
-doc : $(PACKAGE).pdf
+doc-all: doc doc-DE doc-code quickref 
 
-doc-DE : $(PACKAGE)-DE.pdf
-
+doc: $(PACKAGE).pdf
+doc-DE: $(PACKAGE)-DE.pdf
+doc-code: $(PACKAGE)-code.pdf
 quickref: $(PACKAGE)-quickref.pdf
 
 dist : $(ARCHFILES)
@@ -27,29 +27,37 @@ dist : $(ARCHFILES)
 
 $(PACKAGE).dvi: L = english
 $(PACKAGE)-DE.dvi: L = ngerman
+$(PACKAGE)-code.dvi: L = english
 %.dvi: $(PACKAGE).dtx $(PACKAGE).sty $(PACKAGE).ist $(PACKAGE).pro
-	$(LATEX) -jobname=$(basename $@) '\newcommand*{\mainlang}{$(L)}\input{$(PACKAGE).dtx}'
-	$(LATEX) -jobname=$(basename $@) '\newcommand*{\mainlang}{$(L)}\input{$(PACKAGE).dtx}'
+
+	if [ "$@" = "$(PACKAGE)-code.dvi" ]; then \
+		sed 's/^\\OnlyDescription//' < $(PACKAGE).dtx > tmp.dtx; \
+	else cp $(PACKAGE).dtx tmp.dtx; \
+	fi
+
+	$(LATEX) -jobname=$(basename $@) '\newcommand*{\mainlang}{$(L)}\input{tmp.dtx}'
+	$(LATEX) -jobname=$(basename $@) '\newcommand*{\mainlang}{$(L)}\input{tmp.dtx}'
 	splitindex -m "" $(basename $@).idx
 	if test -e $(basename $@)-idx.idx; then \
 	  makeindex -s gind.ist -t $(basename $@)-idx.ilg \
 	        -o $(basename $@)-idx.ind $(basename $@)-idx.idx; \
 	fi
 	if test -e $(basename $@)-doc.idx; then \
-	  makeindex -s pst-optexp.ist -t $(basename $@)-doc.ilg \
+	  makeindex -s $(PACKAGE).ist -t $(basename $@)-doc.ilg \
 	  	-o $(basename $@)-doc.ind $(basename $@)-doc.idx; \
 	fi
-	$(LATEX) -jobname=$(basename $@) '\newcommand*{\mainlang}{$(L)}\input{$(PACKAGE).dtx}'	
+	$(LATEX) -jobname=$(basename $@) '\newcommand*{\mainlang}{$(L)}\input{tmp.dtx}'	
 	splitindex -m "" $(basename $@).idx
 	if test -e $(basename $@)-idx.idx; then \
 	  makeindex -s gind.ist -t $(basename $@)-idx.ilg \
 	        -o $(basename $@)-idx.ind $(basename $@)-idx.idx; \
 	fi
 	if test -e $(basename $@)-doc.idx; then \
-	  makeindex -s pst-optexp.ist -t $(basename $@)-doc.ilg \
+	  makeindex -s $(PACKAGE).ist -t $(basename $@)-doc.ilg \
 	  	-o $(basename $@)-doc.ind $(basename $@)-doc.idx; \
 	fi
-	$(LATEX) -jobname=$(basename $@) '\newcommand*{\mainlang}{$(L)}\input{$(PACKAGE).dtx}'
+	$(LATEX) -jobname=$(basename $@) '\newcommand*{\mainlang}{$(L)}\input{tmp.dtx}'
+	$(RM) -f tmp.dtx
 
 %.ps: %.dvi
 	dvips $< 
@@ -93,11 +101,11 @@ ctan : dist arch-tds
 	$(RM) -rf $(PACKAGE)/
 
 clean :
-	$(RM) $(foreach prefix, $(PACKAGE) $(PACKAGE)-DE $(PACKAGE)-quickref, \
+	$(RM) $(foreach prefix, $(PACKAGE) $(PACKAGE)-code $(PACKAGE)-DE $(PACKAGE)-quickref, \
 	        $(addprefix $(prefix), .dvi .ps .log .aux .bbl .blg .out .tmp \
 	           .toc .idx .ind .ilg .hd \
 	           -idx.idx -idx.ilg -idx.ind -doc.idx -doc.ilg -doc.ind .hd)) \
 	      $(PACKAGE)-quickref.tex
 
 veryclean : clean
-	$(RM) $(addprefix $(PACKAGE), .pdf -DE.pdf -quickref.pdf .sty .pro .ist) Changes
+	$(RM) $(addprefix $(PACKAGE), .pdf -DE.pdf -code.pdf -quickref.pdf .sty .pro .ist) Changes

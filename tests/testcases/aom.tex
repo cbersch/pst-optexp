@@ -1,0 +1,189 @@
+\psset[optexp]{showinterfaces}
+\addtopsstyle{IfcStyle}{linewidth=2\pslinewidth}
+
+\begin{pspicture}[showgrid](5,3.8)
+  \pnodes(0,2.5){A}(4,2){B}(4,2.5){C}
+  \optaom[aomsize=1 2, aomreflalign=perp, diffractionorders=3](A)(B)(C)
+  \optplane(B)
+  \addtopsstyle{Beam}{beamwidth=0.2, linestyle=none, fillstyle=solid}
+  \multido{\i=-3+1,\r=10+15}{7}{%
+    \drawwidebeam[fillcolor=red!\r, beamdiffractionorder=\i](A){-}}
+  \color{Refline}
+  \uput[90](A){A}\psdot(A)
+  \uput[0](B){B}\psdot(B)
+  \uput[0](C){C}\psdot(C)
+\end{pspicture}%
+\hspace*{1cm}%
+\begin{pspicture}[showgrid](0,-1)(5,3)
+  \pnodes(0,2){A}(5,2){B}(5,2.5){C}
+  \optaom[aomsize=1 2, aomreflalign=perp, aomalign=straight](A)(B)(C)
+  \optplane(B)
+  \addtopsstyle{Beam}{beamwidth=0.2, linestyle=none, fillstyle=solid, fillcolor=red}
+  \drawwidebeam[fillcolor=red!20, beamdiffractionorder=-2, beammode=refl](A){-}
+  \drawwidebeam[fillcolor=red!40, beamdiffractionorder=-1, beammode=refl](A){-}
+  \drawwidebeam[fillcolor=red!60, beammode=trans](A){-}
+  \drawwidebeam[fillcolor=red!80, beammode=refl](A){-}
+  \drawwidebeam[fillcolor=red, beamdiffractionorder=2, beammode=refl](A){-}
+\end{pspicture}%
+
+\vspace{1cm}%
+\begin{pspicture}[showgrid](5,3.8)
+  \psset{pswarning}
+  \pnodes(0,2.5){A}(4,2){B}(4,2.5){C}
+  \optaom[aomsize=1 2, aomreflalign=perp, diffractionorders=3](A)(B)(C)
+  \optplane(B)
+  \addtopsstyle{Beam}{beamwidth=0.2, linestyle=none, fillstyle=solid, beammode=refl}
+  \drawwidebeam[fillcolor=red, beamdiffractionorder=-4](A){-}
+\end{pspicture}%
+\hspace*{1cm}%
+\begin{pspicture}[showgrid](3,1.5)
+  \pnodes(0,1.1){A}(3,0.8){B}(3,1.1){C}
+  \optaom[aomreflalign=parallel](A)(B)(C){parallel}
+  \addtopsstyle{Beam}{fillstyle=solid, linestyle=none, beamwidth=0.2}
+  \drawwidebeam[fillcolor=red!50](A){}(C)
+\end{pspicture}
+
+\begin{pspicture}[showgrid](0,-1)(5,3)
+  \pnodes(0,2){A}(5,1){B}(5,2){C}
+  \optaom(A)(B)(C)
+  \addtopsstyle{Beam}{beamwidth=0.1, linestyle=none, fillstyle=solid, fillcolor=red}
+  \multido{\i=-50+6,\ib=50+-6,\ii=100+-5}{15}{
+    \nodexn{(\oenodeCenter{})+(-2;\ib)}{D}
+    \nodexn{(\oenodeCenter{})+(2;\i)}{E}
+    \drawwidebeam[fillcolor=red!\ii](D){}(E)}
+\end{pspicture}%
+\hspace*{1cm}%
+\begin{pspicture}[showgrid](0,-1)(5,3)
+  \pnodes(0,2){A}(5,1){B}(5,2){C}
+  \optaom(A)(B)(C)
+  \addtopsstyle{Beam}{beamwidth=0.1, linestyle=none, fillstyle=solid, fillcolor=red}
+  \multido{\i=-50+6,\ib=50+-6,\ii=100+-5}{15}{
+    \nodexn{(\oenodeCenter{})+(-2;\i)}{D}
+    \nodexn{(\oenodeCenter{})+(2;\i)}{E}
+    \drawwidebeam[fillcolor=red!\ii](D){}(E)}
+\end{pspicture}%
+
+\vspace{1cm}%
+\begin{pspicture}[showgrid](0,-1)(5,3)
+  \pnodes(0,2){A}(5,1){B}(5,2){C}
+  \optaom[aomreflalign=perp](A)(B)(C)
+  \addtopsstyle{Beam}{beamwidth=0.1, linestyle=none, fillstyle=solid, fillcolor=red}
+  \multido{\i=-50+6,\ib=50+-6,\ii=100+-5}{15}{
+    \nodexn{(\oenodeCenter{})+(-2;\ib)}{D}
+    \nodexn{(\oenodeCenter{})+(2;\i)}{E}
+    \drawwidebeam[fillcolor=red!\ii](D){}(E)}
+\end{pspicture}%
+\hspace*{1cm}%
+\begin{pspicture}[showgrid](0,-1)(5,3)
+  \pnodes(0,2){A}(5,1){B}(5,2){C}
+  \optaom[aomreflalign=perp](A)(B)(C)
+  \addtopsstyle{Beam}{beamwidth=0.1, linestyle=none, fillstyle=solid, fillcolor=red}
+  \multido{\i=-50+6,\ib=50+-6,\ii=100+-5}{15}{
+    \nodexn{(\oenodeCenter{})+(-2;\i)}{D}
+    \nodexn{(\oenodeCenter{})+(2;\i)}{E}
+    \drawwidebeam[fillcolor=red!\ii](D){}(E)}
+\end{pspicture}%
+
+\vspace{1cm}%
+\begin{pspicture}[showgrid](0,-1)(5,3)
+  \pnodes(0,1){A}(5,1){B}(5,2){C}
+  \optaom[aomalign=straight](A)(B)(C)
+  \addtopsstyle{Beam}{beamwidth=0.2, linestyle=none, fillstyle=solid, fillcolor=red}
+  \drawwidebeam[fillcolor=red!50](A){}(C)
+  \drawwidebeam[fillcolor=red](A){}(B)
+\end{pspicture}%
+\hspace*{1cm}%
+\begin{pspicture}[showgrid](0,-1)(5,3)
+  \pnodes(0,2){A}(5,1){B}(5,2){C}
+  \optaom[aomreflalign=perp](A)(B)(C)
+  \addtopsstyle{Beam}{beamwidth=0.1, linestyle=none, fillstyle=solid, fillcolor=red}
+  \multido{\i=-50+6,\ib=50+-6,\ii=100+-5}{15}{
+    \nodexn{(\oenodeCenter{})+(-2;\i)}{D}
+    \nodexn{(\oenodeCenter{})+(2;\i)}{E}
+    \drawwidebeam[fillcolor=red!\ii](D){}(E)}
+\end{pspicture}%
+\vspace{1cm}%
+
+\begin{pspicture}[showgrid](0,-1)(5,3)
+  \pnodes(0,2){A}(5,1.5){B}(5,2){C}
+  \optaom[aomsize=1 2, aomreflalign=perp](A)(B)(C)
+  \addtopsstyle{Beam}{beamwidth=0.2, linestyle=none, fillstyle=solid, fillcolor=red}
+%  \drawwidebeam[fillcolor=red](A){}(C)
+%  \drawwidebeam[fillcolor=red!60](A){}(B)
+%  \drawwidebeam[fillcolor=red!30, beamdiffractionorder=-1](A){}(5,1)
+  \multido{\i=-1+1,\r=20+40}{3}{%
+    \drawwidebeam[fillcolor=red!\r, beamdiffractionorder=\i](A){}([offset=\i]B)}
+  \psdot(\oenode{DO1}{})\uput[0](\oenode{DO1}{}){+1}
+  \psdot(\oenode{DO-1}{})\uput[0](\oenode{DO-1}{}){-1}
+  \psdot(\oenode{DO2}{})\uput[0](\oenode{DO2}{}){+2}
+  \psdot(\oenode{DO-2}{})\uput[0](\oenode{DO-2}{}){-2}
+  \psdot(\oenode{DO0}{})\uput[0](\oenode{DO0}{}){0}
+\end{pspicture}%
+
+\vspace{1cm}%
+\begin{pspicture}[showgrid](0,-1)(5,3)
+  \psset[optexp]{pswarning, useNA=false}
+  \pnodes(0,2){A}(5,1){B}(5,2){C}\psdot[style=IfcNodeStyle](C)
+  \optaom[extnode=t, aomreflalign=perp](A)(B)(C)
+  \addtopsstyle{Beam}{beamwidth=0.2, linestyle=none, fillstyle=solid, fillcolor=red}
+  \drawwidebeam[fillcolor=red!50](A){}(C)
+  \drawwidebeam[fillcolor=red](A){}(B)
+  \psdot(\oenode{DO1}{})\uput[0](\oenode{DO1}{}){+1}
+  \psdot(\oenode{DO-1}{})\uput[0](\oenode{DO-1}{}){-1}
+  \psdot(\oenode{DO2}{})\uput[0](\oenode{DO2}{}){+2}
+  \psdot(\oenode{DO-2}{})\uput[0](\oenode{DO-2}{}){-2}
+  \psdot(\oenode{DO0}{})\uput[0](\oenode{DO0}{}){0}
+\end{pspicture}%
+\hspace*{1cm}%
+\begin{pspicture}[showgrid](0,-1)(5,3)
+  \pnodes(0,2){A}(5,1){B}(5,2){C}
+  \optaom[extnode=t](A)(B)(C)
+  \addtopsstyle{Beam}{beamwidth=0.2, linestyle=none, fillstyle=solid, fillcolor=red}
+  \multido{\i=-50+10,\ii=100+-5,\r=3+-0.1}{11}{
+    \nodexn{(\oenodeCenter{})+(-2;\i)}{D}
+    \nodexn{(\oenodeCenter{})+(\r;\i)}{E}
+    \drawwidebeam[fillcolor=red!\ii](D){}(E)}
+\end{pspicture}%
+
+\vspace{1cm}%
+\begin{pspicture}[showgrid](0,1)(5,4)
+  \pnodes(0,2){A}(5,2){B}(5,3){C}
+  \optaom[extnode=t, aomalign=straight](A)(B)(C)
+  \addtopsstyle{Beam}{beamwidth=0.2, linestyle=none, fillstyle=solid, fillcolor=red}
+  \drawwidebeam[fillcolor=red!50](A){}(C)
+  \drawwidebeam(A){}(B)
+  \drawwidebeam[beamangle=-10, beampos=0.5](A){}(C)
+\end{pspicture}%
+\hspace*{1cm}%
+\begin{pspicture}[showgrid](0,1)(5,4)
+  \pnodes(0,2){A}(5,2){B}(5,2.7){C}
+  \psdots(A)(B)(C)
+  \optaom[extnode=t, aomalign=straight](A)(B)(C)
+  \drawbeam(A){}(B)
+  \addtopsstyle{Beam}{beamwidth=0.2, linestyle=none, fillstyle=solid, fillcolor=red}
+  \drawwidebeam[fillcolor=red!50](A){}(C)
+  \drawwidebeam(A){}(B)
+\end{pspicture}
+
+\vspace{1cm}%
+\begin{pspicture}[showgrid](0,1)(5,4)
+  \pnodes(0,2){A}(5,2){B}(5,3){C}
+  \psdots(A)(B)(C)
+  \psset[optexp]{aomcomp={\multido{\i=-10+1}{21}{\psrline(! -0.4 \i\space 0.04 mul)(0.8,0)}}}
+  \optaom[aomalign=straight](A)(B)(C)
+  \psdot(\oenode{DO2}{})
+  \drawbeam(A){}(B)
+  \addtopsstyle{Beam}{beamwidth=0.2, linestyle=none, fillstyle=solid, fillcolor=red}
+  \drawwidebeam[fillcolor=red!50](A){}(C)
+  \drawwidebeam(A){}(B)
+\end{pspicture}
+
+\begin{pspicture}(0,0.6)(4.3,3.6)
+  \pnodes(0,2.5){A}(4,2){B}(4,2.5){C}
+  \optaom[aomsize=1 2, aomreflalign=perp, diffractionorders=3](A)(B)(C)
+  \addtopsstyle{Beam}{beamwidth=0.2, linestyle=none, fillstyle=solid}
+  \drawwidebeam[fillcolor=red!40](A){}(C)
+  \drawwidebeam[fillcolor=red](A){}(B)
+  \multido{\i=-3+1}{7}{%
+    \psdot(\oenode{DO\i}{})\uput[0](\oenode{DO\i}{}){\i}}%
+\end{pspicture}%
