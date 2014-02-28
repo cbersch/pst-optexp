@@ -18,7 +18,7 @@
 %<stylefile>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<stylefile>\ProvidesPackage{pst-optexp}
 %<*stylefile>
-    [2014/02/26 v4.8dev Optical experimental setups with PSTricks]
+    [2014/02/28 v4.8dev Optical experimental setups with PSTricks]
 %</stylefile>
 %
 %<*driver>
@@ -4133,9 +4133,13 @@
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}
+\begin{LTXexample}[linerange={1-3,7-7}]
 \begin{pspicture}(3,2)
-  \optaom[beam](0,1.5)(3,0.5)(3,1.5){AOM}
+  \pnodes(0,1.5){A}(3,0.5){B}(3,1.5){C}
+  \optaom[beam](A)(B)(C){AOM}
+  \psdots(A)(B)(C)
+  \color{Refline}
+  \uput[-90](A){A}\uput[-90](B){B}\uput[-90](C){C}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -4145,17 +4149,29 @@
 % \ifGERMAN 
 % Dieses Makro stellt einen akustooptischen Modulator dar. Dieser kann,
 % ähnlich einem \Lcomp{beamsplitter} entweder transmittierend oder
-% reflektierend sein. Diese erste Umsetzung des AOM in Version 4.8 ist
+% reflektierend sein. Beachten Sie, dass die Knoten nicht so angeordnet
+% sind, wie bei den üblichen Tripolen wie z. B. dem
+% \Lcomp{optgrating}. Der mittlere Knoten gibt die Richtung eines
+% transmittierten, und der dritte Knoten die Richtung der ersten
+% Beugungsordnung an.
+%
+% Diese erste Umsetzung des AOM in Version 4.8 ist
 % noch etwas experimentell, da ich nicht genügend Testfälle hatte um
 % alle Eventualitäten zu prüfen. Es könnten sich also noch Änderungen
 % ergeben, die nicht abwärts kompatibel sind. 
 % \fi
 % \ifENGLISH
 % This macro draw an acousto-optic modulator, which either be
-% transmittive or reflective, like a \Lcomp{beamsplitter}. This first
-% implementation in version 4.8 is still experimental, because I didn't
-% have enough test cases to check all possible cases. Therefore, future
-% versions may have changes, which are not backwards compatible.
+% transmittive or reflective, like a \Lcomp{beamsplitter}. Please note,
+% that the nodes do not correspond to those of a usual tripole like an
+% \Lcomp{optgrating}. The second node is in the direction of the
+% transmitted beam, the third node gives the direction of the first
+% diffraction order.
+%
+% This first implementation in version 4.8 is still experimental,
+% because I didn't have enough test cases to check all possible
+% cases. Therefore, future versions may have changes, which are not
+% backwards compatible.
 % \fi
 %
 % \begin{optionlist}
@@ -4265,7 +4281,7 @@
 %<*ignore>
 % \fi
 \begin{LTXexample}[linerange={1-5,10-10}]
-\begin{pspicture}[showgrid](3,2)
+\begin{pspicture}(3,2)
   \pnodes(0,1.5){A}(3,0.5){B}(3,1.5){C}
   \optaom[aomreflalign=parallel](A)(B)(C){parallel}
   \addtopsstyle{Beam}{fillstyle=solid, linestyle=none, beamwidth=0.2}
@@ -4278,7 +4294,7 @@
 \end{LTXexample}
 
 \begin{LTXexample}[linerange={1-5,10-10}]
-\begin{pspicture}[showgrid](3,2)
+\begin{pspicture}(3,2)
   \pnodes(0,1.5){A}(3,0.5){B}(3,1.5){C}
   \optaom[aomreflalign=perp](A)(B)(C){perp}
   \addtopsstyle{Beam}{fillstyle=solid, linestyle=none, beamwidth=0.2}
@@ -4301,7 +4317,7 @@
 % \fi
 % \ifENGLISH
 % The following example show a use case, which doesn't work properly
-% with \Lkeyword{aomreflaling}\opt{=parallel}, because the incident
+% with \Lkeyword{aomreflalign}\opt{=parallel}, because the incident
 % angle is so shallow, that the intersection points with the interface
 % lay outside of the component.
 % \fi
@@ -4324,7 +4340,102 @@
 % \ifGERMAN Tauscht die Gitterlinien durch eine beliebige Zeichung aus.\fi
 % \ifENGLISH Changes the grating lines to an arbitrary drawing.\fi
 %
+% \intitem[2]{diffractionorders}
+% \ifGERMAN 
+% Die Anzahl der Beugungsordnungen (positive und negative), die mit
+% \Lkeyword{beamdiffractionorder} ausgewählt werden können, also
+% $-$\prm{num},$-$\prm{num}$+1$,\ldots ,\prm{num}.
+%
+% Gleichzeitig werden entsprechende Knoten
+% \lstinline!\oenode{DO-1}{<comp>}!, \lstinline!\oenode{DO0}{<comp>}!,
+% \lstinline!\oenode{DO1}{<comp>}! usw. definiert.
+% \fi
+% \ifENGLISH
+% The number or diffraction orders (positive and negative) which can be
+% selected with \Lkeyword{beamdiffractionorder},
+% i.e. $-$\prm{num},$-$\prm{num}$+1$,\ldots ,\prm{num}.
+%
+% At the same time the nodes \lstinline!\oenode{DO-1}{<comp>}!,
+% \lstinline!\oenode{DO0}{<comp>}!, \lstinline!\oenode{DO1}{<comp>}!
+% etc. are defined.
+% \fi
+%
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(0,0.6)(4.3,3.6)
+  \pnodes(0,2.5){A}(4,2){B}(4,2.5){C}
+  \optaom[aomsize=1 2, aomreflalign=perp, diffractionorders=3](A)(B)(C)
+  \addtopsstyle{Beam}{beamwidth=0.2, linestyle=none, fillstyle=solid}
+  \drawwidebeam[fillcolor=red!40](A){}(C)
+  \drawwidebeam[fillcolor=red](A){}(B)
+  \multido{\i=-3+1}{7}{%
+    \psdot(\oenode{DO\i}{})\uput[0](\oenode{DO\i}{}){\i}}%
+\end{pspicture}%
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
+% \intitem[\{\}]{beamdiffractionorder}
+% \ifGERMAN
+% Die Beugungsordnung, die für einen reflektierten Strahl durch den AOM
+% verwendet wird. Wenn der Wert leer ist, \opt{\{\}} dann wird die
+% Option ignoriert.
+%
+% Mit Verwendung dieser Option wird unmittelbar das Verhalten der
+% Grenzfläche festgelegt, hängt also nicht von der relativen Position
+% von AOM und der folgenden Komponente ab. Für
+% \Lkeyword{beamdiffractionorder}$\neq 0$ wird der Strahl reflektiert,
+% für den Wert $0$ hingegen transmittiert. Der Parameter
+% \Lkeyword{beammode} wird dann ignoriert.
+%
+% Es können nur die Beugungsordnungen verwendet werden, die für die
+% entsprechende Komponente mit \Lkeyword{diffractionorders} definiert
+% wurden. Wird eine nicht-definierte Ordnung verwendet, dann wird die
+% nächstliegende verwendet und eine Postscript-Warnung (siehe
+% \Lkeyword{pswarning}) ausgegeben.
+% \fi
+% \ifENGLISH
+% The diffraction order, which is used for a reflected beam going
+% through the aom. The option is ignored if its value is empty
+% \opt{\{\}}.
+%
+% By using this option you automatically select the behaviour of the
+% interface, which then doesn't depend on the relative position of AOM
+% and the following component. For \Lkeyword{beamdiffractionorder}$\neq
+% 0$ a beam gets reflected, for the value $0$ it gets transmitted. The
+% parameter \Lkeyword{beammode} is ignored.
+%
+% You can select only those orders, where have been defined for the
+% respective component with \Lkeyword{diffractionorders}. If an
+% undefined order is selected, the closest one is choosen instead and a
+% Postscript warning is issued (see \Lkeyword{pswarning}).
+% \fi
+%
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[pos=t, linerange={1-7,12-12}]
+\begin{pspicture}(0,-0.2)(4.4,3.8)
+  \pnodes(0,2.5){A}(4,2){B}(4,2.5){C}
+  \optaom[aomsize=1 2, aomreflalign=perp, diffractionorders=3](A)(B)(C)
+  \optplane(B)
+  \addtopsstyle{Beam}{beamwidth=0.2, linestyle=none, fillstyle=solid}
+  \multido{\i=-3+1,\r=10+15}{7}{%
+    \drawwidebeam[fillcolor=red!10, beamdiffractionorder=\r](A){-}}
+  \color{Refline}
+  \uput[90](A){A}\psdot(A)
+  \uput[0](B){B}\psdot(B)
+  \uput[0](C){C}\psdot(C)
+\end{pspicture}%
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % \end{optionlist}
+%
 % \ifGERMAN\section{Prisma}\fi
 % \ifENGLISH\section{Prism}\fi
 % 
@@ -8229,6 +8340,11 @@
 % \Lkeyword{beaminsidefirst} oder \Lkeyword{startinside} auf \opt{true}
 % gesetzt sind.
 % \fi
+% \ifENGLISH
+% Number of segments, which are used inside the first component. This
+% option is in effect only with \Lkeyword{beaminsidefirst} or
+% \Lkeyword{startinside} set to \opt{true}.
+% \fi
 %
 % \numitem[-1]{stopinsidecount}
 % \ifGERMAN
@@ -8237,10 +8353,16 @@
 % \Lkeyword{beaminsidelast} oder \Lkeyword{stopinside} auf \opt{true}
 % gesetzt sind.
 % \fi
+% \ifENGLISH
+% Number of segments, which are used inside the last component. This
+% option is in effect only with \Lkeyword{beamsinsidelast} or
+% \Lkeyword{stopinside} set to \opt{true}.
+% \fi
+%
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}[morekeywords = {[21]{stopinsidecount, startinsidecout}}]
+\begin{LTXexample}[morekeywords = {[21]{stopinsidecount, startinsidecount}}]
 \begin{pspicture}(4,2)
   \pnodes(0,2){A}(2,0.8){B}(4,2){C}
   \optprism[compname=P, prismtype=reflective, prismangle=90](A)(B)(C)
@@ -8253,6 +8375,20 @@
 \end{LTXexample}
 % \iffalse
 %</ignore>
+% \fi
+%
+% \choitem[auto]{beammode}{refl, trans, reflective, transmittive, auto}
+% \ifGERMAN 
+% Mit dieser Option kann das Strahlverhalten bei Komponenten wie
+% z. B. dem \Lcomp{beamsplitter} auf reflektierend oder transmittierend
+% festgelegt werden, unabhängig von den verwendeten Knoten und deren
+% relative Position bezüglich der Komponente.
+% \fi
+% \ifENGLISH
+% With this option one can force the beam path through e.g. a
+% \Lcomp{beamsplitter} to \opt{reflective} or \opt{transmittive}
+% independent of the choosen nodes and their position relative to the
+% component.
 % \fi
 % \end{optionlist}
 %
@@ -10681,7 +10817,7 @@
 %   \fi
 %   \ifENGLISH
 %   This option defines the drawing of a component, and can be used to
-%   define a new component based in \Lcomp{opttriple} with
+%   define a new component based in \Lcomp{opttripole} with
 %   \Lcs*{newpsobject}.
 %   \fi
 %
@@ -13180,8 +13316,10 @@
 % \prettyref{sec:bwd-comp}.  \fi
 %
 % \begin{changelog}
-%\patchcmd{\release}{\setlength{\itemsep}{0pt}}{\setlength{\itemsep}{0pt}\setlength{\parsep}{0pt}}{}{}
+% \patchcmd{\release}{\setlength{\itemsep}{0pt}}{\setlength{\itemsep}{0pt}\setlength{\parsep}{0pt}}{}{}
 %   \begin{release}{4.8}{2014-xx-xx}
+%   \item Added component \cs{optaom}\see{comp:optaom}
+%   \item Added option \opt{beammode}\see{prm:beammode}
 %   \item Added option \opt{showinterfaces}\see{prm:showinterfaces}
 %   \end{release}
 %   \begin{release}{4.7}{2014-01-12}
@@ -14756,7 +14894,7 @@
   aomreflalign=parallel,
   aomgratingcount=9,
   diffractionorders=2,
-  beamdiffractionorder=0
+  beamdiffractionorder=
 }%
 %    \end{macrocode}
 %
@@ -15189,6 +15327,17 @@
 \define@key[psset]{optexp}{beamwidth}{%
   \edef\POE@key@beamwidth{#1}%
 }%
+\define@choicekey+[psset]{optexp}{beammode}%
+  [\val\nr]{trans,refl,reflective,transmittive,auto}%
+  {\ifcase\nr\relax
+      \let\POE@key@beammode\POE@str@transmittive
+    \or
+      \let\POE@key@beammode\POE@str@reflective
+    \else
+      \def\POE@key@beammode{#1}%
+    \fi}%
+  {\PackageError{pst-optexp}{Unknown value '\val' for beammode}}
+
 \define@boolkey[psset]{optexp}[POE@]{startinside}[true]{}%
 \define@boolkey[psset]{optexp}[POE@]{stopinside}[true]{}%
 \define@key[psset]{optexp}{startinsidecount}{%
@@ -15346,6 +15495,7 @@
   ,beamalign=relative
   ,beamwidth=0
   ,beamdiv=0
+  ,beammode=auto
   ,n=1.5
   ,beampathskip=0
   ,beampathcount=-1
@@ -16066,7 +16216,18 @@
      \POE@key@beampathcount\space dup -1 gt { beampathskip add } if /beampathcount ED
      /useNA \ifPOE@useNA true \else false \fi def
      /aligntovector \ifx\POE@key@beamnodealign\POE@str@vector true \else false \fi def
-     /beamdiffractionorder \POE@key@beamdiffractionorder\space def
+     /beamdiffractionorder 
+       \ifx\POE@key@beamdiffractionorder\@empty null 
+       \else\POE@key@beamdiffractionorder\space 
+       \fi def
+     /beammode 
+       \ifx\POE@key@beammode\POE@str@reflective
+         refl
+       \else\ifx\POE@key@beammode\POE@str@transmittive
+         trans
+       \else
+         auto
+       \fi\fi def
   }%
   \let\tx@Line\POE@tx@Line
 }%
@@ -19293,7 +19454,6 @@
   \newOptexpComp{%
     {0 0} {1 0} \POE@key@gratingwidth\space -0.5 mul dup neg 
     refltrans {PlainIfc} 1}%
-  \POE@saveDiffractionNodes
 }%
 \let\transmissiongrating@comp\optgrating@comp
 %    \end{macrocode}
@@ -19820,9 +19980,22 @@
       /N@\oenodeRefA{} @GetCenter
       /N@\oenodeCenter{} @GetCenter 
       @ABVect 90 matrix rotate dtransform
-      NormalVec ReflectVec ToVec
+      NormalVec ReflectVec ToVec dup
       \oenode{}{} begin
-        {0 0} exch 0 0 refltrans name (C') {PlainIfc} {sc} NewCompIfc
+        {0 0} exch 0 0 refltrans name (C-1) {PlainIfc} {sc} NewCompIfc
+        (C) (C1) IfcAlias
+        2 1 \POE@key@diffractionorders\space {% vec i
+          2 copy neg dup 5 string cvs (C) exch strcat % vec i vec -i (C-i)
+              3 -1 roll exec 4 -1 roll % vec i (C-i) X Y -i
+              1 add 180 OEangle sub 0.5 mul mul 
+              matrix rotate dtransform ToVec % vec i (C-i) {X' Y'}
+              {0 0} exch 0 0 refltrans name 7 -1 roll {PlainIfc} {sc} NewCompIfc
+          2 copy 3 -1 roll 5 string cvs (C) exch strcat % vec i vec i (C-i)
+              3 -1 roll exec 4 -1 roll % vec i (Ci) X Y i
+              1 add 180 OEangle sub 0.5 mul mul 
+              matrix rotate dtransform ToVec % vec i (Ci) {X' Y'}
+              {0 0} exch 0 0 refltrans name 7 -1 roll {PlainIfc} {sc} NewCompIfc
+            } for pop
         /grating true def
       end
     grestore 
@@ -21437,7 +21610,7 @@ tx@OptexpDict begin
 % Define some constants.
 %    \begin{macrocode}
 /relative 0 def /absolute 1 def /center 2 def
-/refl 0 def /trans 1 def /absorb 2 def /refltrans 3 def /undefined -1 def
+/refl 0 def /trans 1 def /absorb 2 def /refltrans 3 def /auto 4 def /undefined -1 def
 /desc 0 def /asc 1 def /amb 2 def
 /ok 0 def /tir 1 def /missed 2 def
 /bgRefIndex 0 def
@@ -21872,14 +22045,68 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % Otherwise put the ambiguous interface on the stack and check its mode.
 %    \begin{macrocode}
-      beamdiffractionorder 0 lt name cvn load /grating get and { (C') } { (C) } ifelse
-      /@@centerifc ED
-      [ @@centerifc name
-      name GetRefIndex
-      CurrVecTmp @@centerifc name GetPlaneVec 
-      name @@centerifc GetIfcMode refltrans eq { -90 matrix rotate dtransform } if
-      NormalVec outToPlane GetIfcCenter @@centerifc name GetIfcCenter @ABVect DotProd
-      0 lt { trans } { name @@centerifc GetIfcMode refltrans eq { refltrans } { refl } ifelse } ifelse
+      beamdiffractionorder null eq not name cvn load /grating get and {
+%    \end{macrocode}
+% A grating (AOM) and a beamdiffractionorder was selected. In that case,
+% \opt{beammode} has no effect, and for beamdiffractionorder=0 the
+% interface is transmittive, otherwise refl or refltrans
+%    \begin{macrocode}
+        beamdiffractionorder dup 0 eq { pop () } if
+        (C) exch 20 string cvs strcat 
+        dup (P@) exch strcat cvn name cvn load exch known not {
+%    \end{macrocode}
+% The choosen beamdiffractionorder is not defined, select the closest one and issue a warning
+%    \begin{macrocode}
+          pop beamdiffractionorder dup sign neg 1 {
+            (C) exch 5 string cvs dup 3 1 roll strcat 
+            dup (P@) exch strcat cvn name cvn load exch known {
+              3 -1 roll pop
+              (Diffraction order ) beamdiffractionorder 5 string cvs strcat
+              ( is not defined, using ) 4 -1 roll strcat strcat Warning
+              exit
+            } {
+              pop
+            } ifelse
+          } for
+        } if
+        /@@centerifc ED
+        mark @@centerifc name name GetRefIndex
+        beamdiffractionorder 0 eq { 
+          trans 
+        }{ 
+          name @@centerifc GetIfcMode refltrans eq {
+            refltrans
+          }{
+            refl
+          } ifelse
+        } ifelse
+      }{ 
+        /@@centerifc (C) def
+        [ @@centerifc name
+        name GetRefIndex
+        beammode auto eq {
+          CurrVecTmp @@centerifc name GetPlaneVec 
+          name @@centerifc GetIfcMode refltrans eq { -90 matrix rotate dtransform } if
+          NormalVec outToPlane GetIfcCenter @@centerifc name GetIfcCenter @ABVect DotProd
+          0 lt { 
+            trans 
+          }{ 
+            name @@centerifc GetIfcMode 
+            refltrans eq { 
+              refltrans 
+            }{ 
+              refl 
+            } ifelse 
+          } ifelse
+        } {
+          beammode dup refl eq { 
+%    \end{macrocode}
+% in case, the ambiguous interface is refltrans
+%    \begin{macrocode}
+            pop name @@centerifc GetIfcMode dup refltrans eq not { pop refl } if
+          } if
+        } ifelse
+      } ifelse
       dup 6 1 roll
 %    \end{macrocode}
 % if the ambiguous interface is the first, always draw to it
