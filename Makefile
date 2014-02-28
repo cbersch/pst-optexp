@@ -7,7 +7,7 @@ LATEX = latex
 ARCHNAME = $(PACKAGE)-$(shell date +"%y%m%d")
 ARCHNAME_TDS = $(PACKAGE).tds
 
-ARCHFILES = Makefile README Changes 
+ARCHFILES = Makefile README Changes \
 	    $(addprefix $(PACKAGE), -quickref.pdf .dtx .ins .pdf -DE.pdf -code.pdf)
 
 PS2PDF = GS_OPTIONS=-dPDFSETTINGS=/prepress ps2pdf
