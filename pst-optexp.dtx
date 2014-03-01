@@ -18,7 +18,7 @@
 %<stylefile>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<stylefile>\ProvidesPackage{pst-optexp}
 %<*stylefile>
-    [2014/02/28 v4.8 Optical experimental setups with PSTricks]
+    [2014/03/01 v4.9dev Optical experimental setups with PSTricks]
 %</stylefile>
 %
 %<*driver>
@@ -8364,11 +8364,11 @@
 % \fi
 \begin{LTXexample}[morekeywords = {[21]{stopinsidecount, startinsidecount}}]
 \begin{pspicture}(4,2)
-  \pnodes(0,2){A}(2,0.8){B}(4,2){C}
-  \optprism[compname=P, prismtype=reflective, prismangle=90](A)(B)(C)
-  \lens[abspos=1.33](\oenodeIfc{2}{P})(A)%
-  \lens[abspos=1.33](\oenodeIfc{2}{P})(C)%
-  \newpsstyle{Beam}{linestyle=none, fillstyle=solid}%
+  \pnodes(0,2){A}(2,0){B}(4,2){C}
+  \optprism[compname=P, n=1, prismtype=reflective, prismangle=90](A)(B)(C)
+  \lens[abspos=1.08](\oenodeIfc{2}{P})(A)
+  \lens[abspos=1.08](\oenodeIfc{2}{P})(C)
+  \newpsstyle{Beam}{linestyle=none, fillstyle=solid}
   \drawwidebeam[fillcolor=green, beamwidth=0.2, beaminsidelast, stopinsidecount=1](A){2}{1}
   \drawwidebeam[fillcolor=orange, beaminsidefirst, startinsidecount=1, loadbeam]{1}{3}(C)
 \end{pspicture}
@@ -12412,7 +12412,48 @@
 %
 % \begin{optionlist}
 % \boolitem[false]{showinterfaces}
+% \ifGERMAN Zeigt alle Grenzflächen einer Komponente an.\fi
+% \ifENGLISH Visualizes all interfaces of a component.\fi
+%
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(3,1.5)
+  \psset[optexp]{showinterfaces, aomgratingcount=6}
+  \addtopsstyle{IfcStyle}{linewidth=2\pslinewidth}
+  \pnodes(0,1.5){A}(3,0.5){B}(3,1.5){C}
+  \optaom[aomalign=symmetric](A)(B)(C){symmetric}
+  \addtopsstyle{Beam}{arrows=->, linewidth=4\pslinewidth}
+  \drawbeam[linecolor=red!50](A){}(C)
+  \drawbeam[linecolor=red](A){}(B)
+\end{pspicture}
+\end{LTXexample}
+
+\begin{LTXexample}
+\begin{pspicture}(3,1.5)
+  \psset[optexp]{showinterfaces, aomgratingcount=6}
+  \addtopsstyle{IfcStyle}{linewidth=2\pslinewidth}
+  \pnodes(0,1){A}(3,1){B}(3,1.5){C}
+  \optaom[aomalign=straight](A)(B)(C){straight}
+  \addtopsstyle{Beam}{arrows=->, linewidth=4\pslinewidth}
+  \drawbeam[linecolor=red!50](A){}(C)
+  \drawbeam[linecolor=red](A){}(B)
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
 % \styleitem[linestyle=dashed, dash=1pt 1pt, linecolor=red!70!black]{IfcStyle}
+% \ifGERMAN
+% Bestimmt das Aussehen der mit \Lkeyword{showinterfaces} angezeigten
+% Grenzflächen.
+% \fi
+% \ifENGLISH
+% Determines the appearance of the interfaces, which are shown with
+% \Lkeyword{showinterfaces}.
+% \fi
 % \end{optionlist}
 %
 % \ifENGLISH\section{Overview of special nodes}\fi
@@ -13348,6 +13389,9 @@
 %
 % \begin{changelog}
 % \patchcmd{\release}{\setlength{\itemsep}{0pt}}{\setlength{\itemsep}{0pt}\setlength{\parsep}{0pt}}{}{}
+%   \begin{release}{4.9}{2014-xx-xx}
+%   \item
+%   \end{release}
 %   \begin{release}{4.8}{2014-02-28}
 %   \item Added component \cs{optaom}\see{comp:optaom}
 %   \item Added option \opt{beammode}\see{prm:beammode}
