@@ -16466,7 +16466,37 @@
 \def\POE@strokesinglebeam{%
   gsave 
     /Lineto /lineto load def
-    \tx@Drawbeam 
+    20 dict begin
+      DrawbeamPrepare
+%    \end{macrocode}
+% If there are only three elements or less on the stack, the first ray
+% misses the next interface or is even parallel to the input interface.
+%    \begin{macrocode}
+      counttomark 3 gt { 
+%    \end{macrocode}
+% Define some parameters for Drawbeam which are based on TeX-parameters
+%    \begin{macrocode}
+        \ifx\psk@arrowA\arrowType@H
+          \pst@number\pshooklength
+        \else
+          \psk@arrowsize\space CLW mul add dup \psk@arrowlength\space mul exch \psk@arrowinset mul neg add  
+        \fi
+        /arrowlength exch def 
+        /arrowminlength \POE@key@ArrowInsideMinLength\space\pst@number\psunit mul def
+        /arrowmaxlength \POE@key@ArrowInsideMaxLength\space\pst@number\psunit mul def
+        /arrowpos  \psk@ArrowInsidePos\space def
+        /arrowno   \psk@ArrowInsideNo\space cvi def
+        /ArrowPosStart \psk@ArrowInsideOffset\space def
+        /dArrowPosStart \psk@ArrowInsidePos\space def
+        counttomark 3 idiv /N exch def
+        (\psk@ArrowInside) length 0 gt {
+          DrawbeamArrowInside
+        }{
+          DrawbeamSimple
+        } ifelse
+      } if
+      cleartomark
+    end
     \tx@setlinejoin
     \pst@number\pslinewidth SLW
     \pst@usecolor\pslinecolor
@@ -16603,126 +16633,6 @@
 }%
 %    \end{macrocode}
 % \end{macro}
-%
-%    \begin{macrocode}
-\pst@def{Drawbeam}<
-%    \end{macrocode}
-% Remove trailing empty line parts.
-%    \begin{macrocode}
-    { counttomark 6 le {
-        exit
-      } if
-      3 index not {
-        pop pop pop 
-      }{ 
-        exit
-      } ifelse
-    } loop
-%    \end{macrocode}
-% Remove heading empty line parts. Note, that the first point must not have
-% 'draw = true', because it is the starting point which we have to move to.
-%    \begin{macrocode}
-    { counttomark 3 le {
-        exit
-      } if
-      counttomark 3 sub index not {
-        counttomark -3 roll pop pop pop
-      }{
-        exit
-      } ifelse
-    } loop
-%    \end{macrocode}
-%    \begin{macrocode}
-  counttomark 3 le {
-%    \end{macrocode}
-% first ray misses the next interface or is even parallel to the input interface.
-%    \begin{macrocode}
-    cleartomark
-  }{
-%    \end{macrocode}
-% This is the /Line definition from \opt{pstricks-add}, adapted to the beam path
-% structure which includes the boolean values to indicate if a line is drawn, or
-% if we use moveto. There was no way to patch the original definition to account
-% for the moveto parts and avoid duplicating the code.
-%    \begin{macrocode}
-  counttomark 3 div cvi /N ED
-  (\psk@ArrowInside) length 0 gt { 
-    \ifx\psk@arrowA\arrowType@H   % do we have a Hook arrow at the beginning?
-      \pst@number\pshooklength  % yes 
-    \else
-      \psk@arrowsize\space CLW mul add dup \psk@arrowlength\space mul exch \psk@arrowinset mul neg add  
-    \fi
-    /arrowlength exch def 
-    6 copy pop				% copy all four values for the arrow line
-    /y1 ED /x1 ED pop /y2 ED /x2 ED 	% save them
-    /Alpha y2 y1 sub x2 x1 sub Atan def % the gradient of the line
-    pop 3 -1 roll 5 1 roll 
-    ArrowA 
-    x1 Alpha cos arrowlength mul add	% dx add
-    y1 Alpha sin arrowlength mul add	% dy add, to get the current point at the end of the arrow tip
-    5 -1 roll 3 1 roll true
-    /N N 1 sub def
-    N {
-      6 copy pop 
-      /y1 ED /x1 ED pop /y2 ED /x2 ED /draw ED
-%    \end{macrocode}
-% Check for line segment length and draw the arrow only, if the segment is long
-% enough. This is in first place to avoid drawing an inside arrow for the
-% pinhole which has three interfaces instead of one so that it can be used as
-% real spatial filter.
-%    \begin{macrocode}
-      x1 y1 x2 y2 @ABDist dup
-      \POE@key@ArrowInsideMinLength\space\pst@number\psunit mul ge 
-      exch \POE@key@ArrowInsideMaxLength\space\pst@number\psunit mul dup 0 lt 
-        3 1 roll le or and {
-        x1 y1
-        \psk@ArrowInsidePos\space 1 gt {
-          /Alpha y2 y1 sub x2 x1 sub Atan def
-          /ArrowPos \psk@ArrowInsideOffset\space def
-          /dArrowPos \psk@ArrowInsidePos\space abs def
-          \psk@ArrowInsideNo\space cvi {
-            /ArrowPos ArrowPos dArrowPos add def
-            x1 Alpha cos ArrowPos mul add
-            y1 Alpha sin ArrowPos mul add
-            6 index { ArrowInside } if
-            pop pop
-          } repeat
-        }{
-          /ArrowPos \psk@ArrowInsideOffset\space def
-          /dArrowPos \psk@ArrowInsideNo 1 gt {%
-            1.0 \psk@ArrowInsideNo 1.0 add div
-          }{\psk@ArrowInsidePos } ifelse def
-            \psk@ArrowInsideNo\space cvi {
-              /ArrowPos ArrowPos dArrowPos add def
-              x2 x1 sub ArrowPos mul x1 add
-              y2 y1 sub ArrowPos mul y1 add
-              6 index { ArrowInside } if
-              pop pop
-            } repeat
-        } ifelse
-        pop pop
-      } if
-      draw {Lineto}{moveto} ifelse
-    } repeat
-  }{
-    pop 5 copy 3 -1 roll pop 
-    ArrowA pop pop pop pop
-    counttomark 3 idiv -1 2 {
-      pop {
-        lineto
-      }{
-        moveto
-      } ifelse
-    } for
-  } ifelse
-  {CP 4 2 roll ArrowB lineto pop pop } {moveto} ifelse
-%    \end{macrocode}
-% remove the mark
-%    \begin{macrocode}
-  pop
-  } ifelse
->
-%    \end{macrocode}
 % 
 %    \begin{macrocode}
 \def\POE@getcomprange#1-#2\@nil{%
@@ -21683,10 +21593,24 @@ tx@OptexpDict begin
 % \end{macro}
 % 
 % Define some constants.
+%
+% These are used for checks of the \opt{beamalign} and \opt{fiberalign} parameters.
 %    \begin{macrocode}
 /relative 0 def /absolute 1 def /center 2 def
+%    \end{macrocode}
+% 
+% These constants are used to describe the characteristics of interfaces.
+%    \begin{macrocode}
 /refl 0 def /trans 1 def /absorb 2 def /refltrans 3 def /auto 4 def /undefined -1 def
+%    \end{macrocode}
+% 
+% These give the ordering of the internal interfaces of a component.
+%    \begin{macrocode}
 /desc 0 def /asc 1 def /amb 2 def
+%    \end{macrocode}
+% 
+% The possible status after computing the outgoing vector at an interface.
+%    \begin{macrocode}
 /ok 0 def /tir 1 def /missed 2 def
 /bgRefIndex 0 def
 %    \end{macrocode}
@@ -22739,7 +22663,120 @@ tx@OptexpDict begin
 } bind def
 %    \end{macrocode}
 % \end{macro}
-% 
+%
+% \begin{macro}{DrawbeamPrepare}
+%   Prepare the data points for drawing with \PSop{DrawbeamSimple} and
+%   \PSop{DrawbeamArrowInside}.
+%    \begin{macrocode}
+/DrawbeamPrepare {
+%    \end{macrocode}
+% Remove trailing empty line parts.
+%    \begin{macrocode}
+  { 
+    counttomark 6 le { exit } if
+    3 index not { pop pop pop }{ exit } ifelse
+  } loop
+%    \end{macrocode}
+% Remove heading empty line parts. Note, that the first point must not have
+% 'draw = true', because it is the starting point which we have to move to.
+%    \begin{macrocode}
+  { 
+    counttomark 3 le { exit } if
+    counttomark 3 sub index not {
+      counttomark -3 roll pop pop pop
+    }{
+      exit
+    } ifelse
+  } loop
+} bind def
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{DrawbeamSimple}
+%    \begin{macrocode}
+/DrawbeamSimple {
+  pop 5 copy 3 -1 roll pop 
+  ArrowA pop pop pop pop
+  counttomark 3 idiv -1 2 {
+    pop {
+      lineto
+    }{
+      moveto
+    } ifelse
+  } for
+  {CP 4 2 roll ArrowB lineto pop pop } {moveto} ifelse
+} bind def
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{DrawbeamArrowInside}
+% This is the /Line definition from \opt{pstricks-add}, adapted to the beam path
+% structure which includes the boolean values to indicate if a line is drawn, or
+% if we use moveto. There was no way to patch the original definition to account
+% for the moveto parts and avoid duplicating the code.
+%    \begin{macrocode}
+/DrawbeamArrowInside {
+  6 copy pop
+  /y1 ED /x1 ED pop /y2 ED /x2 ED
+  /Alpha y2 y1 sub x2 x1 sub Atan def
+  pop 3 -1 roll 5 1 roll 
+  ArrowA 
+%    \end{macrocode}
+% dx add, and dy add, to get the current point at the end of the arrow tip.
+%    \begin{macrocode}
+  x1 Alpha cos arrowlength mul add
+  y1 Alpha sin arrowlength mul add
+  5 -1 roll 3 1 roll true
+  /N N 1 sub def
+  N {
+    6 copy pop 
+    /y1 ED /x1 ED pop /y2 ED /x2 ED /draw ED
+%    \end{macrocode}
+% Check for line segment length and draw the arrow only, if the segment is long
+% enough. This is in first place to avoid drawing an inside arrow for the
+% pinhole which has three interfaces instead of one so that it can be used as
+% real spatial filter.
+%    \begin{macrocode}
+    x1 y1 x2 y2 @ABDist dup
+    arrowminlength ge 
+    exch arrowmaxlength dup 0 lt 
+    3 1 roll le or and {
+      x1 y1
+      arrowpos 1 gt {
+        /Alpha y2 y1 sub x2 x1 sub Atan def
+        /dArrowPos dArrowPosStart abs def
+        /ArrowPos ArrowPosStart def
+        arrowno {
+          /ArrowPos ArrowPos dArrowPos add def
+          x1 Alpha cos ArrowPos mul add
+          y1 Alpha sin ArrowPos mul add
+          6 index { ArrowInside } if
+          pop pop
+        } repeat
+      }{
+        arrowno 1 gt { 
+          1.0 arrowno 1.0 add div
+        }{
+          dArrowPosStart
+        } ifelse /dArrowPos ED
+        /ArrowPos ArrowPosStart def
+        arrowno {
+          /ArrowPos ArrowPos dArrowPos add def
+          x2 x1 sub ArrowPos mul x1 add
+          y2 y1 sub ArrowPos mul y1 add
+          6 index { ArrowInside } if
+          pop pop
+        } repeat
+      } ifelse
+      pop pop
+    } if
+    draw {Lineto}{moveto} ifelse
+  } repeat
+  {CP 4 2 roll ArrowB lineto pop pop } {moveto} ifelse
+} bind def
+%    \end{macrocode}
+% \end{macro}
+%
 % \begin{macro}{isAmbiguous}
 %   Check if \PSvar{compname} is ambiguous, i.e. if it can have alternating beam
 %   paths depending on the input and output plane (e.g. beamsplitter can either
