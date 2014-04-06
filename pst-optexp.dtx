@@ -18,7 +18,7 @@
 %<stylefile>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<stylefile>\ProvidesPackage{pst-optexp}
 %<*stylefile>
-    [2014/03/01 v4.9dev Optical experimental setups with PSTricks]
+    [2014/04/06 v4.9dev Optical experimental setups with PSTricks]
 %</stylefile>
 %
 %<*driver>
@@ -13390,7 +13390,7 @@
 % \begin{changelog}
 % \patchcmd{\release}{\setlength{\itemsep}{0pt}}{\setlength{\itemsep}{0pt}\setlength{\parsep}{0pt}}{}{}
 %   \begin{release}{4.9}{2014-xx-xx}
-%   \item
+%   \item Fixed bug related to \opt{extnodes} together with \opt{compname}
 %   \end{release}
 %   \begin{release}{4.8}{2014-02-28}
 %   \item Added component \cs{optaom}\see{comp:optaom}
@@ -17276,61 +17276,6 @@
 \let\newOptexpElecComp\newOptexpFiberComp
 %    \end{macrocode}
 % \end{macro}
-%
-% \begin{macro}{\POE@compalias}
-%   Components which have a \opt{compname} assigned, must also be
-%   available by their component number. Here, all necessary
-%   informations (nodes, component dictionary) are referenced such that
-%   any information is accessible via number or name. First parameter is
-%   the component name, second one the component id.
-%    \begin{macrocode}
-\def\POE@compalias#1#2{%
-  \POE@Verb{%
-%    \end{macrocode}
-% Copy the component dictionary
-%    \begin{macrocode}
-    /\oenode{}{#2} dup currentdict exch known { 
-      load /\oenode{}{#1} ED 
-    } { 
-      pop 
-    } ifelse
-    (\oenode{}{#1}) (\oenode{}{#2})
-    tx@NodeDict begin
-%    \end{macrocode}
-% Copy all interface nodes of the component.
-%    \begin{macrocode}
-      1 {
-        3 copy inttostr dup 
-        3 1 roll 2 copy NodeName
-        currentdict exch known {
-          NodeName load 3 1 roll NodeName ED
-          1 add
-        } {
-          pop (N) NodeName load 3 1 roll 
-          pop (N) NodeName ED
-          pop exit
-        } ifelse
-      } loop
-%    \end{macrocode}
-% Copy all other nodes associated with the component (reference nodes, center
-% node, label node etc).
-%    \begin{macrocode}
-      [ (A) (B) (@A) (@B) (Center) (Label) (Rotref) 
-        (TrefA) (TrefB) (@TrefA) (@TrefB) (Ext)
-      counttomark {
-        counttomark 3 add -2 roll 2 copy counttomark 1 add 2 roll
-        3 -1 roll dup 4 1 roll NodeName dup 
-        currentdict exch known { 
-          load 3 1 roll exch NodeName ED 
-        } { 
-          pop pop pop 
-        } ifelse
-      } repeat pop pop pop
-    end
-  }%
-\ignorespaces}%
-%    \end{macrocode}
-% \end{macro}
 % 
 % \begin{macro}{\optplane}
 %   Define an invisible plane which is used only for ray tracing. The first node
@@ -17422,13 +17367,16 @@
 %    \begin{macrocode}
 \def\end@OptexpObj{%
   \ifnum9<1\POE@key@compname\else
-    \POE@compalias{\POE@key@compname}{\the\POE@cnt}%
+    \POE@Verb{
+      (\oenode{}{\POE@key@compname})
+      (\oenode{}{\the\POE@cnt}) CompAlias }%
   \fi
   \endgroup
   \ignorespaces%
 }%
 %    \end{macrocode}
 % \end{macro}
+%
 % \begin{macro}{\end@OptexpDipole}
 %    \begin{macrocode}
 \let\end@OptexpDipole\end@OptexpObj
@@ -21751,12 +21699,83 @@ tx@OptexpDict begin
 %   alias for the associated node.  Must be called withing
 %   \PSvar{NewOptexpComp}.
 %
-% \PSstring{OrigPN} \PSstring{AliasPN} \PSop{IfcAlias}
+%   \begin{pssyntax}
+%     \PSstring{OrigPN} \PSstring{AliasPN} \PSop{IfcAlias}
+%   \end{pssyntax}
 %    \begin{macrocode}
 /IfcAlias {
   2 copy IfcName exch IfcName load def
   tx@NodeDict begin 
     name exch NodeName name 3 -1 roll NodeName load def
+  end
+} bind def
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{CompAlias}
+%   Components which have a \opt{compname} assigned, must also be
+%   available by their component number. Here, all necessary
+%   informations (nodes, component dictionary) are referenced such that
+%   any information is accessible via number or name. 
+%   \begin{pssyntax}
+%     \PSstring{NameStem} \PSstring{IDStem} \PSop{CompAlias}
+%   \end{pssyntax}
+%    \begin{macrocode}
+/CompAlias {
+%    \end{macrocode}
+% Copy the component dictionary
+%    \begin{macrocode}
+  2 copy cvn dup currentdict exch known { 
+    load def 
+  } { 
+    pop 
+  } ifelse
+  tx@NodeDict begin
+%    \end{macrocode}
+% Copy all interface nodes of the component.
+%    \begin{macrocode}
+  1 {
+    3 copy inttostr dup 
+    3 1 roll 2 copy NodeName
+    currentdict exch known {
+      NodeName load 3 1 roll NodeName ED
+      1 add
+    } {
+      pop (N) NodeName load 3 1 roll 
+      pop (N) NodeName ED
+      pop exit
+    } ifelse
+  } loop
+%    \end{macrocode}
+% Copy all other nodes associated with the component (reference nodes, center
+% node, label node etc).
+%    \begin{macrocode}
+  mark (A) (B) (@A) (@B) (Center) (Label) (Rotref) 
+       (TrefA) (TrefB) (@TrefA) (@TrefB) (Ext) (Origin)
+  counttomark {
+    counttomark 3 add -2 roll 2 copy counttomark 1 add 2 roll
+    3 -1 roll dup 4 1 roll NodeName dup 
+    currentdict exch known { 
+      load 3 1 roll exch NodeName ED 
+    } { 
+      pop pop pop 
+    } ifelse
+  } repeat pop 
+%    \end{macrocode}
+% Copy additional external nodes, the maximum is 8 (all combinations of
+% l, r, t, b, c). Old and new node name stems are still on the stack.
+%    \begin{macrocode}
+  exch 1 1 8 {
+    3 copy
+    (Ext) exch 5 string cvs strcat dup 3 1 roll 
+    NodeName 3 1 roll NodeName
+    dup currentdict exch known {
+      load def pop
+    } {
+      pop pop pop exit
+    } ifelse
+  } for
+  pop pop
   end
 } bind def
 %    \end{macrocode}
@@ -23239,9 +23258,7 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % \end{macro}
 % \begin{macro}{NodeName}
-% Construct the plane name from IfcNum. This must be called within a dict of a
-% optexpcomp, because the last node ends with (N) instead of the number and we must
-% know the plane count of the component.
+% Construct the node name from a string or number.
 % \begin{pssyntax}
 % \PSstring{name} \PSvar{num} \PSop{NodeName} \PSname{N@namenum}
 % \end{pssyntax}
