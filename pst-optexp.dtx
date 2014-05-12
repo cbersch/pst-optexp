@@ -18,7 +18,7 @@
 %<stylefile>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<stylefile>\ProvidesPackage{pst-optexp}
 %<*stylefile>
-    [2014/04/06 v4.9dev Optical experimental setups with PSTricks]
+    [2014/05/07 v4.9dev Optical experimental setups with PSTricks]
 %</stylefile>
 %
 %<*driver>
@@ -6788,12 +6788,15 @@
 %   \cmditem{oenodeIfc}{num}{comp}
 %
 %   \ifGERMAN
-%   Der Grenzflächenknoten \prm{num}, wobei \prm{num} eine positive Ganzzahl
-%   oder \opt{N} ist. Der letzte Knoten ist immer \opt{N}.
+%   Der Grenzflächenknoten \prm{num}, wobei \prm{num} eine positive
+%   Ganzzahl oder der Buchstabe \opt{N} ist. Der letzte Knoten ist immer
+%   \opt{N}, kann aber auch über die entsprechende Zahl angesprochen
+%   werden.
 %   \fi
 %   \ifENGLISH
-%   The interface node \prm{num}, where the number is a positive integer or
-%   \opt{N}. The last node is always defined as \opt{N}.
+%   The interface node \prm{num}, where the number is a positive integer
+%   or the character \opt{N}. The last node is always defined as \opt{N}
+%   but can also be accessed via its number.
 %   \fi
 %
 %   \cmditem{oenodeIn}{comp}
@@ -17638,7 +17641,7 @@
     \ifPOE@backlayer
       \POE@Verb{%
         (1) (3) (\oenode{}{}) CorrectDipoleIfc 
-        (2) (N) (\oenode{}{}) CorrectDipoleIfc 
+        (2) (4) (\oenode{}{}) CorrectDipoleIfc 
       }%
       \ifPOE@fiberpresetin@
         \ifPOE@fiberpresetin@top
@@ -17696,7 +17699,7 @@
     \ifPOE@backlayer
       \POE@Verb{%
         (1) (2) (\oenode{}{}) CorrectDipoleIfc 
-        (1) (N) (\oenode{}{}) CorrectDipoleIfc 
+        (1) (3) (\oenode{}{}) CorrectDipoleIfc 
       }%
       \ifPOE@fiberpresetin@
         \drawfiber@{FiberIn}[stopnode=1](#1){}
@@ -17747,8 +17750,8 @@
     \POE@drawcomponent{wdmcoupler}{#4}
     \ifPOE@backlayer 
       \POE@Verb{%
-        (1) (N) (\oenode{}{}) CorrectDipoleIfc 
-        (2) (N) (\oenode{}{}) CorrectDipoleIfc
+        (1) (3) (\oenode{}{}) CorrectDipoleIfc 
+        (2) (3) (\oenode{}{}) CorrectDipoleIfc
       }%
       \ifPOE@fiberpresetout@
         \drawfiber@{FiberOut}[startnode=N]{}(#3)
@@ -20812,7 +20815,7 @@
     \ifPOE@backlayer
       \POE@Verb{%
         (1) (3) (\oenode{}{}) CorrectDipoleIfc 
-        (2) (N) (\oenode{}{}) CorrectDipoleIfc 
+        (2) (4) (\oenode{}{}) CorrectDipoleIfc 
       }%
       \ifPOE@wirepresetin@top
         \drawwire@{WireIn1}[stopnode=1](#1){}
@@ -21183,25 +21186,6 @@ tx@OptexpDict begin
 } bind def
 %    \end{macrocode}
 % \end{macro}
-%
-% \begin{macro}{IfcCopy}
-%   Copy an interface \PSvar{from} to an interface \PSvar{to}, must be called
-%   within the respective component dictionary. This involves also copying the
-%   node associated with the interface.
-%   \begin{pssyntax}
-%     \PSvar{from} \PSvar{to} \PSop{CopyIfc}
-%   \end{pssyntax}
-%    \begin{macrocode}
-/IfcCopy { 
-  2 copy IfcName exch IfcName load dup
-  length dict copy def
-  name exch NodeName name 3 -1 roll NodeName 
-  tx@NodeDict begin
-    load dup length dict copy def
-  end
-} bind def
-%    \end{macrocode}
-% \end{macro}
 % 
 % \begin{macro}{calcNodes}
 %   Calculate the reference node coordinates for reflective components and
@@ -21369,7 +21353,7 @@ tx@OptexpDict begin
   /reverse ED
   dup cvn load /N get dup
   reverse { -1 1 } { 1 1 3 -1 roll } ifelse
-  { 2 copy eq { pop (N) } { inttostr } ifelse
+  { inttostr
     3 -1 roll dup 4 1 roll exch NodeName 3 1 roll
   } for
   pop pop
@@ -21640,15 +21624,16 @@ tx@OptexpDict begin
 % only a single plane is specified, create the aliases.
 %    \begin{macrocode}
       name (1) 3 -1 roll {sc} NewCompIfc 
-      (1) (N) IfcCopy
+      (1) (2) IfcCopy
+      (2) (N) IfcAlias
   }{
     N -1 1 { %
-      dup N eq { pop (N) }{inttostr} ifelse
-      exch name 3 1 roll {sc} NewCompIfc
+      inttostr exch name 3 1 roll {sc} NewCompIfc
     } for
+    N inttostr (N) IfcAlias
   } ifelse
   ambiguous ambIfc 0 gt and { 
-    ambIfc N eq { (N) }{ ambIfc inttostr } ifelse (C) IfcCopy
+    ambIfc inttostr (C) IfcCopy
   } if
   end
   pop
@@ -21680,16 +21665,37 @@ tx@OptexpDict begin
 % only a single plane is specified, create the aliases.
 %    \begin{macrocode}
     {0 1} 0 0 trans name (1) {PlainIfc} {sc} NewCompIfc 
-    (1) (N) IfcCopy
+    (1) (2) IfcCopy
+    (2) (N) IfcAlias
   }{
     N -1 1 {
-      dup N eq { pop (N) }{inttostr} ifelse
+      inttostr
       {0 1} 0 0 absorb name 6 -1 roll {PlainIfc} {sc} NewCompIfc
     } for
+    N inttostr (N) IfcAlias
   } ifelse
   end
   pop
   DebugEnd
+} bind def
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{IfcCopy}
+%   Copy an interface \PSvar{from} to an interface \PSvar{to}, must be called
+%   within the respective component dictionary. This involves also copying the
+%   node associated with the interface.
+%   \begin{pssyntax}
+%     \PSvar{from} \PSvar{to} \PSop{CopyIfc}
+%   \end{pssyntax}
+%    \begin{macrocode}
+/IfcCopy { 
+  2 copy IfcName exch IfcName load dup
+  length dict copy def
+  name exch NodeName name 3 -1 roll NodeName 
+  tx@NodeDict begin
+    load dup length dict copy def
+  end
 } bind def
 %    \end{macrocode}
 % \end{macro}
@@ -21843,7 +21849,8 @@ tx@OptexpDict begin
 % \end{macro}
 %
 % \begin{macro}{GetIfcCenterCorr}
-% Get the center node of a interface, either by specifying the name of the component and the interface number
+%   Get the coordinates of an interface node. This checks if corrected
+%   coordinates for proper connection handling are available.
 %   \begin{pssyntax}
 %     \PSvar{IfcNum} \PSstring{CompName} \PSop{GetIfcCenterCorr} \PSvar{X|XCorr Y|YCorr}
 %   \end{pssyntax}
@@ -23200,11 +23207,7 @@ tx@OptexpDict begin
 %    \begin{macrocode}
             name GetRefIndex
           } ifelse
-          exch dup N eq {
-            pop (N)
-          } {
-            inttostr
-          } ifelse exch
+          exch inttostr exch
           3 1 roll name
           4 1 roll
           dup IfcName load /mode get
@@ -23227,20 +23230,13 @@ tx@OptexpDict begin
 % \end{macro}
 % 
 % \begin{macro}{IfcName}
-% Construct the interface name from \PSvar{num}. This must be called within a dict of a
-% optexpcomp, because the last node ends with (N) instead of the number and we must
-% know the number of component interfaces.
+% Construct the interface name from \PSvar{num}.
 % \begin{pssyntax}
 % \PSvar{num} \PSop{IfcName} \PSname{P@num}
 % \end{pssyntax}
 %    \begin{macrocode}
 /IfcName {
-  dup dup 1 eq not exch N eq and {
-    pop (N)
-  } {
-    inttostr
-  } ifelse
-  (P@) exch strcat cvn
+  inttostr (P@) exch strcat cvn
 } bind def
 %    \end{macrocode}
 % \end{macro}
@@ -23982,7 +23978,7 @@ tx@OptexpDict begin
 %   estimation of the fiber connections does not work properly. So these
 %   interfaces are separated as less as possible so that the NearestNode
 %   procedure estimates two different distances. The changed nodes are saved
-%   only in the interface dictionaly as XCorr and YCorr. You must use these for
+%   only in the interface dictionary as XCorr and YCorr. You must use these for
 %   the fiber connections.
 %   \begin{pssyntax}
 %     \PSstring{node1} \PSstring{node2} \PSstring{basename} \PSop{CorrectDipoleIfc}
