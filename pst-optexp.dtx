@@ -14518,6 +14518,28 @@
 }%
 \psset[optexp]{optboxsize=1.4 0.8}%
 %    \end{macrocode}
+%
+% Box
+%    \begin{macrocode}
+\define@key[psset]{optexp}{sourcewidth}{%
+  \pst@checknum{#1}\POE@key@sourcewidth
+}
+\define@key[psset]{optexp}{sourceheight}{%
+  \pst@checknum{#1}\POE@key@sourceheight
+}
+\define@key[psset]{optexp}{sourcesize}{%
+  \pst@expandafter\POE@psset@@sourcesize{#1} {} {} {}\@nil
+}%
+\def\POE@psset@@sourcesize#1 #2 #3\@nil{%
+  \ifx\\#2\\%
+    \PackageWarning{pst-optexp}{%
+      Parameter 'sourcesize' requires two numbers.}%
+  \fi
+  \psset[optexp]{sourcewidth=#1, sourceheight=#2}%
+}%
+\psset[optexp]{sourcesize=1.4 0.8}%
+%    \end{macrocode}
+%
 % arrowbox
 %    \begin{macrocode}
 \define@key[psset]{optexp}{arrowcompwidth}{%
@@ -16402,7 +16424,18 @@
     \ifx\pslinestyle\@none\ifx\psk@ArrowInside\@empty 1\else 0\fi\else 0\fi
     \addto@pscode{ cleartomark false false }%
   \else
+%    \end{macrocode}
+% Get the beamangle from the first component if it is a source.
+%    \begin{macrocode}
     \addto@pscode{%
+      counttomark 0 eq not {
+        dup cvn load dup /source known { 
+          /source get /beamangle 2 copy known {
+            get /beamangle exch def
+            /beamalign absolute def
+          } { pop pop } ifelse
+        }{ pop } ifelse
+      } if
 %    \end{macrocode}
 % I need to pack it this way in order to avoid replacing the \opt{n} inside the
 % code here. This must be done later, when it refers to the correct refractive
@@ -16422,7 +16455,7 @@
           0 exch
         } if
       } ifelse \tx@ScreenCoor] cvx
-      \POE@key@beamangle\space
+      beamangle
       currentdict /lastBeamPointTmp undef
       currentdict /lastVecTmp undef
       loadbeampoints 1 ge 
@@ -16514,7 +16547,17 @@
 %    \begin{macrocode}
 \def\drawwidebeam@ii{%
   \def\pst@fill##1{ gsave ##1 grestore }%
+%    \end{macrocode}
+% Get some beam properties (beamangle, beamdiv and beamwidth), if the
+% first component is a source.
+%    \begin{macrocode}
   \addto@pscode{%
+    counttomark 0 eq not {
+      dup cvn load dup /source known { 
+        /source get dup { def } forall
+        length 0 gt { /beamalign absolute def } if
+      }{ pop } ifelse
+    } if
     {/nbeam {\POE@key@n cvx exec} bind def
       \ifPOE@pswarning
         /Warning /PrintWarning load def
@@ -16526,8 +16569,8 @@
 % arrange and create the input vectors
 %    \begin{macrocode}
   \addto@pscode{%
-    \POE@key@beamangle\space dup
-    \POE@key@beamdiv\space 0.5 mul dup 4 -1 roll add 3 1 roll sub
+    beamangle dup
+    beamdiv 0.5 mul dup 4 -1 roll add 3 1 roll sub
   }%
 %    \end{macrocode}
 % the start positions
@@ -16541,12 +16584,14 @@
           0 exch 
         } if
       } ifelse
-      mark \POE@key@beamwidth\space counttomark 0 eq {
-        0 
+%    \end{macrocode}
+% if \opt{beamwidth} is defined at Postscript level, it was defined from the source object.
+%    \begin{macrocode}
+      currentdict /beamwidth known {
+        beamwidth currentdict /beamwidth undef
       } {
-        0.5 mul
+        mark \POE@key@beamwidth\space counttomark 0 eq { 0 } if exch pop
       } ifelse
-      exch pop
       3 copy add \tx@ScreenCoor\space ToVec 
       5 1 roll sub \tx@ScreenCoor
     ] cvx
@@ -17309,6 +17354,7 @@
   \begingroup
     \POE@insideobjtrue
     \POE@Verb{InitOptexpComp }%
+    \POE@unsetbeamparameters
     \use@par
 %    \end{macrocode}
 % The \opt{compshift} refers to the $y$-direction, shifting in $x$-direction
@@ -17365,6 +17411,19 @@
     \POE@transformnode{\oenode@RefB{}}{\oenode@TrefB{}}%
   }%
 }%
+%    \end{macrocode}
+% \end{macro}
+% 
+% \begin{macro}{\POE@unsetbeamparameters}
+% Unset some beam parameters which might be used by \cs{optsource}.
+%    \begin{macrocode}
+\def\POE@unsetbeamparameters{%
+  \let\POE@key@beamangle\relax
+  \let\POE@key@beamdiv\relax
+  \let\POE@key@beamwidth\relax
+}%
+%    \end{macrocode}
+% \end{macro}
 %
 % \begin{macro}{\end@OptexpObj}
 %    \begin{macrocode}
@@ -18256,6 +18315,7 @@
 \newOptexpDipole{crystal}
 \newOptexpDipole{polarization}
 \newOptexpDipole{optbox}
+\newOptexpDipole{optsource}{position=start}
 \newOptexpDipole{optplate}
 \newOptexpDipole{optretplate}
 \newOptexpDipole{optdetector}{position=end}
@@ -19414,6 +19474,51 @@
 %    \end{macrocode}
 % \end{macro}
 % 
+% \subsubsection{optsource}
+%
+% \begin{macro}{\optsource@ref}
+%    \begin{macrocode}
+\def\optsource@ref{%
+  \let\POE@key@optboxwidth\POE@key@sourcewidth
+  \let\POE@key@optboxheight\POE@key@sourceheight
+  \optbox@ref
+}%
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\optsource@nodes}
+%    \begin{macrocode}
+\def\optsource@nodes{%
+  \POE@dipole@nodes
+  \ifodd\ifx\POE@key@beamangle\relax
+        \ifx\POE@key@beamdiv\relax
+        \ifx\POE@key@beamwidth\relax 0
+        \else 1\fi
+        \else 1\fi
+        \else 1\fi
+    \POE@Verb{%
+      \oenode{}{} begin
+        3 dict dup /source exch def begin
+          \ifx\POE@key@beamangle\relax\else
+            /beamangle \POE@key@beamangle\space def
+          \fi
+          \ifx\POE@key@beamdiv\relax\else
+            /beamdiv \POE@key@beamdiv\space def
+          \fi
+          \ifx\POE@key@beamwidth\relax\else
+            /beamwidth \POE@key@beamwidth\space def
+          \fi
+        end
+    end }%
+  \fi
+}%
+%
+% \begin{macro}{\optsource@comp}
+%    \begin{macrocode}
+\let\optsource@comp\POE@comp@rectangle
+%    \end{macrocode}
+% \end{macro}
+%
 % \subsubsection{optplate}
 %
 % \begin{macro}{\optplate@ref}
