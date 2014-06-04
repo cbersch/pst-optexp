@@ -18,7 +18,7 @@
 %<stylefile>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<stylefile>\ProvidesPackage{pst-optexp}
 %<*stylefile>
-    [2014/06/03 v4.9 Optical experimental setups with PSTricks]
+    [2014/06/04 v4.10 Optical experimental setups with PSTricks]
 %</stylefile>
 %
 %<*driver>
@@ -3147,12 +3147,11 @@
 % \ifENGLISH 
 % An optical source predefines some properties of any outgoing beam, if
 % it is the first component in a beam path. The definable beam
-% properties are \Lkeyword{beamangle}, \Lkeyword{beamwidth} and
-% \Lkeyword{beamdiv}. The \Lkeyword{beamangle} will always be treated as
-% as being \opt{absolute}. The properties defined by the optical source
-% cannot be overwritten by the beam properties. If a property wasn't
-% explicitely defined for a source, it is taken from the beam
-% properties.
+% properties are \Lkeyword{beamangle}, \Lkeyword{beamwidth},
+% \Lkeyword{beamdiv} and \Lkeyword{beamalign}. The properties defined by
+% the optical source cannot be overwritten by the beam properties. If a
+% property wasn't explicitely defined for a source, it is taken from the
+% beam properties.
 %
 % The default settings for the component position are
 % \Lkeyword{position}\opt{=start}.
@@ -3161,10 +3160,9 @@
 % Eine optische Quelle gibt ein paar Eigenschaften für alle von ihr
 % ausgehenden Strahlen vor, falls es die erste Komponente in einem
 % Strahlengang ist. Die verwendbaren Eigenschaften sind
-% \Lkeyword{beamangle}, \Lkeyword{beamwidth} und \Lkeyword{beamdiv}. Der
-% Winkel \Lkeyword{beamangle} wird immer als \opt{absolute}
-% angenommen. Alle Eigenschaften, die von einer optischen Quelle
-% definiert werden, können nicht später durch Strahlparameter
+% \Lkeyword{beamangle}, \Lkeyword{beamwidth}, \Lkeyword{beamdiv} und
+% \Lkeyword{beamalign}. Alle Eigenschaften, die von einer optischen
+% Quelle definiert werden, können nicht später durch Strahlparameter
 % überschrieben werden. Wird ein Parameter nicht explizit von der Quelle
 % definiert, so werden die Parameter von dem Strahl-Stil verwendet.
 %
@@ -8148,11 +8146,12 @@
 %</ignore>
 % \fi
 % 
-% \choitem[relative]{beamalign}{rel, relative, abs, absolute}
+% \choitem[relative]{beamalign}{rel, relative, abs, absolute, firstcomp}
 % \ifGERMAN
 % Gibt vor, ob der Winkel \Lkeyword{beamangle} relativ zu der Verbindung
-% zwischen den ersten beiden Komponenten ist, oder ob es sich um einen absoluten
-% Winkel handelt.
+% zwischen den ersten beiden Komponenten ist, ob es sich um einen
+% absoluten Winkel handelt, oder ob der Winkel durch die Ausrichtung der
+% ersten Komponente vorgegeben wird.
 %
 % Ein absoluter Winkel kann sehr hilfreich sein, falls eine der beiden ersten
 % Komponenten gedreht oder verschoben wurde. Dabei werden die
@@ -8187,6 +8186,37 @@
 %</ignore>
 % \fi
 %
+% \ifGERMAN 
+% Im folgenden Beispiel liegen beide Komponenten auf der horizontalen
+% Linie $\overline{AB}$. Der grüne Strahl, mit
+% \Lkeyword{beamalign}\opt{=rel} verläuft daher auch horizontal. Der
+% rote Strahl ist hingegen mit \Lkeyword{beamalign}\opt{=firstcomp}
+% entsprechend der Drehung der ersten Komponente ausgerichtet.
+% \fi
+% \ifENGLISH 
+% Both components in the following example are align on the horizontal
+% line $\overline{AB}$. The green beam with
+% \Lkeyword{beamalign}\opt{=rel} is accordingly aligned
+% horizontally. The red beam with \Lkeyword{beamalign}\opt{=firstcomp}
+% is aligned according to the rotation of the first component:
+% \fi
+%
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[morekeywords = {[21]{beamalign, angle}}]
+\begin{pspicture}(4,3)
+  \pnodes(1.5,1.5){A}(4,1.5){B}
+  \optbox[position=start, rotateref=r, angle=10](A)(B)
+  \optplate[position=end, plateheight=3](A)(B)
+  \addtopsstyle{Beam}{beamdiv=20}
+  \drawwidebeam{-}
+  \drawwidebeam[beamalign=firstcomp, linecolor=red]{-}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 %
 % \numitem[0]{beampathskip}
 % \ifGERMAN
@@ -13472,6 +13502,10 @@
 %
 % \begin{changelog}
 % \patchcmd{\release}{\setlength{\itemsep}{0pt}}{\setlength{\itemsep}{0pt}\setlength{\parsep}{0pt}}{}{}
+%   \begin{release}{4.10}{2014-06-04}
+%   \item Added value \opt{firstcomp} to parameter \opt{beamalign}\see{prm:beamalign}
+%   \item Modified \cs{optsource} to handle also the beam alignment\see{comp:optsource}
+%   \end{release}
 %   \begin{release}{4.9}{2014-06-03}
 %   \item Added new component \cs{optsource}\see{comp:optsource}
 %   \item Improved naming of the last component name, which can now be
@@ -15615,7 +15649,7 @@
   \pst@getint{#1}\POE@key@beampathcount
 }%
 \define@choicekey+[psset]{optexp}{beamalign}%
-  [\val\nr]{rel,abs,relative,absolute}%
+  [\val\nr]{rel,abs,relative,absolute,firstcomp}%
   {%
     \ifcase\nr\relax
       \let\POE@key@beamalign\POE@str@relative
@@ -16392,9 +16426,11 @@
      /beamalign 
        \ifx\POE@key@beamalign\POE@str@absolute\space 
          absolute
-       \else 
+       \else\ifx\POE@key@beamalign\POE@str@relative\space
          relative
-       \fi def
+       \else
+         firstcomp
+       \fi\fi def
      /beampathskip \POE@key@beampathskip\space def
      \POE@key@beampathcount\space dup -1 gt { beampathskip add } if /beampathcount ED
      /useNA \ifPOE@useNA true \else false \fi def
@@ -16508,22 +16544,15 @@
     \addto@pscode{ cleartomark false false }%
   \else
 %    \end{macrocode}
-% Get the beamangle from the first component if it is a source.
+% Get the beamproperties from the first component if it is a source.
 %    \begin{macrocode}
-    \addto@pscode{%
-      counttomark 0 eq not {
-        dup cvn load dup /source known { 
-          /source get /beamangle 2 copy known {
-            get /beamangle exch def
-            /beamalign absolute def
-          } { pop pop } ifelse
-        }{ pop } ifelse
-      } if
+    \POE@HandleSourceBeam
 %    \end{macrocode}
 % I need to pack it this way in order to avoid replacing the \opt{n} inside the
 % code here. This must be done later, when it refers to the correct refractive
 % indices.
 %    \begin{macrocode}
+    \addto@pscode{%
       {/nbeam {\POE@key@n cvx exec} bind def
        \ifPOE@pswarning
          /Warning /PrintWarning load def
@@ -16631,16 +16660,10 @@
 \def\drawwidebeam@ii{%
   \def\pst@fill##1{ gsave ##1 grestore }%
 %    \end{macrocode}
-% Get some beam properties (beamangle, beamdiv and beamwidth), if the
-% first component is a source.
+% Get the beamproperties from the first component if it is a source.
 %    \begin{macrocode}
+  \POE@HandleSourceBeam
   \addto@pscode{%
-    counttomark 0 eq not {
-      dup cvn load dup /source known { 
-        /source get dup { def } forall
-        length 0 gt { /beamalign absolute def } if
-      }{ pop } ifelse
-    } if
     {/nbeam {\POE@key@n cvx exec} bind def
       \ifPOE@pswarning
         /Warning /PrintWarning load def
@@ -17436,9 +17459,11 @@
   \let\POE@tempA\POE@key@beamangle
   \let\POE@tempB\POE@key@beamdiv
   \let\POE@tempC\POE@key@beamwidth
+  \let\POE@tempD\POE@key@beamalign
   \let\POE@key@beamangle\relax
   \let\POE@key@beamdiv\relax
   \let\POE@key@beamwidth\relax
+  \let\POE@key@beamalign\relax
 }%
 %    \end{macrocode}
 % \end{macro}
@@ -17449,10 +17474,46 @@
   \let\POE@key@sourcebeamangle\POE@key@beamangle
   \let\POE@key@sourcebeamdiv\POE@key@beamdiv
   \let\POE@key@sourcebeamwidth\POE@key@beamwidth
+  \let\POE@key@sourcebeamalign\POE@key@beamalign
   \let\POE@key@beamangle\POE@tempA
   \let\POE@key@beamdiv\POE@tempB
   \let\POE@key@beamwidth\POE@tempC
+  \let\POE@key@beamalign\POE@tempD
 }%      
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\POE@HandleSourceBeam}
+%   Load beam properties from the first component on the stack, if it is
+%   an optical source. Also handle the beamalign=firstcomp case, since
+%   this also depends on the first component.
+%    \begin{macrocode}
+\def\POE@HandleSourceBeam{%
+  \addto@pscode{%
+    counttomark 0 eq not {
+      dup cvn load dup /source known { 
+        /source get { def } forall
+      }{ pop } ifelse
+    } if
+%    \end{macrocode}
+% Handle the beamalign=firstcomp case. Calculate the angle of the first
+% component's reference line and set the beamalign parameter to
+% absolute.
+%    \begin{macrocode}
+    beamalign firstcomp eq {
+      dup dup (Center) NodeName tx@NodeDict exch known not {
+%    \end{macrocode}
+% If we have no node called \opt{\ldots Center}, the first object isn't
+% a component, but a node. Switch to relative alignment.
+%    \begin{macrocode}
+        pop /beamalign relative def
+      } {
+        RelConnAngle@tref exch atan /beamangle exch def
+        /beamalign absolute def
+      } ifelse
+    } if
+  }%
+}%
 %    \end{macrocode}
 % \end{macro}
 %
@@ -19604,7 +19665,7 @@
   \POE@dipole@nodes
   \POE@Verb{%
     \oenode{}{} begin
-    3 dict dup /source exch def begin
+    4 dict dup /source exch def begin
       \if\POE@key@sourcebeamangle\relax\else
         /beamangle \POE@key@sourcebeamangle\space def
       \fi
@@ -19613,6 +19674,9 @@
       \fi
       \if\POE@key@sourcebeamwidth\relax\else
         /beamwidth \POE@key@sourcebeamwidth\space def
+      \fi
+      \if\POE@key@sourcebeamalign\relax\else
+        /beamalign \POE@key@sourcebeamalign\space def
       \fi
     end
     source length 0 eq { currentdict /source undef } if
@@ -21739,7 +21803,7 @@ tx@OptexpDict begin
 %
 % These are used for checks of the \opt{beamalign} and \opt{fiberalign} parameters.
 %    \begin{macrocode}
-/relative 0 def /absolute 1 def /center 2 def
+/relative 0 def /absolute 1 def /center 2 def /firstcomp 3 def
 %    \end{macrocode}
 % 
 % These constants are used to describe the characteristics of interfaces.
