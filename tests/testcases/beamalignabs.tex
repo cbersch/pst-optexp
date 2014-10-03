@@ -5,11 +5,31 @@
   \drawbeam{(A)}{}{(B)}
   \drawbeam[linecolor=red, beamalign=absolute]{(A)}{}{(B)}
 \end{pspicture}
+\bigskip
 
-\begin{pspicture}[showgrid](3,1.5)
+\begin{pspicture}[showgrid](3,2)
   \pnode(0,0.75){A}\pnode(3,0.75){B}
   \optbox[angle=10, showifcnodes](A)(B)
   \psdot[dotstyle=+, linecolor=red](\oenodeRotref{})
   \drawbeam{(A)}{}{(B)}
   \drawbeam[linecolor=red, beamalign=absolute]{(A)}{}{(B)}
+\end{pspicture}
+\bigskip
+
+\begin{pspicture}[showgrid](5,3)
+  \pnodes(1.5,1.5){A}(5,1.5){B}
+  \optbox[position=start, rotateref=r, angle=10](A)(B)
+  \optplate[position=end, plateheight=3](A)(B)
+  \addtopsstyle{Beam}{beamdiv=20}
+  \drawwidebeam[beamalign=rel]{-}
+  \drawwidebeam[beamalign=firstcomp, linecolor=red]{-}
+\end{pspicture}
+
+\begin{pspicture}[showgrid](5,3)
+  \pnodes(1.5,1.5){A}(5,1.5){B}
+  \optsource[beamdiv=20, beamalign=firstcomp, rotateref=r, angle=10](A)(B)
+  \optplate[position=end, plateheight=3](A)(B)
+  % can't overwrite source parameters!
+  \drawwidebeam[beamalign=rel]{-}
+  \drawwidebeam[beamalign=abs, linecolor=red]{-}
 \end{pspicture}

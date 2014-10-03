@@ -18,7 +18,7 @@
 %<stylefile>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<stylefile>\ProvidesPackage{pst-optexp}
 %<*stylefile>
-    [2014/03/17 v5.0dev Optical experimental setups with PSTricks]
+    [2014/10/03 v5.0dev Optical experimental setups with PSTricks]
 %</stylefile>
 %
 %<*driver>
@@ -112,7 +112,7 @@
     oeBeamCenter, optplate, optretplate, pinhole, crystal, optdetector,
     optdiode, doveprism, glanthompson, polarization, mirror,
     beamsplitter, optgrating, optprism, rightangleprism, pentaprism, optaom,
-    optdipole, opttripole, optfiber, optamp, optmzm, optfilter,
+    optdipole, opttripole, optfiber, optamp, optmzm, optfilter, optsource,
     polcontrol, optisolator, optswitch, fiberdelayline,
     optfiberpolarizer, fibercollimator, optcoupler, wdmcoupler,
     wdmsplitter, optcirculator, fiberbox, eleccoupler, elecsynthesizer,
@@ -3132,6 +3132,84 @@
 % \fi
 % \end{stylelist}
 %
+% \ifGERMAN\section{Optische Quelle}\fi
+% \ifENGLISH\section{Optical source}\fi
+% 
+% \begin{ltxsyntax}
+% \dipoledesc{optsource}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(3,2)
+  \optsource(1.5,1)(3,1){Laser}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
+% \ifENGLISH 
+% An optical source predefines some properties of any outgoing beam, if
+% it is the first component in a beam path. The definable beam
+% properties are \Lkeyword{beamangle}, \Lkeyword{beamwidth},
+% \Lkeyword{beamdiv} and \Lkeyword{beamalign}. The properties defined by
+% the optical source cannot be overwritten by the beam properties. If a
+% property wasn't explicitely defined for a source, it is taken from the
+% beam properties.
+%
+% The default settings for the component position are
+% \Lkeyword{position}\opt{=start}.
+% \fi
+% \ifGERMAN
+% Eine optische Quelle gibt ein paar Eigenschaften für alle von ihr
+% ausgehenden Strahlen vor, falls es die erste Komponente in einem
+% Strahlengang ist. Die verwendbaren Eigenschaften sind
+% \Lkeyword{beamangle}, \Lkeyword{beamwidth}, \Lkeyword{beamdiv} und
+% \Lkeyword{beamalign}. Alle Eigenschaften, die von einer optischen
+% Quelle definiert werden, können nicht später durch Strahlparameter
+% überschrieben werden. Wird ein Parameter nicht explizit von der Quelle
+% definiert, so werden die Parameter von dem Strahl-Stil verwendet.
+%
+% Die Voreinstellung für die Positionierung ist
+% \Lkeyword{position}\opt{=start}.
+% \fi
+% \end{ltxsyntax}
+%
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(5,2)
+  \pnodes(1.5,1){A}(5,1){B}
+  \optsource[innerlabel, beamdiv=10, beamangle=10](A)(B){Laser}
+  \lens[lens=2 2 2](A)(B)
+  \optplane(B)
+  \drawwidebeam{-}
+  \drawbeam[linecolor=red]{-}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
+% \begin{optionlist}
+% \numitem[1.4]{sourcewidth}
+% \ifGERMAN Die Breite der Box.\fi
+% \ifENGLISH The width of the box.\fi
+%
+% \numitem[0.8]{sourceheight}
+% \ifGERMAN Die Höhe der Box.\fi
+% \ifENGLISH The height of the box.\fi
+%
+% \optitem{sourcesize}{\prm{width} \prm{height}}
+% \ifGERMAN Die Breite und Höhe der Box, äquivalent zum Aufruf von
+% \Lkeyword{sourcewidth} und \Lkeyword{sourceheight}.
+% \fi
+% \ifENGLISH The width and height of the box, is equivalent to calling both
+% \Lkeyword{sourcewidth} and \Lkeyword{sourceheight}.
+% \fi
+% \end{optionlist}
 %
 % \ifGERMAN\section{Kristall}\fi
 % \ifENGLISH\section{Crystal}\fi
@@ -6856,12 +6934,15 @@
 %   \cmditem{oenodeIfc}{num}{comp}
 %
 %   \ifGERMAN
-%   Der Grenzflächenknoten \prm{num}, wobei \prm{num} eine positive Ganzzahl
-%   oder \opt{N} ist. Der letzte Knoten ist immer \opt{N}.
+%   Der Grenzflächenknoten \prm{num}, wobei \prm{num} eine positive
+%   Ganzzahl oder der Buchstabe \opt{N} ist. Der letzte Knoten ist immer
+%   \opt{N}, kann aber auch über die entsprechende Zahl angesprochen
+%   werden.
 %   \fi
 %   \ifENGLISH
-%   The interface node \prm{num}, where the number is a positive integer or
-%   \opt{N}. The last node is always defined as \opt{N}.
+%   The interface node \prm{num}, where the number is a positive integer
+%   or the character \opt{N}. The last node is always defined as \opt{N}
+%   but can also be accessed via its number.
 %   \fi
 %
 %   \cmditem{oenodeIn}{comp}
@@ -8133,11 +8214,12 @@
 %</ignore>
 % \fi
 % 
-% \choitem[relative]{beamalign}{rel, relative, abs, absolute}
+% \choitem[relative]{beamalign}{rel, relative, abs, absolute, firstcomp}
 % \ifGERMAN
 % Gibt vor, ob der Winkel \Lkeyword{beamangle} relativ zu der Verbindung
-% zwischen den ersten beiden Komponenten ist, oder ob es sich um einen absoluten
-% Winkel handelt.
+% zwischen den ersten beiden Komponenten ist, ob es sich um einen
+% absoluten Winkel handelt, oder ob der Winkel durch die Ausrichtung der
+% ersten Komponente vorgegeben wird.
 %
 % Ein absoluter Winkel kann sehr hilfreich sein, falls eine der beiden ersten
 % Komponenten gedreht oder verschoben wurde. Dabei werden die
@@ -8172,6 +8254,37 @@
 %</ignore>
 % \fi
 %
+% \ifGERMAN 
+% Im folgenden Beispiel liegen beide Komponenten auf der horizontalen
+% Linie $\overline{AB}$. Der grüne Strahl, mit
+% \Lkeyword{beamalign}\opt{=rel} verläuft daher auch horizontal. Der
+% rote Strahl ist hingegen mit \Lkeyword{beamalign}\opt{=firstcomp}
+% entsprechend der Drehung der ersten Komponente ausgerichtet.
+% \fi
+% \ifENGLISH 
+% Both components in the following example are align on the horizontal
+% line $\overline{AB}$. The green beam with
+% \Lkeyword{beamalign}\opt{=rel} is accordingly aligned
+% horizontally. The red beam with \Lkeyword{beamalign}\opt{=firstcomp}
+% is aligned according to the rotation of the first component:
+% \fi
+%
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[morekeywords = {[21]{beamalign, angle}}]
+\begin{pspicture}(4,3)
+  \pnodes(1.5,1.5){A}(4,1.5){B}
+  \optbox[position=start, rotateref=r, angle=10](A)(B)
+  \optplate[position=end, plateheight=3](A)(B)
+  \addtopsstyle{Beam}{beamdiv=20}
+  \drawwidebeam{-}
+  \drawwidebeam[beamalign=firstcomp, linecolor=red]{-}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 %
 % \numitem[0]{beampathskip}
 % \ifGERMAN
@@ -13464,6 +13577,16 @@
 %   \item Requires the \opt{pst-intersect} package.
 %   \item Requires \opt{pstricks} version 2.53
 %   \end{release}
+%   \begin{release}{4.10}{2014-06-04}
+%   \item Added value \opt{firstcomp} to parameter \opt{beamalign}\see{prm:beamalign}
+%   \item Modified \cs{optsource} to handle also the beam alignment\see{comp:optsource}
+%   \end{release}
+%   \begin{release}{4.9}{2014-06-03}
+%   \item Added new component \cs{optsource}\see{comp:optsource}
+%   \item Improved naming of the last component name, which can now be
+%     accessed also by its number besides using \opt{N}.
+%   \item Fixed bug related to \opt{extnodes} together with \opt{compname}
+%   \end{release}
 %   \begin{release}{4.8}{2014-02-28}
 %   \item Added component \cs{optaom}\see{comp:optaom}
 %   \item Added option \opt{beammode}\see{prm:beammode}
@@ -13482,7 +13605,7 @@
 %   \item Added option \opt{usewirestyle}\see{prm:usewirestyle}
 %   \item Added line style \opt{fade}, with options \opt{fadeto},
 %     \opt{fadepoints}, \opt{fadefunc}, and
-%     \opt{fadefuncname}\see{prm:fade}
+%     \opt{fadefuncname}\see{prm:fade}.
 %   \end{release}
 %   \begin{release}{4.4}{2013-07-14}
 %   \item Added component \cs{transmissiongrating}\see{comp:transmissiongrating}
@@ -14588,6 +14711,28 @@
 }%
 \psset[optexp]{optboxsize=1.4 0.8}%
 %    \end{macrocode}
+%
+% Box
+%    \begin{macrocode}
+\define@key[psset]{optexp}{sourcewidth}{%
+  \pst@checknum{#1}\POE@key@sourcewidth
+}
+\define@key[psset]{optexp}{sourceheight}{%
+  \pst@checknum{#1}\POE@key@sourceheight
+}
+\define@key[psset]{optexp}{sourcesize}{%
+  \pst@expandafter\POE@psset@@sourcesize{#1} {} {} {}\@nil
+}%
+\def\POE@psset@@sourcesize#1 #2 #3\@nil{%
+  \ifx\\#2\\%
+    \PackageWarning{pst-optexp}{%
+      Parameter 'sourcesize' requires two numbers.}%
+  \fi
+  \psset[optexp]{sourcewidth=#1, sourceheight=#2}%
+}%
+\psset[optexp]{sourcesize=1.4 0.8}%
+%    \end{macrocode}
+%
 % arrowbox
 %    \begin{macrocode}
 \define@key[psset]{optexp}{arrowcompwidth}{%
@@ -15595,7 +15740,7 @@
   \pst@getint{#1}\POE@key@beampathcount
 }%
 \define@choicekey+[psset]{optexp}{beamalign}%
-  [\val\nr]{rel,abs,relative,absolute}%
+  [\val\nr]{rel,abs,relative,absolute,firstcomp}%
   {%
     \ifcase\nr\relax
       \let\POE@key@beamalign\POE@str@relative
@@ -16372,9 +16517,11 @@
      /beamalign 
        \ifx\POE@key@beamalign\POE@str@absolute\space 
          absolute
-       \else 
+       \else\ifx\POE@key@beamalign\POE@str@relative\space
          relative
-       \fi def
+       \else
+         firstcomp
+       \fi\fi def
      /beampathskip \POE@key@beampathskip\space def
      \POE@key@beampathcount\space dup -1 gt { beampathskip add } if /beampathcount ED
      /useNA \ifPOE@useNA true \else false \fi def
@@ -16487,12 +16634,16 @@
     \ifx\pslinestyle\@none\ifx\psk@ArrowInside\@empty 1\else 0\fi\else 0\fi
     \addto@pscode{ cleartomark false false }%
   \else
-    \addto@pscode{%
+%    \end{macrocode}
+% Get the beamproperties from the first component if it is a source.
+%    \begin{macrocode}
+    \POE@HandleSourceBeam
 %    \end{macrocode}
 % I need to pack it this way in order to avoid replacing the \opt{n} inside the
 % code here. This must be done later, when it refers to the correct refractive
 % indices.
 %    \begin{macrocode}
+    \addto@pscode{%
       {/nbeam {\POE@key@n cvx exec} bind def
        \ifPOE@pswarning
          /Warning /PrintWarning load def
@@ -16507,7 +16658,7 @@
           0 exch
         } if
       } ifelse \tx@ScreenCoor] cvx
-      \POE@key@beamangle\space
+      beamangle
       currentdict /lastBeamPointTmp undef
       currentdict /lastVecTmp undef
       loadbeampoints 1 ge 
@@ -16554,7 +16705,37 @@
 \def\POE@strokesinglebeam{%
   gsave 
     /Lineto /lineto load def
-    \tx@Drawbeam 
+    20 dict begin
+      DrawbeamPrepare
+%    \end{macrocode}
+% If there are only three elements or less on the stack, the first ray
+% misses the next interface or is even parallel to the input interface.
+%    \begin{macrocode}
+      counttomark 3 gt { 
+%    \end{macrocode}
+% Define some parameters for Drawbeam which are based on TeX-parameters
+%    \begin{macrocode}
+        \ifx\psk@arrowA\arrowType@H
+          \pst@number\pshooklength
+        \else
+          \psk@arrowsize\space CLW mul add dup \psk@arrowlength\space mul exch \psk@arrowinset mul neg add  
+        \fi
+        /arrowlength exch def 
+        /arrowminlength \POE@key@ArrowInsideMinLength\space\pst@number\psunit mul def
+        /arrowmaxlength \POE@key@ArrowInsideMaxLength\space\pst@number\psunit mul def
+        /arrowpos  \psk@ArrowInsidePos\space def
+        /arrowno   \psk@ArrowInsideNo\space cvi def
+        /ArrowPosStart \psk@ArrowInsideOffset\space def
+        /dArrowPosStart \psk@ArrowInsidePos\space def
+        counttomark 3 idiv /N exch def
+        (\psk@ArrowInside) length 0 gt {
+          DrawbeamArrowInside
+        }{
+          DrawbeamSimple
+        } ifelse
+      } if
+      cleartomark
+    end
     \tx@setlinejoin
     \pst@number\pslinewidth SLW
     \pst@usecolor\pslinecolor
@@ -16569,6 +16750,10 @@
 %    \begin{macrocode}
 \def\drawwidebeam@ii{%
   \def\pst@fill##1{ gsave ##1 grestore }%
+%    \end{macrocode}
+% Get the beamproperties from the first component if it is a source.
+%    \begin{macrocode}
+  \POE@HandleSourceBeam
   \addto@pscode{%
     {/nbeam {\POE@key@n cvx exec} bind def
       \ifPOE@pswarning
@@ -16581,8 +16766,8 @@
 % arrange and create the input vectors
 %    \begin{macrocode}
   \addto@pscode{%
-    \POE@key@beamangle\space dup
-    \POE@key@beamdiv\space 0.5 mul dup 4 -1 roll add 3 1 roll sub
+    beamangle dup
+    beamdiv 0.5 mul dup 4 -1 roll add 3 1 roll sub
   }%
 %    \end{macrocode}
 % the start positions
@@ -16596,12 +16781,14 @@
           0 exch 
         } if
       } ifelse
-      mark \POE@key@beamwidth\space counttomark 0 eq {
-        0 
+%    \end{macrocode}
+% if \opt{beamwidth} is defined at Postscript level, it was defined from the source object.
+%    \begin{macrocode}
+      currentdict /beamwidth known {
+        beamwidth currentdict /beamwidth undef
       } {
-        0.5 mul
-      } ifelse
-      exch pop
+        mark \POE@key@beamwidth\space counttomark 0 eq { 0 } if exch pop
+      } ifelse 0.5 mul
       3 copy add \tx@ScreenCoor\space ToVec 
       5 1 roll sub \tx@ScreenCoor
     ] cvx
@@ -17464,61 +17651,6 @@
 \let\newOptexpElecComp\newOptexpFiberComp
 %    \end{macrocode}
 % \end{macro}
-%
-% \begin{macro}{\POE@compalias}
-%   Components which have a \opt{compname} assigned, must also be
-%   available by their component number. Here, all necessary
-%   informations (nodes, component dictionary) are referenced such that
-%   any information is accessible via number or name. First parameter is
-%   the component name, second one the component id.
-%    \begin{macrocode}
-\def\POE@compalias#1#2{%
-  \POE@Verb{%
-%    \end{macrocode}
-% Copy the component dictionary
-%    \begin{macrocode}
-    /\oenode{}{#2} dup currentdict exch known { 
-      load /\oenode{}{#1} ED 
-    } { 
-      pop 
-    } ifelse
-    (\oenode{}{#1}) (\oenode{}{#2})
-    tx@NodeDict begin
-%    \end{macrocode}
-% Copy all interface nodes of the component.
-%    \begin{macrocode}
-      1 {
-        3 copy inttostr dup 
-        3 1 roll 2 copy NodeName
-        currentdict exch known {
-          NodeName load 3 1 roll NodeName ED
-          1 add
-        } {
-          pop (N) NodeName load 3 1 roll 
-          pop (N) NodeName ED
-          pop exit
-        } ifelse
-      } loop
-%    \end{macrocode}
-% Copy all other nodes associated with the component (reference nodes, center
-% node, label node etc).
-%    \begin{macrocode}
-      [ (A) (B) (@A) (@B) (Center) (Label) (Rotref) 
-        (TrefA) (TrefB) (@TrefA) (@TrefB) (Ext)
-      counttomark {
-        counttomark 3 add -2 roll 2 copy counttomark 1 add 2 roll
-        3 -1 roll dup 4 1 roll NodeName dup 
-        currentdict exch known { 
-          load 3 1 roll exch NodeName ED 
-        } { 
-          pop pop pop 
-        } ifelse
-      } repeat pop pop pop
-    end
-  }%
-\ignorespaces}%
-%    \end{macrocode}
-% \end{macro}
 % 
 % \begin{macro}{\optplane}
 %   Define an invisible plane which is used only for ray tracing. The first node
@@ -17540,6 +17672,72 @@
 %    \end{macrocode}
 % \end{macro}
 % 
+% \begin{macro}{\POE@SaveBeamParameters}
+%   Save the current beam parameters. This is used to be able to set a
+%   source beam with the usual beam parameters.
+%    \begin{macrocode}
+\def\POE@SaveBeamParameters{%
+  \let\POE@tempA\POE@key@beamangle
+  \let\POE@tempB\POE@key@beamdiv
+  \let\POE@tempC\POE@key@beamwidth
+  \let\POE@tempD\POE@key@beamalign
+  \let\POE@key@beamangle\relax
+  \let\POE@key@beamdiv\relax
+  \let\POE@key@beamwidth\relax
+  \let\POE@key@beamalign\relax
+}%
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\POE@SetSourceAndRestoreBeamParameters}
+%    \begin{macrocode}
+\def\POE@SetSourceAndRestoreBeamParameters{%
+  \let\POE@key@sourcebeamangle\POE@key@beamangle
+  \let\POE@key@sourcebeamdiv\POE@key@beamdiv
+  \let\POE@key@sourcebeamwidth\POE@key@beamwidth
+  \let\POE@key@sourcebeamalign\POE@key@beamalign
+  \let\POE@key@beamangle\POE@tempA
+  \let\POE@key@beamdiv\POE@tempB
+  \let\POE@key@beamwidth\POE@tempC
+  \let\POE@key@beamalign\POE@tempD
+}%      
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\POE@HandleSourceBeam}
+%   Load beam properties from the first component on the stack, if it is
+%   an optical source. Also handle the beamalign=firstcomp case, since
+%   this also depends on the first component.
+%    \begin{macrocode}
+\def\POE@HandleSourceBeam{%
+  \addto@pscode{%
+    counttomark 0 eq not {
+      dup cvn load dup /source known { 
+        /source get { def } forall
+      }{ pop } ifelse
+    } if
+%    \end{macrocode}
+% Handle the beamalign=firstcomp case. Calculate the angle of the first
+% component's reference line and set the beamalign parameter to
+% absolute.
+%    \begin{macrocode}
+    beamalign firstcomp eq {
+      dup dup (Center) NodeName tx@NodeDict exch known not {
+%    \end{macrocode}
+% If we have no node called \opt{\ldots Center}, the first object isn't
+% a component, but a node. Switch to relative alignment.
+%    \begin{macrocode}
+        pop /beamalign relative def
+      } {
+        RelConnAngle@tref exch atan /beamangle exch def
+        /beamalign absolute def
+      } ifelse
+    } if
+  }%
+}%
+%    \end{macrocode}
+% \end{macro}
+%
 % \begin{macro}{\begin@OptexpObj}
 %    \begin{macrocode}
 \def\begin@OptexpObj{%
@@ -17549,7 +17747,9 @@
   \begingroup
     \POE@insideobjtrue
     \POE@Verb{InitOptexpComp }%
+    \POE@SaveBeamParameters
     \use@par
+    \POE@SetSourceAndRestoreBeamParameters
 %    \end{macrocode}
 % The \opt{compshift} refers to the $y$-direction, shifting in $x$-direction
 % is done by \opt{abspos} or \opt{position}
@@ -17605,18 +17805,34 @@
     \POE@transformnode{\oenode@RefB{}}{\oenode@TrefB{}}%
   }%
 }%
+%    \end{macrocode}
+% \end{macro}
+% 
+% \begin{macro}{\POE@unsetbeamparameters}
+% Unset some beam parameters which might be used by \cs{optsource}.
+%    \begin{macrocode}
+\def\POE@unsetbeamparameters{%
+  \let\POE@key@beamangle\relax
+  \let\POE@key@beamdiv\relax
+  \let\POE@key@beamwidth\relax
+}%
+%    \end{macrocode}
+% \end{macro}
 %
 % \begin{macro}{\end@OptexpObj}
 %    \begin{macrocode}
 \def\end@OptexpObj{%
   \ifnum9<1\POE@key@compname\else
-    \POE@compalias{\POE@key@compname}{\the\POE@cnt}%
+    \POE@Verb{
+      (\oenode{}{\POE@key@compname})
+      (\oenode{}{\the\POE@cnt}) CompAlias }%
   \fi
   \endgroup
   \ignorespaces%
 }%
 %    \end{macrocode}
 % \end{macro}
+%
 % \begin{macro}{\end@OptexpDipole}
 %    \begin{macrocode}
 \let\end@OptexpDipole\end@OptexpObj
@@ -17878,7 +18094,7 @@
     \ifPOE@backlayer
       \POE@Verb{%
         (1) (3) (\oenode{}{}) CorrectDipoleIfc 
-        (2) (N) (\oenode{}{}) CorrectDipoleIfc 
+        (2) (4) (\oenode{}{}) CorrectDipoleIfc 
       }%
       \ifPOE@fiberpresetin@
         \ifPOE@fiberpresetin@top
@@ -17936,7 +18152,7 @@
     \ifPOE@backlayer
       \POE@Verb{%
         (1) (2) (\oenode{}{}) CorrectDipoleIfc 
-        (1) (N) (\oenode{}{}) CorrectDipoleIfc 
+        (1) (3) (\oenode{}{}) CorrectDipoleIfc 
       }%
       \ifPOE@fiberpresetin@
         \drawfiber@{FiberIn}[stopnode=1](#1){}
@@ -17987,8 +18203,8 @@
     \POE@drawcomponent{wdmcoupler}{#4}
     \ifPOE@backlayer 
       \POE@Verb{%
-        (1) (N) (\oenode{}{}) CorrectDipoleIfc 
-        (2) (N) (\oenode{}{}) CorrectDipoleIfc
+        (1) (3) (\oenode{}{}) CorrectDipoleIfc 
+        (2) (3) (\oenode{}{}) CorrectDipoleIfc
       }%
       \ifPOE@fiberpresetout@
         \drawfiber@{FiberOut}[startnode=N]{}(#3)
@@ -18493,6 +18709,7 @@
 \newOptexpDipole{crystal}
 \newOptexpDipole{polarization}
 \newOptexpDipole{optbox}
+\newOptexpDipole{optsource}{position=start}
 \newOptexpDipole{optplate}
 \newOptexpDipole{optretplate}
 \newOptexpDipole{optdetector}{position=end}
@@ -19221,9 +19438,8 @@
 % \begin{macro}{\parabolicmirror@comp}
 %    \begin{macrocode}
 \def\parabolicmirror@comp{%
-  \pscustom{%
-    \pstracecurve{\oenode@Path{A}}
-    \pstracecurve{\oenode@Path{B}}}
+  \pstracecurve{\oenode@Path{A}}
+  \pstracecurve{\oenode@Path{B}}
 \ignorespaces}
 %    \end{macrocode}
 % \end{macro}
@@ -19686,6 +19902,48 @@
 %    \end{macrocode}
 % \end{macro}
 % 
+% \subsubsection{optsource}
+%
+% \begin{macro}{\optsource@ref}
+%    \begin{macrocode}
+\def\optsource@ref{%
+  \let\POE@key@optboxwidth\POE@key@sourcewidth
+  \let\POE@key@optboxheight\POE@key@sourceheight
+  \optbox@ref
+}%
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\optsource@nodes}
+%    \begin{macrocode}
+\def\optsource@nodes{%
+  \POE@dipole@nodes
+  \POE@Verb{%
+    \oenode{}{} begin
+    4 dict dup /source exch def begin
+      \if\POE@key@sourcebeamangle\relax\else
+        /beamangle \POE@key@sourcebeamangle\space def
+      \fi
+      \if\POE@key@sourcebeamdiv\relax\else
+        /beamdiv \POE@key@sourcebeamdiv\space def
+      \fi
+      \if\POE@key@sourcebeamwidth\relax\else
+        /beamwidth \POE@key@sourcebeamwidth\space def
+      \fi
+      \if\POE@key@sourcebeamalign\relax\else
+        /beamalign \POE@key@sourcebeamalign\space def
+      \fi
+    end
+    source length 0 eq { currentdict /source undef } if
+    end }%
+}%
+%
+% \begin{macro}{\optsource@comp}
+%    \begin{macrocode}
+\let\optsource@comp\POE@comp@rectangle
+%    \end{macrocode}
+% \end{macro}
+%
 % \subsubsection{optplate}
 %
 % \begin{macro}{\optplate@ref}
@@ -21087,7 +21345,7 @@
     \ifPOE@backlayer
       \POE@Verb{%
         (1) (3) (\oenode{}{}) CorrectDipoleIfc 
-        (2) (N) (\oenode{}{}) CorrectDipoleIfc 
+        (2) (4) (\oenode{}{}) CorrectDipoleIfc 
       }%
       \ifPOE@wirepresetin@top
         \drawwire@{WireIn1}[stopnode=1](#1){}
@@ -21458,25 +21716,6 @@ tx@OptexpDict begin
 } bind def
 %    \end{macrocode}
 % \end{macro}
-%
-% \begin{macro}{IfcCopy}
-%   Copy an interface \PSvar{from} to an interface \PSvar{to}, must be called
-%   within the respective component dictionary. This involves also copying the
-%   node associated with the interface.
-%   \begin{pssyntax}
-%     \PSvar{from} \PSvar{to} \PSop{CopyIfc}
-%   \end{pssyntax}
-%    \begin{macrocode}
-/IfcCopy { 
-  2 copy IfcName exch IfcName load dup
-  length dict copy def
-  name exch NodeName name 3 -1 roll NodeName 
-  tx@NodeDict begin
-    load dup length dict copy def
-  end
-} bind def
-%    \end{macrocode}
-% \end{macro}
 % 
 % \begin{macro}{calcNodes}
 %   Calculate the reference node coordinates for reflective components and
@@ -21644,7 +21883,7 @@ tx@OptexpDict begin
   /reverse ED
   dup cvn load /N get dup
   reverse { -1 1 } { 1 1 3 -1 roll } ifelse
-  { 2 copy eq { pop (N) } { inttostr } ifelse
+  { inttostr
     3 -1 roll dup 4 1 roll exch NodeName 3 1 roll
   } for
   pop pop
@@ -21832,10 +22071,24 @@ tx@OptexpDict begin
 % \end{macro}
 % 
 % Define some constants.
+%
+% These are used for checks of the \opt{beamalign} and \opt{fiberalign} parameters.
 %    \begin{macrocode}
-/relative 0 def /absolute 1 def /center 2 def
+/relative 0 def /absolute 1 def /center 2 def /firstcomp 3 def
+%    \end{macrocode}
+% 
+% These constants are used to describe the characteristics of interfaces.
+%    \begin{macrocode}
 /refl 0 def /trans 1 def /absorb 2 def /refltrans 3 def /auto 4 def /undefined -1 def
+%    \end{macrocode}
+% 
+% These give the ordering of the internal interfaces of a component.
+%    \begin{macrocode}
 /desc 0 def /asc 1 def /amb 2 def
+%    \end{macrocode}
+% 
+% The possible status after computing the outgoing vector at an interface.
+%    \begin{macrocode}
 /ok 0 def /tir 1 def /missed 2 def
 /bgRefIndex 0 def
 %    \end{macrocode}
@@ -21917,15 +22170,16 @@ tx@OptexpDict begin
 % only a single plane is specified, create the aliases.
 %    \begin{macrocode}
       name (1) 3 -1 roll {sc} NewCompIfc 
-      (1) (N) IfcCopy
+      (1) (2) IfcCopy
+      (2) (N) IfcAlias
   }{
     N -1 1 { %
-      dup N eq { pop (N) }{inttostr} ifelse
-      exch name 3 1 roll {sc} NewCompIfc
+      inttostr exch name 3 1 roll {sc} NewCompIfc
     } for
+    N inttostr (N) IfcAlias
   } ifelse
   ambiguous ambIfc 0 gt and { 
-    ambIfc N eq { (N) }{ ambIfc inttostr } ifelse (C) IfcCopy
+    ambIfc inttostr (C) IfcCopy
   } if
   end
   pop
@@ -21957,16 +22211,37 @@ tx@OptexpDict begin
 % only a single plane is specified, create the aliases.
 %    \begin{macrocode}
     {0 1} 0 0 trans name (1) {PlainIfc} {sc} NewCompIfc 
-    (1) (N) IfcCopy
+    (1) (2) IfcCopy
+    (2) (N) IfcAlias
   }{
     N -1 1 {
-      dup N eq { pop (N) }{inttostr} ifelse
+      inttostr
       {0 1} 0 0 absorb name 6 -1 roll {PlainIfc} {sc} NewCompIfc
     } for
+    N inttostr (N) IfcAlias
   } ifelse
   end
   pop
   DebugEnd
+} bind def
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{IfcCopy}
+%   Copy an interface \PSvar{from} to an interface \PSvar{to}, must be called
+%   within the respective component dictionary. This involves also copying the
+%   node associated with the interface.
+%   \begin{pssyntax}
+%     \PSvar{from} \PSvar{to} \PSop{CopyIfc}
+%   \end{pssyntax}
+%    \begin{macrocode}
+/IfcCopy { 
+  2 copy IfcName exch IfcName load dup
+  length dict copy def
+  name exch NodeName name 3 -1 roll NodeName 
+  tx@NodeDict begin
+    load dup length dict copy def
+  end
 } bind def
 %    \end{macrocode}
 % \end{macro}
@@ -21976,12 +22251,83 @@ tx@OptexpDict begin
 %   alias for the associated node.  Must be called withing
 %   \PSvar{NewOptexpComp}.
 %
-% \PSstring{OrigPN} \PSstring{AliasPN} \PSop{IfcAlias}
+%   \begin{pssyntax}
+%     \PSstring{OrigPN} \PSstring{AliasPN} \PSop{IfcAlias}
+%   \end{pssyntax}
 %    \begin{macrocode}
 /IfcAlias {
   2 copy IfcName exch IfcName load def
   tx@NodeDict begin 
     name exch NodeName name 3 -1 roll NodeName load def
+  end
+} bind def
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{CompAlias}
+%   Components which have a \opt{compname} assigned, must also be
+%   available by their component number. Here, all necessary
+%   informations (nodes, component dictionary) are referenced such that
+%   any information is accessible via number or name. 
+%   \begin{pssyntax}
+%     \PSstring{NameStem} \PSstring{IDStem} \PSop{CompAlias}
+%   \end{pssyntax}
+%    \begin{macrocode}
+/CompAlias {
+%    \end{macrocode}
+% Copy the component dictionary
+%    \begin{macrocode}
+  2 copy cvn dup currentdict exch known { 
+    load def 
+  } { 
+    pop 
+  } ifelse
+  tx@NodeDict begin
+%    \end{macrocode}
+% Copy all interface nodes of the component.
+%    \begin{macrocode}
+  1 {
+    3 copy inttostr dup 
+    3 1 roll 2 copy NodeName
+    currentdict exch known {
+      NodeName load 3 1 roll NodeName ED
+      1 add
+    } {
+      pop (N) NodeName load 3 1 roll 
+      pop (N) NodeName ED
+      pop exit
+    } ifelse
+  } loop
+%    \end{macrocode}
+% Copy all other nodes associated with the component (reference nodes, center
+% node, label node etc).
+%    \begin{macrocode}
+  mark (A) (B) (@A) (@B) (Center) (Label) (Rotref) 
+       (TrefA) (TrefB) (@TrefA) (@TrefB) (Ext) (Origin)
+  counttomark {
+    counttomark 3 add -2 roll 2 copy counttomark 1 add 2 roll
+    3 -1 roll dup 4 1 roll NodeName dup 
+    currentdict exch known { 
+      load 3 1 roll exch NodeName ED 
+    } { 
+      pop pop pop 
+    } ifelse
+  } repeat pop 
+%    \end{macrocode}
+% Copy additional external nodes, the maximum is 8 (all combinations of
+% l, r, t, b, c). Old and new node name stems are still on the stack.
+%    \begin{macrocode}
+  exch 1 1 8 {
+    3 copy
+    (Ext) exch 5 string cvs strcat dup 3 1 roll 
+    NodeName 3 1 roll NodeName
+    dup currentdict exch known {
+      load def pop
+    } {
+      pop pop pop exit
+    } ifelse
+  } for
+  pop pop
   end
 } bind def
 %    \end{macrocode}
@@ -22049,7 +22395,8 @@ tx@OptexpDict begin
 % \end{macro}
 %
 % \begin{macro}{GetIfcCenterCorr}
-% Get the center node of a interface, either by specifying the name of the component and the interface number
+%   Get the coordinates of an interface node. This checks if corrected
+%   coordinates for proper connection handling are available.
 %   \begin{pssyntax}
 %     \PSvar{IfcNum} \PSstring{CompName} \PSop{GetIfcCenterCorr} \PSvar{X|XCorr Y|YCorr}
 %   \end{pssyntax}
@@ -22888,7 +23235,120 @@ tx@OptexpDict begin
 } bind def
 %    \end{macrocode}
 % \end{macro}
-% 
+%
+% \begin{macro}{DrawbeamPrepare}
+%   Prepare the data points for drawing with \PSop{DrawbeamSimple} and
+%   \PSop{DrawbeamArrowInside}.
+%    \begin{macrocode}
+/DrawbeamPrepare {
+%    \end{macrocode}
+% Remove trailing empty line parts.
+%    \begin{macrocode}
+  { 
+    counttomark 6 le { exit } if
+    3 index not { pop pop pop }{ exit } ifelse
+  } loop
+%    \end{macrocode}
+% Remove heading empty line parts. Note, that the first point must not have
+% 'draw = true', because it is the starting point which we have to move to.
+%    \begin{macrocode}
+  { 
+    counttomark 3 le { exit } if
+    counttomark 3 sub index not {
+      counttomark -3 roll pop pop pop
+    }{
+      exit
+    } ifelse
+  } loop
+} bind def
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{DrawbeamSimple}
+%    \begin{macrocode}
+/DrawbeamSimple {
+  pop 5 copy 3 -1 roll pop 
+  ArrowA pop pop pop pop
+  counttomark 3 idiv -1 2 {
+    pop {
+      lineto
+    }{
+      moveto
+    } ifelse
+  } for
+  {CP 4 2 roll ArrowB lineto pop pop } {moveto} ifelse
+} bind def
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{DrawbeamArrowInside}
+% This is the /Line definition from \opt{pstricks-add}, adapted to the beam path
+% structure which includes the boolean values to indicate if a line is drawn, or
+% if we use moveto. There was no way to patch the original definition to account
+% for the moveto parts and avoid duplicating the code.
+%    \begin{macrocode}
+/DrawbeamArrowInside {
+  6 copy pop
+  /y1 ED /x1 ED pop /y2 ED /x2 ED
+  /Alpha y2 y1 sub x2 x1 sub Atan def
+  pop 3 -1 roll 5 1 roll 
+  ArrowA 
+%    \end{macrocode}
+% dx add, and dy add, to get the current point at the end of the arrow tip.
+%    \begin{macrocode}
+  x1 Alpha cos arrowlength mul add
+  y1 Alpha sin arrowlength mul add
+  5 -1 roll 3 1 roll true
+  /N N 1 sub def
+  N {
+    6 copy pop 
+    /y1 ED /x1 ED pop /y2 ED /x2 ED /draw ED
+%    \end{macrocode}
+% Check for line segment length and draw the arrow only, if the segment is long
+% enough. This is in first place to avoid drawing an inside arrow for the
+% pinhole which has three interfaces instead of one so that it can be used as
+% real spatial filter.
+%    \begin{macrocode}
+    x1 y1 x2 y2 @ABDist dup
+    arrowminlength ge 
+    exch arrowmaxlength dup 0 lt 
+    3 1 roll le or and {
+      x1 y1
+      arrowpos 1 gt {
+        /Alpha y2 y1 sub x2 x1 sub Atan def
+        /dArrowPos dArrowPosStart abs def
+        /ArrowPos ArrowPosStart def
+        arrowno {
+          /ArrowPos ArrowPos dArrowPos add def
+          x1 Alpha cos ArrowPos mul add
+          y1 Alpha sin ArrowPos mul add
+          6 index { ArrowInside } if
+          pop pop
+        } repeat
+      }{
+        arrowno 1 gt { 
+          1.0 arrowno 1.0 add div
+        }{
+          dArrowPosStart
+        } ifelse /dArrowPos ED
+        /ArrowPos ArrowPosStart def
+        arrowno {
+          /ArrowPos ArrowPos dArrowPos add def
+          x2 x1 sub ArrowPos mul x1 add
+          y2 y1 sub ArrowPos mul y1 add
+          6 index { ArrowInside } if
+          pop pop
+        } repeat
+      } ifelse
+      pop pop
+    } if
+    draw {Lineto}{moveto} ifelse
+  } repeat
+  {CP 4 2 roll ArrowB lineto pop pop } {moveto} ifelse
+} bind def
+%    \end{macrocode}
+% \end{macro}
+%
 % \begin{macro}{isAmbiguous}
 %   Check if \PSvar{compname} is ambiguous, i.e. if it can have alternating beam
 %   paths depending on the input and output plane (e.g. beamsplitter can either
@@ -23316,11 +23776,7 @@ tx@OptexpDict begin
 %    \begin{macrocode}
             name GetRefIndex
           } ifelse
-          exch dup N eq {
-            pop (N)
-          } {
-            inttostr
-          } ifelse exch
+          exch inttostr exch
           3 1 roll name
           4 1 roll
           dup IfcName load /mode get
@@ -23343,20 +23799,13 @@ tx@OptexpDict begin
 % \end{macro}
 % 
 % \begin{macro}{IfcName}
-% Construct the interface name from \PSvar{num}. This must be called within a dict of a
-% optexpcomp, because the last node ends with (N) instead of the number and we must
-% know the number of component interfaces.
+% Construct the interface name from \PSvar{num}.
 % \begin{pssyntax}
 % \PSvar{num} \PSop{IfcName} \PSname{P@num}
 % \end{pssyntax}
 %    \begin{macrocode}
 /IfcName {
-  dup dup 1 eq not exch N eq and {
-    pop (N)
-  } {
-    inttostr
-  } ifelse
-  (P@) exch strcat cvn
+  inttostr (P@) exch strcat cvn
 } bind def
 %    \end{macrocode}
 % \end{macro}
@@ -23374,9 +23823,7 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % \end{macro}
 % \begin{macro}{NodeName}
-% Construct the plane name from IfcNum. This must be called within a dict of a
-% optexpcomp, because the last node ends with (N) instead of the number and we must
-% know the plane count of the component.
+% Construct the node name from a string or number.
 % \begin{pssyntax}
 % \PSstring{name} \PSvar{num} \PSop{NodeName} \PSname{N@namenum}
 % \end{pssyntax}
@@ -24151,7 +24598,7 @@ tx@OptexpDict begin
 %   estimation of the fiber connections does not work properly. So these
 %   interfaces are separated as less as possible so that the NearestNode
 %   procedure estimates two different distances. The changed nodes are saved
-%   only in the interface dictionaly as XCorr and YCorr. You must use these for
+%   only in the interface dictionary as XCorr and YCorr. You must use these for
 %   the fiber connections.
 %   \begin{pssyntax}
 %     \PSstring{node1} \PSstring{node2} \PSstring{basename} \PSop{CorrectDipoleIfc}
