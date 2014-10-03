@@ -69,6 +69,7 @@
 \colorlet{DGreen}{green!90!black}
 \usepackage{pst-tree}
 \usepackage{showexpl}
+\usepackage{scrhack}
 \makeatletter\renewcommand*\SX@Info{}\makeatother
 \usepackage{etoolbox}
 \undef{\cs}\undef{\cmd}
@@ -813,9 +814,10 @@
 % \ifGERMAN
 %   \section{Anforderungen}
 %   \LPack{pst-optexp} benötigt \LaTeX{} und aktuelle Versionen der
-%   Pakete \LPack{pstricks} ($>= 2.53$), \LPack{pst-node},
-%   \LPack{pstricks-add}, \LPack{multido}, \LPack{pst-eucl},
-%   \LPack{pst-intersect) ($>= 0.4$) und \LPack{environ}.
+%   Pakete \LPack{pstricks} ($\geq 2.53$), \LPack{pst-plot} ($\geq
+%   1.6.1$), \LPack{pst-node}, \LPack{pstricks-add}, \LPack{multido},
+%   \LPack{pst-eucl}, \LPack{pst-intersect} ($\geq 0.4$) und
+%   \LPack{environ}.
 %
 %   Alle PSTricks-Pakete machen regen Gebrauch von der Postscript-Sprache, so
 %   dass der typische Arbeitsfluss \opt{latex}, \opt{dvips} und
@@ -826,9 +828,10 @@
 % \ifENGLISH
 %   \section{Requirements}
 %   \LPack{pst-optexp} requires \LaTeX{} and recent versions of
-%   \LPack{pstricks} ($>= 2.53$), \LPack{pst-node}, \LPack{multido},
-%   \LPack{pstricks-add}, \LPack{pst-eucl}, \LPack{pst-intersect} ($>=
-%   0.4$) and \LPack{environ}.
+%   \LPack{pstricks} ($\geq 2.53$), \LPack{pst-plot} ($\geq 1.61$),
+%   \LPack{pst-node}, \LPack{multido}, \LPack{pstricks-add},
+%   \LPack{pst-eucl}, \LPack{pst-intersect} ($\geq 0.4$) and
+%   \LPack{environ}.
 %
 %   All PSTricks package rely heavily on the Postscript language so that the
 %   typical workflow involves \opt{latex}, \opt{dvips}, and \opt{ps2pdf}. Of
@@ -3833,19 +3836,31 @@
 %<*ignore>
 % \fi
 \begin{LTXexample}
-\begin{pspicture}[showgrid](0,-2)(3,2)
+\begin{pspicture}(0,-2)(3,2)
   \parabolicmirror[parmirrorheight=4, parmirrorwidth=2](0,0)(3,0)
   \addtopsstyle{Beam}{beamalign=abs, linewidth=0.2\pslinewidth, beaminsidelast, stopinsidecount=1}
   \multido{\r=-1.55+0.1}{33}{%
     \drawbeam[beampos=\r](0,0){1}}
 \end{pspicture}
+\end{LTXexample}
 
+\begin{LTXexample}
 \begin{pspicture}(0,-1)(3,1)
   \optplane(0,0)
   \parabolicmirror(0,0)(3,0)
   \addtopsstyle{Beam}{arrows=->, beamalign=abs, linewidth=0.2\pslinewidth, beaminsidelast, stopinsidecount=1}
   \drawbeam[beampos=0.4](0,0){2}{1}
   \drawbeam[beampos=0.2, linecolor=red](0,0){2}{1}
+\end{pspicture}
+\end{LTXexample}
+
+\begin{LTXexample}
+\begin{pspicture}(0,-1)(3,1)
+  \optplane(0,0)
+  \parabolicmirror[parmirrorheight=2, parmirrorwidth=1.5](0,0)(3,0)
+  \addtopsstyle{Beam}{arrows=->, beamalign=abs}
+  \drawbeam[beampos=0.1]{1}{2}{1}
+  \drawbeam[beampos=0.5, linecolor=red]{1}{2}{1}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -8408,7 +8423,7 @@
 % \fi
 % \ifENGLISH
 % Number of segments, which are used inside the last component. This
-% option is in effect only with \Lkeyword{beamsinsidelast} or
+% option is in effect only with \Lkeyword{beaminsidelast} or
 % \Lkeyword{stopinside} set to \opt{true}.
 % \fi
 %
@@ -10833,16 +10848,25 @@
 %</ignore>
 % \fi
 %
-%   \optitem{optdipolecomp}{\prm{macros}}
-%   \ifGERMAN Mit dieser Option kann die Zeichnung einer Komponente
-%   definiert werden, um dann mit \Lcs*{newpsobject} basierend auf
-%   \Lcomp{optdipole} eine neuen Komponente zu definieren.
-%   \fi
-%   \ifENGLISH
-%   This option defines the drawing of a component, and can be used to
-%   define a new component based in \Lcomp{optdipole} with
-%   \Lcs*{newpsobject}.
-%   \fi
+% \ifGERMAN  
+% Weitere Beispiel sind \prettyref{ex:lclv} und
+% \prettyref{ex:absspektr}.
+% \fi
+% \ifENGLISH 
+% Further examples are \prettyref{ex:lclv} and
+% \prettyref{ex:absspektr}.
+% \fi
+% 
+% \optitem{optdipolecomp}{\prm{macros}}
+% \ifGERMAN Mit dieser Option kann die Zeichnung einer Komponente
+% definiert werden, um dann mit \Lcs*{newpsobject} basierend auf
+% \Lcomp{optdipole} eine neuen Komponente zu definieren.
+% \fi
+% \ifENGLISH
+% This option defines the drawing of a component, and can be used to
+% define a new component based in \Lcomp{optdipole} with
+% \Lcs*{newpsobject}.
+% \fi
 %
 % \iffalse
 %<*ignore>
@@ -10863,16 +10887,16 @@
 %</ignore>
 % \fi
 %
-%   \optitem{opttripolecomp}{\prm{macros}}
-%   \ifGERMAN Mit dieser Option kann die Zeichnung einer Komponente
-%   definiert werden, um dann mit \Lcs*{newpsobject} basierend auf
-%   \Lcomp{opttripole} eine neuen Komponente zu definieren.
-%   \fi
-%   \ifENGLISH
-%   This option defines the drawing of a component, and can be used to
-%   define a new component based in \Lcomp{opttripole} with
-%   \Lcs*{newpsobject}.
-%   \fi
+% \optitem{opttripolecomp}{\prm{macros}}
+% \ifGERMAN Mit dieser Option kann die Zeichnung einer Komponente
+% definiert werden, um dann mit \Lcs*{newpsobject} basierend auf
+% \Lcomp{opttripole} eine neuen Komponente zu definieren.
+% \fi
+% \ifENGLISH
+% This option defines the drawing of a component, and can be used to
+% define a new component based in \Lcomp{opttripole} with
+% \Lcs*{newpsobject}.
+% \fi
 %
 % \iffalse
 %<*ignore>
@@ -10892,14 +10916,6 @@
 %</ignore>
 % \fi
 %
-% \ifGERMAN  
-% Weitere Beispiel sind \prettyref{ex:lclv} und
-% \prettyref{ex:absspektr}.
-% \fi
-% \ifENGLISH 
-% Further examples are \prettyref{ex:lclv} and
-% \prettyref{ex:absspektr}.
-% \fi
 % \end{optionlist}
 %
 % \ifGERMAN
@@ -16798,13 +16814,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}
-%    \begin{macrocode}
-\def\beginplot@cspline{\begin@OpenObj}
-\def\endplot@cspline{\pscspline@ii}
-%    \end{macrocode}
-% \end{macro}
-%
+% \begin{macro}{\POE@getcomprange}
 %    \begin{macrocode}
 \def\POE@getcomprange#1-#2\@nil{%
   \ifx\\#2\\%
@@ -16911,7 +16921,8 @@
   \fi
 }%
 %    \end{macrocode}
-%
+% \end{macro}
+% 
 % \begin{macro}{\POE@getcomps}
 %    \begin{macrocode}
 \def\POE@getcomps#1#2{%
@@ -18488,7 +18499,7 @@
 \newOptexpDipole{optdiode}{allowbeaminside=false}
 \newOptexpDipole{doveprism}
 \newOptexpDipole{glanthompson}
-\newOptexpDipole{parabolicmirror}{position=end, ref@angle=90}
+\newOptexpDipole{parabolicmirror}{position=end, ref@angle=-90}
 %    \end{macrocode}
 % 
 % Define all free-ray tripoles
@@ -19189,14 +19200,19 @@
 %    \begin{macrocode}
 \def\parabolicmirror@nodes{%
   \pssavepath[linestyle=none, arrows=-,ArrowInside=-]{\oenode@Path{A}}{%
-    \parametricplot[algebraic, VarStep, VarStepEpsilon=0.00001, plotstyle=cspline]%
-      {\POE@key@parmirrorheight\space -0.5 mul}%
-      {\POE@key@parmirrorheight\space 0.5 mul}%
+    \parametricplot[algebraic, VarStep, VarStepEpsilon=1e-7, plotstyle=cspline]%
+      {0}{\POE@key@parmirrorheight\space 0.5 mul}%
+      {-\POE@key@parmirrorwidth/(0.25*\POE@key@parmirrorheight^2)*t^2|-t}}
+  \pssavepath[linestyle=none, arrows=-,ArrowInside=-]{\oenode@Path{B}}{%
+    \parametricplot[algebraic, VarStep, VarStepEpsilon=1e-7, plotstyle=cspline]%
+      {0}{\POE@key@parmirrorheight\space 0.5 mul}%
       {-\POE@key@parmirrorwidth/(0.25*\POE@key@parmirrorheight^2)*t^2|t}}
   \newOptexpComp{%
-    {0 0} tx@IntersectDict /\PIT@name{\oenode@Path{A}} get 0 0 refl {PathIfc}
+    {-\POE@key@parmirrorwidth\space 0.16 mul \POE@key@parmirrorheight\space -0.2 mul} 
+      tx@IntersectDict /\PIT@name{\oenode@Path{A}} get 0 0 refl {PathIfc}
     {0 0} {1 0} 0 0 trans {PlainIfc}
-    {0 0} tx@IntersectDict /\PIT@name{\oenode@Path{A}} get 0 0 refl {PathIfc}
+    {-\POE@key@parmirrorwidth\space 0.16 mul \POE@key@parmirrorheight\space 0.2 mul}
+      tx@IntersectDict /\PIT@name{\oenode@Path{B}} get 0 0 refl {PathIfc}
     1 }%
 \ignorespaces}%
 %    \end{macrocode}
@@ -19205,7 +19221,9 @@
 % \begin{macro}{\parabolicmirror@comp}
 %    \begin{macrocode}
 \def\parabolicmirror@comp{%
-  \pstracecurve{\oenode@Path{A}}
+  \pscustom{%
+    \pstracecurve{\oenode@Path{A}}
+    \pstracecurve{\oenode@Path{B}}}
 \ignorespaces}
 %    \end{macrocode}
 % \end{macro}
@@ -24271,7 +24289,7 @@ tx@OptexpDict begin
 %
 % \begin{macro}{TransformPath}
 %   Transforms a path (as defined by \cs{pssavepath} from
-%   \pkg{pst-intersect}) using the \opt{currentmatrix} and the
+%   \nxLPack{pst-intersect}) using the \opt{currentmatrix} and the
 %   \opt{CompMtrx} of the component. That is used only by \opt{LoadIfc}.
 %   \begin{pssyntax}
 %     \PSarray{path} \PSop{TransformPath} \PSarray{path'}
@@ -24340,7 +24358,7 @@ tx@OptexpDict begin
 %     C'(t) = \sum_{i=0}^n B'_{i,n}(t)P_i\quad\text{with}\quad B'_{i,n}(t) = (n over i)(i t^{i-1}(1-t)^{n-i} - (n-i)t^i(1-t)^{n-i-1})
 %   \end{equation}
 %   \begin{pssyntax}
-%     \PSarray{[P0]\ldots[P_n]} \PSvar{t} \PSop{DeriveBezier} \PSvar{x y}
+%     \PSarray{[P0]\ldots[P\_n]} \PSvar{t} \PSop{DeriveBezier} \PSvar{x y}
 %   \end{pssyntax}
 %    \begin{macrocode}
 /GetBezierDeriv { 				% t on stack
