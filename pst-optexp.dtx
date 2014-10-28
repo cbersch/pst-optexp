@@ -18,7 +18,7 @@
 %<stylefile>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<stylefile>\ProvidesPackage{pst-optexp}
 %<*stylefile>
-    [2014/06/04 v4.10 Optical experimental setups with PSTricks]
+    [2014/10/03 v5.0dev Optical experimental setups with PSTricks]
 %</stylefile>
 %
 %<*driver>
@@ -69,6 +69,7 @@
 \colorlet{DGreen}{green!90!black}
 \usepackage{pst-tree}
 \usepackage{showexpl}
+\usepackage{scrhack}
 \makeatletter\renewcommand*\SX@Info{}\makeatother
 \usepackage{etoolbox}
 \undef{\cs}\undef{\cmd}
@@ -813,8 +814,10 @@
 % \ifGERMAN
 %   \section{Anforderungen}
 %   \LPack{pst-optexp} benötigt \LaTeX{} und aktuelle Versionen der
-%   Pakete \LPack{pst-node}, \LPack{pstricks-add}, \LPack{multido},
-%   \LPack{pst-eucl} und \LPack{environ}.
+%   Pakete \LPack{pstricks} ($\geq 2.53$), \LPack{pst-plot} ($\geq
+%   1.6.1$), \LPack{pst-node}, \LPack{pstricks-add}, \LPack{multido},
+%   \LPack{pst-eucl}, \LPack{pst-intersect} ($\geq 0.4$) und
+%   \LPack{environ}.
 %
 %   Alle PSTricks-Pakete machen regen Gebrauch von der Postscript-Sprache, so
 %   dass der typische Arbeitsfluss \opt{latex}, \opt{dvips} und
@@ -825,8 +828,10 @@
 % \ifENGLISH
 %   \section{Requirements}
 %   \LPack{pst-optexp} requires \LaTeX{} and recent versions of
+%   \LPack{pstricks} ($\geq 2.53$), \LPack{pst-plot} ($\geq 1.61$),
 %   \LPack{pst-node}, \LPack{multido}, \LPack{pstricks-add},
-%   \LPack{pst-eucl}, and \LPack{environ}. 
+%   \LPack{pst-eucl}, \LPack{pst-intersect} ($\geq 0.4$) and
+%   \LPack{environ}.
 %
 %   All PSTricks package rely heavily on the Postscript language so that the
 %   typical workflow involves \opt{latex}, \opt{dvips}, and \opt{ps2pdf}. Of
@@ -3877,6 +3882,69 @@
 % \fi
 % \end{stylelist}
 % 
+% \ifGERMAN\section{Parabolspiegel}\fi
+% \ifENGLISH\section{Parabolic mirror}\fi
+%
+% \begin{ltxsyntax}
+%   \dipoledesc{parabolicmirror}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(3,2)
+  \parabolicmirror(0,1)(2,1){PM}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+% \end{ltxsyntax}
+%
+% \begin{optionlist}
+%   \numitem[1]{parmirrorwidth}
+%   \ifGERMAN Die Breite des Parabolspiegels.\fi
+%   \ifENGLISH The width of the parabolic mirror.\fi
+%
+%   \numitem[1]{parmirrorheight}
+%   \ifGERMAN Die Höhe des Parabolspiegels.\fi
+%   \ifENGLISH The height of the parabolic mirror.\fi
+% \end{optionlist}
+% 
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(0,-2)(3,2)
+  \parabolicmirror[parmirrorheight=4, parmirrorwidth=2](0,0)(3,0)
+  \addtopsstyle{Beam}{beamalign=abs, linewidth=0.2\pslinewidth, beaminsidelast, stopinsidecount=1}
+  \multido{\r=-1.55+0.1}{33}{%
+    \drawbeam[beampos=\r](0,0){1}}
+\end{pspicture}
+\end{LTXexample}
+
+\begin{LTXexample}
+\begin{pspicture}(0,-1)(3,1)
+  \optplane(0,0)
+  \parabolicmirror(0,0)(3,0)
+  \addtopsstyle{Beam}{arrows=->, beamalign=abs, linewidth=0.2\pslinewidth, beaminsidelast, stopinsidecount=1}
+  \drawbeam[beampos=0.4](0,0){2}{1}
+  \drawbeam[beampos=0.2, linecolor=red](0,0){2}{1}
+\end{pspicture}
+\end{LTXexample}
+
+\begin{LTXexample}
+\begin{pspicture}(0,-1)(3,1)
+  \optplane(0,0)
+  \parabolicmirror[parmirrorheight=2, parmirrorwidth=1.5](0,0)(3,0)
+  \addtopsstyle{Beam}{arrows=->, beamalign=abs}
+  \drawbeam[beampos=0.1]{1}{2}{1}
+  \drawbeam[beampos=0.5, linecolor=red]{1}{2}{1}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
 % \ifGERMAN\section{Strahlteiler}\fi
 % \ifENGLISH\section{Beamsplitter}\fi
 %
@@ -8469,7 +8537,7 @@
 % \fi
 % \ifENGLISH
 % Number of segments, which are used inside the last component. This
-% option is in effect only with \Lkeyword{beamsinsidelast} or
+% option is in effect only with \Lkeyword{beaminsidelast} or
 % \Lkeyword{stopinside} set to \opt{true}.
 % \fi
 %
@@ -10894,16 +10962,25 @@
 %</ignore>
 % \fi
 %
-%   \optitem{optdipolecomp}{\prm{macros}}
-%   \ifGERMAN Mit dieser Option kann die Zeichnung einer Komponente
-%   definiert werden, um dann mit \Lcs*{newpsobject} basierend auf
-%   \Lcomp{optdipole} eine neuen Komponente zu definieren.
-%   \fi
-%   \ifENGLISH
-%   This option defines the drawing of a component, and can be used to
-%   define a new component based in \Lcomp{optdipole} with
-%   \Lcs*{newpsobject}.
-%   \fi
+% \ifGERMAN  
+% Weitere Beispiel sind \prettyref{ex:lclv} und
+% \prettyref{ex:absspektr}.
+% \fi
+% \ifENGLISH 
+% Further examples are \prettyref{ex:lclv} and
+% \prettyref{ex:absspektr}.
+% \fi
+% 
+% \optitem{optdipolecomp}{\prm{macros}}
+% \ifGERMAN Mit dieser Option kann die Zeichnung einer Komponente
+% definiert werden, um dann mit \Lcs*{newpsobject} basierend auf
+% \Lcomp{optdipole} eine neuen Komponente zu definieren.
+% \fi
+% \ifENGLISH
+% This option defines the drawing of a component, and can be used to
+% define a new component based in \Lcomp{optdipole} with
+% \Lcs*{newpsobject}.
+% \fi
 %
 % \iffalse
 %<*ignore>
@@ -10924,16 +11001,16 @@
 %</ignore>
 % \fi
 %
-%   \optitem{opttripolecomp}{\prm{macros}}
-%   \ifGERMAN Mit dieser Option kann die Zeichnung einer Komponente
-%   definiert werden, um dann mit \Lcs*{newpsobject} basierend auf
-%   \Lcomp{opttripole} eine neuen Komponente zu definieren.
-%   \fi
-%   \ifENGLISH
-%   This option defines the drawing of a component, and can be used to
-%   define a new component based in \Lcomp{opttripole} with
-%   \Lcs*{newpsobject}.
-%   \fi
+% \optitem{opttripolecomp}{\prm{macros}}
+% \ifGERMAN Mit dieser Option kann die Zeichnung einer Komponente
+% definiert werden, um dann mit \Lcs*{newpsobject} basierend auf
+% \Lcomp{opttripole} eine neuen Komponente zu definieren.
+% \fi
+% \ifENGLISH
+% This option defines the drawing of a component, and can be used to
+% define a new component based in \Lcomp{opttripole} with
+% \Lcs*{newpsobject}.
+% \fi
 %
 % \iffalse
 %<*ignore>
@@ -10953,14 +11030,6 @@
 %</ignore>
 % \fi
 %
-% \ifGERMAN  
-% Weitere Beispiel sind \prettyref{ex:lclv} und
-% \prettyref{ex:absspektr}.
-% \fi
-% \ifENGLISH 
-% Further examples are \prettyref{ex:lclv} and
-% \prettyref{ex:absspektr}.
-% \fi
 % \end{optionlist}
 %
 % \ifGERMAN
@@ -13503,6 +13572,12 @@
 %
 % \begin{changelog}
 % \patchcmd{\release}{\setlength{\itemsep}{0pt}}{\setlength{\itemsep}{0pt}\setlength{\parsep}{0pt}}{}{}
+%   \begin{release}{5.0}{2014-xx-xx}
+%   \item Added support for arbitrary interface shapes.
+%   \item Added component \cs{parabolicmirror}.
+%   \item Requires the \opt{pst-intersect} package.
+%   \item Requires \opt{pstricks} version 2.53
+%   \end{release}
 %   \begin{release}{4.10}{2014-06-04}
 %   \item Added value \opt{firstcomp} to parameter \opt{beamalign}\see{prm:beamalign}
 %   \item Modified \cs{optsource} to handle also the beam alignment\see{comp:optsource}
@@ -13821,6 +13896,7 @@
 \RequirePackage{pst-plot}
 \RequirePackage{multido}
 \RequirePackage{pst-eucl}
+\RequirePackage{pst-intersect}
 \RequirePackage{pstricks-add}
 \RequirePackage{environ}
 %    \end{macrocode}
@@ -14905,6 +14981,21 @@
   mirrorlinewidth=2\pslinewidth
 }%
 %    \end{macrocode}
+%
+% Parabolic mirror
+%    \begin{macrocode}
+\define@key[psset]{optexp}{parmirrorwidth}{%
+  \pst@checknum{#1}\POE@key@parmirrorwidth
+}
+\define@key[psset]{optexp}{parmirrorheight}{%
+  \pst@checknum{#1}\POE@key@parmirrorheight
+}
+\psset[optexp]{%
+  parmirrorwidth=1,
+  parmirrorheight=1
+}%
+%    \end{macrocode}
+%
 % Grating
 %
 % These are the old \opt{optgrid*} parameters, which have been deprecated.
@@ -16788,7 +16879,130 @@
 }%
 %    \end{macrocode}
 % \end{macro}
-% 
+%
+% \begin{macro}{\tx@Drawbeam}
+%    \begin{macrocode}
+\pst@def{Drawbeam}<
+%    \end{macrocode}
+% Remove trailing empty line parts.
+%    \begin{macrocode}
+    { counttomark 6 le {
+        exit
+      } if
+      3 index not {
+        pop pop pop 
+      }{ 
+        exit
+      } ifelse
+    } loop
+%    \end{macrocode}
+% Remove heading empty line parts. Note, that the first point must not have
+% 'draw = true', because it is the starting point which we have to move to.
+%    \begin{macrocode}
+    { counttomark 3 le {
+        exit
+      } if
+      counttomark 3 sub index not {
+        counttomark -3 roll pop pop pop
+      }{
+        exit
+      } ifelse
+    } loop
+%    \end{macrocode}
+%    \begin{macrocode}
+  counttomark 3 le {
+%    \end{macrocode}
+% first ray misses the next interface or is even parallel to the input interface.
+%    \begin{macrocode}
+    cleartomark
+  }{
+%    \end{macrocode}
+% This is the /Line definition from \opt{pstricks-add}, adapted to the beam path
+% structure which includes the boolean values to indicate if a line is drawn, or
+% if we use moveto. There was no way to patch the original definition to account
+% for the moveto parts and avoid duplicating the code.
+%    \begin{macrocode}
+  counttomark 3 div cvi /N ED
+  (\psk@ArrowInside) length 0 gt { 
+    \ifx\psk@arrowA\arrowType@H   % do we have a Hook arrow at the beginning?
+      \pst@number\pshooklength  % yes 
+    \else
+      \psk@arrowsize\space CLW mul add dup \psk@arrowlength\space mul exch \psk@arrowinset mul neg add  
+    \fi
+    /arrowlength exch def 
+    6 copy pop				% copy all four values for the arrow line
+    /y1 ED /x1 ED pop /y2 ED /x2 ED 	% save them
+    /Alpha y2 y1 sub x2 x1 sub Atan def % the gradient of the line
+    pop 3 -1 roll 5 1 roll 
+    ArrowA 
+    x1 Alpha cos arrowlength mul add	% dx add
+    y1 Alpha sin arrowlength mul add	% dy add, to get the current point at the end of the arrow tip
+    5 -1 roll 3 1 roll true
+    /N N 1 sub def
+    N {
+      6 copy pop 
+      /y1 ED /x1 ED pop /y2 ED /x2 ED /draw ED
+%    \end{macrocode}
+% Check for line segment length and draw the arrow only, if the segment is long
+% enough. This is in first place to avoid drawing an inside arrow for the
+% pinhole which has three interfaces instead of one so that it can be used as
+% real spatial filter.
+%    \begin{macrocode}
+      x1 y1 x2 y2 @ABDist dup
+      \POE@key@ArrowInsideMinLength\space\pst@number\psunit mul ge 
+      exch \POE@key@ArrowInsideMaxLength\space\pst@number\psunit mul dup 0 lt 
+        3 1 roll le or and {
+        x1 y1
+        \psk@ArrowInsidePos\space 1 gt {
+          /Alpha y2 y1 sub x2 x1 sub Atan def
+          /ArrowPos \psk@ArrowInsideOffset\space def
+          /dArrowPos \psk@ArrowInsidePos\space abs def
+          \psk@ArrowInsideNo\space cvi {
+            /ArrowPos ArrowPos dArrowPos add def
+            x1 Alpha cos ArrowPos mul add
+            y1 Alpha sin ArrowPos mul add
+            6 index { ArrowInside } if
+            pop pop
+          } repeat
+        }{
+          /ArrowPos \psk@ArrowInsideOffset\space def
+          /dArrowPos \psk@ArrowInsideNo 1 gt {%
+            1.0 \psk@ArrowInsideNo 1.0 add div
+          }{\psk@ArrowInsidePos } ifelse def
+            \psk@ArrowInsideNo\space cvi {
+              /ArrowPos ArrowPos dArrowPos add def
+              x2 x1 sub ArrowPos mul x1 add
+              y2 y1 sub ArrowPos mul y1 add
+              6 index { ArrowInside } if
+              pop pop
+            } repeat
+        } ifelse
+        pop pop
+      } if
+      draw {Lineto}{moveto} ifelse
+    } repeat
+  }{
+    pop 5 copy 3 -1 roll pop 
+    ArrowA pop pop pop pop
+    counttomark 3 idiv -1 2 {
+      pop {
+        lineto
+      }{
+        moveto
+      } ifelse
+    } for
+  } ifelse
+  {CP 4 2 roll ArrowB lineto pop pop } {moveto} ifelse
+%    \end{macrocode}
+% remove the mark
+%    \begin{macrocode}
+  pop
+  } ifelse
+>
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\POE@getcomprange}
 %    \begin{macrocode}
 \def\POE@getcomprange#1-#2\@nil{%
   \ifx\\#2\\%
@@ -16895,7 +17109,8 @@
   \fi
 }%
 %    \end{macrocode}
-%
+% \end{macro}
+% 
 % \begin{macro}{\POE@getcomps}
 %    \begin{macrocode}
 \def\POE@getcomps#1#2{%
@@ -17271,6 +17486,12 @@
 %   (for \cs{rightangleprism} and \cs{optprism}.
 %    \begin{macrocode}
 \def\oenode@Origin#1{\oenode{Origin}{#1}}%
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{oenode@Path}
+% Use this macro for internal use with \cs{pssavepath}.
+%    \begin{macrocode}
+\def\oenode@Path#1{\oenode{Path@#1}{}}%
 %    \end{macrocode}
 % \end{macro}
 % \begin{macro}{\oenodeIfc}
@@ -18496,6 +18717,7 @@
 \newOptexpDipole{optdiode}{allowbeaminside=false}
 \newOptexpDipole{doveprism}
 \newOptexpDipole{glanthompson}
+\newOptexpDipole{parabolicmirror}{position=end, ref@angle=-90}
 %    \end{macrocode}
 % 
 % Define all free-ray tripoles
@@ -19187,6 +19409,39 @@
          \fi){0.6}{160}{200}
    \fi
 }%
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsubsection{parabolicmirror}
+%
+% \begin{macro}{\parabolicmirror@nodes}
+%    \begin{macrocode}
+\def\parabolicmirror@nodes{%
+  \pssavepath[linestyle=none, arrows=-,ArrowInside=-]{\oenode@Path{A}}{%
+    \parametricplot[algebraic, VarStep, VarStepEpsilon=1e-7, plotstyle=cspline]%
+      {0}{\POE@key@parmirrorheight\space 0.5 mul}%
+      {-\POE@key@parmirrorwidth/(0.25*\POE@key@parmirrorheight^2)*t^2|-t}}
+  \pssavepath[linestyle=none, arrows=-,ArrowInside=-]{\oenode@Path{B}}{%
+    \parametricplot[algebraic, VarStep, VarStepEpsilon=1e-7, plotstyle=cspline]%
+      {0}{\POE@key@parmirrorheight\space 0.5 mul}%
+      {-\POE@key@parmirrorwidth/(0.25*\POE@key@parmirrorheight^2)*t^2|t}}
+  \newOptexpComp{%
+    {-\POE@key@parmirrorwidth\space 0.16 mul \POE@key@parmirrorheight\space -0.2 mul} 
+      tx@IntersectDict /\PIT@name{\oenode@Path{A}} get 0 0 refl {PathIfc}
+    {0 0} {1 0} 0 0 trans {PlainIfc}
+    {-\POE@key@parmirrorwidth\space 0.16 mul \POE@key@parmirrorheight\space 0.2 mul}
+      tx@IntersectDict /\PIT@name{\oenode@Path{B}} get 0 0 refl {PathIfc}
+    1 }%
+\ignorespaces}%
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\parabolicmirror@comp}
+%    \begin{macrocode}
+\def\parabolicmirror@comp{%
+  \pstracecurve{\oenode@Path{A}}
+  \pstracecurve{\oenode@Path{B}}
+\ignorespaces}
 %    \end{macrocode}
 % \end{macro}
 %
@@ -21757,6 +22012,23 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % \end{macro}
 % 
+% \begin{macro}{PathIfc}
+% Define an interface which is given by an arbitrary path.
+%   \begin{pssyntax}
+%     \PSproc{X Y} \PSarray{path} \PSproc{scl} \PSvar{NAlow NAup} \PSop{PathIfc}
+%   \end{pssyntax}
+%    \begin{macrocode}
+/PathIfc {
+  pop pop /NAup 0 def /NAlow 0 def 
+%    \end{macrocode}
+% This kind of interface doesn't allow to switch off the NA-settings,
+% because the interface is defined only inside the NA.
+%    \begin{macrocode}
+  3 1 roll /Path ED
+  exec 3 -1 roll exec /Y ED /X ED
+} bind def
+%    \end{macrocode}
+% \end{macro}
 % \begin{macro}{NewCompIfc}
 % Defines a new interface of a component, must be called within \PSvar{NewOptexpComp}.
 % \begin{pssyntax}
@@ -21774,8 +22046,7 @@ tx@OptexpDict begin
 % \psargitem{\PSstring{CompName}} The name of the component we are in.
 % \psargitem{\PSstring{Name}} The name of the new interface. It is prefixed by «P@».
 % \psargitem{\PSproc{\ldots Ifc}} Contain the actual procedure to define the
-%   concrete interface type, can be \PSproc{PlainIfc} or
-%   \PSproc{CurvedIfc}.
+%   concrete interface type, can be \PSproc{PlainIfc}, \PSproc{CurvedIfc} or \PSproc{PathIfc}.
 % \end{psarglist}
 %    \begin{macrocode}
 /NewCompIfc {
@@ -22841,7 +23112,7 @@ tx@OptexpDict begin
     PrevR type /realtype eq {
       /CurrCenter load /PrevCenter ED
     } if
-    IfcNum CompName isCurved {
+    IfcNum CompName isCurvedIfc {
       IfcNum CompName LoadIfc
       tx@Dict begin Pyth end /CurrR ED
       ToVec /CurrCenter ED
@@ -22853,7 +23124,7 @@ tx@OptexpDict begin
       draw {
         /DrawnSegm DrawnSegm 1 add def
         PrevUp moveto CurrUp lineto
-        IfcNum CompName isCurved {
+        IfcNum CompName isCurvedIfc {
           CurrCenter CurrUp CurrLow 
           4 copy 3 -1 roll eq 3 1 roll eq and {
             6 {pop} repeat
@@ -23113,15 +23384,29 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % \end{macro}
 % 
-% \begin{macro}{isCurved}
+% \begin{macro}{isCurvedIfc}
 %  Check if interface \PSvar{IfcNum} of componente \PSvar{compname} is curved.
 %   \begin{pssyntax}
-%     \PSvar{IfcNum} \PSstring{compname} \PSop{isCurved} \PSvar{bool}
+%     \PSvar{IfcNum} \PSstring{compname} \PSop{isCurvedIfc} \PSvar{bool}
 %   \end{pssyntax}
 %    \begin{macrocode}
-/isCurved {
+/isCurvedIfc {
   cvn load begin
     IfcName load /RX known
+  end
+} bind def
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{isPathIfc}
+%  Check if interface \PSvar{IfcNum} of componente \PSvar{compname} is an arbitrary path.
+%   \begin{pssyntax}
+%     \PSvar{IfcNum} \PSstring{compname} \PSop{isPathIfc} \PSvar{bool}
+%   \end{pssyntax}
+%    \begin{macrocode}
+/isPathIfc {
+  cvn load begin
+    IfcName load /Path known
   end
 } bind def
 %    \end{macrocode}
@@ -23137,8 +23422,13 @@ tx@OptexpDict begin
 /HandleInterface {
   (HandleInterface) DebugBegin
   /Yin ED /Xin ED /Y0 ED /X0 ED /n2 ED /mode ED
-  2 copy 2 copy LoadIfc
-  6 -2 roll isCurved { CurvedInterface }{ PlainInterface } ifelse
+  2 copy 2 copy LoadIfc % IfcNum name IfcNum name path
+  dup type /arraytype eq { % is an path interface
+    3 1 roll pop pop PathInterface % IfcNum name X0' Y0' Xout Yout status
+  } {
+    6 -2 roll 
+    isCurvedIfc { CurvedInterface }{ PlainInterface } ifelse
+  } ifelse
 %    \end{macrocode}
 % IfcNum CompName X0' Y0' Xout Yout status
 %
@@ -23151,7 +23441,7 @@ tx@OptexpDict begin
     cvn load begin IfcName load dup /NAlow get exch /NAup get end
     2 copy lt {
       4 2 roll 2 copy LoadIfc NormalizeVec
-      6 -2 roll isCurved {
+      6 -2 roll isCurvedIfc {
         neg exch
       } if
       %% ... X0' Y0' NAlow NAup X Y dXp dYp
@@ -23182,17 +23472,21 @@ tx@OptexpDict begin
   (LoadIfc) DebugBegin
   cvn load begin
     IfcName load begin
-      X Y
-      CompMtrx transform CM itransform
-      currentdict /RX known { RX RY }{ DX DY } ifelse
-      CompMtrx dtransform CM idtransform
+      currentdict /Path known {
+        Path TransformPath
+      } {
+        X Y
+        CompMtrx transform CM itransform
+        currentdict /RX known { RX RY }{ DX DY } ifelse
+        CompMtrx dtransform CM idtransform
+      } ifelse
     end
   end
   DebugEnd
 } bind def
 %    \end{macrocode}
 % \end{macro}
-% 
+%
 % \begin{macro}{isFreeray}
 %   Check if \PSvar{compname} is a free-ray componente by checking if there is a
 %   refractive index associated with it.
@@ -23656,7 +23950,19 @@ tx@OptexpDict begin
 %   \end{pssyntax}
 %    \begin{macrocode}
 /ToVec {
-    [ 3 1 roll ] cvx
+    ToPnt cvx
+} bind def
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{ToPnt}
+%   Convert two numbers to an array holding the two values.
+%   \begin{pssyntax}
+%     \PSvar{X Y} \PSop{ToPnt} \PSarray{X Y}
+%   \end{pssyntax}
+%    \begin{macrocode}
+/ToPnt {
+    [ 3 1 roll ]
 } bind def
 %    \end{macrocode}
 % \end{macro}
@@ -23916,6 +24222,45 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % \end{macro}
 % 
+% \begin{macro}{PathInterface}
+%   \begin{pssyntax}
+%     \PSarray{path} \PSop{PathInterface} \PSvar{X0' Y0' Xout Yout status}
+%   \end{pssyntax}
+%    \begin{macrocode}
+/PathInterface {
+  (PathInterface) DebugBegin
+  [ [X0 Y0] [X0 Xin add Y0 Yin add] ] exch 
+  tx@IntersectDict begin IntersectLinePath end % [pathseg] t [isect]
+  dup length 0 eq {
+    pop pop pop 0 0 missed
+  } {
+    aload pop
+    Xin Yin Xin Yin 
+    8 -2 roll exch % I.x I.y Xin Yin Xin Yin t [pathseg]
+    dup length 2 eq { % a line
+      exch pop
+      aload pop aload pop 3 -1 roll aload pop VecSub % I.x I.y Xin Yin Xin Yin dXp dYp
+    } {
+      exch dup cvi sub DeriveCurve
+    } ifelse
+    % the following part is copied from /PlainInterface
+    NormalVec
+    mode trans eq {
+      n1 n2 RefractVec
+      2 copy 0 eq exch 0 eq and { tir } { ok } ifelse
+    } {
+      ReflectVec ok
+    } ifelse
+    /n1 n2 def
+    5 -2 roll 2 copy 7 2 roll X0 Y0 @ABVect Xin Yin DotProd 0 lt
+    PN 1 gt and {
+      pop missed
+    } if
+  } ifelse
+  DebugEnd
+} bind def
+%    \end{macrocode}
+% \end{macro}
 % 
 % \begin{macro}{TransformRefIndex}
 %   If the refractive index on the stack is for the background (has value
@@ -24390,8 +24735,112 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % \end{macro}
 %
+% \begin{macro}{TransformPath}
+%   Transforms a path (as defined by \cs{pssavepath} from
+%   \nxLPack{pst-intersect}) using the \opt{currentmatrix} and the
+%   \opt{CompMtrx} of the component. That is used only by \opt{LoadIfc}.
+%   \begin{pssyntax}
+%     \PSarray{path} \PSop{TransformPath} \PSarray{path'}
+%   \end{pssyntax}
+%    \begin{macrocode}
+/TransformPath {
+  mark [ 3 -1 roll aload pop 
+  counttomark 1 add counttomark 1 add exch 1 roll
+  {
+    counttomark 1 eq { cleartomark exit } if
+    dup /curvetype eq {
+      7 1 roll
+      3 { CompMtrx transform CM itransform 7 2 roll } repeat
+      counttomark -1 roll dup counttomark 1 roll
+      7 roll
+    } {
+      3 1 roll CompMtrx transform CM itransform 3 -1 roll
+      counttomark -1 roll dup counttomark 1 roll
+      3 roll
+    } ifelse
+  } loop
+  ]
+} bind def
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{DeriveCurve}
+%   Calculate the derivative of a curve at its parameter \PSvar{t}. This
+%   works only for the special case of third-order Bezier curves.
+%
+%   \begin{align*}
+%     B(t)  & = (1-t)^3 P_0 + 3(1-t)^2 t P_1 + 3(1-t)t^2 P_2 + t^3 P_3\\
+%     B'(t) & = -3(1-t)^2 P_0 + 3(3t^2–4t+1) P_1 + 3(2t–3t^2) P_2 + 3t^2 P_3
+%   \end{align*}
+%   \begin{pssyntax}
+%     \PSarray{curve} \PSvar{t} \PSop{DeriveCurve} \PSvar{dX dY}
+%   \end{pssyntax}
+%    \begin{macrocode}
+/DeriveCurve {
+  (DeriveCurve) DebugBegin
+  exch dup length 4 eq not {
+    pop pop 0 0
+  } {
+    aload pop 5 -1 roll
+    dup 1 exch sub dup mul -3 mul exch % P0 P1 P2 P3 C0=(-3(1-t)^2) t
+    dup dup -4 mul 1 add exch dup mul 3 mul add 3 mul exch % P0 P1 P2 P3 C0 C1=(3(3t^2-4t+1)) t
+    dup dup 2 mul exch dup mul -3 mul add 3 mul exch % P0 P1 P2 P3 C0 C1 C2=(3(2t-3t^2)) t
+    dup mul 3 mul % P0 P1 P2 P3 C0 C1 C2 C3=3t^2
+    8 copy
+    0 6 -1 3 { -1 roll 0 get 3 -1 roll mul add } for
+    9 1 roll
+    0 6 -1 3 { -1 roll 1 get 3 -1 roll mul add } for
+  } ifelse
+  DebugEnd
+} bind def
+%    \end{macrocode}
+% \end{macro}
+% 
+% \begin{macro}{GetBezierDeriv}
+%   Calculate the derivative of the bezier curve at the coordinate
+%   \PSvar{t}.
+%   \begin{equation}
+%     C(t) = \sum_{i=0}^n B_{i,n}(t)P_i\quad\text{with}\quad B_{i,n}(t) = (n over i) t^i(1-t)^{n-i}
+%   \end{equation}
+%   \begin{equation}
+%     C'(t) = \sum_{i=0}^n B'_{i,n}(t)P_i\quad\text{with}\quad B'_{i,n}(t) = (n over i)(i t^{i-1}(1-t)^{n-i} - (n-i)t^i(1-t)^{n-i-1})
+%   \end{equation}
+%   \begin{pssyntax}
+%     \PSarray{[P0]\ldots[P\_n]} \PSvar{t} \PSop{DeriveBezier} \PSvar{x y}
+%   \end{pssyntax}
+%    \begin{macrocode}
+/GetBezierDeriv { 				% t on stack
+  10 dict begin					% hold all local
+  /t ED
+  /t1 1 t sub def				% t1=1-t
+  dup length /BezierOrder exch def
+  /Points exch def
+  /Coeff tx@FuncDict begin Pascal end BezierOrder get def		% get the coefficients
+    0 0						% initial values for x y
+    BezierOrder -1 0 {				% BezierOrder,...,2,1,0
+      /I ED					% I=BezierOrder,...,2,1,0
+      /J BezierOrder I sub def			% J=0,1,2,...,BezierOrder
+      I 0 eq { 
+        0 
+      }{ 
+        I t I 1 sub exp mul t1 J exp mul        %  i*t^{i-1}*(1-t)^{n-i} 
+      } ifelse
+      J 0 eq {
+        0
+      } {
+        J t I exp mul t1 J 1 sub exp mul    % -(n-i)t^i(1-t)^{n-i-1}
+      } ifelse
+      sub Coeff J get mul
+      Points I get aload pop 3 -1 roll VecScale VecAdd
+    } for					% x y on stack
+  end
+} bind def
+%    \end{macrocode}
+% \end{macro}
+%
 % \begin{macro}{mymax}
-% For some reason Adobe Distiller crashes if 'max' operator is used with two floats which are very close (4e-5 in one case)
+%   For some reason Adobe Distiller crashes if 'max' operator is used
+%   with two floats which are very close (4e-5 in one case)
 %    \begin{macrocode}
 /mymax {
   2 copy lt { exch } if pop
