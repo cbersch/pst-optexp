@@ -7995,13 +7995,14 @@
   \optprism[prismalign=center, prismangle=59](A)(B)(C)
   \optplane(C)
   \definecolor[ps]{bl}{rgb}{%
-    tx@addDict begin Red Green Blue end}%
+    tx@addDict begin tx@OptexpDict begin
+      Wavelength wavelengthToRGB 
+      Red Green Blue 
+    end end }%
   \addtopsstyle{Beam}{linecolor=bl, linewidth=0.4\pslinewidth, beamalign=abs}
-  \multido{\i=0+1}{60}{%
-    \pstVerb{%
-      \i\space 650 400 sub 59 div mul 400 add 
-      tx@addDict begin wavelengthToRGB end }%
-    \drawbeam[n=\i\space 650 400 sub 59 div mul 400 add Sellmaier]{-}%
+  \multido{\iLambda=400+4}{60}{%
+    \pstVerb{/Wavelength \iLambda\space def }%
+    \drawbeam[n=Wavelength Sellmaier]{-}%
   }%
 \end{pspicture}
 \end{LTXexample}
