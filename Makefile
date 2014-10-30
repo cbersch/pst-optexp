@@ -5,7 +5,6 @@ PACKAGE = pst-optexp
 LATEX = latex
 
 ARCHNAME = $(PACKAGE)-$(shell date +"%y%m%d")
-ARCHNAME_TDS = $(PACKAGE).tds
 
 ARCHFILES = Makefile README Changes \
 	    $(addprefix $(PACKAGE), -quickref.pdf .dtx .ins .pdf -DE.pdf)
@@ -21,9 +20,11 @@ doc-DE: $(PACKAGE)-DE.pdf
 doc-code: $(PACKAGE)-code.pdf
 quickref: $(PACKAGE)-quickref.pdf
 
-dist : $(ARCHFILES)
-	mkdir -p pst-optexp
+dist: $(ARCHFILES)
+	mkdir -p $(PACKAGE)
 	cp $(ARCHFILES) $(PACKAGE)
+	zip -r $(PACKAGE).zip $(PACKAGE)
+	$(RM) -rf $(PACKAGE)/
 
 $(PACKAGE).dvi: L = english
 $(PACKAGE)-DE.dvi: L = ngerman
@@ -75,30 +76,6 @@ $(PACKAGE).sty $(PACKAGE).pro $(PACKAGE).ist: $(PACKAGE).ins $(PACKAGE).dtx
 
 Changes: Changes.py $(PACKAGE).dtx
 	python $<
-
-arch : Changes
-	zip $(ARCHNAME).zip $(ARCHFILES)
-
-arch-tds : dist
-	$(RM) $(ARCHNAME_TDS).zip
-	mkdir -p tds/tex/latex/$(PACKAGE)
-	mkdir -p tds/doc/latex/$(PACKAGE)
-	mkdir -p tds/source/latex/$(PACKAGE)
-	mkdir -p tds/dvips/$(PACKAGE)
-	cp $(PACKAGE).sty tds/tex/latex/$(PACKAGE)/
-	cp $(PACKAGE).pro tds/dvips/$(PACKAGE)/
-	cp Changes $(PACKAGE).pdf $(PACKAGE)-DE.pdf \
-          README $(PACKAGE)-quickref.pdf \
-	  tds/doc/latex/$(PACKAGE)/
-	cp $(PACKAGE).dtx $(PACKAGE).ins Makefile \
-	  tds/source/latex/$(PACKAGE)/
-	cd tds ; zip -r ../$(ARCHNAME_TDS).zip tex doc source dvips
-	cd ..
-	rm -rf tds
-
-ctan : dist arch-tds
-	zip -r $(PACKAGE).zip $(ARCHNAME_TDS).zip $(PACKAGE)
-	$(RM) -rf $(PACKAGE)/
 
 clean :
 	$(RM) $(foreach prefix, $(PACKAGE) $(PACKAGE)-code $(PACKAGE)-DE $(PACKAGE)-quickref, \
