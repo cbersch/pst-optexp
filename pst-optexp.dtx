@@ -18,7 +18,7 @@
 %<stylefile>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<stylefile>\ProvidesPackage{pst-optexp}
 %<*stylefile>
-    [2014/10/03 v5.0dev Optical experimental setups with PSTricks]
+    [2014/10/30 v5.0 Optical experimental setups with PSTricks]
 %</stylefile>
 %
 %<*driver>
@@ -3925,19 +3925,8 @@
 \begin{LTXexample}
 \begin{pspicture}(0,-1)(3,1)
   \optplane(0,0)
-  \parabolicmirror(0,0)(3,0)
-  \addtopsstyle{Beam}{arrows=->, beamalign=abs, linewidth=0.2\pslinewidth, beaminsidelast, stopinsidecount=1}
-  \drawbeam[beampos=0.4](0,0){2}{1}
-  \drawbeam[beampos=0.2, linecolor=red](0,0){2}{1}
-\end{pspicture}
-\end{LTXexample}
-
-\begin{LTXexample}
-\begin{pspicture}(0,-1)(3,1)
-  \optplane(0,0)
   \parabolicmirror[parmirrorheight=2, parmirrorwidth=1.5](0,0)(3,0)
   \addtopsstyle{Beam}{arrows=->, beamalign=abs}
-  \drawbeam[beampos=0.1]{1}{2}{1}
   \drawbeam[beampos=0.5, linecolor=red]{1}{2}{1}
 \end{pspicture}
 \end{LTXexample}
@@ -12515,6 +12504,33 @@
     \drawwire{\i}{\ii}}
 \end{pspicture}
 \end{LTXexample}
+
+\begin{LTXexample}[pos=t, caption={caption}]
+\begin{pspicture}(10,3)
+\makeatletter
+\newOptexpTripole{roughsurface}
+\def\roughsurface@nodes{%
+  \pssavepath[linestyle=none, arrows=-,ArrowInside=-]{\oenode@Path{A}}{%
+    \code{0 srand}
+    \moveto(!-3 Rand 0.5 sub 0.1 mul)
+    \multido{\r=-2.7+0.3}{20}{%
+      \lineto(!\r\space Rand 0.5 sub 0.1 mul)}%
+  }%
+  \newOptexpComp{%
+    {0 0} tx@IntersectDict /\PIT@name{\oenode@Path{A}} get 0 0 refl {PathIfc}
+    1 }%
+}%
+\def\roughsurface@comp{%
+  \pstracecurve{\oenode@Path{A}}
+}%
+\makeatother
+\optplane[angle=90](1,3)
+\roughsurface(0,3)(5,0)(10,3)
+\addtopsstyle{Beam}{beamalign=abs, beamangle=-45, arrows=->, arrowscale=2}
+\multido{\r=0+0.3}{6}{%
+\drawbeam[beampos=\r]{1}{2}{1}}
+\end{pspicture}
+\end{LTXexample}
 % \iffalse
 %</ignore>
 % \fi
@@ -13572,11 +13588,11 @@
 %
 % \begin{changelog}
 % \patchcmd{\release}{\setlength{\itemsep}{0pt}}{\setlength{\itemsep}{0pt}\setlength{\parsep}{0pt}}{}{}
-%   \begin{release}{5.0}{2014-xx-xx}
-%   \item Added support for arbitrary interface shapes.
+%   \begin{release}{5.0}{2014-10-30}
+%   \item Added support for arbitrary interface shapes (experimental,
+%     requires the \opt{pst-intersect} package and \opt{pstricks}
+%     version 2.53.
 %   \item Added component \cs{parabolicmirror}.
-%   \item Requires the \opt{pst-intersect} package.
-%   \item Requires \opt{pstricks} version 2.53
 %   \end{release}
 %   \begin{release}{4.10}{2014-06-04}
 %   \item Added value \opt{firstcomp} to parameter \opt{beamalign}\see{prm:beamalign}
@@ -24837,6 +24853,37 @@ tx@OptexpDict begin
 } bind def
 %    \end{macrocode}
 % \end{macro}
+%
+% This fixes a problem in pst-intersect.pro v0.4
+%    \begin{macrocode}
+tx@IntersectDict begin 
+/IntersectLinePath {
+  3 dict begin
+    PreparePath
+    2 copy ElongateLine exch 3 -1 roll pop
+    /isect [] def
+    /t -1 def
+    /n -1 def
+    {
+      /n n 1 add def
+      2 copy IntersectBeziers
+      dup 5 1 roll LoadIntersectionPoints
+      dup length 0 gt {
+        /isect exch def
+        0 get dup type /arraytype eq {
+          aload pop add 0.5 mul 
+        } if n add /t exch def
+        exch pop
+        exit
+      } {
+        pop pop pop
+      } ifelse
+    } forall
+    t isect
+  end
+} bind def
+end
+%    \end{macrocode}
 %
 % \begin{macro}{mymax}
 %   For some reason Adobe Distiller crashes if 'max' operator is used
