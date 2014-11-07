@@ -18,7 +18,7 @@
 %<stylefile>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<stylefile>\ProvidesPackage{pst-optexp}
 %<*stylefile>
-    [2014/10/30 v5.0 Optical experimental setups with PSTricks]
+    [2014/11/07 v5.1dev Optical experimental setups with PSTricks]
 %</stylefile>
 %
 %<*driver>
@@ -3933,6 +3933,58 @@
 % \iffalse
 %</ignore>
 % \fi
+%
+% \ifGERMAN\section{Off-axis-Parabolspiegel}\fi
+% \ifENGLISH\section{Off-axis parabolic mirror}\fi
+%
+% \begin{ltxsyntax}
+%   \xLtripole{oapmirror}%
+%   \compitem{oapmirror}[options](in)(center)(focus){label}%
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(3,2.5)
+  \oapmirror(3,2)(1,2)(2,0){OAP}
+  \drawwidebeam[beamwidth=0.5](3,2){1}(2,0)
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+% \end{ltxsyntax}
+%
+% \begin{optionlist}
+%   \numitem[1]{oapmirroraperture}
+%   \ifGERMAN Apertur des Spiegels bezogen auf die Eingangsrichtung.\fi
+%   \ifENGLISH Mirror aperture with respect to the input direction.\fi
+% \end{optionlist}
+% 
+% \ifGERMAN Konstruktion des Spiegels anhand der vorgegebenen Punkte. \fi
+% \ifENGLISH Mirror construction using the given nodes.\fi
+%
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[linerange={1-2,4-6,13-13}]
+\begin{pspicture}(6,5)
+\pnodes(5.5,3){In}(1.5,3){Center}(1.5,1.5){Focus}
+\oapmirror[oapmirroraperture=3 2, linestyle=dashed, linecolor=gray](In)(Center)(Focus)
+\oapmirror[oapmirroraperture=1.5, linewidth=3\pslinewidth, plotpoints=200](In)(Center)(Focus){OAP}
+\multido{\r=-0.5+0.5}{3}{%
+  \drawbeam[beampos=\r](In){}(Focus)}
+\psset{style=Refline}\color{Refline}
+\psdot(In)\uput[0](In){In}\psdot(Center)\uput[180](Center){\rput[r](0,0){Center}}\psdot(Focus)\uput[-90](Focus){Focus}
+\pnodes([Xnodesep=1]Center){TmpA}([Xnodesep=1,offset=0.75]Center){TmpB}
+\psline[arrowscale=1.5, arrows=<->](TmpA)(TmpB)\rput[l]([Xnodesep=0.3]TmpB){outer aperture}
+\pnode([Xnodesep=1,offset=-0.75]Center){TmpB}
+\psline[arrowscale=1.5, arrows=<->](TmpA)(TmpB)\rput[l]([Xnodesep=0.3]TmpB){inner aperture}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
 %
 % \ifGERMAN\section{Strahlteiler}\fi
 % \ifENGLISH\section{Beamsplitter}\fi
@@ -13588,6 +13640,9 @@
 %
 % \begin{changelog}
 % \patchcmd{\release}{\setlength{\itemsep}{0pt}}{\setlength{\itemsep}{0pt}\setlength{\parsep}{0pt}}{}{}
+%   \begin{release}{5.1}{xxxx-xx-xx}
+%   \item Added component \cs{oapmirror}.
+%   \end{release}
 %   \begin{release}{5.0}{2014-10-30}
 %   \item Added support for arbitrary interface shapes (experimental,
 %     requires the \opt{pst-intersect} package and \opt{pstricks}
@@ -15010,6 +15065,23 @@
   parmirrorwidth=1,
   parmirrorheight=1
 }%
+%    \end{macrocode}
+%
+% Off-axis parabolic mirror
+%    \begin{macrocode}
+\define@key[psset]{optexp}{oapmirroraperture}{%
+  \pst@expandafter\POE@psset@@oapmirroraperture{#1} {} {} {}\@nil
+}%
+\def\POE@psset@@oapmirroraperture#1 #2 #3\@nil{%
+  \ifx\\#2\\%
+    \def\POE@key@oapmirroraperture@outer{#1 0.5 mul}
+    \def\POE@key@oapmirroraperture@inner{#1 0.5 mul}
+  \else
+    \pst@checknum{#1}\POE@key@oapmirroraperture@inner
+    \pst@checknum{#2}\POE@key@oapmirroraperture@outer
+  \fi
+}%
+\psset[optexp]{oapmirroraperture=1}
 %    \end{macrocode}
 %
 % Grating
@@ -18751,6 +18823,7 @@
 \newOptexpTripole[ref@angle=45]{pentaprism}
 \newOptexpTripole[ref@angle=45]{rightangleprism}
 \newOptexpTripole[ref@angle=45]{optprism}
+\newOptexpTripole{oapmirror}
 %    \end{macrocode}
 %
 % \begin{macro}{\optdipole}
@@ -20505,6 +20578,54 @@
 %    \end{macrocode}
 % \end{macro}
 % 
+% \subsubsection{off-axis parabolic mirror}
+%
+% \begin{macro}{\oapmirror@nodes}
+%    \begin{macrocode}
+\def\oapmirror@nodes{%
+  \POE@calcAngle
+  \POE@Verb{%
+    gsave
+      STV CP T
+      /N@\oenodeRefA{} @GetCenter 
+      /N@\oenodeCenter{} @GetCenter
+      @ABVect NormalizeVec 2 copy 
+      90 matrix rotate dtransform
+      /N@\oenodeRefB{} @GetCenter
+      /N@\oenodeCenter{} @GetCenter @ABVect
+      \tx@UserCoor 2 copy 6 2 roll 
+    grestore
+    DotProd tx@Dict begin /POEzonalradius ED end
+    DotProd 
+    % y = ax^2, a = 1/(2x_0^2) (-h + sqrt(h^2 + x_0^2)), x_0 = @zonalradius.
+    tx@Dict begin 
+    dup /POEoapheight ED neg dup dup mul POEzonalradius dup mul add sqrt add 0.5 POEzonalradius dup mul div mul
+    dup /POEoappar ED
+    /POEangle 180 OEangle sub 0.5 mul POEzonalradius 0 gt { 90 add } if DegToRad def
+    end
+  }%
+  \def\POE@tempX{((POEoappar*(t^2))-(0.25/POEoappar)+POEoapheight)}%
+  \def\POE@tempY{(-t+POEzonalradius)}%
+  \pssavepath[linestyle=none, arrows=-,ArrowInside=-]{\oenode@Path{A}}{%
+    \psparametricplot[algebraic]%
+      {POEzonalradius dup 0 gt {\POE@key@oapmirroraperture@outer}{\POE@key@oapmirroraperture@inner} ifelse add}%
+      {POEzonalradius dup 0 gt {\POE@key@oapmirroraperture@inner}{\POE@key@oapmirroraperture@outer} ifelse sub}%
+      {(cos(POEangle)*\POE@tempX+sin(POEangle)*\POE@tempY)|(cos(POEangle)*\POE@tempY-sin(POEangle)*\POE@tempX)}}%
+  \newOptexpComp{%
+    {0 0} tx@IntersectDict /\PIT@name{\oenode@Path{A}} get 0 0 refl {PathIfc}
+    1 }%
+\ignorespaces}%
+%    \end{macrocode}
+% \end{macro}
+% 
+% \begin{macro}{\oapmirror@comp}
+%    \begin{macrocode}
+\def\oapmirror@comp{%
+  \pstracecurve{\oenode@Path{A}}%
+\ignorespaces}%
+%    \end{macrocode}
+% \end{macro}
+%
 % \subsection{Fiber components}
 %
 % \subsubsection{optfiber}
@@ -23441,6 +23562,10 @@ tx@OptexpDict begin
   2 copy 2 copy LoadIfc % IfcNum name IfcNum name path
   dup type /arraytype eq { % is an path interface
     3 1 roll pop pop PathInterface % IfcNum name X0' Y0' Xout Yout status
+%    \end{macrocode}
+% Dummy element on the stack to allow the clean-up routine to work also for this case.
+%    \begin{macrocode}
+    dup missed eq { /dummy 7 1 roll } if
   } {
     6 -2 roll 
     isCurvedIfc { CurvedInterface }{ PlainInterface } ifelse
@@ -24013,8 +24138,9 @@ tx@OptexpDict begin
 % \end{macro}
 % 
 % \begin{macro}{@ABVect}
+% Vector from (Xb,Yb) to (Xa,Ya)
 % \begin{pssyntax}
-%   \PSvar{Xa Ya Xb Yb} \PSop{@ABVect} \PSvar{dX dY}
+%   \PSvar{Xa Ya Xb Yb} \PSop{@ABVect} \PSvar{(Ya - Yb) (Xa - Xb)}
 % \end{pssyntax}
 %    \begin{macrocode}
 /@ABVect { 
