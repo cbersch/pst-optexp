@@ -18,7 +18,7 @@
 %<stylefile>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<stylefile>\ProvidesPackage{pst-optexp}
 %<*stylefile>
-    [2014/11/07 v5.1dev Optical experimental setups with PSTricks]
+    [2014/11/19 v5.1 Optical experimental setups with PSTricks]
 %</stylefile>
 %
 %<*driver>
@@ -110,7 +110,7 @@
     oenodeRotref, oenodeBeam, oenodeBeamUp, oenodeBeamLow, oenodeCenter,
     oenodeIfc, oeBeamVec, oeBeamVecUp, oeBeamVecLow, oeBeamVecMedian,
     oeBeamCenter, optplate, optretplate, pinhole, crystal, optdetector,
-    optdiode, doveprism, glanthompson, polarization, mirror,
+    optdiode, doveprism, glanthompson, polarization, mirror, parabolicmirror, oapmirror,
     beamsplitter, optgrating, optprism, rightangleprism, pentaprism, optaom,
     optdipole, opttripole, optfiber, optamp, optmzm, optfilter, optsource,
     polcontrol, optisolator, optswitch, fiberdelayline,
@@ -3960,16 +3960,37 @@
 %   \ifENGLISH Mirror aperture with respect to the input direction.\fi
 % \end{optionlist}
 % 
-% \ifGERMAN Konstruktion des Spiegels anhand der vorgegebenen Punkte. \fi
-% \ifENGLISH Mirror construction using the given nodes.\fi
+% \ifGERMAN \newpage
+% Die Konstruktion des Spiegels anhand der vorgegebenen Punkte geschieht
+% wie folgt: Die Gerade von Knoten \prm{in} zu \prm{center} liegt
+% parallel zur optischen Achse, \prm{focus} gibt den Fokuspunkt der
+% Parabel an. Die Apertur des Spiegels wird mittels des Parameters
+% \Lkeyword{oapmirroraperture} angegeben, gemessen senkrecht zum
+% einfallenden Strahl.
+%
+% Die unterschiedlichen Parameter und die zugrundeliegende ganze Parabel
+% sind in der folgenden Skizze dargestellt:
+% \fi
+% \ifENGLISH 
+% The mirror construction using the given nodes is done as follows: the
+% line from node \prm{in} to \prm{center} is parallel to the optical
+% axis, \prm{focus} specifies the focal point of the parabola. The
+% mirror aperture is given by the parameter
+% \Lkeyword{oapmirroraperture}, measured perpendicular to the incoming
+% beam.
+%
+% The different parameters and the whole original parabola are shown in
+% the following illustration:
+% \fi
 %
 % \iffalse
 %<*ignore>
 % \fi
-\begin{LTXexample}[linerange={1-2,4-6,13-13}]
+\ifENGLISH
+\begin{LTXexample}[linerange={1-2,4-6,15-15}]
 \begin{pspicture}(6,5)
 \pnodes(5.5,3){In}(1.5,3){Center}(1.5,1.5){Focus}
-\oapmirror[oapmirroraperture=3 2, linestyle=dashed, linecolor=gray](In)(Center)(Focus)
+\oapmirror[oapmirroraperture=3 2, linestyle=dashed, style=Refline](In)(Center)(Focus)
 \oapmirror[oapmirroraperture=1.5, linewidth=3\pslinewidth, plotpoints=200](In)(Center)(Focus){OAP}
 \multido{\r=-0.5+0.5}{3}{%
   \drawbeam[beampos=\r](In){}(Focus)}
@@ -3979,8 +4000,29 @@
 \psline[arrowscale=1.5, arrows=<->](TmpA)(TmpB)\rput[l]([Xnodesep=0.3]TmpB){outer aperture}
 \pnode([Xnodesep=1,offset=-0.75]Center){TmpB}
 \psline[arrowscale=1.5, arrows=<->](TmpA)(TmpB)\rput[l]([Xnodesep=0.3]TmpB){inner aperture}
+\pnode(In|Focus){Tmp}
+\psline[linestyle=dotted]([Xnodesep=-1.5]Focus)(Tmp)\rput[r]([offset=-0.5]Tmp){optical axis}
 \end{pspicture}
 \end{LTXexample}
+\fi\ifGERMAN
+\begin{LTXexample}[linerange={1-2,4-6,15-15}]
+\begin{pspicture}(6,5)
+\pnodes(5.5,3){In}(1.5,3){Center}(1.5,1.5){Focus}
+\oapmirror[oapmirroraperture=3 2, linestyle=dashed, style=Refline](In)(Center)(Focus)
+\oapmirror[oapmirroraperture=1.5, linewidth=3\pslinewidth, plotpoints=200](In)(Center)(Focus){OAP}
+\multido{\r=-0.5+0.5}{3}{%
+  \drawbeam[beampos=\r](In){}(Focus)}
+\psset{style=Refline}\color{Refline}
+\psdot(In)\uput[0](In){In}\psdot(Center)\uput[180](Center){\rput[r](0,0){Center}}\psdot(Focus)\uput[-90](Focus){Focus}
+\pnodes([Xnodesep=1]Center){TmpA}([Xnodesep=1,offset=0.75]Center){TmpB}
+\psline[arrowscale=1.5, arrows=<->](TmpA)(TmpB)\rput[l]([Xnodesep=0.3]TmpB){aeussere Apertur}
+\pnode([Xnodesep=1,offset=-0.75]Center){TmpB}
+\psline[arrowscale=1.5, arrows=<->](TmpA)(TmpB)\rput[l]([Xnodesep=0.3]TmpB){innere Apertur}
+\pnode(In|Focus){Tmp}
+\psline[linestyle=dotted]([Xnodesep=-1.5]Focus)(In|Focus)\rput[r]([offset=-0.5]Tmp){optische Achse}
+\end{pspicture}
+\end{LTXexample}
+\fi
 % \iffalse
 %</ignore>
 % \fi
@@ -13640,8 +13682,9 @@
 %
 % \begin{changelog}
 % \patchcmd{\release}{\setlength{\itemsep}{0pt}}{\setlength{\itemsep}{0pt}\setlength{\parsep}{0pt}}{}{}
-%   \begin{release}{5.1}{xxxx-xx-xx}
+%   \begin{release}{5.1}{2014-11-19}
 %   \item Added component \cs{oapmirror}.
+%   \item Added support for filled beams with path interfaces.
 %   \end{release}
 %   \begin{release}{5.0}{2014-10-30}
 %   \item Added support for arbitrary interface shapes (experimental,
@@ -21827,7 +21870,7 @@ tx@OptexpDict begin
 %   \opt{pswarning}.
 %    \begin{macrocode}
 /PrintWarning {
-  (Warning pst-optexp: ) exch strcat ==
+  (Warning pst-optexp: ) exch strcat (\n) strcat print
 } bind def
 /CompUnknownWarning {
   (Component ') exch strcat (' unknown) strcat Warning
@@ -23046,6 +23089,18 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % \end{macro}
 % 
+% \begin{macro}{TraceInterfacePath}
+%    \begin{macrocode}
+/TraceInterfacePath {
+  tx@IntersectDict begin
+    /ArrowA { {currentpoint} stopped {moveto}{pop pop pop pop} ifelse } def
+    {} TraceCurveOrPath 
+    currentdict /ArrowA undef
+  end
+} bind def
+%    \end{macrocode}
+% \end{macro}
+%
 % \begin{macro}{TraceAndFillWideBeam}
 % Fill a wide beam. This has an own procedure, because each segment
 % of the beam must be filled separately.
@@ -23138,6 +23193,9 @@ tx@OptexpDict begin
   counttomark /IfcCnt ED 
   /n1 bgRefIndex def
   /CurrR false def
+  /CurrPath false def
+  /CurrUpT false def
+  /CurrLowT false def
   /ret missed def
   /PN 1 def
   {
@@ -23209,7 +23267,9 @@ tx@OptexpDict begin
       currentdict /relAngleUp known { relAngleUp } { 0 } ifelse 
       connectInterfaces /relAngleUp ED
     } if
-    /CurrUp load /PrevUp ED
+    /PrevUp /CurrUp load def
+    /PrevUpT /CurrUpT load def
+    /PrevPath /CurrPath load def
     IfcNum CompName Mode n2 8 4 roll HandleInterface
     dup /ret ED
     missed eq {
@@ -23218,11 +23278,16 @@ tx@OptexpDict begin
     } if
     ToVec /CurrVecUp ED
     ToVec /CurrUp ED
+    currentdict /isectT known currentdict /isectPath known and { 
+      /CurrUpT isectT def 
+      /CurrPath isectPath def
+    } if
     /n1 oldn1 def
 %    \end{macrocode}
 % Calculate new lower vector and intersection point
 %    \begin{macrocode}
-    /CurrLow load /PrevLow ED
+    /PrevLow /CurrLow load def
+    /PrevLowT /CurrLowT load def
     CurrLow CurrVecLow
     connectifc PrevCorrect PN 2 gt and PN 2 eq or and  {
       CurrVecLow CurrPCenter PrevPCenter PrevMode 
@@ -23245,6 +23310,9 @@ tx@OptexpDict begin
 %    \end{macrocode}
 % lower done
 %    \begin{macrocode}
+    currentdict /isectT known {
+      /CurrLowT isectT def
+    } if
     /PrevR CurrR def
     PrevR type /realtype eq {
       /CurrCenter load /PrevCenter ED
@@ -23257,6 +23325,11 @@ tx@OptexpDict begin
       /CurrR false def
       /CurrCenter false def
     } ifelse
+    IfcNum CompName isPathIfc not {
+      /CurrPath false def
+      /CurrLowT false def
+      /CurrUpT false def
+    } if
     PN 1 gt currentdict /fillBeam known and {
       draw {
         /DrawnSegm DrawnSegm 1 add def
@@ -23270,22 +23343,27 @@ tx@OptexpDict begin
             CurrLow CurrR arct
           } ifelse
         } {
-          CurrLow lineto
+          IfcNum CompName isPathIfc {
+            CurrPath CurrUpT CurrLowT TraceInterfacePath
+          } {
+            CurrLow lineto
+          } ifelse
         } ifelse
         PrevLow lineto
-        PrevR type /booleantype eq not {
-%    \end{macrocode}
-% previous interface was also curved
-%    \begin{macrocode}
-          PrevCenter PrevLow PrevUp
-          4 copy 3 -1 roll eq 3 1 roll eq and {
-            6 {pop} repeat
-          } {
-            TangentCrosspoint
-            PrevUp PrevR arct
-          } ifelse
+        PrevPath type /booleantype eq not {
+          PrevPath PrevLowT PrevUpT TraceInterfacePath
         } {
-          PrevUp lineto
+          PrevR type /booleantype eq not {
+            PrevCenter PrevLow PrevUp
+            4 copy 3 -1 roll eq 3 1 roll eq and {
+              6 {pop} repeat
+            } {
+              TangentCrosspoint
+              PrevUp PrevR arct
+            } ifelse
+          } {
+            PrevUp lineto
+          } ifelse
         } ifelse
       } if
       Mode refl eq draw and
@@ -23559,13 +23637,12 @@ tx@OptexpDict begin
 /HandleInterface {
   (HandleInterface) DebugBegin
   /Yin ED /Xin ED /Y0 ED /X0 ED /n2 ED /mode ED
+  currentdict /isectT undef currentdict /isectPath undef
   2 copy 2 copy LoadIfc % IfcNum name IfcNum name path
   dup type /arraytype eq { % is an path interface
-    3 1 roll pop pop PathInterface % IfcNum name X0' Y0' Xout Yout status
-%    \end{macrocode}
-% Dummy element on the stack to allow the clean-up routine to work also for this case.
-%    \begin{macrocode}
-    dup missed eq { /dummy 7 1 roll } if
+    dup /isectPath exch def
+    3 1 roll pop pop PathInterface % IfcNum name t X0' Y0' Xout Yout status
+    dup missed eq not { 6 -1 roll /isectT exch def } if
   } {
     6 -2 roll 
     isCurvedIfc { CurvedInterface }{ PlainInterface } ifelse
@@ -24379,9 +24456,10 @@ tx@OptexpDict begin
     aload pop
     Xin Yin Xin Yin 
     8 -2 roll exch % I.x I.y Xin Yin Xin Yin t [pathseg]
+    exch dup 9 1 roll exch % t I.x I.y Xin Yin Xin Yin t [pathseg]
     dup length 2 eq { % a line
       exch pop
-      aload pop aload pop 3 -1 roll aload pop VecSub % I.x I.y Xin Yin Xin Yin dXp dYp
+      aload pop aload pop 3 -1 roll aload pop VecSub % t I.x I.y Xin Yin Xin Yin dXp dYp
     } {
       exch dup cvi sub DeriveCurve
     } ifelse
@@ -24398,6 +24476,7 @@ tx@OptexpDict begin
     PN 1 gt and {
       pop missed
     } if
+    % t X0' Y0' Xout Yout status 
   } ifelse
   DebugEnd
 } bind def
@@ -24985,13 +25064,12 @@ tx@OptexpDict begin
 tx@IntersectDict begin 
 /IntersectLinePath {
   3 dict begin
-    PreparePath
+    PreparePath dup length /n exch def
     2 copy ElongateLine exch 3 -1 roll pop
     /isect [] def
     /t -1 def
-    /n -1 def
     {
-      /n n 1 add def
+      /n n 1 sub def
       2 copy IntersectBeziers
       dup 5 1 roll LoadIntersectionPoints
       dup length 0 gt {
