@@ -18,7 +18,7 @@
 %<stylefile>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<stylefile>\ProvidesPackage{pst-optexp}
 %<*stylefile>
-    [2014/11/19 v5.1 Optical experimental setups with PSTricks]
+    [2014/11/22 v5.2dev Optical experimental setups with PSTricks]
 %</stylefile>
 %
 %<*driver>
@@ -110,7 +110,8 @@
     oenodeRotref, oenodeBeam, oenodeBeamUp, oenodeBeamLow, oenodeCenter,
     oenodeIfc, oeBeamVec, oeBeamVecUp, oeBeamVecLow, oeBeamVecMedian,
     oeBeamCenter, optplate, optretplate, pinhole, crystal, optdetector,
-    optdiode, doveprism, glanthompson, polarization, mirror, parabolicmirror, oapmirror,
+    optdiode, doveprism, glanthompson, polarization, mirror, parabolicmirror, 
+    oapmirror, axicon, optwedge,
     beamsplitter, optgrating, optprism, rightangleprism, pentaprism, optaom,
     optdipole, opttripole, optfiber, optamp, optmzm, optfilter, optsource,
     polcontrol, optisolator, optswitch, fiberdelayline,
@@ -3601,6 +3602,57 @@
 % \ifENGLISH Affects the style of the polarisation symbols.\fi
 % \end{stylelist}
 % 
+% \ifGERMAN\section{Keil}\fi
+% \ifENGLISH\section{Wedge}\fi
+%
+% \begin{ltxsyntax}
+% \dipoledesc{optwedge}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(3,2)
+  \optwedge[beam](0,1)(3,1){Wedge}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+% \end{ltxsyntax}
+%
+% \begin{optionlist}
+% \numitem[0.8]{wedgeheight}
+% \numitem[10]{wedgeangleright}
+% \numitem[0]{wedgeangleleft}
+% \optitem{wedgeangles}{\prm{left} \prm{right}}
+% \numitem[0]{wedgewidth}
+% \end{optionlist}
+%
+% \ifGERMAN\section{Axikon}\fi
+% \ifENGLISH\section{Axicon}\fi
+%
+% \begin{ltxsyntax}
+% \dipoledesc{axicon}
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(3,2)
+  \axicon(0,1)(3,1){Axicon}
+  \drawwidebeam[beamwidth=0.5](0,1){}(3,1)
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+% \end{ltxsyntax}
+%
+% \begin{optionlist}
+% \numitem[0.8]{axiconheight}
+% \numitem[0.2]{axiconwidth}
+% \numitem[10]{axiconangle}
+% \end{optionlist}
+%
 % \ifGERMAN\section{Spiegel}\fi
 % \ifENGLISH\section{Mirror}\fi
 % 
@@ -13693,6 +13745,10 @@
 %
 % \begin{changelog}
 % \patchcmd{\release}{\setlength{\itemsep}{0pt}}{\setlength{\itemsep}{0pt}\setlength{\parsep}{0pt}}{}{}
+%   \begin{release}{5.2}{xxxx-xx-xx}
+%   \item Added component \cs{axicon}.
+%   \item Added component \cs{optwedge}.
+%   \end{release}
 %   \begin{release}{5.1}{2014-11-19}
 %   \item Added component \cs{oapmirror}.
 %   \item Added support for filled beams with path interfaces.
@@ -15138,6 +15194,52 @@
 \psset[optexp]{oapmirroraperture=1}
 %    \end{macrocode}
 %
+% Axicon
+%    \begin{macrocode}
+\define@key[psset]{optexp}{axiconheight}{%
+  \pst@checknum{#1}\POE@key@axiconheight
+}%
+\define@key[psset]{optexp}{axiconwidth}{%
+  \pst@checknum{#1}\POE@key@axiconwidth
+}%
+\define@key[psset]{optexp}{axiconangle}{%
+  \pst@checknum{#1}\POE@key@axiconangle
+}%
+\psset[optexp]{axiconheight=0.8, axiconwidth=0.15, axiconangle=10}
+%    \end{macrocode}
+%
+% Wedge
+%    \begin{macrocode}
+\define@key[psset]{optexp}{wedgeangles}{%
+  \pst@expandafter\POE@psset@@wedgeangles{#1} {} {} {}\@nil
+}%
+\def\POE@psset@@wedgeangles#1 #2 #3\@nil{%
+  \ifx\\#2\\%
+    \PackageError{pst-optexp}{%
+      Parameter 'wedgeangles' requires two numbers.}
+  \else
+    \pst@checknum{#1}\POE@key@wedgeangleleft
+    \pst@checknum{#2}\POE@key@wedgeangleright
+  \fi
+}%
+\define@key[psset]{optexp}{wedgeangleleft}{%
+  \pst@checknum{#1}\POE@key@wedgeangleleft
+}%
+\define@key[psset]{optexp}{wedgeangleright}{%
+  \pst@checknum{#1}\POE@key@wedgeangleright
+}%
+\define@key[psset]{optexp}{wedgeheight}{%
+  \pst@checknum{#1}\POE@key@wedgeheight
+}%
+\define@key[psset]{optexp}{wedgewidth}{%
+  \pst@checknum{#1}\POE@key@wedgewidth
+}%
+\psset[optexp]{%
+  wedgeangles=0 10,
+  wedgeheight=0.8,
+  wedgewidth=0
+}%
+%    \end{macrocode}
 % Grating
 %
 % These are the old \opt{optgrid*} parameters, which have been deprecated.
@@ -18860,6 +18962,8 @@
 \newOptexpDipole{doveprism}
 \newOptexpDipole{glanthompson}
 \newOptexpDipole{parabolicmirror}{position=end, ref@angle=-90}
+\newOptexpDipole{axicon}
+\newOptexpDipole{optwedge}
 %    \end{macrocode}
 % 
 % Define all free-ray tripoles
@@ -20680,6 +20784,67 @@
 %    \end{macrocode}
 % \end{macro}
 %
+% \subsubsection{Axicon}
+%
+% \begin{macro}{axicon@nodes}
+%    \begin{macrocode}
+\def\axicon@nodes{%
+  \pssavepath[linestyle=none, arrows=-,ArrowInside=-]{\oenode@Path{A}}{%
+    \psline(! 0 \POE@key@axiconheight\space 0.5 mul)
+           (! \POE@key@axiconheight\space 0.5 mul \POE@key@axiconangle\space dup sin exch cos div mul 0)
+           (! 0 \POE@key@axiconheight\space -0.5 mul)
+  }%
+  \newOptexpComp{%
+    {\POE@key@axiconwidth\space neg 0} {0 1} \POE@key@axiconheight\space 0.5 mul dup neg exch trans {PlainIfc}
+    {\POE@key@axiconheight\space 0.5 mul \POE@key@axiconangle\space dup sin exch cos div mul 0} 
+      tx@IntersectDict /\PIT@name{\oenode@Path{A}} get 0 0 trans {PathIfc}
+    \POE@key@n }%
+}%
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{axicon@comp}
+%    \begin{macrocode}
+\def\axicon@comp{%
+  \pspolygon[arrows=-]%
+    (!\POE@key@axiconwidth\space neg \POE@key@axiconheight\space -0.5 mul)
+    (!\POE@key@axiconwidth\space neg \POE@key@axiconheight\space 0.5 mul)
+    (! 0 \POE@key@axiconheight\space 0.5 mul)
+    (! \POE@key@axiconheight\space 0.5 mul \POE@key@axiconangle\space tan mul 0)
+    (! 0 \POE@key@axiconheight\space -0.5 mul)
+}%
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsubsection{optwedge}
+%
+% \begin{macro}{optwedge@nodes}
+%    \begin{macrocode}
+\def\optwedge@nodes{%
+  \POE@Verb{%
+    /@@xl \POE@key@wedgeheight\space \POE@key@wedgeangleleft\space tan mul def
+    /@@xr \POE@key@wedgeheight\space \POE@key@wedgeangleright\space tan mul def
+    /@@xa \POE@key@wedgewidth\space @@xl @@xr add sub dup 0 gt {0.5 mul}{pop 0} ifelse def
+  }%
+  \newOptexpComp{%
+    {@@xl @@xa add -0.5 mul 0} {\POE@key@wedgeangleleft\space tan 1} 0 0 trans {PlainIfc}
+    {@@xr @@xa add 0.5 mul 0} {\POE@key@wedgeangleright\space tan -1} 0 0 trans {PlainIfc}
+  \POE@key@n }%
+}%
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{optwedge@comp}
+%    \begin{macrocode}
+\def\optwedge@comp{%
+  \pspolygon[arrows=-](!\POE@dict{@@xa} \POE@key@wedgeheight\space 0.5 mul)
+                      (!\POE@dict{@@xa @@xr} add \POE@key@wedgeheight\space -0.5 mul)
+                      (!\POE@dict{@@xa @@xl} add neg \POE@key@wedgeheight\space -0.5 mul)
+                      (!\POE@dict{@@xa} neg \POE@key@wedgeheight\space 0.5 mul)
+}%
+%    \end{macrocode}
+% \end{macro}
+% 
 % \subsection{Fiber components}
 %
 % \subsubsection{optfiber}
