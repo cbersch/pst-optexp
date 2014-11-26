@@ -1,35 +1,66 @@
-\documentclass{article}
+\documentclass[margin=5pt, pstricks]{standalone}
 \usepackage{pst-optexp}
+\psset[optexp]{pswarning}
 \begin{document}
-\begin{pspicture}[showgrid](3,2)
-  \optaom[beam](0,1.5)(3,0.5)(3,1.5){AOM}
+\begin{pspicture}(0,-0.3)(5,2.3)
+  \pnodes(0,1){A}(5,1){B}
+  \asphericlens[%
+    plotstyle=cspline,
+    asphereheight=2.54,
+    aspherewidth=1.4,
+    asphereradiusleft=0.8818197,
+    aspherecoefficients=8.682167e-3 6.3760123e-3 2.4073084e-2 -1.718902e-2,
+    asphereconstant=-0.9991715,
+    asphereradiusright=6.999948](A)(B)
+  \multido{\r=-1+0.1}{21}{%
+    \drawbeam[beampos=\r, linewidth=0.3\pslinewidth](A){}(B)}
 \end{pspicture}
+%
+% \begin{pspicture}[showgrid](0,-0.5)(5,2.5)
+%   \pnodes(0,1){A}(5,1){B}
+%   \asphericlens[%
+%     plotstyle=cspline,
+%     asphereheight=1,
+%     aspherewidth=0.3,
+%     asphereradiusleft=1,
+%     aspherecoefficients=0](A)(B)
+%   \multido{\r=-1+0.1}{21}{%
+%     \drawbeam[beampos=\r, linewidth=0.1\pslinewidth](A){}(B)}
+% \end{pspicture}
+% \bigskip
 
-\begin{pspicture}[showgrid](3,2)
-  \psset{showinterfaces}
-  \pnodes(0,1.5){A}(3,0.5){B}(3,1.5){C}
-  \optaom[aomalign=symmetric](A)(B)(C){symmetric}
-  \addtopsstyle{Beam}{fillstyle=solid, linestyle=none, beamwidth=0.1}
-  \drawwidebeam[fillcolor=red!50](A){}(C)
-  \drawwidebeam[fillcolor=red](A){}(B)
+\begin{pspicture}[showgrid](15,10)
+  \pnodes(0,4){A}(15,4){B}
+  \asphericlens[%
+    plotstyle=cspline,
+    asphereheight=7.5,
+    asphereradiusleft=3.12848,
+    asphereconstant=-1.991145, 
+    aspherecoefficients=4.98e-3](A)(B)
+  \multido{\r=-3.2+0.4}{17}{%
+    \drawbeam[beampos=\r, linewidth=0.5\pslinewidth](A){}(B)}
+  \lens[lensradius=3.12848 0, lensheight=6, abspos=6.13, lenswidth=5.49](A)(B)
+  \multido{\r=-3.2+0.4}{17}{%
+    \drawbeam[beampos=\r, linewidth=0.5\pslinewidth, linecolor=blue](A){}(B)}%
 \end{pspicture}
+\end{document}
 
-\begin{pspicture}[showgrid](3,2)
-  \psset{showinterfaces, pswarning, useNA=false}
-  \pnodes(0,1){A}(3,1){B}(3,1.5){C}\psdot(B)
-  \optaom[aomalign=straight](A)(B)(C){straight}
-  \addtopsstyle{Beam}{fillstyle=solid, linestyle=none, beamwidth=0.1}
-%  \drawwidebeam[fillcolor=red!50](A){}(C)
-  \drawwidebeam[fillcolor=red](A){}(B)
+\begin{pspicture}(5,4)
+  \pnodes(5,0.5){In}(1,0.5){C}(1,2){Focus}(1,4){Out}
+  \addtopsstyle{Beam}{fillstyle=solid,fillcolor=green!40!white}
+  \begin{optexp}
+    \oapmirror(In)(C)(Focus)
+    \lens[n=1.53](Focus)(Out)
+    \drawwidebeam[beamwidth=0.5](In){-}(Out)
+    \drawbeam[ArrowInside=->, ArrowInsidePos=0.2, arrowscale=3, arrowinset=0.3, linestyle=none](In){1}
+  \end{optexp}
+  \psdot(Focus)\uput[0](Focus){focus}
 \end{pspicture}
+\bigskip
 
-\begin{pspicture}[showgrid](5,2.4)
-  \optbox[extnode=](0,1)(5,1)
-  \psdot[dotstyle=o](\oenode{Ext1}{})
-\end{pspicture}
-
-\begin{pspicture}[showgrid](5,2.4)
-  \optbox[extnodes={tl,tr,bl,br}](0,1)(5,1)
-  \multido{\i=1+1}{4}{\psdot[dotstyle=o](\oenode{Ext\i}{})}
+\begin{pspicture}[showgrid](6,2)
+\psset[optexp]{pswarning}
+\axicon(0,1)(6,1){Axicon}
+\drawwidebeam[beampos=0.2, beamwidth=0.2](0,1){1}(6,1)
 \end{pspicture}
 \end{document}

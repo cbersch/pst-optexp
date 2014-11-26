@@ -18,7 +18,7 @@
 %<stylefile>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<stylefile>\ProvidesPackage{pst-optexp}
 %<*stylefile>
-    [2014/11/22 v5.2dev Optical experimental setups with PSTricks]
+    [2014/11/26 v5.2 Optical experimental setups with PSTricks]
 %</stylefile>
 %
 %<*driver>
@@ -111,7 +111,7 @@
     oenodeIfc, oeBeamVec, oeBeamVecUp, oeBeamVecLow, oeBeamVecMedian,
     oeBeamCenter, optplate, optretplate, pinhole, crystal, optdetector,
     optdiode, doveprism, glanthompson, polarization, mirror, parabolicmirror, 
-    oapmirror, axicon, optwedge,
+    oapmirror, axicon, optwedge, asphericlens,
     beamsplitter, optgrating, optprism, rightangleprism, pentaprism, optaom,
     optdipole, opttripole, optfiber, optamp, optmzm, optfilter, optsource,
     polcontrol, optisolator, optswitch, fiberdelayline,
@@ -2806,7 +2806,127 @@
 % gesetzt wird.
 % \fi
 % \end{optionlist}
+%
+% \ifGERMAN\section{Asphärische Linse}\fi
+% \ifENGLISH\section{Aspheric lens}\fi
+%
+% \begin{ltxsyntax}
+% \dipoledesc{asphericlens}
+% \end{ltxsyntax}
+%
+% \ifGERMAN Eine asphärische Linse besitzt eine Oberfläche, deren Form durch die Gleichung
+% \begin{equation*}
+% z(y) = \frac{y^2}{R(1 + \sqrt{1 - (1+k)y^2/R^2})} + A_4y^4 + A_6y^6 + A_8y^8 + A_{10}y^{10}
+% \end{equation*}
+% gegeben ist. $z$ ist der Sagittalschnitt parallel zur optischen Achse,
+% $y$ der Abstand zur optischen Achse und $R$ der
+% Krümmungsradius. Desweiteren ist $k$ die konische Konstante und $A_4$,
+% $A_6$, $A_8$ und $A_{10}$ die Asphärenkoeffizienten der 4. bis
+% 10. Ordnung.
+% \fi
+% \begin{optionlist}
+% \numitem[1]{asphereheight}
+% \ifGERMAN Die Höhe der Linse.\fi
+% \ifENGLISH The lens height.\fi
 % 
+% \numitem[0]{aspherewidth}
+% \ifGERMAN 
+% Die Breite der Linse. Wird nur verwendet, wenn der angegebene Wert
+% über dem minimal berechneten liegt.
+% \fi
+% \ifENGLISH
+% The lens center thickness. Is use only, if the given value is larger
+% than the minimum calculated value.
+% \fi
+%
+% \numitem[1]{asphereradiusleft}
+% \ifGERMAN Der Krümmungsradius der linken, asphärischen Oberfläche.\fi
+% \ifENGLISH Curvature radius of the left, aspheric surface.\fi
+%
+% \numitem[0]{asphereradiusright}
+% \ifGERMAN
+% Der Krümmungsradius der rechten Oberfläche. Ist dieser gleich Null,
+% dann ist die Oberfläche plan.
+% \fi
+% \ifENGLISH
+% Curvature radius of the right surface. IF the value is zero, the
+% surface is plane.
+% \fi
+%
+% \numitem{asphereconstant}
+% \ifGERMAN Die konische Konstante $k$ der linken Oberfläche.\fi
+% \ifENGLISH The conic constant $k$ of the left surface.\fi
+%
+% \optitem{aspherecoefficients}{\prm{$A_4$} [\prm{$A_6$} [\prm{$A_8$} [\prm{$A_{10}$}]]]}
+% \ifGERMAN 
+% Die Asphärenkoeffizienten $A_4$ bis $A_{10}$. Es können ein bis vier
+% Zahlen angegeben werden.
+% \fi
+% \ifENGLISH
+% The aspheric terms of fourth to tenth order. One to four values can be
+% specified.
+% \fi
+% \end{optionlist}
+%
+% \ifGERMAN
+% Als Beispiel nehmen wir die Parameter einer kommerziell erhältlichen
+% asphärische
+% Kondensorlinse\fnurl{http://www.thorlabs.de/thorproduct.cfm?partnumber=ACL25416U}:
+% \fi
+% \ifENGLISH
+% As example we use the parameters of a commercially available condensor
+% lens\fnurl{http://www.thorlabs.de/thorproduct.cfm?partnumber=ACL25416U}:
+% \fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(0,-0.3)(5,2.3)
+  \pnodes(0,1){A}(5,1){B}
+  \asphericlens[%
+    plotstyle=cspline,
+    asphereheight=2.54,
+    aspherewidth=1.4,
+    asphereradiusleft=0.8818197,
+    aspherecoefficients=8.682e-3 6.376e-3 2.4073e-2 -1.719e-2,
+    asphereconstant=-0.9992,
+    asphereradiusright=6.99995](A)(B)
+  \multido{\r=-1+0.1}{21}{%
+    \drawbeam[beampos=\r, linewidth=0.3\pslinewidth](A){}(B)}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
+% \ifGERMAN Ein weiteres Beispiel zeigt anschaulich den Unterschied
+% einer asphärischen Linsen zu einer sphärischen Linse mit gleichem
+% Krümmungsradius:
+% \fi
+% \ifENGLISH 
+% Another example illustrates the difference between an aspheric lens an
+% a spheric lens with equal curvature:
+% \fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}[pos=t,linerange={2-11}]
+\psset{unit=0.5cm}
+\begin{pspicture*}(15,8)
+  \pnodes(0,4){A}(15,4){B}
+  \asphericlens[asphereheight=7.5, asphereradiusleft=3.12848, 
+    asphereconstant=-1.991145, aspherecoefficients=4.98e-3](A)(B)
+  \multido{\r=-3.2+0.8}{9}{%
+    \drawbeam[beampos=\r, linewidth=0.5\pslinewidth](A){}(B)}
+  \lens[lens=3.12848 0 6 5.49, abspos=6.13, style=Refline, linestyle=dashed](A)(B)
+  \multido{\r=-2.8+0.8}{8}{%
+    \drawbeam[beampos=\r, linewidth=0.5\pslinewidth, linecolor=red](A){}(B)}%
+\end{pspicture*}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
 % \ifGERMAN\section{Optisches Plättchen}\fi
 % \ifENGLISH\section{Optical plate}\fi
 %
@@ -3622,10 +3742,42 @@
 %
 % \begin{optionlist}
 % \numitem[0.8]{wedgeheight}
+% \ifGERMAN Höhe des Keils.\fi
+% \ifENGLISH The height of the wedge.\fi
+%
 % \numitem[10]{wedgeangleright}
+% \ifGERMAN Der obere Winkel der rechten Grenzfläche bezogen auf die Vertikale.\fi
+% \ifENGLISH The upper angle of the right interface with respect to a vertical line.\fi
+%
 % \numitem[0]{wedgeangleleft}
-% \optitem{wedgeangles}{\prm{left} \prm{right}}
+% \ifGERMAN Der obere Winkel der linken Grenzfläche bezogen auf die Vertikale.\fi
+% \ifENGLISH The upper angle of the left interface with respect to a vertical line.\fi
+%
+% \optitem{wedgeangles}{\prm{left}[ \prm{right}]}
+% \ifGERMAN
+% Erlaubt beide Winkel gleichzeitig zu setzen. Wird nur ein Wert
+% angegeben, dann wird dieser für beide Winkel verwendet.
+% \fi
+% \ifENGLISH
+% Allows setting both angles at once. If only a single value is given,
+% it is used for both angles.
+% \fi
 % \numitem[0]{wedgewidth}
+% \ifGERMAN Ist der Wert größer als die berechnete Grundbreite, dann wird der Keil auf die angegebene Breite vergrößert.\fi
+% \ifENGLISH If this value is larger than the calculated base width, then the wedge's width is increase to this value.\fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(2,1)
+  \optwedge[wedgeangles=10 0, wedgewidth=0.4](0,0.5)(2,0.5)
+  \drawwidebeam[beamwidth=0.5](0,0.5){}(2,0.5)
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
 % \end{optionlist}
 %
 % \ifGERMAN\section{Axikon}\fi
@@ -3638,7 +3790,7 @@
 % \fi
 \begin{LTXexample}
 \begin{pspicture}(3,2)
-  \axicon(0,1)(3,1){Axicon}
+  \axicon[label=1](0,1)(3,1){Axicon}
   \drawwidebeam[beamwidth=0.5](0,1){}(3,1)
 \end{pspicture}
 \end{LTXexample}
@@ -3648,9 +3800,18 @@
 % \end{ltxsyntax}
 %
 % \begin{optionlist}
-% \numitem[0.8]{axiconheight}
-% \numitem[0.2]{axiconwidth}
+% \numitem[1.5]{axiconheight}
+% \ifGERMAN Die Höhe des Axikons.\fi
+% \ifENGLISH The height of the axicon.\fi
+%
+% \numitem[0.4]{axiconwidth}
+% \ifGERMAN Die Breite des Axikons.\fi
+% \ifENGLISH The width of the axicon.\fi
+%
 % \numitem[10]{axiconangle}
+% \ifGERMAN Der obere Winkel der rechten Grenzfläche bezogen auf die Vertikale.\fi
+% \ifENGLISH The upper angle of the right interface with respect to a vertical line.\fi
+%
 % \end{optionlist}
 %
 % \ifGERMAN\section{Spiegel}\fi
@@ -13745,19 +13906,20 @@
 %
 % \begin{changelog}
 % \patchcmd{\release}{\setlength{\itemsep}{0pt}}{\setlength{\itemsep}{0pt}\setlength{\parsep}{0pt}}{}{}
-%   \begin{release}{5.2}{xxxx-xx-xx}
-%   \item Added component \cs{axicon}.
-%   \item Added component \cs{optwedge}.
+%   \begin{release}{5.2}{2014-11-26}
+%   \item Added component \cs{asphericlens}\see{comp:asphericlens}
+%   \item Added component \cs{axicon}\see{comp:axicon}
+%   \item Added component \cs{optwedge}\see{comp:optwedge}
 %   \end{release}
 %   \begin{release}{5.1}{2014-11-19}
-%   \item Added component \cs{oapmirror}.
+%   \item Added component \cs{oapmirror}\see{comp:oapmirror}
 %   \item Added support for filled beams with path interfaces.
 %   \end{release}
 %   \begin{release}{5.0}{2014-10-30}
 %   \item Added support for arbitrary interface shapes (experimental,
 %     requires the \opt{pst-intersect} package and \opt{pstricks}
-%     version 2.53.
-%   \item Added component \cs{parabolicmirror}.
+%     version 2.53).
+%   \item Added component \cs{parabolicmirror}\see{comp:parabolicmirror}
 %   \end{release}
 %   \begin{release}{4.10}{2014-06-04}
 %   \item Added value \opt{firstcomp} to parameter \opt{beamalign}\see{prm:beamalign}
@@ -14813,6 +14975,53 @@
   lensradiusright=1
 }%
 %    \end{macrocode}
+%
+%    \begin{macrocode}
+\define@key[psset]{optexp}{asphereheight}{%
+  \pst@checknum{#1}\POE@key@asphereheight
+}%
+\define@key[psset]{optexp}{aspherewidth}{%
+  \pst@checknum{#1}\POE@key@aspherewidth
+}%
+\define@key[psset]{optexp}{asphereradiusleft}{%
+  \pst@checknum{#1}\POE@key@asphereradiusleft
+}%
+\define@key[psset]{optexp}{asphereradiusright}{%
+  \pst@checknum{#1}\POE@key@asphereradiusright
+}%
+\define@key[psset]{optexp}{asphereconstant}{%
+  \pst@checknum{#1}\POE@key@asphereconstant
+}%
+\define@key[psset]{optexp}{aspherecoefficients}{%
+  \pst@expandafter\POE@psset@@aspherecoefficients{#1} {} {} {} {} {}\@nil
+}%
+\def\POE@psset@@aspherecoefficients#1 #2 #3 #4 #5\@nil{%
+  \def\POE@key@asphereAfour{0}%
+  \def\POE@key@asphereAsix{0}%
+  \def\POE@key@asphereAeight{0}%
+  \def\POE@key@asphereAten{0}%
+  \ifx\\#1\\\else
+    \def\POE@key@asphereAfour{#1}%
+    \ifx\\#2\\\else
+      \def\POE@key@asphereAsix{#2}%
+      \ifx\\#3\\\else
+        \def\POE@key@asphereAeight{#3}%
+        \ifx\\#4\\\else
+          \def\POE@key@asphereAten{#4}%
+        \fi
+      \fi
+    \fi
+  \fi
+}%
+\psset[optexp]{%
+  aspherewidth=0,
+  asphereheight=1,
+  asphereconstant=-1,
+  asphereradiusleft=1,
+  aspherecoefficients=0,
+  asphereradiusright=0
+}
+%    \end{macrocode}
 % Pinhole
 %    \begin{macrocode}
 \define@key[psset]{optexp}{innerheight}{%
@@ -15205,7 +15414,7 @@
 \define@key[psset]{optexp}{axiconangle}{%
   \pst@checknum{#1}\POE@key@axiconangle
 }%
-\psset[optexp]{axiconheight=0.8, axiconwidth=0.15, axiconangle=10}
+\psset[optexp]{axiconheight=1.5, axiconwidth=0.4, axiconangle=10}
 %    \end{macrocode}
 %
 % Wedge
@@ -15214,11 +15423,10 @@
   \pst@expandafter\POE@psset@@wedgeangles{#1} {} {} {}\@nil
 }%
 \def\POE@psset@@wedgeangles#1 #2 #3\@nil{%
+  \pst@checknum{#1}\POE@key@wedgeangleleft
   \ifx\\#2\\%
-    \PackageError{pst-optexp}{%
-      Parameter 'wedgeangles' requires two numbers.}
+    \pst@checknum{#1}\POE@key@wedgeangleright
   \else
-    \pst@checknum{#1}\POE@key@wedgeangleleft
     \pst@checknum{#2}\POE@key@wedgeangleright
   \fi
 }%
@@ -18950,6 +19158,7 @@
 % Define all free-ray dipoles
 %    \begin{macrocode}
 \newOptexpDipole{lens}
+\newOptexpDipole{asphericlens}
 \newOptexpDipole{pinhole}
 \newOptexpDipole{crystal}
 \newOptexpDipole{polarization}
@@ -19826,6 +20035,77 @@
   \addto@pscode{closepath 1 setlinejoin end }%
   \end@ClosedObj
 \ignorespaces}%
+%    \end{macrocode}
+% \end{macro}
+% 
+% \subsubsection{Aspheric lens}
+%
+% \begin{macro}{\asphericlens@nodes}
+%    \begin{macrocode}
+\def\asphericlens@nodes{%
+  \def\POE@asphere##1{%
+    (##1)^2*(1/(\POE@key@asphereradiusleft*(1+sqrt(1-(1+\POE@key@asphereconstant)*(##1)^2/\POE@key@asphereradiusleft^2)))+%
+    (##1)^2*(\POE@key@asphereAfour % 
+      + (##1)^2*(\POE@key@asphereAsix %
+        + ((##1)^2*(\POE@key@asphereAeight %
+          + \POE@key@asphereAten*(##1)^2)))))}%
+  \def\POE@arcright##1{%
+    (##1)^2/(\POE@key@asphereradiusright*sqrt(1-(##1)^2/\POE@key@asphereradiusright^2))}%
+  \POE@Verb{%
+    tx@Dict begin 
+      /POEasphereleftx0 (\POE@asphere{0.5*\POE@key@asphereheight}) AlgParser cvx exec def
+      /POEasphererightx0
+      \ifdim\POE@key@asphereradiusright pt>0pt
+        (\POE@arcright{0.5*\POE@key@asphereheight}) AlgParser cvx exec
+      \else
+        0
+      \fi
+      def
+      \POE@key@aspherewidth\space POEasphereleftx0 POEasphererightx0 add sub dup 0 gt {
+        POEasphererightx0 add /POEasphererightx0 exch def
+      } {
+        pop
+      } ifelse
+    end
+  }%
+  \pssavepath[linestyle=none, arrows=-,ArrowInside=-]{\oenode@Path{A}}{%
+    \psparametricplot[algebraic, plotstyle=cspline]%
+      {\POE@key@asphereheight\space -0.5 mul}%
+      {\POE@key@asphereheight\space 0.5 mul}%
+      {\POE@asphere{t}-POEasphereleftx0|t}}%
+  \ifdim\POE@key@asphereradiusright pt>0pt
+    \pssavepath[linestyle=none, arrows=-,ArrowInside=-]{\oenode@Path{B}}{%
+      \psparametricplot[algebraic, plotstyle=cspline]%
+        {\POE@key@asphereheight\space 0.5 mul}%
+        {\POE@key@asphereheight\space -0.5 mul}%
+        {-\POE@arcright{t}+POEasphererightx0|t}}%
+  \fi
+  \newOptexpComp{%
+    {POEasphereleftx0 neg 0} tx@IntersectDict /\PIT@name{\oenode@Path{A}} get 0 0 trans {PathIfc}
+    {POEasphererightx0 0}
+    \ifdim\POE@key@asphereradiusright pt>0pt
+      tx@IntersectDict /\PIT@name{\oenode@Path{B}} get 0 0 trans {PathIfc}
+    \else
+      {0 1} 0 0 trans {PlainIfc}
+    \fi
+    \POE@key@n }%
+}%
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\asphericlens@comp}
+%    \begin{macrocode}
+\def\asphericlens@comp{%
+  \pscustom[arrows=-]{%
+    \pstracecurve{\oenode@Path{A}}%
+    \ifdim\POE@key@asphereradiusright pt>0pt
+      \pstracecurve{\oenode@Path{B}}
+    \else
+      \lineto(!POEasphererightx0 \POE@key@asphereheight\space 0.5 mul)
+      \lineto(!POEasphererightx0 \POE@key@asphereheight\space -0.5 mul)
+    \fi
+    \closepath}%
+}%
 %    \end{macrocode}
 % \end{macro}
 % 
@@ -20789,14 +21069,20 @@
 % \begin{macro}{axicon@nodes}
 %    \begin{macrocode}
 \def\axicon@nodes{%
+  \POE@setref{%
+    /@@right \POE@key@axiconheight\space 0.5 mul \POE@key@axiconangle\space dup sin exch cos div mul def
+    @@right \POE@key@axiconwidth\space max 0.5 mul /@@x exch def
+    /@@y \POE@key@axiconheight\space 0.5 mul def
+    /@@right 
+  }%
   \pssavepath[linestyle=none, arrows=-,ArrowInside=-]{\oenode@Path{A}}{%
-    \psline(! 0 \POE@key@axiconheight\space 0.5 mul)
-           (! \POE@key@axiconheight\space 0.5 mul \POE@key@axiconangle\space dup sin exch cos div mul 0)
-           (! 0 \POE@key@axiconheight\space -0.5 mul)
+    \psline(!\POE@dict{@@x @@right sub @@y})
+           (!\POE@dict{@@x 0})
+           (!\POE@dict{@@x @@right sub @@y neg})
   }%
   \newOptexpComp{%
-    {\POE@key@axiconwidth\space neg 0} {0 1} \POE@key@axiconheight\space 0.5 mul dup neg exch trans {PlainIfc}
-    {\POE@key@axiconheight\space 0.5 mul \POE@key@axiconangle\space dup sin exch cos div mul 0} 
+    {@@x neg 0} {0 1} @@y neg @@y trans {PlainIfc}
+    {@@x 0}
       tx@IntersectDict /\PIT@name{\oenode@Path{A}} get 0 0 trans {PathIfc}
     \POE@key@n }%
 }%
@@ -20807,11 +21093,14 @@
 %    \begin{macrocode}
 \def\axicon@comp{%
   \pspolygon[arrows=-]%
-    (!\POE@key@axiconwidth\space neg \POE@key@axiconheight\space -0.5 mul)
-    (!\POE@key@axiconwidth\space neg \POE@key@axiconheight\space 0.5 mul)
-    (! 0 \POE@key@axiconheight\space 0.5 mul)
-    (! \POE@key@axiconheight\space 0.5 mul \POE@key@axiconangle\space tan mul 0)
-    (! 0 \POE@key@axiconheight\space -0.5 mul)
+    (!\POE@dict{@@x neg @@y})(!\POE@dict{@@x @@right sub @@y})
+    (!\POE@dict{@@x 0})(!\POE@dict{@@x @@right sub @@y neg})
+    (!\POE@dict{@@x neg @@y neg})
+    %(!\POE@key@axiconwidth\space neg \POE@key@axiconheight\space -0.5 mul)
+    %(!\POE@key@axiconwidth\space neg \POE@key@axiconheight\space 0.5 mul)
+    %(! 0 \POE@key@axiconheight\space 0.5 mul)
+    %(! \POE@key@axiconheight\space 0.5 mul \POE@key@axiconangle\space tan mul 0)
+    %(! 0 \POE@key@axiconheight\space -0.5 mul)
 }%
 %    \end{macrocode}
 % \end{macro}

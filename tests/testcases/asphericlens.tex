@@ -13,17 +13,13 @@
 \end{pspicture}
 \bigskip
 
-
 \begin{pspicture}[showgrid](0,-0.5)(5,2.5)
   \pnodes(0,1){A}(5,1){B}
-  \asphericlens[%
-    plotstyle=cspline,
-    asphereheight=1,
-    aspherewidth=0.3,
-    asphereradiusleft=1,
-    aspherecoefficients=0](A)(B)
+  \asphericlens[aspherewidth=0.3](A)(B)
   \multido{\r=-1+0.1}{21}{%
-    \drawbeam[beampos=\r, linewidth=0.1\pslinewidth](A){}(B)}
+    \drawbeam[beampos=\r, linewidth=0.1\pslinewidth, beaminsidelast](A){}}
+  \multido{\r=-1.05+0.1}{21}{%
+    \drawbeam[beampos=\r, linewidth=0.1\pslinewidth,linecolor=red](A){}}
 \end{pspicture}
 \bigskip
 
