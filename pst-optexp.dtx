@@ -1,6 +1,6 @@
 % \iffalse meta-comment
 %
-% Copyright (C) 2007-2014 by Christoph Bersch <usenet@bersch.net>
+% Copyright (C) 2007-2021 by Christoph Bersch <usenet@bersch.net>
 %
 % This work may be distributed and/or modified under the
 % conditions of the LaTeX Project Public License, either version 1.3c
@@ -18,7 +18,7 @@
 %<stylefile>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<stylefile>\ProvidesPackage{pst-optexp}
 %<*stylefile>
-    [2014/11/26 v5.2 Optical experimental setups with PSTricks]
+    [2021/02/26 v5.3dev Optical experimental setups with PSTricks]
 %</stylefile>
 %
 %<*driver>
@@ -136,7 +136,7 @@
 \makeatother
 \colorlet{sectioncolor}{DOrange}
 \addtokomafont{sectioning}{\color{sectioncolor}}
-\usepackage[automark,nouppercase]{scrpage2}
+\usepackage[automark,nouppercase]{scrlayer-scrpage}
 \pagestyle{scrheadings}
 \clearscrheadings
 \clearscrplain
@@ -5681,7 +5681,7 @@
 % \fi
 %
 % \xLfmultipole{wdmcoupler}%
-% \compitem{wdmcoupler}(tl)(bl)(r){label}
+% \compitem{wdmcoupler}(tl)...(bl)(r){label}
 % \iffalse
 %<*ignore>
 % \fi
@@ -5839,6 +5839,8 @@
 % \fi
 % \end{stylelist}
 %
+% \ifGERMAN\subsection{Variable Knotenanzahl}\fi
+% \ifENGLISH\subsection{Variable node count}\fi
 % \ifGERMAN
 % Jeder Koppler hat eine Variante, die nur zwei Knoten benötigt, einen Eingangs-
 % und einen Ausgangsknoten. \Lcomp{optcoupler} verwendet jeden dieser Knoten
@@ -5867,6 +5869,58 @@
   \drawfiber{(A)}{1}{2}{(B)}
   \drawfiber{1}{([offset=0.5, Xnodesep=1]\oenodeIfc{2}{1})}
   \drawfiber{([offset=-0.5, Xnodesep=-1]\oenodeIfc{2}{2})}{2}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
+% \ifGERMAN Des Weiteren kann ein \Lcomp{wdmcoupler} mehr als zwei Eingangsknoten haben, ein
+% \Lcomp{wdmsplitter} mehr als zwei Ausgangsknoten.\fi
+% \ifENGLISH A \Lcomp{wdmcoupler} can have more than two input nodes, a \Lcomp{wdmsplitter}
+% more than two output nodes.\fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(8,2)
+  \pnodes(0,0){A}(0,0.8){B}(0,1.2){C}(0,2){D}(4,1){E}
+  \wdmcoupler(A)(B)(C)(D)(E){coupler}
+  \pnodes(8,2){F}(8,1.2){G}(8,0.8){H}(8,0){I}
+  \wdmcoupler(E)(F)(G)(H)(I){splitter}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
+% \ifGERMAN Die Ausrichtung der Komponente wird anhand des Mittelpunkts aller Eingangs-
+% (\Lcomp{wdmcoupler}) bzw. Ausgangsknoten (\Lcomp{wdmsplitter}
+% berechnet, falls nicht \Lkeyword{coupleralign} verwendet wird.\fi
+% \ifENGLISH The component's orientation is calculated from the median of all input nodes (\Lcomp{wdmcoupler}) or all output nodes (\Lcomp{wdmsplitter}, unless \Lkeyword{coupleralign} is used.\fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(9,2)
+  \pnodes(0,0){A}(0,0.5){B}(0,2){C}(4,1){D}
+  \wdmcoupler(A)(B)(C)(D){coupler}
+  \pnodes(5,2){E}(5,0.5){F}(5,0){G}(9,2){H}
+  \wdmcoupler[coupleralign=t](E)(F)(G)(H){coupler}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(9,2)
+  \pnode(0,1){A}(2,2){B}(2,0.5){C}(2,0){D}
+  \wdmsplitter(A)(B)(C)(D){splitter}
+  \pnodes(5,0.5){E}(9,2){F}(9,1.5){G}(9,0){H}
+  \wdmsplitter[coupleralign=b](E)(F)(G)(H)
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -13906,6 +13960,10 @@
 %
 % \begin{changelog}
 % \patchcmd{\release}{\setlength{\itemsep}{0pt}}{\setlength{\itemsep}{0pt}\setlength{\parsep}{0pt}}{}{}
+%   \begin{release}{5.x}{xxxx-xx-xx}
+%   \item Modified \cs{wdmcoupler} to handle an arbitrary number of input nodes\see{comp:wdmcoupler}
+%   \item Modified \cs{wdmsplitter} to handle an arbitrary number of output nodes\see{comp:wdmsplitter}
+%   \end{release}
 %   \begin{release}{5.2}{2014-11-26}
 %   \item Added component \cs{asphericlens}\see{comp:asphericlens}
 %   \item Added component \cs{axicon}\see{comp:axicon}
@@ -14371,6 +14429,10 @@
 % Count the temporal planes which are created for connections to nodes.
 %    \begin{macrocode}
 \newcount\POE@nodecnt
+%    \end{macrocode}
+% Count the number of input nodes of a wdmcoupler, or output nodes of a wdmsplitter
+%    \begin{macrocode}
+\newcount\POE@couplernodecount
 %    \end{macrocode}
 %
 % \subsection{Fixed strings}
@@ -16711,13 +16773,8 @@
 %    \end{macrocode}
 % Which nodes to take for the automatic fiber and wire connections.
 %    \begin{macrocode}
-\define@choicekey+[psset]{optexp}{startnode}%
-  [\val\nr]{auto,1,2,3,4,N}%
-  {\edef\POE@key@startnode{\val}}
-  {\PackageError{pst-optexp}{Unknown startnode number '\val'}}
-\define@choicekey+[psset]{optexp}{stopnode}[\val\nr]{auto,1,2,3,4,N}%
-   {\edef\POE@key@stopnode{\val}}
-   {\PackageError{pst-optexp}{Unknown stopnode number '\val'}}
+\define@key[psset]{optexp}{startnode}{\edef\POE@key@startnode{#1}}%
+\define@key[psset]{optexp}{stopnode}{\edef\POE@key@stopnode{#1}}%
 \psset[optexp]{%
   startnode=auto,
   stopnode=auto
@@ -18575,106 +18632,207 @@
 % \begin{macro}{\wdmsplitter}
 %    \begin{macrocode}
 \def\wdmsplitter{\pst@object{wdmsplitter}}%
-\def\wdmsplitter@i(#1)(#2){%
-  \@ifnextchar(%)
-    {\wdmsplitter@ii(#1)(#2)}%
-    {\wdmsplitter@ii(#1)(#2)(#2)}%
-}%
-\def\wdmsplitter@ii(#1)(#2)(#3){%
+\def\wdmsplitter@i{%
+  \def\my@aftercoors{\wdmsplitter@ii}%
+  \POE@couplernodecount=0\relax
+  \def\coupler@coors{}%
+  \coupler@@getcoors
+}
+\def\wdmsplitter@ii{%
   \@ifnextchar\bgroup%
-    {\wdmsplitter@iii(#1)(#2)(#3)}%
-    {\wdmsplitter@iii(#1)(#2)(#3){}}%
+    {\wdmsplitter@iii}%
+    {\wdmsplitter@iii{}}%
 }%
-\def\wdmsplitter@iii(#1)(#2)(#3)#4{%
+\def\wdmsplitter@iii#1{%
+  \ifnum\POE@couplernodecount>1\else
+    \PackageError{pst-optexp}%
+    {A wdmsplitter expects at least two nodes, one input and one output node}%
+  \fi
   \begin@OptexpObj
     \ifPOE@backlayer
-      \pnode(#1){\oenodeRefA{}}
+%    \end{macrocode}
+% Use first coordinate pair as RefA
+%    \begin{macrocode}
+      \pnode(! [ \coupler@coors 1 \POE@dict{GetCoordinatePair} \tx@UserCoor){\oenodeRefA{}}
       \ifx\POE@key@coupleralign\POE@str@top
-         \pnode(#2){\oenodeRefB{}}
+%    \end{macrocode}
+% For top alignment, use first output coordinate pair, i.e. second coordinate pair as RefB
+%    \begin{macrocode}
+        \pnode(! [ \coupler@coors 2 \POE@dict{GetCoordinatePair} \tx@UserCoor){\oenodeRefB{}}
       \else\ifx\POE@key@coupleralign\POE@str@bottom
-         \pnode(#3){\oenodeRefB{}}
+%    \end{macrocode}
+% For bottom alignment, use last output coordinate pair
+% \end{macrocode}
+        \pnode(! [ \coupler@coors counttomark 2 idiv \POE@dict{GetCoordinatePair} \tx@UserCoor){\oenodeRefB{}}
       \else
-         \pst@getcoor{#2}\POE@tempa%
-         \pst@getcoor{#3}\POE@tempb%
-         \pnode(!\POE@tempa \POE@tempb 
-                 \POE@dict{VecAdd 0.5 VecScale}
-                 \tx@UserCoor){\oenodeRefB{}}
+%    \end{macrocode}
+% Use median of all output coordinate pairs as RefB
+%    \begin{macrocode}
+        \pnode(! [ \coupler@coors
+%    \end{macrocode}
+% remove input node from stack
+%    \begin{macrocode}
+pop pop
+%    \end{macrocode}
+% count number of output coordinate pair, keep that number and save it behind the mark
+%    \begin{macrocode}
+counttomark 2 idiv dup counttomark 1 add 1 roll
+1 sub { \POE@dict{VecAdd} } repeat
+%    \end{macrocode}
+% divide by number of output coordinate pairs and remove mark
+%    \begin{macrocode}
+4 -1 roll 1 exch div \POE@dict{VecScale} 3 -1 roll pop \tx@UserCoor){\oenodeRefB{}}
       \fi\fi
     \fi
-    \POE@drawcomponent{wdmsplitter}{#4}
+    \POE@drawcomponent{wdmsplitter}{#1}
     \ifPOE@backlayer
       \POE@Verb{%
-        (1) (2) (\oenode{}{}) CorrectDipoleIfc 
-        (1) (3) (\oenode{}{}) CorrectDipoleIfc 
+        2 1 \the\POE@couplernodecount\space
+        {
+          inttostr (1) exch (\oenode{}{}) CorrectDipoleIfc
+        } for
       }%
       \ifPOE@fiberpresetin@
-        \drawfiber@{FiberIn}[stopnode=1](#1){}
+        \drawfiber@{FiberIn}[stopnode=1](! [ \coupler@coors 1 \POE@dict{GetCoordinatePair} \tx@UserCoor){}
       \fi
       \ifPOE@fiberpresetout@
         \ifPOE@fiberpresetout@top
-          \drawfiber@{FiberOut1}[startnode=2]{}(#2)
+          \drawfiber@{FiberOut1}[startnode=2]{}(! [ \coupler@coors 2 \POE@dict{GetCoordinatePair} \tx@UserCoor)
         \fi
         \ifPOE@fiberpresetout@bottom
-          \drawfiber@{FiberOut2}[startnode=N]{}(#3)
+          \drawfiber@{FiberOut2}[startnode=N]{}(! [ \coupler@coors \the\POE@couplernodecount\space \POE@dict{GetCoordinatePair} \tx@UserCoor)
         \fi
       \fi
+%    \end{macrocode}
+% If top and bottom fibers are drawn, we must also draw all other output fibers
+%    \begin{macrocode}
+        \ifPOE@fiberpresetout@top\ifPOE@fiberpresetout@bottom
+          \@tempcnta=\POE@couplernodecount
+          \advance\@tempcnta by -3
+          \ifnum0<\@tempcnta
+            \multido{\i=3+1}{\the\@tempcnta}{%
+              \drawfiber@{FiberOut}[startnode=\i]{}(! [ \coupler@coors \i\space \POE@dict{GetCoordinatePair} \tx@UserCoor)
+            }%
+          \fi
+        \fi\fi  
     \fi
   \end@OptexpObj
 }%
 %    \end{macrocode}
 % \end{macro}
-% 
+%
 % \begin{macro}{\wdmcoupler}
 %    \begin{macrocode}
 \def\wdmcoupler{\pst@object{wdmcoupler}}%
-\def\wdmcoupler@i(#1)(#2){%
-  \@ifnextchar(%)
-    {\wdmcoupler@ii(#1)(#2)}%
-    {\wdmcoupler@ii(#1)(#1)(#2)}%
-}%
-\def\wdmcoupler@ii(#1)(#2)(#3){%
+\def\wdmcoupler@i{%
+  \def\my@aftercoors{%
+%    \end{macrocode}
+% Subtract one, because we counted all nodes. However, we can always access the last
+% node by N, so we more often use the second last, i.e the last input node
+%    \begin{macrocode}
+    \advance\POE@couplernodecount by -1\relax%
+    \wdmcoupler@ii}%
+  \POE@couplernodecount=0\relax
+  \def\coupler@coors{}%
+  \coupler@@getcoors
+}
+%    \end{macrocode}
+% \begin{macro}{\coupler@@getcoors}
+%   Read in a variable number of node coordinates. The coordinates are saved in \cs{coupler@coors},
+%   their number in \cs{POE@couplernodecount}.
+%    \begin{macrocode}
+\def\coupler@@getcoors(#1){%
+  \advance\POE@couplernodecount by \@ne\relax%
+  \pst@@getcoor{#1}%
+  \edef\coupler@coors{\pst@coor\coupler@coors}%
+  \@ifnextchar({\coupler@@getcoors}{\my@aftercoors}%
+}
+%    \end{macrocode}
+% \end{macro}
+%    \begin{macrocode}
+\def\wdmcoupler@ii{%
   \@ifnextchar\bgroup%
-    {\wdmcoupler@iii(#1)(#2)(#3)}%
-    {\wdmcoupler@iii(#1)(#2)(#3){}}%
-}%
-\def\wdmcoupler@iii(#1)(#2)(#3)#4{%
+    {\wdmcoupler@iii}%
+    {\wdmcoupler@iii{}}%
+  }%
+\def\wdmcoupler@iii#1{%
+  \ifnum\POE@couplernodecount>0\else
+    \PackageError{pst-optexp}%
+    {A wdmcoupler expects at least two nodes, one input and one output node}%
+  \fi
   \begin@OptexpObj
     \ifPOE@backlayer
-      \pnode(#3){\oenodeRefB{}}
+%    \end{macrocode}
+% Use last coordinate pair as RefB
+%    \begin{macrocode}
+      \pnode(! [ \coupler@coors \the\POE@couplernodecount\space 1 add \POE@dict{GetCoordinatePair} \tx@UserCoor){\oenodeRefB{}}
       \ifx\POE@key@coupleralign\POE@str@top
-         \pnode(#1){\oenodeRefA{}}
+%    \end{macrocode}
+% For top alignment, use first coordinate pair as RefA
+%    \begin{macrocode}
+         \pnode(! [ \coupler@coors \POE@dict{GetFirstInputCoordinatePair} \tx@UserCoor){\oenodeRefA{}}
       \else\ifx\POE@key@coupleralign\POE@str@bottom
-         \pnode(#2){\oenodeRefA{}}
+%    \end{macrocode}
+% For bottom alignment, use second last coordinate pair as RefA
+%    \begin{macrocode}
+         \pnode(! [ \coupler@coors \POE@dict{GetLastInputCoordinatePair} \tx@UserCoor){\oenodeRefA{}}
       \else
-         \pst@getcoor{#1}\POE@tempa%
-         \pst@getcoor{#2}\POE@tempb%
-         \pnode(!\POE@tempa \POE@tempb 
-                 \POE@dict{VecAdd 0.5 VecScale}
-                 \tx@UserCoor){\oenodeRefA{}}
+%    \end{macrocode}
+% Use median of all input coordinate pairs as RefA
+%    \begin{macrocode}
+        \pnode(! [ \coupler@coors
+%    \end{macrocode}
+% remove output node from stack
+%    \begin{macrocode}
+counttomark -2 roll pop pop
+%    \end{macrocode}
+% count number of input coordinate pair, keep that number and save it behind the mark
+%    \begin{macrocode}
+counttomark 2 idiv dup counttomark 1 add 1 roll
+1 sub { \POE@dict{VecAdd} } repeat
+%    \end{macrocode}
+% divide by number of input coordinate pairs and remove mark
+%    \begin{macrocode}
+4 -1 roll 1 exch div \POE@dict{VecScale} 3 -1 roll pop \tx@UserCoor){\oenodeRefA{}}
       \fi\fi
     \fi
-    \POE@drawcomponent{wdmcoupler}{#4}
+    \POE@drawcomponent{wdmcoupler}{#1}
     \ifPOE@backlayer 
       \POE@Verb{%
-        (1) (3) (\oenode{}{}) CorrectDipoleIfc 
-        (2) (3) (\oenode{}{}) CorrectDipoleIfc
+        1 1 \the\POE@couplernodecount\space
+        {
+          inttostr \the\POE@couplernodecount\space 1 add inttostr (\oenode{}{}) CorrectDipoleIfc
+        } for
       }%
       \ifPOE@fiberpresetout@
-        \drawfiber@{FiberOut}[startnode=N]{}(#3)
+        \drawfiber@{FiberOut}[startnode=N]{}(\oenodeRefB{})
       \fi
       \ifPOE@fiberpresetin@
         \ifPOE@fiberpresetin@top
-          \drawfiber@{FiberIn1}[stopnode=1](#1){}
+          \drawfiber@{FiberIn1}[stopnode=1](! [ \coupler@coors 1 \POE@dict{GetCoordinatePair} \tx@UserCoor){}
         \fi 
         \ifPOE@fiberpresetin@bottom
-          \drawfiber@{FiberIn2}[stopnode=2](#2){}
+          \drawfiber@{FiberIn2}[stopnode=\the\POE@couplernodecount](! [ \coupler@coors \the\POE@couplernodecount\space \POE@dict{GetCoordinatePair} \tx@UserCoor){}
         \fi
+%    \end{macrocode}
+% If top and bottom fibers are drawn, we must also draw all other input fibers
+%    \begin{macrocode}
+        \ifPOE@fiberpresetin@top\ifPOE@fiberpresetin@bottom
+          \@tempcnta=\POE@couplernodecount
+          \advance\@tempcnta by -2
+          \ifnum0<\@tempcnta
+            \multido{\i=2+1}{\the\@tempcnta}{%
+              \drawfiber@{FiberIn}[stopnode=\i](! [ \coupler@coors \i\space \POE@dict{GetCoordinatePair} \tx@UserCoor){}
+            }%
+          \fi
+        \fi\fi
       \fi
     \fi
   \end@OptexpObj
 }%
 %    \end{macrocode}
 % \end{macro}
+%
 % \begin{macro}{\optcirculator}
 %    \begin{macrocode}
 \def\optcirculator{\pst@object{optcirculator}}%
@@ -21744,16 +21902,25 @@
 % \begin{macro}{\wdmcoupler@nodes}
 %    \begin{macrocode}
 \def\wdmcoupler@nodes{%
-  \edef\@sep{\POE@key@couplersep\space 0.5 mul }%
-  \ifx\POE@key@couplertype\POE@str@none
-    \ifx\POE@key@coupleralign\POE@str@center
-      \edef\@sep{0 }%
-    \fi
-  \fi
   \newOptexpFiberComp{%
-    {@@x neg @@y0 \@sep add}
-    {@@x neg  @@y0 \@sep sub}
-    {@@x 0}}%
+%    \end{macrocode}
+% A coupler may have only a single input node, which must then be duplicated
+%    \begin{macrocode}
+    /@@nodecount \the\POE@couplernodecount\space dup 1 le { pop 2 } if def
+    @@y0 \POE@key@couplersep\space 0.5 mul add
+    \POE@key@couplersep\space @@nodecount 1 sub div
+    \ifx\POE@key@couplertype\POE@str@none
+      \ifx\POE@key@coupleralign\POE@str@center
+        pop pop @@y0 0
+      \fi
+    \fi
+    1 1 @@nodecount
+    {
+      3 copy 1 sub mul sub exch pop [ @@x neg 3 -1 roll ] cvx 3 1 roll
+    } for
+    pop pop
+    {@@x 0}
+  }%
   \pnode(0,0){\oenodeCenter{}}
 }%
 %    \end{macrocode}
@@ -21769,7 +21936,7 @@
         (!/N@\oenodeOut{} \POE@dict{@GetCenter} 
           \tx@UserCoor \POE@key@couplersep\space sub)(\oenode{2}{})
     \else
-      \psline[style=Fiber](\oenode{2}{})(\oenodeOut{})
+      \psline[style=Fiber](\oenode{\the\POE@couplernodecount}{})(\oenodeOut{})
       \ifx\POE@key@coupleralign\POE@str@bottom
         \psline[style=Fiber]%
           (!/N@\oenodeOut{} \POE@dict{@GetCenter} 
@@ -21786,16 +21953,25 @@
 % \begin{macro}{\wdmsplitter@nodes}
 %    \begin{macrocode}
 \def\wdmsplitter@nodes{%
-  \edef\@sep{\POE@key@couplersep\space 0.5 mul }%
-  \ifx\POE@key@couplertype\POE@str@none
-    \ifx\POE@key@coupleralign\POE@str@center
-      \edef\@sep{0 }%
-    \fi
-  \fi
   \newOptexpFiberComp{%
     {@@x neg 0}
-    {@@x @@y0 \@sep add}
-    {@@x @@y0 \@sep sub}}
+%    \end{macrocode}
+% A coupler may have only a single output node, which must then be duplicated
+%    \begin{macrocode}
+    /@@nodecount \the\POE@couplernodecount\space dup 2 gt { 1 sub } if def
+    @@y0 \POE@key@couplersep\space 0.5 mul add
+    \POE@key@couplersep\space @@nodecount 1 sub div
+    \ifx\POE@key@couplertype\POE@str@none
+      \ifx\POE@key@coupleralign\POE@str@center
+        pop pop @@y0 0
+      \fi
+    \fi
+    1 1 @@nodecount
+    {
+      3 copy 1 sub mul sub exch pop [ @@x 3 -1 roll ] cvx 3 1 roll
+    } for
+    pop pop
+  }%
   \pnode(0,0){\oenodeCenter{}}
 }%
 %    \end{macrocode}
@@ -25224,11 +25400,13 @@ tx@OptexpDict begin
 %   \end{pssyntax}
 %    \begin{macrocode}
 /GetIfcOrNodeCoord {
+  (GetIfcOrNodeCoord) DebugBegin
   dup xcheck {
     exch pop exec
   } {
     nametostr exch nametostr exch GetIfcCenter
   } ifelse
+  DebugEnd
 } bind def
 %    \end{macrocode}
 % \end{macro}
@@ -25554,6 +25732,25 @@ tx@IntersectDict begin
 end
 %    \end{macrocode}
 %
+% \begin{macro}{GetCoordinatePair}
+%   Get the coordinate pair at position \PSvar{n} (n goes from 1 to N) and remove the other coordinates
+%   including mark from stack
+%   \begin{pssyntax}
+%     [ \PSvar{xN} \PSvar{yN} ... \PSvar{x1} \PSvar{y1} \PSvar{n} \PSop{GetCoordinatePair}
+%   \end{pssyntax}
+%    \begin{macrocode}
+/GetCoordinatePair {%
+  2 mul -2 roll counttomark 1 add 2 roll cleartomark
+} bind def
+%    \end{macrocode}
+% \end{macro}
+%    \begin{macrocode}
+/GetFirstInputCoordinatePair { 1 GetCoordinatePair } bind def
+%    \end{macrocode}
+% If a coupler has only a single input node, this must be used for both nodes
+%    \begin{macrocode}
+/GetLastInputCoordinatePair { counttomark 2 idiv 1 sub GetCoordinatePair } bind def
+%    \end{macrocode}
 % \begin{macro}{mymax}
 %   For some reason Adobe Distiller crashes if 'max' operator is used
 %   with two floats which are very close (4e-5 in one case)

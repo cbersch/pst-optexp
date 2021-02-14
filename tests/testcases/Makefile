@@ -1,9 +1,11 @@
 ifeq ($(DEBUG),)
 LATEX = latex -interaction=nonstopmode 2>&1 >/dev/null
 DVIPS = dvips -q 2>&1 >/dev/null
+PS2PDF = ps2pdf -dALLOWPSTRANSPARENCY 2>&1 >/dev/null
 else
 LATEX = latex -interaction=nonstopmode 
 DVIPS = dvips
+PS2PDF = ps2pdf -dALLOWPSTRANSPARENCY
 endif
 
 export TEXINPUTS := ../..:
@@ -32,7 +34,7 @@ testcases.tex: $(addsuffix .tex, $(filter-out $(GENTEX) $(HEADER), $(FILELIST)))
 		echo "\\\\bgroup\section{$(file)}\\\\input{$(file)}\\\\egroup\\\\newpage";) } >> $@
 
 %.pdf: %.ps
-	ps2pdf $<
+	$(PS2PDF) $<
 
 %.ps: %.dvi
 	$(DVIPS) $<

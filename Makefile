@@ -63,7 +63,7 @@ $(PACKAGE)-code.dvi: L = english
 %.ps: %.dvi
 	dvips $< 
 %.pdf: %.ps
-	$(PS2PDF) $< $@
+	$(PS2PDF) -dALLOWPSTRANSPARENCY $< $@
 
 $(PACKAGE)-quickref.tex: $(PACKAGE)-quickref.py $(PACKAGE).dtx
 	python $<
