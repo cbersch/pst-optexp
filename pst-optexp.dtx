@@ -18,11 +18,18 @@
 %<stylefile>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<stylefile>\ProvidesPackage{pst-optexp}
 %<*stylefile>
-    [2021/02/26 v5.3dev Optical experimental setups with PSTricks]
+    [2021/02/26 v6.0 Optical experimental setups with PSTricks]
 %</stylefile>
 %
 %<*driver>
-\documentclass[a4paper, DIV=9, oneside, toc=index, parskip=half-]{scrreprt}
+\documentclass[
+paper=a4,
+headinclude=false,
+footinclude=false,
+oneside,
+toc=index,
+headsepline,
+parskip=half-]{scrreprt}
 \usepackage{doc}
 \setcounter{IndexColumns}{2}
 \usepackage[utf8]{inputenc} 
@@ -136,21 +143,19 @@
 \makeatother
 \colorlet{sectioncolor}{DOrange}
 \addtokomafont{sectioning}{\color{sectioncolor}}
-\usepackage[automark,nouppercase]{scrlayer-scrpage}
+\usepackage[automark,markcase=ignorenouppercase]{scrlayer-scrpage}
 \pagestyle{scrheadings}
-\clearscrheadings
-\clearscrplain
+\clearmainofpairofpagestyles
+\clearplainofpairofpagestyles
 \ohead{\pagemark}
 \ihead{\headmark}
 \ofoot[\pagemark]{}
 \automark[subsection]{section}
-\setheadsepline{.4pt}[\color{DOrange}]
-\setheadwidth[0pt]{text}
-\setfootwidth[0pt]{text}
+\setkomafont{headsepline}{\color{DOrange}}
+\DeclareTOCStyleEntry[level=0, numwidth=2.0em]{default}{chapter}
+\DeclareTOCStyleEntry[level=1, indent=1.5em, numwidth=3.0em]{default}{section}
+\DeclareTOCStyleEntry[level=2, indent=3.8em, numwidth=4.0em]{default}{subsection}
 \makeatletter
-\patchcmd{\l@chapter}{1.5em}{2em}{}{}
-\renewcommand*\l@section{\bprot@dottedtocline{1}{1.5em}{3.0em}}
-\renewcommand*\l@subsection{\bprot@dottedtocline{2}{3.8em}{4.0em}}
 \newrobustcmd*{\fnurl}[1][]{\hyper@normalise\ltd@fnurl{#1}}
 \def\ltd@fnurl#1#2{\footnote{#1\hyper@linkurl{\Hurl{#2}}{#2}}}
 \newrobustcmd*{\arxivurl}[1]{\href{http://arxiv.org/abs/#1}{arXiv:#1}}
@@ -709,7 +714,7 @@
 % \renewcommand\maketitle{^^A
 % \thispagestyle{empty}^^A
 % \begin{titlepage}
-% \begin{pspicture}(1.6in,0.685in)(10,21.7)
+% \begin{pspicture}(1.6in,0.685in)(10,20.5)
 %   \psframe[fillstyle=solid,linecolor=lightgray,fillcolor=lightgray,linestyle=solid](0,-5.75)(21.5,10)
 %   \psframe[fillstyle=solid,linecolor=Orange!85!Red,fillcolor=Orange!85!Red,linestyle=solid](0,10)(21.5,10.5)
 %   \psframe[fillstyle=solid,linecolor=Orange!85!Red,fillcolor=Orange!85!Red,linestyle=solid](0,21.1)(21.5,21.2)
@@ -2547,7 +2552,7 @@
 \addtopsstyle{OptComp}{linewidth=3\pslinewidth, linecolor=red}
 \newpsstyle{OptionalStyle}{linecolor=blue}
 \lens(0,1)(2,1)
-% Liniefarbe wird ueberschrieben, die Linienbreite nicht.
+% Linienfarbe wird ueberschrieben, die Linienbreite nicht.
 \lens[optional](0,1)(3,1)
 \end{pspicture}
 \end{LTXexample}
@@ -5642,7 +5647,7 @@
 % \fi
 %
 % \xLfmultipole{wdmcoupler}%
-% \compitem{wdmcoupler}(tl)...(bl)(r){label}
+% \compitem{wdmcoupler}(tl)(...)(bl)(r){label}
 % \iffalse
 %<*ignore>
 % \fi
@@ -5656,7 +5661,7 @@
 % \fi
 %
 % \xLfmultipole{wdmsplitter}%
-% \compitem{wdmsplitter}(l)(tr)(br){label}
+% \compitem{wdmsplitter}(l)(tr)(...)(br){label}
 % \iffalse
 %<*ignore>
 % \fi
@@ -5837,11 +5842,21 @@
 %<*ignore>
 % \fi
 \begin{LTXexample}
-\begin{pspicture}(8,2)
-  \pnodes(0,0){A}(0,0.8){B}(0,1.2){C}(0,2){D}(4,1){E}
+\begin{pspicture}(4,2)
+  \pnodes(0,2){A}(0,1.2){B}(0,0.8){C}(0,0){D}(4,1){E}
   \wdmcoupler(A)(B)(C)(D)(E){coupler}
-  \pnodes(8,2){F}(8,1.2){G}(8,0.8){H}(8,0){I}
-  \wdmcoupler(E)(F)(G)(H)(I){splitter}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(4,2)
+  \pnodes(0,1){A}(4,2){B}(4,1.2){C}(4,0.8){D}(4,0){E}
+  \wdmsplitter(A)(B)(C)(D)(E){splitter}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -5849,32 +5864,57 @@
 % \fi
 %
 % \ifGERMAN Die Ausrichtung der Komponente wird anhand des Mittelpunkts aller Eingangs-
-% (\Lcomp{wdmcoupler}) bzw. Ausgangsknoten (\Lcomp{wdmsplitter}
+% (\Lcomp{wdmcoupler}) bzw. Ausgangsknoten (\Lcomp{wdmsplitter})
 % berechnet, falls nicht \Lkeyword{coupleralign} verwendet wird.\fi
-% \ifENGLISH The component's orientation is calculated from the median of all input nodes (\Lcomp{wdmcoupler}) or all output nodes (\Lcomp{wdmsplitter}, unless \Lkeyword{coupleralign} is used.\fi
+% \ifENGLISH The component's orientation is calculated from the median of all input nodes
+% (\Lcomp{wdmcoupler}) or all output nodes (\Lcomp{wdmsplitter}), unless \Lkeyword{coupleralign}
+% is used.\fi
 % \iffalse
 %<*ignore>
 % \fi
 \begin{LTXexample}
-\begin{pspicture}(9,2)
-  \pnodes(0,0){A}(0,0.5){B}(0,2){C}(4,1){D}
+\begin{pspicture}(4,2)
+  \pnodes(0,2){A}(0,0.5){B}(0,0){C}(4,1){D}
   \wdmcoupler(A)(B)(C)(D){coupler}
-  \pnodes(5,2){E}(5,0.5){F}(5,0){G}(9,2){H}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(4,2)
+  \pnodes(0,2){E}(0,0.5){F}(0,0){G}(4,2){H}
   \wdmcoupler[coupleralign=t](E)(F)(G)(H){coupler}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
 %</ignore>
 % \fi
+%
 % \iffalse
 %<*ignore>
 % \fi
 \begin{LTXexample}
-\begin{pspicture}(9,2)
-  \pnode(0,1){A}(2,2){B}(2,0.5){C}(2,0){D}
+\begin{pspicture}(4,2)
+  \pnodes(0,1){A}(4,2){B}(4,0.5){C}(4,0){D}
   \wdmsplitter(A)(B)(C)(D){splitter}
-  \pnodes(5,0.5){E}(9,2){F}(9,1.5){G}(9,0){H}
-  \wdmsplitter[coupleralign=b](E)(F)(G)(H)
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(4,2)
+  \pnodes(0,0.5){E}(4,2){F}(4,1.5){G}(4,0){H}
+  \wdmsplitter[coupleralign=b](E)(F)(G)(H){splitter}
 \end{pspicture}
 \end{LTXexample}
 % \iffalse
@@ -5896,14 +5936,16 @@
 % \fi
 % \begin{center}
 % \begin{pspicture}(11,2)
-% \psset{couplersize=0.5, couplertype=rectangle, couplersep=0.2}
-% \wdmsplitter(0, 1.25)(3,2)(3,0.5)
+% \psset{couplersize=0.6, couplertype=rectangle, couplersep=0.25}
+% \wdmsplitter(0,1.25)(3,2)(3,1.25)(3,0.5)
 % \psdot(\oenodeIfc{1}{})\uput[120](\oenodeIfc{1}{}){1}
 % \psdot(\oenodeIfc{2}{})\uput[90](\oenodeIfc{2}{}){2}
+% \psdot(\oenodeIfc{3}{})\uput[180](\oenodeIfc{3}{}){3}
 % \psdot(\oenodeIfc{N}{})\uput[-90](\oenodeIfc{N}{}){N}
-% \wdmcoupler(4, 2)(4,0.5)(7,1.25)
+% \wdmcoupler(4,2)(4,1.25)(4,0.5)(7,1.25)
 % \psdot(\oenodeIfc{1}{})\uput[90](\oenodeIfc{1}{}){1}
-% \psdot(\oenodeIfc{2}{})\uput[-90](\oenodeIfc{2}{}){2}
+% \psdot(\oenodeIfc{2}{})\uput[0](\oenodeIfc{2}{}){2}
+% \psdot(\oenodeIfc{3}{})\uput[-90](\oenodeIfc{3}{}){3}
 % \psdot(\oenodeIfc{N}{})\uput[60](\oenodeIfc{N}{}){N}
 % \optcoupler(8,2)(8,0.5)(11,2)(11,0.5)
 % \psdot(\oenodeIfc{1}{})\uput[90](\oenodeIfc{1}{}){1}
@@ -11856,7 +11898,7 @@
 \end{LTXexample}
 \bigskip
 
-\enlargethispage{2cm}
+\enlargethispage{2.5cm}
 \begingroup
 \captionsetup[lstlisting]{format=poecaption}
 \begin{LTXexample}[pos=t, caption={\ifGERMAN Angepasst von \fi\ifENGLISH Adapted from \fi\arxivurl{1112.5270v2}}]
@@ -12241,7 +12283,7 @@
   \perppol[abspos=7](A)(B)\parpol(D)(\oenodeBeam{})
 \end{pspicture}
 \end{LTXexample}
-\enlargethispage{1cm}
+\enlargethispage{1.5cm}
 \begin{LTXexample}[pos=t, caption={caption}]
 \begin{pspicture}(13.7,2.9)
 \newpsstyle{Wire}{arm=0.1, arrows=->}
@@ -12503,6 +12545,31 @@
   }%
 \end{optexp}   
 \end{pspicture}  
+\end{LTXexample}
+
+\begin{LTXexample}[pos=t, caption={\ifENGLISH Adapted from \fi\ifGERMAN Angepasst von \fi\href{https://tex.stackexchange.com/q/581952}}, label=ex:multi-input-coupler]
+\begin{pspicture}(10,6)
+  \begin{optexp}
+    \psset[optexp]{usefiberstyle, couplersize=0.25, couplersep=0.07}
+    \newpsstyle{Fiber}{linecolor=orange, linewidth=2\pslinewidth}
+    \pnodes(2,1){PumpDiode}(2,5){UpperPumpDiode}(1,3){SignalIsolatorIn}(4, 3){SignalIsolatorOut}(1,3){SignalIn}(10,3){SignalCombinerOut}
+    \pnodes(7,3){FiberIn}(9,3){FiberOut}(9,3){AmpOut}
+    \optdiode[compname=PumpDiode, position=start](PumpDiode)([Xnodesep=1]PumpDiode){Pump diode}
+    \optdiode[compname=UpperPumpDiode, position=start](UpperPumpDiode)([Xnodesep=1]UpperPumpDiode){Pump diode}
+    \optisolator[compname=SignalIsolator, fiber=none](SignalIsolatorIn)(SignalIsolatorOut)%
+        {\begin{tabular}{@{}c@{}}Signal\\Isolator\end{tabular}}
+    \wdmcoupler[compname=SignalPumpCombiner](UpperPumpDiode)(\oenodeOut{SignalIsolator})(PumpDiode)(FiberIn)%
+        {\begin{tabular}{@{}c@{}}Signal/Pump\\light combiner\end{tabular}}
+    \optfiber[
+        compname=ActiveFiber,
+        position=start,
+        addtoFiberOut={arrows=->}](FiberIn)(FiberOut)%
+        {\begin{tabular}{@{}c@{}}Active\\fiber\end{tabular}}
+    \drawfiber[ArrowInside=->](SignalIn){SignalIsolator}
+  \end{optexp}
+  \nput{75}{AmpOut}{\begin{tabular}{@{}c@{}}Amplifier\\Output\end{tabular}}
+  \nput{-90}{SignalIn}{\begin{tabular}{@{}c@{}}Signal\\Input\end{tabular}}         
+\end{pspicture}
 \end{LTXexample}
 
 \begin{LTXexample}[pos=t, linerange={1-1}, caption={caption}]
@@ -18532,7 +18599,7 @@
       \else\ifx\POE@key@coupleralign\POE@str@bottom
 %    \end{macrocode}
 % For bottom alignment, use last output coordinate pair
-% \end{macrocode}
+%    \begin{macrocode}
         \pnode(! [ \coupler@coors counttomark 2 idiv \POE@dict{GetCoordinatePair} \tx@UserCoor){\oenodeRefB{}}
       \else
 %    \end{macrocode}
