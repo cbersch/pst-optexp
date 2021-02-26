@@ -3430,11 +3430,6 @@
 % \iffalse
 %</ignore>
 % \fi
-%
-% \numitem{lampscale}
-% \ifGERMAN Skalierung der Lampe.\fi
-% \ifENGLISH Scaling of the lamp.\fi
-% \deprecatedmsg{\ifGERMAN den Stil \fi\ifENGLISH style \fi\Lstyle{CrystalLamp}}
 % \end{optionlist}
 %
 % \begin{stylelist}
@@ -3687,11 +3682,6 @@
 % \ifENGLISH The size of the polarization symbol, the circle for \opt{perp} and
 % \opt{polmisc} is half of this.
 % \fi
-%
-% \optitem[0.7\nxLcs{pslinewidth}]{pollinewidth}{\prm{num} or \prm{dimen}}
-% \ifGERMAN \linewidthexplanation{des Polarisationszeichens}{Polarisationszeichen}\fi
-% \ifENGLISH \linewidthexplanation{polarisation sign}{polarisation signs}\fi
-% \deprecatedmsg{\ifGERMAN den Stil \fi\ifENGLISH style \fi\Lstyle{Polarization}}
 %
 % \choitem[parallel]{poltype}{parallel, perp, misc, lcirc, rcirc}
 % \ifGERMAN Dieser Parameter wählt die Polarizationsart aus.\fi
@@ -4319,14 +4309,6 @@
 % \fi
 % \end{ltxsyntax}
 %
-% \ifENGLISH Before package version 3.0 this component was called
-% \Lcomp*{optgrid}. Since then this command name is deprecated and will be removed
-% in future versions.
-% \fi
-% \ifGERMAN Vor Paketversion 3.0 hieß diese Komponente \Lcomp*{optgrid}. Seitdem
-% ist diese Benennung veraltet und wird in zukünftigen Versionen entfernt
-% werden.
-% \fi
 % \begin{optionlist}
 % \numitem[1]{gratingwidth} 
 % \ifGERMAN Die Breite des Gitters.\fi
@@ -4451,27 +4433,6 @@
 % \ifGERMAN \linewidthexplanation{des Gitters}{Gitter}\fi
 % \ifENGLISH \linewidthexplanation{grating}{gratings}\fi
 % \end{optionlist}
-%
-% \begin{stylelist}
-% \item[\smash{%
-%   \begin{tabular}[t]{@{}l@{}}
-%     \Lkeyword*{optgridwidth}\\
-%     \Lkeyword*{optgridheight}\\
-%     \Lkeyword*{optgriddepth}\\
-%     \Lkeyword*{optgridcount}\\
-%     \Lkeyword*{optgridtype}\\
-%     \Lkeyword*{optgridlinewidth}
-%   \end{tabular}}]^^A
-% \noindent
-% \ifGERMAN Diese Parameter wurden in die entsprechenden \opt{grating*}
-%   Parameter umbenannt und sind seit Version 3.0 veraltet.
-% \fi
-% \ifENGLISH These parameters were renamed to the respective \opt{grating*}
-% parameters and are deprecated since version 3.0.
-% \fi
-% \vspace*{2cm}
-% \end{stylelist}
-%
 %
 % \ifGERMAN\section{Transmissionsgitter}\fi
 % \ifENGLISH\section{Transmission grating}\fi
@@ -5807,13 +5768,6 @@
 % \iffalse
 %</ignore>
 % \fi
-% \choitem[center]{align}{top, bottom, center}
-% \ifGERMAN Dieser Parameter wurde in Version 3.0 in \Lkeyword{coupleralign}
-% umbenannt und ist seitdem veraltet.
-% \fi
-% \ifENGLISH This parameter was renamed in version 3.0 to
-% \Lkeyword{coupleralign} and is deprecated.
-% \fi
 %
 % \boolitem*[true]{variable}
 % \iffalse
@@ -6797,24 +6751,6 @@
 % \end{ltxsyntax}
 %
 % \begin{optionlist}
-%   \optitem[new]{namingscheme}{old, new} 
-%   \ifGERMAN
-%   Diese Option ist nur aus Kompatibilitätsgründen vorhanden. In Version 2.1
-%   mussten spezielle Komponentenknoten über ihren expliziten Namen angesprochen
-%   werden. Sie sollten diese Option nur dann verwenden und auf \opt{old}
-%   setzen, wenn Sie in älteren Dokumenten direkt auf die Knoten zugegriffen
-%   haben. Seit Version 3.0 werden Makros für den Zugriff auf die
-%   Komponentenknoten bereitgestellt, so dass das eigentliche Namensschema
-%   unerheblich ist.
-%   \fi
-%   \ifENGLISH
-%   This option is for backward compatibility only. In version 2.1 special
-%   component nodes had to be accessed by their explicit name. You should use
-%   this option only if you accessed internal nodes directly in old
-%   documents. Since version 3.0 explicit macros are provided to access all
-%   special component nodes, so that the actual naming scheme does not matter.
-%   \fi
-%
 %   \boolitem[false]{showoptdots}
 %   \ifGERMAN 
 %   Markiert einige der speziellen Komponentenknoten: die schwarzen Punkte sind
@@ -13960,9 +13896,20 @@
 %
 % \begin{changelog}
 % \patchcmd{\release}{\setlength{\itemsep}{0pt}}{\setlength{\itemsep}{0pt}\setlength{\parsep}{0pt}}{}{}
-%   \begin{release}{5.x}{xxxx-xx-xx}
+%   \begin{release}{6.0}{2021-02-26}
 %   \item Modified \cs{wdmcoupler} to handle an arbitrary number of input nodes\see{comp:wdmcoupler}
 %   \item Modified \cs{wdmsplitter} to handle an arbitrary number of output nodes\see{comp:wdmsplitter}
+%   \item Removed deprecated \opt{lampscale}, use style \opt{CrystalLamp}.
+%   \item Removed deprecated \opt{pollinewidth}, use style \opt{Polarization}.
+%   \item Removed deprecated \cs{optgrid}, use \cs{optgrating}.
+%   \item Removed deprecated \opt{optgridwidth}, use \opt{gratingwidth}.
+%   \item Removed deprecated \opt{optgridheight}, use \opt{gratingheight}.
+%   \item Removed deprecated \opt{optgriddepth}, use \opt{gratingdepth}.
+%   \item Removed deprecated \opt{optgridcount}, use \opt{gratingcount}.
+%   \item Removed deprecated \opt{optgridtype}, use \opt{gratingtype}.
+%   \item Removed deprecated \opt{optgridlinewidth}, use \opt{gratinglinewidth}.
+%   \item Removed deprecated \opt{align}, use \opt{coupleralign}.
+%   \item Removed deprecated \opt{namingschema}.
 %   \end{release}
 %   \begin{release}{5.2}{2014-11-26}
 %   \item Added component \cs{asphericlens}\see{comp:asphericlens}
@@ -14907,24 +14854,10 @@
 %    \end{macrocode}
 % Naming parameters.
 %    \begin{macrocode}
-\define@choicekey*[psset]{optexp}{namingscheme}%
-  [\val\nr]{old,new}[new]{%
-  \ifcase\nr\relax
-%    \end{macrocode}
-% Use the old naming scheme which was used in version 2.x.
-%    \begin{macrocode}
-    \edef\POE@str@basicname@default{tempNode}%
-    \edef\POE@str@basicname@prefix{}%
-    \gdef\POE@str@basicname@sep{Intern}%
-    \edef\POE@str@extnode@postfix{ExtNode}%
-  \or
-    \edef\POE@str@basicname@default{@}%
-    \edef\POE@str@basicname@prefix{OE@}%
-    \gdef\POE@str@basicname@sep{}%
-    \edef\POE@str@extnode@postfix{Ext}%
-  \fi
-}%
-\psset[optexp]{namingscheme=new}%
+\edef\POE@str@basicname@default{@}%
+\edef\POE@str@basicname@prefix{OE@}%
+\gdef\POE@str@basicname@sep{}%
+\edef\POE@str@extnode@postfix{Ext}%
 \define@key[psset]{optexp}{b@sicname}{%
   \edef\POE@key@b@sicname{\POE@str@basicname@prefix#1}%
 }%
@@ -15130,14 +15063,6 @@
 \define@boolkey[psset]{optexp}[POE@]{voltage}[true]{}
 \define@boolkey[psset]{optexp}[POE@]{caxisinv}[true]{}
 \define@boolkey[psset]{optexp}[POE@]{lamp}[true]{}
-\define@key[psset]{optexp}{lampscale}{%
-  \pst@checknum{#1}\POE@key@lampscale
-  \pst@divide{\POE@key@lampscale pt}{0.3pt}{\POE@key@lampscale}
-  \addtopsstyle{CrystalLamp}{unit=\POE@key@lampscale}
-  \PackageWarning{pst-optexp}{%
-    Parameter 'lampscale' is deprecated, \MessageBreak
-    use style 'CrystalLamp' instead.}%
-}
 \psset[optexp]{%
   crystalwidth=1.4,
   crystalheight=0.6,
@@ -15309,18 +15234,11 @@
 \define@key[psset]{optexp}{polsize}{%
   \pst@checknum{#1}\POE@key@polsize
 }
-\define@key[psset]{optexp}{pollinewidth}{%
-  \edef\POE@key@pollinewidth{#1}%
-  \PackageWarning{pst-optexp}{%
-    Parameter 'pollinewidth' is deprecated, \MessageBreak
-    use style 'Polarization'.}%
-}%
 %    \end{macrocode}
 % This is defined manually, to avoid printing the warning inside the key definition above.
 %    \begin{macrocode}
-\def\POE@key@pollinewidth{0.7\pslinewidth}%
 \newpsstyle{Polarization}{%
-  linewidth=\POE@key@pollinewidth, 
+  linewidth=0.7\pslinewidth, 
   arrowscale=0.8, dotsize=3\pslinewidth}
 \define@choicekey+[psset]{optexp}{poltype}%
   [\val\nr]{parallel,misc,perp,rcirc,lcirc}%
@@ -15511,48 +15429,6 @@
 }%
 %    \end{macrocode}
 % Grating
-%
-% These are the old \opt{optgrid*} parameters, which have been deprecated.
-%    \begin{macrocode}
-\define@key[psset]{optexp}{optgridcount}{%
-  \pst@checknum{#1}\POE@key@gratingcount
-  \PackageWarning{pst-optexp}{%
-    Parameter 'optgridcount' is deprecated,\MessageBreak
-    use 'gratingcount' instead.}%
-}%
-\define@key[psset]{optexp}{optgridwidth}{%
-  \pst@checknum{#1}\POE@key@gratingwidth
-  \PackageWarning{pst-optexp}{%
-    Parameter 'optgridwidth' is deprecated,\MessageBreak
-    use 'gratingwidth' instead.}%
-}%
-\define@key[psset]{optexp}{optgridheight}{%
-  \pst@checknum{#1}\POE@key@gratingheight
-  \PackageWarning{pst-optexp}{%
-    Parameter 'optgridheight' is deprecated,\MessageBreak
-    use 'gratingheight' instead.}%
-}%
-\define@choicekey*[psset]{optexp}{optgridtype}%
-  [\val\nr]{binary,blazed}{%
-  \edef\POE@key@gratingtype{#1}%
-  \PackageWarning{pst-optexp}{%
-    Parameter 'optgridtype' is deprecated,\MessageBreak
-    use 'gratingtype' instead.}%
-}%
-\define@key[psset]{optexp}{optgriddepth}{%
-  \pst@checknum{#1}\POE@key@gratingdepth
-  \PackageWarning{pst-optexp}{%
-    Parameter 'optgriddepth' is deprecated,\MessageBreak
-    use 'gratingdepth' instead.}%
-}%
-\define@key[psset]{optexp}{optgridlinewidth}{%
-  \edef\POE@key@gratinglinewidth{#1}%
-  \PackageWarning{pst-optexp}{%
-    Parameter 'optgridlinewidth' is deprecated,\MessageBreak
-    use 'gratinglinewidth' instead.}%
-}%
-%    \end{macrocode}
-% These are the new grating parameters.
 %    \begin{macrocode}
 \define@key[psset]{optexp}{gratingcount}{%
   \pst@checknum{#1}\POE@key@gratingcount
@@ -15947,12 +15823,6 @@
     \fi
   }%
   {\PackageError{pst-optexp}{Unknown value '\val' for couplertype}}
-\define@key[psset]{optexp}{align}{%
-  \psset[optexp]{coupleralign=#1}%
-  \PackageWarning{pst-optexp}{%
-    Parameter 'align' is deprecated,\MessageBreak
-    use 'coupleralign' instead.}%
-}
 \define@choicekey+[psset]{optexp}{coupleralign}%
   [\val\nr]{t,b,c,top,bottom,center}%
   {%
@@ -19339,12 +19209,6 @@ counttomark 2 idiv dup counttomark 1 add 1 roll
 \newOptexpTripole[ref@angle=45]{beamsplitter}
 \newOptexpTripole{optgrating}
 \newOptexpTripole[ref@angle=90]{transmissiongrating}
-\def\optgrid{%
-  \PackageWarning{pst-optexp}{%
-    \string\optgrid\space is deprecated,\MessageBreak
-    use \string\optgrating\space instead.}%
-  \optgrating%
-}%
 \newOptexpTripole[ref@angle=45]{pentaprism}
 \newOptexpTripole[ref@angle=45]{rightangleprism}
 \newOptexpTripole[ref@angle=45]{optprism}
