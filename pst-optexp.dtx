@@ -1,6 +1,6 @@
 % \iffalse meta-comment
 %
-% Copyright (C) 2007-2014 by Christoph Bersch <usenet@bersch.net>
+% Copyright (C) 2007-2021 by Christoph Bersch <usenet@bersch.net>
 %
 % This work may be distributed and/or modified under the
 % conditions of the LaTeX Project Public License, either version 1.3c
@@ -18,11 +18,18 @@
 %<stylefile>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<stylefile>\ProvidesPackage{pst-optexp}
 %<*stylefile>
-    [2014/11/26 v5.2 Optical experimental setups with PSTricks]
+    [2021/02/26 v6.0 Optical experimental setups with PSTricks]
 %</stylefile>
 %
 %<*driver>
-\documentclass[a4paper, DIV=9, oneside, toc=index, parskip=half-]{scrreprt}
+\documentclass[
+paper=a4,
+headinclude=false,
+footinclude=false,
+oneside,
+toc=index,
+headsepline,
+parskip=half-]{scrreprt}
 \usepackage{doc}
 \setcounter{IndexColumns}{2}
 \usepackage[utf8]{inputenc} 
@@ -136,21 +143,19 @@
 \makeatother
 \colorlet{sectioncolor}{DOrange}
 \addtokomafont{sectioning}{\color{sectioncolor}}
-\usepackage[automark,nouppercase]{scrpage2}
+\usepackage[automark,markcase=ignorenouppercase]{scrlayer-scrpage}
 \pagestyle{scrheadings}
-\clearscrheadings
-\clearscrplain
+\clearmainofpairofpagestyles
+\clearplainofpairofpagestyles
 \ohead{\pagemark}
 \ihead{\headmark}
 \ofoot[\pagemark]{}
 \automark[subsection]{section}
-\setheadsepline{.4pt}[\color{DOrange}]
-\setheadwidth[0pt]{text}
-\setfootwidth[0pt]{text}
+\setkomafont{headsepline}{\color{DOrange}}
+\DeclareTOCStyleEntry[level=0, numwidth=2.0em]{default}{chapter}
+\DeclareTOCStyleEntry[level=1, indent=1.5em, numwidth=3.0em]{default}{section}
+\DeclareTOCStyleEntry[level=2, indent=3.8em, numwidth=4.0em]{default}{subsection}
 \makeatletter
-\patchcmd{\l@chapter}{1.5em}{2em}{}{}
-\renewcommand*\l@section{\bprot@dottedtocline{1}{1.5em}{3.0em}}
-\renewcommand*\l@subsection{\bprot@dottedtocline{2}{3.8em}{4.0em}}
 \newrobustcmd*{\fnurl}[1][]{\hyper@normalise\ltd@fnurl{#1}}
 \def\ltd@fnurl#1#2{\footnote{#1\hyper@linkurl{\Hurl{#2}}{#2}}}
 \newrobustcmd*{\arxivurl}[1]{\href{http://arxiv.org/abs/#1}{arXiv:#1}}
@@ -709,7 +714,7 @@
 % \renewcommand\maketitle{^^A
 % \thispagestyle{empty}^^A
 % \begin{titlepage}
-% \begin{pspicture}(1.6in,0.685in)(10,21.7)
+% \begin{pspicture}(1.6in,0.685in)(10,20.5)
 %   \psframe[fillstyle=solid,linecolor=lightgray,fillcolor=lightgray,linestyle=solid](0,-5.75)(21.5,10)
 %   \psframe[fillstyle=solid,linecolor=Orange!85!Red,fillcolor=Orange!85!Red,linestyle=solid](0,10)(21.5,10.5)
 %   \psframe[fillstyle=solid,linecolor=Orange!85!Red,fillcolor=Orange!85!Red,linestyle=solid](0,21.1)(21.5,21.2)
@@ -2547,7 +2552,7 @@
 \addtopsstyle{OptComp}{linewidth=3\pslinewidth, linecolor=red}
 \newpsstyle{OptionalStyle}{linecolor=blue}
 \lens(0,1)(2,1)
-% Liniefarbe wird ueberschrieben, die Linienbreite nicht.
+% Linienfarbe wird ueberschrieben, die Linienbreite nicht.
 \lens[optional](0,1)(3,1)
 \end{pspicture}
 \end{LTXexample}
@@ -3430,11 +3435,6 @@
 % \iffalse
 %</ignore>
 % \fi
-%
-% \numitem{lampscale}
-% \ifGERMAN Skalierung der Lampe.\fi
-% \ifENGLISH Scaling of the lamp.\fi
-% \deprecatedmsg{\ifGERMAN den Stil \fi\ifENGLISH style \fi\Lstyle{CrystalLamp}}
 % \end{optionlist}
 %
 % \begin{stylelist}
@@ -3687,11 +3687,6 @@
 % \ifENGLISH The size of the polarization symbol, the circle for \opt{perp} and
 % \opt{polmisc} is half of this.
 % \fi
-%
-% \optitem[0.7\nxLcs{pslinewidth}]{pollinewidth}{\prm{num} or \prm{dimen}}
-% \ifGERMAN \linewidthexplanation{des Polarisationszeichens}{Polarisationszeichen}\fi
-% \ifENGLISH \linewidthexplanation{polarisation sign}{polarisation signs}\fi
-% \deprecatedmsg{\ifGERMAN den Stil \fi\ifENGLISH style \fi\Lstyle{Polarization}}
 %
 % \choitem[parallel]{poltype}{parallel, perp, misc, lcirc, rcirc}
 % \ifGERMAN Dieser Parameter wählt die Polarizationsart aus.\fi
@@ -4319,14 +4314,6 @@
 % \fi
 % \end{ltxsyntax}
 %
-% \ifENGLISH Before package version 3.0 this component was called
-% \Lcomp*{optgrid}. Since then this command name is deprecated and will be removed
-% in future versions.
-% \fi
-% \ifGERMAN Vor Paketversion 3.0 hieß diese Komponente \Lcomp*{optgrid}. Seitdem
-% ist diese Benennung veraltet und wird in zukünftigen Versionen entfernt
-% werden.
-% \fi
 % \begin{optionlist}
 % \numitem[1]{gratingwidth} 
 % \ifGERMAN Die Breite des Gitters.\fi
@@ -4451,27 +4438,6 @@
 % \ifGERMAN \linewidthexplanation{des Gitters}{Gitter}\fi
 % \ifENGLISH \linewidthexplanation{grating}{gratings}\fi
 % \end{optionlist}
-%
-% \begin{stylelist}
-% \item[\smash{%
-%   \begin{tabular}[t]{@{}l@{}}
-%     \Lkeyword*{optgridwidth}\\
-%     \Lkeyword*{optgridheight}\\
-%     \Lkeyword*{optgriddepth}\\
-%     \Lkeyword*{optgridcount}\\
-%     \Lkeyword*{optgridtype}\\
-%     \Lkeyword*{optgridlinewidth}
-%   \end{tabular}}]^^A
-% \noindent
-% \ifGERMAN Diese Parameter wurden in die entsprechenden \opt{grating*}
-%   Parameter umbenannt und sind seit Version 3.0 veraltet.
-% \fi
-% \ifENGLISH These parameters were renamed to the respective \opt{grating*}
-% parameters and are deprecated since version 3.0.
-% \fi
-% \vspace*{2cm}
-% \end{stylelist}
-%
 %
 % \ifGERMAN\section{Transmissionsgitter}\fi
 % \ifENGLISH\section{Transmission grating}\fi
@@ -5681,7 +5647,7 @@
 % \fi
 %
 % \xLfmultipole{wdmcoupler}%
-% \compitem{wdmcoupler}(tl)(bl)(r){label}
+% \compitem{wdmcoupler}(tl)(...)(bl)(r){label}
 % \iffalse
 %<*ignore>
 % \fi
@@ -5695,7 +5661,7 @@
 % \fi
 %
 % \xLfmultipole{wdmsplitter}%
-% \compitem{wdmsplitter}(l)(tr)(br){label}
+% \compitem{wdmsplitter}(l)(tr)(...)(br){label}
 % \iffalse
 %<*ignore>
 % \fi
@@ -5807,13 +5773,6 @@
 % \iffalse
 %</ignore>
 % \fi
-% \choitem[center]{align}{top, bottom, center}
-% \ifGERMAN Dieser Parameter wurde in Version 3.0 in \Lkeyword{coupleralign}
-% umbenannt und ist seitdem veraltet.
-% \fi
-% \ifENGLISH This parameter was renamed in version 3.0 to
-% \Lkeyword{coupleralign} and is deprecated.
-% \fi
 %
 % \boolitem*[true]{variable}
 % \iffalse
@@ -5839,6 +5798,8 @@
 % \fi
 % \end{stylelist}
 %
+% \ifGERMAN\subsection{Variable Knotenanzahl}\fi
+% \ifENGLISH\subsection{Variable node count}\fi
 % \ifGERMAN
 % Jeder Koppler hat eine Variante, die nur zwei Knoten benötigt, einen Eingangs-
 % und einen Ausgangsknoten. \Lcomp{optcoupler} verwendet jeden dieser Knoten
@@ -5872,6 +5833,93 @@
 % \iffalse
 %</ignore>
 % \fi
+%
+% \ifGERMAN Des Weiteren kann ein \Lcomp{wdmcoupler} mehr als zwei Eingangsknoten haben, ein
+% \Lcomp{wdmsplitter} mehr als zwei Ausgangsknoten.\fi
+% \ifENGLISH A \Lcomp{wdmcoupler} can have more than two input nodes, a \Lcomp{wdmsplitter}
+% more than two output nodes.\fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(4,2)
+  \pnodes(0,2){A}(0,1.2){B}(0,0.8){C}(0,0){D}(4,1){E}
+  \wdmcoupler(A)(B)(C)(D)(E){coupler}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(4,2)
+  \pnodes(0,1){A}(4,2){B}(4,1.2){C}(4,0.8){D}(4,0){E}
+  \wdmsplitter(A)(B)(C)(D)(E){splitter}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
+% \ifGERMAN Die Ausrichtung der Komponente wird anhand des Mittelpunkts aller Eingangs-
+% (\Lcomp{wdmcoupler}) bzw. Ausgangsknoten (\Lcomp{wdmsplitter})
+% berechnet, falls nicht \Lkeyword{coupleralign} verwendet wird.\fi
+% \ifENGLISH The component's orientation is calculated from the median of all input nodes
+% (\Lcomp{wdmcoupler}) or all output nodes (\Lcomp{wdmsplitter}), unless \Lkeyword{coupleralign}
+% is used.\fi
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(4,2)
+  \pnodes(0,2){A}(0,0.5){B}(0,0){C}(4,1){D}
+  \wdmcoupler(A)(B)(C)(D){coupler}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(4,2)
+  \pnodes(0,2){E}(0,0.5){F}(0,0){G}(4,2){H}
+  \wdmcoupler[coupleralign=t](E)(F)(G)(H){coupler}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(4,2)
+  \pnodes(0,1){A}(4,2){B}(4,0.5){C}(4,0){D}
+  \wdmsplitter(A)(B)(C)(D){splitter}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
+%
+% \iffalse
+%<*ignore>
+% \fi
+\begin{LTXexample}
+\begin{pspicture}(4,2)
+  \pnodes(0,0.5){E}(4,2){F}(4,1.5){G}(4,0){H}
+  \wdmsplitter[coupleralign=b](E)(F)(G)(H){splitter}
+\end{pspicture}
+\end{LTXexample}
+% \iffalse
+%</ignore>
+% \fi
 % \ifGERMAN\subsection{Eingangs- und Ausgangsknoten}\fi
 % \ifENGLISH\subsection{Input and output nodes}\fi
 % \label{sec:coupler-nodes}
@@ -5888,14 +5936,16 @@
 % \fi
 % \begin{center}
 % \begin{pspicture}(11,2)
-% \psset{couplersize=0.5, couplertype=rectangle, couplersep=0.2}
-% \wdmsplitter(0, 1.25)(3,2)(3,0.5)
+% \psset{couplersize=0.6, couplertype=rectangle, couplersep=0.25}
+% \wdmsplitter(0,1.25)(3,2)(3,1.25)(3,0.5)
 % \psdot(\oenodeIfc{1}{})\uput[120](\oenodeIfc{1}{}){1}
 % \psdot(\oenodeIfc{2}{})\uput[90](\oenodeIfc{2}{}){2}
+% \psdot(\oenodeIfc{3}{})\uput[180](\oenodeIfc{3}{}){3}
 % \psdot(\oenodeIfc{N}{})\uput[-90](\oenodeIfc{N}{}){N}
-% \wdmcoupler(4, 2)(4,0.5)(7,1.25)
+% \wdmcoupler(4,2)(4,1.25)(4,0.5)(7,1.25)
 % \psdot(\oenodeIfc{1}{})\uput[90](\oenodeIfc{1}{}){1}
-% \psdot(\oenodeIfc{2}{})\uput[-90](\oenodeIfc{2}{}){2}
+% \psdot(\oenodeIfc{2}{})\uput[0](\oenodeIfc{2}{}){2}
+% \psdot(\oenodeIfc{3}{})\uput[-90](\oenodeIfc{3}{}){3}
 % \psdot(\oenodeIfc{N}{})\uput[60](\oenodeIfc{N}{}){N}
 % \optcoupler(8,2)(8,0.5)(11,2)(11,0.5)
 % \psdot(\oenodeIfc{1}{})\uput[90](\oenodeIfc{1}{}){1}
@@ -6743,24 +6793,6 @@
 % \end{ltxsyntax}
 %
 % \begin{optionlist}
-%   \optitem[new]{namingscheme}{old, new} 
-%   \ifGERMAN
-%   Diese Option ist nur aus Kompatibilitätsgründen vorhanden. In Version 2.1
-%   mussten spezielle Komponentenknoten über ihren expliziten Namen angesprochen
-%   werden. Sie sollten diese Option nur dann verwenden und auf \opt{old}
-%   setzen, wenn Sie in älteren Dokumenten direkt auf die Knoten zugegriffen
-%   haben. Seit Version 3.0 werden Makros für den Zugriff auf die
-%   Komponentenknoten bereitgestellt, so dass das eigentliche Namensschema
-%   unerheblich ist.
-%   \fi
-%   \ifENGLISH
-%   This option is for backward compatibility only. In version 2.1 special
-%   component nodes had to be accessed by their explicit name. You should use
-%   this option only if you accessed internal nodes directly in old
-%   documents. Since version 3.0 explicit macros are provided to access all
-%   special component nodes, so that the actual naming scheme does not matter.
-%   \fi
-%
 %   \boolitem[false]{showoptdots}
 %   \ifGERMAN 
 %   Markiert einige der speziellen Komponentenknoten: die schwarzen Punkte sind
@@ -11866,7 +11898,7 @@
 \end{LTXexample}
 \bigskip
 
-\enlargethispage{2cm}
+\enlargethispage{2.5cm}
 \begingroup
 \captionsetup[lstlisting]{format=poecaption}
 \begin{LTXexample}[pos=t, caption={\ifGERMAN Angepasst von \fi\ifENGLISH Adapted from \fi\arxivurl{1112.5270v2}}]
@@ -12251,7 +12283,7 @@
   \perppol[abspos=7](A)(B)\parpol(D)(\oenodeBeam{})
 \end{pspicture}
 \end{LTXexample}
-\enlargethispage{1cm}
+\enlargethispage{1.5cm}
 \begin{LTXexample}[pos=t, caption={caption}]
 \begin{pspicture}(13.7,2.9)
 \newpsstyle{Wire}{arm=0.1, arrows=->}
@@ -12513,6 +12545,31 @@
   }%
 \end{optexp}   
 \end{pspicture}  
+\end{LTXexample}
+
+\begin{LTXexample}[pos=t, caption={\ifENGLISH Adapted from \fi\ifGERMAN Angepasst von \fi\href{https://tex.stackexchange.com/q/581952}}, label=ex:multi-input-coupler]
+\begin{pspicture}(10,6)
+  \begin{optexp}
+    \psset[optexp]{usefiberstyle, couplersize=0.25, couplersep=0.07}
+    \newpsstyle{Fiber}{linecolor=orange, linewidth=2\pslinewidth}
+    \pnodes(2,1){PumpDiode}(2,5){UpperPumpDiode}(1,3){SignalIsolatorIn}(4, 3){SignalIsolatorOut}(1,3){SignalIn}(10,3){SignalCombinerOut}
+    \pnodes(7,3){FiberIn}(9,3){FiberOut}(9,3){AmpOut}
+    \optdiode[compname=PumpDiode, position=start](PumpDiode)([Xnodesep=1]PumpDiode){Pump diode}
+    \optdiode[compname=UpperPumpDiode, position=start](UpperPumpDiode)([Xnodesep=1]UpperPumpDiode){Pump diode}
+    \optisolator[compname=SignalIsolator, fiber=none](SignalIsolatorIn)(SignalIsolatorOut)%
+        {\begin{tabular}{@{}c@{}}Signal\\Isolator\end{tabular}}
+    \wdmcoupler[compname=SignalPumpCombiner](UpperPumpDiode)(\oenodeOut{SignalIsolator})(PumpDiode)(FiberIn)%
+        {\begin{tabular}{@{}c@{}}Signal/Pump\\light combiner\end{tabular}}
+    \optfiber[
+        compname=ActiveFiber,
+        position=start,
+        addtoFiberOut={arrows=->}](FiberIn)(FiberOut)%
+        {\begin{tabular}{@{}c@{}}Active\\fiber\end{tabular}}
+    \drawfiber[ArrowInside=->](SignalIn){SignalIsolator}
+  \end{optexp}
+  \nput{75}{AmpOut}{\begin{tabular}{@{}c@{}}Amplifier\\Output\end{tabular}}
+  \nput{-90}{SignalIn}{\begin{tabular}{@{}c@{}}Signal\\Input\end{tabular}}         
+\end{pspicture}
 \end{LTXexample}
 
 \begin{LTXexample}[pos=t, linerange={1-1}, caption={caption}]
@@ -13906,6 +13963,21 @@
 %
 % \begin{changelog}
 % \patchcmd{\release}{\setlength{\itemsep}{0pt}}{\setlength{\itemsep}{0pt}\setlength{\parsep}{0pt}}{}{}
+%   \begin{release}{6.0}{2021-02-26}
+%   \item Modified \cs{wdmcoupler} to handle an arbitrary number of input nodes\see{comp:wdmcoupler}
+%   \item Modified \cs{wdmsplitter} to handle an arbitrary number of output nodes\see{comp:wdmsplitter}
+%   \item Removed deprecated \opt{lampscale}, use style \opt{CrystalLamp}.
+%   \item Removed deprecated \opt{pollinewidth}, use style \opt{Polarization}.
+%   \item Removed deprecated \cs{optgrid}, use \cs{optgrating}.
+%   \item Removed deprecated \opt{optgridwidth}, use \opt{gratingwidth}.
+%   \item Removed deprecated \opt{optgridheight}, use \opt{gratingheight}.
+%   \item Removed deprecated \opt{optgriddepth}, use \opt{gratingdepth}.
+%   \item Removed deprecated \opt{optgridcount}, use \opt{gratingcount}.
+%   \item Removed deprecated \opt{optgridtype}, use \opt{gratingtype}.
+%   \item Removed deprecated \opt{optgridlinewidth}, use \opt{gratinglinewidth}.
+%   \item Removed deprecated \opt{align}, use \opt{coupleralign}.
+%   \item Removed deprecated \opt{namingschema}.
+%   \end{release}
 %   \begin{release}{5.2}{2014-11-26}
 %   \item Added component \cs{asphericlens}\see{comp:asphericlens}
 %   \item Added component \cs{axicon}\see{comp:axicon}
@@ -14371,6 +14443,10 @@
 % Count the temporal planes which are created for connections to nodes.
 %    \begin{macrocode}
 \newcount\POE@nodecnt
+%    \end{macrocode}
+% Count the number of input nodes of a wdmcoupler, or output nodes of a wdmsplitter
+%    \begin{macrocode}
+\newcount\POE@couplernodecount
 %    \end{macrocode}
 %
 % \subsection{Fixed strings}
@@ -14845,24 +14921,10 @@
 %    \end{macrocode}
 % Naming parameters.
 %    \begin{macrocode}
-\define@choicekey*[psset]{optexp}{namingscheme}%
-  [\val\nr]{old,new}[new]{%
-  \ifcase\nr\relax
-%    \end{macrocode}
-% Use the old naming scheme which was used in version 2.x.
-%    \begin{macrocode}
-    \edef\POE@str@basicname@default{tempNode}%
-    \edef\POE@str@basicname@prefix{}%
-    \gdef\POE@str@basicname@sep{Intern}%
-    \edef\POE@str@extnode@postfix{ExtNode}%
-  \or
-    \edef\POE@str@basicname@default{@}%
-    \edef\POE@str@basicname@prefix{OE@}%
-    \gdef\POE@str@basicname@sep{}%
-    \edef\POE@str@extnode@postfix{Ext}%
-  \fi
-}%
-\psset[optexp]{namingscheme=new}%
+\edef\POE@str@basicname@default{@}%
+\edef\POE@str@basicname@prefix{OE@}%
+\gdef\POE@str@basicname@sep{}%
+\edef\POE@str@extnode@postfix{Ext}%
 \define@key[psset]{optexp}{b@sicname}{%
   \edef\POE@key@b@sicname{\POE@str@basicname@prefix#1}%
 }%
@@ -15068,14 +15130,6 @@
 \define@boolkey[psset]{optexp}[POE@]{voltage}[true]{}
 \define@boolkey[psset]{optexp}[POE@]{caxisinv}[true]{}
 \define@boolkey[psset]{optexp}[POE@]{lamp}[true]{}
-\define@key[psset]{optexp}{lampscale}{%
-  \pst@checknum{#1}\POE@key@lampscale
-  \pst@divide{\POE@key@lampscale pt}{0.3pt}{\POE@key@lampscale}
-  \addtopsstyle{CrystalLamp}{unit=\POE@key@lampscale}
-  \PackageWarning{pst-optexp}{%
-    Parameter 'lampscale' is deprecated, \MessageBreak
-    use style 'CrystalLamp' instead.}%
-}
 \psset[optexp]{%
   crystalwidth=1.4,
   crystalheight=0.6,
@@ -15247,18 +15301,11 @@
 \define@key[psset]{optexp}{polsize}{%
   \pst@checknum{#1}\POE@key@polsize
 }
-\define@key[psset]{optexp}{pollinewidth}{%
-  \edef\POE@key@pollinewidth{#1}%
-  \PackageWarning{pst-optexp}{%
-    Parameter 'pollinewidth' is deprecated, \MessageBreak
-    use style 'Polarization'.}%
-}%
 %    \end{macrocode}
 % This is defined manually, to avoid printing the warning inside the key definition above.
 %    \begin{macrocode}
-\def\POE@key@pollinewidth{0.7\pslinewidth}%
 \newpsstyle{Polarization}{%
-  linewidth=\POE@key@pollinewidth, 
+  linewidth=0.7\pslinewidth, 
   arrowscale=0.8, dotsize=3\pslinewidth}
 \define@choicekey+[psset]{optexp}{poltype}%
   [\val\nr]{parallel,misc,perp,rcirc,lcirc}%
@@ -15449,48 +15496,6 @@
 }%
 %    \end{macrocode}
 % Grating
-%
-% These are the old \opt{optgrid*} parameters, which have been deprecated.
-%    \begin{macrocode}
-\define@key[psset]{optexp}{optgridcount}{%
-  \pst@checknum{#1}\POE@key@gratingcount
-  \PackageWarning{pst-optexp}{%
-    Parameter 'optgridcount' is deprecated,\MessageBreak
-    use 'gratingcount' instead.}%
-}%
-\define@key[psset]{optexp}{optgridwidth}{%
-  \pst@checknum{#1}\POE@key@gratingwidth
-  \PackageWarning{pst-optexp}{%
-    Parameter 'optgridwidth' is deprecated,\MessageBreak
-    use 'gratingwidth' instead.}%
-}%
-\define@key[psset]{optexp}{optgridheight}{%
-  \pst@checknum{#1}\POE@key@gratingheight
-  \PackageWarning{pst-optexp}{%
-    Parameter 'optgridheight' is deprecated,\MessageBreak
-    use 'gratingheight' instead.}%
-}%
-\define@choicekey*[psset]{optexp}{optgridtype}%
-  [\val\nr]{binary,blazed}{%
-  \edef\POE@key@gratingtype{#1}%
-  \PackageWarning{pst-optexp}{%
-    Parameter 'optgridtype' is deprecated,\MessageBreak
-    use 'gratingtype' instead.}%
-}%
-\define@key[psset]{optexp}{optgriddepth}{%
-  \pst@checknum{#1}\POE@key@gratingdepth
-  \PackageWarning{pst-optexp}{%
-    Parameter 'optgriddepth' is deprecated,\MessageBreak
-    use 'gratingdepth' instead.}%
-}%
-\define@key[psset]{optexp}{optgridlinewidth}{%
-  \edef\POE@key@gratinglinewidth{#1}%
-  \PackageWarning{pst-optexp}{%
-    Parameter 'optgridlinewidth' is deprecated,\MessageBreak
-    use 'gratinglinewidth' instead.}%
-}%
-%    \end{macrocode}
-% These are the new grating parameters.
 %    \begin{macrocode}
 \define@key[psset]{optexp}{gratingcount}{%
   \pst@checknum{#1}\POE@key@gratingcount
@@ -15885,12 +15890,6 @@
     \fi
   }%
   {\PackageError{pst-optexp}{Unknown value '\val' for couplertype}}
-\define@key[psset]{optexp}{align}{%
-  \psset[optexp]{coupleralign=#1}%
-  \PackageWarning{pst-optexp}{%
-    Parameter 'align' is deprecated,\MessageBreak
-    use 'coupleralign' instead.}%
-}
 \define@choicekey+[psset]{optexp}{coupleralign}%
   [\val\nr]{t,b,c,top,bottom,center}%
   {%
@@ -16711,13 +16710,8 @@
 %    \end{macrocode}
 % Which nodes to take for the automatic fiber and wire connections.
 %    \begin{macrocode}
-\define@choicekey+[psset]{optexp}{startnode}%
-  [\val\nr]{auto,1,2,3,4,N}%
-  {\edef\POE@key@startnode{\val}}
-  {\PackageError{pst-optexp}{Unknown startnode number '\val'}}
-\define@choicekey+[psset]{optexp}{stopnode}[\val\nr]{auto,1,2,3,4,N}%
-   {\edef\POE@key@stopnode{\val}}
-   {\PackageError{pst-optexp}{Unknown stopnode number '\val'}}
+\define@key[psset]{optexp}{startnode}{\edef\POE@key@startnode{#1}}%
+\define@key[psset]{optexp}{stopnode}{\edef\POE@key@stopnode{#1}}%
 \psset[optexp]{%
   startnode=auto,
   stopnode=auto
@@ -18575,106 +18569,207 @@
 % \begin{macro}{\wdmsplitter}
 %    \begin{macrocode}
 \def\wdmsplitter{\pst@object{wdmsplitter}}%
-\def\wdmsplitter@i(#1)(#2){%
-  \@ifnextchar(%)
-    {\wdmsplitter@ii(#1)(#2)}%
-    {\wdmsplitter@ii(#1)(#2)(#2)}%
-}%
-\def\wdmsplitter@ii(#1)(#2)(#3){%
+\def\wdmsplitter@i{%
+  \def\my@aftercoors{\wdmsplitter@ii}%
+  \POE@couplernodecount=0\relax
+  \def\coupler@coors{}%
+  \coupler@@getcoors
+}
+\def\wdmsplitter@ii{%
   \@ifnextchar\bgroup%
-    {\wdmsplitter@iii(#1)(#2)(#3)}%
-    {\wdmsplitter@iii(#1)(#2)(#3){}}%
+    {\wdmsplitter@iii}%
+    {\wdmsplitter@iii{}}%
 }%
-\def\wdmsplitter@iii(#1)(#2)(#3)#4{%
+\def\wdmsplitter@iii#1{%
+  \ifnum\POE@couplernodecount>1\else
+    \PackageError{pst-optexp}%
+    {A wdmsplitter expects at least two nodes, one input and one output node}%
+  \fi
   \begin@OptexpObj
     \ifPOE@backlayer
-      \pnode(#1){\oenodeRefA{}}
+%    \end{macrocode}
+% Use first coordinate pair as RefA
+%    \begin{macrocode}
+      \pnode(! [ \coupler@coors 1 \POE@dict{GetCoordinatePair} \tx@UserCoor){\oenodeRefA{}}
       \ifx\POE@key@coupleralign\POE@str@top
-         \pnode(#2){\oenodeRefB{}}
+%    \end{macrocode}
+% For top alignment, use first output coordinate pair, i.e. second coordinate pair as RefB
+%    \begin{macrocode}
+        \pnode(! [ \coupler@coors 2 \POE@dict{GetCoordinatePair} \tx@UserCoor){\oenodeRefB{}}
       \else\ifx\POE@key@coupleralign\POE@str@bottom
-         \pnode(#3){\oenodeRefB{}}
+%    \end{macrocode}
+% For bottom alignment, use last output coordinate pair
+%    \begin{macrocode}
+        \pnode(! [ \coupler@coors counttomark 2 idiv \POE@dict{GetCoordinatePair} \tx@UserCoor){\oenodeRefB{}}
       \else
-         \pst@getcoor{#2}\POE@tempa%
-         \pst@getcoor{#3}\POE@tempb%
-         \pnode(!\POE@tempa \POE@tempb 
-                 \POE@dict{VecAdd 0.5 VecScale}
-                 \tx@UserCoor){\oenodeRefB{}}
+%    \end{macrocode}
+% Use median of all output coordinate pairs as RefB
+%    \begin{macrocode}
+        \pnode(! [ \coupler@coors
+%    \end{macrocode}
+% remove input node from stack
+%    \begin{macrocode}
+pop pop
+%    \end{macrocode}
+% count number of output coordinate pair, keep that number and save it behind the mark
+%    \begin{macrocode}
+counttomark 2 idiv dup counttomark 1 add 1 roll
+1 sub { \POE@dict{VecAdd} } repeat
+%    \end{macrocode}
+% divide by number of output coordinate pairs and remove mark
+%    \begin{macrocode}
+4 -1 roll 1 exch div \POE@dict{VecScale} 3 -1 roll pop \tx@UserCoor){\oenodeRefB{}}
       \fi\fi
     \fi
-    \POE@drawcomponent{wdmsplitter}{#4}
+    \POE@drawcomponent{wdmsplitter}{#1}
     \ifPOE@backlayer
       \POE@Verb{%
-        (1) (2) (\oenode{}{}) CorrectDipoleIfc 
-        (1) (3) (\oenode{}{}) CorrectDipoleIfc 
+        2 1 \the\POE@couplernodecount\space
+        {
+          inttostr (1) exch (\oenode{}{}) CorrectDipoleIfc
+        } for
       }%
       \ifPOE@fiberpresetin@
-        \drawfiber@{FiberIn}[stopnode=1](#1){}
+        \drawfiber@{FiberIn}[stopnode=1](! [ \coupler@coors 1 \POE@dict{GetCoordinatePair} \tx@UserCoor){}
       \fi
       \ifPOE@fiberpresetout@
         \ifPOE@fiberpresetout@top
-          \drawfiber@{FiberOut1}[startnode=2]{}(#2)
+          \drawfiber@{FiberOut1}[startnode=2]{}(! [ \coupler@coors 2 \POE@dict{GetCoordinatePair} \tx@UserCoor)
         \fi
         \ifPOE@fiberpresetout@bottom
-          \drawfiber@{FiberOut2}[startnode=N]{}(#3)
+          \drawfiber@{FiberOut2}[startnode=N]{}(! [ \coupler@coors \the\POE@couplernodecount\space \POE@dict{GetCoordinatePair} \tx@UserCoor)
         \fi
       \fi
+%    \end{macrocode}
+% If top and bottom fibers are drawn, we must also draw all other output fibers
+%    \begin{macrocode}
+        \ifPOE@fiberpresetout@top\ifPOE@fiberpresetout@bottom
+          \@tempcnta=\POE@couplernodecount
+          \advance\@tempcnta by -3
+          \ifnum0<\@tempcnta
+            \multido{\i=3+1}{\the\@tempcnta}{%
+              \drawfiber@{FiberOut}[startnode=\i]{}(! [ \coupler@coors \i\space \POE@dict{GetCoordinatePair} \tx@UserCoor)
+            }%
+          \fi
+        \fi\fi  
     \fi
   \end@OptexpObj
 }%
 %    \end{macrocode}
 % \end{macro}
-% 
+%
 % \begin{macro}{\wdmcoupler}
 %    \begin{macrocode}
 \def\wdmcoupler{\pst@object{wdmcoupler}}%
-\def\wdmcoupler@i(#1)(#2){%
-  \@ifnextchar(%)
-    {\wdmcoupler@ii(#1)(#2)}%
-    {\wdmcoupler@ii(#1)(#1)(#2)}%
-}%
-\def\wdmcoupler@ii(#1)(#2)(#3){%
+\def\wdmcoupler@i{%
+  \def\my@aftercoors{%
+%    \end{macrocode}
+% Subtract one, because we counted all nodes. However, we can always access the last
+% node by N, so we more often use the second last, i.e the last input node
+%    \begin{macrocode}
+    \advance\POE@couplernodecount by -1\relax%
+    \wdmcoupler@ii}%
+  \POE@couplernodecount=0\relax
+  \def\coupler@coors{}%
+  \coupler@@getcoors
+}
+%    \end{macrocode}
+% \begin{macro}{\coupler@@getcoors}
+%   Read in a variable number of node coordinates. The coordinates are saved in \cs{coupler@coors},
+%   their number in \cs{POE@couplernodecount}.
+%    \begin{macrocode}
+\def\coupler@@getcoors(#1){%
+  \advance\POE@couplernodecount by \@ne\relax%
+  \pst@@getcoor{#1}%
+  \edef\coupler@coors{\pst@coor\coupler@coors}%
+  \@ifnextchar({\coupler@@getcoors}{\my@aftercoors}%
+}
+%    \end{macrocode}
+% \end{macro}
+%    \begin{macrocode}
+\def\wdmcoupler@ii{%
   \@ifnextchar\bgroup%
-    {\wdmcoupler@iii(#1)(#2)(#3)}%
-    {\wdmcoupler@iii(#1)(#2)(#3){}}%
-}%
-\def\wdmcoupler@iii(#1)(#2)(#3)#4{%
+    {\wdmcoupler@iii}%
+    {\wdmcoupler@iii{}}%
+  }%
+\def\wdmcoupler@iii#1{%
+  \ifnum\POE@couplernodecount>0\else
+    \PackageError{pst-optexp}%
+    {A wdmcoupler expects at least two nodes, one input and one output node}%
+  \fi
   \begin@OptexpObj
     \ifPOE@backlayer
-      \pnode(#3){\oenodeRefB{}}
+%    \end{macrocode}
+% Use last coordinate pair as RefB
+%    \begin{macrocode}
+      \pnode(! [ \coupler@coors \the\POE@couplernodecount\space 1 add \POE@dict{GetCoordinatePair} \tx@UserCoor){\oenodeRefB{}}
       \ifx\POE@key@coupleralign\POE@str@top
-         \pnode(#1){\oenodeRefA{}}
+%    \end{macrocode}
+% For top alignment, use first coordinate pair as RefA
+%    \begin{macrocode}
+         \pnode(! [ \coupler@coors \POE@dict{GetFirstInputCoordinatePair} \tx@UserCoor){\oenodeRefA{}}
       \else\ifx\POE@key@coupleralign\POE@str@bottom
-         \pnode(#2){\oenodeRefA{}}
+%    \end{macrocode}
+% For bottom alignment, use second last coordinate pair as RefA
+%    \begin{macrocode}
+         \pnode(! [ \coupler@coors \POE@dict{GetLastInputCoordinatePair} \tx@UserCoor){\oenodeRefA{}}
       \else
-         \pst@getcoor{#1}\POE@tempa%
-         \pst@getcoor{#2}\POE@tempb%
-         \pnode(!\POE@tempa \POE@tempb 
-                 \POE@dict{VecAdd 0.5 VecScale}
-                 \tx@UserCoor){\oenodeRefA{}}
+%    \end{macrocode}
+% Use median of all input coordinate pairs as RefA
+%    \begin{macrocode}
+        \pnode(! [ \coupler@coors
+%    \end{macrocode}
+% remove output node from stack
+%    \begin{macrocode}
+counttomark -2 roll pop pop
+%    \end{macrocode}
+% count number of input coordinate pair, keep that number and save it behind the mark
+%    \begin{macrocode}
+counttomark 2 idiv dup counttomark 1 add 1 roll
+1 sub { \POE@dict{VecAdd} } repeat
+%    \end{macrocode}
+% divide by number of input coordinate pairs and remove mark
+%    \begin{macrocode}
+4 -1 roll 1 exch div \POE@dict{VecScale} 3 -1 roll pop \tx@UserCoor){\oenodeRefA{}}
       \fi\fi
     \fi
-    \POE@drawcomponent{wdmcoupler}{#4}
+    \POE@drawcomponent{wdmcoupler}{#1}
     \ifPOE@backlayer 
       \POE@Verb{%
-        (1) (3) (\oenode{}{}) CorrectDipoleIfc 
-        (2) (3) (\oenode{}{}) CorrectDipoleIfc
+        1 1 \the\POE@couplernodecount\space
+        {
+          inttostr \the\POE@couplernodecount\space 1 add inttostr (\oenode{}{}) CorrectDipoleIfc
+        } for
       }%
       \ifPOE@fiberpresetout@
-        \drawfiber@{FiberOut}[startnode=N]{}(#3)
+        \drawfiber@{FiberOut}[startnode=N]{}(\oenodeRefB{})
       \fi
       \ifPOE@fiberpresetin@
         \ifPOE@fiberpresetin@top
-          \drawfiber@{FiberIn1}[stopnode=1](#1){}
+          \drawfiber@{FiberIn1}[stopnode=1](! [ \coupler@coors 1 \POE@dict{GetCoordinatePair} \tx@UserCoor){}
         \fi 
         \ifPOE@fiberpresetin@bottom
-          \drawfiber@{FiberIn2}[stopnode=2](#2){}
+          \drawfiber@{FiberIn2}[stopnode=\the\POE@couplernodecount](! [ \coupler@coors \the\POE@couplernodecount\space \POE@dict{GetCoordinatePair} \tx@UserCoor){}
         \fi
+%    \end{macrocode}
+% If top and bottom fibers are drawn, we must also draw all other input fibers
+%    \begin{macrocode}
+        \ifPOE@fiberpresetin@top\ifPOE@fiberpresetin@bottom
+          \@tempcnta=\POE@couplernodecount
+          \advance\@tempcnta by -2
+          \ifnum0<\@tempcnta
+            \multido{\i=2+1}{\the\@tempcnta}{%
+              \drawfiber@{FiberIn}[stopnode=\i](! [ \coupler@coors \i\space \POE@dict{GetCoordinatePair} \tx@UserCoor){}
+            }%
+          \fi
+        \fi\fi
       \fi
     \fi
   \end@OptexpObj
 }%
 %    \end{macrocode}
 % \end{macro}
+%
 % \begin{macro}{\optcirculator}
 %    \begin{macrocode}
 \def\optcirculator{\pst@object{optcirculator}}%
@@ -19181,12 +19276,6 @@
 \newOptexpTripole[ref@angle=45]{beamsplitter}
 \newOptexpTripole{optgrating}
 \newOptexpTripole[ref@angle=90]{transmissiongrating}
-\def\optgrid{%
-  \PackageWarning{pst-optexp}{%
-    \string\optgrid\space is deprecated,\MessageBreak
-    use \string\optgrating\space instead.}%
-  \optgrating%
-}%
 \newOptexpTripole[ref@angle=45]{pentaprism}
 \newOptexpTripole[ref@angle=45]{rightangleprism}
 \newOptexpTripole[ref@angle=45]{optprism}
@@ -21744,16 +21833,25 @@
 % \begin{macro}{\wdmcoupler@nodes}
 %    \begin{macrocode}
 \def\wdmcoupler@nodes{%
-  \edef\@sep{\POE@key@couplersep\space 0.5 mul }%
-  \ifx\POE@key@couplertype\POE@str@none
-    \ifx\POE@key@coupleralign\POE@str@center
-      \edef\@sep{0 }%
-    \fi
-  \fi
   \newOptexpFiberComp{%
-    {@@x neg @@y0 \@sep add}
-    {@@x neg  @@y0 \@sep sub}
-    {@@x 0}}%
+%    \end{macrocode}
+% A coupler may have only a single input node, which must then be duplicated
+%    \begin{macrocode}
+    /@@nodecount \the\POE@couplernodecount\space dup 1 le { pop 2 } if def
+    @@y0 \POE@key@couplersep\space 0.5 mul add
+    \POE@key@couplersep\space @@nodecount 1 sub div
+    \ifx\POE@key@couplertype\POE@str@none
+      \ifx\POE@key@coupleralign\POE@str@center
+        pop pop @@y0 0
+      \fi
+    \fi
+    1 1 @@nodecount
+    {
+      3 copy 1 sub mul sub exch pop [ @@x neg 3 -1 roll ] cvx 3 1 roll
+    } for
+    pop pop
+    {@@x 0}
+  }%
   \pnode(0,0){\oenodeCenter{}}
 }%
 %    \end{macrocode}
@@ -21769,7 +21867,7 @@
         (!/N@\oenodeOut{} \POE@dict{@GetCenter} 
           \tx@UserCoor \POE@key@couplersep\space sub)(\oenode{2}{})
     \else
-      \psline[style=Fiber](\oenode{2}{})(\oenodeOut{})
+      \psline[style=Fiber](\oenode{\the\POE@couplernodecount}{})(\oenodeOut{})
       \ifx\POE@key@coupleralign\POE@str@bottom
         \psline[style=Fiber]%
           (!/N@\oenodeOut{} \POE@dict{@GetCenter} 
@@ -21786,16 +21884,25 @@
 % \begin{macro}{\wdmsplitter@nodes}
 %    \begin{macrocode}
 \def\wdmsplitter@nodes{%
-  \edef\@sep{\POE@key@couplersep\space 0.5 mul }%
-  \ifx\POE@key@couplertype\POE@str@none
-    \ifx\POE@key@coupleralign\POE@str@center
-      \edef\@sep{0 }%
-    \fi
-  \fi
   \newOptexpFiberComp{%
     {@@x neg 0}
-    {@@x @@y0 \@sep add}
-    {@@x @@y0 \@sep sub}}
+%    \end{macrocode}
+% A coupler may have only a single output node, which must then be duplicated
+%    \begin{macrocode}
+    /@@nodecount \the\POE@couplernodecount\space dup 2 gt { 1 sub } if def
+    @@y0 \POE@key@couplersep\space 0.5 mul add
+    \POE@key@couplersep\space @@nodecount 1 sub div
+    \ifx\POE@key@couplertype\POE@str@none
+      \ifx\POE@key@coupleralign\POE@str@center
+        pop pop @@y0 0
+      \fi
+    \fi
+    1 1 @@nodecount
+    {
+      3 copy 1 sub mul sub exch pop [ @@x 3 -1 roll ] cvx 3 1 roll
+    } for
+    pop pop
+  }%
   \pnode(0,0){\oenodeCenter{}}
 }%
 %    \end{macrocode}
@@ -25224,11 +25331,13 @@ tx@OptexpDict begin
 %   \end{pssyntax}
 %    \begin{macrocode}
 /GetIfcOrNodeCoord {
+  (GetIfcOrNodeCoord) DebugBegin
   dup xcheck {
     exch pop exec
   } {
     nametostr exch nametostr exch GetIfcCenter
   } ifelse
+  DebugEnd
 } bind def
 %    \end{macrocode}
 % \end{macro}
@@ -25554,6 +25663,25 @@ tx@IntersectDict begin
 end
 %    \end{macrocode}
 %
+% \begin{macro}{GetCoordinatePair}
+%   Get the coordinate pair at position \PSvar{n} (n goes from 1 to N) and remove the other coordinates
+%   including mark from stack
+%   \begin{pssyntax}
+%     [ \PSvar{xN} \PSvar{yN} ... \PSvar{x1} \PSvar{y1} \PSvar{n} \PSop{GetCoordinatePair}
+%   \end{pssyntax}
+%    \begin{macrocode}
+/GetCoordinatePair {%
+  2 mul -2 roll counttomark 1 add 2 roll cleartomark
+} bind def
+%    \end{macrocode}
+% \end{macro}
+%    \begin{macrocode}
+/GetFirstInputCoordinatePair { 1 GetCoordinatePair } bind def
+%    \end{macrocode}
+% If a coupler has only a single input node, this must be used for both nodes
+%    \begin{macrocode}
+/GetLastInputCoordinatePair { counttomark 2 idiv 1 sub GetCoordinatePair } bind def
+%    \end{macrocode}
 % \begin{macro}{mymax}
 %   For some reason Adobe Distiller crashes if 'max' operator is used
 %   with two floats which are very close (4e-5 in one case)

@@ -1,25 +1,4 @@
-ifeq ($(OLDDIR),)
-OLDDIR=../../../old/tests
-endif
-
-ifeq ($(abspath $(OLDDIR)),$(abspath ..))
-$(error You are already in the old director, please set $$OLDDIR properly)
-endif
-
 DIRS = testcases examples
-
-ifeq ($(shell test -d $(OLDDIR); echo $$?),1)
-$(error Could not find old directory '$(OLDDIR)')
-else 
-ifeq ($(shell test -d $(OLDDIR)/testcases -a -d $(OLDDIR)/examples; echo $$?),1)
-$(error Old directory '$(OLDDIR)' does not have the correct structure)
-endif
-endif
-
-ifeq ($(shell test -d $(OLDDIR); echo $$?),1)
-$(error Could not find old directory '$(OLDDIR)')
-endif
-
 CONVERT = convert -density 300 -alpha off
 BLACKLIST = $(addprefix testcases/, header.tex doc-examples.tex testcases.tex)
 FILELIST := $(filter-out $(BLACKLIST), \
@@ -55,6 +34,26 @@ DIFF := $(subst current/,diff/, $(subst .pdf,-01.png, $(CURRENT_TGT)))
 all: check-diff check-nodiff
 
 old-src:
+ifeq ($(OLDDIR),)
+OLDDIR=../../../old/tests
+endif
+
+ifeq ($(abspath $(OLDDIR)),$(abspath ..))
+$(error You are already in the old directory $(OLDDIR), please set $$OLDDIR properly)
+endif
+
+ifeq ($(shell test -d $(OLDDIR); echo $$?),1)
+$(error Could not find old directory '$(OLDDIR)', use variable $$OLDDIR to override it)
+else 
+ifeq ($(shell test -d $(OLDDIR)/testcases -a -d $(OLDDIR)/examples; echo $$?),1)
+$(error Old directory '$(OLDDIR)' does not have the correct structure)
+endif
+endif
+
+ifeq ($(shell test -d $(OLDDIR); echo $$?),1)
+$(error Could not find old directory '$(OLDDIR)')
+endif
+
 	make -C $(OLDDIR)/.. pst-optexp.pro
 	make -C $(OLDDIR)/testcases
 	make -C $(OLDDIR)/examples
@@ -91,7 +90,7 @@ $(DIFF): diff/%-01.png: current/%-01.png old/%-01.png | diff-dir
 
 check-nodiff check-diff: old-src current-src
 
-GREPDIFF=egrep -zq "Histogram:[[:space:]]*[[:digit:]]*: \(  0,  0,  0\) \#000000 gray\(0,0,0\)[[:space:]]*Colormap:"
+GREPDIFF=grep -Pqz "Histogram:\s*\d+:\s+\([\s]*0,[\s]*0,[\s]*]*0\)\s+\#000000\s+gray\([^\)]+\)\s+Color"
 check-nodiff: $(DIFF)
 	@for f in $(addprefix diff/, $(addsuffix *.png, $(BASENAMES_NODIFF))); \
 	  do srcstring=' (source  \033[22;32munchanged\033[0m)';\

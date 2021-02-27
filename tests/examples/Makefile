@@ -1,9 +1,11 @@
 ifeq ($(DEBUG),)
 LATEX = latex -interaction=nonstopmode 2>&1 >/dev/null
 DVIPS = dvips -q 2>&1 >/dev/null
+PS2PDF = ps2pdf -dALLOWPSTRANSPARENCY 2>&1 >/dev/null
 else
 LATEX = latex -interaction=nonstopmode 
 DVIPS = dvips
+PS2PDF = ps2pdf
 endif
 
 export TEXINPUTS := ../..:
@@ -23,7 +25,7 @@ connectall.tex: connectall.py $(POE)
 	./connectall.py
 
 %.pdf: %.ps
-	ps2pdf $<
+	$(PS2PDF) $<
 
 %.ps: %.dvi
 	$(DVIPS) $<
