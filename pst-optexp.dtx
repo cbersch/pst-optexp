@@ -1,6 +1,6 @@
 % \iffalse meta-comment
 %
-% Copyright (C) 2007-2021 by Christoph Bersch <usenet@bersch.net>
+% Copyright (C) 2007-2022 by Christoph Bersch <usenet@bersch.net>
 %
 % This work may be distributed and/or modified under the
 % conditions of the LaTeX Project Public License, either version 1.3c
@@ -18,7 +18,7 @@
 %<stylefile>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<stylefile>\ProvidesPackage{pst-optexp}
 %<*stylefile>
-    [2021/02/26 v6.0 Optical experimental setups with PSTricks]
+    [2022/02/26 v6.1 Optical experimental setups with PSTricks]
 %</stylefile>
 %
 %<*driver>
@@ -13962,7 +13962,10 @@ parskip=half-]{scrreprt}
 % \prettyref{sec:bwd-comp}.  \fi
 %
 % \begin{changelog}
-% \patchcmd{\release}{\setlength{\itemsep}{0pt}}{\setlength{\itemsep}{0pt}\setlength{\parsep}{0pt}}{}{}
+%   \patchcmd{\release}{\setlength{\itemsep}{0pt}}{\setlength{\itemsep}{0pt}\setlength{\parsep}{0pt}}{}{}
+%   \begin{release}{6.1}{2022-02-06}
+%   \item Fixed bug in \cs{oapmirror}
+%   \end{release}
 %   \begin{release}{6.0}{2021-02-26}
 %   \item Modified \cs{wdmcoupler} to handle an arbitrary number of input nodes\see{comp:wdmcoupler}
 %   \item Modified \cs{wdmsplitter} to handle an arbitrary number of output nodes\see{comp:wdmsplitter}
@@ -21128,7 +21131,7 @@ counttomark 2 idiv dup counttomark 1 add 1 roll
     tx@Dict begin 
     dup /POEoapheight ED neg dup dup mul POEzonalradius dup mul add sqrt add 0.5 POEzonalradius dup mul div mul
     dup /POEoappar ED
-    /POEangle 180 OEangle sub 0.5 mul POEzonalradius 0 gt { 90 add } if DegToRad def
+    /POEangle 180 OEangle sub 0.5 mul POEzonalradius 0 gt { -1 mul 180 add } if DegToRad def
     end
   }%
   \def\POE@tempX{((POEoappar*(t^2))-(0.25/POEoappar)+POEoapheight)}%
